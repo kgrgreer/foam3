@@ -14,7 +14,8 @@ foam.CLASS({
     'stack',
     'transactionDAO',
     'userDAO',
-    'user'
+    'user',
+    'homeDenomination'
   ],
 
   requires: [
@@ -122,7 +123,6 @@ foam.CLASS({
   methods: [
 
     function initE() {
-      this.currentAccount$.sub(this.updateCurrency);
       this.updateCurrency();
 
       this
@@ -130,7 +130,7 @@ foam.CLASS({
         .tag('span', null, this.optionsBtn_$)
         .start(this.CURRENCY_CHOICE, {
           icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}),
-          label$: this.lastCurrency$.dot('alphabeticCode')
+          label$: this.lastCurrency$.dot('id')
         })
           .start('div')
             .addClass(this.myClass('carrot'))
@@ -142,14 +142,9 @@ foam.CLASS({
   listeners: [
     function updateCurrency() {
       var self = this;
-      self.accountDAO.find(this.currentAccount.id).then(function(acc) {
-        var denomination = 'CAD';
-        if ( acc ) {
-          denomination = acc.denomination;
-        }
-        self.currencyDAO.find(denomination).then(function(c) {
-          self.lastCurrency = c;
-        });
+
+      this.currencyDAO.find(this.homeDenomination).then(function(c) {
+        self.lastCurrency = c;
       });
     }
   ],
@@ -169,26 +164,29 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.accountDAO.where(
-            this.AND(
-              this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, this.DigitalAccount.name),
-              this.EQ(this.Account.IS_DEFAULT, true)
-              //this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
-            )), function(acc) {
-              if ( acc != null ) {
-                this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
-                  if ( cur.flagImage != null ) {
-                    this.start('div').start('img')
-                      .attrs({ src: cur.flagImage })
-                      .addClass('flag').end().add(cur.alphabeticCode)
+          .select(self.currencyDAO.where(
+              self.OR(
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'USD'),
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'CAD'),
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'EUR'),
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'GBP'),
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'JPY'),
+                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'AUD'),
+              )
+            ), function(c) {
+                if ( c.flagImage != null ) {
+                  return self.E()
+                    .start('div').start('img')
+                      .attrs({ src: c.flagImage })
+                      .addClass('flag').end().add(c.id)
                       .on('click', function() {
-                        self.currentAccount = acc;
-                        self.lastCurrency = cur;
+                        self.lastCurrency = c;
+                        self.homeDenomination = c.id;
+
+                        // TODO: Figure out a better way to store user preferences
+                        localStorage.setItem('homeDenomination', c.id);
                       });
-                  }
-                });
-              }
+                }
             })
           .end();
         self.optionsBtn_.add(self.optionPopup_);

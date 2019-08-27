@@ -24,11 +24,7 @@ foam.CLASS({
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
-    'validateAddress',
-    'validateCity',
     'validateInstitutionNumber',
-    'validatePostalCode',
-    'validateStreetNumber',
     'validateTransitNumber'
   ],
 

@@ -43,7 +43,8 @@ foam.CLASS({
     'isPayable',
     'loadingSpin',
     'newButton',
-    'predicate'
+    'predicate',
+    'refreshIntervalId'
   ],
 
   requires: [
@@ -228,6 +229,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'permitToPay'
+    },
+    {
+      class: 'String',
+      name: 'refreshIntervalId'
     }
   ],
 
@@ -398,9 +403,6 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.fxService
-              .acceptFXRate(transaction.fxQuoteId, this.user.id);
-            if ( quoteAccepted ) transaction.accepted = true;
             transaction.isQuoted = true;
             await this.transactionDAO.put(transaction);
           } catch ( error ) {

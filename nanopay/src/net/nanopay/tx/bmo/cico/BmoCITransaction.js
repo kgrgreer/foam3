@@ -28,6 +28,16 @@ foam.CLASS({
     {
       name: 'rejectReason',
       class: 'String'
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: '001',
+      visibility: 'Hidden'
+    },
+    {
+      name: 'settled',
+      class: 'Boolean'
     }
   ],
 
@@ -63,6 +73,7 @@ foam.CLASS({
         setBmoReferenceNumber( ((BmoCITransaction) other).getBmoReferenceNumber() );
         setBmoFileCreationNumber( ((BmoCITransaction) other).getBmoFileCreationNumber() );
         setRejectReason( ((BmoCITransaction) other).getRejectReason() );
+        setSettled( ((BmoCITransaction) other).getSettled() );
       `
     }
   ]

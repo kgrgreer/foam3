@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   properties: [
-    { 
+    {
       name: 'nodeWidth',
       value: 185
     },
@@ -33,19 +33,19 @@ foam.CLASS({
       value: 80
     },
     {
-      name: 'padding', 
+      name: 'padding',
       value: 10
     },
     {
       name: 'width',
-      value: 1614
+      value: 1460
     },
     {
       name: 'height',
       value: 1000
     },
     {
-      name: 'x', 
+      name: 'x',
       value: 0
     },
     {
@@ -67,38 +67,23 @@ foam.CLASS({
     {
       name: 'formatNode',
       value: function() {
+        this.homeDenomination$.sub(this.invalidate);
+
         // var isShadow = this.data.name.indexOf('Shadow') != -1;
         const leftPos  = -this.width/2+8;
         let type     = this.data.type.replace('Account', '');
-        const treeTagColourSequence = ['#406dea', '#32bf5e', '#eedc00', '#d9170e'];
-        let treeTagColourPointer = 0;
-
         // Account Name
         this.add(this.Label.create({color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif'}));
 
         // Balance and Denomination Indicator
         this.data.findBalance(this.__subContext__).then(function(balance) {
           this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
-
-            let treeTagColour;
-            // check parents
-            if ( !balance || type === 'Aggregate' ) {
-              treeTagColour = '#9ba1a6';
-            }
-            // TODO: group tree tag colours by trees themselves (i.e. by roots)
-            else if ( /* new tree */ false ) {
-              treeTagColour = treeTagColourSequence[treeTagColourPointer++];
-              if (treeTagColourPointer > treeTagColourSequence.length) treeTagColourPointer = 0;
-            } else {
-              treeTagColour = treeTagColourSequence[treeTagColourPointer];
-            }
-
             this.add(this.Line.create({
               startX: -this.width/2+1,
               startY: 0,
               endX: -this.width/2+1,
               endY: this.height,
-              color: treeTagColour,
+              color: type === 'Aggregate' ? '#9ba1a6' : denom.colour,
               lineWidth: 6
             }));
 
@@ -111,7 +96,13 @@ foam.CLASS({
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
             const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
-            this.add(this.Label.create({color: balanceColour, font: balanceFont, x: leftPos,  y: this.height-21, text: denom.format(balance)}));
+            this.add(this.Label.create({
+              color: balanceColour,
+              font: balanceFont,
+              x: leftPos,
+              y: this.height-21,
+              text$: this.homeDenomination$.map(_ =>  denom.format(balance))
+            }))
           }.bind(this));
         }.bind(this));
       }
@@ -137,7 +128,8 @@ foam.CLASS({
         'nodeWidth',
         'padding',
         'parentNode?',
-        'relationship'
+        'relationship',
+        'homeDenomination'
       ],
       exports: [ 'as parentNode' ],
 

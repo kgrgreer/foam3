@@ -5,6 +5,7 @@ foam.RELATIONSHIP({
   inverseName: 'branch',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -33,6 +34,7 @@ foam.RELATIONSHIP({
   inverseName: 'institution',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -109,6 +111,7 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     section: 'accountsSection',
     label: ''
@@ -154,7 +157,8 @@ foam.RELATIONSHIP({
         .catch((error) => {
           this.add(value);
         });
-    }
+    },
+    tableWidth: 220
   }
 });
 
@@ -239,9 +243,7 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+  inverseName: 'parent'
 });
 
 
@@ -269,6 +271,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Business'
   ],
@@ -485,6 +488,12 @@ foam.CLASS({
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
+        if ( targetUser == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error(String.format("Could not find business with id = %d in localBusinessDAO. The source id, which is the id of the user, is %d.", junctionObj.getTargetId(), junctionObj.getSourceId()));
+          throw new RuntimeException("An unexpected error occured. Please try again later.");
+        }
+
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
@@ -502,6 +511,7 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
+  unauthorizedTargetDAOKey: 'localContactDAO',
 });
 
 foam.RELATIONSHIP({
@@ -568,6 +578,21 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
 
+foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'BusinessUserJunctionPropertyRefinement',
+  refines: 'net.nanopay.model.BusinessUserJunction',
+
+  properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      storageTransient: true
+    }
+  ]
+});
+
 /*
  * Originally this was intended to be a many-to-many relationship because it
  * makes sense that a user could be a beneficial owner in multiple businesses.
@@ -626,6 +651,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: { visibility: 'RO' }
 });
 
@@ -637,6 +663,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: { visibility: 'RO' }
 });
 
@@ -647,6 +674,7 @@ foam.RELATIONSHIP({
   inverseName: 'flinksAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -658,6 +686,7 @@ foam.RELATIONSHIP({
   inverseName: 'plaidAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -669,6 +698,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -680,6 +710,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -691,6 +722,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -698,10 +730,11 @@ foam.RELATIONSHIP({
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
-  forwardName: 'complianceItems',
+  forwardName: 'complianceResponses',
   inverseName: 'transactionId',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });

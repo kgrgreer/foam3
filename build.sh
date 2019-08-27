@@ -207,7 +207,6 @@ function build_jar {
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
-        # export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
     fi
 }
 
@@ -299,7 +298,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -392,6 +391,8 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
@@ -416,6 +417,9 @@ function setenv {
     fi
     if [ ! -d "${JOURNAL_HOME}" ]; then
         mkdir -p "${JOURNAL_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -445,6 +449,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
@@ -506,7 +511,7 @@ function usage {
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -n : new Gradle Build"
+    echo "  -o : old maven build"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
@@ -561,11 +566,10 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
-           GRADLE_FLAGS="--rerun-tasks"
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
@@ -591,22 +595,21 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         q) MODE=STAGING
-           CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
+           JOURNAL_CONFIG=liquid
+           echo "💧 Initializing Liquid Environment 💧"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
-           CLEAN_BUILD=1
            COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
            MODE=TEST
-           CLEAN_BUILD=1
            ;;
         u) RUN_JAR=1;;
         U) RUN_USER=${OPTARG};;
@@ -621,6 +624,15 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
         ?) usage ; quit 1 ;;
     esac
 done
+
+if [ "${MODE}" == "TEST" ]; then
+    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+    JOURNAL_CONFIG=test
+fi
+
+if [ ${CLEAN_BUILD} -eq 1 ]; then
+    GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
+fi
 
 if [ ${GRADLE_BUILD} -eq 0 ]; then
     warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"

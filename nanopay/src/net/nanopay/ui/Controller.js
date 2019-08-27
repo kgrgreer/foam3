@@ -25,6 +25,8 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
+    'net.nanopay.ui.banner.BannerData',
+    'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
@@ -45,7 +47,8 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'homeDenomination'
   ],
 
   css: `
@@ -149,7 +152,41 @@ foam.CLASS({
           denomination: 'CAD'
         });
       }
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'homeDenomination',
+      factory: function() {
+        /**
+         * TODO: Currently our storing the home denomination preferences, just need it 
+         * to default to USD for Goldman, also added a hacky way to persist it via local storage
+         * we will later on think of a better way to handle default user preferences
+         */
+        const defaultDenomination = 'USD';
+        const storedHomeDenomination = localStorage.getItem('homeDenomination');
+
+        let startingDenomination;
+        if ( storedHomeDenomination ) {
+          localStorage.setItem('homeDenomination', storedHomeDenomination);
+          startingDenomination = storedHomeDenomination;
+        } else {
+          startingDenomination = defaultDenomination;
+        }
+
+        return startingDenomination;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.ui.banner.BannerData',
+      name: 'bannerData',
+      factory: function() {
+        return this.BannerData.create({
+          isDismissed: true
+        });
+      }
+    },
   ],
 
   methods: [
@@ -166,6 +203,9 @@ foam.CLASS({
       // errors when trying to expand the CSS macros in these models.
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
+          this.client.nSpecDAO.find('appConfig').then((config) => {
+            this.appConfig.copyFrom(config.service);
+          });
           this.AppStyles.create();
           this.NanoConnectStyles.create();
           this.InvoiceStyles.create();
@@ -179,6 +219,10 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
+              .tag({
+                class: 'net.nanopay.ui.banner.Banner',
+                data$: this.bannerData$
+              })
               .tag(this.StackView, {
                 data: this.stack,
                 showActions: false
@@ -189,6 +233,18 @@ foam.CLASS({
             .end();
         });
       });
+    },
+
+    function bannerizeTwoFactorAuth() {
+      if ( ! this.user.twoFactorEnabled ) {
+        this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
+      }
+    },
+
+    function setBanner(bannerMode, message) {
+      this.bannerData.isDismissed = false;
+      this.bannerData.mode = bannerMode;
+      this.bannerData.message = message;
     },
 
     function onSessionTimeout() {
@@ -303,6 +359,10 @@ foam.CLASS({
 
       this.SUPER();
       this.findBalance();
+
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
+        this.bannerizeTwoFactorAuth();
+      }
     }
   ]
 });

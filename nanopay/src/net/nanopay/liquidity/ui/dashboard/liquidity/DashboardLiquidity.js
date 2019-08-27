@@ -14,8 +14,12 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'foam.u2.detail.SectionedDetailPropertyView',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfDay',
+    'foam.glang.EndOfWeek',
+    'foam.mlang.IdentityExpr',
     'net.nanopay.account.DigitalAccount',
     'org.chartjs.CandlestickDAOChartView',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency',
   ],
 
   imports: [
@@ -97,14 +101,40 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       factory: function() {
-        return new Date(0);
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
+      preSet: function(_, n) {
+        var dayBeforeEndDate = new Date(this.endDate);
+        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
+
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
+            )
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function() {
-        return new Date().setHours(23,59,59,999);
+      factory: function () {
+        return new Date();
+      },
+      preSet: function(o, n) {
+        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
+          return o;
+        } else {
+          return this.EndOfDay.create({
+            delegate: this.IdentityExpr.create()
+          }).f(
+                new Date(Math.min(Date.now(), n.getTime()))
+              )
+        }
       }
     },
     {
@@ -170,14 +200,12 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .style({ 'width': '600px', 'height': '550px' })
+          .style({ 'height': '550px' })
           .addClass(this.myClass('chart'))
           .add(this.CandlestickDAOChartView.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
-            customDatasetStyling$: this.styling$,
-            width: 600,
-            height: 550
+            customDatasetStyling$: this.styling$
           }))
         .end()
         .start(this.Cols)
@@ -302,13 +330,18 @@ foam.CLASS({
         this.config.options.scales.yAxes = [{
             ticks: {
               callback: function(v) {
-                return c.format(Math.floor(v));
+                return `${c.format(v)}`;
               }
             }
         }];
-        this.config.options.tooltips.callbacks.label = function(v) {
-          return c.format(Math.floor(v.yLabel));
-        };
+        this.config.options.tooltips = {
+          displayColors: false,
+          callbacks: {
+            label: function(v) {
+              return `${c.format(v.yLabel)}`;
+            }
+          }
+        }
 
         var style = {};
         style[a.id] = {

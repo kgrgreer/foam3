@@ -51,7 +51,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
-      value: 'afexService'
+      value: 'afexServiceProvider'
     }
   ],
 
@@ -71,7 +71,7 @@ foam.CLASS({
       TransactionQuote quote = (TransactionQuote) obj;
 
       if ( ! this.getEnabled() ) {
-        getDelegate().put_(x, quote);
+        return getDelegate().put_(x, quote);
       }
 
       Logger logger = (Logger) x.get("logger");
@@ -93,19 +93,30 @@ foam.CLASS({
       }
 
       // Check if AFEXTransactionPlanDAO can handle the currency combination
-      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+      FXService fxService = null;
+      // if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
+      //   if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
+      //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
+      //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
+      //     AFEX afex = new AFEXServiceMock(x);
+      //     fxService = new AFEXServiceProvider(x, afex);
+      //   }
+      // } else {
+        fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
         request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
+      // }
+
       if ( fxService instanceof AFEXServiceProvider  ) {
         fxService = (AFEXServiceProvider) fxService;
   
         // Validate that Payer is provisioned for AFEX before proceeding
-        if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
+        // if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
           AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
           if (afexBusiness == null) {
             logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
             return getDelegate().put_(x, quote);
           }
-        }
+        // }
   
         if ( isUSDCAD ) {
           return createUSDCAD(x, quote, sourceAccount, destinationAccount);
@@ -126,32 +137,38 @@ foam.CLASS({
       { name: 'destAccount', type: 'net.nanopay.account.Account' },
     ],
     javaCode: `
-    // Deposit USD into CAD BMO using AFEX, CADBMO to CAD bank
-    // TODO use bmo account
-    DigitalAccount bmoAccount = TrustAccount.findDefault(x,sourceAccount.findOwner(x),"CAD");
 
+    DigitalAccount sourceDigital = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), "CAD");
     Transaction request = quote.getRequestTransaction();
 
-    AFEXTransaction afexTransaction = getAFEXTransaction(x, "USD", "CAD", request.getAmount(), request.getDestinationAmount(), sourceAccount, bmoAccount); 
+    // AFEXTransaction go get money from sender source account to sender digital account
+    AFEXTransaction afexTransaction = getAFEXTransaction(x, "USD", "CAD", request.getAmount(), request.getDestinationAmount(), sourceAccount, sourceDigital);
 
+    // Add balance to sender digital account only????]
     if ( afexTransaction != null ) {
       // create BMO CO transaction
-      // TODO change to BMOTransaction
-      AlternaCOTransaction bmoCO = new AlternaCOTransaction();
-      bmoCO.copyFrom(request);
-      bmoCO.setSourceAccount(bmoAccount.getId());//set to bmo
-      bmoCO.setAmount(afexTransaction.getDestinationAmount());
-      bmoCO.setDestinationAccount(destAccount.getId());
-      bmoCO.setDestinationAmount(afexTransaction.getDestinationAmount());
+      DAO quoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+      TransactionQuote q1 = new TransactionQuote.Builder(x).build();
+      Transaction co = new Transaction.Builder(x)
+        .setAmount(afexTransaction.getDestinationAmount())
+        .setDestinationAmount(afexTransaction.getDestinationAmount())
+        .setDestinationAccount(destAccount.getId())
+        .setSourceAccount(sourceDigital.getId())
+        .setSourceCurrency(sourceDigital.getDenomination())
+        .setDestinationCurrency(destAccount.getDenomination())
+        .setPayerId(sourceDigital.getOwner())
+        .setPayeeId(destAccount.getOwner())
+        .build();
+      q1.setRequestTransaction(co);
+      TransactionQuote quoteTxn = (TransactionQuote) quoteDAO.put(q1);
 
-      // add BMO CO as child of afexTransaction
-      afexTransaction.addNext(bmoCO);
+      // add CO as a child of afexTransaction
+      afexTransaction.addNext(quoteTxn.getPlan());
 
       // create summary transaction and add to quote
       FXSummaryTransaction summary = this.limitedCopyFrom(new FXSummaryTransaction(), afexTransaction);
       summary.setSourceAccount(sourceAccount.getId());
       summary.setDestinationAccount(destAccount.getId());
-      summary.setFxRate(afexTransaction.getFxRate());
       summary.addNext(afexTransaction);
       quote.addPlan(summary);
     }
@@ -185,8 +202,11 @@ foam.CLASS({
       bmoCI.copyFrom(request);
       bmoCI.setSourceAccount(sourceAccount.getId());
       bmoCI.setAmount(afexTransaction.getAmount());
+      bmoCI.setSourceCurrency(sourceAccount.getDenomination());
       bmoCI.setDestinationAccount(bmoAccount.getId());
       bmoCI.setDestinationAmount(afexTransaction.getAmount());
+      bmoCI.setDestinationCurrency(bmoAccount.getDenomination());
+      bmoCI.setIsQuoted(true);
 
       // set afexTransaction as child of bmo
       bmoCI.addNext(afexTransaction);
@@ -236,7 +256,7 @@ foam.CLASS({
         .setTemplate("NOC")
         .setBody(message)
         .build();
-        ((DAO) x.get("notificationDAO")).put(notification);
+        ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).error("Error sending GetQuote to AFEX.", t);
     }
     return null;
@@ -266,16 +286,9 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
-  // Currency conversion
-  DAO currencyDAO = (DAO) x.get("currencyDAO");
-  Currency currency = (Currency) currencyDAO.find(fxQuote.getSourceCurrency());
-  double amount = invoiceAmount > 0 ? invoiceAmount: destinationAmount;
-  double sourceAmount = amount / Math.pow(10, currency.getPrecision()) * fxQuote.getRate();
-  Long sourceAmountWithRate = Math.round(sourceAmount * 100);
-
-  afexTransaction.setAmount( sourceAmountWithRate );
+  afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
-  afexTransaction.setDestinationAmount(invoiceAmount > 0 ? invoiceAmount: destinationAmount);
+  afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
   afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
   
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
@@ -297,6 +310,7 @@ public FXSummaryTransaction limitedCopyFrom (FXSummaryTransaction summary, AFEXT
   summary.setSourceCurrency(tx.getSourceCurrency());
   summary.setDestinationCurrency(tx.getDestinationCurrency());
   summary.setFxQuoteId(tx.getFxQuoteId());
+  summary.setFxRate(tx.getFxRate());
   summary.setIsQuoted(true);
   return summary;
 }

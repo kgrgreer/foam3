@@ -38,42 +38,33 @@ public class AFEXContactDAO
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     
     Contact contact = (Contact) obj;
-    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
+    
+    AuthService auth = (AuthService) x.get("auth");
+    Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+
     // Check if contact has a bank account
     BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
       ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
       : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
     if ( contactBankAccount != null ) {
+       // check contact owner has currency.read.x permission
+      String currencyPermission = "currency.read." + contactBankAccount.getDenomination();
+      boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
       // Check if beneficiary already added
-      if ( ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
+      if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
-      } else {
-        // Check if this is an update
-        if ( contactNeedsUpdateChanged(contact) ) {
-          try {
-            afexServiceProvider.updatePayee(contact.getId(), contactBankAccount.getId(),  contact.getOwner());
-          } catch(Throwable t) {
-            ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
-          } 
-        }        
       }
     }
 
     // Check If Contact has business and create AFEX beneficiary for business also
+    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
     if ( business != null ) {
       BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
       if ( null != businessBankAccount ) {
-        if ( ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
+        String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
+        boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
+        if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
-        } else {
-          // Check if this is an update
-          if ( businessNeedsUpdateChanged(business) ) {
-            try {
-              afexServiceProvider.updatePayee(business.getId(), businessBankAccount.getId(),  contact.getOwner());
-            } catch(Throwable t) {
-              ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
-            } 
-          }
         }
       }
     }
@@ -81,14 +72,28 @@ public class AFEXContactDAO
     return super.put_(x, obj);
   }
 
-  protected boolean contactNeedsUpdateChanged(Contact contact) {
-    // TODO: Logic to check if we are updating contact
-    return false;
-  }
+  @Override
+  public FObject remove_(X x, FObject obj) {
+    Contact contact = (Contact) obj;
 
-  protected boolean businessNeedsUpdateChanged(Business business) {
-    // TODO: Logic to check if we are updating contact
-    return false;
+    if ( contact == null ) return null;
+
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+    Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+    if (null == contactOwner ) return super.remove_(x, obj);
+    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
+    long contactId = contact.getId();
+    if ( business != null ) contactId = business.getId();
+    
+    try {
+      afexServiceProvider.deletePayee(contactId, contactOwner.getId());
+    } catch(Throwable t) {
+      Logger l = (Logger) x.get("logger");
+      l.error("Unexpected error disabling AFEX Beneficiary history record.", t);
+    }
+    
+    return super.remove_(x, obj);
   }
 
   protected boolean afexBeneficiaryExists(X x, Long contactId, Long ownerId) {
@@ -124,7 +129,7 @@ public class AFEXContactDAO
   protected void createAFEXBeneficiary(X x, long beneficiaryId, long bankAccountId, long beneficiaryOwnerId) {
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     try {
-      afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId);
+      new Thread(() -> afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId)).start();
     } catch(Throwable t) {
       ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
     }  

@@ -41,12 +41,11 @@ foam.CLASS({
           this.Business.EMAIL,
           this.Business.BUSINESS_PHONE,
           this.Business.BUSINESS_ADDRESS,
+          this.Business.BUSINESS_DIRECTORS,
           this.Business.ACCOUNTS,
           this.Business.CONTACTS,
           this.Business.AGENTS,
-          this.Business.COMPLIANCE_RESPONSES,
-          this.Business.COMPLIANCE_HISTORIES,
-          this.Business.APPROVAL_REQUESTS
+          this.Business.COMPLIANCE_RESPONSES
         ];
       }
     }

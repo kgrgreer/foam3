@@ -16,12 +16,14 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.logger.Logger',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.ExternalContactToken',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
@@ -113,7 +115,7 @@ foam.CLASS({
             public void execute(X x) {
               migrateContactsAndInvoices(x, business);
             }
-          });
+          }, "Contact Migration Rule");
         }
       `
     },
@@ -130,10 +132,29 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO localContactDAO = ((DAO) x.get("localContactDAO")).inX(x);
-        ArraySink sink = (ArraySink) localContactDAO.where(EQ(Contact.EMAIL, business.getEmail())).select(new ArraySink());
-        List<Contact> contacts = sink.getArray();
+        DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
 
+        ExternalContactToken token = (ExternalContactToken) tokenDAO
+          .find(EQ(ExternalContactToken.BUSINESS_ID, business.getId()));
+
+        if ( token == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("Token is null when migrating the contact.");
+          return;
+        }
+
+        String inviteeEmail = token.getBusinessEmail();
+
+        DAO localContactDAO = ((DAO) x.get("localContactDAO")).inX(x);
+        ArraySink contactSink = (ArraySink) localContactDAO
+          .where(EQ(Contact.EMAIL, inviteeEmail))
+          .select(new ArraySink());
+        List<Contact> contacts = contactSink.getArray();
+
+        /**
+         * Update the contacts based on the original contact's email 
+         * which is stored in the external contact token.
+         */
         for ( Contact contact : contacts ) {
           Contact updatedContact = (Contact) contact.fclone();
           updatedContact.setBusinessId(business.getId());

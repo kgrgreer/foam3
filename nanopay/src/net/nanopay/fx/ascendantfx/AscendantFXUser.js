@@ -5,12 +5,21 @@ foam.CLASS({
 
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.EnabledAware'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.mlang.MLang',
     'foam.util.SafetyUtil',
+    'net.nanopay.fx.FXUserStatus',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -25,6 +34,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
+    },
     {
       class: 'Long',
       name: 'id',
@@ -85,6 +99,28 @@ foam.CLASS({
       documentation: 'Ascendant Holding Accounts.',
       hidden: true
     },
+    {
+      class: 'DateTime',
+      name: 'created',
+      label: 'Creation Date',
+      documentation: 'Creation date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: 'User who created the entry'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy'
+    }
   ],
   axioms: [
     {
@@ -93,9 +129,10 @@ foam.CLASS({
           static public String getUserAscendantFXOrgId(X x, long userId) throws RuntimeException {
               String orgId = null;
               DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
-              final AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
-                            MLang.EQ(AscendantFXUser.USER, userId)
-                    );
+              final AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(MLang.AND(
+                            MLang.EQ(AscendantFXUser.USER, userId),
+                            MLang.EQ(AscendantFXUser.USER_STATUS, FXUserStatus.ACTIVE)
+                    ));
 
               if ( null != ascendantFXUser && ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
 

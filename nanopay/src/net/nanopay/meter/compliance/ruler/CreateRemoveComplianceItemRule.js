@@ -194,7 +194,7 @@ foam.CLASS({
                   */
               }
             }
-          });
+          }, "Create Remove Compliance Item Rule");
         } catch (Exception e) {
           Logger logger = (Logger) x.get("logger");
           logger.error("CreateRemoveComplianceItemRule Error: ", e);

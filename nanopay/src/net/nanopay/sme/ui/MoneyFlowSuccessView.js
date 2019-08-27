@@ -12,11 +12,16 @@ foam.CLASS({
     });
   `,
 
+  requires: [
+    'net.nanopay.tx.ConfirmationFileLineItem'
+  ],
+
   imports: [
     'auth',
     'currencyDAO',
     'menuDAO',
     'stack',
+    'transactionDAO',
     'user'
   ],
 
@@ -146,6 +151,12 @@ foam.CLASS({
         return isPayable_ ?
           (isApprover_ ? this.BODY_SEND : this.BODY_PENDING) : this.BODY_REC;
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'transactionConfirmationPDF',
+      documentation: `Order confirmation, as a PDF, for the Payer.
+    `
     }
   ],
 
@@ -168,11 +179,23 @@ foam.CLASS({
     function populateVariables() {
       this.currencyDAO.find(this.invoice.destinationCurrency)
         .then((currency) => {
-        this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
-          currency.alphabeticCode;
+        this.formattedAmount_ = currency.format(this.invoice.amount);
       });
       this.auth.check(null, 'invoice.pay').then((result) => {
         this.isApprover_ = result;
+      });
+    },
+
+    function init() {
+      this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
+        if ( transaction ) {
+          for ( var i = 0; i < transaction.lineItems.length; i++ ) {
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
+              break;
+            }
+          }
+        }
       });
     },
 
@@ -212,16 +235,16 @@ foam.CLASS({
               });
             })
           .end()
-          .callIf(this.invoice.AFXConfirmationPDF != null, function() {
-            this
-              .start()
-                .tag({
-                  class: 'net.nanopay.sme.ui.Link',
-                  data: self.invoice.AFXConfirmationPDF.address,
-                  text: self.TXN_CONFIRMATION_LINK_TEXT
-                })
-              .end();
-          })
+          .add(this.slot(function(transactionConfirmationPDF) {
+            if ( transactionConfirmationPDF != null ) {
+              return this.E().start()
+              .tag({
+                class: 'net.nanopay.sme.ui.Link',
+                data: self.transactionConfirmationPDF.address,
+                text: self.TXN_CONFIRMATION_LINK_TEXT
+              })
+            }
+          }))
         .end()
         .start('div').addClass('navigationContainer')
           .start('div').addClass('buttonContainer')

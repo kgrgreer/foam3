@@ -7,8 +7,16 @@
 # See https://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.htmlString
 #########################
 
+if [ -z "${DEBUG_PORT}" ]; then
+  DEBUG_PORT=8000
+fi
+
+if [ -z "${DEBUG_SUSPEND}" ]; then
+  DEBUG_SUSPEND=n
+fi
+
 ###### Customer parameter File
-CUSTOM_CONFIG="$NANOPAY_HOME/etc/shrc.custom"
+CUSTOM_CONFIG="${NANOPAY_HOME}/conf/shrc.custom"
 if [ -f "${CUSTOM_CONFIG}" ]; then
   . ${CUSTOM_CONFIG} $1
 fi
@@ -116,7 +124,7 @@ fi
 if [ "${DEBUG}" = "1" -o "${DEBUG_DEV}" = "1" ]; then
   JAVA_OPTS="${JAVA_OPTS} -Xdebug"
   JAVA_OPTS="${JAVA_OPTS} -Xnoagent"
-  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG_PORT}"
+  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
 fi
 
 ##### Garbage Collection
@@ -140,9 +148,12 @@ if [ -z "`echo "${JAVA_OPTS}" | grep "DisableExplicitGC"`" ]; then
 fi
 
 # Garbage Collection logging
-#if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*PrintGC"`" ]; then
+# NOTE: disabled - we are experiencing lockup on GC for 4-5 seconds
+# see https://nanopay.atlassian.net/browse/CPF-2417
+#JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCDetails"
+if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*PrintGC"`" ]; then
   JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCTimeStamps"
-  JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCDetails"
+
   JAVA_OPTS=$JAVA_OPTS" -XX:+PrintTenuringDistribution"
 
   # include class histogram in thread dumps, makes thread
@@ -151,14 +162,14 @@ fi
   # gc occurs. Do not enable this feature if you perform
   # non troubleshooting 'routine' threaddumps.
   #JAVA_OPTS="${JAVA_OPTS} -XX:+PrintClassHistogram"
-#fi
 
-export GC_LOG="${NANOPAY_HOME}/logs/gcstats.log.$$"
-JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCLogFileRotation"
-JAVA_OPTS=$JAVA_OPTS" -XX:NumberOfGCLogFiles=10"
-JAVA_OPTS=$JAVA_OPTS" -XX:GCLogFileSize=100m"
-JAVA_OPTS=$JAVA_OPTS" -Xloggc:${GC_LOG}"
-JAVA_OPTS=$JAVA_OPTS" -verbose:gc"
+  export GC_LOG="${NANOPAY_HOME}/logs/gcstats.log.$$"
+  JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCLogFileRotation"
+  JAVA_OPTS=$JAVA_OPTS" -XX:NumberOfGCLogFiles=10"
+  JAVA_OPTS=$JAVA_OPTS" -XX:GCLogFileSize=100m"
+  JAVA_OPTS=$JAVA_OPTS" -Xloggc:${GC_LOG}"
+  JAVA_OPTS=$JAVA_OPTS" -verbose:gc"
+fi
 
 # OutOfMemory
 JAVA_OPTS=$JAVA_OPTS" -XX:+HeapDumpOnOutOfMemoryError"

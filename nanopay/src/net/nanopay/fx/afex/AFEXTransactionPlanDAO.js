@@ -23,7 +23,7 @@ foam.CLASS({
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.tx.ExpiryLineItem',
-    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoiceFeeLineItem',
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXService',
@@ -46,7 +46,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
-      value: 'afexService'
+      value: 'afexServiceProvider'
     }
   ],
 
@@ -60,13 +60,83 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'generateTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'quote',
+          type: 'TransactionQuote'
+        },
+        {
+          name: 'afexService',
+          type: 'AFEXServiceProvider'
+        }
+      ],
+      javaType: 'FObject',
+      javaCode: `
+      Transaction request = quote.getRequestTransaction();
+      Account sourceAccount = request.findSourceAccount(x);
+      Account destinationAccount = request.findDestinationAccount(x);
+      Logger logger = (Logger) x.get("logger");
+
+      // Validate that Payer is provisioned for AFEX before proceeding
+      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
+      if (afexBusiness == null) {
+        logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
+        return getDelegate().put_(x, quote);
+      }
+
+      FXQuote fxQuote = new FXQuote.Builder(x).build();
+
+      // FX Rate has not yet been fetched
+      if ( fxQuote.getId() < 1 ) {
+        try {
+
+          fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+            null, null, request.findSourceAccount(x).getOwner(), null);
+          if ( fxQuote != null && fxQuote.getId() > 0 ) {
+            AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
+            afexTransaction.setPayerId(sourceAccount.getOwner());
+            afexTransaction.setSourceAccount(sourceAccount.getId());
+            afexTransaction.setPayeeId(destinationAccount.getOwner());
+            afexTransaction.setDestinationAccount(destinationAccount.getId());
+            afexTransaction.setInvoiceId(request.getInvoiceId());
+            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+            quote.addPlan(summary);
+          }
+          
+        } catch (Throwable t) {
+          String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AFEX" ;
+          Notification notification = new Notification.Builder(x)
+            .setTemplate("NOC")
+            .setBody(message)
+            .build();
+            ((DAO) x.get("localNotificationDAO")).put(notification);
+            logger.error("Error sending GetQuote to AFEX.", t);
+        }
+      } else  {
+        AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
+        afexTransaction.setPayerId(sourceAccount.getOwner());
+        afexTransaction.setPayeeId(destinationAccount.getOwner());
+
+        // create summary transaction and add to quote
+        FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+        quote.addPlan(summary);
+      }
+      return quote;
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
 
     TransactionQuote quote = (TransactionQuote) obj;
 
     if ( ! this.getEnabled() ) {
-      getDelegate().put_(x, quote);
+      return getDelegate().put_(x, quote);
     }
 
     Logger logger = (Logger) x.get("logger");
@@ -80,70 +150,10 @@ foam.CLASS({
     if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
 
     // Check if AFEXTransactionPlanDAO can handle the currency combination
-    FXService fxService = null;
-    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
-      if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
-        AFEX afex = new AFEXServiceMock(x);
-        fxService = new AFEXServiceProvider(x, afex);
-      }
-    } else {
-      fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
-    }
     if ( fxService instanceof AFEXServiceProvider  ) {
-      fxService = (AFEXServiceProvider) fxService;
-
-      // Validate that Payer is provisioned for AFEX before proceeding
-      if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
-        AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
-        if (afexBusiness == null) {
-          logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
-          return getDelegate().put_(x, quote);
-        }
-
-      }
-
-      FXQuote fxQuote = new FXQuote.Builder(x).build();
-
-      // FX Rate has not yet been fetched
-      if ( fxQuote.getId() < 1 ) {
-        try {
-
-          AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
-
-          fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-            null, null, request.findSourceAccount(x).getOwner(), null);
-          if ( fxQuote != null && fxQuote.getId() > 0 ) {
-            AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
-            afexTransaction.setPayerId(sourceAccount.getOwner());
-            afexTransaction.setSourceAccount(sourceAccount.getId());
-            afexTransaction.setPayeeId(destinationAccount.getOwner());
-            afexTransaction.setDestinationAccount(destinationAccount.getId());
-            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
-            quote.addPlan(summary);
-          }
-          
-        } catch (Throwable t) {
-          String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AFEX" ;
-          Notification notification = new Notification.Builder(x)
-            .setTemplate("NOC")
-            .setBody(message)
-            .build();
-            ((DAO) x.get("notificationDAO")).put(notification);
-            ((Logger) x.get("logger")).error("Error sending GetQuote to AFEX.", t);
-        }
-      } else  {
-        AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
-        afexTransaction.setPayerId(sourceAccount.getOwner());
-        afexTransaction.setPayeeId(destinationAccount.getOwner());
-
-        // create summary transaction and add to quote
-        FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
-        quote.addPlan(summary);
-      }
-
+     quote = (TransactionQuote) generateTransaction(x, quote, (AFEXServiceProvider) fxService);
     }
     return getDelegate().put_(x, quote);
     `
@@ -166,22 +176,15 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   FeesFields fees = new FeesFields.Builder(x).build();
   fees.setTotalFees(fxQuote.getFee());
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setFxFees(fees);
-  
+  afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
-  // Currency conversion
-  DAO currencyDAO = (DAO) x.get("currencyDAO");
-  Currency currency = (Currency) currencyDAO.find(request.getSourceCurrency());
-  double amount = request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount();
-  double sourceAmount = amount / Math.pow(10, currency.getPrecision()) * fxQuote.getRate();
-  Long sourceAmountWithRate = Math.round(sourceAmount * 100);
-
-  afexTransaction.setAmount( sourceAmountWithRate );
+  afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
-  afexTransaction.setDestinationAmount(request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount());
+  afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
   afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
   
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
@@ -190,8 +193,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
-
-  // TODO ADD FEES
+  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoiceFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setIsQuoted(true);
 
   return afexTransaction;
@@ -208,8 +210,27 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setSourceAccount(sourceAccount.getId());
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
-  summary.addNext(tx);
+  summary.setFxExpiry(tx.getFxExpiry());
+  summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
+  summary.setFxFees(tx.getFxFees());
+
+  // create AFEXBeneficiaryComplianceTransaction
+  AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
+  afexCT.setAmount(tx.getAmount());
+  afexCT.setDestinationAmount(tx.getDestinationAmount());
+  afexCT.setSourceCurrency(tx.getSourceCurrency());
+  afexCT.setDestinationCurrency(tx.getDestinationCurrency());
+  afexCT.setSourceAccount(sourceAccount.getId());
+  afexCT.setDestinationAccount(destinationAccount.getId());
+  afexCT.setInvoiceId(tx.getInvoiceId());
+  afexCT.setIsQuoted(true);
+  afexCT.setPayeeId(tx.getPayeeId());
+  afexCT.setPayerId(tx.getPayerId());
+  afexCT.addNext(tx);
+  
+  summary.addNext(afexCT);
+
   return summary;
 }
         `);

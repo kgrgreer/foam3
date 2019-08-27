@@ -44,8 +44,12 @@ foam.CLASS({
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfWeek',
+    'foam.glang.EndOfDay',
+    'foam.mlang.IdentityExpr',
     'foam.u2.detail.SectionedDetailPropertyView',
-    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType'
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency'
   ],
 
   exports: [
@@ -53,13 +57,22 @@ foam.CLASS({
   ],
   imports: [
     'accountDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'currencyDAO'
   ],
 
   messages: [
     {
       name: 'CARD_HEADER',
       message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CI',
+      message: '+'
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CO',
+      message: '−'
     }
   ],
 
@@ -67,10 +80,23 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function () {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        return oneWeekAgo;
+      factory: function() {
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
+      preSet: function(_, n) {
+        var dayBeforeEndDate = new Date(this.endDate);
+        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
+
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
+            )
       }
     },
     {
@@ -78,6 +104,17 @@ foam.CLASS({
       name: 'endDate',
       factory: function () {
         return new Date();
+      },
+      preSet: function(o, n) {
+        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
+          return o;
+        } else {
+          return this.EndOfDay.create({
+            delegate: this.IdentityExpr.create()
+          }).f(
+                new Date(Math.min(Date.now(), n.getTime()))
+              )
+        }
       }
     },
     {
@@ -126,16 +163,6 @@ foam.CLASS({
                   }
                 }
               ],
-              xAxes:
-                [
-                  {
-                    ticks: {
-                      callback: function (value, index, values) {
-                        return `$${value}`;
-                      }
-                    }
-                  }
-                ]
             }
           },
         };
@@ -214,6 +241,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
+
       this.addClass(this.myClass())
         .start(this.Cols)
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
@@ -224,19 +253,46 @@ foam.CLASS({
             .end()
           .endContext()
         .end()
-        .start().style({ 'width': '1150px', 'height': '320px' }).addClass(this.myClass('chart'))
-          .add(this.HorizontalBarDAOChartView.create({
-            data$: this.cicoTransactionsDAO$,
-            keyExpr: this.TransactionCICOType.create(),
-            config: this.config,
-            xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-            yExpr$: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
-              delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
-            })),
-            customDatasetStyling: this.customDatasetStyling,
-            width: 1100,
-            height: 320
-          }))
+        .start().style({ 'height': '320px' }).addClass(self.myClass('chart'))
+          .add(this.slot(function(account, currencyDAO, config, customDatasetStyling) {
+            return (account ? self.account$find : Promise.resolve(null))
+              .then(a => a && currencyDAO.find(a.denomination))
+              .then(c => {
+                if ( c ) {
+                  config = foam.Object.clone(config);
+                  config.options.scales.xAxes = [{
+                    ticks: {
+                      callback: function (value) {
+                        return `${c.format(value)}`;
+                      }
+                    }
+                  }];
+                  config.options.tooltips = {
+                    callbacks: {
+                      label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+
+                        var label = dataset.label === 'CITransaction' ? self.TOOLTIP_TOTAL_CI : self.TOOLTIP_TOTAL_CO;
+                        return [`${label} ${c.format(currentValue)}`];
+                      }
+                    }
+                  };
+                }
+                return self.HorizontalBarDAOChartView.create({
+                  data$: self.cicoTransactionsDAO$,
+                  keyExpr: self.TransactionCICOType.create(),
+                  config: config,
+                  xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+                  yExpr$: self.dateFrequency$.map(d => d.glang.clone().copyFrom({
+                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                  })),
+                  customDatasetStyling: customDatasetStyling,
+                  width: 1100,
+                  height: 320
+                });
+              })
+            }))
         .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
@@ -275,16 +331,16 @@ foam.CLASS({
     {
       name: 'f',
       code: function (obj) {
-        return this.CITransaction.isInstance(obj) 
+        return this.CITransaction.isInstance(obj)
           ? 'CITransaction'
-          : this.COTransaction.isInstance(obj) 
-            ? 'COTransaction' 
+          : this.COTransaction.isInstance(obj)
+            ? 'COTransaction'
             : 'Other';
       },
       javaCode: `
-        return obj instanceof CITransaction 
+        return obj instanceof CITransaction
           ? "CITransaction"
-          : obj instanceof COTransaction 
+          : obj instanceof COTransaction
             ? "COTransaction"
             : "Other";
       `

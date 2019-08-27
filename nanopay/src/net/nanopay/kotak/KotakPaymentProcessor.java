@@ -58,6 +58,8 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setInstRefNo(paymentMessageId);
           requestInstrument.setAccountNo(String.valueOf(kotakCOTxn.getSourceAccount()));
           requestInstrument.setTxnAmnt((double) kotakCOTxn.getAmount());
+          requestInstrument.setPurposeCode(kotakCOTxn.getPurposeCode());
+          requestInstrument.setAccountRelationship(kotakCOTxn.getAccountRelationship());
 
           requestInstrument.setBeneAcctNo(String.valueOf(kotakCOTxn.getDestinationAccount()));
           requestInstrument.setBeneName(kotakCOTxn.getPayee().getFirstName() + " " + kotakCOTxn.getPayee().getLastName());
@@ -116,6 +118,6 @@ public class KotakPaymentProcessor implements ContextAgent {
       .setBody(body)
       .build();
 
-    ((DAO) x.get("notificationDAO")).put(notification);
+    ((DAO) x.get("localNotificationDAO")).put(notification);
   }
 }

@@ -25,10 +25,6 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
-  imports: [
-    'complianceHistoryDAO'
-  ],
-
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -248,6 +244,12 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+    },
+    {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.'
@@ -402,7 +404,14 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+      value: false,
+      documentation: `Determines whether a user has been onboarded to 
+        a partner platform to support international payments.`
+    },
   ],
 
   methods: [

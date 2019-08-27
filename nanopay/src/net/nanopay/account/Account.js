@@ -15,16 +15,24 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'homeDenomination',
+    'fxService',
+    'user'
+  ],
+
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.model.Currency'
   ],
 
   searchColumns: [
-    'name', 'id', 'denomination', 'type'
+    'name', 'id', 'denomination', 'type', 'isDefault'
   ],
 
   tableColumns: [
@@ -33,7 +41,9 @@ foam.CLASS({
     'name',
     'type',
     'denomination',
-    'balance'
+    'balance',
+    'homeBalance',
+    'isDefault'
   ],
 
   axioms: [
@@ -155,7 +165,8 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'denomination',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
@@ -167,9 +178,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDefault',
-      documentation: `Determines whether an account is the first preferred option of the User.`,
+      documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
-      value: false
+      value: false,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Default');
+      },
+      tableCellFormatter: function(value, obj, property) {
+        this
+          .start()
+            .callIf(value, function() {
+              this.style({ color: '#32bf5e' });
+            })
+            .add(value ? 'Y' : '-')
+          .end();
+      },
     },
     // TODO: access/scope: public, private
     {
@@ -183,25 +206,62 @@ foam.CLASS({
       javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 125,
+      tableWidth: 135,
       section: 'accountType',
       visibility: 'RO'
     },
     {
       class: 'Long',
       name: 'balance',
+      label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        obj.findBalance(this.__subSubContext__).then( function( balance ) {
-          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
-            self.add(balance != null ?  curr.format(balance) : 0);
-          });
-        });
+        // React to homeDenomination because it's used in the currency formatter.
+        this.add(obj.homeDenomination$.map(_ => {
+          return obj.findBalance(this.__subSubContext__)
+            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
+            .then(curr => curr.format(balance != null ? balance : 0)))
+        }))
       },
-      tableWidth: 100
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        long balance  = (Long) ((Account)obj).findBalance(x);
+        Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
+        
+        // Output formatted balance or zero
+        outputter.outputValue(curr.format(balance));
+      `,
+      tableWidth: 145
+    },
+    {
+      class: 'Long',
+      name: 'homeBalance',
+      label: 'Balance (home)',
+      documentation: `
+        A numeric value representing the available funds in the 
+        bank account converted to home denomination.
+      `,
+      storageTransient: true,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, id) {
+        var self = this;
+
+        this.add(
+          obj.slot(homeDenomination => 
+            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+              obj.findBalance(self.__subSubContext__).then(balance => 
+                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
+                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
+                )
+              )
+            )
+          )
+        );
+      },
+      tableWidth: 145
     },
     {
       class: 'DateTime',
