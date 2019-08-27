@@ -590,6 +590,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public Quote getQuote(GetQuoteRequest request) {
+    logger.debug("Entered getquote", request);
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
       uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
@@ -603,9 +604,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       omLogger.log("AFEX getQuote starting");
 
+      logger.debug("before execute");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
       omLogger.log("AFEX getQuote complete");
+      logger.debug("after execute", httpResponse);
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
       DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
@@ -616,7 +620,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         .setRequest(jsonOutputter.stringify(request))
         .setResponse(response)
         .build();
-      afexLogger.put(afexLogging);
+      afexLogger.inX(getX()).put(afexLogging);
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           String errorMsg = "Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
@@ -634,7 +638,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( e instanceof  IOException ) {
         omLogger.log("AFEX getQuote timeout");
       }
-      logger.error(e);
+      logger.error("AFEX GetQoute failed",e);
     }
 
     return null;
