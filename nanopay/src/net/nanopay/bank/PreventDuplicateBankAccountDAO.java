@@ -49,7 +49,7 @@ public class PreventDuplicateBankAccountDAO
         .limit(1)
         .select(count);
       if ( count.getValue() > 0 ) {
-        throw new RuntimeException("Bank account with same details already registered");
+       // throw new RuntimeException("Bank account with same details already registered");
       }
     }
 

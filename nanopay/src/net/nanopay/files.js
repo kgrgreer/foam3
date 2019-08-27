@@ -1139,4 +1139,5 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
   { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
+  { name: 'net/nanopay/tx/gs/GsRowToTx'},
 ]);

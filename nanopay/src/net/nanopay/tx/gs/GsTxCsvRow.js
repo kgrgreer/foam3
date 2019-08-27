@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'GsTxCsvRow',
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'String',
       name: 'TransactionId'
     },
@@ -47,11 +51,11 @@ foam.CLASS({
       name: 'Company'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'CashQty'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'CashUSD'
     },
     {
@@ -63,7 +67,7 @@ foam.CLASS({
       name: 'Account'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'SecQty'
     },
     {
@@ -71,7 +75,7 @@ foam.CLASS({
       name: 'ProductId'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'MarketValueLocal'
     },
     {
@@ -79,7 +83,7 @@ foam.CLASS({
       name: 'MarketValueCCy'
     },
     {
-      class: 'String',
+      class: 'Double',
       name: 'MarketValue'
     },
     {
@@ -117,10 +121,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'LiquidityBucket'
-    },
-    {
-      class: 'Double',
-      name: 'Mval'
     }
   ]
 });
