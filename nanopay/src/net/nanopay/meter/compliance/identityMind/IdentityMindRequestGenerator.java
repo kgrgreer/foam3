@@ -116,7 +116,7 @@ public class IdentityMindRequestGenerator {
     Account destinationAccount = transaction.findDestinationAccount(x);
     // The owner of destination account is a business but we need to know
     // the person who actually sends the payment therefore uses agent as sender.
-    User sender = getRealUser(x);
+    User sender = (User) x.get("agent");
     if ( sender == null ) {
       // REVIEW: it is not always the case that a user is logged in when
       // Transactions are created. Also, this logic fails the transaction

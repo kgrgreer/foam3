@@ -468,8 +468,7 @@ foam.CLASS({
           address: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
-          welcomeEmailSent: true,
-          group: 'sme'
+          welcomeEmailSent: true
         });
 
         this.smeBusinessRegistrationDAO
