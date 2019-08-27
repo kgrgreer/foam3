@@ -25,10 +25,6 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
-  imports: [
-    'complianceHistoryDAO'
-  ],
-
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],

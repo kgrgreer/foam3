@@ -101,7 +101,7 @@ foam.CLASS({
 
         try {
           AppConfig config = (AppConfig) x.get("appConfig");
-          DAO tokenDAO = (DAO) x.get("tokenDAO");
+          DAO tokenDAO = (DAO) x.get("localTokenDAO");
           DAO userDAO = (DAO) x.get("localUserDAO");
           String url = config.getUrl().replaceAll("/$", "");
 
