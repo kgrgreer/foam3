@@ -29,6 +29,21 @@ import static java.lang.System.exit;
 public abstract class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
+  protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
+
+  DAOSecurityTest() {
+    GLOBAL_IGNORES.add("businessTypeDAO");
+    GLOBAL_IGNORES.add("canadianSanctionDAO");
+    GLOBAL_IGNORES.add("countryDAO");
+    GLOBAL_IGNORES.add("deprecatedCapabilityJunctionDAO");
+    GLOBAL_IGNORES.add("nSpecDAO");
+    GLOBAL_IGNORES.add("prerequisiteCapabilityJunctionDAO");
+    GLOBAL_IGNORES.add("regionDAO");
+    GLOBAL_IGNORES.add("smeBusinessRegistrationDAO");
+    GLOBAL_IGNORES.add("themeDAO");
+    GLOBAL_IGNORES.add("userDAO");
+    GLOBAL_IGNORES.add("userUserDAO");
+  }
 
   // Helper class for holding results
   static class TestDAOFailed extends Exception {
@@ -103,7 +118,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
 
     if ( ! sid.equals("foam.nanos.auth.AuthenticationException") ) {
       throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
-    } 
+    }
 
     // Successful (i.e. transaction failed with authentication exception)
     return true;
@@ -124,7 +139,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
       // Skip anything in the ignores list
       if (ignores.contains(nspec.getName()))
         continue;
-        
+
       // Test the DAO
       boolean DAOFailed;
       try {
@@ -141,7 +156,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     // Skip anything that is not a DAO
     if (!dao.endsWith("DAO") && !force)
       return "Not a DAO - Skipping";
-  
+
     // Test the DAO
     try {
       testDAO(x, dao, request);

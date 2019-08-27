@@ -4,8 +4,15 @@ import foam.core.X;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DAOSecurityTestFind extends DAOSecurityTest {
+    protected static final List<String> FIND_IGNORES = new ArrayList<>();
+
+    DAOSecurityTestFind() {
+      FIND_IGNORES.add("userCapabilityJunctionDAO");
+    }
 
     private static final String TEST_FIND = "{\n" +
         "\t\"class\":\"foam.box.Message\",\n" +
@@ -28,8 +35,7 @@ public class DAOSecurityTestFind extends DAOSecurityTest {
 
     @Override
     public void runTest(X x) {
-        List<String> ignores = new ArrayList<>();
-        testAllDAOs(x, TEST_FIND, "find", ignores);
+        testAllDAOs(x, TEST_FIND, "find", Stream.concat(FIND_IGNORES.stream(), GLOBAL_IGNORES.stream()).collect(Collectors.toList()));
     }
 
 }
