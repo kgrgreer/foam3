@@ -611,14 +611,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       omLogger.log("AFEX getQuote complete");
       logger.debug("after execute", httpResponse);
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
       DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
       Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
       AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
         .setUser(request.getAmount() + "   " + request.getClientAPIKey())
         .setOther("Fx quote request")
         .setRequest(jsonOutputter.stringify(request))
-        .setResponse(response)
         .build();
       afexLogger.inX(getX()).put(afexLogging);
       try {
@@ -629,6 +627,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (Quote) jsonParser.parseString(response, Quote.class);
       } finally {
         httpResponse.close();
