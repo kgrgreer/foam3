@@ -1,5 +1,0 @@
-[submodule "foam2"]
-	path = foam2
-	url = git@github.com:nanoPayinc/foam2.git
-	branch = master
-	ignore = dirty
