@@ -169,35 +169,38 @@ foam.CLASS({
             .end();
         }, () => {
           this
-          .start().addClass('divider').end()
-          .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
-          .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
-          .start().addClass('cards').hide(this.hidePaymentCards$)
-            .start('span')
-              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: this.onboardingStatus })
-              .style({ 'margin-bottom': '20px' })
-            .end()
-            .start('span')
-              .add(this.slot(function(internationalPaymentEnabled) {
-                return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end()
-              }))
-            .end()
-          .end();
-      })
-      .start().addClass('lower-cards')
-        .start('span')
-          .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: this.bankAccount })
-          .style({ 'margin-bottom': '20px' })
-        .end()
-        .start('span')
-          .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: this.userData.hasIntegrated })
-        .end()
-      .end()
-      .start().addClass('line')
-        .start('span')
-          .addClass('divider-half').add(this.UPPER_TXT)
-        .end()
-      .end();
+            .start().addClass('divider').end()
+            .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
+            .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
+            .start().addClass('cards').hide(this.hidePaymentCards$)
+              .start('span')
+                .add(this.slot((onboardingStatus) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus }).end();
+                }))
+              .end()
+              .start('span')
+                .add(this.slot((internationalPaymentEnabled) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end();
+                }))
+              .end()
+            .end();
+        })
+        .start().addClass('lower-cards')
+              .start('span')
+                .add(this.slot((bankAccount) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount }).end();
+                }))
+              .end()
+              .start('span')
+                .add(this.slot((user$hasIntegrated) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
+                }))
+              .end()
+        .start().addClass('line')
+          .start('span')
+            .addClass('divider-half').add(this.UPPER_TXT)
+          .end()
+        .end();
     }
   ]
 });
