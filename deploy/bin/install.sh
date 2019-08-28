@@ -163,6 +163,11 @@ function setupUser {
     else
        echo "umask 027" >> "$BASHRC"
     fi
+
+    # Setup ubuntu user
+    if id "ubuntu" > /dev/null 2>&1 && ! id -nG "ubuntu" | grep -qw "nanopay"; then
+        sudo usermod -a -G nanopay ubuntu
+    fi
 }
 
 function setupNanopaySymLink {
