@@ -84,7 +84,7 @@ foam.CLASS({
       DAO afexLogger =(DAO) x.get("afexLoggingDAO");
 
       // Validate that Payer is provisioned for AFEX before proceeding
-      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(getX(), sourceAccount.getOwner());
+      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
       if (afexBusiness == null) {
         AFEXLogging afexLogging = new AFEXLogging.Builder(x)
         .setUser(quote.getRequestTransaction().getPayerId()+"")
