@@ -335,7 +335,6 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
-  'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',

@@ -11,6 +11,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
@@ -20,8 +22,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Currency',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.auth.AuthService'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   messages: [
@@ -148,7 +149,7 @@ foam.CLASS({
       ],
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        // TODO: Add Super authorization create call once authorization methods on transactions are implemented.
+        super.authorizeOnCreate(x);
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "invoice.pay") ) {
@@ -164,12 +165,32 @@ foam.CLASS({
       ],
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        // TODO: Add Super authorization create call once authorization methods on transactions are implemented.
+        super.authorizeOnUpdate(x, oldObj);
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnDelete(x);
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnRead(x);
       `
     },
   ]
