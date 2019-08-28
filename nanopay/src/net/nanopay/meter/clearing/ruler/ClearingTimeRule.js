@@ -9,32 +9,42 @@ foam.CLASS({
     'net.nanopay.tx.cico.COTransaction'
   ],
 
+  tableColumns: [
+    'id',
+    'name',
+    'duration'
+  ],
+
   properties: [
+    {
+      name: 'name',
+      tableWidth: 600
+    },
     {
       name: 'daoKey',
       value: 'localTransactionDAO',
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       name: 'ruleGroup',
       value: 'ClearingTime',
-      visibility: 'HIDDEN',
+      hidden: true,
       permissionRequired: true
     },
     {
       name: 'operation',
       value: 'UPDATE',
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       name: 'after',
       value: false,
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       name: 'predicate',
       javaFactory: 'return new DefaultClearingTimeRulePredicate();',
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       name: 'action',
@@ -43,12 +53,12 @@ foam.CLASS({
     {
       name: 'saveHistory',
       value: false,
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       name: 'validity',
       value: 0,
-      visibility: 'HIDDEN'
+      hidden: true
     },
     {
       class: 'Int',
