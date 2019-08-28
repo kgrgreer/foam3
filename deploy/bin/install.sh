@@ -106,7 +106,7 @@ function installFiles {
     if [ ! -d ${MNT_HOME} ]; then
         mkdir -p ${MNT_HOME}
     fi
-    chgrp nanopay ${MNT_HOME}
+    chown nanopay:nanopay ${MNT_HOME}
     chmod 750 ${MNT_HOME}
 
     if [ ! -d ${CONF_HOME} ]; then
