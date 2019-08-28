@@ -60,68 +60,34 @@ var startAccountIds = 1000;
 //         denomination: 'USD',
 //         children: [
 //           {
-//             type: 'Aggregate',
+//             type: 'Virtual',
 //             name: 'Goldman Peon AA',
 //             denomination: 'CAD',
-//             children: [
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAA',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAB',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAC',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAD',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAE',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAF',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAG',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon AAH',
-//                 denomination: 'USD',
-//               }
-//             ]
 //           },
 //           {
-//             type: 'Aggregate',
+//             type: 'Virtual',
 //             name: 'Goldman Peon AB',
 //             denomination: 'USD',
-//             children: [
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon ABA',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon ABB',
-//                 denomination: 'USD',
-//               },
-//             ]
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AC',
+//             denomination: 'CAD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AD',
+//             denomination: 'USD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AE',
+//             denomination: 'CAD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AF',
+//             denomination: 'USD',
 //           }
 //         ]
 //       },
@@ -131,44 +97,20 @@ var startAccountIds = 1000;
 //         denomination: 'USD',
 //         children: [
 //           {
-//             type: 'Aggregate',
+//             type: 'Virtual',
 //             name: 'Goldman Peon BA',
 //             denomination: 'CAD',
-//             children: [
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon BAA',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon BAB',
-//                 denomination: 'USD',
-//               }
-//             ]
 //           },
 //           {
-//             type: 'Aggregate',
+//             type: 'Virtual',
 //             name: 'Goldman Peon BB',
 //             denomination: 'USD',
-//             children: [
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon BBA',
-//                 denomination: 'USD',
-//               },
-//               {
-//                 type: 'Virtual',
-//                 name: 'Goldman DemiPeon BBB',
-//                 denomination: 'USD',
-//               }
-//             ]
 //           }
 //         ]
 //       }
 //     ]
 //   }
-// ]
+// ];
 
 var accountTree = [
   {

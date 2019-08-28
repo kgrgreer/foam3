@@ -203,7 +203,7 @@ foam.CLASS({
 
           var champion = [];
 
-          for ( let i = 0; i < childNodes.length; i++ ){
+          for ( let i = 0; i < childNodes.length && this.expanded; i++ ){
             // get child outline
             // transform all rows
             // merge levels into childoutlines
@@ -286,7 +286,6 @@ foam.CLASS({
           var node = this.cls_.create(args, this);
           this.add(node);
           this.childNodes.push(node);
-          this.graph.doLayout();
           return this;
         },
 
@@ -327,51 +326,51 @@ foam.CLASS({
           for ( var pass = 0 ; pass < 50 ; pass++ ) {
             var movedNow = false;
             // Layout children
-          for ( var i = 0 ; i < l ; i++ ) {
-            var c = childNodes[i];
-            if ( c.y < this.height*2 ) { moved = true; c.y += 2; }
+            for ( var i = 0 ; i < l ; i++ ) {
+              var c = childNodes[i];
+              if ( c.y < this.height*2 ) { moved = true; c.y += 2; }
 
-            if ( c.layout() ) moved = true;
-            this.left  = Math.min(this.left, c.x);
-            this.right = Math.max(this.right, c.x);
-          }
+              if ( c.layout() ) moved = true;
+              // this.left  = Math.min(this.left, c.x);
+              // this.right = Math.max(this.right, c.x);
+            }
 
-          // Move children away from each other if required
-          var m = l/2;
-          for ( var i = 0 ; i < l-1 ; i++ ) {
-            var n1 = childNodes[i];
-            var n2 = childNodes[i+1];
+            // Move children away from each other if required
+            var m = l/2;
+            for ( var i = 0 ; i < l-1 && this.expanded ; i++ ) {
+              var n1 = childNodes[i];
+              var n2 = childNodes[i+1];
 
-            var o1 = n1.getOutline();
-            var o2 = n2.getOutline();
+              var o1 = n1.getOutline();
+              var o2 = n2.getOutline();
 
-            var overlapDistance = this.findOverlap(o1, o2);
+              var overlapDistance = this.findOverlap(o1, o2);
 
-            // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
-            if ( overlapDistance !== 0 ) {
-              moved = movedNow = true;
-              var w = Math.min(Math.abs(overlapDistance), 10);
-              if ( i+1 == m ) {
-                n1.x -= w/2;
-                n2.x += w/2;
-              } else if ( i < Math.floor(m) ) {
-                n1.x -= w;
-              } else {
-                n2.x += w;
+              // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
+              if ( overlapDistance !== 0 ) {
+                moved = movedNow = true;
+                var w = Math.min(Math.abs(overlapDistance), 10);
+                if ( i+1 == m ) {
+                  n1.x -= w/2;
+                  n2.x += w/2;
+                } else if ( i < Math.floor(m) ) {
+                  n1.x -= w;
+                } else {
+                  n2.x += w;
+                }
               }
             }
-          }
-          // TODO/BUG: I'm not sure why this is necessary, but without, center
-          // nodes are a few pixels off.
-          // if ( l%2 == 1 ) childNodes[Math.floor(m)].x = 0;
+            // TODO/BUG: I'm not sure why this is necessary, but without, center
+            // nodes are a few pixels off.
+            // if ( l%2 == 1 ) childNodes[Math.floor(m)].x = 0;
 
-          // Calculate maxLeft and maxRight
-          this.maxLeft = this.maxRight = 0;
-          for ( var i = 0 ; i < l ; i++ ) {
-            var c = childNodes[i];
-            this.maxLeft  = Math.min(c.x + c.maxLeft, this.maxLeft);
-            this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
-          }
+            // Calculate maxLeft and maxRight
+            this.maxLeft = this.maxRight = 0;
+            for ( var i = 0 ; i < l ; i++ ) {
+              var c = childNodes[i];
+              this.maxLeft  = Math.min(c.x + c.maxLeft, this.maxLeft);
+              this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
+            }
 
             if ( ! movedNow ) return moved; 
           }
