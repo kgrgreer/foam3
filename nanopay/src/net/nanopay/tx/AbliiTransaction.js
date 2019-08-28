@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: `Transaction to be created specifically for ablii users, enforces source/destination to always be bank accounts`,
 
+  implements: [
+    'foam.nanos.auth.Authorizable'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -16,7 +20,15 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Currency',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'foam.nanos.auth.AuthService'
+  ],
+
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to pay invoices.'
+    }
   ],
 
   methods: [
@@ -128,6 +140,37 @@ foam.CLASS({
 
       return tx;
     `
-    }
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        // TODO: Add Super authorization create call once authorization methods on transactions are implemented.
+
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "invoice.pay") ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        // TODO: Add Super authorization create call once authorization methods on transactions are implemented.
+
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "invoice.pay") ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+      `
+    },
   ]
 });

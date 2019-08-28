@@ -140,11 +140,13 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec", "name":"transactionDAO",                   "lazy":false,  "serve":true,  "serviceScript":
   """
-    return new foam.dao.PMDAO(x, 
-      new foam.dao.PipelinePMDAO(x, 
-        new net.nanopay.tx.AuthenticatedTransactionDAO(x, 
-          new foam.nanos.auth.PermissionedPropertyDAO(x, 
-            (foam.dao.DAO) x.get("localTransactionDAO"))).orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED))));
+    return new foam.nanos.auth.AuthorizationDAO(x,
+        new foam.dao.PMDAO(x,
+          new foam.dao.PipelinePMDAO(x,
+            new net.nanopay.tx.AuthenticatedTransactionDAO(x,
+              new foam.nanos.auth.PermissionedPropertyDAO(x,
+                (foam.dao.DAO) x.get("localTransactionDAO"))).orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED))))
+        new foam.nanos.auth.AuthorizableAuthorizer("transaction");
   """,
   "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
 })
