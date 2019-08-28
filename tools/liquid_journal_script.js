@@ -47,7 +47,7 @@ var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
 // what number the account IDs should start up
 var startAccountIds = 1000;
 
-// can enter banks with new currencies just by typing the denomination ('alphabetic code')
+// below tree is just for testing purposes
 // var accountTree = [
 //   {
 //     type: 'Aggregate',
@@ -112,6 +112,7 @@ var startAccountIds = 1000;
 //   }
 // ];
 
+// can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
   {
     type: 'Bank',
