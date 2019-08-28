@@ -207,12 +207,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       quoteRequest.setClientAPIKey(business.getApiKey());
     }
     if ( SafetyUtil.isEmpty(quoteRequest.getClientAPIKey()) ) {
-      ((Logger) x.get("logger")).error("No API key set for fxquoteRequest for user " + user);
       throw new RuntimeException("No ClientAPIKey set");
     }
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
-      ((Logger) getX().get("logger")).debug("AFEXQUOTE ", quote);
       if ( null != quote ) {
         Boolean sameCurrency = sourceCurrency.equals(targetCurrency);
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
