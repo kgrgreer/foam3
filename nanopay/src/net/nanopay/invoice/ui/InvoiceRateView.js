@@ -520,7 +520,6 @@ foam.CLASS({
     },
 
     function getExpiryTime( time, expiryTime) {
-      return;
       let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
       let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
       this.refreshTime = Math.floor(( utc2-utc1 ));
