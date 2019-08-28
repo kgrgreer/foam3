@@ -389,6 +389,20 @@ foam.CLASS({
           }
           slot.set((2*slot.get() + newValue)/3);
           return true;
+        },
+
+        function findNodeAbsoluteXByName(name, compound) {
+          if ( this.data.name === name ){
+            return this.x + compound;
+          }
+          
+          var childNodes = this.childNodes;
+          for ( var i = 0; i < childNodes.length; i++ ){
+            var foundNode = childNodes[i].findNodeAbsoluteXByName(name, this.x + compound);
+            if ( foundNode ){
+              return foundNode;
+            }
+          }
         }
       ],
 

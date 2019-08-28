@@ -88,6 +88,36 @@ var startAccountIds = 1000;
 //             type: 'Virtual',
 //             name: 'Goldman Peon AF',
 //             denomination: 'USD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AG',
+//             denomination: 'CAD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AH',
+//             denomination: 'USD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AI',
+//             denomination: 'CAD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AJ',
+//             denomination: 'USD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AK',
+//             denomination: 'CAD',
+//           },
+//           {
+//             type: 'Virtual',
+//             name: 'Goldman Peon AL',
+//             denomination: 'USD',
 //           }
 //         ]
 //       },

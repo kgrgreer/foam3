@@ -25,12 +25,19 @@ foam.CLASS({
       border-bottom: solid 1px #e7eaec;
       height: 39px;
       width: 100%;
-      text-align: center;
-      padding-top: 12px;
       font-size: 12px;
       font-weight: 600;
       line-height: 1.5;
       color: #1e1f21;
+    }
+
+    ^title {
+      left: 45%;
+      position: absolute;
+    }
+
+    ^selector {
+      padding-left: 16px;
     }
 
     ^nav-container {
@@ -71,7 +78,25 @@ foam.CLASS({
     },
   ],
 
-  properties: [ 'cview', 'canvasContainer' ],
+  properties: [ 
+    {
+      class: 'Reference',
+      name: 'accounts',
+      of: 'net.nanopay.account.Account',
+      visibilityExpression: function(canvasContainer) {
+        return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
+      },
+      postSet: function(_, n){
+        this.accountDAO.find(n).then(account => {
+          var absoluteX = this.cview.root.findNodeAbsoluteXByName(account.name,0);
+          var e = this.canvasContainer.el();
+          e.scrollTo(absoluteX * this.cview.scaleX - e.clientWidth/2, 0);
+        })
+      }
+    },
+    'cview',
+    'canvasContainer',
+  ],
   actions: [
     {
       name: 'zoomIn',
@@ -111,8 +136,15 @@ foam.CLASS({
 
         this.addClass(this.myClass());
         this
-          .start().addClass(this.myClass('header'))
-            .add(this.VIEW_HEADER)
+          .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
+            .startContext({data: this})
+              .start().addClass(this.myClass('selector'))
+                .add(this.ACCOUNTS)
+              .end()
+            .endContext()
+            .start().addClass(this.myClass('title'))
+              .add(this.VIEW_HEADER)
+            .end()
           .end()
           .startContext({data: this})
             .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
