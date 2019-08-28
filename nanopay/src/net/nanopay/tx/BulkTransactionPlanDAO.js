@@ -31,7 +31,7 @@ foam.CLASS({
         // Check whether it is bulkTransaction
         if ( parentTxn instanceof BulkTransaction) {
           long sum = 0;
-          Transaction[] childTransactions= ((BulkTransaction) parentTxn).getChildTransactionsArray();
+          Transaction[] childTransactions= parentTxn.getNext();
           CompositeTransaction ct = new CompositeTransaction();
           ct.setPayerId(parentTxn.getPayerId());
           ct.setPayeeId(parentTxn.getPayerId());
@@ -64,7 +64,7 @@ foam.CLASS({
 
           // If destinationCurrency is not default CAD
           parentTxn.setDestinationCurrency(parentTxn.getSourceCurrency());
-          
+
           // Quote parent transaction
           parentQuote.setPlan(parentTxn);
     
@@ -73,7 +73,7 @@ foam.CLASS({
     
           // If digital does not have sufficient funds, then set the source account to their default bank account.
           // When this is quoted, it will create a Cash-In.
-          if ( sum < payerDigitalAccount.getBalance() ) {
+          if ( sum > payerDigitalAccount.getBalance() ) {
             BankAccount defaultBankAccount = BankAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
             parentTxn.setSourceAccount(defaultBankAccount.getId());
           } else {
@@ -85,8 +85,9 @@ foam.CLASS({
           parentTxn.setDestinationAccount(payerDigitalAccount.getId());
     
           // Add a compositeTransaction as the next of the parent
+          parentQuote.getPlan().clearNext();
           parentQuote.getPlan().addNext(ct);
-    
+              
           return parentQuote;
         }
         return super.put_(x, obj);
