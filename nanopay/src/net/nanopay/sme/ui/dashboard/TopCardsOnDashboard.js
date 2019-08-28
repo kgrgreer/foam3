@@ -131,7 +131,6 @@ foam.CLASS({
       name: 'hidePaymentCards',
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
-    'userData',
     'bankAccount',
     {
       class: 'Boolean',
