@@ -264,7 +264,6 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
-            userData: this.user,
             businessOnboarding: this.businessOnboarding,
             onboardingStatus: this.onboardingStatus
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard

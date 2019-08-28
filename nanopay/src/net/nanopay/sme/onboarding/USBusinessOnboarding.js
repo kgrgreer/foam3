@@ -50,7 +50,7 @@ foam.CLASS({
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-                e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
+                e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
                 }), true)
@@ -913,6 +913,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
+      label: '',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
