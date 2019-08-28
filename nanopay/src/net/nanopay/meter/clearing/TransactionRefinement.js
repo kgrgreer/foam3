@@ -8,7 +8,7 @@ foam.CLASS({
       class: 'Map',
       name: 'clearingTimes',
       documentation: 'Clearing times of a transaction.',
-      help: 'A map of ClearingTimeRule (sub-)class name and duration (in days).',
+      help: 'A list of clearing times applied to the transaction when sent.',
       visibility: 'RO',
       permissionRequired: true,
       javaType: 'java.util.Map<String, Integer>',
