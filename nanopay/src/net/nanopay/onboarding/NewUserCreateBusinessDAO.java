@@ -41,7 +41,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     super(x, delegate);
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
 

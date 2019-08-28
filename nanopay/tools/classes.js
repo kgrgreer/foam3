@@ -281,6 +281,8 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnCreate',
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
+  'net.nanopay.tx.AccountRelationship',
+  'net.nanopay.tx.AccountRelationshipLineItem',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
@@ -289,6 +291,7 @@ var classes = [
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
   'net.nanopay.tx.ModifyCicoStatus',
+  'net.nanopay.tx.PurposeGroup',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -324,6 +327,8 @@ var classes = [
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',
   'net.nanopay.tx.NanopayLineItemTaxDAO',
+  'net.nanopay.tx.PurposeCode',
+  'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -485,6 +490,7 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.PayerAssentTransactionDAO',
+  'net.nanopay.security.UserRegistrationSanitationDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
@@ -685,7 +691,6 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
-  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 

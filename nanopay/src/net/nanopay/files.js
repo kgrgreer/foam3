@@ -1,4 +1,6 @@
 FOAM_FILES([
+  // DAO
+  { name: 'net/nanopay/dao/EasyDAO'},
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
@@ -480,6 +482,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
+  { name: 'net/nanopay/tx/AccountRelationship' },
+  { name: 'net/nanopay/tx/AccountRelationshipLineItem' },
   { name: 'net/nanopay/tx/ConfirmationFileLineItem' },
   { name: 'net/nanopay/tx/LineItemType' },
   { name: 'net/nanopay/tx/LineItemTypeAccount' },
@@ -494,6 +498,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/InfoLineItem' },
   { name: 'net/nanopay/tx/ExpediteCICOApprovalRequest' },
   { name: 'net/nanopay/tx/ExpenseLineItem' },
+  { name: 'net/nanopay/tx/PurposeCode' },
+  { name: 'net/nanopay/tx/PurposeCodeLineItem' },
+  { name: 'net/nanopay/tx/PurposeCodeSelectionView' },
+  { name: 'net/nanopay/tx/PurposeGroup' },
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItemCitationView' },
@@ -1095,7 +1103,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
-  { name: 'net/nanopay/meter/test/IdentityMindIntegrationTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
@@ -1109,6 +1116,7 @@ FOAM_FILES([
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
   { name: 'net/nanopay/approval/ApprovalStatus' },
+  { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },

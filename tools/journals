@@ -40,6 +40,8 @@ payoutOptions
 paymentProviders
 permissions
 prerequisiteCapabilityJunctions
+purposeCodes
+purposeGroups
 questionnaires
 quickbooksToken
 regions

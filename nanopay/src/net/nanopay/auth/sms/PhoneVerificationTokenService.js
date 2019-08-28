@@ -50,7 +50,7 @@ foam.CLASS({
     {
       name: 'generateTokenWithParameters',
       javaCode: `
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
 
         // don't send token if already verified
         Phone phone = user.getPhone();
@@ -74,7 +74,7 @@ foam.CLASS({
       name: 'processToken',
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
         Calendar calendar = Calendar.getInstance();
 
         // find token

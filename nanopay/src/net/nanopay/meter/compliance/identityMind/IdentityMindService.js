@@ -241,13 +241,10 @@ foam.CLASS({
           response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
           return response;
         } catch(Exception e) {
-          StringBuilder sb = new StringBuilder("IdentityMindService failed.");
+          String message = String.format("IdentityMind %s failed.", request.getClass().getSimpleName());
           if ( httpResponse != null ) {
-            sb.append(" HTTP status code: ")
-              .append(httpResponse.getStatusLine().getStatusCode())
-              .append(".");
+            message += String.format(" HTTP status code: %d.", httpResponse.getStatusLine().getStatusCode());
           }
-          String message = sb.toString();
           ((Logger) x.get("logger")).error(message, e);
           throw new RuntimeException(message);
         }
