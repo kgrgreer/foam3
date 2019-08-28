@@ -1,1 +1,5 @@
-p({"class":"foam.nanos.boot.NSpec","name":"iso8583","serviceClass":"net.nanopay.iso8583.ISO8583WebAgent"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "iso8583",
+  "serviceClass": "net.nanopay.iso8583.ISO8583WebAgent"
+})
