@@ -56,11 +56,11 @@ foam.CLASS({
         if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
   
         // ACCEPTANCE DOCUMENTS
-        Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        Long oldDualPartyAgreement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
-        if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
+        if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
