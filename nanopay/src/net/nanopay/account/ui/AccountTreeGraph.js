@@ -331,8 +331,8 @@ foam.CLASS({
               if ( c.y < this.height*2 ) { moved = true; c.y += 2; }
 
               if ( c.layout() ) moved = true;
-              // this.left  = Math.min(this.left, c.x);
-              // this.right = Math.max(this.right, c.x);
+              this.left  = Math.min(this.left, c.x);
+              this.right = Math.max(this.right, c.x);
             }
 
             // Move children away from each other if required
@@ -347,9 +347,9 @@ foam.CLASS({
               var overlapDistance = this.findOverlap(o1, o2);
 
               // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
-              if ( overlapDistance !== 0 ) {
+              if ( Math.abs(overlapDistance) > 0.1 ) {
                 moved = movedNow = true;
-                var w = Math.min(Math.abs(overlapDistance), 10);
+                var w = overlapDistance > 0 ? Math.min(overlapDistance, 10) :  Math.max(overlapDistance, -10);
                 if ( i+1 == m ) {
                   n1.x -= w/2;
                   n2.x += w/2;
