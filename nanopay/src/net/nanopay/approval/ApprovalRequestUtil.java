@@ -1,6 +1,8 @@
 package net.nanopay.approval;
 
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
@@ -38,5 +40,30 @@ public class ApprovalRequestUtil {
       : getRejectedPoints(x, id, classification) >= request.getRequiredRejectedPoints()
         ? ApprovalStatus.REJECTED
         : ApprovalStatus.REQUESTED;
+  }
+
+  /**
+   * Returns approval state (combined status) of a given collection of approval
+   * requests.
+   *
+   * @param collection (DAO) of approval request
+   * @return approval status (combined) for approval requests in the collection
+   */
+  public static ApprovalStatus getState(DAO collection) {
+    ApprovalTester tester = new ApprovalTester();
+    try {
+      collection.select(new AbstractSink() {
+        @Override
+        public void put(Object obj, Detachable sub) {
+          if ( tester.test((ApprovalRequest) obj) != null )
+            // Approval request state is determined.
+            // Therefore, throw to break out of AbstractSink.
+            throw new RuntimeException();
+          }
+        }
+      );
+    } finally {
+      return tester.getState();
+    }
   }
 }

@@ -19,6 +19,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -100,18 +102,21 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   @Override
   public Quote getQuote(GetQuoteRequest request) {
 
-    Calendar oneDay = Calendar.getInstance();
-    oneDay.add(Calendar.HOUR,24);
+    Date date = Calendar.getInstance().getTime();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss");
+    String strDate = dateFormat.format(date);
     Quote quote = new Quote.Builder(getX())
       .setAmount(Double.parseDouble(request.getAmount()))
       .setQuoteId(request.getAmount()+1)
-      .setValueDate(oneDay.getTime())
+      .setValueDate(strDate)
       .build();
     if ( request.getCurrencyPair().equals("CADUSD") ) {
-      quote.setRate(0.75);
+      quote.setRate(1.34);
+      quote.setTerms("E");
     } else if ( request.getCurrencyPair().equals("USDUSD") ){
       quote.setRate(1);
     } else if ( request.getCurrencyPair().equals("USDCAD") ) {
+      quote.setTerms("A");
       quote.setRate(1.34);
     }
     return quote;
@@ -134,6 +139,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request) {
+    return null;
+  }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
     return null;
   }
 }

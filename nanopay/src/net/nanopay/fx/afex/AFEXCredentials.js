@@ -20,6 +20,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'AFEXApi'
+    },
+    {
+      class: 'Int',
+      name: 'quoteExpiryTime'
     }
   ]
 });

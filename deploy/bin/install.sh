@@ -10,6 +10,7 @@ LOG_HOME=${MNT_HOME}/logs
 JOURNAL_HOME=${MNT_HOME}/journals
 CONF_HOME=${MNT_HOME}/conf
 BACKUP_HOME=${MNT_HOME}/backups
+VAR_HOME=${MNT_HOME}/var
 
 function quit {
     echo "ERROR :: Remote Install Failed"
@@ -49,7 +50,7 @@ function backupFiles {
     if [ ! -d ${BACKUP_HOME} ]; then
         mkdir -p ${BACKUP_HOME} 
         chgrp nanopay ${BACKUP_HOME}
-        chmod 770 ${BACKUP_HOME}
+        chmod 750 ${BACKUP_HOME}
     fi
 
     # Move same/duplicate version installation.
@@ -62,7 +63,7 @@ function backupFiles {
             quit
         fi
         chgrp nanopay ${NANOPAY_BACKUP}
-        chmod 770 ${NANOPAY_BACKUP}
+        chmod 750 ${NANOPAY_BACKUP}
         rm -rf ${NANOPAY_HOME}
     fi
 }
@@ -106,19 +107,25 @@ function installFiles {
         mkdir -p ${MNT_HOME}
     fi
     chgrp nanopay ${MNT_HOME}
-    chmod 770 ${MNT_HOME}
+    chmod 750 ${MNT_HOME}
 
     if [ ! -d ${CONF_HOME} ]; then
         mkdir -p ${CONF_HOME}
     fi
     chgrp -R nanopay ${CONF_HOME}
-    chmod -R 770 ${CONF_HOME}
+    chmod -R 750 ${CONF_HOME}
 
     if [ ! -d ${LOG_HOME} ]; then
         mkdir -p ${LOG_HOME}
     fi
     chgrp nanopay ${LOG_HOME}
-    chmod 770 ${LOG_HOME}
+    chmod 750 ${LOG_HOME}
+
+    if [ ! -d ${VAR_HOME} ]; then
+        mkdir -p ${VAR_HOME}
+    fi
+    chgrp nanopay ${VAR_HOME}
+    chmod 750 ${VAR_HOME}
 
     if [ ! -d ${JOURNAL_HOME} ]; then
         mkdir ${JOURNAL_HOME}
@@ -127,10 +134,10 @@ function installFiles {
     mkdir -p ${JOURNAL_HOME}/migrated
 
     chgrp -R nanopay ${JOURNAL_HOME}
-    chmod 770 ${JOURNAL_HOME}
-    chmod -R 760 ${JOURNAL_HOME}/*
-    chmod 770 ${JOURNAL_HOME}/sha256
-    chmod 770 ${JOURNAL_HOME}/migrated
+    chmod 750 ${JOURNAL_HOME}
+    chmod -R 640 ${JOURNAL_HOME}/*
+    chmod 750 ${JOURNAL_HOME}/sha256
+    chmod 750 ${JOURNAL_HOME}/migrated
 
 }
 
@@ -194,6 +201,15 @@ function setupNanopaySymLink {
 
     if [ -d ${CONF_HOME} ]; then
         ln -s ${CONF_HOME} ${NANOPAY_HOME}/conf
+    fi
+    
+    # symlink to var
+    if [ -h ${NANOPAY_HOME}/var ]; then
+        unlink ${NANOPAY_HOME}/var
+    fi
+
+    if [ -d ${VAR_HOME} ]; then
+        ln -s ${VAR_HOME} ${NANOPAY_HOME}/var
     fi
 }
 

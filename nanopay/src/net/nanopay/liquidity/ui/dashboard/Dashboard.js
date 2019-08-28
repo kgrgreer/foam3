@@ -64,7 +64,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'currencyExposureDAO',
-      factory: function() {
+      expression: function(lastUpdated) {
         return this.CurrencyExposureDAO.create();
       },
     },
@@ -110,14 +110,14 @@ foam.CLASS({
               .addClass(this.myClass('dashboard-container'))
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
-                  currency$: this.currencyExposureDAO$
+                  currency: this.currencyExposureDAO$proxy
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
                 .tag(this.DashboardLiquidity)
               .end()
               .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
-                .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+                .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO$proxy })
               .end()
               .start(this.Card, { columns: 9 })
                 .tag(this.DashboardCicoShadow)
