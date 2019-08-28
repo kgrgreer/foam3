@@ -194,10 +194,12 @@ foam.CLASS({
         function getOutline() {
           var nodeLeftEdge = this.x - this.nodeWidth / 2;
           var nodeRightEdge = this.x + this.nodeWidth / 2;
-          var ret = {
-            left: nodeLeftEdge,
-            right: nodeRightEdge
-          };
+          var currentOutline = [
+            {
+              left: nodeLeftEdge,
+              right: nodeRightEdge
+            }
+          ];
 
           const { childNodes } = this;
 
@@ -221,7 +223,7 @@ foam.CLASS({
             }
           }
 
-          return [ret].concat(champion)
+          return currentOutline.concat(champion)
         },
 
         function paint(x) {
