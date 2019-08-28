@@ -113,7 +113,7 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
@@ -162,45 +162,16 @@ function clean {
             rm -rf *
             cd "$tmp"
         fi
-
-        if [ "$GRADLE_BUILD" -eq 0 ]; then
-            if [ -d "build/" ]; then
-                rm -rf build
-                mkdir build
-            fi
-            if [ -d "target/" ]; then
-                rm -rf target
-                mkdir target
-            fi
-            mvn clean
-        else
-            gradle clean $GRADLE_FLAGS
-        fi
+        
+        gradle clean $GRADLE_FLAGS
     fi
 }
 
 function build_jar {
-    if [ "$GRADLE_BUILD" -eq 1 ]; then
-        if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-            gradle --daemon buildJar $GRADLE_FLAGS
-        else
-            gradle --daemon build $GRADLE_FLAGS
-        fi
+    if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
+        gradle --daemon buildJar $GRADLE_FLAGS
     else
-        # maven
-        if [ "$COMPILE_ONLY" -eq 0 ]; then
-            echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js build/src/java
-
-            echo "INFO :: Packaging js..."
-            ./tools/js_build/build.js
-        fi
-
-        if [[ ! -z "$VERSION" ]]; then
-            mvn versions:set -DnewVersion=$VERSION
-        fi
-
-        mvn package
+        gradle --daemon build $GRADLE_FLAGS
     fi
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
@@ -290,9 +261,7 @@ function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
         OPT_ARGS=
         
-        if [ $GRADLE_BUILD -eq 1 ]; then
-            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
-        fi
+        OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
 
         if [ ! -z ${RUN_USER} ]; then
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
@@ -536,7 +505,6 @@ function usage {
 JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -590,7 +558,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
-        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
@@ -632,10 +599,6 @@ fi
 
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
-fi
-
-if [ ${GRADLE_BUILD} -eq 0 ]; then
-    warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
 fi
 
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
