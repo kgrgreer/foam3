@@ -101,28 +101,5 @@ foam.CLASS({
       ],
       javaCode: 'return getSend() ? txn.getSourceAccount() : txn.getDestinationAccount();'
     },
-    {
-      name: 'validate',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `
-        // check if the rule already exists
-        DAO ruleDAO = (DAO) x.get("ruleDAO");
-        ruleDAO = ruleDAO.where(
-          AND(
-            EQ(BusinessLimit.BUSINESS, getBusiness()),
-            EQ(BusinessLimit.PERIOD, getPeriod())
-          ));
-        if ( ruleDAO != null ) {
-          throw new IllegalStateException("Duplicated business limit set up for the same business and the same frequency.");
-        }
-      `
-    }
   ]
 });
