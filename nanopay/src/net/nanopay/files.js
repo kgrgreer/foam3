@@ -97,8 +97,6 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
-  { name: 'net/nanopay/model/DateOnly' },
-  { name: 'net/nanopay/model/DateOnlyView' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -110,6 +108,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/InvitationStatus' },
   { name: 'net/nanopay/model/IdentificationType' },
   { name: 'net/nanopay/model/PersonalIdentification' },
+  { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
@@ -221,7 +220,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
-  // AFEX
+  //
+  { name: 'net/nanopay/fx/afex/AFEXLogging' },
   { name: 'net/nanopay/fx/FXSummaryTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: 'net/nanopay/fx/afex/AFEX' },

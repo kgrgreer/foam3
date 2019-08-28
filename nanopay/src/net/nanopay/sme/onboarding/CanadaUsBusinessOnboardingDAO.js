@@ -14,9 +14,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
-    'net.nanopay.model.DateOnly',
-    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
-    'java.util.Date'
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding'
   ],
 
   methods: [
@@ -39,7 +37,7 @@ foam.CLASS({
         CanadaUsBusinessOnboarding old = (CanadaUsBusinessOnboarding)getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED && old.getSigningOfficer() ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
 
         // TODO: Please call the java validator of the businessOnboarding here
 
@@ -52,9 +50,7 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        DateOnly businessRegistrationDate = businessOnboarding.getBusinessRegistrationDateTwo();
-        business.setBusinessRegistrationDateTwo(businessRegistrationDate);
-        business.setBusinessRegistrationDate( new Date(businessRegistrationDate.getYear(), businessRegistrationDate.getMonth(), businessRegistrationDate.getDay(), 12, 0) );
+        business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
         business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
         localBusinessDAO.put(business);

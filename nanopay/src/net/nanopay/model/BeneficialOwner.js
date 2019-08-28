@@ -78,36 +78,32 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'birthday',
-      hidden: true
-    },
-    {
-      class: 'net.nanopay.model.DateOnlyProperty',
-      name: 'birthdayTwo',
+      label: 'Date of birth',
       section: 'requiredSection',
-      // validationPredicates: [
-      //   {
-      //     args: ['birthdayTwo'],
-      //     predicateFactory: function(e) {
-      //       return foam.mlang.predicate.OlderThan.create({
-      //         arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY_TWO,
-      //         timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-      //       });
-      //     },
-      //     errorString: 'Must be at least 18 years old.'
-      //   },
-      //   {
-      //     args: ['birthday'],
-      //     predicateFactory: function(e) {
-      //       return e.NOT(
-      //           foam.mlang.predicate.OlderThan.create({
-      //             arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
-      //             timeMs: 125 * 365 * 24 * 60 * 60 * 1000
-      //           })
-      //         );
-      //     },
-      //     errorString: 'Must be under the age of 125 years old.'
-      //   }
-      // ]
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return foam.mlang.predicate.OlderThan.create({
+              arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+              timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+            });
+          },
+          errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              );
+          },
+          errorString: 'Must be under the age of 125 years old.'
+        }
+      ]
     },
     {
       class: 'FObjectProperty',

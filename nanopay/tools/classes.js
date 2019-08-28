@@ -101,6 +101,7 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
+  'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -126,6 +127,7 @@ var classes = [
   'net.nanopay.kotak.KotakCredentials',
 
   // AFEX
+  'net.nanopay.fx.afex.AFEXLogging',
   'net.nanopay.fx.FXSummaryTransaction',
   'net.nanopay.fx.afex.AFEXTransaction',
   'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
@@ -742,8 +744,6 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
-
-  'net.nanopay.model.DateOnly',
 ];
 
 var abstractClasses = [

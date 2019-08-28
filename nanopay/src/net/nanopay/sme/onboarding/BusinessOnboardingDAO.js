@@ -19,7 +19,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.documents.AcceptanceDocumentService',
-    'net.nanopay.model.DateOnly',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
@@ -27,8 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'java.util.Date'
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -51,7 +49,7 @@ foam.CLASS({
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED && old.getSigningOfficer() ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
 
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
@@ -82,9 +80,7 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          DateOnly birthday = businessOnboarding.getBirthdayTwo();
-          user.setBirthdayTwo(birthday);
-          user.setBirthday( new Date(birthday.getYear(), birthday.getMonth(), birthday.getDay(), 12, 0) );
+          user.setBirthday( businessOnboarding.getBirthday() );
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)

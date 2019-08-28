@@ -313,58 +313,79 @@ foam.CLASS({
         ],
       }
     },
-
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+    {
+      class: 'String',
+      name: 'jobTitle',
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Chief Visionary Officer'
+      label: 'Job Title',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
       },
-      minLength: 1,
-      maxLength: 50
-    }),
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.JOB_TITLE
+              }), 0)
+          },
+          errorString: 'Please select a job title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
       autoValidate: true
     }),
-    foam.nanos.auth.User.BIRTHDAY_TWO.clone().copyFrom({
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
       section: 'personalInformationSection',
-      // TODO fix age mlang for DateOnly
-      // visibilityExpression: function(signingOfficer) {
-      //   return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      // },
-      // validationPredicates: [
-      //   {
-      //     args: ['birthday'],
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-      //         foam.mlang.predicate.OlderThan.create({
-      //           arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BIRTHDAY,
-      //           timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-      //         })
-      //       );
-      //     },
-      //     errorString: 'Must be at least 18 years old.'
-      //   },
-      //   {
-      //     args: ['birthday'],
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-      //         e.NOT(
-      //           foam.mlang.predicate.OlderThan.create({
-      //             arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BIRTHDAY,
-      //             timeMs: 125 * 365 * 24 * 60 * 60 * 1000
-      //           })
-      //         )
-      //       );
-      //     },
-      //     errorString: 'Must be under the age of 125 years old.'
-      //   }
-      // ]
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BIRTHDAY,
+                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+              })
+            );
+          },
+          errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              )
+            );
+          },
+          errorString: 'Must be under the age of 125 years old.'
+        }
+      ]
     }),
     {
       section: 'personalInformationSection',
@@ -665,26 +686,27 @@ foam.CLASS({
         }
       ]
     }),
-    foam.nanos.auth.User.BUSINESS_REGISTRATION_DATE_TWO.clone().copyFrom({
+    {
       section: 'businessDetailsSection',
+      class: 'Date',
+      name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.',
-      // TODO Fix mlang age validation
-      // validationPredicates: [
-      //   {
-      //     args: ['signingOfficer','businessFormationDate'],// TODO <- NAME ERROR 
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-      //         foam.mlang.predicate.OlderThan.create({
-      //           arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE, // TODO <- NAME ERROR
-      //           timeMs: 24 * 60 * 60 * 1000
-      //         })
-      //       );
-      //     },
-      //     errorString: 'Must be at least a before now.'
-      //   }
-      // ]
-    }),
+      validationPredicates: [
+        {
+          args: ['signingOfficer','businessFormationDate'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
+                timeMs: 24 * 60 * 60 * 1000
+              })
+            );
+          },
+          errorString: 'Must be at least a before now.'
+        }
+      ]
+    },
     {
       section: 'businessDetailsSection',
       class: 'Reference',
@@ -898,7 +920,7 @@ foam.CLASS({
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = this.userOwnsPercent = false;
+        this.publiclyTraded = false;
       },
       validationPredicates: [
         {
@@ -923,7 +945,16 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        if ( n ) {
+          this.owner1.ownershipPercent = this.ownershipPercent;
+          this.owner1.jobTitle = this.jobTitle;
+          this.owner1.firstName = this.firstName;
+          this.owner1.lastName = this.lastName;
+          this.owner1.birthday = this.birthday;
+          this.owner1.address = this.address;
+          return;
+        }
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -984,16 +1015,7 @@ foam.CLASS({
     }),
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 1,
-      postSet: function(_, n) {
-        if ( ! this.userOwnsPercent ) return;
-        this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
-        this.onDetach(n.jobTitle$.follow(this.jobTitle$));
-        this.onDetach(n.firstName$.follow(this.firstName$));
-        this.onDetach(n.lastName$.follow(this.lastName$));
-        this.onDetach(n.birthdayTwo$.follow(this.birthdayTwo$));
-        this.onDetach(n.address$.follow(this.address$));
-      }
+      index: 1
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
