@@ -138,10 +138,11 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
                  createInfoLineItem("Memo",row1.getDescriptionTag()),
                  createInfoLineItem("Ref#",row1.getTransactionId()),
                  createInfoLineItem("Product Type",row1.getProductType()),
-                 createInfoLineItem("Transaction Type",row1.getSettleType()),
-                 createInfoLineItem("LiquidityBucket 4",row1.getProto_Liquidity_Hierarchy4()),
-                 createInfoLineItem("LiquidityBucket 2",row1.getProto_Liquidity_Hierarchy2()),
-                 createInfoLineItem("LiquidityBucket 3",row1.getProto_Liquidity_Hierarchy3())
+                 createInfoLineItem("Settlement Type",row1.getSettleType()),
+                 createInfoLineItem("Liquidity Bucket",row1.getLiquidityBucket()),
+                 createInfoLineItem("Liquidity Hierarchy 2",row1.getProto_Liquidity_Hierarchy2()),
+                 createInfoLineItem("Liquidity Hierarchy 3",row1.getProto_Liquidity_Hierarchy3()),
+                 createInfoLineItem("Liquidity Hierarchy 4",row1.getProto_Liquidity_Hierarchy4()),
               },null);
           }
           else {
