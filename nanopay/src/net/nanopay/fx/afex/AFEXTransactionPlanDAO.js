@@ -81,16 +81,10 @@ foam.CLASS({
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
       Logger logger = (Logger) x.get("logger");
-      DAO afexLogger =(DAO) x.get("afexLoggingDAO");
 
       // Validate that Payer is provisioned for AFEX before proceeding
       AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
       if (afexBusiness == null) {
-        AFEXLogging afexLogging = new AFEXLogging.Builder(x)
-        .setUser(quote.getRequestTransaction().getPayerId()+"")
-        .setOther("could not find afex business" + quote.getRequestTransaction().getAmount())
-        .build();
-        afexLogger.put(afexLogging);
         logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
         return getDelegate().put_(x, quote);
       }
@@ -100,12 +94,6 @@ foam.CLASS({
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
-
-          AFEXLogging afexLogging = new AFEXLogging.Builder(x)
-            .setUser(quote.getRequestTransaction().getPayerId()+"")
-            .setOther("Pre quote request " + request.getAmount() + " dest amount " + request.getDestinationAmount()  +" DEST " +request.getDestinationCurrency() + " SRC " + request.getSourceCurrency())
-            .build();
-          afexLogger.put(afexLogging);
 
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
             null, null, request.findSourceAccount(x).getOwner(), null);
@@ -118,21 +106,10 @@ foam.CLASS({
             afexTransaction.setInvoiceId(request.getInvoiceId());
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
             quote.addPlan(summary);
-          }else {
-            AFEXLogging afexLogging2 = new AFEXLogging.Builder(x)
-            .setUser(quote.getRequestTransaction().getPayerId()+"")
-            .setOther("fxquote is null " + quote.getRequestTransaction().getAmount())
-            .build();
-           afexLogger.put(afexLogging2);
           }
           
         } catch (Throwable t) {
           logger.error("error fetchhing afex fxQuote", t);
-          AFEXLogging afexLogging = new AFEXLogging.Builder(x)
-            .setUser(quote.getRequestTransaction().getPayerId()+"")
-            .setOther("catch error" + quote.getRequestTransaction().getAmount() + t.getMessage())
-            .build();
-          afexLogger.put(afexLogging);
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AFEX" ;
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
@@ -158,14 +135,8 @@ foam.CLASS({
       javaCode: `
 
     TransactionQuote quote = (TransactionQuote) obj;
-    DAO afexLogger =(DAO) x.get("afexLoggingDAO");
 
     if ( ! this.getEnabled() ) {
-      AFEXLogging afexLogging = new AFEXLogging.Builder(x)
-      .setUser(quote.getRequestTransaction().getPayerId()+"")
-      .setOther("not enabled" + + quote.getRequestTransaction().getAmount())
-      .build();
-      afexLogger.put(afexLogging);
       return getDelegate().put_(x, quote);
     }
 
@@ -185,11 +156,6 @@ foam.CLASS({
     if ( fxService instanceof AFEXServiceProvider  ) {
      quote = (TransactionQuote) generateTransaction(x, quote, (AFEXServiceProvider) fxService);
     }
-    AFEXLogging afexLogging = new AFEXLogging.Builder(x)
-    .setUser(quote.getRequestTransaction().getPayerId()+"")
-    .setOther((quote.getPlans()).length +" normal return" + + quote.getRequestTransaction().getAmount())
-    .build();
-    afexLogger.put(afexLogging);
     return getDelegate().put_(x, quote);
     `
   }
