@@ -227,6 +227,29 @@ foam.CLASS({
           errorString: 'Must acknowledge the AFEX agreement.'
         }
       ]
+    },
+    {
+      section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      name: 'nanopayInternationalPaymentsCustomerAgreement',
+      documentation: 'Verifies if the user has accepted nanopayInternationalPaymentsCustomerAgreement.',
+      docName: 'nanopayInternationalPaymentsCustomerAgreement',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'nanopayInternationalPaymentsCustomerAgreement'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.NANOPAY_INTERNATIONAL_PAYMENTS_CUSTOMER_AGREEMENT, 0)
+            );
+          },
+          errorString: 'Must acknowledge the nanopay International Payments Customer Agreement.'
+        }
+      ]
     }
   ],
 
