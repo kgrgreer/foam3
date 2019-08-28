@@ -46,11 +46,15 @@ foam.CLASS({
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
 
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED && old.getSigningOfficer() ) return getDelegate().put_(x, businessOnboarding);
-
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+  
         // ACCEPTANCE DOCUMENTS
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();

@@ -131,7 +131,6 @@ foam.CLASS({
       name: 'hidePaymentCards',
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
-    'userData',
     'bankAccount',
     {
       class: 'Boolean',
@@ -163,7 +162,6 @@ foam.CLASS({
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
         .callIfElse( this.businessOnboarding &&
                       this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
-                      ! this.onboardingStatus &&
                       ! this.businessOnboarding.signingOfficer, () => {
           this
             .start('span').addClass('cards')
@@ -176,25 +174,28 @@ foam.CLASS({
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: this.onboardingStatus })
-                .style({ 'margin-bottom': '20px' })
+                .add(this.slot((onboardingStatus) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus }).end();
+                }))
               .end()
               .start('span')
-                .add(this.slot(function(internationalPaymentEnabled) {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end()
+                .add(this.slot((internationalPaymentEnabled) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end();
                 }))
               .end()
             .end();
         })
         .start().addClass('lower-cards')
-          .start('span')
-            .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: this.bankAccount })
-            .style({ 'margin-bottom': '20px' })
-          .end()
-          .start('span')
-            .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: this.userData.hasIntegrated })
-          .end()
-        .end()
+              .start('span')
+                .add(this.slot((bankAccount) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount }).end();
+                }))
+              .end()
+              .start('span')
+                .add(this.slot((user$hasIntegrated) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
+                }))
+              .end()
         .start().addClass('line')
           .start('span')
             .addClass('divider-half').add(this.UPPER_TXT)

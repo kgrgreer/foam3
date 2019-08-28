@@ -46,11 +46,15 @@ foam.CLASS({
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
 
-        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
+        BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED && old.getSigningOfficer() ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
-
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+        
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
@@ -61,9 +65,7 @@ foam.CLASS({
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
-        }
+
 
         businessOnboarding.validate(x);
 
