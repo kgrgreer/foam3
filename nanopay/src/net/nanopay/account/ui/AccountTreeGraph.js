@@ -291,7 +291,7 @@ foam.CLASS({
           return this;
         },
 
-        function findOverlap(outlineA, outlineB){
+        function findOverlap(outlineA, outlineB, nodeA, nodeB){
           levelsA = this.checkLevels(outlineA);
           levelsB = this.checkLevels(outlineB);
           maxLevels = Math.max(levelsA, levelsB);
@@ -301,7 +301,7 @@ foam.CLASS({
             // we only need to check if the right of outlineA overlaps with the left of outlineB
             var overlapDistance = outlineA[i].right - outlineB[i].left + this.padding;
 
-            if ( overlapDistance > 0 ) {
+            if ( overlapDistance > 0 || ! nodeA.expanded || ! nodeB.expanded ) {
               return overlapDistance;
             }
           }
@@ -346,7 +346,7 @@ foam.CLASS({
               var o1 = n1.getOutline();
               var o2 = n2.getOutline();
 
-              var overlapDistance = this.findOverlap(o1, o2);
+              var overlapDistance = this.findOverlap(o1, o2, n1, n2);
 
               // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
               if ( Math.abs(overlapDistance) > 0.1 ) {
