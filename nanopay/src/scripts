@@ -587,5 +587,6 @@ p({
     print(" DONE ");
   
   """,
-  "output": ""
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
 })
