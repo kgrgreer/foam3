@@ -34,7 +34,7 @@ foam.CLASS({
     },
     {
       name: 'padding',
-      value: 10
+      value: 30
     },
     {
       name: 'width',
@@ -59,8 +59,6 @@ foam.CLASS({
     {
       name: 'selectedNode',
       postSet: function(o,n){
-        console.log('o',o);
-        console.log('n',n);
         if ( o ) {
           o.color = 'white';
         }
