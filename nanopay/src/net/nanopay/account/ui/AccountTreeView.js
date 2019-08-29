@@ -183,7 +183,7 @@ foam.CLASS({
               })
             .end()
           .endContext()
-          .start('div', null, this.canvasContainer$).style({overflow: 'scroll'})
+          .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container')).style({overflow: 'scroll'})
             .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
               self.cview = self.AccountTreeGraph.create({ data: a.array[0] });
               return self.cview;
