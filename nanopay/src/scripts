@@ -621,7 +621,7 @@ p({
       for( Object obj : contacts ) {
         if ( ! (obj instanceof Contact) ) continue;
         Contact contact = (Contact) obj;
-        
+
         print(" Migrating " + contact.getOrganization());
 
         Business contactBusiness = (Business) localBusinessDAO.find(contact.getBusinessId());
@@ -677,5 +677,6 @@ p({
     print(" Done ");
   
   """,
-  "output": ""
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
 })
