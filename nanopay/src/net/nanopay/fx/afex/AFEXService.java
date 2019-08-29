@@ -611,14 +611,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       omLogger.log("AFEX getQuote complete");
       logger.debug("after execute", httpResponse);
 
-      DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
-      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-      AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
-        .setUser(request.getAmount() + "   " + request.getClientAPIKey())
-        .setOther("Fx quote request")
-        .setRequest(jsonOutputter.stringify(request))
-        .build();
-      afexLogger.inX(getX()).put(afexLogging);
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           String errorMsg = "Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
