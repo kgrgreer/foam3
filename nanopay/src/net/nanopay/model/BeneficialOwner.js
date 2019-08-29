@@ -113,7 +113,14 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      view: function(args, X) {
+        var m = foam.mlang.Expressions.create();
+        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: dao
+        };
+      },
       autoValidate: true
     },
   ],
