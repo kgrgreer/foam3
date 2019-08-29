@@ -965,11 +965,12 @@ foam.CLASS({
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
-
-    // FIXME: IntView not respecting the min-max range
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
+      postSet: function(o, n) {
+        this.owner1.ownershipPercent = n;
+      },
       validationPredicates: [
         {
           args: ['signingOfficer', 'userOwnsPercent', 'ownershipPercent'],
