@@ -53,6 +53,22 @@ foam.CLASS({
       value: 0
     },
     {
+      name: 'selectedColor',
+      value: 'rgb(135,206,250,0.15)'
+    },
+    {
+      name: 'selectedNode',
+      postSet: function(o,n){
+        console.log('o',o);
+        console.log('n',n);
+        if ( o ) {
+          o.color = 'white';
+        }
+        n.color = this.selectedColor
+        ;
+      }
+    },
+    {
       name: 'relationship',
       factory: function() {
         return net.nanopay.account.AccountAccountChildrenRelationship;
@@ -194,7 +210,7 @@ foam.CLASS({
         function getOutline() {
           var nodeLeftEdge = this.x - this.nodeWidth / 2;
           var nodeRightEdge = this.x + this.nodeWidth / 2;
-          var currentOutline = [
+          var rootLevelOutline = [
             {
               left: nodeLeftEdge,
               right: nodeRightEdge
@@ -223,7 +239,12 @@ foam.CLASS({
             }
           }
 
-          return currentOutline.concat(champion)
+          var totalOutline = rootLevelOutline.concat(champion);
+
+          // memoizing the outline
+          this.outline = totalOutline;
+
+          return totalOutline;
         },
 
         function paint(x) {
@@ -353,8 +374,9 @@ foam.CLASS({
                 moved = movedNow = true;
                 var w = overlapDistance > 0 ? Math.min(overlapDistance, 10) :  Math.max(overlapDistance, -10);
                 if ( i+1 == m ) {
-                  n1.x -= w/2;
-                  n2.x += w/2;
+                  var shift = w/2;
+                  n1.x -= shift;
+                  n2.x += shift;
                 } else if ( i < Math.floor(m) ) {
                   n1.x -= w;
                 } else {
@@ -393,6 +415,7 @@ foam.CLASS({
 
         function findNodeAbsoluteXByName(name, compound) {
           if ( this.data.name === name ){
+            this.graph.selectedNode = this;
             return this.x + compound;
           }
           
