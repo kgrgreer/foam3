@@ -468,7 +468,7 @@ function printObject(actionInput, ws) {
             }
             else if ( typeof actionInput[k] === 'object' ){
                 strKeyVal += printObject(
-                    actionInput[k], '  ');
+                    actionInput[k], ws+'  ');
             }
             else {
                 strKeyVal += '' + actionInput[k];
