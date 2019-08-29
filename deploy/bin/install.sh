@@ -106,7 +106,7 @@ function installFiles {
     if [ ! -d ${MNT_HOME} ]; then
         mkdir -p ${MNT_HOME}
     fi
-    chgrp nanopay ${MNT_HOME}
+    chown nanopay:nanopay ${MNT_HOME}
     chmod 750 ${MNT_HOME}
 
     if [ ! -d ${CONF_HOME} ]; then
@@ -162,6 +162,11 @@ function setupUser {
         sed -i 's/umask.*/umask 027/' "$BASHRC"
     else
        echo "umask 027" >> "$BASHRC"
+    fi
+
+    # Setup ubuntu user
+    if id "ubuntu" > /dev/null 2>&1 && ! id -nG "ubuntu" | grep -qw "nanopay"; then
+        sudo usermod -a -G nanopay ubuntu
     fi
 }
 
