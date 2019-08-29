@@ -61,7 +61,7 @@ public class AFEXContactDAO
     // Check If Contact has business and create AFEX beneficiary for business also
     Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
     if ( business != null ) {
-      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
+      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
       if ( null != businessBankAccount ) {
         String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
         boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
