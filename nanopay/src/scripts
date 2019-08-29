@@ -590,3 +590,92 @@ p({
   "output": "",
   "notes": "Please replace businessEmail with the desired Business Email before running script."
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Existing Business Contacts to AFEX",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.auth.Address;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.contacts.Contact;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.model.Business;
+    import foam.util.SafetyUtil;
+
+    String businessEmail = "unknown@ablii.com";
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+    DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO"));
+    Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
+    if ( null == business ) {
+      print(" Business not found for " + businessEmail);
+    } else {
+      print(" Migrating contacts, please wait... ");
+      DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+      DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+      DAO contactDAO = (DAO) x.get("localContactDAO");
+      java.util.List contacts = ((ArraySink) business.getContacts(x).select(new ArraySink())).getArray();
+      for( Object obj : contacts ) {
+        if ( ! (obj instanceof Contact) ) continue;
+        Contact contact = (Contact) obj;
+        
+        print(" Migrating " + contact.getOrganization());
+
+        Business contactBusiness = (Business) localBusinessDAO.find(contact.getBusinessId());
+        Address contactBusinessAddress = contactBusiness == null ? null : contactBusiness.getAddress() == null ? contactBusiness.getBusinessAddress() : contactBusiness.getAddress();
+
+        String contactCountryId = contactBusinessAddress == null ?  contact.getBusinessAddress() == null ? "" : contact.getBusinessAddress().getCountryId() : contactBusinessAddress.getCountryId();
+        String contactOwnerCountryId = business.getAddress() == null ? "" : business.getAddress().getCountryId();
+       
+        if ( SafetyUtil.isEmpty(contactCountryId) ) {
+          print("Unable to migrate " + contact.getOrganization() + " because the address field is invalid. Check country id." );
+          continue;
+        }
+
+        if ( "CA".equals(contactCountryId) && "CA".equals(contactOwnerCountryId)) {
+          print("Skipping " + contact.getOrganization() + " migration because it is a CAD to CAD contact" );
+          continue;
+        }
+
+        BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
+          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} ))) 
+          : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
+
+        BankAccount contactBusinessBankAccount = contactBusiness == null ? null : 
+         ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
+
+        if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
+          print("Unable to migrate " + contact.getOrganization() + " because contact has no bank account." );
+          continue;
+        }
+
+        Address bankAddress = contactBusinessBankAccount == null ? contactBankAccount.getAddress() == null ? contactBankAccountbankAccount.getBankAddress() : contactBankAccount.getAddress() : contactBusinessBankAccount.getAddress() == null ? contactBusinessBankAccount.getBankAddress() : contactBusinessBankAccount.getAddress();
+        if ( bankAddress == null || SafetyUtil.isEmpty(bankAddress.getCountryId())) {
+          print("Unable to migrate " + contact.getOrganization() + " because bank address is missing." );
+          continue;
+        }
+        contact = (Contact) contactDAO.put(contact);
+        Long afexContactId = contactBusiness == null ? contact.getId() : contactBusiness.getId();
+        AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
+          foam.mlang.MLang.AND(new Predicate[] {
+            foam.mlang.MLang.EQ(AFEXBeneficiary.CONTACT, afexContactId),
+            foam.mlang.MLang.EQ(AFEXBeneficiary.OWNER, contact.getOwner())
+          })
+        );
+        if ( afexBeneficiary == null ) {
+          print( contact.getOrganization() + " was not migrated to AFEX " ); 
+        } else { 
+          print( contact.getOrganization() + " was successfully migrated to AFEX "); 
+        }
+      }
+
+    }
+
+    print(" Done ");
+  
+  """,
+  "output": ""
+})
