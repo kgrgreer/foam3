@@ -40,6 +40,8 @@ payoutOptions
 paymentProviders
 permissions
 prerequisiteCapabilityJunctions
+purposeCodes
+purposeGroups
 questionnaires
 quickbooksToken
 regions
@@ -47,6 +49,7 @@ reports
 rules
 scripts
 services
+sessions
 spids
 tests
 themes
