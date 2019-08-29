@@ -61,6 +61,12 @@ foam.CLASS({
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
         }
+        Long oldInternationAgrement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
+        if ( oldInternationAgrement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
+            businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
+        }
         return getDelegate().put_(x, businessOnboarding);
       `
     }
