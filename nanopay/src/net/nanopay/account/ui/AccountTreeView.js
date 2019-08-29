@@ -13,7 +13,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.ui.AccountTreeGraph',
-    'foam.u2.layout.Cols'
+    'foam.u2.layout.Cols',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.AggregateAccount'
   ],
 
   documentation: `
@@ -92,6 +94,21 @@ foam.CLASS({
           var e = this.canvasContainer.el();
           e.scrollTo(absoluteX * this.cview.scaleX - e.clientWidth/2, 0);
         })
+      },
+      view: function(_, x) {
+        var self = x.data;
+        var prop = this;
+        var v = foam.u2.view.ReferenceView.create(null, x);
+        v.fromProperty(prop);
+        v.dao = v.dao.where(self.OR(
+          foam.mlang.predicate.IsClassOf.create({
+            targetClass: self.DigitalAccount
+          }),
+          foam.mlang.predicate.IsClassOf.create({
+            targetClass: self.AggregateAccount
+          })
+        ));
+        return v;
       }
     },
     'cview',
