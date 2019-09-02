@@ -504,7 +504,7 @@ p({
   "id": "AFX to AFEX Business Migration",
   "status": 2,
   "code": """
-    import foam.dao.ArraySink;
+import foam.dao.ArraySink;
     import foam.dao.DAO;
     import foam.nanos.auth.Group;
     import foam.nanos.auth.Permission;
@@ -513,6 +513,8 @@ p({
     import net.nanopay.fx.afex.AFEXBusiness;
     import net.nanopay.fx.afex.AFEXServiceProvider;
     import net.nanopay.model.Business;
+    import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+    import net.nanopay.sme.onboarding.OnboardingStatus;
     import java.util.List;
     import javax.security.auth.AuthPermission;
     import foam.util.SafetyUtil;
@@ -576,7 +578,17 @@ p({
             AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
             Boolean onboarded = afexServiceProvider.onboardBusiness(business);
             afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
-            print(onboarded ? "Business: " + + business.getBusinessName() + " has been onboarded to AFEX" : "Error onboarding business: " + business.getBusinessName());
+            if ( onboarded && "CA".equals(business.getAddress().getCountryId()) ){
+              CanadaUsBusinessOnboarding onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+              onboarding.setUserId(signingOfficers.get(0).getId());
+              onboarding.setBusinessId(business.getId());
+              onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+              onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+              onboarding.setStatus(OnboardingStatus.SUBMITTED);
+              DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+              canadaUsBusinessOnboardingDAO.put(onboarding);
+            }
+            print(onboarded ? "Business: " + business.getBusinessName() + " has been onboarded to AFEX" : "Error onboarding business: " + business.getBusinessName());
           } else {
             print("Please complete the above mentioned fields and try again");
             return;
