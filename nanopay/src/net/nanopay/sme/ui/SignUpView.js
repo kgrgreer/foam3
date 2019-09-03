@@ -255,7 +255,7 @@ foam.CLASS({
       let enableAFEX = await this.appConfigService.getAppConfig();
       var country = enableAFEX.afexEnabled ?
         this.countryDAO.where(this.predicate) :
-        this.countryDAO.where(this.IN(this.Country.ID, ['US', 'CA']));
+        this.countryDAO.where(this.IN(this.Country.ID, ['CA']));
 
       var right = this.Element.create()
         .addClass('content-form')
