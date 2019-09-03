@@ -24,8 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'approvalRequestDAO',
-    'userDAO'
+    'approvalRequestDAO'
   ],
 
   tableColumns: [
