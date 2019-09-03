@@ -150,4 +150,5 @@ p({
   {
     "of":"net.nanopay.sme.onboarding.USBusinessOnboarding"
   }
+  """
 })
