@@ -174,17 +174,19 @@ foam.CLASS({
 
         // Temporarily replace the value of businessAddress property with
         // the empty address object when the first time saving the new contact
-        if ( this.wizard.data.bankAccount === 0 ) {
-          this.address_ = this.wizard.data.businessAddress;
-          this.wizard.data.businessAddress = this.Address.create();
-        }
+        // Commenting this out since it is breaking the AFEX add Beneficiary flow
+        // if ( this.wizard.data.bankAccount === 0 ) {
+        //   this.address_ = this.wizard.data.businessAddress;
+        //   this.wizard.data.businessAddress = this.Address.create();
+        // }
 
         if ( ! await this.addContact() ) return;
 
         // Assign the value of the orignal businessAddress property back
-        if ( this.wizard.data.bankAccount === 0 ) {
-          this.wizard.data.businessAddress = this.address_;
-        }
+        // Commenting this out since it is breaking the AFEX add Beneficiary flow
+        // if ( this.wizard.data.bankAccount === 0 ) {
+        //   this.wizard.data.businessAddress = this.address_;
+        // }
 
         if ( ! await this.addBankAccount() ) return;
         X.closeDialog();

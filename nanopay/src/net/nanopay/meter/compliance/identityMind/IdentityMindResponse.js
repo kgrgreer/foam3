@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'IdentityMindResponse',
 
+  implements: [
+    'foam.nanos.auth.CreatedAware'
+  ],
+
   tableColumns: [
     'id',
     'entityId',
@@ -39,6 +43,11 @@ foam.CLASS({
       class: 'Int',
       name: 'statusCode',
       tableWidth: 80
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
     },
     {
       class: 'String',

@@ -275,7 +275,7 @@ foam.CLASS({
                   placeholder: 'Select your country',
                   dao: this.countryDAO.where(this.OR(
                     this.EQ(this.Country.NAME, 'Canada'),
-                    // this.EQ(this.Country.NAME, 'USA')
+                    this.EQ(this.Country.NAME, 'USA')
                   )),
                   objToChoice: function(a) {
                     return [a.id, a.name];
@@ -468,8 +468,7 @@ foam.CLASS({
           businessAddress: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
-          welcomeEmailSent: true,
-          group: 'sme'
+          welcomeEmailSent: true
         });
 
         this.smeBusinessRegistrationDAO

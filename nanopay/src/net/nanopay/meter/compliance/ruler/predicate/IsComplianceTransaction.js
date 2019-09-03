@@ -12,12 +12,20 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  properties: [
+    {
+      class: 'Class',
+      name: 'of',
+      javaFactory: 'return ComplianceTransaction.getOwnClassInfo();'
+    }
+  ],
+
   methods: [
     {
       name: 'f',
       javaCode: `
         return EQ(
-          DOT(NEW_OBJ, INSTANCE_OF(ComplianceTransaction.class)), true
+          DOT(NEW_OBJ, CLASS_OF(getOf().getObjClass())), true
         ).f(obj);
       `
     }

@@ -112,7 +112,7 @@ public class SendInvitationDAO
     String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
 
     if ( invite.getIsContact() ) {
-      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      DAO tokenDAO = (DAO) x.get("localTokenDAO");
       // Create new token and associate passed in external user to token.
       Map tokenParams = new HashMap();
       tokenParams.put("inviteeEmail", invite.getEmail());

@@ -26,6 +26,7 @@ p({"class":"foam.nanos.script.Script","id":"encryptBankAccounts","description":"
 p({"class":"foam.nanos.script.Script","id":"fixPasswordExpiry","enabled":false,"description":"Updates all users so that password expiry is null","lastDuration":0,"server":true,"status":1,"code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser.setPasswordExpiry(null);\nuserDAO.put(user);\n}\n\nprint(\"done\");","output":""})
 p({"class":"foam.nanos.script.Script","id":"Migrate BusinessAddress address2 -> suite","description":"Migrate current user businessAddress address2 data to suite.","code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser = user.fclone();\naddress = user.getBusinessAddress();\nif ( address != null ) {\naddress2 = address.getAddress2();\naddress.setSuite(address2);\naddress.setAddress2(\"\");\nuser.setBusinessAddress(address);\nuserDAO.put(user);\n}\n}\n\nprint(\"Migration complete.\");\n"})
 p({"class":"foam.nanos.script.Script","id":"TestReporter","description":"Generate a report on the number of tests and post it to a Slack channel.","code":"reporter = new net.nanopay.test.TestsReporter();\nreporter.generateNewReport(x);"})
+p({"class":"foam.nanos.script.Script","id":"benchmarkHashing","description":"Concurrent Hashing Benchmark","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nx = x.put(\"pmLogger\", null);\nb = new HashingBenchmark();\nbuilder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(10000).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);"})
 p({"class":"foam.nanos.script.Script","id":"Set destinationCurrency on existing invoices","code":"invoiceDAO = x.get(\"invoiceDAO\");\n\ninvoices = invoiceDAO.select().getArray();\n\nfor ( int i = 0; i < invoices.size(); i++ ) {\ninvoice = invoices.get(i);\nif (invoice.getDestinationCurrency() == null){\ninvoice.setDestinationCurrency(\"CAD\");\ninvoiceDAO.put(invoice);\n}\n}\n\nprint(\"Done.\");"})
 p({"class":"foam.nanos.script.Script","id":"Transactions Script: Create","enabled":false,"code":"userDAO             = x.get(\"userDAO\");\naccountDAO          = x.get(\"accountDAO\");\ninstitutionDAO      = x.get(\"institutionDAO\");\ntransactionDAO      = x.get(\"localTransactionDAO\");\nbalanceDAO          = x.get(\"balanceDAO\");\nliquidityDAO        = x.get(\"liquiditySettingsDAO\");\nRandom ran          = new Random();\n\n//Create a Admin User\nuser = new foam.nanos.auth.User();\nuser.setId(Long.valueOf(9999));\nuser.setGroup(\"admin\");\nuser.setOrganization(\"Admin\");\nuser.setEmailVerified(true);\nuser.setFirstName(\"AD\");\nuser.setLastName(\"MIN\");\nuser.setEmail(\"ad@min.com\");\nuserDAO.put(user);\nadmin = (foam.nanos.auth.User) userDAO.find(9999);\nuserDigitalAccount  = net.nanopay.account.DigitalAccount.findDefault(x,admin,\"CAD\");\nls = new net.nanopay.liquidity.LiquiditySettings();\nls.setEnableCashIn(false);\nls.setEnableCashOut(false);\nls.setId(userDigitalAccount.getId());\nliquidityDAO.put(ls);\n\n//Create a bank account to User 9999\naccount = new  net.nanopay.bank.BankAccount();\naccount.setAccountNumber(\"\"+(ran.nextInt(1000000)+10000));\naccount.setInstitution(Long.valueOf(ran.nextInt(99)+1));\naccount.setOwner(admin.getId());\naccount.setName(\"\"+ran.nextInt(1000));\naccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);\naccount.setDenomination(\"CAD\");\naccount.setId(1351);\naccountDAO.put(account);\nprint(\"Account made\");\n\n//Cashin to User 1000\nfor( int i = 0 ; i< 100 ; i++ ) {\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(userDigitalAccount.getId());\ntransaction.setSourceAccount(1351);\ntransaction.setAmount(1000000);\\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n}\nprint(\"CashIn made\");\n\n//Create 1000 users and transfer some DC  \nfor ( int i = 3000 ; i < 4000 ; i++ ) {\nuser = new foam.nanos.auth.User();\nuser.setId(Long.valueOf(i));\nuser.setGroup(\"business\");\nuser.setOrganization(\"Balony\");\nuser.setEmailVerified(true);\nuser.setFirstName(\"account\");\nuser.setLastName(\"\"+i);\nuser.setEmail(\"test\"+i+\"@t.com\");\nuserDAO.put(user);\ndA = net.nanopay.account.DigitalAccount.findDefault(x,user,\"CAD\");\nls = new net.nanopay.liquidity.LiquiditySettings();\nls.setEnableCashIn(false);\nls.setEnableCashOut(false);\nls.setId(dA.getId());\nliquidityDAO.put(ls);\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(dA.getId());\ntransaction.setSourceAccount(userDigitalAccount.getId());\ntransaction.setAmount(100000);\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n}\nprint(\"DONE\");"})
 p({"class":"foam.nanos.script.Script","id":"Transactions Script: Transfer","enabled":false,"code":"userDAO        = x.get(\"userDAO\");\naccountDAO     = x.get(\"accountDAO\");\ninstitutionDAO = x.get(\"institutionDAO\");\ntransactionDAO = x.get(\"localTransactionDAO\");\nbalanceDAO     = x.get(\"balanceDAO\");\nRandom ran = new Random();\n\n// Creates x transactions between created accounts\nfor ( int i = 0 ; i<1000 ; i++ )\n{\nuser1 = (foam.nanos.auth.User) userDAO.find(Long.valueOf(ran.nextInt(1000)+3000));\nuser2 = (foam.nanos.auth.User) userDAO.find(Long.valueOf(ran.nextInt(1000)+3000));\nif ( user1.getId() == user2.getId()){\ni--;\ncontinue;\n}\naccount1 = net.nanopay.account.DigitalAccount.findDefault(x,user1,\"CAD\");\naccount2 = net.nanopay.account.DigitalAccount.findDefault(x,user2,\"CAD\");\n\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(account1.getId());\ntransaction.setSourceAccount(account2.getId());\ntransaction.setAmount(100);\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n\nif ( ((foam.mlang.sink.Sum) balanceDAO.select(foam.mlang.MLang.SUM(net.nanopay.account.Balance.BALANCE))).getValue() != 100000000) \n{print(\"\" + transaction.getId());\nthrow new Error(\"SUM out of sync\");} \n}\nprint(\"DONE\")"})
@@ -52,15 +53,59 @@ p({"class":"foam.nanos.script.Script","id":"PublicUserInfo update","description"
 p({"class":"foam.nanos.script.Script","id":"3247d52a-08a1-4793-80a2-2bd095ed714b","description":"Add action permissions to payment-ops group","lastRun":"2019-04-15T19:01:26.031Z","lastDuration":10,"code":"// Add action permissions to payment-ops group\u000a\u000aimport foam.core.X;\u000aimport foam.dao.DAO;\u000aimport foam.nanos.auth.AuthService;\u000aimport foam.nanos.auth.Group;\u000aimport foam.nanos.auth.Permission;\u000aimport java.security.BasicPermission;\u000a\u000agroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\u000aauth = (AuthService) x.get(\"auth\");\u000a\u000agroup = (Group) groupDAO.find(\"payment-ops\");\u000a\u000aX groupCtx = x.put(\"group\", group);\u000a\u000aString[] permissionsToAdd = {\u000a  \"foam.nanos.auth.User.permission.viewAccounts\",\u000a  \"foam.nanos.auth.User.permission.viewTransactions\",\u000a  \"foam.nanos.auth.User.permission.viewPayables\",\u000a  \"foam.nanos.auth.User.permission.viewReceivables\"\u000a};\u000a\u000afor ( String permissionId : permissionsToAdd ) {\u000a  if ( auth.check(groupCtx, permissionId) ) {\u000a    print(\"Already has \" + permissionId + \".\");\u000a  } else {\u000a    print(\"Need to add \" + permissionId + \".\");\u000a    Permission[] currentPermissions = group.getPermissions();\u000a    Permission[] newPermissions = new Permission[currentPermissions.length + 1];\u000a    for ( int i = 0; i < currentPermissions.length; i++ ) {\u000a      newPermissions[i] = currentPermissions[i];\u000a    }\u000a    newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\u000a    group.setPermissions(newPermissions);\u000a    print(\"Added \" + permissionId + \".\");\u000a  }\u000a}\u000a\u000agroupDAO.put(group);","output":"Already has foam.nanos.auth.User.permission.viewAccounts.\u000aAlready has foam.nanos.auth.User.permission.viewTransactions.\u000aAlready has foam.nanos.auth.User.permission.viewPayables.\u000aAlready has foam.nanos.auth.User.permission.viewReceivables.\u000a"})
 p({"class":"foam.nanos.script.Script","id":"d7bea66a-c769-4933-8445-4589066757c5","description":"Add service permissions to sme group","lastRun":"2019-04-17T21:17:29.747Z","lastDuration":15,"code":"// Add service permissions to sme group\u000a\u000aimport foam.core.X;\u000aimport foam.dao.DAO;\u000aimport foam.nanos.auth.AuthService;\u000aimport foam.nanos.auth.Group;\u000aimport foam.nanos.auth.Permission;\u000aimport java.security.BasicPermission;\u000a\u000agroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\u000aauth = (AuthService) x.get(\"auth\");\u000a\u000a// Adds permissions to the group.\u000avoid addPermissionsToGroup(String[] permissionsToAdd, String groupId) {\u000a  group = (Group) groupDAO.find(groupId);\u000a  X groupCtx = x.put(\"group\", group);\u000a  for ( String permissionId : permissionsToAdd ) {\u000a    if ( auth.check(groupCtx, permissionId) ) {\u000a      print(\"Group \" + groupId + \" already has \" + permissionId + \".\");\u000a    } else {\u000a      print(\"Need to add \" + permissionId + \" to \" + groupId + \".\");\u000a      Permission[] currentPermissions = group.getPermissions();\u000a      Permission[] newPermissions = new Permission[currentPermissions.length + 1];\u000a      for ( int i = 0; i < currentPermissions.length; i++ ) {\u000a        newPermissions[i] = currentPermissions[i];\u000a      }\u000a      newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\u000a      group.setPermissions(newPermissions);\u000a      print(\"Added \" + permissionId + \" to \" + groupId + \".\");\u000a    }\u000a  }\u000a  groupDAO.put(group);\u000a}\u000a\u000aString[] groups = {\u000a  \"sme\"\u000a};\u000a\u000aString[] permissionsToAdd = {\u000a  \"service.beneficialOwnerDAO\",\u000a  \"service.signingOfficerJunctionDAO\"\u000a};\u000a\u000afor ( String groupId : groups ) {\u000a  print(groupId + \":\");\u000a  addPermissionsToGroup(permissionsToAdd, groupId);\u000a  print(\"\");\u000a}\u000a","output":"sme:\u000aGroup sme already has service.beneficialOwnerDAO.\u000aGroup sme already has service.signingOfficerJunctionDAO.\u000a\u000a"})
 p({"class":"foam.nanos.script.Script","id":"addSupportLogs","server":false,"description":"To give the support logs menu access to payment-ops under the operations menu","code":"/**\n * TITLE: addSupportLogs\n * DESCRIPTION: To give the support logs menu access to payment-ops under the operations menu\n */\n\nprint(\"START 🏁\");\n\nconst promises = [];\n\n// 1. Create the submenu\nconst menuDAO = x['menuDAO'];\n\nconst supportLogMenu = foam.nanos.menu.Menu.create({\n  id: 'supportLogs',\n  parent: \"operation\",\n  handler: foam.nanos.menu.DAOMenu.create({\n      daoKey: 'logMessageDAO',\n      title: \"Server Log\",\n      createEnabled: false\n  }, x),\n  label: 'Support Logs',\n  order: 1000\n});\n\nmenuDAO.put(supportLogMenu);\n\n// 2. Give the Support group permissions to service.logMessageDAO\n// creating the permission to be added\nconst newPaymentOpsPermission = foam.nanos.auth.Permission.create({\n  id: \"service.logMessageDAO\"\n})\n\nconst  newSupportLogsPermission = foam.nanos.auth.Permission.create({\n  id: \"menu.read.supportLogs\"\n})\n\n// adding to permissionDAO\nconst permissionDAO = x['permissionDAO'];\npermissionDAO.put(newPaymentOpsPermission);\npermissionDAO.put(newSupportLogsPermission);\n\n\nconst updateSupportPermissions = async () => {\n  // grab current Support group\n  const groupDAO = x['groupDAO'];\n\n  const paymentOpsGroup = await groupDAO.find('payment-ops');\n\n  if ( ! paymentOpsGroup.permissions.includes(newPaymentOpsPermission) ){\n    // updating the support group array\n    paymentOpsGroup.permissions.push(newPaymentOpsPermission);\n\n    groupDAO.put(paymentOpsGroup);\n  }\n\n  if ( ! paymentOpsGroup.permissions.includes(newSupportLogsPermission) ){\n    // updating the support group array\n    paymentOpsGroup.permissions.push(newSupportLogsPermission);\n\n    groupDAO.put(paymentOpsGroup);\n  }\n}\n\nupdateSupportPermissions();\n\nprint(\"END 🔥\")"})
-p({"class":"foam.nanos.script.Script","id":"OnboardingSetup","server":false,"status":1,"code":"var services = [\n    {\n        name: 'businessOnboardingDAO',\n        serve: true,\n        authenticate: true, // Remove this?\n        serviceScript: `\nreturn new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x)\n  .setDelegate(new foam.dao.EasyDAO.Builder(x)\n                    .setAuthenticate(false)\n                    .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())\n                    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n                    .setJournalName(\"businessOnboardingDAO\")\n                    .build())\n  .build();\n        `,\n        client: '{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}'\n    }\n].map(o => foam.nanos.boot.NSpec.create(o, x));\n\nvar menus = [\n    {\n        id: 'onboarding',\n        label: 'Onboarding',\n        handler: {class:'foam.nanos.menu.SubMenu'}\n    },\n    {\n        parent: 'onboarding',\n        id: 'onboarding.business',\n        label: 'Business Onboarding',\n        handler: {\n            class:'foam.nanos.menu.DAOMenu',\n            daoKey: 'businessOnboardingDAO',\n            detailView: 'foam.u2.detail.SectionedDetailView'\n        }\n    }\n].map(o => foam.nanos.menu.Menu.create(o, x));\n\nPromise.all([].concat(\n    services.map(o => x['nSpecDAO'].put(o)),\n    menus.map(o => x['menuDAO'].put(o)),\n)).then(function() {\n    return x['groupDAO'].find('sme')\n}).then(function(g) {\n    if ( g.permissions.find(p => p.id == 'service.businessOnboardingDAO') ) return;\n    g.permissions.push(foam.nanos.auth.Permission.create({\n        id: 'service.businessOnboardingDAO'\n    }));\n    return x['groupDAO'].put(g);\n}).then(function() {\n    print('Done');\n});","output":"Done\n"})
-p({"class":"foam.nanos.script.Script","id":"Add USD permission to existing Ablii users","description":"Add USD permission to existing Ablii users","code":"import foam.dao.DAO;\u000aimport foam.dao.ArraySink;\u000aimport foam.nanos.auth.User;\u000aimport foam.nanos.auth.Group;\u000aimport foam.nanos.auth.Permission;\u000aimport net.nanopay.model.Business;\u000aimport javax.security.auth.AuthPermission;\u000a\u000aString PERMISSION = \"currency.read.USD\";\u000a\u000aDAO businessDAO = (DAO) x.get(\"businessDAO\");\u000aDAO groupDAO = (DAO) x.get(\"groupDAO\");\u000a\u000abusinesses = businessDAO.select(new ArraySink()).getArray();\u000aint i;\u000a\u000afor ( Business business : businesses ) {\u000a  Group group = groupDAO.find(business.getBusinessPermissionId() + \".employee\");\u000a\u000a  if ( group.implies(x, new AuthPermission(PERMISSION)) ) {\u000a    print(\"Group \" + group.getId() + \" already has a permission that implies the one we're adding. Skipping.\");\u000a    continue;\u000a  }\u000a\u000a  Permission[] permissions = group.getPermissions();\u000a  Permission[] newPermissions = new Permission[permissions.length + 1];\u000a\u000a  for ( i = 0; i < permissions.length; i++ ) {\u000a    newPermissions[i] = permissions[i];\u000a  }\u000a\u000a  newPermissions[i] = new Permission.Builder(x).setId(PERMISSION).build();\u000a  group.setPermissions(newPermissions);\u000a  groupDAO.put(group);\u000a  print(\"Successfully added permission '\" + newPermissions[i].getId() + \"' to group \" + group.getId());\u000a}\u000a"})
+p({"class":"foam.nanos.script.Script","id":"OnboardingSetup","server":false,"status":1,"code":"var services = [\n    {\n        name: 'businessOnboardingDAO',\n        serve: true,\n        authenticate: true, // Remove this?\n        serviceScript: `\nreturn new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x)\n  .setDelegate(new foam.dao.EasyDAO.Builder(x)\n                    .setAuthorize(false)\n                    .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())\n                    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n                    .setJournalName(\"businessOnboardingDAO\")\n                    .build())\n  .build();\n        `,\n        client: '{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}'\n    }\n].map(o => foam.nanos.boot.NSpec.create(o, x));\n\nvar menus = [\n    {\n        id: 'onboarding',\n        label: 'Onboarding',\n        handler: {class:'foam.nanos.menu.SubMenu'}\n    },\n    {\n        parent: 'onboarding',\n        id: 'onboarding.business',\n        label: 'Business Onboarding',\n        handler: {\n            class:'foam.nanos.menu.DAOMenu',\n            daoKey: 'businessOnboardingDAO',\n            detailView: 'foam.u2.detail.SectionedDetailView'\n        }\n    }\n].map(o => foam.nanos.menu.Menu.create(o, x));\n\nPromise.all([].concat(\n    services.map(o => x['nSpecDAO'].put(o)),\n    menus.map(o => x['menuDAO'].put(o)),\n)).then(function() {\n    return x['groupDAO'].find('sme')\n}).then(function(g) {\n    if ( g.permissions.find(p => p.id == 'service.businessOnboardingDAO') ) return;\n    g.permissions.push(foam.nanos.auth.Permission.create({\n        id: 'service.businessOnboardingDAO'\n    }));\n    return x['groupDAO'].put(g);\n}).then(function() {\n    print('Done');\n});","output":"Done\n"})
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Add USD permission to existing Ablii users",
+  "description": "Add USD permission to existing Ablii users",
+  "code": """
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import foam.mlang.MLang;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.Permission;
+import net.nanopay.model.Business;
+import javax.security.auth.AuthPermission;
+import java.util.List;
+
+String PERMISSION = "currency.read.USD";
+
+DAO businessDAO = (DAO) x.get("businessDAO");
+DAO groupDAO = (DAO) x.get("groupDAO");
+
+businesses = businessDAO.select(new ArraySink()).getArray();
+
+for ( Business business : businesses ) {
+  String toMatch = business.getId().toString() + ".employee";
+  List groups = ((ArraySink) groupDAO
+    .where(
+      MLang.CONTAINS_IC(Group.ID, toMatch)
+    )
+    .select(new ArraySink())).getArray();
+
+  if ( groups.size() == 0 ) {
+    print("WARNING: Group not found for business with id = " + business.getId() + " (" + business.getBusinessName() + ")");
+    continue;
+  } else if ( groups.size() > 1 ) {
+    print("WARNING: There was more than one group with " + toMatch + " in its id.");
+  }
+
+  for ( Group group : groups ) {
+    if ( ! group.implies(x, new AuthPermission(PERMISSION)) ) {
+      group.getPermissions(x).add(new Permission.Builder(x).setId(PERMISSION).build());
+      print("Successfully added permission '" + PERMISSION + "' to group " + group.getId());
+    }
+  }
+}
+  """
+})
 p({"class":"foam.nanos.script.Script","id":"Count Accounting Users","description":"shows users connected to Xero & QBO","code":"import foam.mlang.sink.Count;\nimport foam.nanos.auth.User;\nimport net.nanopay.accounting.IntegrationCode;\nimport foam.dao.DAO;\nimport foam.dao.ArraySink;\n\nDAO userDAO = (DAO) x.get(\"localUserDAO\");\n\nArraySink xero = (ArraySink) userDAO.where(foam.mlang.MLang.EQ(User.INTEGRATION_CODE, IntegrationCode.XERO)).select(new ArraySink());\nprint(\"===== \" + xero.getArray().size() + \" users are connected to Xero =====\");\nfor ( Object user : xero.getArray()) {\n  print( ((User)user).getBusinessName() );\n}\n\nprint(\"\");\nprint(\"\");\n\nArraySink quickbooks = (ArraySink) userDAO.where(foam.mlang.MLang.EQ(User.INTEGRATION_CODE, IntegrationCode.QUICKBOOKS)).select(new ArraySink());\nprint(\"===== \" + xero.getArray().size() + \" users are connected to QuickBooks =====\");\nfor ( Object user : quickbooks.getArray()) {\n  print( ((User)user).getBusinessName() );\n}"})
 p({"class":"foam.nanos.script.Script","id":"Update Accounting Permissions","enabled":false,"description":"Remove xero perms/ add quickbooks perms to sme. Add xero perms to old business that used xero before.","code":"import foam.mlang.sink.Count;\nimport foam.nanos.auth.User;\nimport net.nanopay.accounting.IntegrationCode;\nimport foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.nanos.auth.Group;\nimport foam.nanos.auth.Permission;\nimport foam.core.X;\nimport java.util.HashSet;\nimport java.util.Set;\nimport java.util.ArrayList;\nimport java.util.List;\n\n\nvoid addPermToGroup(groupID){\n\nif ( groupID.endsWith(\".admin\") ) {\ngroupID = groupID.substring(0, groupID.lastIndexOf(\".\"));\ngroupID += \".employee\";\n} else {\nprint(\"Unexpected groupID: \"+groupID);\nreturn;\n}\nString[] permsToAdd = {\n\"service.xeroService\"\n};\n\n// =================================================================================\n\n// grabbing the group's permissions property and permissionDAO\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\nif ( group == null ) {\nprint(\"Group not found: \" + groupID);\nprint(\"\");\nreturn;\n}\ngroupPerms = group.permissions;\npermissionDAO  = x.get(\"permissionDAO\");\n\n// FOR DEBUGGING\nprint(\"START ADD XERO PERM TO GROUP \");\nprint(\"************************\");\nprint(\"GroupID: \" + groupID);\nprint(\"\");\nprint(\"CurrentPermissions: \");\nprint(groupPerms);\nprint(\"\");\nprint(\"PermissionsToAdd: \");\nprint(permsToAdd);\nprint(\"\");\nprint(\"\");\n\n/**\n* we place the following loop at the top in order to act as a fail safe\n* if for some reason only the \"payment-ops\" group permissions array previously had the requested permissions\n* but the PermissionDAO did not get updated with those same permissions\n* we will then add the requested permissions into the PermissionsDAO only if they are unique\n* this is because later on in the script\n* we end the script if \"payment-ops\" group permissions array already has all the requested permissions\n* that is why we are updating the permissionsDAO first\n*/\nfor ( i = 0; i < permsToAdd.length; i++ ){\n/**\n*  ! NOTE: currently commenting out the lowercasifying until \n*  ! lowercase permission standardizations are made\n*  ! currently service permissions are all camel-cased\n*/\n// here we will also lowercasify the permissions in the array as well while we make this check\n// permsToAdd[i] = permsToAdd[i].toLowerCase();\n\ncurrentPermId = permsToAdd[i];\nif ( permissionDAO.find(currentPermId) == null ) permissionDAO.put(new Permission(currentPermId, \"\"));\n} \n\n/**\n* from here on out we will be dealing solely with the \"payment-ops\" group permissions' property\n* transforming the primitive array into just a set\n* because as we're deep cloning we can check if there are any duplicates\n* and then just pop them off the set\n*/\nSet permsToAddSet = new HashSet();\nfor ( i = 0; i < permsToAdd.length; i++ ) {\npermsToAddSet.add(permsToAdd[i]);\n}\n\n/**\n* we use an ArrayList instead of a primitive array because\n* we don't know the exact length of the final array if there are duplicates\n*/\nList newPermissions = new ArrayList();\n\nfor ( i = 0; i < groupPerms.length; i++ ) {\ncurrentPerm = groupPerms[i];\n\n// 1. deep clone original permissions to new arrayList\nnewPermissions.add(new Permission(currentPerm.id, currentPerm.description));\n\n// 2. check if permsToAdd is asking for this permission then pop it off because will already have been created\nif ( permsToAddSet.contains(currentPerm.id) ) permsToAddSet.remove(currentPerm.id);\n}\n\n// if permsToAddSet is empty, that means theres nothing to add\n// we can end the script here\nif ( permsToAddSet.isEmpty() ) {\nprint(\"Ending script here because the \" + groupID + \" group already has all the requested permissions\");\nprint(\"************************\");\nprint(\"END\");\nreturn;\n}\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(\"OriginalPermissions\");\nprint(newPermissions);\nprint(\"=======================\");\nprint(\"\");\n\n// here we will iterate through the remaining permsToAdd and place them in the newPermissions arraylist\nfor ( perm : permsToAddSet ) {\ncurrentPermission = new Permission(perm, \"\");\nnewPermissions.add(currentPermission);\n}\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(\"NewPermissions\");\nprint(newPermissions);\nprint(\"=======================\");\nprint(\"\");\n\n// making a deep conversion of the newPermissions ArrayList to a primitive array\nPermission[] newPermissionsArray = new Permission[newPermissions.size()];\nfor ( i = 0; i < newPermissionsArray.length; i++ ) {\nnewPermissionsArray[i] = new Permission(newPermissions.get(i).id, newPermissions.get(i).description);\n}\n\n// set newPermissionsArray as new property\ngroup.setPermissions(newPermissionsArray);\n\n// put modified group back into the groupDAO\ngroupDAO.put(group);\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(groupID + \"Group Permissions\");\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\ngroupPerms = group.permissions;\nprint(groupPerms);\nprint(\"=======================\");\nprint(\"\");\nprint(\"************************\");\nprint(\"END\");\n}\n\n\n// Add Xero permission to nanopay ablii group\naddPermToGroup(\"nanopaycorporation1357.admin\");\n\n// Find users that use xero and add the permission to use xero to their group\n\nDAO userDAO = (DAO) x.get(\"localUserDAO\");\nArraySink xero = (ArraySink) userDAO.where(foam.mlang.MLang.EQ(User.INTEGRATION_CODE, IntegrationCode.XERO)).select(new ArraySink());\nprint(\"===== \" + xero.getArray().size() + \" users are connected to Xero =====\");\nfor ( Object user : xero.getArray()) {\n  print( ((User)user).getBusinessName() );\n  addPermToGroup( ((User)user).getGroup() );\n}\n\n\n\n// Remove xero permission from SME\n// ==================================================================================\n\ngroupID = \"sme\";\nString[] permsToRemove = {\n\"service.run.xero\"\n};\n\n// =================================================================================\n// grabbing the group's permissions property and permissionDAO\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\ngroupPerms = group.permissions;\npermissionDAO  = x.get(\"permissionDAO\");\n\n// FOR DEBUGGING\nprint(\"STARTING REMOVE XERO PERMISSION FROM SME\");\nprint(\"************************\");\nprint(\"GroupID: \" + groupID);\nprint(\"\");\nprint(\"CurrentPermissions: \");\nprint(groupPerms);\nprint(\"\");\nprint(\"PermissionsToRemove\");\nprint(permsToRemove);\nprint(\"\");\nprint(\"\");\n\n\nfor ( i = 0; i < permsToRemove.length; i++ ){\n// here we will also lowercasify the permissions in the array as well while we make this check\npermsToRemove[i] = permsToRemove[i].toLowerCase();\n} \n\n\nList newPermissions = new ArrayList();\nfor ( i = 0; i < groupPerms.length; i++ ) {\ncurrentPerm = groupPerms[i];\nif ( ! Arrays.asList(permsToRemove).contains(currentPerm.id) ) {\nnewPermissions.add(new Permission(currentPerm.id, currentPerm.description));\n}\n}\n\n// making a deep conversion of the newPermissions ArrayList to a primitive array\nPermission[] newPermissionsArray = new Permission[newPermissions.size()];\nfor ( i = 0; i < newPermissionsArray.length; i++ ) {\nnewPermissionsArray[i] = new Permission(newPermissions.get(i).id, newPermissions.get(i).description);\n}\n\n// set newPermissionsArray as new property\ngroup.setPermissions(newPermissionsArray);\n\n// put modified group back into the groupDAO\ngroupDAO.put(group);\n\n// FOR DEBUGGING\nprint(\"=======================\");\nprint(groupID + \"Group Permissions\");\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\ngroupPerms = group.permissions;\nprint(groupPerms);\nprint(\"=======================\");\nprint(\"\");\nprint(\"************************\");\nprint(\"END\");\n\n\n// Add Quickbooks permission to sme\n\nString groupID = \"sme\";\nString[] permsToAdd = {\n\"service.quickbooksService\"\n};\n\n// =================================================================================\n\n// grabbing the group's permissions property and permissionDAO\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\nif ( group == null ) {\nprint(\"Group not found: \" + groupID);\nprint(\"\");\nreturn;\n}\ngroupPerms = group.permissions;\npermissionDAO  = x.get(\"permissionDAO\");\n\n// FOR DEBUGGING\nprint(\"START ADDING QUICKBOOKS PERM TO SME\");\nprint(\"************************\");\nprint(\"GroupID: \" + groupID);\nprint(\"\");\nprint(\"CurrentPermissions: \");\nprint(groupPerms);\nprint(\"\");\nprint(\"PermissionsToAdd: \");\nprint(permsToAdd);\nprint(\"\");\nprint(\"\");\n\n/**\n* we place the following loop at the top in order to act as a fail safe\n* if for some reason only the \"payment-ops\" group permissions array previously had the requested permissions\n* but the PermissionDAO did not get updated with those same permissions\n* we will then add the requested permissions into the PermissionsDAO only if they are unique\n* this is because later on in the script\n* we end the script if \"payment-ops\" group permissions array already has all the requested permissions\n* that is why we are updating the permissionsDAO first\n*/\nfor ( i = 0; i < permsToAdd.length; i++ ){\n/**\n*  ! NOTE: currently commenting out the lowercasifying until \n*  ! lowercase permission standardizations are made\n*  ! currently service permissions are all camel-cased\n*/\n// here we will also lowercasify the permissions in the array as well while we make this check\n// permsToAdd[i] = permsToAdd[i].toLowerCase();\n\ncurrentPermId = permsToAdd[i];\nif ( permissionDAO.find(currentPermId) == null ) permissionDAO.put(new Permission(currentPermId, \"\"));\n} \n\n/**\n* from here on out we will be dealing solely with the \"payment-ops\" group permissions' property\n* transforming the primitive array into just a set\n* because as we're deep cloning we can check if there are any duplicates\n* and then just pop them off the set\n*/\nSet permsToAddSet = new HashSet();\nfor ( i = 0; i < permsToAdd.length; i++ ) {\npermsToAddSet.add(permsToAdd[i]);\n}\n\n/**\n* we use an ArrayList instead of a primitive array because\n* we don't know the exact length of the final array if there are duplicates\n*/\nList newPermissions = new ArrayList();\n\nfor ( i = 0; i < groupPerms.length; i++ ) {\ncurrentPerm = groupPerms[i];\n\n// 1. deep clone original permissions to new arrayList\nnewPermissions.add(new Permission(currentPerm.id, currentPerm.description));\n\n// 2. check if permsToAdd is asking for this permission then pop it off because will already have been created\nif ( permsToAddSet.contains(currentPerm.id) ) permsToAddSet.remove(currentPerm.id);\n}\n\n// if permsToAddSet is empty, that means theres nothing to add\n// we can end the script here\nif ( permsToAddSet.isEmpty() ) {\nprint(\"Ending script here because the \" + groupID + \" group already has all the requested permissions\");\nprint(\"************************\");\nprint(\"END\");\nreturn;\n}\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(\"OriginalPermissions\");\nprint(newPermissions);\nprint(\"=======================\");\nprint(\"\");\n\n// here we will iterate through the remaining permsToAdd and place them in the newPermissions arraylist\nfor ( perm : permsToAddSet ) {\ncurrentPermission = new Permission(perm, \"\");\nnewPermissions.add(currentPermission);\n}\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(\"NewPermissions\");\nprint(newPermissions);\nprint(\"=======================\");\nprint(\"\");\n\n// making a deep conversion of the newPermissions ArrayList to a primitive array\nPermission[] newPermissionsArray = new Permission[newPermissions.size()];\nfor ( i = 0; i < newPermissionsArray.length; i++ ) {\nnewPermissionsArray[i] = new Permission(newPermissions.get(i).id, newPermissions.get(i).description);\n}\n\n// set newPermissionsArray as new property\ngroup.setPermissions(newPermissionsArray);\n\n// put modified group back into the groupDAO\ngroupDAO.put(group);\n\n// FOR DEBUGGING\nprint(\"\");\nprint(\"=======================\");\nprint(groupID + \"Group Permissions\");\ngroupDAO = x.get(\"groupDAO\");\ngroup = groupDAO.find(groupID);\ngroupPerms = group.permissions;\nprint(groupPerms);\nprint(\"=======================\");\nprint(\"\");\nprint(\"************************\");\nprint(\"END\");\n"})
 p({"class":"foam.nanos.script.Script","id":"Generate Model Documentation","description":"Generates documentation for all properties on a model","enabled":true,"server":false,"code":"var generateMarkdownForClasses = foam.nanos.auth.User;\n\nprintHelpString(generateMarkdownForClasses);\n\nfunction printHelpString(opt_name) {\n  log( '| Name               | Axiom Type         |Documentation                                               | Class                                                           |');\n  log( '|--------------------|--------------------|------------------------------------------------------------|-----------------------------------------------------------------|');\n\n  printHelpLineString(opt_name);\n};\n\nfunction printHelpLineString(opt_name) {\n\n  var axiomMap_ = opt_name.axiomMap_;\n  for ( var key in axiomMap_ ) {\n    \n    // Get the axiom and field type\n    var axiom = axiomMap_[key];\n    var axiomTypeField = axiom.cls_ ? axiom.cls_.name : 'anonymous';\n\n    // Only print valid axioms\n    if ( axiom.name != undefined && axiom.name.length != 0 && axiom.name != 'FObject' ) {\n      \n      // Check for properties\n      if ( foam.core.Property.isInstance(axiom) ) {\n\n        // Change the delimiter on the name if the property is not one of the base class properties\n        var delim = axiom.forClass_ === generateMarkdownForClasses.id ? '***':'---';\n\n        // Log the  property\n        log( '|' + foam.String.pad(delim + axiom.name + delim, 20) +\n             '|' + foam.String.pad(axiom.cls_ ? axiom.cls_.name : 'anonymous', 20) +\n             '|' + foam.String.pad(axiom.documentation ? axiom.documentation : ' ', axiom.documentation && axiom.documentation.length > 60 ? axiom.documentation.length : 60) +\n             '|' + foam.String.pad(axiom.forClass_, 65) +\n             '|');\n\n        // Recursively print out the properties of FObjectProperty objects\n        if ( axiomTypeField == 'FObjectProperty' )\n          printHelpLineString(axiom.of);  /**/\n      }\n    }\n  }\n  return '';\n}\n"})
 p({"class":"foam.nanos.script.Script","id":"DAO Security Test","description":"DAO Security Testl","enabled":true,"server":true,"code":"import net.nanopay.test.api.DAOSecurityTest.DAOSecurityTest;\n\ntestBody = \"nanopay/src/net/nanopay/test/api/DAOSecurityTest/test_body1.json\";\nresults = new DAOSecurityTest().runTest(x, testBody);\nprint(results);\n\n// Individual test - If necessary\n// If there are DAOs that need to be tested individual\n// comment out the above lines and then set the DAO name below\n// and rerun this test to see why the DAO isn't throwing a proper AuthenticationException\n\n//daoName = \"regionDAO\";\n//results = new DAOSecurityTest().runIndividualTest(x, testBody, daoName, false);\n//print(results);"})
 p({"class":"foam.nanos.script.Script","id":"addComplianceReadToSME","code":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.nanos.auth.AuthService;\nimport foam.nanos.auth.Group;\nimport foam.nanos.auth.Permission;\nimport java.security.BasicPermission;\n\ngroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\nauth = (AuthService) x.get(\"auth\");\n\ngroup = (Group) groupDAO.find(\"sme\");\n\nX groupCtx = x.put(\"group\", group);\n\nString[] permissionsToAdd = {\n  \"business.ro.compliance\",\n\"user.ro.compliance\"\n};\n\nfor ( String permissionId : permissionsToAdd ) {\n  if ( auth.check(groupCtx, permissionId) ) {\n    print(\"Already has \" + permissionId + \".\");\n  } else {\n    print(\"Need to add \" + permissionId + \".\");\n    Permission[] currentPermissions = group.getPermissions();\n    Permission[] newPermissions = new Permission[currentPermissions.length + 1];\n    for ( int i = 0; i < currentPermissions.length; i++ ) {\n      newPermissions[i] = currentPermissions[i];\n    }\n    newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\n    group.setPermissions(newPermissions);\n    print(\"Added \" + permissionId + \".\");\n  }\n}\n\ngroupDAO.put(group);","output":""})
 p({"class":"foam.nanos.script.Script","id":"LiquidLiquiditySettingsTest","description":"To test out liquidity settings on liquid","server":false,"code":"/**\n * TITLE: LiquidLiquiditySettingsTest\n * DESCRIPTION: To test out liquidity settings on liquid\n */\n// ==================================================================================\n\nconst main = async () => {\n  // grabbing DAOs\n  const accountDAO = x['accountDAO'];\n  const transactionDAO = x['transactionDAO'];\n  const liquiditySettingsDAO = x['liquiditySettingsDAO'];\n  const MLang = foam.mlang.ExpressionsSingleton.create();\n\n  // grabbing user id\n  const userId = x.user.id;\n  const fromName = 'Main Virtual [4][0][1]';\n  const toName = 'Main Virtual [1][0][1]';\n  const liquiditySettingName = 'Notify and Auto';\n  const rootName = 'Main Root Shadow [0][0][0]';\n\n  // grab the root id of the main tree\n\n  const rootAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, rootName)).select();\n\n  const lowLiquidity = {\n    enabled: true,\n    rebalancingEnabled: true,\n    threshold: 1,\n    resetBalance: 5000000,\n    pushPullAccount: rootAccount.array[0].id\n  }\n  \n  /**\n   * Essentially after this, the fromAccount should trigger a lowLiquidityThreshold and have its balance reset to $50,000 if enabled above\n   * the toAccount should trigger a highLiquidityThreshold and have its balance reset to $500,0000\n   */\n\n  const newLiquiditySettingArray = await liquiditySettingsDAO.limit(1).where(MLang.EQ(net.nanopay.liquidity.LiquiditySettings.NAME, liquiditySettingName)).select();\n\n  const newLiquiditySetting = newLiquiditySettingArray.array[0];\n\n  newLiquiditySetting.lowLiquidity = lowLiquidity;\n\n  // update the notify and auto setting in the DAO\n  await liquiditySettingsDAO.put(newLiquiditySetting);\n\n  // 1. grab the from account\n  // fromAccount = 204\t\tMain Virtual [4][0][1]\tDigitalAccount\tCAD\t$579,000.00\t\n  const fromAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, fromName)).select();\n\n  // 2. grab the to account\n  // toAccount = 189\t\tMain Virtual [1][0][1]\tDigitalAccount\tCAD\t$586,000.00\n  const toAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, toName)).select();\n\n  // 3. create a transaction of the entire balance from\n  const transaction = net.nanopay.tx.model.Transaction.create({\n    sourceAccount: fromAccount.array[0].id,\n    destinationAccount: toAccount.array[0].id,\n    amount: await fromAccount.array[0].findBalance(x),\n    createdBy: userId,\n    payerId: userId,\n    payeeId: userId\n  }, x);\n\n  await transactionDAO.put(transaction);\n\n  print('FIN');\n}\n\nmain();"})
-p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setAuthenticate(true)\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
+p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
 p({
   "class":"foam.nanos.script.Script",
   "id":"setupAbliiUsers",
@@ -104,7 +149,7 @@ address.setRegionId(regionDAO.find("ON").getCode());
 birthday = new GregorianCalendar(2000, 1, 1).getTime();
 
 for(int j = 0; j < emails.length; j+=2) {
-    print("\nCompany "+(i+j));
+    print("Company "+(i+j));
     user = new User();
     user.setFirstName("Test");
     user.setLastName("Admin");
@@ -148,7 +193,7 @@ for(int j = 0; j < emails.length; j+=2) {
 
     accountDAO.put(account);
 
-    print("ADMIN CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+1?passwords[0]:passwords[j]));
+    print("ADMIN CREATED : . "+user.getEmail() + " . " + (passwords.length<j+1?passwords[0]:passwords[j]));
 
     admin = user;
 
@@ -173,7 +218,7 @@ for(int j = 0; j < emails.length; j+=2) {
     junction.setTargetId(business.getId());
     agentJunctionDAO.put(junction);
 
-    print("EMPLOYEE CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+2?passwords[0]:passwords[j+1]));
+    print("EMPLOYEE CREATED : . "+user.getEmail() + " . " + (passwords.length<j+2?passwords[0]:passwords[j+1]));
 }
   """
 })
@@ -229,3 +274,227 @@ for ( Business business : businesses ) {
 }
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Business",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import net.nanopay.model.Business;
+    import java.util.List;
+    import foam.util.SafetyUtil;
+
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    ArraySink businessSink = (ArraySink) localBusinessDAO.select(new ArraySink());
+    businessArray = businessSink.getArray();
+    print(" ");
+
+    for (Business business : businessArray) {
+      print(business.getOrganization());
+      print(" ");
+      business = (Business) business.fclone();
+      businessAddress = business.getBusinessAddress();
+      address = business.getAddress();
+
+      if( businessAddress == null )
+        continue;
+
+      // Migrate streetName
+      if ( SafetyUtil.isEmpty(address.getStreetName()) && ! SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
+        address.setStreetName(businessAddress.getStreetName());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetName()) && ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
+        print(business.getOrganization() + "'s street name needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate streetNumber
+      if ( SafetyUtil.isEmpty(address.getStreetNumber()) && ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) ) {
+        address.setStreetNumber(businessAddress.getStreetNumber());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) && ! SafetyUtil.equals(address.getStreetNumber(), businessAddress.getStreetNumber()) ) {
+        print(business.getOrganization() + "'s street number needs to be verified manually.");
+        continue;
+      }
+
+
+      // Migrate address 1
+      if ( SafetyUtil.isEmpty(address.getAddress1()) && ! SafetyUtil.isEmpty(businessAddress.getAddress1()) ) {
+        address.setAddress1(businessAddress.getAddress1());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress1()) && ! SafetyUtil.equals(address.getAddress1(), businessAddress.getAddress1()) ) {
+        print(business.getOrganization() + "'s address1 needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate address 2
+      if ( SafetyUtil.isEmpty(address.getAddress2()) && ! SafetyUtil.isEmpty(businessAddress.getAddress2()) ) {
+        address.setAddress2(businessAddress.getAddress2());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress2()) && ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
+        print(business.getOrganization() + "'s address2 needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate suite
+      if ( SafetyUtil.isEmpty(address.getSuite()) && ! SafetyUtil.isEmpty(businessAddress.getSuite()) ) {
+        address.setSuite(businessAddress.getSuite());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getSuite()) && ! SafetyUtil.equals(address.getSuite(), businessAddress.getSuite()) ) {
+        print(business.getOrganization() + "'s suite needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate postalCode
+      if ( SafetyUtil.isEmpty(address.getPostalCode()) && ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) ) {
+        address.setPostalCode(businessAddress.getPostalCode());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) && ! SafetyUtil.equals(address.getPostalCode(), businessAddress.getPostalCode()) ) {
+        print(business.getOrganization() + "'s postal code needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate city
+      if ( SafetyUtil.isEmpty(address.getCity()) && ! SafetyUtil.isEmpty(businessAddress.getCity()) ) {
+        address.setCity(businessAddress.getCity());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCity()) && ! SafetyUtil.equals(address.getCity(), businessAddress.getCity()) ) {
+        print(business.getOrganization() + "'s city needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate countryId
+      if ( SafetyUtil.isEmpty(address.getCountryId()) && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
+        address.setCountryId(businessAddress.getCountryId());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCountryId()) && ! SafetyUtil.equals(address.getCountryId(), businessAddress.getCountryId()) ) {
+        print(business.getOrganization() + "'s country needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate regionId
+      if ( SafetyUtil.isEmpty(address.getRegionId()) && ! SafetyUtil.isEmpty(businessAddress.getRegionId()) ) {
+        address.setRegionId(businessAddress.getRegionId());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getRegionId()) && ! SafetyUtil.equals(address.getRegionId(), businessAddress.getRegionId()) ) {
+        print(business.getOrganization() + "'s region/province needs to be verified manually.");
+        continue;
+      }
+
+      business.setPhone(business.getBusinessPhone());
+      localBusinessDAO.put(business);
+    }
+  """,
+  "output": ""
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "AuthService.check Performance Check",
+  "description": "Outputs the time it takes to make calls to the AuthService.check method under different circumstances.",
+  "code": """
+// A script to measure time it takes to call AuthService.check under different
+// conditions.
+
+// The number of calls to do.
+NUM_CALLS = 1000;
+
+// The permission that will be checked.
+PERMISSION_TO_CHECK = "fake.permission";
+
+// Set to true if you want the user to have passed compliance. This is relevant
+// because ComplianceAuthService has to do more work if it's checking a
+// permission for a user and/or business that hasn't passed compliance.
+PASSED_COMPLIANCE = true;
+
+// Set this if you want a specific existing user to be in the context when
+// running the script.
+USER_ID = x.get("user").getId();
+
+// Set this if you want the user identified by USER_ID to act as another user.
+BUSINESS_TO_ACT_AS = 0;
+
+
+// -----------------------------------------------------------------------------
+
+import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.Permission;
+import foam.nanos.auth.User;
+import foam.nanos.session.Session;
+import java.util.Arrays;
+
+AuthService authService = (AuthService) x.get("auth");
+DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+DAO localUserDAO = (DAO) x.get("localUserDAO");
+
+void printContextInfo(X context) {
+  Group g = context.get("group");
+  print(String.format("Group:\t%s", new Object[] { g.getId() }));
+  User u = context.get("user");
+  print(String.format("Label:\t%s", new Object[] { u.label() }));
+  print(String.format("Uid:\t%s", new Object[] { u.getId() }));
+}
+
+void executeCalls(X context) {
+  double sum = 0.0;
+  durations = new double[NUM_CALLS];
+  double worst = 0.0;
+  double best = Double.MAX_VALUE;
+
+  print(String.format("Calling AuthService.check %d times...", new Object[] { NUM_CALLS }));
+
+  printContextInfo(context);
+
+  for ( int i = 0; i < NUM_CALLS; i++ ) {
+    long startTime = System.nanoTime();
+
+    authService.check(context, PERMISSION_TO_CHECK);
+
+    long endTime = System.nanoTime();
+
+    double duration = (double) ((endTime - startTime) / 1000000.0);
+    if ( duration < best ) best = duration;
+    if ( duration > worst ) worst = duration;
+    durations[i] = duration;
+    sum += duration;
+  }
+
+  // Calculate and print mean
+  mean = (double) sum / NUM_CALLS;
+  print(String.format("Mean:\t%.3f\tms", new Object[] { mean }));
+
+  // Calculate and print median
+  Arrays.sort(durations);
+
+  if ( NUM_CALLS % 2 == 0 ) {
+    double median = (double) (durations[NUM_CALLS / 2 - 1] + durations[NUM_CALLS / 2]) / 2.0;
+    print(String.format("Median:\t%.3f\tms", new Object[] { median }));
+  } else {
+    long median = durations[N / 2];
+    print(String.format("Median:\t%.3f\tms", new Object[] { median }));
+  }
+
+  // Print longest and shortest durations.
+  print(String.format("Best:\t%.3f\tms", new Object[] { best }));
+  print(String.format("Worst:\t%.3f\tms", new Object[] { worst }));
+
+  // Print the total duration.
+  print(String.format("Total:\t%.3f\tms", new Object[] { sum }));
+}
+
+context = null;
+
+if ( USER_ID == x.get("user").getId() ) {
+  context = x;
+} else {
+  userContext = foam.util.Auth.sudo(x, USER_ID);
+  if ( BUSINESS_TO_ACT_AS == 0 ) {
+    context = userContext;
+  } else {
+    business = localUserDAO.find(BUSINESS_TO_ACT_AS);
+    userContext.get("agentAuth").actAs(userContext, business);
+    context = userContext.get(Session.class).getContext();
+  }
+}
+
+executeCalls(context);
+  """
+})
+
+p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})

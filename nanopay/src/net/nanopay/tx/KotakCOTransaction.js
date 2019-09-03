@@ -7,10 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.account.TrustAccount'
   ],
 
   properties: [
@@ -96,6 +93,31 @@ foam.CLASS({
       javaCode: `
       super.limitedCopyFrom(other);
       setAmount(((KotakCOTransaction) other).getAmount());
+      setLineItems(((KotakCOTransaction) other).getLineItems());
+      `
+    },
+    {
+      name: 'getPurposeCode',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( item instanceof PurposeCodeLineItem ) {
+          return ((PurposeCodeLineItem) item).getPurposeCode();
+        }
+      }
+      return "P1099";
+      `
+    },
+    {
+      name: 'getAccountRelationship',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( item instanceof AccountRelationshipLineItem ) {
+          return ((AccountRelationshipLineItem) item).getAccountRelationship();
+        }
+      }
+      return "Employee";
       `
     }
   ]

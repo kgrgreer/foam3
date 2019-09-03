@@ -26,15 +26,13 @@ foam.CLASS({
   ],
 
   documentation: `
-    /**
-    * Invoice decorator for dictating and setting up new invoice notifications and emails.
-    * Responsible for sending notifications to both internal and external users on invoice create.
-    * Triggers on invoices that send emails are as follows:
-    * 1) invoiceIsBeingPaidButNotComplete
-    * 2) invoiceIsANewRecievable
-    * 3) invoiceNeedsApproval
-    * 4) invoiceIsBeingPaidAndCompleted 
-    **/
+    Invoice decorator for dictating and setting up new invoice notifications and emails.
+    Responsible for sending notifications to both internal and external users on invoice create.
+    Triggers on invoices that send emails are as follows:
+    1) invoiceIsBeingPaidButNotComplete
+    2) invoiceIsANewRecievable
+    3) invoiceNeedsApproval
+    4) invoiceIsBeingPaidAndCompleted 
    `,
 
   methods: [
@@ -109,7 +107,7 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {

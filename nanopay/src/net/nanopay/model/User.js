@@ -25,10 +25,6 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
-  imports: [
-    'complianceHistoryDAO'
-  ],
-
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -408,7 +404,14 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+      value: false,
+      documentation: `Determines whether a user has been onboarded to 
+        a partner platform to support international payments.`
+    },
   ],
 
   methods: [
