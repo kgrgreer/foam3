@@ -99,6 +99,7 @@ foam.CLASS({
     },
     {
       name: 'action',
+      transient: true,
       javaFactory: `
         return new TransactionLimitRuleAction.Builder(getX())
           .setSend(this.getSend())
