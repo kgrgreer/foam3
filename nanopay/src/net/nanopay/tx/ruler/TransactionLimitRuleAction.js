@@ -35,7 +35,6 @@ foam.CLASS({
       class: 'Map',
       name: 'currentLimits',
       visibility: 'RO',
-      permissionRequired: true,
       javaFactory: `
         return new java.util.HashMap<Object, TransactionLimitState>();
       `
