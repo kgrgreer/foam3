@@ -141,18 +141,5 @@ foam.CLASS({
       return ret;
       `
     }
-  ],
-
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-        public void setX(X x) {
-          this.x_ = x;
-        };
-        `);
-      }
-    }
   ]
 });
