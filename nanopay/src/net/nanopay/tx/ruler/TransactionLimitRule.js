@@ -4,8 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
-  documentation: 'Abstract class for transaction limits, never to be instantiated. Meant to be extended' +
-  'by models that would provide logic for getObjectToMap method. See example: BusinessLimit.',
+  documentation: 'Abstract class for transaction limits, never to be instantiated.',
 
   implements: [
     'foam.mlang.Expressions'
@@ -161,9 +160,6 @@ foam.CLASS({
         public void setX(X x) {
           this.x_ = x;
         };
-        // finds an object to map. E.g., if limit is set per account, the method will return source/destination account'
-        //when set per business, will return business.
-        public abstract Object getObjectToMap(net.nanopay.tx.model.Transaction txn, foam.core.X x);
         `);
       }
     }
