@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account',
     'static foam.mlang.MLang.*',
@@ -29,7 +30,7 @@ foam.CLASS({
       javaCode: `
       Transaction tx = (Transaction) NEW_OBJ.f(obj);
       Account account = getSend() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
-      return ( tx.getType().equals("DigitalTransaction")  && account.getOwner() == getBusiness());
+      return (( tx instanceof DigitalTransaction ) && account.getOwner() == getBusiness());
       `
     }
   ]
