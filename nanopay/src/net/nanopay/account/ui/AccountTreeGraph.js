@@ -394,14 +394,17 @@ foam.CLASS({
               this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
             }
 
-            if (!movedNow) return moved;
+            if ( !movedNow ) return moved;
           }
 
           return moved;
         },
 
         function layout() {
-          
+          const { childNodes } = this;
+          for ( var i = 0; i < childNodes.length; i++ ) {
+            // TODO: TBD
+          }
         },
 
         function convergeTo(slot, newValue) {
@@ -430,29 +433,6 @@ foam.CLASS({
           }
         }
       ],
-
-      listeners: [
-        {
-          name: 'doLayout',
-          isFramed: true,
-          documentation: 'Animate layout until positions stabilize',
-          code: function () {
-            var needsLayout = false;
-            // Scale and translate the view to fit in the available window
-            var gw = this.graph.width - 110;
-            var w = this.maxRight - this.maxLeft + 55;
-
-            var x = (-this.maxLeft + 25) / w * gw + 55;
-            needsLayout = this.convergeTo(this.x$, x) || needsLayout;
-            if (this.layout() || needsLayout) {
-              this.doLayout();
-            } else {
-              this.graph.updateCWidth();
-            }
-            this.graph.invalidate();
-          }
-        }
-      ]
     }
   ]
 });
