@@ -179,6 +179,7 @@ foam.CLASS({
         key: credential.publicKey,
         webhook: credential.webhook,
         product: ['auth', 'transactions', 'identity'],
+        countryCodes: ['US'],
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this)
       };
