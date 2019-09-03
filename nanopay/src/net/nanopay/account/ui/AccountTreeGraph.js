@@ -58,77 +58,77 @@ foam.CLASS({
     },
     {
       name: 'selectedNode',
-      postSet: function(o,n){
-        if ( o ) {
+      postSet: function (o, n) {
+        if (o) {
           o.color = 'white';
         }
         n.color = this.selectedColor
-        ;
+          ;
       }
     },
     {
       name: 'relationship',
-      factory: function() {
+      factory: function () {
         return net.nanopay.account.AccountAccountChildrenRelationship;
       }
     },
     {
       name: 'data',
-      factory: function() {
+      factory: function () {
         return this.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' });
       }
     },
     {
       name: 'formatNode',
-      value: function() {
+      value: function () {
         this.homeDenomination$.sub(this.invalidate);
 
         // var isShadow = this.data.name.indexOf('Shadow') != -1;
-        const leftPos  = -this.width/2+8;
-        let type     = this.data.type.replace('Account', '');
+        const leftPos = -this.width / 2 + 8;
+        let type = this.data.type.replace('Account', '');
         // Account Name
-        this.add(this.Label.create({color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif'}));
+        this.add(this.Label.create({ color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif' }));
 
         // Balance and Denomination Indicator
-        this.data.findBalance(this.__subContext__).then(function(balance) {
-          this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
+        this.data.findBalance(this.__subContext__).then(function (balance) {
+          this.__subContext__.currencyDAO.find(this.data.denomination).then(function (denom) {
 
             // securities and cash colouring are for the liquid accounts
             let color;
-            if ( this.data.name.toLowerCase().includes('securities')) {
+            if (this.data.name.toLowerCase().includes('securities')) {
               color = '#406dea';
-            } else if ( this.data.name.toLowerCase().includes('cash')) {
+            } else if (this.data.name.toLowerCase().includes('cash')) {
               color = '#d9170e';
-            } else if ( type === 'Aggregate' ) {
+            } else if (type === 'Aggregate') {
               color = '#9ba1a6';
             } else {
-              color  = denom ? denom.colour : '#ffffff';
+              color = denom ? denom.colour : '#ffffff';
             }
 
             this.add(this.Line.create({
-              startX: -this.width/2+1,
+              startX: -this.width / 2 + 1,
               startY: 0,
-              endX: -this.width/2+1,
+              endX: -this.width / 2 + 1,
               endY: this.height,
               color: color,
               lineWidth: 6
             }));
 
-            const circleColour = balance && ! (type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
-            this.add(foam.graphics.Circle.create({color: circleColour, x: this.width/2-14, y: this.height-14, radius: 5, border: null}));
+            const circleColour = balance && !(type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
+            this.add(foam.graphics.Circle.create({ color: circleColour, x: this.width / 2 - 14, y: this.height - 14, radius: 5, border: null }));
 
             // Account Type
-            if ( type == 'Digital' ) type = 'Virtual';
-            this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom ? denom.alphabeticCode : 'N/A' + ')'}));
+            if (type == 'Digital') type = 'Virtual';
+            this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type + ' (' + denom ? denom.alphabeticCode : 'N/A' + ')' }));
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
-            const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
+            const balanceFont = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
             this.add(this.Label.create({
               color: balanceColour,
               font: balanceFont,
               x: leftPos,
-              y: this.height-21,
-              text$: this.homeDenomination$.map(_ =>  denom ? denom.format(balance) : 'N/A')
+              y: this.height - 21,
+              text$: this.homeDenomination$.map(_ => denom ? denom.format(balance) : 'N/A')
             }))
           }.bind(this));
         }.bind(this));
@@ -158,22 +158,58 @@ foam.CLASS({
         'relationship',
         'homeDenomination'
       ],
-      exports: [ 'as parentNode' ],
+      exports: ['as parentNode'],
 
       properties: [
         'data',
-        'outline',
-        { name: 'height', factory: function() { return this.nodeHeight; } },
-        { name: 'width',  factory: function() { return this.nodeWidth; } },
-        [ 'border', 'gray' ],
+        {
+          name: 'outline',
+          expression: function (x, nodeWidth, expanded, childNodes) {
+            var nodeLeftEdge = x - nodeWidth / 2;
+            var nodeRightEdge = x + nodeWidth / 2;
+            var rootLevelOutline = [
+              {
+                left: nodeLeftEdge,
+                right: nodeRightEdge
+              }
+            ];
+
+            var champion = [];
+
+            for (let i = 0; i < childNodes.length && expanded; i++) {
+              // get child outline
+              // transform all rows
+              // merge levels into childoutlines
+              var childOutline = childNodes[i].outline;
+              childOutline.forEach(o => {
+                o.left += x;
+                o.right += x;
+              });
+
+              for (var j = 0; j < Math.max(childOutline.length, champion.length); j++) {
+                if (j >= childOutline.length) break;
+                if (j >= champion.length) champion = champion.concat(childOutline);
+                if (childOutline[j].left < champion[j].left) champion[j].left = childOutline[j].left;
+                if (childOutline[j].right > champion[j].right) champion[j].right = childOutline[j].right;
+              }
+            }
+
+            var totalOutline = rootLevelOutline.concat(champion);
+
+            return totalOutline;
+          }
+        },
+        { name: 'height', factory: function () { return this.nodeHeight; } },
+        { name: 'width', factory: function () { return this.nodeWidth; } },
+        ['border', 'gray'],
         {
           name: 'childNodes',
-          factory: function() { return []; }
+          factory: function () { return []; }
         },
-        [ 'left',  0 ],
-        [ 'right', 0 ],
-        [ 'maxLeft',  0 ],
-        [ 'maxRight', 0 ],
+        ['left', 0],
+        ['right', 0],
+        ['maxLeft', 0],
+        ['maxRight', 0],
         {
           class: 'Boolean',
           name: 'expanded',
@@ -184,7 +220,7 @@ foam.CLASS({
           name: 'useShadow',
           value: false
         },
-        [ 'color', 'white' ]
+        ['color', 'white']
       ],
 
       methods: [
@@ -193,74 +229,34 @@ foam.CLASS({
 
           this.formatNode();
 
-          if ( this.relationship ) {
+          if (this.relationship) {
             var data = this.data.clone(this.__subContext__);
 
             try {
-              data[this.relationship.forwardName].select(function(data) {
-                this.addChildNode({data: data});
-               }.bind(this));
-             } catch(x) {}
-             this.graph.doLayout();
-           }
-        },
-
-        function getOutline() {
-          var nodeLeftEdge = this.x - this.nodeWidth / 2;
-          var nodeRightEdge = this.x + this.nodeWidth / 2;
-          var rootLevelOutline = [
-            {
-              left: nodeLeftEdge,
-              right: nodeRightEdge
-            }
-          ];
-
-          const { childNodes } = this;
-
-          var champion = [];
-
-          for ( let i = 0; i < childNodes.length && this.expanded; i++ ){
-            // get child outline
-            // transform all rows
-            // merge levels into childoutlines
-            var childOutline = childNodes[i].getOutline();
-            childOutline.forEach(o => {
-              o.left += this.x;
-              o.right += this.x;
-            });
-
-            for ( var j = 0 ; j < Math.max(childOutline.length, champion.length); j++ ){
-              if ( j >= childOutline.length ) break;
-              if ( j >= champion.length ) champion = champion.concat(childOutline);
-              if ( childOutline[j].left < champion[j].left ) champion[j].left = childOutline[j].left;
-              if ( childOutline[j].right > champion[j].right ) champion[j].right = childOutline[j].right;
-            }
+              data[this.relationship.forwardName].select(function (data) {
+                this.addChildNode({ data: data });
+              }.bind(this));
+            } catch (x) { }
+            this.graph.doLayout();
           }
-
-          var totalOutline = rootLevelOutline.concat(champion);
-
-          // memoizing the outline
-          this.outline = totalOutline;
-
-          return totalOutline;
         },
 
         function paint(x) {
-          if ( ! this.parentNode || this.parentNode.expanded ) this.SUPER(x);
+          if (!this.parentNode || this.parentNode.expanded) this.SUPER(x);
         },
 
         function paintSelf(x) {
           x.save();
 
-          if (this.useShadow){
+          if (this.useShadow) {
             // Add shadow blur to box
-            x.shadowBlur    = 5;
+            x.shadowBlur = 5;
             x.shadowOffsetX = 5;
             x.shadowOffsetY = 5;
-            x.shadowColor   = "gray";
+            x.shadowColor = "gray";
           }
 
-          x.translate(-this.width/2, 0);
+          x.translate(-this.width / 2, 0);
           this.SUPER(x);
 
           // reset translate and shadow settings
@@ -277,16 +273,16 @@ foam.CLASS({
             x.stroke();
           }
 
-          x.lineWidth   = 0.5; //this.borderWidth;
+          x.lineWidth = 0.5; //this.borderWidth;
           x.strokeStyle = this.border;
 
           // Paint lines to childNodes
-          if ( this.expanded && this.childNodes.length ) {
-            var h = this.childNodes[0].y*3/4;
+          if (this.expanded && this.childNodes.length) {
+            var h = this.childNodes[0].y * 3 / 4;
             var l = this.childNodes.length;
 
             line(0, this.height, 0, h);
-            for ( var i = 0 ; i < l ; i++ ) {
+            for (var i = 0; i < l; i++) {
               var c = this.childNodes[i];
               line(0, h, c.x, h);
               line(c.x, h, c.x, c.y);
@@ -295,41 +291,45 @@ foam.CLASS({
 
           x.lineWidth = this.borderWidth;
           // Paint expand/collapse arrow
-          if ( this.childNodes.length ) {
+          if (this.childNodes.length) {
             var d = this.expanded ? 5 : -5;
             var y = this.height - 8;
-            line(-5, y, 0, y+d);
-            line(0, y+d, 5, y);
+            line(-5, y, 0, y + d);
+            line(0, y + d, 5, y);
           }
         },
 
         function addChildNode(args) {
           var node = this.cls_.create(args, this);
           this.add(node);
-          this.childNodes.push(node);
+          this.childNodes = this.childNodes.concat(node);
+          node.outline$.sub(() => {
+            debugger;
+            this.outline = undefined
+          });
           return this;
         },
 
-        function findOverlap(outlineA, outlineB, nodeA, nodeB){
+        function findOverlap(outlineA, outlineB, nodeA, nodeB) {
           levelsA = this.checkLevels(outlineA);
           levelsB = this.checkLevels(outlineB);
           maxLevels = Math.max(levelsA, levelsB);
 
-          for ( var i = 0; i <= maxLevels; i++ ){
-            if ( i > outlineA.length - 1 || i > outlineB.length - 1 ) return 0;
+          for (var i = 0; i <= maxLevels; i++) {
+            if (i > outlineA.length - 1 || i > outlineB.length - 1) return 0;
             // we only need to check if the right of outlineA overlaps with the left of outlineB
             var overlapDistance = outlineA[i].right - outlineB[i].left + this.padding;
 
-            if ( overlapDistance > 0 || ! nodeA.expanded || ! nodeB.expanded ) {
+            if (overlapDistance > 0 || !nodeA.expanded || !nodeB.expanded) {
               return overlapDistance;
             }
           }
           return 0;
         },
 
-        function checkLevels(outline){
+        function checkLevels(outline) {
           var levels = 0;
-          for ( var i = 0; i < outline.length; i++ ){
+          for (var i = 0; i < outline.length; i++) {
             levels++;
           }
           return levels;
@@ -338,44 +338,44 @@ foam.CLASS({
         function layout() {
           this.left = this.right = 0;
 
-          if ( ! this.expanded ) return false;
+          if (!this.expanded) return false;
 
           var childNodes = this.childNodes;
-          var l          = childNodes.length;
-          var moved      = false;
+          var l = childNodes.length;
+          var moved = false;
 
-          for ( var pass = 0 ; pass < 50 ; pass++ ) {
+          for (var pass = 0; pass < 50; pass++) {
             var movedNow = false;
             // Layout children
-            for ( var i = 0 ; i < l ; i++ ) {
+            for (var i = 0; i < l; i++) {
               var c = childNodes[i];
-              if ( c.y < this.height*2 ) { moved = true; c.y += 2; }
+              if (c.y < this.height * 2) { moved = true; c.y += 2; }
 
-              if ( c.layout() ) moved = true;
-              this.left  = Math.min(this.left, c.x);
+              if (c.layout()) moved = true;
+              this.left = Math.min(this.left, c.x);
               this.right = Math.max(this.right, c.x);
             }
 
             // Move children away from each other if required
-            var m = l/2;
-            for ( var i = 0 ; i < l-1 && this.expanded ; i++ ) {
+            var m = l / 2;
+            for (var i = 0; i < l - 1 && this.expanded; i++) {
               var n1 = childNodes[i];
-              var n2 = childNodes[i+1];
+              var n2 = childNodes[i + 1];
 
-              var o1 = n1.getOutline();
-              var o2 = n2.getOutline();
+              var o1 = n1.outline;
+              var o2 = n2.outline;
 
               var overlapDistance = this.findOverlap(o1, o2, n1, n2);
 
               // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
-              if ( Math.abs(overlapDistance) > 0.1 ) {
+              if (Math.abs(overlapDistance) > 0.1) {
                 moved = movedNow = true;
-                var w = overlapDistance > 0 ? Math.min(overlapDistance, 10) :  Math.max(overlapDistance, -10);
-                if ( i+1 == m ) {
-                  var shift = w/2;
+                var w = overlapDistance > 0 ? Math.min(overlapDistance, 10) : Math.max(overlapDistance, -10);
+                if (i + 1 == m) {
+                  var shift = w / 2;
                   n1.x -= shift;
                   n2.x += shift;
-                } else if ( i < Math.floor(m) ) {
+                } else if (i < Math.floor(m)) {
                   n1.x -= w;
                 } else {
                   n2.x += w;
@@ -388,39 +388,43 @@ foam.CLASS({
 
             // Calculate maxLeft and maxRight
             this.maxLeft = this.maxRight = 0;
-            for ( var i = 0 ; i < l ; i++ ) {
+            for (var i = 0; i < l; i++) {
               var c = childNodes[i];
-              this.maxLeft  = Math.min(c.x + c.maxLeft, this.maxLeft);
+              this.maxLeft = Math.min(c.x + c.maxLeft, this.maxLeft);
               this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
             }
 
-            if ( ! movedNow ) return moved; 
+            if (!movedNow) return moved;
           }
 
           return moved;
         },
 
+        function layout() {
+          
+        },
+
         function convergeTo(slot, newValue) {
           /* Return true iff value was changed. */
           var delta = Math.abs(slot.get() - newValue);
-          if ( delta < 0.001 ) {
+          if (delta < 0.001) {
             slot.set(newValue);
             return false;
           }
-          slot.set((2*slot.get() + newValue)/3);
+          slot.set((2 * slot.get() + newValue) / 3);
           return true;
         },
 
         function findNodeAbsoluteXByName(name, compound) {
-          if ( this.data.name === name ){
+          if (this.data.name === name) {
             this.graph.selectedNode = this;
             return this.x + compound;
           }
-          
+
           var childNodes = this.childNodes;
-          for ( var i = 0; i < childNodes.length; i++ ){
+          for (var i = 0; i < childNodes.length; i++) {
             var foundNode = childNodes[i].findNodeAbsoluteXByName(name, this.x + compound);
-            if ( foundNode ){
+            if (foundNode) {
               return foundNode;
             }
           }
@@ -432,15 +436,15 @@ foam.CLASS({
           name: 'doLayout',
           isFramed: true,
           documentation: 'Animate layout until positions stabilize',
-          code: function() {
+          code: function () {
             var needsLayout = false;
             // Scale and translate the view to fit in the available window
-            var gw = this.graph.width-110;
-            var w  = this.maxRight - this.maxLeft + 55;
+            var gw = this.graph.width - 110;
+            var w = this.maxRight - this.maxLeft + 55;
 
-            var x = (-this.maxLeft+25)/w * gw + 55;
+            var x = (-this.maxLeft + 25) / w * gw + 55;
             needsLayout = this.convergeTo(this.x$, x) || needsLayout;
-            if ( this.layout() || needsLayout ) {
+            if (this.layout() || needsLayout) {
               this.doLayout();
             } else {
               this.graph.updateCWidth();
