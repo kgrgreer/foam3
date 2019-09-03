@@ -521,7 +521,7 @@ p({
     import javax.security.auth.AuthPermission;
     import foam.util.SafetyUtil;
 
-    String businessEmail = "unknown@ablii.com";
+    String businessEmail = "jan@ablii.com";
     DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
     if ( null == business ) {
@@ -536,6 +536,23 @@ p({
       AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
+        java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+        DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+        CanadaUsBusinessOnboarding onboarding = canadaUsBusinessOnboardingDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.BUSINESS_ID,business.getId()),
+            foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficers.get(0).getId()) } ));
+        if ( onboarding == null ) {
+          onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+          onboarding.setUserId(signingOfficers.get(0).getId());
+          onboarding.setBusinessId(business.getId());
+          onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+          onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        } else if ( onboarding.getStatus() != OnboardingStatus.SUBMITTED ) {
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        }
+        
       } else {
           DAO localGroupDAO = (DAO) x.get("localGroupDAO");
           Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
