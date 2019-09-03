@@ -6,10 +6,6 @@ foam.CLASS({
 
   documentation: 'Abstract class for transaction limits, never to be instantiated.',
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
@@ -67,11 +63,6 @@ foam.CLASS({
           [false, 'Receiving'],
         ]
       }
-    },
-    {
-      class: 'Class',
-      name: 'transactionType',
-      label: 'Transaction Type',
     },
     {
       class: 'foam.core.Enum',

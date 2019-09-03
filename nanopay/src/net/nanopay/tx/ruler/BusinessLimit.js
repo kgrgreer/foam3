@@ -55,10 +55,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'transactionType',
-      hidden: true
-    },
-    {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'business',
