@@ -534,9 +534,9 @@ p({
 
       DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
       AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();      
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
-        java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
         DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
         CanadaUsBusinessOnboarding onboarding = canadaUsBusinessOnboardingDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.BUSINESS_ID,business.getId()),
             foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficers.get(0).getId()) } ));
@@ -596,7 +596,6 @@ p({
             validFields = false;
           }
 
-          java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
           if ( signingOfficers == null || signingOfficers.size() < 1 ) {
             print("- No signing officer found. Please add at least one signing officer and run script again.");
             validFields = false;
@@ -605,7 +604,6 @@ p({
           if ( validFields ) {
             AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
             Boolean onboarded = afexServiceProvider.onboardBusiness(business);
-            afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
             if ( onboarded && "CA".equals(business.getAddress().getCountryId()) ){
               CanadaUsBusinessOnboarding onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
               onboarding.setUserId(signingOfficers.get(0).getId());
