@@ -504,12 +504,14 @@ p({
   "id": "AFX to AFEX Business Migration",
   "status": 2,
   "code": """
-import foam.dao.ArraySink;
+    import foam.dao.ArraySink;
     import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
     import foam.nanos.auth.Group;
     import foam.nanos.auth.Permission;
     import foam.nanos.auth.User;
     import net.nanopay.admin.model.ComplianceStatus;
+    import net.nanopay.bank.BankAccount;
     import net.nanopay.fx.afex.AFEXBusiness;
     import net.nanopay.fx.afex.AFEXServiceProvider;
     import net.nanopay.model.Business;
@@ -543,6 +545,15 @@ import foam.dao.ArraySink;
           }
 
           Boolean validFields = true;
+          DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+          BankAccount bankAccount = (BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER,business.getId()),
+            foam.mlang.MLang.INSTANCE_OF(BankAccount.class) } ));
+
+          if (bankAccount == null ) {
+            print("- Business does not have a bank account. Please run Script again when a bank account has been added and verified.");
+            validFields = false;
+          }
+
           if ( business.getCompliance() != ComplianceStatus.PASSED ) {
             print("- Business has not passed compliance. Please run Script again when compliance is passed.");
             validFields = false;
