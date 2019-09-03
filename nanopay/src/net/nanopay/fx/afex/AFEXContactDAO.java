@@ -41,6 +41,9 @@ public class AFEXContactDAO
     
     AuthService auth = (AuthService) x.get("auth");
     Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+    if ( contactOwner == null ) {
+      return getDelegate().put_(x, obj);
+    }
     String contactOwnerCountryId = contactOwner.getAddress() == null ? "" : contactOwner.getAddress().getCountryId();
 
     // Check if contact has a bank account
