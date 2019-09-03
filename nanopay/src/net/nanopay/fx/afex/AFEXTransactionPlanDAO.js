@@ -190,7 +190,12 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
-  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  
+  // add invoice fee
+  Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());
+  AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
+  Long feeAmount = sameCurrency ? credentials.getDomesticFee() : credentials.getInternationalFee();
+  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(request.getSourceCurrency()).build()}, null);  
   afexTransaction.setIsQuoted(true);
 
   return afexTransaction;
@@ -210,7 +215,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxExpiry(tx.getFxExpiry());
   summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
-  summary.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  summary.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(tx.getCost()).setCurrency(sourceAccount.getDenomination()).build()}, null);
 
   // create AFEXBeneficiaryComplianceTransaction
   AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
