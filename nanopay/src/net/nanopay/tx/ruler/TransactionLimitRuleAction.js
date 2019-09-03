@@ -59,14 +59,14 @@ foam.CLASS({
       TransactionLimitState limitState = getLimitState(id);
       if ( agency instanceof TestedRule ) {
         TransactionLimitProbeInfo info = new TransactionLimitProbeInfo();
-        info.setRemainingLimit(this.getLimit() - limitState.getLastSpentAmount());
-        info.setMessage("Your remaining limit is " + (this.getLimit() - limitState.getLastSpentAmount()) );
+        info.setRemainingLimit(this.getLimit() - limitState.getSpent());
+        info.setMessage("Your remaining limit is " + (this.getLimit() - limitState.getSpent()) );
         ((TestedRule)agency).setProbeInfo(info);
       }
       if ( ! limitState.check(this.getLimit(), this.getPeriod(), txn.getAmount()) ) {
         throw new RuntimeException("Your " + this.getPeriod() + " limit is exceeded. Please contact us. ");
       }
-      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
+      agency.submit(x, x1 -> limitState.updateSpent(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
     },
     {

@@ -15,7 +15,7 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'lastSpentAmount'
+      name: 'spent'
     }
   ],
 
@@ -37,7 +37,7 @@ foam.CLASS({
       long delta = now - getLastActivity();
 
       setLastActivity(now);
-      setLastSpentAmount(Math.max(getLastSpentAmount() - delta * limit / period.getMs(), 0));
+      setSpent(Math.max(getSpent() - delta * limit / period.getMs(), 0));
       `
     }
   ],
@@ -51,14 +51,14 @@ foam.CLASS({
         public synchronized boolean check(double limit, net.nanopay.util.Frequency period, double amount) {
           update(limit, period);
 
-          if ( amount <= limit - getLastSpentAmount() ) {
+          if ( amount <= limit - getSpent() ) {
             return true;
           }
           return false;
         }
 
-        public synchronized void updateLastSpentAmount(Double amount) {
-          setLastSpentAmount(Math.max(0, getLastSpentAmount() + amount));
+        public synchronized void updateSpent(Double amount) {
+          setSpent(Math.max(0, getSpent() + amount));
         }
         `);
       }
