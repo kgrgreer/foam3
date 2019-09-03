@@ -46,7 +46,8 @@ p({
   """
   {
     "of":"net.nanopay.model.Invitation"
-  }",
+  }
+  """,
   "documentation":"A DAO that can be used to invite users to join businesses.",
   "authNotes":"Wrapped with a custom AuthenticatedInvitationDAO. That should be refactored. Invitation should implement Authorizable and we should use an AuthorizationDAO."
 })
