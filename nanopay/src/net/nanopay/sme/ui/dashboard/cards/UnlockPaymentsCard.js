@@ -95,7 +95,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       margin: 0;
-
+      
       font-size: 14px;
       line-height: 1.71;
       color: /*%BLACK%*/ #1e1f21;
@@ -138,6 +138,10 @@ foam.CLASS({
     {
       name: 'PENDING',
       message: 'pending domestic completion!'
+    },
+    {
+      name: 'PENDING_TWO',
+      message: 'pending!'
     },
     {
       name: 'COMING_SOON',
@@ -227,6 +231,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'AFEXEnabled'
+    },
+    {
+      class: 'Boolean',
+      name: 'isEmployee'
     }
   ],
 
@@ -237,7 +245,6 @@ foam.CLASS({
       });
     },
     async function initE() {
-
       var self = this;
       let EnableAFEX = await this.appConfigService.getAppConfig();
       this.AFEXEnabled = EnableAFEX.afexEnabled;
@@ -253,14 +260,20 @@ foam.CLASS({
               .end();
             }
 
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness 
-                && ( ! hasFXProvisionPermission || ! this.user.onboarded ) ) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+                && ( ! hasFXProvisionPermission || ! this.user.onboarded ) && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
-            }            
+            }
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+              && hasFXProvisionPermission && this.isEmployee ) {
+            return this.E().start().addClass(self.myClass('complete-container'))
+              .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+            .end();
+          }
 
-            if ( ! isComplete ) {
+            if ( ! isComplete && ! this.isEmployee ) {
               return this.E()
                 .startContext({ data: self })
                   .start(self.GET_STARTED, { buttonStyle: 'SECONDARY' }).end()

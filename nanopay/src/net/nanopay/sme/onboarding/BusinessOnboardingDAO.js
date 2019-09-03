@@ -141,7 +141,7 @@ foam.CLASS({
 
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
 
           Invitation invitation = new Invitation();
           /**
