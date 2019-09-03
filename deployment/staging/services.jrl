@@ -75,3 +75,4 @@ p({
     }]
   }
 })
+r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
