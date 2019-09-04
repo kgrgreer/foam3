@@ -250,15 +250,19 @@ foam.CLASS({
         var self = this;
 
         this.add(
-          obj.slot(homeDenomination => 
-            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+          obj.slot(homeDenomination => {
+            var fxRatePromise = obj.denomination == homeDenomination ?
+              Promise.resolve(1) :
+              obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1,
+                'BUY', null, obj.user.id, 'nanopay').then(r => r.rate);
+            return fxRatePromise.then(r => 
               obj.findBalance(self.__subSubContext__).then(balance => 
                 self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
+                  curr.format(balance != null ? Math.floor(balance * r) : 0)
                 )
               )
             )
-          )
+          })
         );
       },
       tableWidth: 145
