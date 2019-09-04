@@ -27,7 +27,10 @@ foam.CLASS({
             EQ(ExpediteCICOApprovalRequest.DAO_KEY, "localTransactionDAO")
           )
         );
-        if ( ci.getStatus() == TransactionStatus.SENT && approvalRequest.getStatus() == ApprovalStatus.APPROVED ) {
+        if ( approvalRequest != null
+          && ci.getStatus() == TransactionStatus.SENT
+          && approvalRequest.getStatus() == ApprovalStatus.APPROVED
+        ) {
           ci.setStatus(TransactionStatus.COMPLETED);
         }
       `
