@@ -320,12 +320,7 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        var self = this;
-        return new Promise(function(resolve, reject) {
-          x.balanceDAO.find(self.id).then(function(balance) {
-            resolve( balance != null ? balance.balance : 0);
-          });
-        });
+        return x.balanceDAO.find(self.id).then(b => b ? b.balance : 0);
       },
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
