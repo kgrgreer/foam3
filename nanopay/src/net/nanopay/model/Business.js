@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessName',
-      documentation: 'The name of the business associated with the User.',
+      documentation: 'Legal name of business.',
       width: 50,
       validateObj: function(businessName) {
         if ( businessName.length > 35 ) {
