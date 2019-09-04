@@ -366,7 +366,9 @@ foam.CLASS({
         .add(this.slot(function(showExchangeRateSection) {
           return ! showExchangeRateSection ? null :
             this.E()
-              .start().show(this.showExchangeRateSection$)
+              .start().show(this.slot(function(showExchangeRateSection, sourceCurrency, invoice$destinationCurrency ) {
+                return showExchangeRateSection && (! (sourceCurrency === 'USD' && destinationCurrency === 'USD') );
+              }))
                 .start().addClass('exchange-amount-container')
                   .start()
                     .addClass(this.myClass('label-value-row'))
