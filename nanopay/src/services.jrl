@@ -37,10 +37,10 @@ p({
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
         "hostMapping": {
           "ablii": "/nanopay/src/net/nanopay/sme/index.html",
-          "portal.nanopay.net": "/nanopay/src/net/nanopay/index.html",
+          "localhost": "/nanopay/src/net/nanopay/index.html",
           "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
         },
-        "defaultHost": "portal.nanopay.net"
+        "defaultHost": "localhost"
       },
       "pathSpec": "/welcome"
     }, {
