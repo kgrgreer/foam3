@@ -21,6 +21,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'afexEnabled',
+      value: true,
       documentation: `Enable AFEX Service.`
     }
   ]
