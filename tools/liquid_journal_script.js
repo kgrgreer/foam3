@@ -47,53 +47,106 @@ var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
 // what number the account IDs should start up
 var startAccountIds = 1000;
 
-// below tree is just for testing purposes
-// var accountTree = [
-//   {
-//     type: 'Aggregate',
-//     name: 'Goldman God',
-//     denomination: 'USD',
-//     children: [
-//       {
-//         type: 'Aggregate',
-//         name: 'Goldman DemiGod A',
-//         denomination: 'USD',
-//         children: [
-//           {
-//             type: 'Virtual',
-//             name: 'Goldman Peon AA',
-//             denomination: 'CAD',
-//           },
-//           {
-//             type: 'Virtual',
-//             name: 'Goldman Peon AB',
-//             denomination: 'USD',
-//           }
-//         ]
-//       },
-//       {
-//         type: 'Aggregate',
-//         name: 'Goldman DemiGod B',
-//         denomination: 'USD',
-//         children: [
-//           {
-//             type: 'Virtual',
-//             name: 'Goldman Peon BA',
-//             denomination: 'CAD',
-//           },
-//           {
-//             type: 'Virtual',
-//             name: 'Goldman Peon BB',
-//             denomination: 'USD',
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// ];
+var lit = false;
 
-// can enter banks with new currencies just by typing the denomination ('alphabetic code')
-var accountTree = [
+// below tree is just for testing purposes
+var accountTree = lit ? [
+  {
+    type: 'Aggregate',
+    name: 'Goldman God',
+    denomination: 'USD',
+    children: [
+      {
+        type: 'Aggregate',
+        name: 'Goldman DemiGod A',
+        denomination: 'USD',
+        children: [
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AA',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AB',
+            denomination: 'USD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AC',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AD',
+            denomination: 'USD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AE',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AF',
+            denomination: 'USD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AG',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AH',
+            denomination: 'USD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AI',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AJ',
+            denomination: 'USD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AK',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon AL',
+            denomination: 'USD',
+          }
+        ]
+      },
+      {
+        type: 'Aggregate',
+        name: 'Goldman DemiGod B',
+        denomination: 'USD',
+        children: [
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon BA',
+            denomination: 'CAD',
+          },
+          {
+            type: 'Virtual',
+            name: 'Goldman Peon BB',
+            denomination: 'USD',
+          }
+        ]
+      }
+    ]
+  }
+]
+
+:
+
+[
   {
     type: 'Bank',
     denomination: 'USD',

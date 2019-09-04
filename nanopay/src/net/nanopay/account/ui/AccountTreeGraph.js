@@ -164,13 +164,13 @@ foam.CLASS({
         'data',
         {
           name: 'outline',
-          expression: function (x, nodeWidth, expanded, childNodes) {
-            var nodeLeftEdge = x - nodeWidth / 2;
-            var nodeRightEdge = x + nodeWidth / 2;
+          expression: function (x, nodeWidth, expanded, childNodes, padding) {
+            var nodeLeftEdgePadded = x - nodeWidth / 2 - padding / 2;
+            var nodeRightEdgePadded = x + nodeWidth / 2 + padding / 2;
             var rootLevelOutline = [
               {
-                left: nodeLeftEdge,
-                right: nodeRightEdge
+                left: nodeLeftEdgePadded,
+                right: nodeRightEdgePadded
               }
             ];
 
@@ -180,17 +180,15 @@ foam.CLASS({
               // get child outline
               // transform all rows
               // merge levels into childoutlines
-              var childOutline = childNodes[i].outline;
-              childOutline.forEach(o => {
-                o.left += x;
-                o.right += x;
-              });
+              var childOutline = childNodes[i].outline.map(o => ({
+                left: o.left + x,
+                right: o.right + x,
+              }));
 
-              for (var j = 0; j < Math.max(childOutline.length, champion.length); j++) {
-                if (j >= childOutline.length) break;
-                if (j >= champion.length) champion = champion.concat(childOutline);
-                if (childOutline[j].left < champion[j].left) champion[j].left = childOutline[j].left;
-                if (childOutline[j].right > champion[j].right) champion[j].right = childOutline[j].right;
+              for (var j = 0; j < childOutline.length; j++) {
+                champion[j] = champion[j] || {};
+                champion[j].left = Math.min(childOutline[j].left, champion[j].left  || Number.MAX_SAFE_INTEGER );
+                champion[j].right = Math.max(childOutline[j].right, champion[j].right || Number.MIN_SAFE_INTEGER );
               }
             }
 
@@ -301,121 +299,56 @@ foam.CLASS({
 
         function addChildNode(args) {
           var node = this.cls_.create(args, this);
+          node.y = this.height * 2;
           this.add(node);
           this.childNodes = this.childNodes.concat(node);
           node.outline$.sub(() => {
-            debugger;
+            this.outline = [];
             this.outline = undefined
           });
           return this;
         },
 
-        function findOverlap(outlineA, outlineB, nodeA, nodeB) {
-          levelsA = this.checkLevels(outlineA);
-          levelsB = this.checkLevels(outlineB);
-          maxLevels = Math.max(levelsA, levelsB);
+        function distanceTo(node) {
+          var outlineA = this.outline;
+          var outlineB = node.outline;
+          minLevels = Math.min(outlineA.length, outlineB.length);
 
-          for (var i = 0; i <= maxLevels; i++) {
-            if (i > outlineA.length - 1 || i > outlineB.length - 1) return 0;
+          var champion = Number.MAX_SAFE_INTEGER;
+          for (var i = 0; i < minLevels; i++) {
             // we only need to check if the right of outlineA overlaps with the left of outlineB
-            var overlapDistance = outlineA[i].right - outlineB[i].left + this.padding;
+            var overlapDistance = outlineB[i].left - outlineA[i].right;
 
-            if (overlapDistance > 0 || !nodeA.expanded || !nodeB.expanded) {
-              return overlapDistance;
-            }
+            champion = Math.min(champion, overlapDistance);
           }
-          return 0;
-        },
-
-        function checkLevels(outline) {
-          var levels = 0;
-          for (var i = 0; i < outline.length; i++) {
-            levels++;
-          }
-          return levels;
+          return champion;
         },
 
         function layout() {
-          this.left = this.right = 0;
-
-          if (!this.expanded) return false;
-
-          var childNodes = this.childNodes;
-          var l = childNodes.length;
+          //console.log(this.data.name);
+          const { childNodes } = this;
           var moved = false;
 
-          for (var pass = 0; pass < 50; pass++) {
-            var movedNow = false;
-            // Layout children
-            for (var i = 0; i < l; i++) {
-              var c = childNodes[i];
-              if (c.y < this.height * 2) { moved = true; c.y += 2; }
+          for ( var i = 0; i < childNodes.length; i++ ) {
+            var n1 = childNodes[i];
 
-              if (c.layout()) moved = true;
-              this.left = Math.min(this.left, c.x);
-              this.right = Math.max(this.right, c.x);
-            }
+            for ( var j = i + 1; j < childNodes.length; j++ ){
+              var n2 = childNodes[j];
 
-            // Move children away from each other if required
-            var m = l / 2;
-            for (var i = 0; i < l - 1 && this.expanded; i++) {
-              var n1 = childNodes[i];
-              var n2 = childNodes[i + 1];
+              var distance = n1.distanceTo(n2);
 
-              var o1 = n1.outline;
-              var o2 = n2.outline;
-
-              var overlapDistance = this.findOverlap(o1, o2, n1, n2);
-
-              // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
-              if (Math.abs(overlapDistance) > 0.1) {
-                moved = movedNow = true;
-                var w = overlapDistance > 0 ? Math.min(overlapDistance, 10) : Math.max(overlapDistance, -10);
-                if (i + 1 == m) {
-                  var shift = w / 2;
-                  n1.x -= shift;
-                  n2.x += shift;
-                } else if (i < Math.floor(m)) {
-                  n1.x -= w;
-                } else {
-                  n2.x += w;
-                }
+              if ( distance < 0 ) {
+                n2.x -= distance;
+                moved = true;
               }
             }
-            // TODO/BUG: I'm not sure why this is necessary, but without, center
-            // nodes are a few pixels off.
-            // if ( l%2 == 1 ) childNodes[Math.floor(m)].x = 0;
+          }
 
-            // Calculate maxLeft and maxRight
-            this.maxLeft = this.maxRight = 0;
-            for (var i = 0; i < l; i++) {
-              var c = childNodes[i];
-              this.maxLeft = Math.min(c.x + c.maxLeft, this.maxLeft);
-              this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
-            }
-
-            if ( !movedNow ) return moved;
+          for ( var i = 0; i < childNodes.length; i++ ){
+            if ( childNodes[i].layout() ) moved = true;
           }
 
           return moved;
-        },
-
-        function layout() {
-          const { childNodes } = this;
-          for ( var i = 0; i < childNodes.length; i++ ) {
-            // TODO: TBD
-          }
-        },
-
-        function convergeTo(slot, newValue) {
-          /* Return true iff value was changed. */
-          var delta = Math.abs(slot.get() - newValue);
-          if (delta < 0.001) {
-            slot.set(newValue);
-            return false;
-          }
-          slot.set((2 * slot.get() + newValue) / 3);
-          return true;
         },
 
         function findNodeAbsoluteXByName(name, compound) {
