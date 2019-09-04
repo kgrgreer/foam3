@@ -7,7 +7,26 @@ p({"class":"foam.nanos.boot.NSpec", "name":"afexServiceProvider",               
 p({"class":"foam.nanos.boot.NSpec", "name":"afexBusinessDAO",                  "lazy":false,  "serve":true,  "serviceScript":"foam.dao.java.JDAO jDao = new foam.dao.java.JDAO(x, net.nanopay.fx.afex.AFEXBusiness.getOwnClassInfo(), \"afexBusinesses\");lb = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x).setDelegate(jDao).build(); l = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(lb).build(); cb = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(l).build(); c = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(cb).build(); sn = new foam.dao.SequenceNumberDAO(c); pm = new foam.dao.PMDAO(x, sn); return pm;", "client":"{\"of\":\"net.nanopay.fx.afex.AFEXBusiness\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"afexBeneficiaryDAO",                  "lazy":false,  "serve":true,  "serviceScript":"foam.dao.java.JDAO jDao = new foam.dao.java.JDAO(x, net.nanopay.fx.afex.AFEXBeneficiary.getOwnClassInfo(), \"afexBeneficiaries\");lb = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x).setDelegate(jDao).build(); l = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(lb).build(); cb = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(l).build(); c = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(cb).build(); sn = new foam.dao.SequenceNumberDAO(c); pm = new foam.dao.PMDAO(x, sn); return pm;", "client":"{\"of\":\"net.nanopay.fx.afex.AFEXBeneficiary\"}"})
 
-p({"class":"foam.nanos.boot.NSpec", "name":"fxService",                       "lazy":false,  "serve":true,  "boxClass":"net.nanopay.fx.FXServiceSkeleton", "serviceClass":"net.nanopay.fx.FXServer","client":"{\"class\":\"net.nanopay.fx.client.ClientFXService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/fxService\"}}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxService",
+  "lazy": false,
+  "serve": true,
+  "boxClass": "net.nanopay.fx.FXServiceSkeleton",
+  "serviceClass": "net.nanopay.fx.FXServer",
+  "client": """
+{
+  "class": "net.nanopay.fx.client.CachedFXService",
+  "delegate": {
+    "class":"net.nanopay.fx.client.ClientFXService",
+    "delegate":{
+      "class":"foam.box.HTTPBox",
+      "url":"service/fxService"   
+    }
+  }
+}
+  """
+})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"fxQuoteDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO (new foam.dao.java.JDAO(x, net.nanopay.fx.FXQuote.getOwnClassInfo(), \"fxQuotes\"))));", "client":"{\"of\":\"net.nanopay.fx.FXQuote\"}"})
 p({
