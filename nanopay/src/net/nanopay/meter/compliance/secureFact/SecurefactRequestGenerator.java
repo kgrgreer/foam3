@@ -110,27 +110,29 @@ public class SecurefactRequestGenerator {
 
     Phone mobile = user.getMobile();
     if ( mobile != null && ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
+      String mobileNumber = mobile.getNumber().replaceAll("[-()]", "");
       list.add(
         new SIDniPhone.Builder(x)
           .setType("MOBILE")
-          .setNumber(mobile.getNumber())
+          .setNumber(mobileNumber)
           .build()
       );
       hasMobile = true;
     }
     Phone phone = user.getPhone();
     if ( phone != null && ! SafetyUtil.isEmpty(phone.getNumber()) ) {
+      String phoneNumber = phone.getNumber().replaceAll("[-()]", "");
       list.add(
         new SIDniPhone.Builder(x)
           .setType("HOME")
-          .setNumber(phone.getNumber())
+          .setNumber(phoneNumber)
           .build()
       );
       if ( ! hasMobile ) {
         list.add(
           new SIDniPhone.Builder(x)
             .setType("MOBILE")
-            .setNumber(phone.getNumber())
+            .setNumber(phoneNumber)
             .build()
         );
       }
