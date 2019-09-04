@@ -117,22 +117,24 @@ foam.CLASS({
   actions: [
     {
       name: 'zoomIn',
-      isEnabled: function(cview$scaleX, cview$scaleY) {
-        return (cview$scaleX || 0) < 2 && (cview$scaleY || 0) < 2;
+      isEnabled: function(cview$root$scaleX, cview$root$scaleY) {
+        return (cview$root$scaleX || 0) < 2 && (cview$root$scaleY || 0) < 2;
       },
       code: function() {
-        this.cview.scaleX += 0.25;
-        this.cview.scaleY += 0.25; 
+        this.cview.root.scaleX *= 1.25;
+        this.cview.root.scaleY *= 1.25;
+        this.cview.doLayout();
       }
     },
     {
       name: 'zoomOut',
-      isEnabled: function(cview$scaleX, cview$scaleY) {
-        return (cview$scaleX || 0) > 0.25 && (cview$scaleY || 0) > 0.25;
+      isEnabled: function(cview$root$scaleX, cview$root$scaleY) {
+        return (cview$root$scaleX || 0) > 0 && (cview$root$scaleY || 0) > 0;
       },
       code: function() {
-        this.cview.scaleX -= 0.25;
-        this.cview.scaleY -= 0.25;
+        this.cview.root.scaleX /= 1.25;
+        this.cview.root.scaleY /= 1.25;
+        this.cview.doLayout();
       }
     },
     {
@@ -142,7 +144,7 @@ foam.CLASS({
       },
       code: function() {
         var e = this.canvasContainer.el();
-        e.scrollTo(this.cview.root.x * this.cview.scaleX - e.clientWidth/2, 0);
+        e.scrollTo(this.cview.root.x - e.clientWidth/2, 0);
       }
     }
   ],
