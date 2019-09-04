@@ -78,7 +78,6 @@ foam.CLASS({
         testUser.setPhone(phone);
         File businessProfilePicFile = new File();
         businessProfilePicFile.setFilename("Business profile picture");
-        testUser.setBusinessProfilePicture(businessProfilePicFile);
         User john = (User) userDAO.put(testUser);
 
         // Put a widget in the DAO.
@@ -115,10 +114,6 @@ foam.CLASS({
         test(owner.getPhone() instanceof Phone, "'owner.getPhone()' should be of type 'Phone'.");
         test(owner.getPhone().equals(john.getPhone()), "'owner.getPhone()' should match the user's business phone.");
         test(owner.getPhone().getNumber().equals(john.getPhone().getNumber()), "'owner.getPhone().getNumber()' should match the user's business phone number (123-456-7890).");
-
-        test(owner.getBusinessProfilePicture() instanceof File, "'owner.getBusinessProfilePicture()' should be of type 'File'.");
-        test(owner.getBusinessProfilePicture().equals(john.getBusinessProfilePicture()), "'owner.getBusinessProfilePicture()' should match the user's business profile picture.");
-        test(owner.getBusinessProfilePicture().getFilename().equals("Business profile picture"), "'owner.getBusinessProfilePicture().getFilename()' should match the user's business profile picture file name (Business profile picture).");
 
         // Null values
         TestWidget badWidget = new TestWidget();

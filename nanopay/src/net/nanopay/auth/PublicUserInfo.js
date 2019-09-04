@@ -133,7 +133,6 @@ foam.CLASS({
             setBusinessName(user.getBusinessName());
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
-            setBusinessProfilePicture(user.getBusinessProfilePicture());
             setAddress(user.getAddress());
             setPhone(user.getPhone());
             setType(user.getType());

@@ -165,16 +165,6 @@ foam.CLASS({
       value: false,
     },
     {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'businessProfilePicture',
-      documentation: `The profile picture of the business, such as a logo, initially
-        defaulting to a placeholder picture.`,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/business-placeholder.png'
-      }
-    },
-    {
       class: 'Boolean',
       name: 'onboarded',
       documentation: `Determines whether completed business registration. This property
