@@ -369,7 +369,7 @@ foam.CLASS({
           if ( txn != null && txn instanceof FXSummaryTransaction ) {
             DecimalFormat decimalFormat = new DecimalFormat("#.####");
             FXSummaryTransaction summaryTransaction = (FXSummaryTransaction) txn;
-            exRate            = summaryTransaction.getFxRate() != 1 ? "1 CAD = " + decimalFormat.format((1/summaryTransaction.getFxRate())) + " " + summaryTransaction.getSourceCurrency() : null;
+            exRate            = summaryTransaction.getFxRate() != 1 ? "1 " + summaryTransaction.getDestinationCurrency() + " = " + decimalFormat.format((1/summaryTransaction.getFxRate())) + " " + summaryTransaction.getSourceCurrency() : null;
           } else {
             exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
           }
