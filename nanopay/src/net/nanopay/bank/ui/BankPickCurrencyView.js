@@ -232,14 +232,14 @@ foam.CLASS({
               .start('p')
                 .addClass(this.myClass('link-text'))
                 .add(this.CONNECT_LABEL)
-                .attrs({name: "connectWithVoidCheck"})
+                .attrs({ name: 'connectWithVoidCheck' })
                 .on('click', function() {
                   var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
                       'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';
 
                   self.ctrl.add(self.Popup.create().tag({
                     class: bankModal,
-                    onComplete: self.onComplete
+                    onComplete: self.createOnComplete()
                   }));
                 })
               .end()
@@ -248,12 +248,12 @@ foam.CLASS({
             .startContext({ data: this })
               .start(this.CURRENCY_ONE, { buttonStyle: 'UNSTYLED' })
                 .addClass('white-radio').show(this.cadAvailable)
-                .enableClass('selected', this.selection$.map(function(v) { return v === 1; }))
+                .enableClass('selected', this.selection$.map((v) => v === 1))
                 .style({ 'margin-left': '5px', 'margin-right': '10px' })
               .end()
               .start(this.CURRENCY_TWO, { buttonStyle: 'UNSTYLED' })
                 .addClass('white-radio').show(this.usdAvailable)
-                .enableClass('selected', this.selection$.map(function(v) { return v === 2; }))
+                .enableClass('selected', this.selection$.map((v) => v === 2))
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
@@ -266,7 +266,8 @@ foam.CLASS({
             .end()
             .end()
           .end()
-          .start().show(this.selection$.map((v) => { return v === 1 && this.cadAvailable; }))
+          .start().show(this.selection$.map(
+            (v) => v === 1 && this.cadAvailable))
             .start().tag({
               class: 'net.nanopay.flinks.view.FlinksInstitutionsView',
               filterFor$: this.filterFor$,
@@ -275,7 +276,8 @@ foam.CLASS({
             }).end()
           .end()
 
-          .start().show(this.selection$.map((v) => { return v === 2 && this.usdAvailable; }))
+          .start().show(this.selection$.map(
+            (v) => v === 2 && this.usdAvailable))
             .start().tag({
               class: 'net.nanopay.plaid.ui.PlaidView',
               logoPath: 'images/ablii-logo.svg',
@@ -291,7 +293,8 @@ foam.CLASS({
       var self = this;
       return function() {
         var menuLocation = 'sme.main.banking';
-        window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
+        window.location.hash.substr(1) != menuLocation ?
+          self.pushMenu(menuLocation) : self.stack.back();
         return;
       };
     },

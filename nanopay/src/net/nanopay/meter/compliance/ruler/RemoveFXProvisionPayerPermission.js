@@ -8,7 +8,7 @@ foam.CLASS({
   documentation: 'Rule to remove fx.provision.payer permissions from a business after it is not onboarded.',
 
   javaImports: [
-    'foam.core.ContextAgent',
+    'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
@@ -24,7 +24,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        agency.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAwareAgent() {
           @Override
           public void execute(X x) {
             if ( ! (obj instanceof Business) ) {
@@ -40,7 +40,7 @@ foam.CLASS({
               Group group = (Group) localGroupDAO.find(business.getGroup());
               if ( null != group && group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
                 try {
-                  group.getPermissions(x).remove(fxProvisionPermission);  
+                  group.getPermissions(getX()).remove(fxProvisionPermission);  
                 } catch(Throwable t) {
                     ((Logger) x.get("logger")).error("Error removing fx.provision.payer permission from business " + business.getId(), t);
                 }

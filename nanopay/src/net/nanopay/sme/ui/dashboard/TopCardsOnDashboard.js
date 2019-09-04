@@ -110,7 +110,6 @@ foam.CLASS({
     background-color: /*%PRIMARY3%*/ #406dea;
     border-radius: 50%;
     z-index: 10000;
-
   }
   ^ .foam-u2-CheckBox:checked:after {
     content: none;
@@ -160,15 +159,9 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
-        .callIfElse( this.businessOnboarding &&
-                      this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
-                      ! this.businessOnboarding.signingOfficer, () => {
-          this
-            .start('span').addClass('cards')
-              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
-            .end();
-        }, () => {
-          this
+        .callIf( ! this.businessOnboarding || this.businessOnboarding.signingOfficer || this.businessOnboarding.status !== this.OnboardingStatus.SUBMITTED,
+          () => {
+            this
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
@@ -184,7 +177,33 @@ foam.CLASS({
                 }))
               .end()
             .end();
-        })
+          })
+        .callIf(this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
+          () => {
+            this
+            .start().addClass('divider').end()
+            .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
+            .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
+            .start().addClass('cards').hide(this.hidePaymentCards$)
+              .start('span')
+                .add(this.slot((onboardingStatus) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus }).end();
+                }))
+              .end()
+              .start('span')
+                .add(this.slot((internationalPaymentEnabled) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled, isEmployee: true }).end();
+                }))
+              .end()
+            .end();
+          })
+        .callIf( ! this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
+          () => {
+            this
+            .start('span').addClass('cards')
+              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
+            .end();
+          })
         .start().addClass('lower-cards')
               .start('span')
                 .add(this.slot((bankAccount) => {

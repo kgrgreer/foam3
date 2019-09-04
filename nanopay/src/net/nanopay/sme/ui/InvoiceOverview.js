@@ -434,7 +434,7 @@ foam.CLASS({
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(0);
+                this.fee = currency.format(transaction.getCost());
               });
           }
 
