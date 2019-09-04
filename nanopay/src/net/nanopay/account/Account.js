@@ -251,17 +251,17 @@ foam.CLASS({
 
         this.add(
           obj.slot(homeDenomination => {
-            var fxRatePromise = obj.denomination == homeDenomination ?
-              Promise.resolve(1) :
-              obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1,
-                'BUY', null, obj.user.id, 'nanopay').then(r => r.rate);
-            return fxRatePromise.then(r => 
-              obj.findBalance(self.__subSubContext__).then(balance => 
-                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-                  curr.format(balance != null ? Math.floor(balance * r) : 0)
-                )
-              )
-            )
+            return Promise.all(
+              obj.denomination == homeDenomination ?
+                Promise.resolve(1) :
+                obj.fxService.getFXRate(obj.denomination, homeDenomination,
+                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
+              obj.findBalance(self.__subSubContext__),
+              self.__subSubContext__.currencyDAO.find(homeDenomination)
+            ).then(arr => {
+              let [r, b, c] = arr;
+              return c.format(Math.floor((b || 0) * r))
+            })
           })
         );
       },
