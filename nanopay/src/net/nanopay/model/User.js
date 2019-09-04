@@ -166,14 +166,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'onboarded',
-      documentation: `Determines whether completed business registration. This property
-        dictates portal views after compliance and account approval.`,
-      value: false,
-      permissionRequired: true
-    },
-    {
-      class: 'Boolean',
       name: 'createdPwd',
       value: false,
       documentation: `Determines whether the User is using its own unique password or one
@@ -320,7 +312,6 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         if ( ! SafetyUtil.isEmpty(getLegalName()) ) return getLegalName();
         if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
-        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
         return "";
       `
     }
