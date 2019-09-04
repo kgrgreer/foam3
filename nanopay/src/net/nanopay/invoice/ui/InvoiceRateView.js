@@ -411,25 +411,6 @@ foam.CLASS({
                 .end()
               .end();
           }))
-          /** Fee for none AFX payables **/
-          .start()
-            .show(this.slot(function(chosenBankAccount, isFx, isPayable) {
-              return ! isFx && isPayable && chosenBankAccount;
-            }))
-            .start()
-              .addClass('inline')
-              .add(this.TRANSACTION_FEE_LABEL)
-            .end()
-            .start()
-              .addClass('float-right')
-              .add(this.chosenBankAccount$.map((bankAccount) => {
-                if ( ! bankAccount ) return '';
-                return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return currency.format(0);
-                });
-              }))
-            .end()
-          .end()
 
           /** Amount to be paid. **/
           .add(this.slot(function(quote, loadingSpinner$isHidden, sourceCurrency) {
