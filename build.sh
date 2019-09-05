@@ -483,7 +483,7 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -L : Disable liveScriptBundler service. (development only)"
+    echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
@@ -534,8 +534,8 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
-DISABLE_LIVESCRIPTBUNDLER=0
 COMPILE_ONLY=0
+DISABLE_LIVESCRIPTBUNDLER=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
@@ -559,7 +559,6 @@ while getopts "bcdD:ghijJ:klLmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
-        L) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
@@ -592,6 +591,7 @@ while getopts "bcdD:ghijJ:klLmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}";;
+        w) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         W) WEB_PORT=$OPTARG
            echo "WEB_PORT=${WEB_PORT}";;
         z) DAEMONIZE=1 ;;
