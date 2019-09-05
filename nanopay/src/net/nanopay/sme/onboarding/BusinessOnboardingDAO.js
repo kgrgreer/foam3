@@ -61,8 +61,6 @@ foam.CLASS({
           return getDelegate().put_(x, businessOnboarding);
         }
 
-        businessOnboarding.validate(x);
-
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
