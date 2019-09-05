@@ -113,10 +113,15 @@ function deploy_journals {
         mkdir -p target
     fi
 
+    journalExtras=""
+    if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
+        journalExtras=-E"tools/journal_extras/disable_livescriptbundler"
+    fi
+
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
@@ -477,6 +482,8 @@ function usage {
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
+    echo "  -l : Delete runtime logs."
+    echo "  -L : Disable liveScriptBundler service. (development only)"
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
@@ -527,6 +534,7 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
+DISABLE_LIVESCRIPTBUNDLER=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
@@ -534,7 +542,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klLmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -551,6 +559,7 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
+        L) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
