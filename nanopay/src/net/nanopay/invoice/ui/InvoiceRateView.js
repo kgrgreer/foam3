@@ -367,7 +367,10 @@ foam.CLASS({
           return ! showExchangeRateSection ? null :
             this.E()
               .start().show(this.slot(function(showExchangeRateSection, sourceCurrency, invoice$destinationCurrency ) {
-                return showExchangeRateSection && (! (sourceCurrency === 'USD' && destinationCurrency === 'USD') );
+                if ( sourceCurrency == null ) {
+                  return false;
+                }
+                return showExchangeRateSection && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
               }))
                 .start().addClass('exchange-amount-container')
                   .start()
