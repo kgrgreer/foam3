@@ -37,14 +37,6 @@ foam.CLASS({
       value: 30
     },
     {
-      name: 'width',
-      value: 1600
-    },
-    {
-      name: 'height',
-      value: 1000
-    },
-    {
       name: 'x',
       value: 0
     },
@@ -349,11 +341,11 @@ foam.CLASS({
           }
 
           // FIXME: center parent above children
-          if ( childNodes.length > 1 ){
-            var leftmostChild = childNodes[0];
-            var rightmostChild = childNodes[childNodes.length - 1];
-            this.x += (leftmostChild.x + rightmostChild.x) / 2;
-          }
+          // if ( childNodes.length > 1 ){
+          //   var leftmostChild = childNodes[0];
+          //   var rightmostChild = childNodes[childNodes.length - 1];
+          //   this.x += (leftmostChild.x + rightmostChild.x) / 2;
+          // }
           
           return moved;
         },

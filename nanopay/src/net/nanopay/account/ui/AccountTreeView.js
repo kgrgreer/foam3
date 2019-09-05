@@ -15,7 +15,8 @@ foam.CLASS({
     'net.nanopay.account.ui.AccountTreeGraph',
     'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.AggregateAccount'
+    'net.nanopay.account.AggregateAccount',
+    'foam.graphics.GreekView'
   ],
 
   documentation: `
@@ -117,24 +118,22 @@ foam.CLASS({
   actions: [
     {
       name: 'zoomIn',
-      isEnabled: function(cview$root$scaleX, cview$root$scaleY) {
-        return (cview$root$scaleX || 0) < 2 && (cview$root$scaleY || 0) < 2;
+      isEnabled: function(cview$scale) {
+        return (cview$scale || 0) < 2 && (cview$scale || 0) < 2;
       },
       code: function() {
-        this.cview.root.scaleX *= 1.25;
-        this.cview.root.scaleY *= 1.25;
-        this.cview.doLayout();
+        this.cview.scale *= 1.25;
+        this.cview.scale *= 1.25;
       }
     },
     {
       name: 'zoomOut',
-      isEnabled: function(cview$root$scaleX, cview$root$scaleY) {
-        return (cview$root$scaleX || 0) > 0 && (cview$root$scaleY || 0) > 0;
+      isEnabled: function(cview$scale) {
+        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
       },
       code: function() {
-        this.cview.root.scaleX /= 1.25;
-        this.cview.root.scaleY /= 1.25;
-        this.cview.doLayout();
+        this.cview.scale /= 1.25;
+        this.cview.scale /= 1.25;
       }
     },
     {
@@ -185,11 +184,18 @@ foam.CLASS({
               })
             .end()
           .endContext()
-          .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container')).style({overflow: 'scroll'})
+          .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
             .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
-              self.cview = self.AccountTreeGraph.create({ data: a.array[0] });
+              self.cview = self.GreekView.create({
+                view: self.AccountTreeGraph.create({ data: a.array[0] }),
+                height: 1000,
+                width: 1600,
+                viewBorder: 'black',
+                navBorder: 'red'
+              });
               return self.cview;
-            }))      
+            })
+          )      
           .end()
       }
   ],
