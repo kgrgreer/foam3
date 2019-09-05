@@ -67,24 +67,16 @@ foam.CLASS({
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'USBusinessOnboarding',
+  documentation: `Multifunctional model used for business onboarding`,
 
   ids: ['userId'],
 
-  tableColumns: [
-    'userId',
-    'legalName',
-    'status',
-    'created',
-    'lastModified'
-  ],
-
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
-
-  documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
     'foam.nanos.auth.Address',
@@ -108,6 +100,14 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
+
+  tableColumns: [
+    'userId',
+    'legalName',
+    'status',
+    'created',
+    'lastModified'
   ],
 
   sections: [

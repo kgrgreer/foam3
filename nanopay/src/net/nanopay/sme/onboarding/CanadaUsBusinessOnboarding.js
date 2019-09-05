@@ -2,12 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboarding',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
-  ],
+  ids: ['userId'],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
@@ -33,8 +31,6 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'net.nanopay.sme.onboarding.OnboardingStatus'
   ],
-
-  ids: ['userId'],
 
   sections: [
     {
