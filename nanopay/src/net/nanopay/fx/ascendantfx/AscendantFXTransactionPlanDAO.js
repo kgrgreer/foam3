@@ -28,6 +28,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
@@ -125,7 +126,8 @@ foam.CLASS({
                     if ( null != disclosure ) {
                       ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
                     }
-                    quote.addPlan(ascendantFXTransaction);
+                    FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, sourceAccount, destinationAccount, fxQuote);
+                    quote.addPlan(summaryTransaction);
                   }
               }
             } else {
@@ -139,7 +141,8 @@ foam.CLASS({
                   if ( null != disclosure ) {
                     ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
                   }
-                  quote.addPlan(ascendantFXTransaction);
+                  FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, sourceAccount, destinationAccount, fxQuote);
+                  quote.addPlan(summaryTransaction);
                 }
             }
           } catch (Throwable t) {
@@ -158,7 +161,8 @@ foam.CLASS({
           if ( null != disclosure ) {
             ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
           }
-          quote.addPlan(ascendantFXTransaction);
+          FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, sourceAccount, destinationAccount, fxQuote);
+          quote.addPlan(summaryTransaction);
         }
 
       }
@@ -232,6 +236,25 @@ protected FXQuote getFXQuoteFromReferenceData(Transaction request) {
     }
   }
   return fxQuote;
+}
+
+public FXSummaryTransaction getSummaryTx (AscendantFXTransaction tx, Account sourceAccount, Account destinationAccount, FXQuote fxQuote ) {
+  FXSummaryTransaction summary = new FXSummaryTransaction();
+  summary.setAmount(tx.getAmount());
+  summary.setDestinationAmount(tx.getDestinationAmount());
+  summary.setSourceCurrency(tx.getSourceCurrency());
+  summary.setDestinationCurrency(tx.getDestinationCurrency());
+  summary.setFxQuoteId(tx.getFxQuoteId());
+  summary.setSourceAccount(sourceAccount.getId());
+  summary.setDestinationAccount(destinationAccount.getId());
+  summary.setFxRate(tx.getFxRate());
+  summary.setFxExpiry(tx.getFxExpiry());
+  summary.setInvoiceId(tx.getInvoiceId());
+  summary.setIsQuoted(true);
+  Long fee = sourceAccount.getDenomination().equals(destinationAccount.getDenomination()) ? 75l : 500l;
+  summary.addLineItems(new TransactionLineItem[] {new net.nanopay.tx.InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(fee).setCurrency(sourceAccount.getDenomination()).build()}, null);
+  summary.addNext(tx);
+  return summary;
 }
         `);
       },
