@@ -64,7 +64,7 @@ foam.CLASS({
       }
       if ( ! limitState.check(this.getLimit(), this.getPeriod(), txn.getAmount()) ) {
         String s = "";
-        if ( this.getPeriod() == net.nanopay.util.Frequency.DAILY ) {
+        if ( this.getPeriod() == net.nanopay.util.Frequency.WEEKLY ) {
           s = "Your current available limit is " + ((double) (Math.round(this.getLimit() - limitState.getSpent())/100.0)) + ". ";
         }
         throw new RuntimeException("This transaction exceeds your " + this.getPeriod() + " transaction limit. " 
