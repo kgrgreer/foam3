@@ -186,10 +186,18 @@ foam.CLASS({
           .endContext()
           .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
             .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
+              var v = self.AccountTreeGraph.create({ data: a.array[0] });
+              // var l1 = self.GreekView.create({
+              //   view: v,
+              //   height$: v.height$,
+              //   width: self.el().clientWidth,
+              //   viewBorder: 'black',
+              //   navBorder: 'red'
+              // });
               self.cview = self.GreekView.create({
-                view: self.AccountTreeGraph.create({ data: a.array[0] }),
-                height: 1000,
-                width: 1600,
+                view: v,
+                height$: v.height$,
+                width: self.el().clientWidth,
                 viewBorder: 'black',
                 navBorder: 'red'
               });

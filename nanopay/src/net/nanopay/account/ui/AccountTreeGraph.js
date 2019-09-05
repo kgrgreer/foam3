@@ -36,6 +36,7 @@ foam.CLASS({
       name: 'padding',
       value: 30
     },
+    
     {
       name: 'x',
       value: 0
@@ -203,7 +204,9 @@ foam.CLASS({
         {
           class: 'Boolean',
           name: 'expanded',
-          value: true
+          expression: function(childNodes) {
+            return childNodes.length < 5;
+          }
         },
         {
           class: 'Boolean',
@@ -340,7 +343,28 @@ foam.CLASS({
             if ( childNodes[i].layout() ) moved = true;
           }
 
+          for ( var i = 0; i < childNodes.length; i++ ) {
+            var n1 = childNodes[i];
+
+            for ( var j = i + 1; j < childNodes.length; j++ ){
+              var n2 = childNodes[j];
+
+              var distance = n1.distanceTo(n2);
+
+              if ( distance !== 0 ) {
+                n1.x += distance/2;
+                n2.x -= distance/2;
+                moved = true;
+              }
+            }
+          }
+
           // FIXME: center parent above children
+          // if ( this.outline[1] ) {
+          // position between left and right  of outline[1]
+          // this.x = this.outline[1].left + this.outline[1].right) / 2
+          // moved = true;
+          // }
           // if ( childNodes.length > 1 ){
           //   var leftmostChild = childNodes[0];
           //   var rightmostChild = childNodes[childNodes.length - 1];
