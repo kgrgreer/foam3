@@ -366,7 +366,9 @@ foam.CLASS({
         .add(this.slot(function(showExchangeRateSection) {
           return ! showExchangeRateSection ? null :
             this.E()
-              .start().show(this.showExchangeRateSection$)
+              .start().show(this.slot(function(showExchangeRateSection, sourceCurrency, invoice$destinationCurrency ) {
+                return showExchangeRateSection && (! (sourceCurrency === 'USD' && destinationCurrency === 'USD') );
+              }))
                 .start().addClass('exchange-amount-container')
                   .start()
                     .addClass(this.myClass('label-value-row'))
@@ -411,25 +413,6 @@ foam.CLASS({
                 .end()
               .end();
           }))
-          /** Fee for none AFX payables **/
-          .start()
-            .show(this.slot(function(chosenBankAccount, isFx, isPayable) {
-              return ! isFx && isPayable && chosenBankAccount;
-            }))
-            .start()
-              .addClass('inline')
-              .add(this.TRANSACTION_FEE_LABEL)
-            .end()
-            .start()
-              .addClass('float-right')
-              .add(this.chosenBankAccount$.map((bankAccount) => {
-                if ( ! bankAccount ) return '';
-                return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return currency.format(0);
-                });
-              }))
-            .end()
-          .end()
 
           /** Amount to be paid. **/
           .add(this.slot(function(quote, loadingSpinner$isHidden, sourceCurrency) {

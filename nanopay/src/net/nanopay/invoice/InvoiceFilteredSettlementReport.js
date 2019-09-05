@@ -18,14 +18,17 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.io.*',
+    'java.text.DecimalFormat',
     'java.text.SimpleDateFormat',
     'java.util.Date',
     'java.util.zip.ZipEntry',
     'java.util.zip.ZipOutputStream',
     'javax.servlet.http.HttpServletRequest',
     'javax.servlet.http.HttpServletResponse',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.model.Currency',
     'org.apache.commons.io.FileUtils',
     'org.apache.commons.io.IOUtils',
@@ -355,12 +358,21 @@ foam.CLASS({
           businessNamePayee = tempUser == null ? "n/a" : tempUser.getOrganization();
           srcCurrency       = invoice.getSourceCurrency();
           dstCurrency       = invoice.getDestinationCurrency();
-          exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
           invoiceStatus          = invoice.getStatus().getLabel();
           transactionID          = invoice.getReferenceId();
           invoicePurchaseOrder   = SafetyUtil.isEmpty(invoice.getPurchaseOrder())
             ? "n/a" : invoice.getPurchaseOrder();
           invoiceID              = Long.toString(invoice.getId());
+
+          DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+          Transaction txn = (Transaction) transactionDAO.find(invoice.getPaymentId());
+          if ( txn != null && txn instanceof FXSummaryTransaction ) {
+            DecimalFormat decimalFormat = new DecimalFormat("#.####");
+            FXSummaryTransaction summaryTransaction = (FXSummaryTransaction) txn;
+            exRate            = summaryTransaction.getFxRate() != 1 ? "1 " + summaryTransaction.getDestinationCurrency() + " = " + decimalFormat.format((1/summaryTransaction.getFxRate())) + " " + summaryTransaction.getSourceCurrency() : null;
+          } else {
+            exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
+          }
 
           DAO currencyDAO = (DAO) x.get("currencyDAO");
           Currency currency = (Currency) currencyDAO.find(dstCurrency);
