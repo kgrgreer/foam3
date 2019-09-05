@@ -59,31 +59,18 @@ p({
   "authenticate":true,
   "serviceScript":
   """
-  return new foam.nanos.auth.AuthorizationDAO(x, 
-    new foam.nanos.auth.CreatedAwareDAO.Builder(x)
-      .setDelegate(
-        new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
-          .setDelegate(
-            new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x)
-              .setDelegate(
-                new foam.dao.EasyDAO.Builder(x)
-                  .setAuthorize(false)
-                  .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())
-                  .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-                  .setJournalName(\"businessOnboardingDAO\")
-                  .build()
-              ).build()
-          ).build()
-      ).build(), 
-      new foam.nanos.auth.AuthorizableAuthorizer("businessOnboarding")
-  );
+    easyDAO = new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"businessOnboardingDAO\").build();
+
+    businessOnboardingDAO = new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
+    lastModifiedAwareDAO = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(businessOnboardingDAO).build();
+    createdByAwareDAO = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(lastModifiedAwareDAO).build();
+    validatingDAO = new foam.dao.ValidatingDAO(x, createdByAwareDAO);
+    authorizationDAO = new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer(\"businessOnboarding\"));
   """,
-  "client":
-  """
-  {
-    "of":"net.nanopay.sme.onboarding.BusinessOnboarding"
-  }
-  """
+  "client": "{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}"
 })
 
 p({
