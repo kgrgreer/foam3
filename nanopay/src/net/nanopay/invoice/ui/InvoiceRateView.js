@@ -48,7 +48,8 @@ foam.CLASS({
     'transactionQuotePlanDAO',
     'user',
     'viewData',
-    'wizard'
+    'wizard',
+    'refreshIntervalId',
   ],
 
   javaImports: [
@@ -108,6 +109,9 @@ foam.CLASS({
     }
     ^exchange-rate-text {
       color: #8e9090
+    }
+    ^ .fees {
+      margin-top: 50px;
     }
   `,
 
@@ -173,7 +177,7 @@ foam.CLASS({
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
         return chosenBankAccount != null &&
-          invoice$destinationCurrency !== chosenBankAccount.denomination;
+          ! (invoice$destinationCurrency == chosenBankAccount.denomination && chosenBankAccount.denomination === 'CAD');
       }
     },
     {
@@ -190,9 +194,17 @@ foam.CLASS({
     },
     {
       name: 'exchangeRateNotice',
-      expression: function(isEmployee, isFx) {
-        return isEmployee && isFx;
+      expression: function(isEmployee) {
+        return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
       }
+    },
+    {
+      class: 'Int',
+      name: 'refreshTime'
+    },
+    {
+      class: 'Boolean',
+      name: 'quotePassedIn'
     }
   ],
 
@@ -205,7 +217,8 @@ foam.CLASS({
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
-    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
+    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction fee of ' },
+    { name: 'TRANSACTION_FEE_LABEL_2', message: ' will be charged at the end of the monthly billing cycle.' },
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
@@ -216,7 +229,8 @@ foam.CLASS({
     { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
     { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
     { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
-    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' }
+    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' },
+    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. ' }
   ],
 
   methods: [
@@ -237,8 +251,14 @@ foam.CLASS({
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
       }
+      if ( this.quotePassedIn && this.quote != null && this.isFx ) {
+        clearTimeout(this.refreshIntervalId);
+        this.getExpiryTime(new Date(), this.quote.fxExpiry);
+        this.updateQuote(this);
+      }
     },
     function initE() {
+      let self = this;
       // Update the rates every time the selected account changes.
       if ( this.isPayable ) {
         this.invoice.account$.sub(this.fetchRates);
@@ -378,34 +398,14 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(this.slot(function(sourceCurrency) {
-                        if ( sourceCurrency && this.quote && this.quote.amount ) {
-                          return sourceCurrency.format(this.quote.amount);
+                      .add(this.slot(function(sourceCurrency, quote) {
+                        if ( sourceCurrency && quote && quote.amount ) {
+                          return sourceCurrency.format(quote.amount);
                         }
                         return '(-)';
                       }),
-                        ' ',
-                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
-                    .end()
-                  .end()
-                  .start().show(this.chosenBankAccount$)
-                    .start()
-                      .addClass('inline')
-                      .add(this.TRANSACTION_FEE_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
-                          if ( ! sourceCurrency ) return;
-                          return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees) :
-                            sourceCurrency.format(0);
-                        })
-                      )
-
                     .end()
                   .end()
                 .end()
@@ -451,14 +451,34 @@ foam.CLASS({
                           return this.sourceCurrency.format(amount);
                         }
                       }),
-                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                      this.isFx$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
           }))
+          .start().show(this.slot(function(quote) {
+            if ( quote == null ) {
+              return false;
+            }
+            return quote.getCost() == 0 ? false : true;
+          }))
+            .start()
+              .addClass('inline')
+              .addClass('fees')
+              .add(this.TRANSACTION_FEE_LABEL)
+              .add(
+                this.slot( function(quote, sourceCurrency) {
+                  if ( ! sourceCurrency || ! quote ) return;
+                  return quote.getCost() ?
+                    sourceCurrency.format(quote.getCost()) + this.TRANSACTION_FEE_LABEL_2:
+                    sourceCurrency.format(0) + this.TRANSACTION_FEE_LABEL_2;
+                })
+              )
+            .end()
+          .end()
         .end()
-        .start().show(this.exchangeRateNotice$)
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
+        .start().show(this.isFx$)
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();
     },
 
@@ -483,6 +503,7 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
@@ -498,7 +519,16 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
+      clearTimeout(this.refreshIntervalId);
+      this.getExpiryTime(new Date(), quote.plan.fxExpiry);
+      this.updateQuote(this);
       return quote.plan;
+    },
+
+    function getExpiryTime( time, expiryTime) {
+      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
+      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
+      this.refreshTime = Math.floor(( utc2-utc1 ));
     },
 
     function createFxTransaction(fxQuote) {
@@ -523,6 +553,33 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
+
+    function updateQuote(self) {
+      this.refreshIntervalId = setTimeout(function() {
+      var transaction = self.AbliiTransaction.create({
+        sourceAccount: self.invoice.account,
+        destinationAccount: self.invoice.destinationAccount,
+        sourceCurrency: self.invoice.sourceCurrency,
+        destinationCurrency: self.invoice.destinationCurrency,
+        payerId: self.invoice.payerId,
+        payeeId: self.invoice.payeeId,
+        destinationAmount: self.invoice.amount
+      });
+
+      self.transactionQuotePlanDAO.put(
+        self.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      ).then(function(quote) {
+        self.quote = quote.plan;
+        self.getExpiryTime(new Date, quote.plan.fxExpiry);
+      });
+      if ( self.state == self.LOADED ) {
+        loopOnce = false;
+        updateQuote(self);
+      }
+      }, self.refreshTime);
+    }
   ],
 
   listeners: [

@@ -137,8 +137,7 @@ public class TransactionBenchmark
       TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
       try {
         transactionDAO_.put(quote.getPlan());
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         System.out.println(e.getMessage());
       }
     }

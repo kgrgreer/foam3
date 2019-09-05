@@ -111,7 +111,7 @@ foam.CLASS({
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-                e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
+                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER'+i]
                 }), true)
@@ -160,7 +160,7 @@ foam.CLASS({
     'ctrl',
     'pushMenu',
     'appConfig',
-    'identificationTypeDAO'
+    'identificationTypeDAO',
   ],
 
   sections: [
@@ -212,14 +212,8 @@ foam.CLASS({
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      help: `Thanks! Now let’s get some details on your company's transactions.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
-    },
-    {
-      name: 'internationalTransactionSection',
-      title: 'Are you going to be sending International Payments?',
-      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.hasUSDPermission }
     },
     {
       name: 'ownershipAmountSection',
@@ -379,16 +373,38 @@ foam.CLASS({
         ],
       }
     },
-
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+    {
+      class: 'String',
+      name: 'jobTitle',
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Chief Visionary Officer'
+      label: 'Job Title',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
       },
-      minLength: 1,
-      maxLength: 50
-    }),
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
+              }), 0)
+          },
+          errorString: 'Please select a job title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
@@ -478,8 +494,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
-          : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -561,8 +576,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
-        : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -870,27 +884,9 @@ foam.CLASS({
       ]
     }),
     {
-      section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'USBusinessDetails',
-      label: 'US Business Details',
-      of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
-      visibilityExpression: function(appConfig) {
-        return this.hasUSDPermission ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      },
-      factory: function() {
-        return this.USBusinessOnboarding.create({});
-      },
-    },
-    {
-      class: 'Boolean',
-      name: 'hasUSDPermission',
-      value: false,
-      hidden: true
-    },
-    {
       class: 'Long',
       name: 'amountOfOwners',
+      label: '',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
@@ -898,7 +894,7 @@ foam.CLASS({
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = this.userOwnsPercent = false;
+        this.publiclyTraded = false;
       },
       validationPredicates: [
         {
@@ -923,6 +919,15 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
+        if ( n ) {
+          this.owner1.ownershipPercent = this.ownershipPercent;
+          this.owner1.jobTitle = this.jobTitle;
+          this.owner1.firstName = this.firstName;
+          this.owner1.lastName = this.lastName;
+          this.owner1.birthday = this.birthday;
+          this.owner1.address = this.address;
+          return;
+        }
         this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
@@ -936,7 +941,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -960,11 +965,12 @@ foam.CLASS({
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
-
-    // FIXME: IntView not respecting the min-max range
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
+      postSet: function(o, n) {
+        this.owner1.ownershipPercent = n;
+      },
       validationPredicates: [
         {
           args: ['signingOfficer', 'userOwnsPercent', 'ownershipPercent'],
@@ -984,16 +990,7 @@ foam.CLASS({
     }),
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
-      index: 1,
-      postSet: function(_, n) {
-        if ( ! this.userOwnsPercent ) return;
-        this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
-        this.onDetach(n.jobTitle$.follow(this.jobTitle$));
-        this.onDetach(n.firstName$.follow(this.firstName$));
-        this.onDetach(n.lastName$.follow(this.lastName$));
-        this.onDetach(n.birthday$.follow(this.birthday$));
-        this.onDetach(n.address$.follow(this.address$));
-      }
+      index: 1
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
@@ -1088,22 +1085,13 @@ foam.CLASS({
         }
       ]
     },
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       section: 'reviewOwnersSection',
+      name: 'dualPartyAgreement',
+      documentation: 'Verifies if the user is accept the dual-party agreement.',
+      docName: 'dualPartyAgreementCAD',
       label: '',
-      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      label2Formatter: function() {
-        this.
-          add('I acknowledge that I have read and accept the ').
-          start('a').
-            attrs({
-              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
-              target: "blank"
-            }).
-            add('Dual Party Agreement').
-          end().
-          add(' for Ablii Canadian Payment Services.');
-      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -1113,13 +1101,13 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
+              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
         }
       ]
-    })
+    }
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [

@@ -141,4 +141,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request) {
     return null;
   }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+    return null;
+  }
 }

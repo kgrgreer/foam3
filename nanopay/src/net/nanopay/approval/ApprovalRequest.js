@@ -29,7 +29,7 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'refObj',
+    'objId',
     'referenceObj',
     'approver',
     'status',
@@ -66,7 +66,24 @@ foam.CLASS({
       class: 'String',
       name: 'objId',
       visibility: 'RO',
-      documentation: 'id of the object that needs approval.'
+      documentation: 'id of the object that needs approval.',
+      tableWidth: 220,
+      tableCellFormatter: function(objId) {
+        let self = this;
+        this.__subSubContext__.userDAO.find(parseInt(objId)).then(function(a) {
+          if ( a != undefined ) {
+            if ( net.nanopay.model.Business.isInstance(a) ) {
+              self.add(objId + ' ' + a.organization);
+            } else {
+              self.add(objId + ' ' + a.firstName + ' ' + a.lastName);
+            }
+          } else {
+            self.add(objId);
+          }
+        }).catch(function(err) {
+          self.add(objId);
+        });
+      }
     },
     {
       class: 'String',

@@ -18,6 +18,7 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
@@ -25,7 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -45,23 +46,26 @@ foam.CLASS({
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
 
-        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
+        BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
 
-        if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
-          net.nanopay.documents.AcceptanceDocumentService documentService =
-            (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
-
-          net.nanopay.documents.AcceptanceDocument document = documentService.getAcceptanceDocument(x, "dualPartyAgreementCAD", "");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), businessOnboarding.getDualPartyAgreement());
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+        
+        Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
         Session session = x.get(Session.class);
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
-        }
+
 
         businessOnboarding.validate(x);
 
@@ -78,18 +82,12 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
+          user.setBirthday( businessOnboarding.getBirthday() );
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
-          if ( businessOnboarding.getHasUSDPermission() ) {
-            user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
-          }
-          
-          
           
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
@@ -110,12 +108,6 @@ foam.CLASS({
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
-
-          if ( businessOnboarding.getHasUSDPermission() ) {
-            business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
-            business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
-            business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
-          }
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
@@ -149,7 +141,7 @@ foam.CLASS({
 
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
 
           Invitation invitation = new Invitation();
           /**

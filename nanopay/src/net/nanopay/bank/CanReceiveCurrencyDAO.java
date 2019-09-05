@@ -59,6 +59,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     Count hasBankAccount = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.DELETED, false),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
@@ -73,6 +74,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     Count count = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.DELETED, false),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, user.getId())))

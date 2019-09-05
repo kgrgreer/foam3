@@ -56,7 +56,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   private DAO currencyDAO;
   private DAO resultDAO;
   private Logger logger;
-
+  private OMLogger omLogger;
   @Override
   public void start() throws Exception {
     this.tokenDAO = (DAO) getX().get("quickbooksTokenDAO");
@@ -67,6 +67,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     this.currencyDAO = (DAO) getX().get("currencyDAO");
     this.resultDAO  = (DAO) getX().get("accountingResultDAO");
     this.logger         = (Logger) getX().get("logger");
+    this.omLogger = (OMLogger) getX().get("OMLogger");
   }
 
   @Override
@@ -100,7 +101,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
           // import
-          ContactMismatchPair mismatch = importContact(x, contact);
+          ContactMismatchPair mismatch = importContact(x, contact, contactErrors);
 
           if ( mismatch != null ) {
             result.add(mismatch);
@@ -380,7 +381,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     if ( e instanceof AccountingException ) {
       AccountingException accountingException = (AccountingException) e;
-      OMLogger omLogger = ((OMLogger) getX().get("OMLogger"));
 
       // if error codes has already been set
       if ( accountingException.getErrorCodes() != null ) {
@@ -395,9 +395,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         if ( temp instanceof AuthenticationException ) {
           resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
           resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
-          omLogger.log("Quickbooks post request");
+          this.omLogger.log("Quickbooks post request");
         } else {
-          omLogger.log("Quickbooks timeout");
+          this.omLogger.log("Quickbooks timeout");
           resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
           resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
         }
@@ -435,7 +435,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return true;
   }
 
-  public ContactMismatchPair importContact(foam.core.X x, NameBase importContact) {
+  public ContactMismatchPair importContact(foam.core.X x, NameBase importContact, HashMap<String, List<ContactResponseItem>> contactErrors) {
     User              user         = (User) x.get("user");
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
@@ -443,14 +443,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
-
-    cacheDAO.inX(x).put(
-      new AccountingContactEmailCache.Builder(x)
-        .setQuickId(importContact.getId())
-        .setRealmId(token.getRealmId())
-        .setEmail(email.getAddress().toLowerCase())
-        .build()
-    );
 
     Contact existContact = (Contact) contactDAO.inX(x).find(AND(
       EQ(Contact.EMAIL, email.getAddress().toLowerCase()),
@@ -470,6 +462,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // If the contact is a existing contact
     if ( existContact != null ) {
+      existContact = (Contact) existContact.fclone();
 
       // existing user
       if ( existUser != null ) {
@@ -484,13 +477,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( existContact instanceof  QuickbooksContact &&
            (( QuickbooksContact ) existContact).getQuickId().equals(importContact.getId()) ) {
         contactDAO.inX(x).put(
-          updateQuickbooksContact(x, importContact, (QuickbooksContact) existContact.fclone(), false)
+          updateQuickbooksContact(x, importContact, (QuickbooksContact) existContact.fclone(), false, contactErrors)
         );
       } else {
         return new ContactMismatchPair.Builder(x)
           .setResultCode(ContactMismatchCode.EXISTING_CONTACT)
           .setExistContact(existContact)
-          .setNewContact(createQuickbooksContactFrom(x, importContact, false))
+          .setNewContact(createQuickbooksContactFrom(x, importContact, false, contactErrors))
           .build();
       }
     }
@@ -509,7 +502,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() == 1 ) {
-          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true, contactErrors);
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           temp.setFirstName(existUser.getFirstName());
@@ -525,7 +518,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() > 1) {
-          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true, contactErrors);
           temp.setChooseBusiness(true);
           temp.setEmail(email.getAddress().toLowerCase());
           temp.setFirstName(existUser.getFirstName());
@@ -540,18 +533,25 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
       if ( existUser == null ) {
-        contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false));
+        contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false, contactErrors));
+        cacheDAO.inX(x).put(
+          new AccountingContactEmailCache.Builder(x)
+            .setQuickId(importContact.getId())
+            .setRealmId(token.getRealmId())
+            .setEmail(email.getAddress().toLowerCase())
+            .build()
+        );
       }
     }
 
     return null;
   }
 
-  public QuickbooksContact createQuickbooksContactFrom(foam.core.X x, NameBase importContact, boolean existUser) {
-    return updateQuickbooksContact(x, importContact, new QuickbooksContact(), existUser);
+  public QuickbooksContact createQuickbooksContactFrom(foam.core.X x, NameBase importContact, boolean existUser,  HashMap<String, List<ContactResponseItem>> contactErrors) {
+    return updateQuickbooksContact(x, importContact, new QuickbooksContact(), existUser, contactErrors);
   }
 
-  public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser) {
+  public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser,  HashMap<String, List<ContactResponseItem>> contactErrors) {
     User            user           = (User) x.get("user");
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
@@ -586,6 +586,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         portalAddress.setCountryId(country != null ? country.getCode() : null);
 
         newContact.setBusinessAddress(portalAddress);
+      } else {
+          ContactResponseItem error = new ContactResponseItem();
+          error.setName(importContact.getDisplayName());
+          error.setBusinessName(importContact.getCompanyName());
+          contactErrors.get("MISS_ADDRESS").add(error);
       }
 
       /*
@@ -764,7 +769,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         EQ(QuickbooksContact.EMAIL, cache.getEmail()),
         EQ(QuickbooksContact.OWNER, user.getId())
       ));
-    if ( contact == null ) {
+    if ( contact == null ||  ! ( contact instanceof  QuickbooksContact)) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
@@ -990,7 +996,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                 configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
 
     if ( token == null || token.getRealmId() == null || token.getBusinessName() == null ) {
@@ -1004,9 +1009,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       List response = service.executeQuery(query).getEntities();
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1021,7 +1026,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
 
     if ( token == null ) {
@@ -1035,9 +1039,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       IEntity response = service.add(object);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1052,7 +1056,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
     if ( token == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
@@ -1065,9 +1068,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       service.executeBatch(operation);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
@@ -1079,6 +1082,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     contactErrors.put("MISS_BUSINESS_EMAIL", new ArrayList<>());
     contactErrors.put("MISS_BUSINESS", new ArrayList<>());
     contactErrors.put("MISS_EMAIL", new ArrayList<>());
+    contactErrors.put("MISS_ADDRESS", new ArrayList<>());
     contactErrors.put("OTHER", new ArrayList<>());
 
     return contactErrors;

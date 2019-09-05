@@ -98,17 +98,17 @@ foam.CLASS({
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
     { name: 'LABEL_ROUTING', message: 'Routing #' },
-    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AFEX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit. I have agreed that we may reduce the standard period of pre-notification for variable amount PADs (Ablii Monthly Fee Invoice). We will send you notice of the amount of each Monthly Fee Invoice PAD five days before the PAD is due.' },
     { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
-    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation (for Canadian domestic transactions) or AscendantFX (for international transactions) or by visiting ' },
+    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation (for Canadian domestic transactions) or AFEX (for international transactions) or by visiting ' },
     { name: 'LINK', message: 'www.payments.ca' },
     { name: 'ACCEPT', message: 'I Agree' },
     { name: 'BACK', message: 'Back' },
     { name: 'LEGAL_AUTH', message: 'Authorization' },
     { name: 'LEGAL_RECOURSE', message: 'Recourse/Reimbursement' },
     { name: 'LEGAL_CANCEL', message: 'Cancellation' },
-    { name: 'US_TC_1', message: `I/We authorize AscendantFX Capital USA, Inc (AscendantFX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AscendantFX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AscendantFX will provide notice for each amount debited.` },
-    { name: 'US_TC_2', message: 'This authority is to remain in effect until AscendantFX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AscendantFX shall advise me/us of any dishonored fees, and I/we agree to pay them.' }
+    { name: 'US_TC_1', message: `I/We authorize Associated Foreign Exchange Inc (AFEX) and the financial institution designated (or any other financial institution I/we may authorize at any time) to deduct regular and/or one-time payments as per my/our instructions for payment of all charges arising under my/our AFEX account(s) In accordance with this Authorization and the applicable rules of the National Automated Clearing House Association(ACH). AFEX will provide notice for each amount debited.` },
+    { name: 'US_TC_2', message: 'This authority is to remain in effect until AFEX has received written notification from me/us of its change or termination. The notification must be received at least 10 business days before the next debit Is scheduled at the address provided below. AFEX shall advise me/us of any dishonored fees, and I/we agree to pay them.' }
   ],
 
   properties: [
@@ -211,13 +211,7 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.AddressView',
             data: this.viewData.user.address,
             // Temporarily only allow businesses based in Canada for new users.
-            customCountryDAO: this.PromisedDAO.create({
-              promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                return hasPermission
-                  ? this.countryDAO.where(this.IN(this.Country.ID, ['CA', 'US']))
-                  : this.countryDAO.where(this.EQ(this.Country.ID, 'CA'));
-              })
-            })
+            customCountryDAO: this.user.address.countryId === 'CA' ? this.countryDAO.where(this.EQ(this.Country.ID, 'CA')) : this.countryDAO.where(this.EQ(this.Country.ID, 'US'))
           })
         .endContext()
 

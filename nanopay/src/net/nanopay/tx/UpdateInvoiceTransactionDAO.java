@@ -117,8 +117,8 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         HashMap<String, Object> args = new HashMap();
         args.put("transactionId", transaction.getId());
         args.put("invoiceId", invoice.getId());
-        invoice.setPaymentMethod(null);
-        invoice.setPaymentDate(null);
+        invoice.clearPaymentMethod();
+        invoice.clearPaymentDate();
         invoiceDAO.put(invoice);
         // Send a notification to the payment-ops team.
         FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
