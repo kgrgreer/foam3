@@ -69,6 +69,7 @@ foam.CLASS({
         Boolean rtn = business != null &&
           SafetyUtil.equals(business.getStatus(), AccountStatus.ACTIVE) &&
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
+          SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();
 
         if ( ((AuthService) x.get("auth")).check(x, "currency.read.USD") ) {

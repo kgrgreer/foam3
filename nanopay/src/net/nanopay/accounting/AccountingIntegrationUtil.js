@@ -40,11 +40,12 @@ foam.CLASS({
     { name: 'MISSING_BUSINESS_EMAIL', message: 'Missing Business Name & Email' },
     { name: 'MISSING_BUSINESS', message: 'Missing Business Name' },
     { name: 'MISSING_EMAIL', message: 'Missing Email' },
+    { name: 'MISS_ADDRESS', message: 'Missing Business Address' },
     { name: 'OTHER', message: 'Other' },
-    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.'},
-    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.'},
-    { name: 'EXISTING_USER', message: 'There is already a user with that email.'},
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.'}
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.' },
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.' },
+    { name: 'EXISTING_USER', message: 'There is already a user with that email.' },
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' }
   ],
 
   properties: [
@@ -82,13 +83,13 @@ foam.CLASS({
         return null;
       }
       if ( ! contactResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // invoice sync
       let invoiceResult = await service.invoiceSync(null);
       if ( ! invoiceResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // build final result
@@ -168,6 +169,7 @@ foam.CLASS({
       let doc = new jsPDF();
       doc.myY = 20;
 
+      this.createContactWarningTables(reportResult.contactErrors, doc);
       this.createContactErrorsTables(reportResult.contactErrors, doc);
       this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
       this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
@@ -208,6 +210,33 @@ foam.CLASS({
       doc.myY = doc.autoTable.previous.finalY + 20;
     },
 
+    function createContactWarningTables(contactErrors, doc) {
+      let columns = [
+        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Name', dataKey: 'name' }
+      ];
+      for ( key of Object.keys(contactErrors) ) {
+        if ( key === 'MISS_ADDRESS' ) {
+          if ( contactErrors[key].length !== 0 ) {
+              doc.text('Contact Sync Action Required', 14, doc.myY);
+              doc.myY = doc.myY + 10;
+              doc.text('These contacts have been added to Ablii, but require a business address', 14, doc.myY);
+              doc.myY = doc.myY + 7;
+              doc.text('before you can pay them.', 14, doc.myY);
+            doc.text('', 14, doc.myY);
+            doc.autoTable({
+              columns: columns,
+              body: contactErrors[key],
+              startY: doc.myY + 3
+            });
+            doc.myY = doc.autoTable.previous.finalY + 10;
+          }
+            columns.pop();
+            removeLastItem = false;
+        }
+      }
+    },
+
     function createContactErrorsTables(contactErrors, doc) {
       let printTitle = true;
       let removeLastItem = false;
@@ -216,27 +245,29 @@ foam.CLASS({
         { header: 'Name', dataKey: 'name' }
       ];
       for ( key of Object.keys(contactErrors) ) {
-        if ( key === 'OTHER' ) {
-          removeLastItem = true;
-          columns.push({ header: 'Message', dataKey: 'message' });
-        }
-        if ( contactErrors[key].length !== 0 ) {
-          if ( printTitle ) {
-            doc.text('Contact Sync Errors', 14, doc.myY);
-            doc.myY = doc.myY + 10;
-            printTitle = false;
+        if ( key !== 'MISS_ADDRESS' ) {
+          if ( key === 'OTHER' ) {
+            removeLastItem = true;
+            columns.push({ header: 'Message', dataKey: 'message' });
           }
-          doc.text(this.getTableName(key), 14, doc.myY);
-          doc.autoTable({
-            columns: columns,
-            body: contactErrors[key],
-            startY: doc.myY + 3
-          });
-          doc.myY = doc.autoTable.previous.finalY + 10;
-        }
-        if ( removeLastItem ) {
-          columns.pop();
-          removeLastItem = false;
+          if ( contactErrors[key].length !== 0 ) {
+            if ( printTitle ) {
+              doc.text('Contact Sync Errors', 14, doc.myY);
+              doc.myY = doc.myY + 10;
+              printTitle = false;
+            }
+            doc.text(this.getTableName(key), 14, doc.myY);
+            doc.autoTable({
+              columns: columns,
+              body: contactErrors[key],
+              startY: doc.myY + 3
+            });
+            doc.myY = doc.autoTable.previous.finalY + 10;
+          }
+          if ( removeLastItem ) {
+            columns.pop();
+            removeLastItem = false;
+          }
         }
       }
     },
@@ -281,6 +312,8 @@ foam.CLASS({
           return this.MISSING_BUSINESS;
         case 'MISS_EMAIL':
           return this.MISSING_EMAIL;
+        case 'MISS_ADDRESS':
+          return this.MISS_ADDRESS;
         default:
           return this.OTHER;
       }

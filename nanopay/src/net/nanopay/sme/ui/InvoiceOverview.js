@@ -26,10 +26,12 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'net.nanopay.tx.ConfirmationFileLineItem'
   ],
 
   imports: [
@@ -393,6 +395,12 @@ foam.CLASS({
         return Promise.resolve();
       }
     },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'transactionConfirmationPDF',
+      documentation: `Order confirmation, as a PDF, for the Payer.
+    `
+    }
   ],
 
   methods: [
@@ -406,20 +414,27 @@ foam.CLASS({
               transaction.sourceAccount :
               transaction.destinationAccount;
 
-          if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
+          if ( (transaction.type === 'AscendantFXTransaction' && transaction.fxRate) || this.FXSummaryTransaction.isInstance(transaction) ) {
             if ( transaction.fxRate !== 1 ) {
               this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} `;
+                + `${(1 / transaction.fxRate).toFixed(4)} ${transaction.sourceCurrency}`;
             }
 
-            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+            if ( this.FXSummaryTransaction.isInstance(transaction) ) {
+              this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(transaction.fxFees.totalFees);
+                this.fee = currency.format(transaction.getCost());
               });
+            } else {
+              this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+                .then((currency) => {
+                  this.fee = currency.format(transaction.fxFees.totalFees);
+                });
+            }
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(0);
+                this.fee = currency.format(transaction.getCost());
               });
           }
 
@@ -434,6 +449,14 @@ foam.CLASS({
               this.isCrossBorder = true;
             }
           });
+
+          for ( var i = 0; i < transaction.lineItems.length; i++ ) {
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
+              break;
+            }
+          }
+
         } else {
           this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
             this.formattedAmountPaid = currency.format(this.invoice.chequeAmount);
@@ -610,17 +633,16 @@ foam.CLASS({
               .end()
             .end()
 
-            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
-              this
-                .start()
-                  .addClass('confirmation-link-content')
-                  .tag({
-                    class: 'net.nanopay.sme.ui.Link',
-                    data: self.invoice.AFXConfirmationPDF.address,
-                    text: self.TXN_CONFIRMATION_LINK_TEXT
-                  })
-                .end();
-            })
+            .add(this.slot(function(transactionConfirmationPDF) {
+              if ( transactionConfirmationPDF != null ) {
+                return this.E().start()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.transactionConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
+              }
+            }))
 
             .start()
               .addClass('invoice-history-content')

@@ -13,16 +13,21 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
-    'net.nanopay.sme.onboarding.BusinessOnboarding'
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding'
   ],
 
   imports: [
     'agent',
     'businessOnboardingDAO',
+    'canadaUsBusinessOnboardingDAO',
+    'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
     'user',
-    'auth'
+    'auth',
+    'appConfigService'
   ],
 
   css: `
@@ -30,67 +35,53 @@ foam.CLASS({
       width: 500px;
       height: 173px;
       box-sizing: border-box;
-
       border-radius: 4px;
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
-
       position: relative;
       padding: 24px;
-
       background-size: cover;
       background-repeat: no-repeat;
     }
-
     ^info-box {
       display: inline-block;
-
-      width: 245px;
+      width: 260px;
       height: 100px;
     }
-
     ^title {
       height: 24px;
       margin: 0;
-
       font-family: Lato;
       font-size: 16px;
       font-weight: 900;
       line-height: 1.5;
       color: /*%BLACK%*/ #1e1f21;
     }
-
     ^description {
       margin: 0;
       margin-top: 8px;
-
       font-family: Lato;
       font-size: 14px;
       line-height: 1.5;
       color: #525455;
     }
-
     ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
       margin-top: 16px;
     }
-
     ^complete-container {
       margin-top: 24px;
     }
-
     ^icon {
       display: inline-block;
       vertical-align: middle;
       width: 20px;
       height: 20px;
-
       margin-right: 8px;
     }
-
     ^complete {
       display: inline-block;
       vertical-align: middle;
       margin: 0;
-
+      
       font-size: 14px;
       line-height: 1.71;
       color: /*%BLACK%*/ #1e1f21;
@@ -103,16 +94,32 @@ foam.CLASS({
       message: 'Unlock domestic payments'
     },
     {
+      name: 'TITLE_US_DOMESTIC',
+      message: 'Unlock US and Canadian Payments'
+    },
+    {
       name: 'TITLE_INTERNATIONAL',
       message: 'Unlock international payments'
+    },
+    {
+      name: 'TITLE_INTERNATIONAL_CAD',
+      message: 'Unlock US payments'
     },
     {
       name: 'DESCRIPTION_DOMESTIC',
       message: 'Complete the requirements and unlock domestic payments'
     },
     {
+      name: 'DESCRIPTION_US_DOMESTIC',
+      message: 'Complete the requirements and unlock domestic and Canadian Payments'
+    },
+    {
       name: 'DESCRIPTION_INTERNATIONAL',
       message: 'We are adding the ability to make FX payments around the world using Ablii. '
+    },
+    {
+      name: 'DESCRIPTION_CAD_INTERNATIONAL',
+      message: 'Complete the requirements to unlock US payments. More corridors coming soon!'
     },
     {
       name: 'COMPLETE',
@@ -120,6 +127,14 @@ foam.CLASS({
     },
     {
       name: 'PENDING',
+      message: 'pending domestic completion!'
+    },
+    {
+      name: 'PENDING_TWO',
+      message: 'pending!'
+    },
+    {
+      name: 'COMING_SOON',
       message: 'Coming soon!'
     }
   ],
@@ -162,10 +177,13 @@ foam.CLASS({
       class: 'String',
       name: 'title',
       expression: function(type) {
-        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
           return this.TITLE_INTERNATIONAL;
         }
-        return this.TITLE_DOMESTIC;
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
+          return this.TITLE_INTERNATIONAL_CAD;
+        }
+        return this.isCanadianBusiness ? this.TITLE_DOMESTIC : this.TITLE_US_DOMESTIC;
       },
       documentation: `
         The title to be used in the card based on card type
@@ -175,10 +193,14 @@ foam.CLASS({
       class: 'String',
       name: 'info',
       expression: function(type) {
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
+          return this.DESCRIPTION_CAD_INTERNATIONAL;
+        }
+
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
-        return this.DESCRIPTION_DOMESTIC;
+        return this.isCanadianBusiness ? this.DESCRIPTION_DOMESTIC : this.DESCRIPTION_US_DOMESTIC;
       },
       documentation: `
         The description to be used in the card based on card type
@@ -189,33 +211,62 @@ foam.CLASS({
       name: 'isComplete'
     },
     {
-      name: 'hasUSDPermission',
+      name: 'hasFXProvisionPermission',
       value: false
     },
+    {
+      name: 'isCanadianBusiness',
+      expression: function(user) {
+        return user.address.countryId === 'CA';
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEmployee'
+    }
   ],
 
   methods: [
     function init() {
-      this.auth.check(null, 'currency.read.USD').then((result) => {
-        this.hasUSDPermission = result;
+      this.auth.check(null, 'fx.provision.payer').then((result) => {
+        this.hasFXProvisionPermission = result;
+        console.log(result);
       });
     },
-    function initE() {
-
+    async function initE() {
       var self = this;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type, hasUSDPermission) {
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! hasUSDPermission ) {
+          .add(this.slot(function(isComplete, type, hasFXProvisionPermission) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
+              .end();
+            }
+
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+                && ! hasFXProvisionPermission ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+              .end();
+            }
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+                && hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
             }
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+              && hasFXProvisionPermission && this.isEmployee ) {
+            return this.E().start().addClass(self.myClass('complete-container'))
+              .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+            .end();
+          }
 
-            if ( ! isComplete ) {
+            if ( ! isComplete && ! this.isEmployee ) {
               return this.E()
                 .startContext({ data: self })
                   .start(self.GET_STARTED, { buttonStyle: 'SECONDARY' }).end()
@@ -244,9 +295,9 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
+          var userId = this.agent.id;
+          var businessId = this.user.id;
           if ( ! this.user.onboarded ) {
-            var userId = this.agent.id;
-            var businessId = this.user.id;
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the
@@ -257,17 +308,50 @@ foam.CLASS({
             // BusinessOnboarding for the existing user's other business instead
             // of the one they were recently added to. By including the
             // businessId in our search criteria we avoid this problem.
-            this.businessOnboardingDAO.find(
+            if ( isDomesticOnboarding && this.isCanadianBusiness ) {
+              this.businessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.BusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.BusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }  else if ( ! this.isCanadianBusiness ) {
+              this.uSBusinessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.USBusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.USBusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.USBusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }
+          }  else if ( ! isDomesticOnboarding && this.isCanadianBusiness ) {
+            this.canadaUsBusinessOnboardingDAO.find(
               this.AND(
-                this.EQ(this.BusinessOnboarding.USER_ID, userId),
-                this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+                this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, userId),
+                this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, businessId)
               )
             ).then((o) => {
-              o = o || this.BusinessOnboarding.create({
+              o = o || this.CanadaUsBusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId
               });
-              o.hasUSDPermission = ! isDomesticOnboarding && this.hasUSDPermission;
               this.stack.push({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o

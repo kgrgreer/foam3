@@ -37,7 +37,10 @@ foam.CLASS({
           DAO paymentProviderDAO = (DAO) x.get("paymentProviderDAO");
       
           ArraySink sink = (ArraySink) InstitutionPaymentProviderDAO.where(
-            MLang.EQ(InstitutionPaymentProvider.INSTITUTION, account.getInstitution())
+            MLang.OR(
+              MLang.EQ(InstitutionPaymentProvider.INSTITUTION, account.getInstitution()),
+              MLang.EQ(InstitutionPaymentProvider.INSTITUTION, 0)
+            )
           ).select(new ArraySink());
           List<InstitutionPaymentProvider> array = sink.getArray();
       

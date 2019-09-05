@@ -16,9 +16,9 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.banner.ComplianceBannerData',
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -29,6 +29,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmailView',
+    'net.nanopay.ui.banner.BannerData',
+    'net.nanopay.ui.banner.BannerMode',
     'foam.u2.Element',
   ],
 
@@ -44,6 +46,10 @@ foam.CLASS({
     'currentAccount',
     'privacyUrl',
     'termsUrl',
+  ],
+
+  imports: [
+    'canadaUsBusinessOnboardingDAO',
   ],
 
   implements: [
@@ -148,7 +154,15 @@ foam.CLASS({
     },
     {
       name: 'PASSED_BANNER',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic payments!'
+    },
+    {
+      name: 'PASSED_BANNER_DOMESTIC_US',
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to send and receive payments between Canada and the US!'
+    },
+    {
+      name: 'PASSED_BANNER_INTERNATIONAL',
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic and international payments to USA!'
     },
     {
       name: 'TWO_FACTOR_REQUIRED_ONE',
@@ -211,10 +225,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.sme.ui.banner.ComplianceBannerData',
+      of: 'net.nanopay.ui.banner.BannerData',
       name: 'bannerData',
       factory: function() {
-        return this.ComplianceBannerData.create({
+        return this.BannerData.create({
           isDismissed: true
         });
       }
@@ -226,6 +240,10 @@ foam.CLASS({
       factory: function() {
         return this.AccountingIntegrationUtil.create();
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'caUsOnboardingComplete'
     },
     {
       class: 'Array',
@@ -240,7 +258,7 @@ foam.CLASS({
         return [
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return user.compliance === self.ComplianceStatus.NOTREQUESTED
                 && accountArray.length === 0;
@@ -250,7 +268,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
@@ -261,7 +279,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
@@ -272,7 +290,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_REQUESTED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray.length === 0;
@@ -282,7 +300,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
@@ -293,7 +311,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_PASSED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length === 0
                 && user.compliance === self.ComplianceStatus.PASSED;
@@ -303,7 +321,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
@@ -314,7 +332,7 @@ foam.CLASS({
           },
           {
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
@@ -325,11 +343,38 @@ foam.CLASS({
           },
           {
             msg: this.PASSED_BANNER,
-            bannerMode: this.ComplianceBannerMode.ACCOMPLISHED,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && ! self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_INTERNATIONAL,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_DOMESTIC_US,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED
+                && user.address.countryId === 'US';
             },
             passed: true,
             showBanner: true
@@ -412,7 +457,7 @@ foam.CLASS({
             .start()
               .addClass('stack-wrapper')
               .start({
-                class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+                class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
               })
               .end()
@@ -458,7 +503,8 @@ foam.CLASS({
             companyNameField: searchParams.has('companyName')
               ? searchParams.get('companyName')
               : '',
-            disableCompanyName: searchParams.has('companyName')
+            disableCompanyName: searchParams.has('companyName'),
+            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
           };
         }
       }
@@ -476,6 +522,12 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      await this.getCAUSPaymentEnabled(user, this.agent);
+
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -604,6 +656,21 @@ foam.CLASS({
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
+      }
+    },
+    /**
+     * Set caUsOnboardingComplete based on CA/US oboarding status.
+     */
+    async function getCAUSPaymentEnabled(user, agent) {
+      if ( this.Business.isInstance(user) ) {
+        this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
+          this.AND(
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, user.id)
+          )
+        ).then((o) => {
+          this.caUsOnboardingComplete = o && o.status === this.OnboardingStatus.SUBMITTED;
+        });
       }
     },
 
