@@ -63,7 +63,12 @@ foam.CLASS({
         ((TestedRule)agency).setProbeInfo(info);
       }
       if ( ! limitState.check(this.getLimit(), this.getPeriod(), txn.getAmount()) ) {
-        throw new RuntimeException("Your " + this.getPeriod() + " limit is exceeded. Please contact us. ");
+        String s = "";
+        if ( this.getPeriod() == net.nanopay.util.Frequency.DAILY ) {
+          s = "Your current available limit is " + ((double) (Math.round(this.getLimit() - limitState.getSpent())/100.0)) + ". ";
+        }
+        throw new RuntimeException("This transaction exceeds your " + this.getPeriod() + " transaction limit. " 
+          + s + "If you require further assistance, please contact us. ");
       }
       agency.submit(x, x1 -> limitState.updateSpent(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
