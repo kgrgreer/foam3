@@ -348,6 +348,13 @@ foam.CLASS({
             if ( childNodes[i].layout() ) moved = true;
           }
 
+          // FIXME: center parent above children
+          if ( childNodes.length > 1 ){
+            var leftmostChild = childNodes[0];
+            var rightmostChild = childNodes[childNodes.length - 1];
+            this.x += (leftmostChild.x + rightmostChild.x) / 2;
+          }
+          
           return moved;
         },
 
