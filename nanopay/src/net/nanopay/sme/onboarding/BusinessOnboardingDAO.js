@@ -44,7 +44,6 @@ foam.CLASS({
       ],
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
-        // TODO: Please call the java validator of the businessOnboarding here
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();

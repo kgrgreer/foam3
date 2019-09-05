@@ -103,6 +103,13 @@ foam.CLASS({
     'identificationTypeDAO'
   ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
+
   sections: [
     {
       name: 'gettingStartedSection',
@@ -1143,6 +1150,13 @@ foam.CLASS({
         });
       }
     },
+  ],
+
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to update a submitted onboard profile.'
+    }
   ],
 
   methods: [
