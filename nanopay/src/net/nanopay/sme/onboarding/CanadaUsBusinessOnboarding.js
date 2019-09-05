@@ -180,28 +180,30 @@ foam.CLASS({
       ],
     },
     {
-      section: 'internationalTransactionSection',
       class: 'String',
       name: 'businessRegistrationNumber',
-      label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      hidden: true
+    },
+    {
+      section: 'internationalTransactionSection',
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      label: 'Federal Tax ID Number (EIN)',
+      documentation: 'Federal Tax ID Number (EIN)',
       visibilityExpression: function(countryOfBusinessFormation) {
         return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'businessRegistrationNumber', 'countryOfBusinessFormation'],
+          args: ['signingOfficer', 'taxIdentificationNumber', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER
-                }), 9),
+              e.REG_EXP(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.TAX_IDENTIFICATION_NUMBER,/^[0-9]{9}$/),
             );
           },
-          errorString: 'Please enter a valid Federal Tax ID Number (EIN) or Business Registration Number.'
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN)'
         }
       ]
     },

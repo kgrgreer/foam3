@@ -112,7 +112,7 @@ foam.CLASS({
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
           business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
+          business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
           business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
 
           // Business info: business details
