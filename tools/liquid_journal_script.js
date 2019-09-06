@@ -2426,4 +2426,4 @@ function main() {
   X.currencyDAO.close();
 }
 
-main();
+// main();
