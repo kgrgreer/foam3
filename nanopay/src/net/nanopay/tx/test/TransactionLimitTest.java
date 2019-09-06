@@ -96,7 +96,7 @@ public class TransactionLimitTest extends Test {
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txDAO.put_(x, tx2),
-      "This transaction exceeds your DAILY transaction limit. Your current available limit is 0.1 dollars. If you require further assistance, please contact us. ",
+      "This transaction exceeds your daily transaction limit. Your current available limit is 0.1 dollars. If you require further assistance, please contact us. ",
       RuntimeException.class), "next transaction for 100L throws exception");
 
     DigitalTransaction tx3 = new DigitalTransaction();
