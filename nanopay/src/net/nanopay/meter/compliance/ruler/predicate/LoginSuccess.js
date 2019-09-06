@@ -17,6 +17,7 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(DOT(NEW_OBJ, LoginAttempt.LOGIN_SUCCESSFUL), true),
+          EQ(DOT(NEW_OBJ, LoginAttempt.GROUP), "sme"),
           EQ(OLD_OBJ, null)
         ).f(obj);
       `
