@@ -66,10 +66,14 @@ foam.CLASS({
       javaCode: `
         int totalClearingTime = transaction.getClearingTimes().values().stream()
           .reduce(0, Integer::sum);
-        if ( totalClearingTime <= 0 ) {
+        if ( transaction.getClearingTimes().isEmpty()
+          || totalClearingTime < 0
+        ) {
           String message = String.format(
-            "Transaction %s has nonpositive clearing time: %d. Use defaultClearingTime: %d instead.",
-            transaction.getId(), totalClearingTime, getDefaultClearingTime());
+            "Transaction %s has %s clearing time. Use defaultClearingTime (%d) instead.",
+            transaction.getId(),
+            totalClearingTime == 0 ? "no" : Integer.toString(totalClearingTime),
+            getDefaultClearingTime());
           ((Logger) x.get("logger")).warning(message, transaction);
 
           totalClearingTime = getDefaultClearingTime();
