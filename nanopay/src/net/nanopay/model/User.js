@@ -312,6 +312,7 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         if ( ! SafetyUtil.isEmpty(getLegalName()) ) return getLegalName();
         if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
+        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
         return "";
       `
     }
