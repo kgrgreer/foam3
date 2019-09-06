@@ -93,10 +93,19 @@ foam.CLASS({
         this.accountDAO.find(n).then(account => {
           var absolutePositionNode = this.cview.view.root.findNodeAbsolutePositionByName(account.name,0,0);
 
-          var viewportPosition = {
-            x: absolutePositionNode.x,
-            y: absolutePositionNode.y
+          if ( ! absolutePositionNode ){
+            console.log('its lit');
           }
+
+          console.log('absoluteNode: ', absolutePositionNode);
+          console.log('Old Viewport Position', this.cview.viewPortPosition);
+
+          var viewportPosition = {
+            x: absolutePositionNode.x - this.cview.viewPortPosition.x,
+            y: absolutePositionNode.y - this.cview.viewPortPosition.y
+          }
+
+          console.log('New Viewport Position', viewportPosition);
 
           this.cview.viewPortPosition = viewportPosition;
         })

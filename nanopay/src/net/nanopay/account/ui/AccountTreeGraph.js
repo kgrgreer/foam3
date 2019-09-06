@@ -179,9 +179,12 @@ foam.CLASS({
               }));
 
               for (var j = 0; j < childOutline.length; j++) {
-                champion[j] = champion[j] || {};
-                champion[j].left = Math.min(childOutline[j].left, champion[j].left  || Number.MAX_SAFE_INTEGER );
-                champion[j].right = Math.max(childOutline[j].right, champion[j].right || Number.MIN_SAFE_INTEGER );
+                champion[j] = champion[j] || {
+                  left: Number.MAX_SAFE_INTEGER,
+                  right: Number.MIN_SAFE_INTEGER
+                };
+                champion[j].left = Math.min(childOutline[j].left, champion[j].left);
+                champion[j].right = Math.max(childOutline[j].right, champion[j].right);
               }
             }
 
@@ -201,6 +204,25 @@ foam.CLASS({
         ['right', 0],
         ['maxLeft', 0],
         ['maxRight', 0],
+        {
+          name: 'x',
+          expression: function(neighborX, centerX) {
+            return neighborX + centerX;
+          },
+          postSet: function() {
+            this.neighborX = 0;
+            this.centerX = 0;
+            this.x = undefined;
+          }
+        },
+        {
+          class: 'Float',
+          name: 'neighborX'
+        },
+        {
+          class: 'Float',
+          name: 'centerX'
+        },
         {
           class: 'Boolean',
           name: 'expanded',
@@ -323,7 +345,6 @@ foam.CLASS({
           //console.log(this.data.name);
           const { childNodes } = this;
           var moved = false;
-          var l = childNodes.length
 
           for ( var i = 0; i < childNodes.length; i++ ) {
             var n1 = childNodes[i];
@@ -334,7 +355,25 @@ foam.CLASS({
               var distance = n1.distanceTo(n2);
 
               if ( distance < 0 ) {
-                n2.x -= distance;
+                n2.neighborX -= distance;
+                moved = true;
+              }
+            }
+          }
+
+          for ( var i = 0; i < childNodes.length - 1; i++ ) {
+            var n1 = childNodes[i];
+            var n2 = childNodes[i + 1];
+
+            var distance = n1.distanceTo(n2);
+
+            if ( distance > 0 ) {
+              for ( var j = 0; j < i; j++ ) {
+                var n3 = childNodes[j];
+                distance = Math.min(distance, n3.distanceTo(n2));
+              }
+              if ( distance ) {              
+                n2.neighborX -= distance;
                 moved = true;
               }
             }
@@ -344,28 +383,20 @@ foam.CLASS({
             if ( childNodes[i].layout() ) moved = true;
           }
 
-          // for ( var i = 0; i < childNodes.length; i++ ) {
-          //   var n1 = childNodes[i];
-
-          //   for ( var j = i + 1; j < childNodes.length; j++ ){
-          //     var n2 = childNodes[j];
-
-          //     var distance = n1.distanceTo(n2);
-
-          //     if ( distance !== 0 ) {
-          //       n1.x += distance/2;
-          //       n2.x -= distance/2;
-          //       moved = true;
-          //     }
-          //   }
-          // }
-
           // FIXME: center parent above children
-          // if ( this.outline[1] ) {
-          // position between left and right  of outline[1]
-          // this.x = this.outline[1].left + this.outline[1].right) / 2
-          // moved = true;
-          // }
+          if ( this.outline[1] ) {
+            var rw = this.outline[0].right - this.outline[0].left;
+            var cw = this.outline[1].right - this.outline[1].left;
+            var d = - (cw - rw) / 2;
+            childNodes.forEach(c => {
+              if ( c.centerX != d ) {
+                c.centerX = d;
+                moved = true;
+              }
+            })
+            // position between left and right  of outline[1]
+            // this.x = (this.outline[1].left + this.outline[1].right) / 2;
+          }
           // if ( childNodes.length > 1 ){
           //   var leftmostChild = childNodes[0];
           //   var rightmostChild = childNodes[childNodes.length - 1];
