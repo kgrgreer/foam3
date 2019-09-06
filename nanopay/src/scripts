@@ -746,12 +746,6 @@ p({
   int count = 0;
   for ( Business business : businesses ) {
 
-    if ( ! business.getOnboarded() ) {
-        count++;
-        print("Skipping " + business.getOrganization() + " because it has not been on-boarded yet.");
-        continue;
-    }
-
     if ( null == business.getAddress() ) {
         print("Unable to move currency permission for " + business.getOrganization() + ". Please check to make sure address field is set.");
         continue;
