@@ -323,6 +323,7 @@ foam.CLASS({
           //console.log(this.data.name);
           const { childNodes } = this;
           var moved = false;
+          var l = childNodes.length
 
           for ( var i = 0; i < childNodes.length; i++ ) {
             var n1 = childNodes[i];
@@ -343,21 +344,21 @@ foam.CLASS({
             if ( childNodes[i].layout() ) moved = true;
           }
 
-          for ( var i = 0; i < childNodes.length; i++ ) {
-            var n1 = childNodes[i];
+          // for ( var i = 0; i < childNodes.length; i++ ) {
+          //   var n1 = childNodes[i];
 
-            for ( var j = i + 1; j < childNodes.length; j++ ){
-              var n2 = childNodes[j];
+          //   for ( var j = i + 1; j < childNodes.length; j++ ){
+          //     var n2 = childNodes[j];
 
-              var distance = n1.distanceTo(n2);
+          //     var distance = n1.distanceTo(n2);
 
-              if ( distance !== 0 ) {
-                n1.x += distance/2;
-                n2.x -= distance/2;
-                moved = true;
-              }
-            }
-          }
+          //     if ( distance !== 0 ) {
+          //       n1.x += distance/2;
+          //       n2.x -= distance/2;
+          //       moved = true;
+          //     }
+          //   }
+          // }
 
           // FIXME: center parent above children
           // if ( this.outline[1] ) {
@@ -374,15 +375,18 @@ foam.CLASS({
           return moved;
         },
 
-        function findNodeAbsoluteXByName(name, compound) {
+        function findNodeAbsolutePositionByName(name, compoundX, compoundY) {
           if (this.data.name === name) {
             this.graph.selectedNode = this;
-            return this.x + compound;
+            return {
+              x: this.x + compoundX,
+              y: this.y + compoundY
+            };
           }
 
           var childNodes = this.childNodes;
           for (var i = 0; i < childNodes.length; i++) {
-            var foundNode = childNodes[i].findNodeAbsoluteXByName(name, this.x + compound);
+            var foundNode = childNodes[i].findNodeAbsolutePositionByName(name, this.x + compoundX, this.y + compoundY);
             if (foundNode) {
               return foundNode;
             }

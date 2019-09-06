@@ -91,9 +91,14 @@ foam.CLASS({
       },
       postSet: function(_, n){
         this.accountDAO.find(n).then(account => {
-          var absoluteX = this.cview.root.findNodeAbsoluteXByName(account.name,0);
-          var e = this.canvasContainer.el();
-          e.scrollTo(absoluteX * this.cview.scaleX - e.clientWidth/2, 0);
+          var absolutePositionNode = this.cview.view.root.findNodeAbsolutePositionByName(account.name,0,0);
+
+          var viewportPosition = {
+            x: absolutePositionNode.x,
+            y: absolutePositionNode.y
+          }
+
+          this.cview.viewPortPosition = viewportPosition;
         })
       },
       view: function(_, x) {
@@ -118,9 +123,6 @@ foam.CLASS({
   actions: [
     {
       name: 'zoomIn',
-      isEnabled: function(cview$scale) {
-        return (cview$scale || 0) < 2 && (cview$scale || 0) < 2;
-      },
       code: function() {
         this.cview.scale *= 1.25;
         this.cview.scale *= 1.25;
@@ -142,8 +144,8 @@ foam.CLASS({
         return !! canvasContainer;
       },
       code: function() {
-        var e = this.canvasContainer.el();
-        e.scrollTo(this.cview.root.x - e.clientWidth/2, 0);
+        // var e = this.canvasContainer.el();
+        // e.scrollTo(this.cview.root.x - e.clientWidth/2, 0);
       }
     }
   ],
@@ -187,13 +189,6 @@ foam.CLASS({
           .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
             .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
               var v = self.AccountTreeGraph.create({ data: a.array[0] });
-              // var l1 = self.GreekView.create({
-              //   view: v,
-              //   height$: v.height$,
-              //   width: self.el().clientWidth,
-              //   viewBorder: 'black',
-              //   navBorder: 'red'
-              // });
               self.cview = self.GreekView.create({
                 view: v,
                 height$: v.height$,
