@@ -13,6 +13,7 @@ capabilities
 corridors
 countries
 cronjobs
+csvUploadScripts
 currencies
 currencyfxServices
 deprecatedCapabilityJunctions

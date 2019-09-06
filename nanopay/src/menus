@@ -69,3 +69,5 @@ p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password",
 // removals
 r({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":""})
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
+
+p({"class":"foam.nanos.menu.Menu","id":"GsScript","label":"GsScript","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"GsScriptDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1001,"parent":""})

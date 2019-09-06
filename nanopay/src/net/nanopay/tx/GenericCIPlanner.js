@@ -31,7 +31,7 @@ foam.CLASS({
     {
       name: 'enabled',
       class: 'Boolean',
-      value: false
+      value: true
     }
   ],
 
@@ -56,7 +56,9 @@ foam.CLASS({
       CITransaction t = new CITransaction.Builder(x).build();
       t.copyFrom(request);
       t.setIsQuoted(true);
-      quote.addPlan(t);
+      t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      quote.setPlan(t);
+      return quote;
     }
     return getDelegate().put_(x, quote);
     `

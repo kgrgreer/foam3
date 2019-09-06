@@ -370,6 +370,7 @@ var classes = [
   'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.tx.GenericCIPlanner',
   'net.nanopay.tx.ParentCompleteToPendingRule',
+  'net.nanopay.tx.GsScript',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -733,6 +734,8 @@ var classes = [
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
 
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
 ];
 
 var abstractClasses = [

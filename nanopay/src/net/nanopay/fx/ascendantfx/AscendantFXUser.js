@@ -137,8 +137,8 @@ foam.CLASS({
               if ( null != ascendantFXUser && ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
 
               if ( SafetyUtil.isEmpty(orgId) ) {
-                ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId);
-                throw new RuntimeException("User is not provisioned for foreign exchange transactions yet, please contact customer support.");
+                //((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId);
+                //throw new RuntimeException("User is not provisioned for foreign exchange transactions yet, please contact customer support.");
               }
 
               return orgId;

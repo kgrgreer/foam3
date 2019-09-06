@@ -346,6 +346,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/GenericCIPlanner' },
+  { name: 'net/nanopay/tx/GsScript'},
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
   { name: 'net/nanopay/tx/InvoiceFeeLineItem' },
@@ -1144,4 +1145,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
+  { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
+  { name: 'net/nanopay/tx/gs/GsRowToTx'},
 ]);
