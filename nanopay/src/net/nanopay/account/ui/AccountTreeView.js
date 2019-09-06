@@ -94,20 +94,19 @@ foam.CLASS({
           var absolutePositionNode = this.cview.view.root.findNodeAbsolutePositionByName(account.name,0,0);
 
           if ( ! absolutePositionNode ){
+            debugger;
             console.log('its lit');
+          } else {
+            console.log('absoluteNode: ', absolutePositionNode);
+            console.log('Old Viewport Position', this.cview.viewPortPosition);
+
+            var viewportPosition = {
+              x: absolutePositionNode.x - this.cview.viewPortPosition.x,
+              y: absolutePositionNode.y - this.cview.viewPortPosition.y
+            }
+            console.log('New Viewport Position', viewportPosition);
+            this.cview.viewPortPosition = viewportPosition;
           }
-
-          console.log('absoluteNode: ', absolutePositionNode);
-          console.log('Old Viewport Position', this.cview.viewPortPosition);
-
-          var viewportPosition = {
-            x: absolutePositionNode.x - this.cview.viewPortPosition.x,
-            y: absolutePositionNode.y - this.cview.viewPortPosition.y
-          }
-
-          console.log('New Viewport Position', viewportPosition);
-
-          this.cview.viewPortPosition = viewportPosition;
         })
       },
       view: function(_, x) {
