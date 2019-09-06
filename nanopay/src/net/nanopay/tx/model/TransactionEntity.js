@@ -59,6 +59,7 @@ foam.CLASS({
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
     }
   ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {

@@ -93,14 +93,16 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'basicInfo'
+      name: 'paymentInfo'
+
     },
     {
-      name: 'paymentInfo'
+      name: 'basicInfo',
+      title: 'Transaction Info'
     },
     {
       name: 'lineItemsSection',
-      title: 'Line Items',
+      title: 'Additional Detail',
       isAvailable: function(id, lineItems) {
         return ! id || lineItems.length;
       }
@@ -114,7 +116,8 @@ foam.CLASS({
     },
     {
       name: '_defaultSection',
-      permissionRequired: true
+      permissionRequired: true,
+      hidden: true
     },
   ],
 
@@ -291,12 +294,16 @@ foam.CLASS({
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       tableWidth: 130,
-      view: function(args, x) {
-        self = this;
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          choices: x.data.statusChoices
-        };
+      view: function(args, x,value) {
+         if (x.controllerMode.name === 'EDIT')
+         return {
+           class: 'foam.u2.view.ChoiceView',
+           choices: x.data.statusChoices
+         };
+         else return { class: 'foam.u2.tag.Input',
+          mode: 'RO',
+          data: x.data.status.name,
+          size: 1000 };
       }
     },
     {
@@ -325,27 +332,16 @@ foam.CLASS({
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
-      name: 'payee',
-      label: 'Receiver',
-      storageTransient: true,
-      visibility: 'RO',
-      section: 'paymentInfo',
-      tableCellFormatter: function(value) {
-        this.start()
-          .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.displayName : 'na')
-          .end()
-        .end();
-      },
-    },
-    {
-      // FIXME: move to a ViewTransaction used on the client
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
       section: 'paymentInfo',
       visibility: 'RO',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: [[x.data.payer, x.data.payer.toSummary()]]
+        };
+      },
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -354,6 +350,29 @@ foam.CLASS({
           .end()
         .end();
       }
+    },
+    {
+      // FIXME: move to a ViewTransaction used on the client
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      label: 'Receiver',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'paymentInfo',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: [[x.data.payee, x.data.payee.toSummary()]]
+        };
+      },
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.displayName : 'na')
+          .end()
+        .end();
+      },
     },
     {
       class: 'Long',
@@ -370,6 +389,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
+      label: 'Source Amount',
       section: 'paymentInfo',
       visibility: 'RO'
     },
@@ -471,12 +491,13 @@ foam.CLASS({
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId',
-      visibility: 'RO'
+      visibility: 'RO',
+      hidden: true
     },
     {
       class: 'String',
       name: 'sourceCurrency',
-      label: 'Currency',
+      label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
       value: 'CAD'
@@ -491,6 +512,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
           foam.u2.Visibility.HIDDEN :
@@ -572,7 +594,7 @@ foam.CLASS({
       name: 'doFolds',
       javaCode: `
 for ( Balance b : getBalances() ) {
-  fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+  fm.foldForState(b.getAccount(), getLastStatusChange(), b.getBalance());
 }
       `
     },

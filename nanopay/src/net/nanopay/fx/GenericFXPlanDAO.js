@@ -79,11 +79,14 @@ foam.CLASS({
       type: 'net.nanopay.fx.FXTransaction',
       javaCode:`
         FXTransaction f = new FXTransaction();
+        f.setDestinationCurrency(txn.getDestinationCurrency());
+        f.setSourceCurrency(txn.getSourceCurrency());
         f.setAmount(txn.getAmount());
         f.setDestinationAmount(txn.getDestinationAmount());
         f.setSourceAccount(txn.getSourceAccount());
+        f.setLastStatusChange(txn.getLastStatusChange());
         f.setDestinationAccount(txn.getDestinationAccount());
-
+        f.setFxRate( ((double) txn.getAmount()/txn.getDestinationAmount()));
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
             .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")

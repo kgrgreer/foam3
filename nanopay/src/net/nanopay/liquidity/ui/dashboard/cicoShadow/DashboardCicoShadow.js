@@ -213,8 +213,8 @@ foam.CLASS({
         return this.transactionDAO.where(
           this.AND(
             this.AND(
-              this.GTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, startDate),
-              this.LTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, endDate)
+              this.GTE(net.nanopay.tx.model.Transaction.LAST_STATUS_CHANGE, startDate),
+              this.LTE(net.nanopay.tx.model.Transaction.LAST_STATUS_CHANGE, endDate)
             ),
             this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
             this.OR(
@@ -285,11 +285,9 @@ foam.CLASS({
                   config: config,
                   xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
                   yExpr$: self.dateFrequency$.map(d => d.glang.clone().copyFrom({
-                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                    delegate: net.nanopay.tx.model.Transaction.LAST_STATUS_CHANGE
                   })),
-                  customDatasetStyling: customDatasetStyling,
-                  width: 1100,
-                  height: 320
+                  customDatasetStyling: customDatasetStyling
                 });
               })
             }))

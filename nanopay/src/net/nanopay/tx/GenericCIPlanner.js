@@ -56,6 +56,7 @@ foam.CLASS({
       CITransaction t = new CITransaction.Builder(x).build();
       t.copyFrom(request);
       t.setIsQuoted(true);
+      t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
       quote.setPlan(t);
       return quote;
     }
