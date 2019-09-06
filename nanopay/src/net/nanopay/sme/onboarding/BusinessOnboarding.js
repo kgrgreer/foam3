@@ -111,7 +111,11 @@ foam.CLASS({
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
+                e.AND(
+                  e.EQ(i, 0),
+                  e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, true)
+                ),
+                e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER'+i]
                 }), true)
@@ -288,6 +292,7 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
+        // TODO: fix: 'console.error :8080/#sme.main.dashboard:1 Uncaught (in promise) ...' postSet doesnt understand promised return- other then error shown this is not a blocker
         this.userId$find.then((user) => {
           if ( this.userId != n ) return;
           this.firstName = user.firstName;

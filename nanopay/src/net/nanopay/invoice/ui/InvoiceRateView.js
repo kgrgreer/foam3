@@ -463,7 +463,12 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().show(this.isFx$)
+        .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency ) {
+          if ( sourceCurrency == null ) {
+            return false;
+          }
+          return isFx && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+        }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();
     },
