@@ -31,7 +31,10 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.emailmessage","label":"Email M
 p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":4000,"parent":"operation"})
 
 // Business Onboarding
-p({"class":"foam.nanos.menu.Menu","id":"operation.BusinessOnboarding","label":"Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.CAD_BusinessOnboarding","label":"Canadian only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.US_BusinessOnboarding","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"uSBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.CAD-US_BusinessOnboarding","label":"Canadian Upgraded Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"canadaUsBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc","label":"Acceptance Document List","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userAcceptanceDocumentDAO"},"parent":"operation"})
 
 // ComplianceItem
 p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})
