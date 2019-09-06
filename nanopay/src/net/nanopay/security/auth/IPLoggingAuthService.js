@@ -40,6 +40,7 @@ foam.CLASS({
         try {
           User user = super.login(x, userId, password);
           loginAttempt.setEmail(user.getEmail());
+          loginAttempt.setGroup(user.getGroup());
           loginAttempt.setLoginSuccessful(true);
           ((DAO) getLoginAttemptDAO()).inX(x).put(loginAttempt);
           return user;
@@ -62,6 +63,7 @@ foam.CLASS({
         try {
           User user = super.loginByEmail(x, email, password);
           loginAttempt.setLoginAttemptedFor(user.getId());
+          loginAttempt.setGroup(user.getGroup());
           loginAttempt.setLoginSuccessful(true);
           ((DAO) getLoginAttemptDAO()).inX(getX()).put(loginAttempt);
           return user;
