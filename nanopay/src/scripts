@@ -720,3 +720,75 @@ p({
 })
 
 p({"class":"foam.nanos.script.Script","id":"On boarding businessRegistration -> tax #","code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport net.nanopay.sme.onboarding.USBusinessOnboarding;\nimport net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;\nimport net.nanopay.model.Business;\n\nusOnboardingDAO = x.get(\"uSBusinessOnboardingDAO\");\ncadUSOnboardingDAO = x.get(\"canadaUsBusinessOnboardingDAO\");\nbusinessDAO = x.get(\"businessDAO\");\n\nusOnboardings = (usOnboardingDAO.select(new ArraySink())).getArray();\n\n// Set business tax id from onboarding registration number\nfor (USBusinessOnboarding onboard : usOnboardings) {\nbusinessId = onboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(onboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\n}\n\ncadUsOnboardings = (cadUSOnboardingDAO.select(new ArraySink())).getArray();\n\nfor (CanadaUsBusinessOnboarding cadOnboard : cadUsOnboardings) {\nbusinessId = cadOnboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(cadOnboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\nprint(cadOnboard);\n}\n\nprint(\"Done\");"})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Move Currency Permission from SME to Business Employee Group",
+  "status": 2,
+  "code": """
+    import foam.dao.DAO;
+  import foam.dao.ArraySink;
+  import foam.mlang.MLang;
+  import foam.nanos.auth.Group;
+  import foam.nanos.auth.Permission;
+  import net.nanopay.model.Business;
+  import javax.security.auth.AuthPermission;
+  import java.util.List;
+
+  String USD_PERMISSION = "currency.read.USD";
+  String CAD_PERMISSION = "currency.read.CAD";
+
+  DAO businessDAO = (DAO) x.get("businessDAO");
+  DAO groupDAO = (DAO) x.get("groupDAO");
+
+  businesses = businessDAO.select(new ArraySink()).getArray();
+  int businessCount = businesses.size();
+  int count = 0;
+  for ( Business business : businesses ) {
+
+    if ( ! business.getOnboarded() ) {
+        count++;
+        print("Skipping " + business.getOrganization() + " because it has not been on-boarded yet.");
+        continue;
+    }
+
+    if ( null == business.getAddress() ) {
+        print("Unable to move currency permission for " + business.getOrganization() + ". Please check to make sure address field is set.");
+        continue;
+    }
+    
+    if ( ! "CA".equals(business.getAddress().getCountryId()) && ! "US".equals(business.getAddress().getCountryId())) {
+      count++;
+      print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
+      continue;
+    }
+
+    String permission = "CA".equals(business.getAddress().getCountryId()) ? CAD_PERMISSION : USD_PERMISSION;
+    Permission domesticCurrencyPermission = new Permission.Builder(x).setId(permission).build();
+    Group group = (Group) groupDAO.find(business.getGroup());
+    while ( group != null ) {
+      group = (Group) group.findParent(x);
+      if ( group != null && group.getId().endsWith("employee") ) break;
+    }
+    if ( group != null ) { 
+      group.getPermissions(x).add(domesticCurrencyPermission); 
+      count++;
+    }
+  }
+
+  print("Total number of businesses is " + businessCount + ". Number of business processed is " + count);
+
+  if ( businessCount == count ) {
+    Group smegroup = groupDAO.find("sme");
+    if ( null != smegroup && smegroup.implies(x, new AuthPermission(CAD_PERMISSION)) ) {
+      Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
+      smegroup.getPermissions(x).remove(cadPermission); 
+    }
+    print("currency.read.CAD permission was removed from the sme group.");
+  } else { print("currency.read.CAD permission was not removed from the sme group because there were issues with " + (businessCount - count) + " businesses."); }
+
+  print("DONE");
+  
+  """,
+  "output": ""
+})
