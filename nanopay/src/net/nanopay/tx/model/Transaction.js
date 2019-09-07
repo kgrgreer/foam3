@@ -95,7 +95,6 @@ foam.CLASS({
   sections: [
     {
       name: 'paymentInfo'
-
     },
     {
       name: 'basicInfo',
@@ -329,7 +328,7 @@ foam.CLASS({
       visibility: 'RO',
       label: 'Reference'
     },
-    {
+     {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
@@ -340,7 +339,7 @@ foam.CLASS({
       view: function(_, x) {
         return {
           class: 'foam.u2.view.ChoiceView',
-          choices: [[x.data.payer, x.data.payer.toSummary()]]
+          choices$: x.data.payer$.map(p => p ? [[p, p.toSummary()]] : [])
         };
       },
       storageTransient: true,
@@ -364,7 +363,7 @@ foam.CLASS({
       view: function(_, x) {
         return {
           class: 'foam.u2.view.ChoiceView',
-          choices: [[x.data.payee, x.data.payee.toSummary()]]
+          choices$: x.data.payee$.map(p => p ? [[p, p.toSummary()]] : [])
         };
       },
       tableCellFormatter: function(value) {
@@ -375,6 +374,7 @@ foam.CLASS({
         .end();
       },
     },
+
     {
       class: 'Long',
       name: 'payeeId',
@@ -420,8 +420,8 @@ foam.CLASS({
               } else {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
                 output += ' → ';
-                output += dstCurrency 
-                            ? dstCurrency.format(obj.destinationAmount) 
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
