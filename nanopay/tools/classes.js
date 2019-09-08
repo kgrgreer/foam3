@@ -144,6 +144,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
   'net.nanopay.fx.afex.AFEXComplianceTransactionPredicate',
   'net.nanopay.fx.afex.AFEXComplianceTransactionRule',
+  'net.nanopay.fx.afex.AFEXLog',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',

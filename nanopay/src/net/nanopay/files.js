@@ -230,6 +230,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCredentials' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionRule' },
+  { name: 'net/nanopay/fx/afex/AFEXLog' },
   { name: 'net/nanopay/fx/afex/Token' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientRequest' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientResponse' },
