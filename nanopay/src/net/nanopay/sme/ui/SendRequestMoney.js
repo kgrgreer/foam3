@@ -29,8 +29,9 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'userDAO',
+    'transactionQuotePlanDAO',
     'quickbooksService',
-    'xeroService'
+    'xeroService',
   ],
 
   exports: [
@@ -44,7 +45,8 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
-    'refreshIntervalId'
+    'updateInvoiceDetails',
+    'forceUpdate'
   ],
 
   requires: [
@@ -57,7 +59,9 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -231,9 +235,11 @@ foam.CLASS({
       name: 'permitToPay'
     },
     {
-      class: 'String',
-      name: 'refreshIntervalId'
-    }
+      class: 'Boolean',
+      name: 'forceUpdate',
+      value: false
+    },
+    'updateInvoiceDetails'
   ],
 
   messages: [
@@ -250,6 +256,9 @@ foam.CLASS({
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
     { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
+    { name: 'RATE_REFRESH', message: 'Exchange rate has been refreshed. Please review and ' },
+    { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
+    { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
@@ -360,6 +369,31 @@ foam.CLASS({
       }
       return true;
     },
+  
+    function getExpiryTime( time, expiryTime) {
+      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
+      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
+      return Math.floor(( utc2-utc1 ));
+    },
+  
+    async function getFXQuote() {
+      var transaction = this.AbliiTransaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        destinationAmount: this.invoice.amount
+      });
+
+      var quote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+      return quote.plan;
+    },
 
     async function submit() {
       this.isLoading = true;
@@ -391,6 +425,18 @@ foam.CLASS({
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         transaction.invoiceId = this.invoice.id;
+
+        // confirm fxquote is still valid
+        if ( transaction != null && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
+          transaction = await this.getFXQuote();
+          transaction.invoiceId = this.invoice.id;
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'error');
+          this.isLoading = false;
+          this.updateInvoiceDetails = transaction;
+          this.forceUpdate = true;
+          return;
+        }
+
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
           try {
