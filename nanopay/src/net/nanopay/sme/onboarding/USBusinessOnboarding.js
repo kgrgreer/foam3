@@ -1177,7 +1177,7 @@ foam.CLASS({
         USBusinessOnboarding oldObj = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(this.getId());
 
         if ( auth.check(x, "onboarding.update.*") ) return;
-s
+
         if (
           oldObj != null &&
           oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
