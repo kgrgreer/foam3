@@ -8,7 +8,7 @@ foam.CLASS({
   documentation: 'Rule to add currency.read.Currency permissions to a business.',
 
   javaImports: [
-    'foam.core.ContextAgent',
+    'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
@@ -25,31 +25,30 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        agency.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAwareAgent() {
           @Override
           public void execute(X x) {
             if ( ! (obj instanceof Business) ) {
 	            return;
             }
             Business business = (Business) obj.fclone();
-            DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-            Address businessAddress = business.getBusinessAddress();
+            DAO localGroupDAO = (DAO) getX().get("localGroupDAO");
+            Address businessAddress = business.getAddress();
             
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String currencyPermissionString = "currency.read.";
               currencyPermissionString = businessAddress.getCountryId().equals("CA") ? currencyPermissionString + "CAD" : currencyPermissionString + "USD";
-              Permission currencyPermission = new Permission.Builder(x).setId(currencyPermissionString).build();
+              Permission currencyPermission = new Permission.Builder(getX()).setId(currencyPermissionString).build();
               Group group = (Group) localGroupDAO.find(business.getGroup());
               while ( group != null ) {
-                group = (Group) group.findParent(x);
+                group = (Group) group.findParent(getX());
                 if ( group != null && group.getId().endsWith("employee") ) break;
               }
-
-              if ( null != group && ! group.implies(x, new AuthPermission(currencyPermissionString)) ) {
+              if ( null != group && ! group.implies(getX(), new AuthPermission(currencyPermissionString)) ) {
                 try {
-                  group.getPermissions(x).add(currencyPermission);  
+                  group.getPermissions(getX()).add(currencyPermission);  
                 } catch(Throwable t) {
-                    ((Logger) x.get("logger")).error("Error adding " + currencyPermissionString + " permission to business " + business.getId(), t);
+                    ((Logger) getX().get("logger")).error("Error adding " + currencyPermissionString + " permission to business " + business.getId(), t);
                 } 
               } 
             }

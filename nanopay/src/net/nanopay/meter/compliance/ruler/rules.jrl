@@ -298,21 +298,10 @@ p({
   "priority": 10,
   "ruleGroup": "onboarding",
   "daoKey": "localUserDAO",
-  "operation": 1,
+  "operation": 3,
   "after": true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
-        }
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed",
-      }
-    ]
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCreated"
   },
   "action": {
     "class": "net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission"
@@ -320,35 +309,11 @@ p({
   "enabled": true,
   "saveHistory": true
 })
-p({
+r({
   "class": "foam.nanos.ruler.Rule",
   "id": 1702,
   "name": "Remove Domestic Currency Permission",
-  "documentation": "This rule removes user currency.read.DOMESTIC_CURRENCY Permission when compliance is not passed.",
-  "priority": 10,
-  "ruleGroup": "onboarding",
-  "daoKey": "localUserDAO",
-  "operation": 1,
-  "after": true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
-        }
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed",
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission"
-  },
-  "enabled": true,
-  "saveHistory": true
+  "documentation": "This rule removes user currency.read.DOMESTIC_CURRENCY Permission when compliance is not passed."
 })
 p({
   "class": "foam.nanos.ruler.Rule",
@@ -361,18 +326,7 @@ p({
   "operation": 1,
   "after": true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
-        }
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded",
-      }
-    ]
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded",
   },
   "action": {
     "class": "net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission"
@@ -391,18 +345,7 @@ p({
   "operation": 1,
   "after": true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
-        }
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded",
-      }
-    ]
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded",
   },
   "action": {
     "class": "net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission"
