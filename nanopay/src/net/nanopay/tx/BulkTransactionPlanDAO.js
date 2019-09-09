@@ -23,24 +23,19 @@ foam.CLASS({
       javaCode: `
         TransactionQuote parentQuote = (TransactionQuote) obj;
         Transaction parentTxn = parentQuote.getRequestTransaction();
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
-        DAO balanceDAO = (DAO) x.get("localBalanceDAO");
 
         // Check whether it is bulkTransaction
         if ( parentTxn instanceof BulkTransaction) {
-
-          User payer = (User) userDAO.find_(x, parentTxn.getPayerId());
-
-          // Check if the payer passed the compliance or not
-          if ( ComplianceStatus.PASSED != payer.getCompliance() ) {
-            throw new RuntimeException("The payer did not pass the compliance check.");
-          }
-
           // Check if the child transaction array is empty or not
           if ( parentTxn.getNext().length < 1 ) {
             throw new RuntimeException("The child transactions of a bulk transasction cannot be empty");
           }
+
+          DAO userDAO = (DAO) x.get("localUserDAO");
+          DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+          DAO balanceDAO = (DAO) x.get("localBalanceDAO");
+
+          User payer = (User) userDAO.find_(x, parentTxn.getPayerId());
 
           long sum = 0;
           Transaction[] childTransactions= parentTxn.getNext();
@@ -48,11 +43,10 @@ foam.CLASS({
             ct.setPayerId(parentTxn.getPayerId());
             ct.setPayeeId(parentTxn.getPayerId());
 
-            for (int i = 0; i < childTransactions.length; i++) {
+            for (Transaction childTransaction : childTransactions) {
               // Sum amount of child transactions
-              sum = sum + childTransactions[i].getAmount();
+              sum = sum + childTransaction.getAmount();
 
-              Transaction childTransaction =  childTransactions[i];
               TransactionQuote childQuote = new TransactionQuote();
 
               // Set the source of each child transaction to its parent destination digital account
@@ -60,7 +54,7 @@ foam.CLASS({
               childTransaction.setPayerId(parentTxn.getPayerId());
 
               // Quote each child transaction
-              childQuote.setRequestTransaction(childTransactions[i]);
+              childQuote.setRequestTransaction(childTransaction);
 
               // Put all the child transaction quotes to TransactionQuotePlanDAO
               TransactionQuote result = (TransactionQuote) planDAO.put(childQuote);
