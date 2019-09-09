@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -97,8 +97,8 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create({ 
-          defaultColumns: ["name","balance","homeBalance","type","owner"],
+        return this.DAOControllerConfig.create({
+          defaultColumns: ["name","balance","homeBalance"],
           dao: this.accountDAO,
         });
       }

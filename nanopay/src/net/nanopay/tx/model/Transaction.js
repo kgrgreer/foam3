@@ -420,8 +420,8 @@ foam.CLASS({
               } else {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
                 output += ' → ';
-                output += dstCurrency 
-                            ? dstCurrency.format(obj.destinationAmount) 
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
@@ -547,6 +547,7 @@ foam.CLASS({
     },
     {
       name: 'lastStatusChange',
+      label: 'Value Date',
       class: 'DateTime',
       section: 'basicInfo',
       documentation: `The date that a transaction changed to its current status`,
