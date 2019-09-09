@@ -1159,6 +1159,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         DAO businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
 
+        BusinessOnboarding obj = (BusinessOnboarding) this;
         BusinessOnboarding oldObj = (BusinessOnboarding) businessOnboardingDAO.find(this.getId());
 
         if ( auth.check(x, "onboarding.update.*") ) return;
@@ -1170,6 +1171,15 @@ foam.CLASS({
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
+
+        if (
+            obj.getStatus() != OnboardingStatus.SUBMITTED &&
+            oldObj.getStatus() != OnboardingStatus.SUBMITTED
+        ) {
+          return;
+        }
+
+        super.validate(x);
       `
     },
     {
