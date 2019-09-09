@@ -21,6 +21,14 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Long',
+      name: 'payerId',
+      documentation: `
+      Set this to the payer's id. The DAO will check if this user is able to
+      send money in the currency with id currencyId.
+      `
+    },
+    {
       class: 'Boolean',
       name: 'response',
       documentation: `

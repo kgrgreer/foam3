@@ -10,6 +10,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
+import foam.nanos.auth.AuthService;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
@@ -42,8 +43,9 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
+    User payer = (User) bareUserDAO.inX(x).find(request.getPayerId());
 
-    if ( user == null ) {
+    if ( user == null && payer == null) {
       throw new RuntimeException("User not found.");
     }
 
@@ -80,10 +82,24 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
 
+    // Check payer denomination bank.
+    Count payerCount = (Count) accountDAO
+      .where(AND(
+        INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.DELETED, false),
+        EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
+        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+        EQ(Account.OWNER, payer.getId())))
+      .select(new Count());
+
+    AuthService auth = (AuthService) x.get("auth");
+    boolean fxRequired = payerCount.getValue() == 0;
+    boolean isProvisioned = auth.checkUser(getX(), payer, "fx.provision.payer");
+
      // if the user is a business then the compliance should be passed
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
 
-    response.setResponse((count.getValue() > 0) && isCompliant);
+    response.setResponse(fxRequired ? (count.getValue() > 0) && isCompliant && isProvisioned : (count.getValue() > 0) && isCompliant);
     if ( count.getValue() == 0 ) response.setMessage("Sorry, we don't support " + request.getCurrencyId() + " for this contact.");
     if ( ! isCompliant ) response.setMessage("The user you've chosen hasn't passed our compliance check.");
     return response;
