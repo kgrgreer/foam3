@@ -1172,14 +1172,7 @@ foam.CLASS({
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
 
-        if (
-            obj.getStatus() != OnboardingStatus.SUBMITTED &&
-            oldObj.getStatus() != OnboardingStatus.SUBMITTED
-        ) {
-          return;
-        }
-
-        super.validate(x);
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
       `
     },
     {
