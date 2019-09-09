@@ -397,7 +397,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+            this.notify(( error ? error.message : this.TRANSACTION_ERROR + this.type ), 'error');
             this.isLoading = false;
             return;
           }
