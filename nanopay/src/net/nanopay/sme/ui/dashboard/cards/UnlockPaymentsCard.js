@@ -230,7 +230,6 @@ foam.CLASS({
     function init() {
       this.auth.check(null, 'fx.provision.payer').then((result) => {
         this.hasFXProvisionPermission = result;
-        console.log(result);
       });
     },
     async function initE() {
