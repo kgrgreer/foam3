@@ -30,8 +30,8 @@ foam.CLASS({
     }
 
     ^pie-chart {
-      height: 300px;
-      padding: 34px;
+      height: 425px;
+      padding-top: 24px;
     }
   `,
 
