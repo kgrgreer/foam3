@@ -89,6 +89,7 @@ foam.CLASS({
             TransactionQuote cashInTransactionQuote = new TransactionQuote();
             cashInTransactionQuote.setRequestTransaction(cashInTransaction);
             cashInTransactionQuote = (TransactionQuote) planDAO.put(cashInTransactionQuote);
+            cashInTransaction = cashInTransactionQuote.getPlan();
             
             // Add cash-in transaction as the next fo the parent transaction
             cashInTransaction.addNext(ct);
