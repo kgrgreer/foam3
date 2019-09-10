@@ -73,15 +73,6 @@ foam.CLASS({
             action: updatedUser.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
           }).end();
       }));
-    },
-
-    function attachSessionId(url) {
-      // attach session id if available
-      var sessionId = localStorage['defaultSession'];
-      if ( sessionId ) {
-        url += '&sessionId=' + sessionId;
-      }
-      return url;
     }
   ],
 
@@ -104,7 +95,6 @@ foam.CLASS({
       },
       code: function() {
         // var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
-        // window.location = this.attachSessionId(url);
         this.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
