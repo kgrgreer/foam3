@@ -6,11 +6,15 @@ foam.ENUM({
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'glang'
+      name: 'startExpr'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'endExpr'
     },
     {
       class: 'Int',
-      name: 'timeFactor'
+      name: 'numDataPoints'
     }
   ],
 
@@ -18,42 +22,57 @@ foam.ENUM({
     {
       name: 'DAILY',
       label: 'Daily',
-      glang: {
+      startExpr: {
+        class: 'foam.glang.StartOfDay'
+      },
+      endExpr: {
         class: 'foam.glang.EndOfDay'
       },
-      timeFactor: 7
+      numDataPoints: 7
     },
     {
       name: 'WEEKLY',
       label: 'Weekly',
-      glang: {
+      startExpr: {
+        class: 'foam.glang.StartOfWeek'
+      },
+      endExpr: {
         class: 'foam.glang.EndOfWeek'
       },
-      timeFactor: 4
+      numDataPoints: 4
     },
     {
       name: 'MONTHLY',
       label: 'Monthly',
-      glang: {
+      startExpr: {
+        class: 'foam.glang.StartOfMonth'
+      },
+      endExpr: {
         class: 'foam.glang.EndOfMonth'
       },
-      timeFactor: 4
+      numDataPoints: 4
     },
     {
       name: 'QUARTERLY',
       label: 'Quarterly',
-      glang: {
+      startExpr: {
+        class: 'foam.glang.StartOfQuarter'
+      },
+      endExpr: {
         class: 'foam.glang.EndOfQuarter'
       },
-      timeFactor: 4
+      numDataPoints: 4
     },
     {
       name: 'ANNUALLY',
       label: 'Annually',
-      glang: {
+      startExpr: {
+        class: 'foam.glang.StartOfYear'
+      },
+      endExpr: {
         class: 'foam.glang.EndOfYear'
       },
-      timeFactor: 6
+      numDataPoints: 6
     },
   ]
 });
