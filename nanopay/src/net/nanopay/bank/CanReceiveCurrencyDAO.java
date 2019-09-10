@@ -93,8 +93,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       .select(new Count());
 
     AuthService auth = (AuthService) x.get("auth");
-    boolean fxRequired = payerCount.getValue() == 0;
-    boolean isProvisioned = auth.checkUser(getX(), payer, "fx.provision.payer");
+    boolean fxRequired = request.getCurrencyId().equals("USD") || payerCount.getValue() == 0 || count.getValue() == 0;
+    boolean isProvisioned = auth.checkUser(getX(), payer, "currency.read.USD");
 
      // if the user is a business then the compliance should be passed
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
