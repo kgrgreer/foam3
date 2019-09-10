@@ -51,7 +51,7 @@ foam.CLASS({
       height: 24px;
       margin: 0;
       font-family: Lato;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
       color: /*%BLACK%*/ #1e1f21;
