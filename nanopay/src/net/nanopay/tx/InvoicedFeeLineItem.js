@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'A Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
 
+  properties: [
+    {
+      class: 'String',
+      name: 'description'
+    }
+  ],
+
   methods: [
     {
       name: 'createTransfers',

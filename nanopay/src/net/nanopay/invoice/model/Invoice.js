@@ -38,7 +38,8 @@ foam.CLASS({
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.tx.TransactionLineItem'
   ],
 
   imports: [
@@ -553,6 +554,13 @@ foam.CLASS({
         net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
       },
       documentation: 'Checks if invoice has been synced with accounting software.',
+      visibility: 'RO'
+    },
+    {
+      name: 'lineItems',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
     }
   ],
