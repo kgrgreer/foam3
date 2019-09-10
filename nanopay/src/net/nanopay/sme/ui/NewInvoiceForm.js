@@ -200,7 +200,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'You do not have the ability to exchange funds in that currency with this contact.'
+      message: 'User does not have the ability to exchange funds in that currency.'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
