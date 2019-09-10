@@ -200,7 +200,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'You do not have a verified bank account in that currency.'
+      message: 'You do not have the ability to exchange funds in that currency with this contact.'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
@@ -559,6 +559,7 @@ foam.CLASS({
       if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
+          payerId: isPayable ? this.user.id : this.invoice.contactId,
           currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
