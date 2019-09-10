@@ -79,5 +79,27 @@ foam.CLASS({
         return blp;
       ` 
     }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        super.validate(x);
+        DAO ruleDAO = (DAO) x.get("ruleDAO");
+        if ( ruleDAO.find(foam.mlang.MLang.AND(
+          foam.mlang.MLang.EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
+          foam.mlang.MLang.EQ(BusinessLimit.PERIOD, this.getPeriod()))) != null ) {
+          throw new IllegalStateException("There already exists a BusinessLimit for the same business and period. ");
+        }
+      `
+    }
   ]
 });
