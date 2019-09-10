@@ -383,6 +383,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
     String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
 
+    String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
+    String beneficiaryName = user.getBusinessName().replaceAll(allowedChars,"");;
     UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
     updateBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
     updateBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
@@ -391,7 +393,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
     updateBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
     updateBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
-    updateBeneficiaryRequest.setBeneficiaryName(user.getLegalName());
+    updateBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
     updateBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
     updateBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
     updateBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
