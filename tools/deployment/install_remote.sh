@@ -6,7 +6,7 @@ INSTALL_ONLY=0
 
 RC_FILE=~/.config/nanopay/remoterc
 
-REMOTE_USER=
+REMOTE_USER=admin
 REMOTE_URL=
 SSH_KEY=
 
