@@ -823,7 +823,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
               + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
             logger.error(errorMsg2);
-            log.logResponse(response);
+            log.logResponse(response2);
             afexLogDAO.put(log);
             throw new RuntimeException(errorMsg2);
           }
