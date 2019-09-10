@@ -38,20 +38,26 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
 
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
-      boolean bufferElapsed = false;
-      int bufferMinutes = 5;
-      Calendar now = Calendar.getInstance();
-      now.add(Calendar.MINUTE, bufferMinutes);
-      Calendar created = Calendar.getInstance();
-      created.setTime(request.getCreated());
-      bufferElapsed = (now.after(created));
-
-      if ( bufferElapsed ) {
-        request = (AFEXBusinessApprovalRequest) request.fclone();
-        request.setStatus(ApprovalStatus.APPROVED);
-        approvalRequestDAO.put(request);
+      if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
+        boolean bufferElapsed = false;
+        int bufferMinutes = 5;
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.MINUTE, bufferMinutes);
+        Calendar created = Calendar.getInstance();
+        created.setTime(request.getCreated());
+        bufferElapsed = (now.after(created));
+        if ( bufferElapsed ) {
+          request = (AFEXBusinessApprovalRequest) request.fclone();
+          request.setStatus(ApprovalStatus.APPROVED);
+          approvalRequestDAO.put(request);
+        }
+      } else if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.APPROVED ) {
+        approvalRequestDAO.where(AND(
+          EQ(ApprovalRequest.DAO_KEY, request.getDaoKey()),
+          EQ(ApprovalRequest.OBJ_ID, String.valueOf(request.getObjId())),
+          EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
+        .removeAll();
       }
-      
     }
   }
 }
