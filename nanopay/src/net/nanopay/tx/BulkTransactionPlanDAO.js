@@ -28,7 +28,7 @@ foam.CLASS({
         if ( parentTxn instanceof BulkTransaction) {
           // Check if the child transaction array is empty or not
           if ( parentTxn.getNext().length < 1 ) {
-            throw new RuntimeException("The child transactions of a bulk transasction cannot be empty");
+            throw new RuntimeException("The child transactions of a bulk transaction cannot be empty");
           }
 
           DAO userDAO = (DAO) x.get("localUserDAO");
@@ -45,7 +45,6 @@ foam.CLASS({
 
           // Set the destination of parent transaction to payer's default digital account
           DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
-          Balance digitalAccountBalance = (Balance) balanceDAO.find(payerDigitalAccount.getId());
           parentTxn.setDestinationAccount(payerDigitalAccount.getId());
 
           for (Transaction childTransaction : childTransactions) {
@@ -75,7 +74,9 @@ foam.CLASS({
           // Set the total amount on parent
           parentTxn.setAmount(sum);
 
-          if ( sum > digitalAccountBalance.getBalance() ) {
+          Long payerDigitalBalance = (Long) payerDigitalAccount.findBalance(x);
+
+          if ( sum > payerDigitalBalance ) {
             // If digital does not have sufficient funds, then set the source account to their default bank account.
             BankAccount payerDefaultBankAccount = BankAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
             parentTxn.setSourceAccount(payerDefaultBankAccount.getId());
