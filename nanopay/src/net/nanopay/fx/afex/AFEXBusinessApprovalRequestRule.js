@@ -27,7 +27,6 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            System.out.println("Inside AFEXBusinessApprovalRequestRule");
             AFEXBusiness afexBusiness = (AFEXBusiness) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
             approvalRequestDAO.put_(x,
