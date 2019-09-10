@@ -547,6 +547,7 @@ foam.CLASS({
     },
     {
       name: 'lastStatusChange',
+      label: 'Value Date',
       class: 'DateTime',
       section: 'basicInfo',
       documentation: `The date that a transaction changed to its current status`,

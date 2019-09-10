@@ -30,8 +30,8 @@ foam.CLASS({
     }
 
     ^pie-chart {
-      height: 300px;
-      padding: 34px;
+      height: 425px;
+      padding-top: 24px;
     }
   `,
 
@@ -113,7 +113,35 @@ foam.CLASS({
                       }
                     }
                   },
-                  palette: ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6']
+                  palette: [
+                    '#afd3bb',
+                    '#cb8363',
+                    '#b82850',
+                    '#25548b',
+                    '#92267a',
+                    '#07a7fe',
+                    '#a5d8a5',
+                    '#0760de',
+                    '#64651b',
+                    '#e788ec',
+                    '#f33fce',
+                    '#38c2f4',
+                    '#6ce179',
+                    '#b9b2e4',
+                    '#3ae83f',
+                    '#2ec3c9',
+                    '#05d6aa',
+                    '#7a63e6',
+                    '#dce644',
+                    '#844b8a',
+                    '#e05115',
+                    '#d49eb1',
+                    '#c4db48',
+                    '#df72d3',
+                    '#b428b9',
+                    '#386278',
+                    '#ccc64b'
+                  ]
                 })
                   .addClass(this.myClass('pie-chart'))
                 .end()

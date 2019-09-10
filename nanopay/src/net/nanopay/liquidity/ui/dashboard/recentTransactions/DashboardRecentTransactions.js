@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -35,7 +35,8 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.comics.v2.DAOBrowserView'
+    'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig'
   ],
   exports: [
     'controllerMode'
@@ -58,6 +59,17 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.DAOControllerConfig',
+      name: 'config',
+      factory: function() {
+        return this.DAOControllerConfig.create({
+          defaultColumns:["id","summary","lastStatusChange","payer","payee","destinationCurrency","destinationAmount"],
+          dao: this.data
+        });
+      }
     }
   ],
 
@@ -73,9 +85,10 @@ foam.CLASS({
                 .start()
                   .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
                 .end()
-                .tag(foam.comics.v2.DAOBrowserView, {
-                  data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20)
-                })
+                .start(foam.comics.v2.DAOBrowserView, {
+                  data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20),
+                  config: self.config
+                }).end()
               .end();
         }));
     }
