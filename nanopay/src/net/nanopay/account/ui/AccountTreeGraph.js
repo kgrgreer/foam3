@@ -55,8 +55,7 @@ foam.CLASS({
         if (o) {
           o.color = 'white';
         }
-        n.color = this.selectedColor
-          ;
+        n.color = this.selectedColor;
       }
     },
     {
@@ -228,6 +227,9 @@ foam.CLASS({
           name: 'expanded',
           expression: function(childNodes) {
             return childNodes.length < 5;
+          },
+          postSet: function() {
+            this.graph.doLayout();
           }
         },
         {
@@ -246,14 +248,34 @@ foam.CLASS({
 
           if (this.relationship) {
             var data = this.data.clone(this.__subContext__);
-
             try {
-              data[this.relationship.forwardName].select(function (data) {
+              data[this.relationship.forwardName].select(data => {
                 this.addChildNode({ data: data });
-              }.bind(this));
+              });
             } catch (x) { }
             this.graph.doLayout();
           }
+
+          this.canvas.on('click', (e) => {
+            var p = this.parent;
+
+            while ( this.cls_.isInstance(p) ) {
+              if ( ! p.expanded ) return;
+              p = p.parent;
+            }
+
+            var point = this.globalToLocalCoordinates({
+              w: 1,
+              x: e.offsetX,
+              y: e.offsetY,
+            });
+            point.x += this.width / 2;
+
+            var hit = this.hitTest(point)
+            if ( hit ) {
+              this.expanded = ! this.expanded;
+            }
+          });
         },
 
         function paint(x) {
@@ -372,7 +394,7 @@ foam.CLASS({
                 var n3 = childNodes[j];
                 distance = Math.min(distance, n3.distanceTo(n2));
               }
-              if ( distance ) {              
+              if ( distance ) {
                 n2.neighborX -= distance;
                 moved = true;
               }
@@ -394,30 +416,20 @@ foam.CLASS({
                 moved = true;
               }
             })
-            // position between left and right  of outline[1]
-            // this.x = (this.outline[1].left + this.outline[1].right) / 2;
           }
-          // if ( childNodes.length > 1 ){
-          //   var leftmostChild = childNodes[0];
-          //   var rightmostChild = childNodes[childNodes.length - 1];
-          //   this.x += (leftmostChild.x + rightmostChild.x) / 2;
-          // }
-          
+
+
           return moved;
         },
 
-        function findNodeAbsolutePositionByName(name, compoundX, compoundY) {
-          if (this.data.name === name) {
-            this.graph.selectedNode = this;
-            return {
-              x: this.x + compoundX,
-              y: this.y + compoundY
-            };
+        function findNode(id){
+          if (this.data.id === id) {
+            return this;
           }
 
           var childNodes = this.childNodes;
           for (var i = 0; i < childNodes.length; i++) {
-            var foundNode = childNodes[i].findNodeAbsolutePositionByName(name, this.x + compoundX, this.y + compoundY);
+            var foundNode = childNodes[i].findNode(id);
             if (foundNode) {
               return foundNode;
             }

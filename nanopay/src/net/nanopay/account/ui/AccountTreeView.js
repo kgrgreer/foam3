@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.AggregateAccount',
-    'foam.graphics.GreekView'
+    'foam.graphics.ZoomMapView'
   ],
 
   documentation: `
@@ -81,7 +81,7 @@ foam.CLASS({
     },
   ],
 
-  properties: [ 
+  properties: [
     {
       class: 'Reference',
       name: 'accounts',
@@ -90,24 +90,7 @@ foam.CLASS({
         return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
       },
       postSet: function(_, n){
-        this.accountDAO.find(n).then(account => {
-          var absolutePositionNode = this.cview.view.root.findNodeAbsolutePositionByName(account.name,0,0);
-
-          if ( ! absolutePositionNode ){
-            debugger;
-            console.log('its lit');
-          } else {
-            console.log('absoluteNode: ', absolutePositionNode);
-            console.log('Old Viewport Position', this.cview.viewPortPosition);
-
-            var viewportPosition = {
-              x: absolutePositionNode.x - this.cview.viewPortPosition.x,
-              y: absolutePositionNode.y - this.cview.viewPortPosition.y
-            }
-            console.log('New Viewport Position', viewportPosition);
-            this.cview.viewPortPosition = viewportPosition;
-          }
-        })
+        this.scrollToAccount(n);
       },
       view: function(_, x) {
         var self = x.data;
@@ -133,7 +116,6 @@ foam.CLASS({
       name: 'zoomIn',
       code: function() {
         this.cview.scale *= 1.25;
-        this.cview.scale *= 1.25;
       }
     },
     {
@@ -143,7 +125,6 @@ foam.CLASS({
       },
       code: function() {
         this.cview.scale /= 1.25;
-        this.cview.scale /= 1.25;
       }
     },
     {
@@ -152,62 +133,149 @@ foam.CLASS({
         return !! canvasContainer;
       },
       code: function() {
-        // var e = this.canvasContainer.el();
-        // e.scrollTo(this.cview.root.x - e.clientWidth/2, 0);
+        this.scrollToNode(this.cview.view.root);
       }
     }
   ],
 
   methods: [
-      function initE(){
-        var self = this;
+    function initE(){
+      var self = this;
 
-        this.addClass(this.myClass());
-        this
-          .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
-            .startContext({data: this})
-              .start().addClass(this.myClass('selector'))
-                .add(this.ACCOUNTS)
-              .end()
-            .endContext()
-            .start().addClass(this.myClass('title'))
-              .add(this.VIEW_HEADER)
-            .end()
-          .end()
+      this.addClass(this.myClass());
+      this
+        .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
           .startContext({data: this})
-            .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
-              .tag(this.HOME, {
-                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
-                icon: 'images/ic-round-home.svg',
-                label: '',
-                size: foam.u2.ButtonSize.SMALL
-              })
-              .tag(this.ZOOM_IN, {
-                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
-                label: '+',
-                size: foam.u2.ButtonSize.SMALL
-              })
-              .tag(this.ZOOM_OUT, {
-                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
-                label: '-',
-                size: foam.u2.ButtonSize.SMALL
-              })
+            .start().addClass(this.myClass('selector'))
+              .add(this.ACCOUNTS)
             .end()
           .endContext()
-          .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-            .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
-              var v = self.AccountTreeGraph.create({ data: a.array[0] });
-              self.cview = self.GreekView.create({
-                view: v,
-                height$: v.height$,
-                width: self.el().clientWidth,
-                viewBorder: 'black',
-                navBorder: 'red'
-              });
-              return self.cview;
-            })
-          )      
+          .start().addClass(this.myClass('title'))
+            .add(this.VIEW_HEADER)
           .end()
+        .end()
+        .startContext({data: this})
+          .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
+            .tag(this.HOME, {
+              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              icon: 'images/ic-round-home.svg',
+              label: '',
+              size: foam.u2.ButtonSize.SMALL
+            })
+            .tag(this.ZOOM_IN, {
+              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              label: '+',
+              size: foam.u2.ButtonSize.SMALL
+            })
+            .tag(this.ZOOM_OUT, {
+              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              label: '-',
+              size: foam.u2.ButtonSize.SMALL
+            })
+          .end()
+        .endContext()
+        .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
+          .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
+            var v = self.AccountTreeGraph.create({ data: a.array[0] });
+            self.cview = self.ZoomMapView.create({
+              view: v,
+              height$: v.height$,
+              width: self.el().clientWidth,
+              viewBorder: '#d9170e',
+              navBorder: 'black',
+              handleHeight: '10',
+              handleColor: '#406dea'
+            });
+            return self.cview;
+          })
+        )
+        .end()
+    },
+
+    function scrollToAccount(accountId){
+      var treeNode = this.cview.view.root.findNode(accountId);
+
+      if ( ! treeNode ) {
+        var self = this;
+        this.cview.view.layoutComplete.sub(function(sub) {
+          sub.detach();
+          self.scrollToAccount(accountId);
+        })
+
+        this.getAncestry(accountId).then(ancestry => {
+          this.expandAncestors(ancestry);
+        });
+      } else {
+        var n = treeNode.parent;
+        while ( n.data.id !== this.cview.view.root.data.id && n.expanded ) {
+          n = n.parent;
+        }
+        if ( n.data.id != this.cview.view.root.data.id && ! n.expanded ) {
+          var self = this;
+          var detached = false;
+          this.cview.view.layoutComplete.sub(function(sub) {
+            sub.detach();
+            self.scrollToAccount(accountId);
+          })
+          n.expanded = true;
+        } else {
+          this.scrollToNode(treeNode);
+        }
       }
+    },
+
+    function scrollToNode(node) {
+      var p = {
+        x: 0,
+        y: this.cview.view.nodeHeight / 2,
+        w: 1
+      }
+      var newFunctionPoint = this.cview.scaledView_.globalToLocalCoordinates(
+        node.localToGlobalCoordinates(p)
+      )
+
+      var newViewportPosition = {
+        x: this.cview.innerNavView_.scaleX * newFunctionPoint.x  - (this.cview.viewPortView_.width / 2),
+        y: this.cview.innerNavView_.scaleY * newFunctionPoint.y  - (this.cview.viewPortView_.height / 2),
+      }
+
+      this.cview.view.selectedNode = node;
+      this.cview.viewPortPosition = newViewportPosition;
+    },
+
+    async function getAncestry(accountId){
+      var ancestry = [];
+
+      var curr = await this.accountDAO.find(accountId);
+
+
+      while ( curr.id !== this.cview.view.root.data.id ){
+        ancestry.push(curr.id);
+        curr = await this.accountDAO.find(curr.parent);
+      }
+
+      return Promise.resolve(ancestry);
+    },
+
+    function expandAncestors(ancestry){
+      var curr = this.cview.view.root;
+
+      while ( ancestry.length ){
+        if ( ! curr.expanded ) {
+          curr.expanded = true;
+        }
+
+        currId = ancestry.pop();
+
+        var children = curr.childNodes;
+
+        for ( var i = 0; i < children.length; i++ ){
+          if ( children[i].data.id === currId ){
+            curr = children[i];
+            break;
+          }
+        }
+      }
+    }
   ],
 });
