@@ -42,10 +42,10 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
         boolean bufferElapsed = false;
         int bufferMinutes = 5;
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, bufferMinutes);
-        Calendar created = Calendar.getInstance();
-        created.setTime(request.getCreated());
-        bufferElapsed = (now.after(created));
+        Calendar eta = Calendar.getInstance();
+        eta.setTime(request.getCreated());
+        eta.add(Calendar.MINUTE, bufferMinutes);
+        bufferElapsed = (now.after(eta));
         if ( bufferElapsed ) {
           request = (AFEXBusinessApprovalRequest) request.fclone();
           request.setStatus(ApprovalStatus.APPROVED);
