@@ -99,7 +99,7 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           defaultColumns: ["name","balance","homeBalance"],
-          dao: this.accountDAO,
+          dao: this.accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
         });
       }
     },
@@ -138,7 +138,7 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(self.TRUE),
+                    data: accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
                     config
                   })
                     .addClass(this.myClass('accounts-table'))
