@@ -1,25 +1,6 @@
 p({"class":"foam.nanos.ruler.Rule","id":8000,"name":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":true,"saveHistory":true})
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":8005,
-  "name":"Create AFEXBusiness Approval Request",
-  "documentation":"Rule to create AFEXBusiness Approval Request.",
-  "priority":100,
-  "ruleGroup":"AFEXOnboarding",
-  "daoKey":"afexBusinessDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
-  },
-  "action":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
-  },
-  "enabled":true,
-  "saveHistory":true
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":8001,
   "name":"Add FX Currency Permission to Business",
   "documentation":"Rule to add currency.read.FX_CURRENCY when a business is pushed to AFEX and AFEXBusiness is created.",
@@ -75,21 +56,26 @@ p({
   "enabled":true,
   "saveHistory":true
 })
-p({
+r({
   "class":"foam.nanos.ruler.Rule",
   "id":8004,
-  "name":"Remove FX Currency Permission When AFEXBusiness is Disabled",
-  "documentation":"Rule to remove currency.read.FX_CURRENCY when a AFEXBusiness is disabled.",
+  "name":"Remove FX Currency Permission When AFEXBusiness is Disabled"
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":8005,
+  "name":"Create AFEXBusiness Approval Request",
+  "documentation":"Rule to create AFEXBusiness Approval Request.",
   "priority":100,
-  "ruleGroup":"onboarding",
+  "ruleGroup":"AFEXOnboarding",
   "daoKey":"afexBusinessDAO",
-  "operation":3,
+  "operation":0,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessDisabledPredicate",
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
   },
   "action":{
-    "class":"net.nanopay.fx.afex.AFEXRemoveCurrencyPermissionRule"
+    "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
   },
   "enabled":true,
   "saveHistory":true

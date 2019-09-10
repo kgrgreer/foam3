@@ -44,12 +44,12 @@ foam.CLASS({
           AFEXBusiness afexBusiness = (AFEXBusiness) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+            EQ(ApprovalRequest.DAO_KEY, "afexBusinessDAO"),
             EQ(ApprovalRequest.OBJ_ID, Long.toString(afexBusiness.getId()))
           ));
 
           ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
-          if ( approval != ApprovalStatus.APPROVED ) {
+          if ( approval == ApprovalStatus.APPROVED ) {
             DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
             
