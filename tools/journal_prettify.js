@@ -447,7 +447,8 @@ function printObject(actionInput, ws) {
         // rendered as multiline strings is sufficient.
         // TODO: Format object inside client parameter.
         if (
-            k == 'serviceScript' || (
+            k == 'serviceScript' ||
+            k == 'code' || (
                 k == 'client' &&
                 looksLikeObject(actionInput[k])
             )
