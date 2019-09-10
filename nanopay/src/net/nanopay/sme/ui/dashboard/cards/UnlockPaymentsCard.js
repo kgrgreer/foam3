@@ -22,7 +22,6 @@ foam.CLASS({
     'agent',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
-    'ctrl',
     'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
