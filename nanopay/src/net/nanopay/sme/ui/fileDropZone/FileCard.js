@@ -125,15 +125,10 @@ foam.CLASS({
       name: 'viewFile',
       code: function() {
         var blob = this.data.data;
-        var sessionId = localStorage['defaultSession'];
         if ( this.BlobBlob.isInstance(blob) ) {
           window.open(URL.createObjectURL(blob.blob));
         } else {
           var url = '/service/httpFileService/' + this.data.id;
-          // attach session id if available
-          if ( sessionId ) {
-            url += '?sessionId=' + sessionId;
-          }
           window.open(url);
         }
       }
