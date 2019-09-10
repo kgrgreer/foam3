@@ -251,6 +251,7 @@ foam.CLASS({
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
+    { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
@@ -354,6 +355,9 @@ foam.CLASS({
         return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
         this.notify(this.DUE_DATE_ERROR, 'error');
+        return false;
+      } else if ( ! (invoice.issueDate instanceof Date && ! isNaN(invoice.issueDate.getTime())) ) {
+        this.notify(this.ISSUE_DATE_ERROR, 'error');
         return false;
       }
       return true;
