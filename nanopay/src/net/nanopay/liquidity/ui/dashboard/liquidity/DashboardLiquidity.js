@@ -114,14 +114,14 @@ foam.CLASS({
       name: 'startDate',
       expression: function(endDate, timeFrame) {
         var startDate = endDate;
-        for ( var i = 0 ; i < timeFrame.numDataPoints ; i++ ) {
+        for ( var i = 0 ; i < timeFrame.numLineGraphPoints ; i++ ) {
           startDate = timeFrame.startExpr.f(new Date(startDate.getTime() - 1));
         }
         return startDate;
       },
       postSet: function(_, n) {
-        var endDate = n;
-        for ( var i = 0 ; i < this.timeFrame.numDataPoints ; i++ ) {
+        var endDate = n || new Date();
+        for ( var i = 0 ; i < this.timeFrame.numBarGraphPoints ; i++ ) {
           endDate = this.timeFrame.endExpr.f(new Date(endDate.getTime() + 1));
         }
         this.endDate = endDate;
@@ -133,6 +133,7 @@ foam.CLASS({
       name: 'endDate',
       factory: function () { return new Date() },
       preSet: function(_, n) {
+        n = n || new Date();
         return this.timeFrame.endExpr.f(n.getTime() > Date.now() ? new Date() : n);
       }
     },
