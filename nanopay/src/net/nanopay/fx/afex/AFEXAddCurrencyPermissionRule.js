@@ -17,7 +17,11 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.email.EmailMessage',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.SafetyUtil',
+    'java.util.HashMap',
+    'java.util.Map',
     'javax.security.auth.AuthPermission',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
@@ -68,6 +72,7 @@ foam.CLASS({
                 if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
                   try {
                     group.getPermissions(x).add(permission);  
+                    sendUserNotification(x, business);
                   } catch(Throwable t) {
                     logger.error("Error adding " + permissionString + " to business " + business.getId(), t);
                     }
@@ -79,6 +84,41 @@ foam.CLASS({
         }
 
       }, "Adds currency.read.FX_CURRENCY permissions to business when AFEXBUsiness is created.");
+      `
+    },
+    {
+      name: 'sendUserNotification',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'business',
+          type: 'net.nanopay.model.Business'
+        }
+      ],
+      javaCode:`
+      EmailMessage         message        = new EmailMessage();
+      Map<String, Object>  args           = new HashMap<>();
+      DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
+      Group                group          = (Group) localGroupDAO.find(business.getGroup());
+      AppConfig            appConfig      = group.getAppConfig(x);
+      String               url            = appConfig.getUrl().replaceAll("/$", "");
+
+      message.setTo(new String[]{business.getEmail()});
+      String toCountry = business.getBusinessAddress().getCountryId().equals("CA") ? "USA" : "Canada";
+      String toCurrency = business.getBusinessAddress().getCountryId().equals("CA") ? "USD" : "CAD";
+      args.put("business", business.getBusinessName());
+      args.put("toCurrency", toCurrency);
+      args.put("toCountry", toCountry); 
+      args.put("link",   url + "#sme.main.dashboard");     
+      try {
+        EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
+      } catch (Throwable t) {
+        String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
+        ((Logger) x.get("logger")).error(msg, t);
+      }
       `
     }
   ]
