@@ -50,7 +50,7 @@ foam.CLASS({
 
           for (Transaction childTransaction : childTransactions) {
             // Sum amount of child transactions
-            sum = sum + childTransaction.getAmount();
+            sum += childTransaction.getAmount();
 
             TransactionQuote childQuote = new TransactionQuote();
 
@@ -59,7 +59,7 @@ foam.CLASS({
 
             // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(x, payee, "CAD");
+            DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
             childTransaction.setDestinationAccount(payeeDigitalAccount.getId());
 
             // Quote each child transaction
