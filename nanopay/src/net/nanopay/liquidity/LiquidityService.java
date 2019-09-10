@@ -189,7 +189,7 @@ public class LiquidityService
   }
 
   public void notifyUser( Account account, boolean above, long threshold, long recipient ) {
-    Notification notification = new Notification();
+    /*Notification notification = new Notification();
     notification.setEmailName("liquidityNotification");
     HashMap<String, Object> args = new HashMap<>();
     String direction;
@@ -211,7 +211,7 @@ public class LiquidityService
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
     notification.setUserId(recipient);
-    ((DAO) x_.get("notificationDAO")).put(notification);
+    ((DAO) x_.get("notificationDAO")).put(notification);*/
   }
 
   //Add cash in and cash out transaction, set transaction type to separate if it is an cash in or cash out transaction
