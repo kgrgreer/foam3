@@ -24,7 +24,7 @@ var old = global.FOAM_FLAGS.src;
 var oldRoot = global.FOAM_ROOT;
 global.FOAM_FLAGS.src = npRoot + 'nanopay/src/'; // Hacky
 require(npRoot + 'nanopay/src/net/nanopay/files.js');
-require(npRoot + 'nanopay/src/net/nanopay/iso20022/files.js');
+// require(npRoot + 'nanopay/src/net/nanopay/iso20022/files.js');
 require(npRoot + 'nanopay/src/net/nanopay/iso8583/files.js');
 require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
 global.FOAM_FLAGS.src = old;
