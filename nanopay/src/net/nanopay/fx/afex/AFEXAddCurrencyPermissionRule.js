@@ -31,7 +31,7 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-
+          System.out.println("inside AFEXAddCurrencyPermissionRule");
           Logger logger = (Logger) x.get("logger");
           
           if ( ! (obj instanceof AFEXBusiness) ) {
@@ -44,6 +44,7 @@ foam.CLASS({
           
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
           if ( null != business ) {
+            System.out.println("business is found " + business.getBusinessName());
             Address businessAddress = business.getBusinessAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String permissionString = "currency.read.";
