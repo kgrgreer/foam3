@@ -145,7 +145,7 @@ foam.CLASS({
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
 
-        if ( this.leftOrRight === 'right' && this.homeDenomination !== this.id ) {
+        if ( this.leftOrRight === 'right' ) {
           formatted += this.id;
           formatted += ' ';
         }
@@ -164,7 +164,7 @@ foam.CLASS({
           formatted += this.symbol;
         }
 
-        if ( this.leftOrRight === 'left' && this.homeDenomination !== this.id ) {
+        if ( this.leftOrRight === 'left' ) {
           formatted += ' ';
           formatted += this.id;
         }
