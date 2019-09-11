@@ -245,9 +245,6 @@ foam.CLASS({
               plaidResponseItem: responseItem
             }));
           }
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-          });
         }
 
         // if error returns, we have to handle the error
