@@ -540,7 +540,13 @@ foam.CLASS({
         return hasNextOption;
       },
       isEnabled: function(errors) {
-        return ! errors && ! this.isLoading;
+        if ( this.user.address.countryId === 'CA' ) {
+          return ! errors && ! this.isLoading;
+        } else {
+          return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
+            return cadPerm && ! errors && ! this.isLoading;
+          });
+        }
       },
       code: function() {
         var currentViewId = this.views[this.position].id;
