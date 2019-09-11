@@ -283,10 +283,6 @@ public class CsvUtil {
             if ( txn.getProcessDate() == null ) {
               txn.setProcessDate(generateProcessDate(x, now));
             }
-
-            if (txn.getCompletionDate() == null) {
-              txn.setCompletionDate(generateCompletionDate(x, now));
-            }
           } else if ( t instanceof AlternaCOTransaction ) {
             AlternaCOTransaction txn = (AlternaCOTransaction) t;
 
@@ -310,10 +306,6 @@ public class CsvUtil {
 
             if ( txn.getProcessDate() == null ) {
               txn.setProcessDate(generateProcessDate(x, now));
-            }
-
-            if (txn.getCompletionDate() == null) {
-              txn.setCompletionDate(generateCompletionDate(x, now));
             }
           } else if ( t instanceof AlternaVerificationTransaction ) {
             AlternaVerificationTransaction txn = (AlternaVerificationTransaction) t;
@@ -340,6 +332,8 @@ public class CsvUtil {
               txn.setProcessDate(generateProcessDate(x, now));
             }
 
+            // QUESTION: do we want to apply the clearing time rules to alterna
+            // verification transactions?
             if (txn.getCompletionDate() == null) {
               txn.setCompletionDate(generateCompletionDate(x, now));
             }

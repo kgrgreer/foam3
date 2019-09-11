@@ -15,6 +15,25 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"App
 
 // Payment Operations Functionality
 p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.clearingTimes",
+  "label": "Clearing Times",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+      },
+      "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+    }
+  },
+  "order": 2010,
+  "parent": "operation"
+})
 
 // Payment Operation Reports
 p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"reportDAO"},"order":3000,"parent":"operation"})

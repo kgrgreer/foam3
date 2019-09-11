@@ -957,6 +957,19 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
+
+  // clearing
+  { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
+  { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
+  { name: 'net/nanopay/meter/clearing/ruler/BusinessClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRuleDAOCreateView' },
+  { name: 'net/nanopay/meter/clearing/ruler/EstimateTransactionCompletionDate' },
+  { name: 'net/nanopay/meter/clearing/ruler/InstitutionClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/TransactionTypeClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/predicate/DefaultClearingTimeRulePredicate' },
+
+  // compliance
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
