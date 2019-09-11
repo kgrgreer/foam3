@@ -8,7 +8,8 @@ p({
   """
     import net.nanopay.account.Account;
     foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER}); 
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
@@ -58,10 +59,10 @@ p({
   "serviceScript":
   """
     foam.dao.DAO AAD = new net.nanopay.account.AuthenticatedAccountDAO(x, 
-      new foam.nanos.auth.PermissionedPropertyDAO(x, 
+      //new foam.nanos.auth.PermissionedPropertyDAO(x,
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
           new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
-            new net.nanopay.bank.BankAccountValidator()))));
+            new net.nanopay.bank.BankAccountValidator())));
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
@@ -74,6 +75,7 @@ p({
   """
   {
     "of":"net.nanopay.account.Account",
+    "cache":true,
     "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
