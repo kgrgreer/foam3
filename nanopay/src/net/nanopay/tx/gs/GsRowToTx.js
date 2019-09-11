@@ -188,7 +188,7 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           t.setDestinationCurrency("USD");
           if(isCash(row1)) {
             t.setAmount((long) Math.abs(row1.getCashQty()));
-            t.setDestinationAmount((long) Math.abs(row1.getMarketValue()));
+            t.setDestinationAmount((long) Math.abs(row1.getCashUSD()));
           }
           else {
             t.setAmount((long) Math.abs(row1.getMarketValueLocal()));
@@ -202,7 +202,7 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           t.setSourceCurrency("USD");
           t.setDestinationCurrency(row1.getCurrency());
           if(isCash(row1)) {
-            t.setAmount((long) Math.abs(row1.getMarketValue()));
+            t.setAmount((long) Math.abs(row1.getCashUSD()));
             t.setDestinationAmount((long) Math.abs(row1.getCashQty()));
           }
           else {

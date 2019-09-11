@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -35,16 +36,13 @@ foam.CLASS({
           LiquidityService ls = (LiquidityService) x.get("liquidityService");
           Account source = txn.findSourceAccount(x);
           Account destination = txn.findDestinationAccount(x);
-          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction ) {
-            agency.submit(x, new ContextAgent() {
-              @Override
-              public void execute(X x) {
+          if ( /*(! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) ||*/ txn instanceof DigitalTransaction ) {
+
                 if( source instanceof DigitalAccount )
-                  ls.liquifyAccount(source.getId(), Frequency.PER_TRANSACTION, -txn.getAmount());
+                  ls.liquifyAccountz(source.getId(), Frequency.PER_TRANSACTION, -txn.getAmount(),txn.getLastStatusChange());
                 if ( destination instanceof DigitalAccount )
-                  ls.liquifyAccount(destination.getId(), Frequency.PER_TRANSACTION, txn.getAmount());
-              }
-            }, "Liquid Rule");
+                  ls.liquifyAccountz(destination.getId(), Frequency.PER_TRANSACTION, txn.getAmount(),txn.getLastStatusChange());
+
           }
         }
       `

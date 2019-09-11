@@ -86,7 +86,7 @@ foam.CLASS({
         f.setSourceAccount(txn.getSourceAccount());
         f.setLastStatusChange(txn.getLastStatusChange());
         f.setDestinationAccount(txn.getDestinationAccount());
-        f.setFxRate( ((double) txn.getAmount()/txn.getDestinationAmount()));
+        f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
             .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
