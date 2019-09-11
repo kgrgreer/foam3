@@ -81,6 +81,38 @@ foam.CLASS({
     },
   ],
 
+  classes: [
+    {
+      // TODO: Consider moving this somewhere else.
+      name: 'AnimateTo',
+      properties: [
+        'slot',
+        'destValue',
+        'ms',
+        {
+          name: 'startTime_',
+          factory: function() { return new Date() }
+        }
+      ],
+      listeners: [
+        {
+          name: 'doAnimation',
+          isFramed: true,
+          code: function() {
+            var timeRemaining = this.ms - (Date.now() - this.startTime_.getTime());
+            if ( timeRemaining < 0 ) {
+              this.slot.set(this.destValue);
+            } else {
+              var delta = this.destValue - this.slot.get();
+              this.slot.set(this.slot.get() + delta * 0.5);
+              this.doAnimation();
+            }
+          }
+        }
+      ]
+    }
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -115,7 +147,11 @@ foam.CLASS({
     {
       name: 'zoomIn',
       code: function() {
-        this.cview.scale *= 1.25;
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale * 1.25,
+          ms: 200
+        }).doAnimation();
       }
     },
     {
@@ -124,7 +160,11 @@ foam.CLASS({
         return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
       },
       code: function() {
-        this.cview.scale /= 1.25;
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale / 1.25,
+          ms: 200
+        }).doAnimation();
       }
     },
     {
@@ -240,7 +280,33 @@ foam.CLASS({
       }
 
       this.cview.view.selectedNode = node;
-      this.cview.viewPortPosition = newViewportPosition;
+
+      this.AnimateTo.create({
+        slot: {
+          get: () => this.cview.viewPortPosition.x,
+          set: x => {
+            this.cview.viewPortPosition = {
+              x: x,
+              y: this.cview.viewPortPosition.y
+            }
+          }
+        },
+        destValue: newViewportPosition.x,
+        ms: 200
+      }).doAnimation();
+      this.AnimateTo.create({
+        slot: {
+          get: () => this.cview.viewPortPosition.y,
+          set: y => {
+            this.cview.viewPortPosition = {
+              x: this.cview.viewPortPosition.x,
+              y: y
+            }
+          }
+        },
+        destValue: newViewportPosition.y,
+        ms: 200
+      }).doAnimation();
     },
 
     async function getAncestry(accountId){
