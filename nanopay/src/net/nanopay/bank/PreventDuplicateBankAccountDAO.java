@@ -43,6 +43,7 @@ public class PreventDuplicateBankAccountDAO
                    EQ(BankAccount.OWNER, account.getOwner()),
                    EQ(BankAccount.ACCOUNT_NUMBER, account.getAccountNumber()),
                    EQ(BankAccount.BRANCH, account.getBranch()),
+                   EQ(BankAccount.DELETED, false),
                    EQ(BankAccount.INSTITUTION, account.getInstitution())
                    )
                )
