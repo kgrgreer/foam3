@@ -172,8 +172,8 @@ foam.CLASS({
                 }))
               .end()
               .start('span')
-                .add(this.slot((internationalPaymentEnabled) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end();
+                .add(this.slot((onboardingStatus, internationalPaymentEnabled) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && internationalPaymentEnabled }).end();
                 }))
               .end()
             .end();
