@@ -533,7 +533,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String postalCode = beneficialOwner.getAddress().getPostalCode();
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
           dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
+          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
