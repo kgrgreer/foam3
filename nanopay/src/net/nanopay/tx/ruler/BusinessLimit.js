@@ -93,11 +93,12 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        DAO ruleDAO = (DAO) x.get("ruleDAO");
-        if ( ruleDAO.find(foam.mlang.MLang.AND(
-          foam.mlang.MLang.EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
-          foam.mlang.MLang.EQ(BusinessLimit.PERIOD, this.getPeriod()))) != null ) {
-          throw new IllegalStateException("There already exists a BusinessLimit for the same business and period. ");
+        BusinessLimit busLimit = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(AND(
+          EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
+          EQ(BusinessLimit.PERIOD, this.getPeriod())
+        ));
+        if ( busLimit != null ) {
+          throw new IllegalStateException("BusinessLimit for the business and period already exists. ");
         }
       `
     }
