@@ -30,6 +30,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isRecievable',
+      documentation: `
+      Determines is we check the user's ability to pay(false) or the payer's ablility to pay(true).
+      `
+    },
+    {
+      class: 'Boolean',
       name: 'response',
       documentation: `
         The server will set this to true when you put it if the user can

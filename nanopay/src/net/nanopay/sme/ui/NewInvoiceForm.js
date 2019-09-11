@@ -200,7 +200,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'User does not have the ability to exchange funds in that currency.'
+      message: 'User does not have the ability to exchange funds in this currency.'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
@@ -559,7 +559,8 @@ foam.CLASS({
       if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
-          payerId: isPayable ? this.user.id : this.invoice.contactId,
+          isRecievable: ! isPayable,
+          payerId: this.invoice.contactId,
           currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
