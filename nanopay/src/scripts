@@ -729,6 +729,7 @@ p({
     import foam.dao.DAO;
   import foam.dao.ArraySink;
   import foam.mlang.MLang;
+  import foam.nanos.auth.Address;
   import foam.nanos.auth.Group;
   import foam.nanos.auth.Permission;
   import net.nanopay.model.Business;
@@ -746,19 +747,22 @@ p({
   int count = 0;
   for ( Business business : businesses ) {
 
-    if ( null == business.getAddress() ) {
+    Address address = null == business.getAddress() ? business.getBusinessAddress() : business.getAddress();
+    if ( null == address ) {
         print("Unable to move currency permission for " + business.getOrganization() + ". Please check to make sure address field is set.");
-        continue;
+        address = new Address();
+        address.setCountryId("CA");
     }
     
-    if ( ! "CA".equals(business.getAddress().getCountryId()) && ! "US".equals(business.getAddress().getCountryId())) {
+    if ( ! "CA".equals(address.getCountryId()) && ! "US".equals(address.getCountryId())) {
       count++;
       print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
       continue;
     }
 
-    String permission = "CA".equals(business.getAddress().getCountryId()) ? CAD_PERMISSION : USD_PERMISSION;
+    String permission = "CA".equals(address.getCountryId()) ? CAD_PERMISSION : USD_PERMISSION;
     Permission domesticCurrencyPermission = new Permission.Builder(x).setId(permission).build();
+    Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
     Group group = (Group) groupDAO.find(business.getGroup());
     while ( group != null ) {
       group = (Group) group.findParent(x);
@@ -766,6 +770,7 @@ p({
     }
     if ( group != null ) { 
       group.getPermissions(x).add(domesticCurrencyPermission); 
+      group.getPermissions(x).add(cadPermission); 
       count++;
     }
   }
