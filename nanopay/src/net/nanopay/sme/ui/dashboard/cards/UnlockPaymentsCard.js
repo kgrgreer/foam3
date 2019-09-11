@@ -243,7 +243,7 @@ foam.CLASS({
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
                 && ! this.hasFXProvisionPermission ) {
-                  return this.E().start().addClass(self.myClass('complete-container'))
+              return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
               .end();
             }
