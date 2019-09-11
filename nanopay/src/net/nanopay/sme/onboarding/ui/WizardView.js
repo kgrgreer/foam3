@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.detail.WizardSectionsView',
 
   imports: [
+    'auth',
     'userDAO'
   ],
 
@@ -192,7 +193,7 @@ foam.CLASS({
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
-          then(async function() {
+          then(async () => {
             let user = await x.userDAO.find(x.user.id);
             if ( user ) x.user.onboarded = user.onboarded;
             // Invalidate auth cache to register new permissions on group.
