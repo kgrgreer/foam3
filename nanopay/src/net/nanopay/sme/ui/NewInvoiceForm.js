@@ -556,7 +556,7 @@ foam.CLASS({
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.contactId : this.user.id;
-      if ( partyId && destinationCurrency ) {
+      if ( partyId && destinationCurrency && this.invoice.contactId ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
           isRecievable: ! isPayable,
