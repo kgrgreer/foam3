@@ -443,7 +443,7 @@ foam.CLASS({
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
           try {
-            await this.transactionDAO.put(transaction);
+            let tem = await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
             this.notify(this.TRANSACTION_ERROR + this.type, 'error');
@@ -453,7 +453,7 @@ foam.CLASS({
         } else {
           try {
             transaction.isQuoted = true;
-            await this.transactionDAO.put(transaction);
+            let tem = await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
             this.notify(this.TRANSACTION_ERROR + this.type, 'error');
