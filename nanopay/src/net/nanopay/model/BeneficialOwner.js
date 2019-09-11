@@ -198,11 +198,11 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
-      code: function toSummary() {
-        return this.lastName ? this.firstName + " " + this.lastName : this.firstName;
+      expression: function(firstName, lastName) {
+        return lastName ? firstName + ' ' + lastName : firstName;
       },
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
     }

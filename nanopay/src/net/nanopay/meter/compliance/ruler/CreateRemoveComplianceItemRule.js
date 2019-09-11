@@ -81,10 +81,7 @@ foam.CLASS({
                   FObject entity = (FObject) entityDAO.find(response.getUserId());
                   String label = "";
                   if ( entity instanceof User ) { label = ((User) entity).label(); }
-                  if ( entity instanceof BeneficialOwner ) {
-                     BeneficialOwner beneficialOwner = ((BeneficialOwner) entity);
-                     label = beneficialOwner.getFirstName() + " " + beneficialOwner.getLastName();
-                  }
+                  if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
                     .setType("Dow Jones (" + response.getSearchType() + ")")
@@ -101,10 +98,7 @@ foam.CLASS({
                   FObject entity = (FObject) entityDAO.find(response.getEntityId().toString());
                   String label = "";
                   if ( entity instanceof User ) { label = ((User) entity).label(); }
-                  if ( entity instanceof BeneficialOwner ) {
-                    BeneficialOwner beneficialOwner = ((BeneficialOwner) entity);
-                    label = beneficialOwner.getFirstName() + " " + beneficialOwner.getLastName();
-                 }
+                  if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem;
                   if ( entity instanceof Transaction ) {
                     complianceItem = new ComplianceItem.Builder(x)
