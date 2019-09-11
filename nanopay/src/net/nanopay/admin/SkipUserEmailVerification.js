@@ -5,6 +5,8 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
+  documentation: 'Set user emailVerified to true.',
+
   javaImports: [
     'foam.nanos.auth.User'
   ],
@@ -13,7 +15,9 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        ((User) obj).setEmailVerified(true);
+        if ( obj instanceof User ) {
+          ((User) obj).setEmailVerified(true);
+        }
       `
     }
   ]
