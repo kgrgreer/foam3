@@ -413,9 +413,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String postalCode = signingOfficer.getAddress().getPostalCode();
 
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
-    String nameOfPerson = ipHistory.findUser(x).getLegalName();
-    String timestamp = sdf.format(ipHistory.getCreated());
-    String ipAddress = ipHistory.getIpAddress();
+    String nameOfPerson = ipHistory != null && ipHistory.findUser(x) != null ? ipHistory.findUser(x).getLegalName() : "N/A";
+    String timestamp = ipHistory != null ? sdf.format(ipHistory.getCreated()) : "N/A";
+    String ipAddress = ipHistory != null ? ipHistory.getIpAddress() : "N/A";
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
@@ -695,7 +695,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           );
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
-          String flinksRequestId = flinksAccountInformation.getRequestId();
+          String flinksRequestId = flinksAccountInformation !=  null ? flinksAccountInformation.getRequestId() : "N/A";
           list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
           list.add(new ListItem("Flink response ID: " + flinksRequestId));
         }
