@@ -49,7 +49,8 @@ foam.CLASS({
     'user',
     'viewData',
     'wizard',
-    'refreshIntervalId',
+    'updateInvoiceDetails',
+    'forceUpdate'
   ],
 
   javaImports: [
@@ -197,14 +198,6 @@ foam.CLASS({
       expression: function(isEmployee) {
         return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
       }
-    },
-    {
-      class: 'Int',
-      name: 'refreshTime'
-    },
-    {
-      class: 'Boolean',
-      name: 'quotePassedIn'
     }
   ],
 
@@ -250,11 +243,6 @@ foam.CLASS({
 
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
-      }
-      if ( this.quotePassedIn && this.quote != null && this.isFx ) {
-        clearTimeout(this.refreshIntervalId);
-        this.getExpiryTime(new Date(), this.quote.fxExpiry);
-        this.updateQuote(this);
       }
     },
     function initE() {
@@ -363,11 +351,18 @@ foam.CLASS({
           .end()
 
         /** Exchange rate details **/
-        .add(this.slot(function(showExchangeRateSection) {
+        .add(this.slot(function(showExchangeRateSection, updateInvoiceDetails) {
+          if ( this.forceUpdate ) {
+            this.quote = updateInvoiceDetails;
+            this.forceUpdate = false;
+          }
           return ! showExchangeRateSection ? null :
             this.E()
               .start().show(this.slot(function(showExchangeRateSection, sourceCurrency, invoice$destinationCurrency ) {
-                return showExchangeRateSection && (! (sourceCurrency === 'USD' && destinationCurrency === 'USD') );
+                if ( sourceCurrency == null ) {
+                  return false;
+                }
+                return showExchangeRateSection && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
               }))
                 .start().addClass('exchange-amount-container')
                   .start()
@@ -460,7 +455,12 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().show(this.isFx$)
+        .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency ) {
+          if ( sourceCurrency == null ) {
+            return false;
+          }
+          return isFx && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+        }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();
     },
@@ -502,16 +502,7 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
-      clearTimeout(this.refreshIntervalId);
-      this.getExpiryTime(new Date(), quote.plan.fxExpiry);
-      this.updateQuote(this);
       return quote.plan;
-    },
-
-    function getExpiryTime( time, expiryTime) {
-      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
-      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
-      this.refreshTime = Math.floor(( utc2-utc1 ));
     },
 
     function createFxTransaction(fxQuote) {
@@ -536,33 +527,6 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
-
-    function updateQuote(self) {
-      this.refreshIntervalId = setTimeout(function() {
-      var transaction = self.AbliiTransaction.create({
-        sourceAccount: self.invoice.account,
-        destinationAccount: self.invoice.destinationAccount,
-        sourceCurrency: self.invoice.sourceCurrency,
-        destinationCurrency: self.invoice.destinationCurrency,
-        payerId: self.invoice.payerId,
-        payeeId: self.invoice.payeeId,
-        destinationAmount: self.invoice.amount
-      });
-
-      self.transactionQuotePlanDAO.put(
-        self.TransactionQuote.create({
-          requestTransaction: transaction
-        })
-      ).then(function(quote) {
-        self.quote = quote.plan;
-        self.getExpiryTime(new Date, quote.plan.fxExpiry);
-      });
-      if ( self.state == self.LOADED ) {
-        loopOnce = false;
-        updateQuote(self);
-      }
-      }, self.refreshTime);
-    }
   ],
 
   listeners: [

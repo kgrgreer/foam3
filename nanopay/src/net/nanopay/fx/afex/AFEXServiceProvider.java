@@ -383,6 +383,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
     String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
 
+    String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
+    String beneficiaryName = user.getBusinessName().replaceAll(allowedChars,"");;
     UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
     updateBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
     updateBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
@@ -391,7 +393,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
     updateBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
     updateBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
-    updateBeneficiaryRequest.setBeneficiaryName(user.getLegalName());
+    updateBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
     updateBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
     updateBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
     updateBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
@@ -474,7 +476,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
     }
 
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
+    AFEXBeneficiary afexBeneficiary = getOrCreateAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
     if ( null == afexBeneficiary ) {
       logger.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
       throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
@@ -679,6 +681,23 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
     DAO dao = (DAO) x.get("afexBeneficiaryDAO");
     return (AFEXBeneficiary) dao.find(AND(EQ(AFEXBeneficiary.CONTACT, beneficiaryId), EQ(AFEXBeneficiary.OWNER, ownerId)));
+  }
+
+  protected AFEXBeneficiary getOrCreateAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
+    if ( afexBeneficiary == null ) {
+      DAO localAccountDAO = (DAO) x.get("localAccountDAO");
+      BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
+      if ( null != bankAccount ) {
+        try {
+          addPayee(beneficiaryId, bankAccount.getId(), ownerId);
+          afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
+        } catch(Throwable t) {
+          ((Logger) x.get("logger")).error("Error creating AFEX Beneficiary.", t);
+        }
+      }
+    }
+    return afexBeneficiary;
   }
 
   protected User getSigningOfficer(X x, Business business) {

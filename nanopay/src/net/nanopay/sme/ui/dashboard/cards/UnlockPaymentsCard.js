@@ -51,7 +51,7 @@ foam.CLASS({
       height: 24px;
       margin: 0;
       font-family: Lato;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
       color: /*%BLACK%*/ #1e1f21;
@@ -227,45 +227,38 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.auth.check(null, 'fx.provision.payer').then((result) => {
-        this.hasFXProvisionPermission = result;
-        console.log(result);
-      });
-    },
     async function initE() {
       var self = this;
+      this.hasFXProvisionPermission = await this.auth.check(null, 'fx.provision.payer');
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type, hasFXProvisionPermission) {
+          .add(this.slot(function(isComplete, type) {
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
               .end();
             }
-
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-                && ! hasFXProvisionPermission ) {
+                && ! this.hasFXProvisionPermission ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
               .end();
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-                && hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
+                && this.hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-              && hasFXProvisionPermission && this.isEmployee ) {
-            return this.E().start().addClass(self.myClass('complete-container'))
-              .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
-            .end();
-          }
-
+              && this.hasFXProvisionPermission && this.isEmployee ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+              .end();
+            }
             if ( ! isComplete && ! this.isEmployee ) {
               return this.E()
                 .startContext({ data: self })

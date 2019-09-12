@@ -729,7 +729,9 @@ foam.CLASS({
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
             var request = this.CanReceiveCurrency.create({
               userId: this.invoice.payeeId,
-              currencyId: this.invoice.destinationCurrency
+              payerId: this.invoice.payerId,
+              currencyId: this.invoice.destinationCurrency,
+              isRecievable: false
             });
             this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {

@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'auth',
     'countryDAO',
+    'userDAO',
     'user'
   ],
 
@@ -163,7 +164,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
       var self = this;
       this.nextLabel = this.ACCEPT;
@@ -178,7 +179,7 @@ foam.CLASS({
         this.viewData.agree3 = this.TC3;
       }
       this.viewData.user.address = this.user.businessAddress;
-
+      let updatedUser = await this.userDAO.find(this.user.id);
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
 
@@ -211,7 +212,7 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.AddressView',
             data: this.viewData.user.address,
             // Temporarily only allow businesses based in Canada for new users.
-            customCountryDAO: this.user.address.countryId === 'CA' ? this.countryDAO.where(this.EQ(this.Country.ID, 'CA')) : this.countryDAO.where(this.EQ(this.Country.ID, 'US'))
+            customCountryDAO: updatedUser.address.countryId === 'CA' ? this.countryDAO.where(this.EQ(this.Country.ID, 'CA')) : this.countryDAO.where(this.EQ(this.Country.ID, 'US'))
           })
         .endContext()
 

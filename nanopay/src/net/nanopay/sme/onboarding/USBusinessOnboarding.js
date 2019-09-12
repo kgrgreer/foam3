@@ -46,11 +46,16 @@ foam.CLASS({
         var i = this.index;
         return [
           {
-            args: ['signingOfficer', 'amountOfOwners', `owner${i}$errors_`],
+            args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', `owner${i}$errors_`],
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-                e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+                e.AND(
+                  e.EQ(i, 1),
+                  e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true)
+                ),
+                e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
                 }), true)
@@ -742,9 +747,14 @@ foam.CLASS({
       ],
     },
     {
-      section: 'businessDetailsSection',
       class: 'String',
       name: 'businessRegistrationNumber',
+      hidden: true
+    },
+    {
+      section: 'businessDetailsSection',
+      class: 'String',
+      name: 'taxIdentificationNumber',
       label: 'Federal Tax ID Number (EIN)',
       documentation: 'Federal Tax ID Number (EIN)',
       visibilityExpression: function(countryOfBusinessFormation) {
@@ -752,11 +762,11 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'businessRegistrationNumber'],
+          args: ['signingOfficer', 'taxIdentificationNumber'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER,/^[0-9]{9}$/),
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.TAX_IDENTIFICATION_NUMBER,/^[0-9]{9}$/),
             );
           },
           errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
@@ -1000,10 +1010,11 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'userOwnsPercent', 'ownershipPercent'],
+          args: ['signingOfficer', 'amountOfOwners', 'ownershipPercent', 'userOwnsPercent'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, false),
               e.AND(
                 e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.OWNERSHIP_PERCENT, 100),

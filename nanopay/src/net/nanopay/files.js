@@ -227,9 +227,16 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXBusiness' },
+  { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedPredicate' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedNotificationRule' },
+  { name: 'net/nanopay/fx/afex/AFEXCoridorEnabledNotificationRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessDisabledPredicate' },
+  { name: 'net/nanopay/fx/afex/AFEXRemoveCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXCredentials' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionRule' },
+  { name: 'net/nanopay/fx/afex/AFEXLog' },
   { name: 'net/nanopay/fx/afex/Token' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientRequest' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientResponse' },
@@ -258,6 +265,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/CheckPaymentStatusRequest' },
   { name: 'net/nanopay/fx/afex/CheckPaymentStatusResponse' },
   { name: 'net/nanopay/fx/afex/AFEXPaymentStatus' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequest' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequestRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -994,6 +1003,15 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessCreated' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessNotOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceNotPassed' },
+  { name: 'net/nanopay/meter/compliance/ruler/AddDomesticCurrencyPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/RemoveFXProvisionPayerPermission' },
+  
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
