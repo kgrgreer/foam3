@@ -30,7 +30,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction || obj instanceof COTransaction) ) {
+        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction ) ) {
           Transaction txn = (Transaction) obj;
           if ( ! (txn.getStatus() == TransactionStatus.COMPLETED) )
             return;
@@ -42,7 +42,7 @@ foam.CLASS({
                 if( source instanceof DigitalAccount )
                   ls.liquifyAccountz(source.getId(), Frequency.PER_TRANSACTION, -txn.getAmount(),txn.getLastStatusChange());
                 if ( destination instanceof DigitalAccount )
-                  ls.liquifyAccountz(destination.getId(), Frequency.PER_TRANSACTION, txn.getAmount(),txn.getLastStatusChange());
+                  ls.liquifyAccountz(destination.getId(), Frequency.PER_TRANSACTION, txn.getDestinationAmount(),txn.getLastStatusChange());
 
           }
         }
