@@ -185,6 +185,8 @@ var classes = [
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
+  'net.nanopay.admin.SkipUserEmailVerification',
+  'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',

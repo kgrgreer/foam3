@@ -451,6 +451,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/admin/SkipUserEmailVerification' },
+  { name: 'net/nanopay/admin/predicate/IsCurrentUser' },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
   { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
