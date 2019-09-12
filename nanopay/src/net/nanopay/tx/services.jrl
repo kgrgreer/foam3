@@ -61,12 +61,16 @@ p({
     drpd = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x)
       .setDelegate(ltpd)
       .build(); 
-    ptd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
+    payeetd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
       .setDelegate(drpd)
       .build();
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.tx.PayerTransactionDAO.Builder(x)
-      .setDelegate(ptd)
-      .build()));
+    payertd = new net.nanopay.tx.PayerTransactionDAO.Builder(x)
+      .setDelegate(payeetd)
+      .build();
+    bulk = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
+      .setDelegate(payertd)
+      .build();
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, bulk));
   """
 })
 
