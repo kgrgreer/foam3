@@ -383,7 +383,6 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       section: 'personalInformationSection',
-      label: 'Job Title',
       view: function(args, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
@@ -405,7 +404,7 @@ foam.CLASS({
             return e.GT(
               foam.mlang.StringLength.create({
                 arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
-              }), 0)
+              }), 0);
           },
           errorString: 'Please select a job title.'
         }
@@ -926,7 +925,7 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         if ( n ) {
-          this.owner1.ownershipPercent = this.ownershipPercent;
+          // note: owner1.ownershipPercent is set in its own property
           this.owner1.jobTitle = this.jobTitle;
           this.owner1.firstName = this.firstName;
           this.owner1.lastName = this.lastName;
@@ -934,7 +933,11 @@ foam.CLASS({
           this.owner1.address = this.address;
           return;
         }
-        this.clearProperty('owner1');
+        if ( this.owner1.firstName === this.firstName && this.owner1.lastName === this.lastName && foam.util.equals(this.owner1.birthday, this.birthday) ) {
+          // to fix a problem that comes from cloning which resets owner1
+          this.clearProperty('owner1');
+        }
+        this.clearProperty('ownershipPercent');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
