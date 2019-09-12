@@ -559,8 +559,8 @@ foam.CLASS({
     {
       name: 'lineItems',
       class: 'FObjectArray',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}',
+      of: 'net.nanopay.invoice.model.InvoiceLineItem',
+      javaValue: 'new InvoiceLineItem[] {}',
       visibility: 'RO'
     }
   ],
