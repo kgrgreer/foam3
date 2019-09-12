@@ -189,11 +189,14 @@ foam.CLASS({
       name: 'isLoading',
       value: false,
       postSet: function(_, n) {
+        this.loadingSpin.text = this.PROCESSING_NOTICE;
         if ( n ) {
           this.loadingSpin.show();
+          this.loadingSpin.showText = true;
           return;
         }
         this.loadingSpin.hide();
+        this.loadingSpin.showText = false;
       }
     },
     {
@@ -260,6 +263,7 @@ foam.CLASS({
     { name: 'RATE_REFRESH', message: 'Exchange rate has been refreshed. Please review and ' },
     { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
     { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
+    { name: 'PROCESSING_NOTICE', message: 'Processing your transaction, this can take up to 30 seconds.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
