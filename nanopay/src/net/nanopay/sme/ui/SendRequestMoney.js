@@ -433,7 +433,7 @@ foam.CLASS({
         if ( transaction != null && transaction.fxExpiry && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
           transaction = await this.getFXQuote();
           transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'error');
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');
           this.isLoading = false;
           this.updateInvoiceDetails = transaction;
           this.forceUpdate = true;
