@@ -224,6 +224,7 @@ foam.CLASS({
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'LINE_ITEMS', message: 'Items' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
@@ -335,6 +336,31 @@ foam.CLASS({
                   .add(this.issueDate$)
                 .end()
               .end()
+            .end()
+          .end()
+          .start()
+            .addClass('invoice-row')
+            .start()
+              .add(this.LINE_ITEMS)
+              .addClass('bold-label')
+            .end()
+            .start()
+              .add(this.slot(function(invoice$lineItems) {
+                if ( invoice$lineItems.length !== 0 ) {
+                   return self.E()
+                     .startContext({ data: self.invoice })
+                       .add(self.Invoice.LINE_ITEMS)
+                     .endContext();
+                } else {
+                 return self.E()
+                   .start()
+                     .addClass(this.myClass('invoice-content-block'))
+                     .addClass(this.myClass('invoice-content-text'))
+                     .addClass(this.myClass('italic'))
+                     .add('No items provided')
+                   .end();
+                }
+              }))
             .end()
           .end()
         .end()
