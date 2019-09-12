@@ -190,7 +190,7 @@ public class Test implements ContextAgent {
   }
 
   private void testGetValueDate(AFEXService afexService) {
-    String response = afexService.getValueDate("USDCAD", "SPOT");
+    String response = afexService.getValueDate("USDCAD", "SPOT", "");
     System.out.println("value date response: " + response);
   }
 
