@@ -483,7 +483,6 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
@@ -499,6 +498,7 @@ function usage {
     echo "  -U : User to run as"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
+    echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -x : Check dependencies for known vulnerabilities."
@@ -506,6 +506,14 @@ function usage {
     echo "No options implies: stop, build/compile, deploy, start"
     echo ""
 }
+
+# Print Nanopay text (very important, otherwise nothing will work)
+echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
+echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
+echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
+echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
+echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
+echo ""
 
 ############################
 
@@ -542,7 +550,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klLmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
