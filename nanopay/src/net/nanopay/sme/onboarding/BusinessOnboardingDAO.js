@@ -66,7 +66,6 @@ foam.CLASS({
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
 
-
         businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
