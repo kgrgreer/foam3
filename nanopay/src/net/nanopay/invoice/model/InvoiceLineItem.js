@@ -11,7 +11,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'group'
+      name: 'group',
+      label: 'Type'
     },
     {
       class: 'String',

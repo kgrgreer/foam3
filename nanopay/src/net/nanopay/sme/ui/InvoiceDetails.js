@@ -347,10 +347,13 @@ foam.CLASS({
             .start()
               .add(this.slot(function(invoice$lineItems) {
                 if ( invoice$lineItems.length !== 0 ) {
-                   return self.E()
-                     .startContext({ data: self.invoice })
-                       .add(self.Invoice.LINE_ITEMS)
-                     .endContext();
+                  return self.E()
+                    .startContext({
+                      data: self.invoice,
+                      controllerMode: foam.u2.ControllerMode.VIEW
+                    })
+                      .add(self.Invoice.LINE_ITEMS)
+                    .endContext();
                 } else {
                  return self.E()
                    .start()
