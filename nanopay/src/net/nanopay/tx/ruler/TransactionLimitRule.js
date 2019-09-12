@@ -36,7 +36,7 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
-      class: 'Double',
+      class: 'Long',
       name: 'limit',
       label: 'Maximum Transaction Size',
       section: 'basicInfo',
@@ -111,14 +111,14 @@ foam.CLASS({
       args: [
         {
           name: 'amount',
-          type: 'Double'
+          type: 'Long'
         },
         {
           name: 'msPeriod',
           type: 'Long'
         }
       ],
-      type: 'Double',
+      type: 'Long',
       javaCode: `
       return Math.max(amount - msPeriod * getLimit() / getPeriod().getMs(), 0);
       `

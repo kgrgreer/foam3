@@ -14,7 +14,7 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'Double',
+      class: 'Long',
       name: 'spent'
     }
   ],
@@ -25,7 +25,7 @@ foam.CLASS({
       args: [
         {
           name: 'limit',
-          type: 'Double'
+          type: 'Long'
         },
         {
           name: 'period',
@@ -48,7 +48,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
 
-        public synchronized boolean check(double limit, net.nanopay.util.Frequency period, double amount) {
+        public synchronized boolean check(Long limit, net.nanopay.util.Frequency period, Long amount) {
           update(limit, period);
 
           if ( amount <= limit - getSpent() ) {
@@ -57,7 +57,7 @@ foam.CLASS({
           return false;
         }
 
-        public synchronized void updateSpent(Double amount) {
+        public synchronized void updateSpent(Long amount) {
           setSpent(Math.max(0, getSpent() + amount));
         }
         `);

@@ -18,7 +18,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Double',
+      class: 'Long',
       name: 'limit'
     },
     {
@@ -74,7 +74,7 @@ foam.CLASS({
               " dollars transaction limit. If you require further assistance, please contact us. ");
         }
       }
-      agency.submit(x, x1 -> limitState.updateSpent(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
+      agency.submit(x, x1 -> limitState.updateSpent(Long.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
     },
     {
