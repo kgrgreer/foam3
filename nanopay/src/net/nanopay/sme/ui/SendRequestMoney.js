@@ -257,7 +257,7 @@ foam.CLASS({
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
     { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
-    { name: 'RATE_REFRESH', message: 'Exchange rate has been refreshed. Please review and ' },
+    { name: 'RATE_REFRESH', message: 'The exchange rate expired, please ' },
     { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
     { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
     {
