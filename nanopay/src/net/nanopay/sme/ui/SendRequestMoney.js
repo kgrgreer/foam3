@@ -539,12 +539,12 @@ foam.CLASS({
       isAvailable: function(hasNextOption) {
         return hasNextOption;
       },
-      isEnabled: function(errors) {
+      isEnabled: function(errors, isLoading) {
         if ( this.user.address.countryId === 'CA' ) {
-          return ! errors && ! this.isLoading;
+          return ! errors && ! isLoading;
         } else {
           return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
-            return cadPerm && ! errors && ! this.isLoading;
+            return cadPerm && ! errors && ! isLoading;
           });
         }
       },
@@ -589,6 +589,9 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isEnabled: function(errors, isLoading) {
+        return ! isLoading;
+      },
       code: function() {
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
@@ -596,6 +599,12 @@ foam.CLASS({
           this.stack.back();
         }
       }
-    }
+    },
+    {
+      name: 'goBack',
+      isEnabled: function(isLoading) {
+        return ! isLoading;
+      }
+    },
   ]
 });
