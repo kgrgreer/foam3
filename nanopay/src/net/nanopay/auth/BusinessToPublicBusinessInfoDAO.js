@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthService',
     'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
@@ -72,19 +73,13 @@ foam.CLASS({
           SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();
 
-        if ( ((AuthService) x.get("auth")).check(x, "currency.read.USD") ) {
-          return rtn;
-        }
-
-        ArraySink results = (ArraySink) ((DAO) x.get("accountDAO")).where(
-          AND(
-            EQ(Account.OWNER, business.getId()),
-            EQ(BankAccount.DENOMINATION, "USD"),
-            NEQ(Account.DELETED, true)
-          )
-        ).select(new ArraySink());
-
-        return rtn && (results.getArray().size() == 0);
+        String USD_PERMISSION = "currency.read.USD";
+        String CAD_PERMISSION = "currency.read.CAD";
+        Address address = null == business.getAddress() ? business.getBusinessAddress() : business.getAddress();
+        String permission = null == address || "CA".equals(address.getCountryId()) ? CAD_PERMISSION : USD_PERMISSION; 
+        Boolean hasCurrencyPermission = ((AuthService) x.get("auth")).check(x, permission);
+        
+        return rtn && hasCurrencyPermission;
 
       `
     }
