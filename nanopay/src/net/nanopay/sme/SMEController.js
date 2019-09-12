@@ -531,28 +531,28 @@ foam.CLASS({
      * It is only required for payables.
      */
     async function check2FAEnalbed() {
-      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+      // var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
 
-      if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
-        var TwoFactorNotificationDOM = this.Element.create()
-          .start().style({ 'display': 'inline-block' })
-            .add(this.TWO_FACTOR_REQUIRED_ONE)
-          .end()
-          .start('a').addClass('toast-link')
-            .add(this.TWO_FACTOR_REQUIRED_TWO)
-            .on('click', () => {
-              this.pushMenu('sme.accountProfile.personal-settings');
-            })
-          .end();
+      // if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
+      //   var TwoFactorNotificationDOM = this.Element.create()
+      //     .start().style({ 'display': 'inline-block' })
+      //       .add(this.TWO_FACTOR_REQUIRED_ONE)
+      //     .end()
+      //     .start('a').addClass('toast-link')
+      //       .add(this.TWO_FACTOR_REQUIRED_TWO)
+      //       .on('click', () => {
+      //         this.pushMenu('sme.accountProfile.personal-settings');
+      //       })
+      //     .end();
 
-        // Pass the customized DOM element into the toast notification
-        this.notify(TwoFactorNotificationDOM, 'warning');
-        if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
-          return true;
-        } else {
-          return false;
-        }
-      }
+      //   // Pass the customized DOM element into the toast notification
+      //   this.notify(TwoFactorNotificationDOM, 'warning');
+      //   if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // }
       return true;
     },
 

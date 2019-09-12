@@ -44,7 +44,6 @@ foam.CLASS({
       ],
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
-        // TODO: Please call the java validator of the businessOnboarding here
 
         USBusinessOnboarding old = (USBusinessOnboarding)getDelegate().find_(x, obj);
 
@@ -67,8 +66,6 @@ foam.CLASS({
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
-
-        businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
