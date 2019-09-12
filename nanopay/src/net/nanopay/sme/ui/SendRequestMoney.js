@@ -257,7 +257,7 @@ foam.CLASS({
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
     { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
-    { name: 'RATE_REFRESH', message: 'Exchange rate has been refreshed. Please review and ' },
+    { name: 'RATE_REFRESH', message: 'The exchange rate expired, please ' },
     { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
     { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
     {
@@ -433,7 +433,7 @@ foam.CLASS({
         if ( transaction != null && transaction.fxExpiry && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
           transaction = await this.getFXQuote();
           transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'error');
           this.isLoading = false;
           this.updateInvoiceDetails = transaction;
           this.forceUpdate = true;
