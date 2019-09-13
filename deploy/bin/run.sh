@@ -63,7 +63,7 @@ JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 
-export MEMORY_MODEL=SMALL
+export MEMORY_MODEL=LARGE
 
 # load instance specific deployment options
 if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
