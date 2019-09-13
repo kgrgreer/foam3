@@ -66,8 +66,6 @@ foam.CLASS({
           date: new Date()
         }
         this.setTimeout(this.purge, this.ttl);
-      } else {
-        console.log('hit');
       }
       return this.cache[key].data;
     }

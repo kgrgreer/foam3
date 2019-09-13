@@ -226,7 +226,6 @@ foam.CLASS({
       name: 'updateAggregatedDAO',
       isFramed: true,
       code: function() {
-        console.log('inside aggregated ting');
         this.aggregatedDAO = ( this.account && this.timeFrame ) ?
           this.PromisedDAO.create({
             of: this.Candlestick,
@@ -254,7 +253,6 @@ foam.CLASS({
                 return;
               }
 
-              console.log('Inside Dashboard Liquidity', account);
 
               var liquiditySetting = await account.liquiditySetting$find;
 

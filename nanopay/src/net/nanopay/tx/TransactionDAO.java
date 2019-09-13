@@ -124,7 +124,6 @@ public class TransactionDAO
 
       if ( (long)value != 0 ) {
         logger.error("Debits and credits don't match.", value);
-        logger.error("heyooo ", hm.keySet(),hm.values());
         throw new RuntimeException("Debits and credits don't match.");
       }
     }
