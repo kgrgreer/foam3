@@ -223,12 +223,12 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
-  'net.nanopay.invoice.model.InvoiceLineItem',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
+  'net.nanopay.invoice.InvoiceLineItem',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',

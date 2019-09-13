@@ -544,7 +544,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
   { name: 'net/nanopay/invoice/model/InvoiceStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
-  { name: 'net/nanopay/invoice/model/InvoiceLineItem' },
   { name: 'net/nanopay/invoice/model/RecurringInvoice' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesView', flags: ['web'] },
@@ -579,6 +578,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
+  { name: 'net/nanopay/invoice/InvoiceLineItem' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },

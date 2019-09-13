@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.invoice.model',
+  package: 'net.nanopay.invoice',
   name: 'InvoiceLineItem',
 
   properties: [

@@ -39,7 +39,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.tx.TransactionLineItem'
+    'net.nanopay.invoice.InvoiceLineItem'
   ],
 
   imports: [
@@ -559,7 +559,7 @@ foam.CLASS({
     {
       name: 'lineItems',
       class: 'FObjectArray',
-      of: 'net.nanopay.invoice.model.InvoiceLineItem',
+      of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
       visibility: 'RO'
     }
