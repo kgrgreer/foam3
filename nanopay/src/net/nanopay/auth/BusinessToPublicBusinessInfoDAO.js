@@ -67,20 +67,11 @@ foam.CLASS({
         { name: 'business', type: 'net.nanopay.model.Business' }
       ],
       javaCode: `
-        Boolean rtn = business != null &&
+        return business != null &&
           SafetyUtil.equals(business.getStatus(), AccountStatus.ACTIVE) &&
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
           SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();
-
-        String USD_PERMISSION = "currency.read.USD";
-        String CAD_PERMISSION = "currency.read.CAD";
-        Address address = null == business.getAddress() ? business.getBusinessAddress() : business.getAddress();
-        String permission = null == address || "CA".equals(address.getCountryId()) ? CAD_PERMISSION : USD_PERMISSION; 
-        Boolean hasCurrencyPermission = ((AuthService) x.get("auth")).check(x, permission);
-        
-        return rtn && hasCurrencyPermission;
-
       `
     }
   ]

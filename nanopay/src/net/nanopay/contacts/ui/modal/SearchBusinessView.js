@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.NullDAO',
     'foam.dao.PromisedDAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.Address',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicBusinessInfo',
     'net.nanopay.contacts.Contact',
@@ -25,6 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'publicBusinessDAO',
     'ctrl',
     'notify',
@@ -184,6 +186,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'StringArray',
+      name: 'permissionedCountries',
+      documentation: 'Array of countries user has access to based on currency.read.permission',
+      factory: function(){
+        return  [];
+      }
+    },
+    {
       class: 'foam.dao.DAOProperty',
       name: 'connectedBusinesses',
       documentation: `
@@ -237,7 +247,8 @@ foam.CLASS({
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
                       this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
-                      this.NOT(this.IN(this.Business.ID, mapSink.delegate.array))
+                      this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
+                      this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
                   );
                 dao
@@ -291,6 +302,14 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.permissionedCountries = [this.user.address.countryId];
+      var permission = 'CA' === this.user.address.countryId ? 'currency.read.USD' : 'currency.read.CAD';
+      var otherCountry = 'CA' === this.user.address.countryId ? 'US' : 'CA';
+      this.auth.check(null, permission).then((hasPermission) => {
+        return hasPermission ? this.permissionedCountries.push(otherCountry) : this.permissionedCountries;
+      })
+    },
     function initE() {
       var self = this;
 
