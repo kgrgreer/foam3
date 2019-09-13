@@ -16,10 +16,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'description',
-      expression: function(transaction) {
-        return transaction;
-      }
+      name: 'description'
     },
     {
       class: 'Currency',
