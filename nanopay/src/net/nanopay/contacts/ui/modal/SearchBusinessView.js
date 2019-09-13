@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.dao.NullDAO',
     'foam.dao.PromisedDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.auth.Address',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicBusinessInfo',
     'net.nanopay.contacts.Contact',
