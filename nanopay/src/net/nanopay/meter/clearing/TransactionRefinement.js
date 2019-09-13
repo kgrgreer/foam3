@@ -26,7 +26,7 @@ const clearingTimes = {
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
   name: 'CITransactionRefinement',
-  refines: 'net.nanopay.tx.model.Transaction',
+  refines: 'net.nanopay.tx.cico.CITransaction',
 
   properties: [ clearingTimes ]
 });
@@ -34,7 +34,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
   name: 'COTransactionRefinement',
-  refines: 'net.nanopay.tx.model.COTransaction',
+  refines: 'net.nanopay.tx.cico.COTransaction',
 
   properties: [ clearingTimes ]
 });
