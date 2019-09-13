@@ -1,5 +1,5 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"localBalanceDAO",                    "serviceScript":"return new net.nanopay.tx.LocalBalanceDAO(x);"})
-p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 
 p({
   "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
@@ -76,7 +76,6 @@ p({
   """
   {
     "of":"net.nanopay.account.Account",
-    "cache":true,
     "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
