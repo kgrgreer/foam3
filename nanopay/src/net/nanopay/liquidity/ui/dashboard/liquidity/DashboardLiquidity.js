@@ -276,22 +276,24 @@ foam.CLASS({
                 var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
                   .where(this.EQ(this.Candlestick.KEY, key));
 
-                var first = (await liquidityHistoryDAO
+                var first = await liquidityHistoryDAO
                   .where(this.LTE(this.Candlestick.CLOSE_TIME, minTime))
                   .orderBy(this.DESC(this.Candlestick.CLOSE_TIME))
                   .limit(1)
-                  .select()).array[0];
+                  .select()
+                first = first.array[0];
                 if ( first ) {
                   first = first.clone();
                   first.closeTime = minTime;
                   await dao.put(first);
                 }
 
-                var last = (await liquidityHistoryDAO
+                var last = await liquidityHistoryDAO
                   .where(this.GTE(this.Candlestick.CLOSE_TIME, maxTime))
                   .orderBy(this.Candlestick.CLOSE_TIME)
                   .limit(1)
-                  .select()).array[0];
+                  .select();
+                last = last.array[0]
                 if ( last ) {
                   last = last.clone();
                   last.closeTime = maxTime;
