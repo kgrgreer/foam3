@@ -306,7 +306,7 @@ foam.CLASS({
       var permission = 'CA' === this.user.address.countryId ? 'currency.read.USD' : 'currency.read.CAD';
       var otherCountry = 'CA' === this.user.address.countryId ? 'US' : 'CA';
       this.auth.check(null, permission).then((hasPermission) => {
-        return hasPermission ? this.permissionedCountries.push(otherCountry) : this.permissionedCountries;
+        if ( hasPermission ) this.permissionedCountries = [this.user.address.countryId, otherCountry];
       })
     },
     function initE() {
