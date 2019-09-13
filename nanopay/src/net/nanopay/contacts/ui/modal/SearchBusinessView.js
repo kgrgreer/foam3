@@ -189,7 +189,7 @@ foam.CLASS({
       name: 'permissionedCountries',
       documentation: 'Array of countries user has access to based on currency.read.permission',
       factory: function(){
-        return  [];
+        return  [this.user.address.countryId];
       }
     },
     {
