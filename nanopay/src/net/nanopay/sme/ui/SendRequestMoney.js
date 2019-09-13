@@ -189,11 +189,14 @@ foam.CLASS({
       name: 'isLoading',
       value: false,
       postSet: function(_, n) {
+        this.loadingSpin.text = this.PROCESSING_NOTICE;
         if ( n ) {
           this.loadingSpin.show();
+          this.loadingSpin.showText = true;
           return;
         }
         this.loadingSpin.hide();
+        this.loadingSpin.showText = false;
       }
     },
     {
@@ -257,9 +260,10 @@ foam.CLASS({
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
     { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
-    { name: 'RATE_REFRESH', message: 'Exchange rate has been refreshed. Please review and ' },
+    { name: 'RATE_REFRESH', message: 'The exchange rate expired, please ' },
     { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
     { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
+    { name: 'PROCESSING_NOTICE', message: 'Processing your transaction, this can take up to 30 seconds.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
@@ -433,7 +437,7 @@ foam.CLASS({
         if ( transaction != null && transaction.fxExpiry && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
           transaction = await this.getFXQuote();
           transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'error');
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');
           this.isLoading = false;
           this.updateInvoiceDetails = transaction;
           this.forceUpdate = true;
@@ -539,12 +543,12 @@ foam.CLASS({
       isAvailable: function(hasNextOption) {
         return hasNextOption;
       },
-      isEnabled: function(errors) {
+      isEnabled: function(errors, isLoading) {
         if ( this.user.address.countryId === 'CA' ) {
-          return ! errors && ! this.isLoading;
+          return ! errors && ! isLoading;
         } else {
           return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
-            return cadPerm && ! errors && ! this.isLoading;
+            return cadPerm && ! errors && ! isLoading;
           });
         }
       },
@@ -589,6 +593,9 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isEnabled: function(errors, isLoading) {
+        return ! isLoading;
+      },
       code: function() {
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
@@ -596,6 +603,12 @@ foam.CLASS({
           this.stack.back();
         }
       }
-    }
+    },
+    {
+      name: 'goBack',
+      isEnabled: function(isLoading) {
+        return ! isLoading;
+      }
+    },
   ]
 });

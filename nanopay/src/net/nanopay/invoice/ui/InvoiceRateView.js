@@ -223,7 +223,7 @@ foam.CLASS({
     { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
     { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
     { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' },
-    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. ' }
+    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' }
   ],
 
   methods: [

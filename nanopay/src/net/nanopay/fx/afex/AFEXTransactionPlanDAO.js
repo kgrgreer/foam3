@@ -39,7 +39,10 @@ foam.CLASS({
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
     'net.nanopay.model.Currency',
-    'java.util.Date'
+    'java.util.Date',
+    'java.text.DateFormat',
+    'java.text.SimpleDateFormat',
+    'java.util.Locale'
   ],
 
   constants: [
@@ -189,7 +192,14 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
     afexTransaction.setAccepted(true);
   }
 
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
+  Date date = null;
+  try{
+    DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+    date = format.parse(fxQuote.getValueDate());
+  } catch ( Exception e) {
+
+  }
+  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
   
   // add invoice fee
   Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());

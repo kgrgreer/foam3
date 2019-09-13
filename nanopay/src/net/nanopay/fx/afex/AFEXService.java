@@ -598,7 +598,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String getValueDate(String currencyPair, String valueType) {
+  public String getValueDate(String currencyPair, String valueType,  String businessApiKey) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
       uriBuilder.setParameter("CurrencyPair", currencyPair)
@@ -606,11 +606,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
-      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("API-Key", businessApiKey);
       httpGet.addHeader("Content-Type", "application/json");
 
       AFEXLog log = new AFEXLog();
-      log.setApiKey(apiKey);
+      log.setApiKey(businessApiKey);
       log.setName("getValueDate");
       log.logRequest(httpGet.toString());
 
@@ -763,7 +763,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request) {
     try {
-      valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "SPOT");
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
@@ -775,7 +774,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
       nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
       nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
-      nvps.add(new BasicNameValuePair("ValueDate", valueDate));
+      nvps.add(new BasicNameValuePair("ValueDate", request.getValueDate()));
       nvps.add(accountNumber);
       nvps.add(new BasicNameValuePair("IsAmountSettlement", request.getIsAmountSettlement()));
 
