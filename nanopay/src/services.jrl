@@ -317,3 +317,12 @@ p({"class":"foam.nanos.boot.NSpec", "name":"JDBCConnectionSpec", "lazy":false, "
 
 // Remove the "static" service since we don't depend on it and it provides unauthenticated access to highly sensitive information.
 r({"class":"foam.nanos.boot.NSpec","name":"static"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "BankHolidayService",
+  "serve": true,
+  "service": {
+    "class": "net.nanopay.bank.BankHolidayService"
+  }
+})
