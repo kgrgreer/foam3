@@ -95,7 +95,8 @@ foam.CLASS({
         super.validate(x);
         BusinessLimit busLimit = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(AND(
           EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
-          EQ(BusinessLimit.PERIOD, this.getPeriod())
+          EQ(BusinessLimit.PERIOD, this.getPeriod()),
+          EQ(BusinessLimit.SEND, this.getSend())
         ));
         if ( busLimit != null ) {
           throw new IllegalStateException("BusinessLimit for the business and period already exists. ");
