@@ -94,14 +94,15 @@ foam.CLASS({
         List<Integer> bankHolidays = CsvUtil.cadHolidays;
 
         int i = 0;
-        while ( i < totalClearingTime ) {
-          completionDate = completionDate.plusDays(1);
+        while ( true ) {
           if ( completionDate.getDayOfWeek() != DayOfWeek.SATURDAY
             && completionDate.getDayOfWeek() != DayOfWeek.SUNDAY
             && ! bankHolidays.contains(completionDate.getDayOfYear())
+            && ++i >= totalClearingTime
           ) {
-            i = i + 1;
+            break;
           }
+          completionDate = completionDate.plusDays(1);
         }
         return Date.from(completionDate.atStartOfDay()
           .atZone(ZoneId.systemDefault())
