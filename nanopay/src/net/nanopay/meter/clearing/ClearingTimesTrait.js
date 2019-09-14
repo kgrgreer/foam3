@@ -6,7 +6,8 @@ foam.INTERFACE({
     {
       class: 'Map',
       name: 'clearingTimes',
-      documentation: 'Clearing times of a transaction.',
+      label: 'Custom Clearing Times',
+      documentation: 'Custome clearing times of a transaction.',
       help: 'A list of clearing times applied to the transaction when sent.',
       visibility: 'RO',
       permissionRequired: true,
