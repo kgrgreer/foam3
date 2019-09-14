@@ -5,6 +5,7 @@ foam.CLASS({
   abstract: true,
 
   javaImports: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait',
     'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
     'net.nanopay.tx.cico.COTransaction'
   ],
@@ -105,8 +106,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        transaction.getClearingTimes()
-          .put(getClass().getSimpleName(), getDuration());
+        if ( transaction instanceof ClearingTimesTrait ) {
+          ((ClearingTimesTrait) transaction).getClearingTimes()
+            .put(getClass().getSimpleName(), getDuration());
+        }
       `
     }
   ]
