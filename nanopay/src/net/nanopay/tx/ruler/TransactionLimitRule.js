@@ -55,6 +55,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       label: 'Apply Limit To',
+      visibility: 'FINAL',
       section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
