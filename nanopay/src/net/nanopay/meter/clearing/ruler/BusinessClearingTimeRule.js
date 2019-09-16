@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.model.Business',
+    'net.nanopay.meter.clearing.ClearingTimesTrait',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
@@ -41,6 +42,10 @@ foam.CLASS({
       name: 'action',
       javaGetter: `
         return (x, obj, oldObj, ruler, agency) -> {
+          if ( ! (obj instanceof ClearingTimesTrait) ) {
+            return;
+          }
+
           Transaction transaction = (Transaction) obj;
           Account account = findAccount(x, transaction);
           User owner = account.findOwner(x);
@@ -50,8 +55,8 @@ foam.CLASS({
           ) {
             incrClearingTime(transaction);
             if ( getDuration() < 0 ) {
-              int totalClearingTime = transaction.getClearingTimes().values()
-                .stream().reduce(0, Integer::sum);
+              int totalClearingTime = ((ClearingTimesTrait) transaction)
+                .getClearingTimes().values().stream().reduce(0, Integer::sum);
               if ( totalClearingTime < 0 ) {
                 String message = String.format(
                   "Rule %d (duration: %d) causes transaction %s total clearing time: %d.",

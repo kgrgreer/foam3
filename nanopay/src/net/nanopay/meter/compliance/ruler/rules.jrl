@@ -188,7 +188,7 @@ p({"class":"foam.nanos.ruler.Rule","id":1660,"name":"Remove ComplianceItem - Sec
 p({"class":"foam.nanos.ruler.Rule","id":1670,"name":"Remove ComplianceItem - SecureFact(SIDni) Removal","priority":50,"ruleGroup":"ComplianceItem","documentation":"Removes the ComplianceItem when the SecureFact(SIDni) response is removed","daoKey":"securefactSIDniDAO","operation":2,"action":{"class":"net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule","operation":2,"responseType":"securefactSIDni"},"after":true,"enabled":true,"saveHistory":true})
 
 // Reput object rules
-p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,after:false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
+p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
 
 // Clearing time rules
 p({
