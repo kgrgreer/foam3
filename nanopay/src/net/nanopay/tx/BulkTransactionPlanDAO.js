@@ -24,7 +24,7 @@ foam.CLASS({
         TransactionQuote parentQuote = (TransactionQuote) obj;
 
         // Check whether it is bulkTransaction
-        if ( ! ( parentQuote.getRequestTransaction() instanceof BulkTransaction) ) {
+        if ( parentQuote.getRequestTransaction() instanceof BulkTransaction) {
           BulkTransaction parentTxn = (BulkTransaction) parentQuote.getRequestTransaction();
 
           // Check if the child transaction array is empty or not
