@@ -320,8 +320,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
-  { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimit' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimitPredicate' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
@@ -1098,7 +1098,6 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
-  { name: 'net/nanopay/tx/ui/AccountTransactionLimitRulePredicateView' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },

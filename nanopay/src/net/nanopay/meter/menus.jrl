@@ -17,6 +17,25 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"App
 p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "operation.bus_limits",
+  "label": "Business Limits",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.tx.ruler.BusinessLimit"
+      },
+      "of": "net.nanopay.tx.ruler.BusinessLimit"
+    }
+  },
+  "order": 2100,
+  "parent": "operation"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "operation.clearingTimes",
   "label": "Clearing Times",
   "handler": {
