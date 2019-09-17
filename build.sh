@@ -582,7 +582,20 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
            ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
-           echo "💧 Initializing Liquid Environment 💧"
+
+           echo ""
+           echo ""                             
+           echo -e "\033[31;1m   (                       (     \033[0m"    
+           echo -e "\033[31;1m   )\ (     (     (   (    )\ )  \033[0m"
+           echo -e "\033[31;1m  ((_))\  ( )\   ))\  )\  (()/(  \033[0m"
+           echo -e "\033[31;1m   \033[36;1m_\033[0m\033[31;1m ((_) )(( ) /((_)((_)  ((\033[36;1m_\033[0m\033[31;1m)) \033[0m\033[0m"
+           echo -e "\033[96;1m  | | \033[31;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m" 
+           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m" 
+           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m" 
+           echo -e "\033[96;1m            |_|                  \033[0m"
+           echo ""
+           echo "" 
+           echo -e "💧 Initializing Liquid Environment 💧  "
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
