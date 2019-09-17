@@ -34,7 +34,6 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
-  'net.nanopay.tx.ruler.UserTransactionLimitRule',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -185,6 +184,8 @@ var classes = [
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
+  'net.nanopay.admin.SkipUserEmailVerification',
+  'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
@@ -340,8 +341,9 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
+  'net.nanopay.tx.ruler.BusinessLimit',
+  'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
-  'net.nanopay.tx.ruler.AccountTransactionLimitRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
@@ -561,6 +563,18 @@ var classes = [
   'net.nanopay.meter.reports.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+
+  // clearing
+  'net.nanopay.meter.clearing.ClearingTimeService',
+  'net.nanopay.meter.clearing.ClearingTimesTrait',
+  'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate',
+  'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
+
+  // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ComplianceAuthService',

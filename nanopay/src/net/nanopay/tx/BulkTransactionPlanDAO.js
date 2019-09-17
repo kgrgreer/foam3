@@ -37,15 +37,21 @@ foam.CLASS({
 
           User payer = (User) userDAO.find_(x, parentTxn.getPayerId());
 
-          long sum = 0;
-          Transaction[] childTransactions= parentTxn.getNext();
-          CompositeTransaction ct = new CompositeTransaction();
-          ct.setPayerId(parentTxn.getPayerId());
-          ct.setPayeeId(parentTxn.getPayerId());
-
           // Set the destination of parent transaction to payer's default digital account
           DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
           parentTxn.setDestinationAccount(payerDigitalAccount.getId());
+
+          long sum = 0;
+          Transaction[] childTransactions= parentTxn.getNext();
+          CompositeTransaction ct = new CompositeTransaction();
+
+          // Set the composite transaction as a quoted transaction so that 
+          // it won't be quoted in the DigitalTransactionPlanDAO decorator.
+          // In order to set the composite transaction as a quoted one, it requires
+          // to have both source account and destination account setup.
+          ct.setSourceAccount(payerDigitalAccount.getId());
+          ct.setDestinationAccount(payerDigitalAccount.getId());
+          ct.setIsQuoted(true);
 
           for (Transaction childTransaction : childTransactions) {
             // Sum amount of child transactions

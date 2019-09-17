@@ -41,7 +41,7 @@ foam.CLASS({
                 var formatted = '';
                 if ( obj ) {
                   formatted += obj.organization || obj.businessName;
-                  if ( obj.legalName.trim() ) {
+                  if ( obj.legalName && obj.legalName.trim() ) {
                     formatted += ` (${obj.legalName})`; 
                   }
                 }

@@ -320,8 +320,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
-  { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimit' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimitPredicate' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
@@ -451,6 +451,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/admin/SkipUserEmailVerification' },
+  { name: 'net/nanopay/admin/predicate/IsCurrentUser' },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
   { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
@@ -957,6 +959,20 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
+
+  // clearing
+  { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
+  { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
+  { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
+  { name: 'net/nanopay/meter/clearing/ruler/BusinessClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRuleDAOCreateView' },
+  { name: 'net/nanopay/meter/clearing/ruler/EstimateTransactionCompletionDate' },
+  { name: 'net/nanopay/meter/clearing/ruler/InstitutionClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/TransactionTypeClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/predicate/DefaultClearingTimeRulePredicate' },
+
+  // compliance
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
@@ -1082,7 +1098,6 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
-  { name: 'net/nanopay/tx/ui/AccountTransactionLimitRulePredicateView' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
