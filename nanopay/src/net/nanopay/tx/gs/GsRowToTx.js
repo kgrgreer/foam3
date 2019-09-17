@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.dao.ArraySink',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.fx.ExchangeRate'
   ],
   properties: [
 
@@ -294,13 +295,39 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
              .setDestinationAccount(source.getId())
              .setSourceAccount(b.getId())
              .setDestinationCurrency(txn.getSourceCurrency())
-             .setAmount(txn.getAmount())
+             .setSourceCurrency(b.getDenomination())
              .setDestinationAmount(txn.getAmount())
              .setLastStatusChange(txn.getLastStatusChange())
              .build();
+           if ( SafetyUtil.equals(ci.getSourceCurrency(),ci.getDestinationCurrency()))
+            ci.setAmount(ci.getDestinationAmount());
+           else {
+            double w = 1.0;
+            ArraySink ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
+              MLang.AND(
+                MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getDestinationCurrency()),
+                MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getSourceCurrency())
+            )
+      ).select(new ArraySink());
+      if (((ex.getArray().toArray())).length == 0 ){
+        ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
+          MLang.AND(
+            MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getSourceCurrency()),
+            MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
+          )
+        ).select(new ArraySink());
+        w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
+      }
+      else {
+        w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
+      }
+      if ( w == 0) System.out.println("uuuuhhhohhh");
+              ci.setAmount((long) ((double) ci.getDestinationAmount()*w));
+           }
            if (! (b instanceof BankAccount) ){
               verifyBalance(x,ci);
            }
+           checkTrusty(x,ci);
            Transaction tx = (Transaction) transactionDAO.put(ci).fclone();
            if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
              tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
