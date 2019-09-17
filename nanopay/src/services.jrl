@@ -834,9 +834,17 @@ p({"class":"foam.nanos.boot.NSpec", "name":"AFEXCredentials",                  "
 p({"class":"foam.nanos.boot.NSpec","name":"liquidityThresholdCandlestickDAO","serve":true,"serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());","client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
 p({"class":"foam.nanos.boot.NSpec","id":"liquiditySettingsDAO","serviceScript":"dao = new foam.dao.MDAO(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo());\n\ndao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)\n    .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)\n        .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))\n        .setPeriodLengthMs(1)\n        .build())\n    .setDelegate(dao)\n    .build();\n\ndao = new foam.dao.java.JDAO(x, dao, \"liquiditySettings\");\n\ndao = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)\n    .setDelegate(dao)\n    .build();\n\ndao = new foam.dao.SequenceNumberDAO(dao);\n                \ndao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.liquidity.LiquiditySettingValidator());\n\ndao = new foam.dao.PMDAO(x, dao);\n        \nreturn dao;"})
 p({"class":"foam.nanos.boot.NSpec", "name":"JDBCConnectionSpec", "lazy":false, "serve":false, "class":"foam.nanos.boot.NSpec", "service":{"class":"foam.dao.jdbc.JDBCConnectionSpec", "databaseServer":"mysql", "hostName":"localhost", "databaseName":"testSQLDAO", "userName":"foam_user", "userPassword":"foam_password"} })
-
-// Remove the "static" service since we don't depend on it and it provides unauthenticated access to highly sensitive information.
-r({"class":"foam.nanos.boot.NSpec","name":"static"})
 p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"csvUploadScriptDAO",
+  "lazy":true,
+  "serve":true,
+  "serviceScript":"return new foam.dao.EasyDAO.Builder(x)\n  .setPm(true)\n  .setGuid(true)\n  .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())\n  .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n  .setJournalName(\"csvUploadScripts\")\n  .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))\n  .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .build();",
+  "client":"{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+})
+
+// Remove the "static" service since we don't depend on it and it provides unauthenticated access to highly sensitive information.
+r({"class":"foam.nanos.boot.NSpec","name":"static"})

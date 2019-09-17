@@ -737,6 +737,8 @@ var classes = [
 
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
+
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [
