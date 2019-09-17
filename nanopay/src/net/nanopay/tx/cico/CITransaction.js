@@ -115,7 +115,7 @@ foam.CLASS({
       super.limitedCopyFrom(other);
       setCompletionDate(other.getCompletionDate());
       setProcessDate(other.getProcessDate());
-      setClearingTimes(other.getClearingTimes());
+      copyClearingTimesFrom(other);
       `
     },
     {
