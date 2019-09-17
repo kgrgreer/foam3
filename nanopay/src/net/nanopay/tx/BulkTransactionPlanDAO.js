@@ -42,10 +42,15 @@ foam.CLASS({
               bulkTxn.setSourceAccount(getAccountId(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI()));
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
               bulkTxn.setDestinationAccount(getAccountId(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()));
+              Transaction txn = new Transaction();
+              txn.copyFrom(bulkTxn);
               TransactionQuote quote = new TransactionQuote();
-              quote.setRequestTransaction(bulkTxn);
+              quote.setRequestTransaction(txn);
               quote = (TransactionQuote) getDelegate().put_(x, quote);
-              parentQuote.setPlan(quote.getPlan());
+              bulkTxn.clearNext();
+              bulkTxn.setIsQuoted(true);
+              bulkTxn.addNext(quote.getPlan());
+              parentQuote.setPlan(bulkTxn);
               return parentQuote;
             } else {
               throw new RuntimeException("BulkTransaction missing Child transactions or payee.");
