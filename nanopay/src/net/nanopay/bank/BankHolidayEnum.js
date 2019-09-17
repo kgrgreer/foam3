@@ -3,7 +3,6 @@ foam.ENUM({
   name: 'BankHolidayEnum',
 
   values: [
-    { name: 'NONE' },
     { name: 'SATURDAY' },
     { name: 'SUNDAY' },
     { name: 'BOTH' },

@@ -7,6 +7,7 @@ foam.CLASS({
     'java.time.DayOfWeek',
     'java.time.LocalDate',
     'java.time.ZoneId',
+    'java.time.ZoneOffset',
     'java.util.Date',
     'java.util.List',
     'java.util.ArrayList',
@@ -50,48 +51,43 @@ foam.CLASS({
       ],
       javaCode: `
       DAO bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
+      LocalDate date = requestedDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
+      Date requestDate = Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+
       List bankHolidayList = ((ArraySink) bankHolidayDAO.where(
         AND(
           EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-          EQ(BankHoliday.REGION_ID, address.getRegionId())
+          EQ(BankHoliday.REGION_ID, address.getRegionId()),
+          GTE(BankHoliday.DATE, requestDate)
         ))
         .select(new ArraySink())).getArray();
   
-      List<LocalDate> holidayList = new ArrayList<>();
-      for ( Object holidayObj : bankHolidayList ) {
-        BankHoliday holiday = (BankHoliday) holidayObj;
-        LocalDate bankHoliday = holiday.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        if ( ! bankHoliday.isBefore(LocalDate.now()) ) {
-          holidayList.add(bankHoliday);
-        }
-      }
-  
-      LocalDate date = requestedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-      date = date.plusDays(offset);
-
       Boolean skipSaturday = false;
       Boolean skipSunday = false;
       for ( BankHolidayWeekendModifiers object : getHolidayExecptions() ) {
-            //check for country wide rule
-            if ( object.getCountryId().equals(address.getCountryId()) && object.getRegionId().equals("") ) {
-              skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-              skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-            }
-            //check for region rule, overides country rule
-            if ( object.getRegionId().equals(address.getRegionId()) ) {
-              skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-              skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-              break;
-            }
-      }
-      while ( true ) {
-
-        if ( (skipSaturday ? true : date.getDayOfWeek() != DayOfWeek.SATURDAY)
-          && (skipSunday ? true : date.getDayOfWeek() != DayOfWeek.SUNDAY)
-          && ! holidayList.contains(date) ) {
+        //check for country wide rule
+        if ( object.getCountryId().equals(address.getCountryId()) && object.getRegionId().equals("") ) {
+          skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
+          skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
+        }
+        //check for region rule, overides country rule
+        if ( object.getRegionId().equals(address.getRegionId()) ) {
+          skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
+          skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
           break;
         }
-          date = date.plusDays(1l);
+      }
+      while ( true ) {
+        if ( (skipSaturday ? true : date.getDayOfWeek() != DayOfWeek.SATURDAY)
+          && (skipSunday ? true : date.getDayOfWeek() != DayOfWeek.SUNDAY)
+          && ! bankHolidayList.contains(requestDate) ) {
+          if ( offset > 0 ) {
+            offset--;
+          } else {
+            break;
+          }
+        }
+        date = date.plusDays(1l);
       }
       return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
       `

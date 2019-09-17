@@ -17,8 +17,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           },
-          placeholder: 'Select a Country',
-          defaultValue: 'Select a Country'
+          placeholder: 'Select a Country'
         });
       }
     },
