@@ -11,7 +11,6 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'java.util.ArrayList',
-    'java.util.Calendar',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -62,6 +61,13 @@ foam.CLASS({
         ))
         .select(new ArraySink())).getArray();
   
+      List<LocalDate> holidayList = new ArrayList<>();
+      for ( Object holidayObj : bankHolidayList ) {
+        BankHoliday holiday = (BankHoliday) holidayObj;
+        LocalDate bankHoliday = holiday.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+          holidayList.add(bankHoliday);
+      }
+    
       Boolean skipSaturday = false;
       Boolean skipSunday = false;
       for ( BankHolidayWeekendModifiers object : getHolidayExecptions() ) {
@@ -80,7 +86,7 @@ foam.CLASS({
       while ( true ) {
         if ( (skipSaturday ? true : date.getDayOfWeek() != DayOfWeek.SATURDAY)
           && (skipSunday ? true : date.getDayOfWeek() != DayOfWeek.SUNDAY)
-          && ! bankHolidayList.contains(requestDate) ) {
+          && ! holidayList.contains(date) ) {
           if ( offset > 0 ) {
             offset--;
           } else {
