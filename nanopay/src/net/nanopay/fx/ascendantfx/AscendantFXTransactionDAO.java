@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.util.SafetyUtil;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
