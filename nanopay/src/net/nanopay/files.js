@@ -1147,4 +1147,6 @@ FOAM_FILES([
 
   { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
   { name: 'net/nanopay/tx/gs/GsRowToTx'},
+
+  { name: 'net/nanopay/script/CsvUploadScript'},
 ]);
