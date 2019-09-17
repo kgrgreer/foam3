@@ -7,6 +7,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 
+import foam.util.SafetyUtil;
 import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.model.Business;
@@ -19,7 +20,7 @@ public class DigitalAccountService
   public DigitalAccount findDefault(X x, String denomination) {
     User user = (User) x.get("user");
 
-     if ( user instanceof Business || user.getGroup().equals("sme") ) {
+     if ( (user instanceof Business || user.getGroup().equals("sme") ) && SafetyUtil.equals("CAD",denomination) )   {
        DAO accountDAO = (DAO) x.get("localAccountDAO");
        OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
        overdraft.setName("OverdraftAccount for: " + overdraft.getOwner());
