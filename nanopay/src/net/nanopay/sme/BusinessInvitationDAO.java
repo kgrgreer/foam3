@@ -143,7 +143,7 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
+    DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
 

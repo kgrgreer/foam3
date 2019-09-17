@@ -14,10 +14,7 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,10 +114,12 @@ public class EFTReturnFileProcessor implements ContextAgent
         tran.setStatus(TransactionStatus.DECLINED);
         sendEmail(x, "Transaction was rejected or returned by EFT return file",
           "Transaction id: " + tran.getId() + ", Return code: " + eftReturnRecord.getReturnCode() + ", Return date: " + eftReturnRecord.getReturnDate());
+        tran.setCompletionDate(new Date());
       } else if ( tran.getStatus() == TransactionStatus.COMPLETED && "Return".equals(returnType) ) {
         tran.setStatus(TransactionStatus.DECLINED);
         sendEmail(x, "Transaction was returned outside of the 2 business day return period",
           "Transaction id: " + tran.getId() + ", Return code: " + eftReturnRecord.getReturnCode() + ", Return date: " + eftReturnRecord.getReturnDate());
+        tran.setCompletionDate(new Date());
       }
 
       transactionDao.put(tran);

@@ -132,7 +132,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
+        DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
 
         ExternalContactToken token = (ExternalContactToken) tokenDAO
           .find(EQ(ExternalContactToken.BUSINESS_ID, business.getId()));

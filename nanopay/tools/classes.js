@@ -34,7 +34,6 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
-  'net.nanopay.tx.ruler.UserTransactionLimitRule',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -195,6 +194,8 @@ var classes = [
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
+  'net.nanopay.admin.SkipUserEmailVerification',
+  'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
@@ -291,6 +292,8 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnCreate',
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
+  'net.nanopay.tx.AccountRelationship',
+  'net.nanopay.tx.AccountRelationshipLineItem',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
@@ -299,6 +302,7 @@ var classes = [
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
   'net.nanopay.tx.ModifyCicoStatus',
+  'net.nanopay.tx.PurposeGroup',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -330,10 +334,14 @@ var classes = [
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummaryTransaction',
+  'net.nanopay.tx.BulkTransaction',
+  'net.nanopay.tx.BulkTransactionPlanDAO',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',
   'net.nanopay.tx.NanopayLineItemTaxDAO',
+  'net.nanopay.tx.PurposeCode',
+  'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -343,9 +351,9 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
+  'net.nanopay.tx.ruler.BusinessLimit',
+  'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
-  'net.nanopay.tx.ruler.AccountTransactionLimitRule',
-  'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
@@ -495,6 +503,7 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.PayerAssentTransactionDAO',
+  'net.nanopay.security.UserRegistrationSanitationDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
@@ -564,6 +573,18 @@ var classes = [
   'net.nanopay.meter.reports.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+
+  // clearing
+  'net.nanopay.meter.clearing.ClearingTimeService',
+  'net.nanopay.meter.clearing.ClearingTimesTrait',
+  'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate',
+  'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
+
+  // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ComplianceAuthService',
@@ -704,7 +725,6 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
-  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 

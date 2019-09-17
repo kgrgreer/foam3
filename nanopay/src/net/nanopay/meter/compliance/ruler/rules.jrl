@@ -353,3 +353,24 @@ p({
   "enabled": true,
   "saveHistory": true
 })
+p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
+
+// Clearing time rules
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1800,
+  "name": "Estimate Transaction completionDate",
+  "documentation": "Estimates and updates transaction completionDate using ClearingTimeService.",
+  "ruleGroup": "ClearingTime",
+  "daoKey": "localTransactionDAO",
+  "operation": 1,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate"
+  },
+  "enabled": true,
+  "saveHistory": false,
+  "predicate": {
+    "class": "net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate"
+  }
+})
