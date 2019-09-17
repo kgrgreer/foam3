@@ -501,10 +501,6 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'String',
-      name: 'paymentMethod'
-    },
-    {
       name: 'next',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
