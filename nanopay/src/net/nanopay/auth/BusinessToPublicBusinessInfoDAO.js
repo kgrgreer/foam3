@@ -66,26 +66,11 @@ foam.CLASS({
         { name: 'business', type: 'net.nanopay.model.Business' }
       ],
       javaCode: `
-        Boolean rtn = business != null &&
+        return business != null &&
           SafetyUtil.equals(business.getStatus(), AccountStatus.ACTIVE) &&
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
           SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();
-
-        if ( ((AuthService) x.get("auth")).check(x, "currency.read.USD") ) {
-          return rtn;
-        }
-
-        ArraySink results = (ArraySink) ((DAO) x.get("accountDAO")).where(
-          AND(
-            EQ(Account.OWNER, business.getId()),
-            EQ(BankAccount.DENOMINATION, "USD"),
-            NEQ(Account.DELETED, true)
-          )
-        ).select(new ArraySink());
-
-        return rtn && (results.getArray().size() == 0);
-
       `
     }
   ]

@@ -608,6 +608,16 @@ foam.CLASS({
       name: 'goBack',
       isEnabled: function(isLoading) {
         return ! isLoading;
+      },
+      isAvailable: function(hasBackOption) {
+        return hasBackOption;
+      },
+      code: function(X) {
+        if ( this.position <= 0 ) {
+          X.stack.back();
+          return;
+        }
+        this.subStack.back();
       }
     },
   ]
