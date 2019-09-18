@@ -583,7 +583,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
 
-           echo ""
            echo ""                             
            echo -e "\033[31;1m   (                       (     \033[0m"    
            echo -e "\033[31;1m   )\ (     (     (   (    )\ )  \033[0m"
