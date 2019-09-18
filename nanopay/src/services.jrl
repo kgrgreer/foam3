@@ -320,8 +320,8 @@ r({"class":"foam.nanos.boot.NSpec","name":"static"})
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "BankHolidayService",
-  "serve": true,
+  "name": "bankHolidayService",
+  "serve": false,
   "service": {
     "class": "net.nanopay.bank.BankHolidayService"
   }
