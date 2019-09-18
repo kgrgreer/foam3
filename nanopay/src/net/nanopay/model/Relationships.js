@@ -650,7 +650,9 @@ foam.RELATIONSHIP({
   inverseName: 'sourceAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: { visibility: 'RO', section: 'paymentInfo', }
 });
 
@@ -661,7 +663,9 @@ foam.RELATIONSHIP({
   inverseName: 'destinationAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: { visibility: 'RO', section: 'paymentInfo' }
 });
