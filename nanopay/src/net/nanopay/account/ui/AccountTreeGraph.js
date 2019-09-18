@@ -51,7 +51,7 @@ foam.CLASS({
     },
     {
       name: 'selectedNode',
-      postSet: function (o, n) {
+      postSet: function(o, n) {
         if (o) {
           o.color = 'white';
         }
@@ -60,19 +60,19 @@ foam.CLASS({
     },
     {
       name: 'relationship',
-      factory: function () {
+      factory: function() {
         return net.nanopay.account.AccountAccountChildrenRelationship;
       }
     },
     {
       name: 'data',
-      factory: function () {
+      factory: function() {
         return this.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' });
       }
     },
     {
       name: 'formatNode',
-      value: function () {
+      value: function() {
         this.__subContext__.homeDenomination$.sub(this.invalidate);
 
         // var isShadow = this.data.name.indexOf('Shadow') != -1;
