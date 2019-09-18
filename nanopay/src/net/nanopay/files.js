@@ -854,7 +854,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
-
+  { name: 'net/nanopay/sme/onboarding/BusinessOnboardingDAOTest' },
   // relationships
   { name: 'net/nanopay/model/Relationships' },
   { name: 'net/nanopay/security/Relationships' },
