@@ -66,7 +66,6 @@ p({
       .build()));
   """
 })
-p({"class":"foam.nanos.boot.NSpec", "name":"transactionQuotePlanDAO",          "lazy":false,  "serve":true,  "serviceScript":"return x.get(\"localTransactionQuotePlanDAO\");","client":"{\"of\":\"net.nanopay.tx.TransactionQuote\"}"})
 
 p({
   "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",              "lazy":false,  "serve":false, "serviceScript":

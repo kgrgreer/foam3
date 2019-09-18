@@ -529,6 +529,11 @@ foam.CLASS({
         this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
       }
 
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
+
       /*
        * Get the complianceStatus object from the complianceStatusArray
        * when it matches the condition of business onboarding status
