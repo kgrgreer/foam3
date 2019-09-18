@@ -49,25 +49,16 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      LocalDate localDate = requestedDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
       DAO bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
-      LocalDate date = requestedDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
-      Date requestDate = Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+      List<Date> bankHolidayList = ((ArraySink) ((foam.mlang.sink.Map)
+        bankHolidayDAO
+          .where(AND(
+            EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+            EQ(BankHoliday.REGION_ID, address.getRegionId()),
+            GTE(BankHoliday.DATE, getDate(localDate, ZoneOffset.UTC))))
+          .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();
 
-      List bankHolidayList = ((ArraySink) bankHolidayDAO.where(
-        AND(
-          EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-          EQ(BankHoliday.REGION_ID, address.getRegionId()),
-          GTE(BankHoliday.DATE, requestDate)
-        ))
-        .select(new ArraySink())).getArray();
-  
-      List<LocalDate> holidayList = new ArrayList<>();
-      for ( Object holidayObj : bankHolidayList ) {
-        BankHoliday holiday = (BankHoliday) holidayObj;
-        LocalDate bankHoliday = holiday.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-          holidayList.add(bankHoliday);
-      }
-    
       Boolean skipSaturday = false;
       Boolean skipSunday = false;
       for ( BankHolidayWeekendModifiers object : getHolidayExecptions() ) {
@@ -84,18 +75,35 @@ foam.CLASS({
         }
       }
       while ( true ) {
-        if ( (skipSaturday ? true : date.getDayOfWeek() != DayOfWeek.SATURDAY)
-          && (skipSunday ? true : date.getDayOfWeek() != DayOfWeek.SUNDAY)
-          && ! holidayList.contains(date) ) {
+        if ( (skipSaturday ? true : localDate.getDayOfWeek() != DayOfWeek.SATURDAY)
+          && (skipSunday ? true : localDate.getDayOfWeek() != DayOfWeek.SUNDAY)
+          && ! bankHolidayList.contains(getDate(localDate, ZoneOffset.UTC)) ) {
           if ( offset > 0 ) {
             offset--;
           } else {
             break;
           }
         }
-        date = date.plusDays(1l);
+        localDate = localDate.plusDays(1);
       }
-      return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+      return getDate(localDate, ZoneOffset.UTC);
+      `
+    },
+    {
+      name: 'getDate',
+      type: 'Date',
+      args: [
+        {
+          name: 'localDate',
+          type: 'java.time.LocalDate'
+        },
+        {
+          name: 'zone',
+          type: 'java.time.ZoneId'
+        }
+      ],
+      javaCode: `
+        return Date.from(localDate.atStartOfDay(zone).toInstant());
       `
     }
   ]
