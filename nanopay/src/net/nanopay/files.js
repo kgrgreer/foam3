@@ -124,7 +124,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
-  { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
