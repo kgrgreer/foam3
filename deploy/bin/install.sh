@@ -53,11 +53,19 @@ function backupFiles {
         chmod 750 ${BACKUP_HOME}
     fi
 
+    # clear and copy journals and logs
+    # tar'ing the live directories will fail with changed files.
+    rm -rf ${BACKUP_HOME}/journals
+    rm -rf ${BACKUP_HOME}/logs
+    cp -r ${MNT_HOME}/journals ${BACKUP_HOME}/
+    cp -r ${MNT_HOME}/logs ${BACKUP_HOME}/
+    
     # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
         NANOPAY_BACKUP=${BACKUP_HOME}/$(basename ${NANOPAY_HOME})-$(date +%s)-backup.tar.gz
         echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
-        tar -czf ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} .
+        tar -czf  ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} . ${BACKUP_HOME}/journals ${BACKUP_HOME}/logs
+        
         if [ ! $? -eq 0 ]; then
             echo "ERROR :: Couldn't backup ${NANOPAY_HOME} to ${NANOPAY_BACKUP}"
             quit
