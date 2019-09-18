@@ -5,7 +5,7 @@ foam.CLASS({
 
   properties: [
     {
-      documenation: `When true, planners will add a Cash-In Transaction,
+      documentation: `When true, planners will add a Cash-In Transaction,
  rather than rely on liquidity or manual Cash-In to found the appropriate
  Digital account.`,
       name: 'explicitCI',
@@ -13,7 +13,7 @@ foam.CLASS({
       value: true
     },
     {
-      documenation: `When true, planners will add a Cash-Out Transaction,
+      documentation: `When true, planners will add a Cash-Out Transaction,
  rather than leave Cash-Out to be dealt with via Liquidity.`,
       name: 'explicitCO',
       class: 'Boolean',
