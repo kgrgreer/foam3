@@ -284,7 +284,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.setFxFees(fees);
   
   afexTransaction.setIsQuoted(true);
-  afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+ // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
   afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());

@@ -180,7 +180,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
   afexTransaction.setIsQuoted(true);
-  afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+  // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
   afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
