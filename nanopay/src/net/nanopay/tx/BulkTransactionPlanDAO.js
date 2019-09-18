@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
@@ -25,27 +26,37 @@ foam.CLASS({
 
         // Check whether it is bulkTransaction
         if ( parentQuote.getRequestTransaction() instanceof BulkTransaction) {
-          BulkTransaction parentTxn = (BulkTransaction) parentQuote.getRequestTransaction();
-
-          // Check if the child transaction array is empty or not
-          if ( parentTxn.getNext().length < 1 ) {
-            throw new RuntimeException("The child transactions of a bulk transaction cannot be empty");
-          }
+          BulkTransaction bulkTxn = (BulkTransaction) parentQuote.getRequestTransaction();
 
           DAO userDAO = (DAO) x.get("localUserDAO");
           DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
           DAO balanceDAO = (DAO) x.get("localBalanceDAO");
 
-          User payer = (User) userDAO.find_(x, parentTxn.getPayerId());
+          User payer = (User) userDAO.find_(x, bulkTxn.getPayerId());
+
+          // If only a single child transaction or no children and a non-null
+          // payee then quote a single Transaction.
+
+          if ( bulkTxn.getNext().length == 0 ) {
+            if ( bulkTxn.getPayeeId() != 0 ) {
+              bulkTxn.setSourceAccount(getAccountId(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI()));
+              User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
+              bulkTxn.setDestinationAccount(getAccountId(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()));
+              parentQuote.setRequestTransaction(bulkTxn);
+              return (TransactionQuote) getDelegate().put_(x, parentQuote);
+            } else {
+              throw new RuntimeException("BulkTransaction missing Child transactions or payee.");
+            }
+          }
 
           // Set the destination of parent transaction to payer's default digital account
-          DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
-          parentTxn.setDestinationAccount(payerDigitalAccount.getId());
+          DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
+          bulkTxn.setSourceAccount(payerDigitalAccount.getId());
+          bulkTxn.setDestinationAccount(payerDigitalAccount.getId());
 
           long sum = 0;
-          Transaction[] childTransactions= parentTxn.getNext();
+          Transaction[] childTransactions = bulkTxn.getNext();
           CompositeTransaction ct = new CompositeTransaction();
-
           // Set the composite transaction as a quoted transaction so that 
           // it won't be quoted in the DigitalTransactionPlanDAO decorator.
           // In order to set the composite transaction as a quoted one, it requires
@@ -61,15 +72,11 @@ foam.CLASS({
             TransactionQuote childQuote = new TransactionQuote();
 
             // Set the source of each child transaction to its parent destination digital account
-            childTransaction.setSourceAccount(parentTxn.getDestinationAccount());
+            childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
             // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            Account payeeAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
-            if ( parentTxn.getExplicitCO() ) {
-              payeeAccount = BankAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
-            }
-            childTransaction.setDestinationAccount(payeeAccount.getId());
+            childTransaction.setDestinationAccount(getAccountId(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()));
 
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);
@@ -81,48 +88,81 @@ foam.CLASS({
             ct.addNext(result.getPlan());
           }
 
+          // TODO: consider FX.
           // Set the total amount on parent
-          parentTxn.setAmount(sum);
+          bulkTxn.setAmount(sum);
 
           Long payerDigitalBalance = (Long) payerDigitalAccount.findBalance(x);
 
           if ( sum > payerDigitalBalance ||
-               parentTxn.getExplicitCI() ) {
+               bulkTxn.getExplicitCI() ) {
             // If digital does not have sufficient funds, then set the source account to their default bank account.
-            BankAccount payerDefaultBankAccount = BankAccount.findDefault(x, payer, parentTxn.getSourceCurrency());
-            parentTxn.setSourceAccount(payerDefaultBankAccount.getId());
+            BankAccount payerDefaultBankAccount = BankAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
 
             // Create a Cash-In transaction
             Transaction cashInTransaction = new Transaction();
             cashInTransaction.setSourceAccount(payerDefaultBankAccount.getId());
             cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
-            cashInTransaction.setAmount(parentTxn.getAmount());
+            cashInTransaction.setAmount(bulkTxn.getAmount());
             TransactionQuote cashInTransactionQuote = new TransactionQuote();
             cashInTransactionQuote.setRequestTransaction(cashInTransaction);
             cashInTransactionQuote = (TransactionQuote) planDAO.put(cashInTransactionQuote);
             cashInTransaction = cashInTransactionQuote.getPlan();
 
-            // Add cash-in transaction as the next fo the parent transaction
+            // Add cash-in transaction as the next of the parent transaction
             cashInTransaction.addNext(ct);
-            parentTxn.clearNext();
-            parentTxn.addNext(cashInTransaction);
+            bulkTxn.clearNext();
+            bulkTxn.addNext(cashInTransaction);
           } else {
             // If the payer digital account does have sufficient balance then
             // set the source and destination as the default digital account.
             // When this is quoted, the planners will do nothing (which is what we want).
-            parentTxn.setSourceAccount(payerDigitalAccount.getId());
 
             // Add a compositeTransaction as the next of the parent transaction
-            parentTxn.clearNext();
-            parentTxn.addNext(ct);
-          } 
+            bulkTxn.clearNext();
+            bulkTxn.addNext(ct);
+          }
+          bulkTxn.setIsQuoted(true);
 
           // Set parent transaction to the parent quote
-          parentQuote.setPlan(parentTxn);
+          parentQuote.setPlan(bulkTxn);
 
           return parentQuote;
         }
         return super.put_(x, obj);
+      `
+    },
+    {
+      name: 'getAccountId',
+      args: [
+        {
+          name: 'x',
+          type: 'X'
+        },
+        {
+          name: 'user',
+          type: 'User'
+        },
+        {
+          name: 'currency',
+          type: 'String'
+        },
+        {
+          name: 'cico',
+          type: 'Boolean'
+        }
+      ],
+      javaType: 'Long',
+      javaCode: `
+    if ( cico ) {
+      Account account = BankAccount.findDefault(x, user, currency);
+      if ( account != null ) {
+        return account.getId();
+      }
+      throw new RuntimeException(currency+" BankAccount not found for "+user.getId());
+    } else {
+      return DigitalAccount.findDefault(x, user, currency).getId();
+    }
       `
     }
   ]
