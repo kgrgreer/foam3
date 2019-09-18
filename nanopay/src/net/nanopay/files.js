@@ -110,7 +110,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PersonalIdentification' },
   { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
-  { name: 'net/nanopay/bank/BankHolidayEnum' },
   { name: 'net/nanopay/bank/BankHolidayService' },
   { name: 'net/nanopay/bank/BankWeekend' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
