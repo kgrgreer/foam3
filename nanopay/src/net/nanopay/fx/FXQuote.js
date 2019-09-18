@@ -97,7 +97,7 @@ foam.CLASS({
           name: 'paymentMethod'
         },
         {
-          class: 'Date',
+          class: 'String',
           name: 'valueDate'
         }
     ],

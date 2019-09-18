@@ -90,7 +90,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String getValueDate(String currencyPair, String valueType) {
+  public String getValueDate(String currencyPair, String valueType, String businessApiKey) {
     return null;
   }
 

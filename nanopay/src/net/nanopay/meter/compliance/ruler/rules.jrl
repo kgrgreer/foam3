@@ -9,9 +9,108 @@ p({"class":"foam.nanos.ruler.Rule","id":1100,"name":"Securefact SIDni","priority
 p({"class":"foam.nanos.ruler.Rule","id":1101,"name":"Securefact LEV","priority":110,"ruleGroup":"onboarding","documentation":"Check business via Securefact LEV API","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.SecurefactLEVValidator"},"enabled":true,"saveHistory":true})
 
 // Dow Jones rules
-p({"class":"foam.nanos.ruler.Rule","id":1200,"name":"Dow Jones Person KYC - User onboarding","priority":100,"ruleGroup":"onboarding","documentation":"Check user via Dow Jones API","daoKey":"localUserDAO","operation":3,"after":false,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"foam.mlang.predicate.Or","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested","strict":true},{"class":"net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck"}]}]},"asyncAction":{"class":"net.nanopay.meter.compliance.dowJones.PersonSanctionValidator"},"enabled":false,"saveHistory":true,"validity":1})
-p({"class":"foam.nanos.ruler.Rule","id":1201,"name":"Dow Jones Entity KYC - Business onboarding","priority":100,"ruleGroup":"onboarding","documentation":"Check business via Dow Jones API","daoKey":"localUserDAO","operation":3,"after":false,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.dowJones.EntitySanctionValidator"},"enabled":false,"saveHistory":true,"validity":1})
-p({"class":"foam.nanos.ruler.Rule","id":1202,"name":"Dow Jones Beneficial Owner KYC - Beneficial Owner onboarding","priority":100,"ruleGroup":"onboarding","documentation":"Check beneficial owner via Dow Jones API","daoKey":"beneficialOwnerDAO","operation":3,"after":false,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator"},"enabled":false,"saveHistory":true,"validity":1})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1200,
+  "name": "Dow Jones Person KYC - User onboarding",
+  "priority": 100,
+  "ruleGroup": "onboarding",
+  "documentation": "Check user via Dow Jones API",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Or",
+        "args": [
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested",
+            "strict": true
+          },
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck"
+          }
+        ]
+      }
+    ]
+  },
+  "asyncAction": {
+    "class": "net.nanopay.meter.compliance.dowJones.PersonSanctionValidator"
+  },
+  "enabled": false,
+  "saveHistory": true,
+  "validity": 1
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1201,
+  "name": "Dow Jones Entity KYC - Business onboarding",
+  "priority": 100,
+  "ruleGroup": "onboarding",
+  "documentation": "Check business via Dow Jones API",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding"
+      }
+    ]
+  },
+  "asyncAction": {
+    "class": "net.nanopay.meter.compliance.dowJones.EntitySanctionValidator"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "validity": 1
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1202,
+  "name": "Dow Jones Beneficial Owner KYC - Beneficial Owner onboarding",
+  "priority": 100,
+  "ruleGroup": "onboarding",
+  "documentation": "Check beneficial owner via Dow Jones API",
+  "daoKey": "beneficialOwnerDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"
+      }
+    ]
+  },
+  "asyncAction": {
+    "class": "net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator"
+  },
+  "enabled": false,
+  "saveHistory": true,
+  "validity": 1
+})
 p({"class":"foam.nanos.ruler.Rule","id":1203,"name":"Dow Jones Approval Request Rule","priority":50,"ruleGroup":"dowjones-update","documentation":"Propagates data from the approval request to the corresponding dow jones response.","daoKey":"approvalRequestDAO","operation":1,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.DowJonesApprovalRequested"},"action":{"class":"net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequestRule"},"enabled":false,"saveHistory":true})
 
 // Final rules
@@ -188,6 +287,72 @@ p({"class":"foam.nanos.ruler.Rule","id":1660,"name":"Remove ComplianceItem - Sec
 p({"class":"foam.nanos.ruler.Rule","id":1670,"name":"Remove ComplianceItem - SecureFact(SIDni) Removal","priority":50,"ruleGroup":"ComplianceItem","documentation":"Removes the ComplianceItem when the SecureFact(SIDni) response is removed","daoKey":"securefactSIDniDAO","operation":2,"action":{"class":"net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule","operation":2,"responseType":"securefactSIDni"},"after":true,"enabled":true,"saveHistory":true})
 
 // Reput object rules
+p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,after:false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
+
+// User Corridor Permission
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1701,
+  "name": "Add Domestic Currency Permission",
+  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY Permission when compliance is passed.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCreated"
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+r({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1702,
+  "name": "Remove Domestic Currency Permission",
+  "documentation": "This rule removes user currency.read.DOMESTIC_CURRENCY Permission when compliance is not passed."
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1703,
+  "name": "Add FX Provision Payer Permission after Business is onboarded",
+  "documentation": "This rule gives business fx.provision.payer Permission when onboarded.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded",
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1704,
+  "name": "Remove FX Provision Payer Permission after Business is not onboarded",
+  "documentation": "This rule removes business fx.provision.payer Permission when business is not onboarded.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded",
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
 p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
 
 // Clearing time rules

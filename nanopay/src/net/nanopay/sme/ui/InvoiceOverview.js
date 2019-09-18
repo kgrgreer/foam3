@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -413,20 +414,27 @@ foam.CLASS({
               transaction.sourceAccount :
               transaction.destinationAccount;
 
-          if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
+          if ( (transaction.type === 'AscendantFXTransaction' && transaction.fxRate) || this.FXSummaryTransaction.isInstance(transaction) ) {
             if ( transaction.fxRate !== 1 ) {
               this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} `;
+                + `${(1 / transaction.fxRate).toFixed(4)} ${transaction.sourceCurrency}`;
             }
 
-            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+            if ( this.FXSummaryTransaction.isInstance(transaction) ) {
+              this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(transaction.fxFees.totalFees);
+                this.fee = currency.format(transaction.getCost());
               });
+            } else {
+              this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+                .then((currency) => {
+                  this.fee = currency.format(transaction.fxFees.totalFees);
+                });
+            }
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(0);
+                this.fee = currency.format(transaction.getCost());
               });
           }
 
@@ -721,7 +729,9 @@ foam.CLASS({
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
             var request = this.CanReceiveCurrency.create({
               userId: this.invoice.payeeId,
-              currencyId: this.invoice.destinationCurrency
+              payerId: this.invoice.payerId,
+              currencyId: this.invoice.destinationCurrency,
+              isRecievable: false
             });
             this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {

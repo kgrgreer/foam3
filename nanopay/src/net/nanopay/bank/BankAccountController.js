@@ -159,6 +159,7 @@ foam.CLASS({
         this.available = true;
         this.availableCAD = true;
         this.availableUSD = true;
+        var isCanadianBusiness = ctrl.user.businessAddress.countryId == 'CA';
         var accountListCAD = await ctrl.user.accounts.where(
             foam.mlang.predicate.Eq.create({
               arg1: net.nanopay.account.Account.TYPE,
@@ -171,10 +172,10 @@ foam.CLASS({
             arg2: net.nanopay.bank.USBankAccount.name
           })
         ).select();
-        if ( accountListCAD && accountListCAD.array.length > 0 ) {
+        if ( accountListCAD && accountListCAD.array.length > 0 && isCanadianBusiness ) {
           this.availableCAD = false;
         }
-        if ( accountListUSD && accountListUSD.array.length > 0 ) {
+        if ( accountListUSD && accountListUSD.array.length > 0 && ! isCanadianBusiness ) {
           this.availableUSD = false;
         }
         if ( ! this.availableCAD && ! this.availableUSD ) {
@@ -188,7 +189,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination != 'CAD') {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD') {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account
