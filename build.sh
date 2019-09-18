@@ -594,7 +594,9 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
            echo -e "\033[96;1m            |_|                  \033[0m"
            echo ""
            echo "" 
-           echo -e "💧 Initializing Liquid Environment 💧  "
+           echo -e "💧 Initializing Liquid Environment 💧"
+           echo -e "\033[41;1m BE SURE TO SET ENABLED TO TRUE FOR BOTH: \033[0m"
+           echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanner \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
