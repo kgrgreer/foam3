@@ -14,6 +14,7 @@ foam.CLASS({
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
     'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
+    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'net.nanopay.model.Business',
     'java.util.Date',
     'static foam.mlang.MLang.*'
@@ -52,6 +53,22 @@ foam.CLASS({
                     .build());
               }
             }, "Entity Sanction Validator");
+          }
+
+          if ( business.getBusinessDirectors().length > 0 ) {
+            for ( int i = 0; i < business.getBusinessDirectors().length; i++ ) {
+              String fullName = business.getBusinessDirectors()[i];
+              String[] arr = fullName.split(" ", 2);
+              String firstName = arr[0];
+              String lastName = arr[1];
+
+              PersonNameSearchData personSearchData = new PersonNameSearchData.Builder(x)
+                .setFirstName(firstName)
+                .setSurName(lastName)
+                .build();
+
+              dowJonesService.personNameSearch(x, personSearchData);
+            }
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
