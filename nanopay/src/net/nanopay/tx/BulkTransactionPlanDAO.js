@@ -36,7 +36,6 @@ foam.CLASS({
 
           // If only a single child transaction or no children and a non-null
           // payee then quote a single Transaction.
-
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
               bulkTxn.setSourceAccount(getAccountId(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI()));
@@ -154,15 +153,15 @@ foam.CLASS({
       ],
       javaType: 'Long',
       javaCode: `
-    if ( cico ) {
-      Account account = BankAccount.findDefault(x, user, currency);
-      if ( account != null ) {
-        return account.getId();
-      }
-      throw new RuntimeException(currency+" BankAccount not found for "+user.getId());
-    } else {
-      return DigitalAccount.findDefault(x, user, currency).getId();
-    }
+        if ( cico ) {
+          Account account = BankAccount.findDefault(x, user, currency);
+          if ( account != null ) {
+            return account.getId();
+          }
+          throw new RuntimeException(currency + " BankAccount not found for "+user.getId());
+        } else {
+          return DigitalAccount.findDefault(x, user, currency).getId();
+        }
       `
     }
   ]
