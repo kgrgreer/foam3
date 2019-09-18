@@ -580,11 +580,9 @@ foam.CLASS({
                       .setName("Digital Transfer from PACS")
                       .setStatus(TransactionStatus.ACSP)
 
-                      .setPayer(payer)
                       .setSourceCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy())
                       .setSourceAccount(senderBkId)
 
-                      .setPayee(payee)
                       .setDestinationCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getCcy())
                       .setDestinationAmount(desAmt)
                       .setDestinationAccount(receiverBkId)
