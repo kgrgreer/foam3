@@ -41,6 +41,10 @@ public class AFEXContactDAO
     
     AuthService auth = (AuthService) x.get("auth");
     Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+    if ( contactOwner == null ) {
+      return getDelegate().put_(x, obj);
+    }
+    String contactOwnerCountryId = contactOwner.getAddress() == null ? "" : contactOwner.getAddress().getCountryId();
 
     // Check if contact has a bank account
     BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
@@ -50,8 +54,9 @@ public class AFEXContactDAO
        // check contact owner has currency.read.x permission
       String currencyPermission = "currency.read." + contactBankAccount.getDenomination();
       boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
+      boolean isCadToCad = "CAD".equals(contactBankAccount.getDenomination()) && "CA".equals(contactOwnerCountryId);
       // Check if beneficiary already added
-      if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
+      if (  ! isCadToCad && hasCurrencyPermission && ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
       }
     }
@@ -59,11 +64,12 @@ public class AFEXContactDAO
     // Check If Contact has business and create AFEX beneficiary for business also
     Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
     if ( business != null ) {
-      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
+      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
       if ( null != businessBankAccount ) {
         String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
         boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
-        if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
+        boolean isCadToCad = "CAD".equals(businessBankAccount.getDenomination()) && "CA".equals(contactOwnerCountryId);
+        if ( ! isCadToCad && hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
         }
       }

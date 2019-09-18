@@ -151,8 +151,7 @@ foam.CLASS({
           })
         .end()
         .start()
-          .enableClass('three-column', this.withoutCountrySelection)
-          .enableClass('two-column', ! this.withoutCountrySelection)
+          .addClass('two-column')
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,

@@ -56,7 +56,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   private DAO currencyDAO;
   private DAO resultDAO;
   private Logger logger;
-
+  private OMLogger omLogger;
   @Override
   public void start() throws Exception {
     this.tokenDAO = (DAO) getX().get("quickbooksTokenDAO");
@@ -67,6 +67,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     this.currencyDAO = (DAO) getX().get("currencyDAO");
     this.resultDAO  = (DAO) getX().get("accountingResultDAO");
     this.logger         = (Logger) getX().get("logger");
+    this.omLogger = (OMLogger) getX().get("OMLogger");
   }
 
   @Override
@@ -380,7 +381,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     if ( e instanceof AccountingException ) {
       AccountingException accountingException = (AccountingException) e;
-      OMLogger omLogger = ((OMLogger) getX().get("OMLogger"));
 
       // if error codes has already been set
       if ( accountingException.getErrorCodes() != null ) {
@@ -395,9 +395,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         if ( temp instanceof AuthenticationException ) {
           resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
           resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
-          omLogger.log("Quickbooks post request");
+          this.omLogger.log("Quickbooks post request");
         } else {
-          omLogger.log("Quickbooks timeout");
+          this.omLogger.log("Quickbooks timeout");
           resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
           resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
         }
@@ -444,14 +444,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
-    cacheDAO.inX(x).put(
-      new AccountingContactEmailCache.Builder(x)
-        .setQuickId(importContact.getId())
-        .setRealmId(token.getRealmId())
-        .setEmail(email.getAddress().toLowerCase())
-        .build()
-    );
-
     Contact existContact = (Contact) contactDAO.inX(x).find(AND(
       EQ(Contact.EMAIL, email.getAddress().toLowerCase()),
       EQ(Contact.OWNER, user.getId())
@@ -470,6 +462,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // If the contact is a existing contact
     if ( existContact != null ) {
+      existContact = (Contact) existContact.fclone();
 
       // existing user
       if ( existUser != null ) {
@@ -541,6 +534,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       if ( existUser == null ) {
         contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false, contactErrors));
+        cacheDAO.inX(x).put(
+          new AccountingContactEmailCache.Builder(x)
+            .setQuickId(importContact.getId())
+            .setRealmId(token.getRealmId())
+            .setEmail(email.getAddress().toLowerCase())
+            .build()
+        );
       }
     }
 
@@ -769,7 +769,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         EQ(QuickbooksContact.EMAIL, cache.getEmail()),
         EQ(QuickbooksContact.OWNER, user.getId())
       ));
-    if ( contact == null ) {
+    if ( contact == null ||  ! ( contact instanceof  QuickbooksContact)) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
@@ -995,7 +996,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                 configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
 
     if ( token == null || token.getRealmId() == null || token.getBusinessName() == null ) {
@@ -1009,9 +1009,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       List response = service.executeQuery(query).getEntities();
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1026,7 +1026,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
 
     if ( token == null ) {
@@ -1040,9 +1039,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       IEntity response = service.add(object);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1057,7 +1056,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
     if ( token == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
@@ -1070,9 +1068,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       service.executeBatch(operation);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }

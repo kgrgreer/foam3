@@ -202,6 +202,7 @@ foam.CLASS({
         txn.addNext(digitalPlan);
         txn.addLineItems(digitalPlan.getLineItems(), digitalPlan.getReverseLineItems());
         txn.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
+        txn.addLineItems(new TransactionLineItem[] { new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(75l).setCurrency(sourceAccount.getDenomination()).build()}, null);
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);

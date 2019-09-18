@@ -47,6 +47,20 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       section: 'requiredSection',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
+      },
       minLength: 1
     },
     {
@@ -78,6 +92,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'birthday',
+      label: 'Date of birth',
       section: 'requiredSection',
       validationPredicates: [
         {
@@ -112,7 +127,14 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      view: function(args, X) {
+        var m = foam.mlang.Expressions.create();
+        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: dao
+        };
+      },
       autoValidate: true
     },
   ],

@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -45,7 +45,15 @@ foam.CLASS({
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
 
-        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
+        BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
+
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+        
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
@@ -55,9 +63,6 @@ foam.CLASS({
         Session session = x.get(Session.class);
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
-        }
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
         }
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
@@ -73,7 +78,7 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
+          user.setBirthday( businessOnboarding.getBirthday() );
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
@@ -132,7 +137,7 @@ foam.CLASS({
 
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
 
           Invitation invitation = new Invitation();
           /**

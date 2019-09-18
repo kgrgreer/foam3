@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -45,14 +45,21 @@ foam.CLASS({
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
 
-        USBusinessOnboarding old = (USBusinessOnboarding)getDelegate().find_(x, obj);
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
+        USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+  
         // ACCEPTANCE DOCUMENTS
-        Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        Long oldDualPartyAgreement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
-        if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
+        if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
@@ -102,7 +109,7 @@ foam.CLASS({
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
           business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
+          business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
           business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
 
           // Business info: business details
@@ -142,7 +149,7 @@ foam.CLASS({
 
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
 
           Invitation invitation = new Invitation();
           /**

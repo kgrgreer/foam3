@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
-    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding'
   ],
 
   methods: [
@@ -40,11 +40,18 @@ foam.CLASS({
           return getDelegate().put_(x, businessOnboarding);
         }
 
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+  
+        // TODO: Please call the java validator of the businessOnboarding here
+
+        businessOnboarding.validate(x);
+
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-        business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
+        business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
         localBusinessDAO.put(business);
 
@@ -53,6 +60,12 @@ foam.CLASS({
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+        Long oldInternationAgrement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
+        if ( oldInternationAgrement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
+            businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
         }
         return getDelegate().put_(x, businessOnboarding);
       `
