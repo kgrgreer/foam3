@@ -578,7 +578,8 @@ foam.CLASS({
                     long desAmt = new Double((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getText()).longValue();
                     transaction = new Transaction.Builder(getX())
                       .setName("Digital Transfer from PACS")
-                      .setStatus(TransactionStatus.ACSP)
+                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status. 
+                      //.setStatus(TransactionStatus.ACSP)
 
                       .setPayer(payer)
                       .setSourceCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy())
@@ -748,7 +749,7 @@ foam.CLASS({
                     Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
                     String cur_txnStatus = null;
-                    TransactionStatus txnStatus  = null;
+                    String txnStatus  = null;
 
                     if ( txn != null ) {
                       cur_txnStatus = ((TransactionStatus)txn.getStatus()).getName();
@@ -756,9 +757,9 @@ foam.CLASS({
                       System.out.println("txn.getStatus().getName() : " + txn.getStatus().getName());
 
                       if ( cur_txnStatus.equals(TransactionStatus.COMPLETED) ) {
-                        txnStatus = TransactionStatus.ACSP;
+                        txnStatus = "ACSP"; //TransactionStatus.ACSP;
                       } else {
-                        txnStatus = TransactionStatus.ACSC;
+                        txnStatus = "ACSC"; //TransactionStatus.ACSC;
                       }
 
                     } else {
@@ -768,7 +769,7 @@ foam.CLASS({
                     orgnlGrpInfAndSts.setOriginalMessageIdentification((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
                     orgnlGrpInfAndSts.setOriginalCreationDateTime((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalCreationDateTime());
                     orgnlGrpInfAndSts.setOriginalMessageNameIdentification("Pacs.008.001.06");
-                    orgnlGrpInfAndSts.setGroupStatus(txnStatus.toString());   // ACSP or ACSC
+                    orgnlGrpInfAndSts.setGroupStatus(txnStatus);   // ACSP or ACSC
                     pacs00200109.getFIToFIPmtStsRpt().getOriginalGroupInformationAndStatus()[i] = orgnlGrpInfAndSts;
                   } else {
                     throw new RuntimeException("Missing field : OriginalMessageIdentification OR OriginalCreationDateTime");

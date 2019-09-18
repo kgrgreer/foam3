@@ -51,20 +51,6 @@ foam.ENUM({
       ordinal: 6
     },
     {
-      // deprecated
-      name: 'ACSP',
-      label: 'ACSP',
-      documentation: 'DEPRECATED. Accepted, Settlement Pending: The transaction has been received by nanopay and is sent to the partner bank for credit. (PacsMessage)',
-      ordinal: 7
-    },
-    {
-      // deprecated
-      name: 'ACSC',
-      label: 'ACSC',
-      documentation: ' DEPRECATED. Accepted, Settlement Complete: The transaction has been successfully completed within the ecosystem and the funds are credited to the beneficiary account. (PacsMessage)',
-      ordinal: 8
-    },
-    {
       name: 'FAILED',
       label: 'Failed',
       documentation: 'CICO: in case confirmation files indicates invalid transactions, those transactions take FAILED status.',
