@@ -1,12 +1,6 @@
 #!/bin/bash
 # Super simple launcher.
 
-# Run as ubuntu on staging and production
-#target_user="ubuntu"
-#if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
-#  exec sudo -u "$target_user" -- "$0" "$@"
-#fi
-
 HOST_NAME=`hostname -s`
 NANOPAY_HOME=/opt/nanopay
 WEB_PORT=8080
@@ -62,8 +56,6 @@ JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
-
-export MEMORY_MODEL=SMALL
 
 # load instance specific deployment options
 if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
