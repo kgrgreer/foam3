@@ -12,7 +12,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -22,7 +21,6 @@ foam.CLASS({
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.fx.FXTransaction',
     'net.nanopay.util.Frequency'
   ],
 
@@ -30,20 +28,23 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction ) ) {
+        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction) ) {
           Transaction txn = (Transaction) obj;
           if ( ! (txn.getStatus() == TransactionStatus.COMPLETED) )
             return;
           LiquidityService ls = (LiquidityService) x.get("liquidityService");
           Account source = txn.findSourceAccount(x);
           Account destination = txn.findDestinationAccount(x);
-          if ( /*(! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) ||*/txn instanceof FXTransaction || txn instanceof DigitalTransaction ) {
-
+          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction ) {
+            agency.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
                 if( source instanceof DigitalAccount )
-                  ls.liquifyAccountz(source.getId(), Frequency.PER_TRANSACTION, -txn.getAmount(),txn.getLastStatusChange());
+                  ls.liquifyAccount(source.getId(), Frequency.PER_TRANSACTION, -txn.getAmount());
                 if ( destination instanceof DigitalAccount )
-                  ls.liquifyAccountz(destination.getId(), Frequency.PER_TRANSACTION, txn.getDestinationAmount(),txn.getLastStatusChange());
-
+                  ls.liquifyAccount(destination.getId(), Frequency.PER_TRANSACTION, txn.getAmount());
+              }
+            }, "Liquid Rule");
           }
         }
       `
