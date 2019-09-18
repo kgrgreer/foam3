@@ -3,25 +3,23 @@ foam.CLASS({
   name: 'BankHolidayService',
 
   javaImports: [
-    'foam.nanos.logger.Logger',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'java.time.DayOfWeek',
     'java.time.LocalDate',
     'java.time.ZoneId',
     'java.time.ZoneOffset',
     'java.util.Date',
     'java.util.List',
-    'java.util.ArrayList',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
-    'net.nanopay.bank.BankHolidayEnum'
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.bank.BankHolidayWeekendModifiers',
-      name: 'holidayExecptions'
+      of: 'net.nanopay.bank.BankWeekend',
+      name: 'customBankWeekends'
     }
   ],
 
@@ -59,30 +57,14 @@ foam.CLASS({
             GTE(BankHoliday.DATE, getDate(localDate, ZoneOffset.UTC))))
           .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();
 
-      Boolean skipSaturday = false;
-      Boolean skipSunday = false;
-      for ( BankHolidayWeekendModifiers object : getHolidayExecptions() ) {
-        //check for country wide rule
-        if ( object.getCountryId().equals(address.getCountryId()) && object.getRegionId().equals("") ) {
-          skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-          skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-        }
-        //check for region rule, overides country rule
-        if ( object.getRegionId().equals(address.getRegionId()) ) {
-          skipSaturday = object.getBankHolidayEnum() == BankHolidayEnum.SATURDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-          skipSunday = object.getBankHolidayEnum() == BankHolidayEnum.SUNDAY || object.getBankHolidayEnum() == BankHolidayEnum.BOTH;
-          break;
-        }
-      }
+      BankWeekend bankWeekend = findBankWeekend(address);
       while ( true ) {
-        if ( (skipSaturday ? true : localDate.getDayOfWeek() != DayOfWeek.SATURDAY)
-          && (skipSunday ? true : localDate.getDayOfWeek() != DayOfWeek.SUNDAY)
-          && ! bankHolidayList.contains(getDate(localDate, ZoneOffset.UTC)) ) {
-          if ( offset > 0 ) {
-            offset--;
-          } else {
-            break;
-          }
+        if ( ! (bankWeekend.getSaturday() && localDate.getDayOfWeek() == DayOfWeek.SATURDAY)
+          && ! (bankWeekend.getSunday() && localDate.getDayOfWeek() == DayOfWeek.SUNDAY)
+          && ! bankHolidayList.contains(getDate(localDate, ZoneOffset.UTC))
+          && --offset < 0
+        ) {
+          break;
         }
         localDate = localDate.plusDays(1);
       }
@@ -104,6 +86,33 @@ foam.CLASS({
       ],
       javaCode: `
         return Date.from(localDate.atStartOfDay(zone).toInstant());
+      `
+    },
+    {
+      name: 'findBankWeekend',
+      type: 'net.nanopay.bank.BankWeekend',
+      args: [
+        {
+          name: 'address',
+          type: 'foam.nanos.auth.Address'
+        }
+      ],
+      javaCode: `
+        BankWeekend ret = new BankWeekend();
+        for ( BankWeekend bankWeekend : getCustomBankWeekends() ) {
+          String regionId = bankWeekend.getRegionId();
+          if ( regionId.equals(address.getRegionId()) ) {
+            return bankWeekend;
+          }
+
+          // Check for country wide bank weekend
+          if ( bankWeekend.getCountryId().equals(address.getCountryId())
+            && SafetyUtil.isEmpty(regionId)
+          ) {
+            ret = bankWeekend;
+          }
+        }
+        return ret;
       `
     }
   ]

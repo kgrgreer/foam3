@@ -104,8 +104,8 @@ var classes = [
   'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayEnum',
-  'net.nanopay.bank.BankHolidayWeekendModifiers',
   'net.nanopay.bank.BankHolidayService',
+  'net.nanopay.bank.BankWeekend',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',

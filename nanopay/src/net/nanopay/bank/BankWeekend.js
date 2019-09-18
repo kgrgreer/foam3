@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'BankHolidayWeekendModifiers',
+  name: 'BankWeekend',
 
   implements: [
     'foam.mlang.Expressions'
@@ -41,10 +41,14 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.bank.BankHolidayEnum',
-      name: 'bankHolidayEnum'
+      class: 'Boolean',
+      name: 'saturday',
+      value: true
     },
-  ],
-
+    {
+      class: 'Boolean',
+      name: 'sunday',
+      value: true
+    }
+  ]
 });
