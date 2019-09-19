@@ -10,7 +10,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
@@ -34,6 +33,14 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     setUpBankHoliday(x);
     testSkipHoliday(x);
     testSkipWeekend(x);
+    testSkipHolidayWithOffset(x);
+  }
+
+  private void testSkipHolidayWithOffset(X x) {
+    Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 1);
+    Date expected = getDate(jan1_2020.plusDays(2));
+
+    test(expected.equals(result), "Should skip bank holiday with offset");
   }
 
   private void testSkipWeekend(X x) {
