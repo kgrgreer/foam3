@@ -237,7 +237,7 @@ foam.CLASS({
 
       if ( ! treeNode ) {
         var self = this;
-        this.cview.view.layoutComplete.sub(function(sub) {
+        this.cview.view.onSizeChange.sub(function(sub) {
           sub.detach();
           self.scrollToAccount(accountId);
         })
@@ -252,8 +252,7 @@ foam.CLASS({
         }
         if ( n.data.id != this.cview.view.root.data.id && ! n.expanded ) {
           var self = this;
-          var detached = false;
-          this.cview.view.layoutComplete.sub(function(sub) {
+          this.cview.view.onSizeChange.sub(function(sub) {
             sub.detach();
             self.scrollToAccount(accountId);
           })
