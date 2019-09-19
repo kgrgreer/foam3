@@ -19,14 +19,31 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.bank.BankWeekend',
-      name: 'customBankWeekends'
+      name: 'customBankWeekends',
+      documentation: 'Customize country/regional bank weekends'
     }
   ],
 
   methods: [
     {
-      name: 'checkBankHoliday',
+      name: 'skipBankHolidays',
       type: 'Date',
+      documentation: `
+        Skip bank holidays, weekend and "offset" number of business days for a
+        given requestedDate.
+
+        Arguments:
+          - x             : Context object
+          - requestedDate : Requested date to check against applicable holidays
+          - address       : For determining applicable bank holidays and weekend
+          - offset        : The number of business days to skip
+
+        Eg.
+
+          skipBankHoliday(x, january1_2020, ontario, 0); //  returns 2020-01-02 (Thursday)
+          skipBankHoliday(x, january1_2010, ontario, 1); //  returns 2020-01-03 (Friday)
+          skipBankHoliday(x, january1_2010, ontario, 2); //  returns 2020-01-06 (Monday) because weekend 04 and 05 are skipped
+      `,
       args: [
         {
           name: 'x',
@@ -41,9 +58,8 @@ foam.CLASS({
           name: 'address'
         },
         {
-          type: 'Long',
-          name: 'offset',
-          value: 0
+          type: 'Integer',
+          name: 'offset'
         }
       ],
       javaCode: `
