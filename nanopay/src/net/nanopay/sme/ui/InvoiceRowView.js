@@ -193,7 +193,9 @@ foam.CLASS({
       event.stopPropagation();
       var request = this.CanReceiveCurrency.create({
         userId: this.data.payeeId,
-        currencyId: this.data.destinationCurrency
+        payerId: this.data.payerId,
+        currencyId: this.data.destinationCurrency,
+        isRecievable: ! this.isPayable
       });
       let responseObj = await this.canReceiveCurrencyDAO.put(request);
       if ( ! responseObj.response ) {

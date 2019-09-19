@@ -32,8 +32,8 @@ foam.CLASS({
     1) invoiceIsBeingPaidButNotComplete
     2) invoiceIsANewRecievable
     3) invoiceNeedsApproval
-    4) invoiceIsBeingPaidAndCompleted 
-   `,
+    4) invoiceIsBeingPaidAndCompleted
+  `,
 
   methods: [
     {

@@ -10,6 +10,7 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
+import foam.nanos.auth.AuthService;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
@@ -42,23 +43,14 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
-
-    if ( user == null ) {
-      throw new RuntimeException("User not found.");
-    }
-
-    if ( user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
-      User realUser = (User) bareUserDAO.find(((Contact) user).getBusinessId());
-      if ( realUser != null ) {
-        user = realUser;
-      }
-    }
+    user = checkUser(user, request.getUserId(), request);
 
     // Checks if the contact has a bank account
     // Needed for a better error message to improve user experience
     Count hasBankAccount = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.DELETED, false),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
@@ -73,20 +65,68 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     Count count = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.DELETED, false),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
+    boolean contactRecieveCurrency = (count.getValue() > 0) && ! request.getIsRecievable();
 
-     // if the user is a business then the compliance should be passed
+    // Check if the contact can pay an invoice to the user in the currency our user accepts
+    boolean contactPayCurrency = false;
+    if ( request.getIsRecievable() ) {
+      User payer = (User) bareUserDAO.inX(x).find(request.getPayerId());
+      contactPayCurrency = request.getUserId() == request.getPayerId(); // If user is payer then this check isn't needed.
+      try {
+        payer = checkUser(payer, request.getPayerId(), request);
+        if ( payer != null && ! contactPayCurrency ) {
+          AuthService auth = (AuthService) x.get("auth");
+          contactPayCurrency = auth.checkUser(getX(), payer, "currency.read."+ request.getCurrencyId()) && (count.getValue() > 0);
+        }
+      } catch (Exception e) {
+        if ( ! contactPayCurrency ) {
+          Count payerCount = (Count) accountDAO
+            .where(AND(
+              INSTANCE_OF(BankAccount.getOwnClassInfo()),
+              EQ(BankAccount.DELETED, false),
+              EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+              EQ(Account.OWNER, request.getPayerId())))
+            .select(new Count());
+          contactPayCurrency = (payerCount.getValue() > 0);
+        }
+        
+      }
+    }
+  
+    // if the user is a business then the compliance should be passed
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
 
-    response.setResponse((count.getValue() > 0) && isCompliant);
-    if ( count.getValue() == 0 ) response.setMessage("Sorry, we don't support " + request.getCurrencyId() + " for this contact.");
-    if ( ! isCompliant ) response.setMessage("The user you've chosen hasn't passed our compliance check.");
+    response.setResponse(isCompliant && (contactPayCurrency || contactRecieveCurrency) );
+    if ( count.getValue() == 0 ) response.setMessage("We apologize for, this contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
+    if ( ! isCompliant ) response.setMessage("Please be patient as we perform our due diligence. This business will be active shortly.");
     return response;
   }
 
+  public User checkUser(User user, long id, CanReceiveCurrency request) {
+    if ( user == null ) {
+      throw new RuntimeException("Warning: User " + id + " was not found.");
+    }
+    if ( user instanceof Contact ) {
+      if ( ((Contact) user).getBusinessId() > 0 ) {
+        User realUser = (User) bareUserDAO.find(((Contact) user).getBusinessId());
+        if ( realUser != null ) {
+          return realUser;
+        }
+      } else {
+        if (request.getUserId() != request.getPayerId()) {
+          throw new RuntimeException("Warning: User " + id + " is a contact with no Business Id.");
+        }
+      }
+    }
+    return user;
+  }
+  
   @Override
   public FObject find_(X x, Object id) {
     return null;

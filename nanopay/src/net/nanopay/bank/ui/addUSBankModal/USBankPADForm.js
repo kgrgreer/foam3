@@ -21,6 +21,7 @@ foam.CLASS({
     'ctrl',
     'isConnecting',
     'onComplete',
+    'plaidService',
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
@@ -76,12 +77,19 @@ foam.CLASS({
         var spinner = this.LoadingSpinner.create();
         return spinner;
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.plaid.PlaidResponseItem',
+      name: 'plaidResponseItem'
     }
   ],
 
   messages: [
+    { name: 'PLAID_TITLE', message: 'Connect using Plaid' },
     { name: 'TITLE', message: 'Connect using a void check' },
-    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
+    { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.' },
+    { name: 'INSTRUCTIONS2', message: 'Please ensure your details are entered properly.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'SUCCESS', message: 'Your bank account was successfully added.' },
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
@@ -89,18 +97,30 @@ foam.CLASS({
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
     { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
     { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ERROR_FNUMBER', message: 'First name cannot contain numbers.' },
+    { name: 'ERROR_LNUMBER', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.viewData.bankAccounts = [this.bank];
+      if ( this.plaidResponseItem != null ) {
+        this.viewData.bankAccounts = [this.plaidResponseItem.account];
+      } else {
+        this.viewData.bankAccounts = [this.bank];
+      }
     },
 
     function initE() {
       this.addClass(this.myClass())
-        .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
+        .start('p').addClass(this.myClass('title')).add(this.slot(function(plaidResponseItem) {
+          if ( plaidResponseItem != null ) {
+            return this.PLAID_TITLE;
+          } else {
+            return this.TITLE;
+          }
+        })).end()
         .start().addClass(this.myClass('content')).enableClass(this.myClass('shrink'), this.isConnecting$)
           .start().addClass('spinner-container').show(this.isConnecting$)
             .start().addClass('spinner-container-center')
@@ -108,7 +128,13 @@ foam.CLASS({
               .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
+          .start('p').addClass(this.myClass('instructions')).add(this.slot(function(plaidResponseItem) {
+            if ( plaidResponseItem != null ) {
+              return this.INSTRUCTIONS2;
+            } else {
+              return this.INSTRUCTIONS + '\n' + this.INSTRUCTIONS2;
+            }
+          })).end()
           .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$, isUSPAD: true }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
@@ -158,6 +184,14 @@ foam.CLASS({
         ctrl.notify(this.ERROR_LLENGTH, 'error');
         return false;
       }
+      if ( /\d/.test(user.firstName) ) {
+        ctrl.notify(this.ERROR_FNUMBER, 'error');
+        return false;
+      }
+      if ( /\d/.test(user.lastName) ) {
+        ctrl.notify(this.ERROR_LNUMBER, 'error');
+        return false;
+      }
       if ( ! user.businessName ) {
         ctrl.notify(this.ERROR_BUSINESS_NAME_REQUIRED, 'error');
         return false;
@@ -186,8 +220,24 @@ foam.CLASS({
           accountNumber: this.bank.accountNumber,
           companyName: this.viewData.padCompanyName
         }));
-        this.bank.address = user.address;
-        this.bank = await this.bankAccountDAO.put(this.bank);
+        if ( this.plaidResponseItem != null ) {
+          try {
+            let response = await this.plaidService.saveAccount(null, this.plaidResponseItem);
+            if ( response.plaidError !== null ) {
+              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+              this.closeDialog();
+            } else {
+              let message = error.display_message !== '' ? error.display_message : error.error_code;
+              this.ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+            }
+          } catch (e) {
+            this.ctrl.add(this.NotificationMessage.create({ message: e.message, type: 'error' }));
+          }
+          this.closeDialog();
+        } else {
+         this.bank.address = user.address;
+         this.bank = await this.bankAccountDAO.put(this.bank);
+        }
       } catch (error) {
         ctrl.notify(error.message, 'error');
         return;
@@ -206,6 +256,9 @@ foam.CLASS({
       name: 'back',
       label: 'Back',
       code: function(X) {
+        if ( this.plaidResponseItem != null ) {
+          return X.closeDialog();
+        }
         X.subStack.back();
       }
     },
