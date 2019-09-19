@@ -13,6 +13,7 @@ public class DAOSecurityTestFind extends DAOSecurityTest {
   public DAOSecurityTestFind() {
     super();
     FIND_IGNORES.add("userCapabilityJunctionDAO"); // TODO: Review
+    FIND_IGNORES.add("jobTitleDAO"); // ReadOnlyDAO
   }
 
   private static final String TEST_FIND = "{\n" +

@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 public class DAOSecurityTestSelect extends DAOSecurityTest {
   private static final List<String> SELECT_IGNORES = new ArrayList<>();
 
+  public DAOSecurityTestSelect() {
+    super();
+    SELECT_IGNORES.add("jobTitleDAO"); // ReadOnlyDAO
+  }
+
   private static final String TEST_SELECT = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
     "\t\"attributes\":{\n" +
