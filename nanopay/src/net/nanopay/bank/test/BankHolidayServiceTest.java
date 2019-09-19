@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import net.nanopay.bank.BankHoliday;
 import net.nanopay.bank.BankHolidayService;
+import net.nanopay.bank.BankWeekend;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     testSkipOffset(x);
     testSkipHolidayWeekendAndOffset(x);
     testNoSkipBusinessDay(x);
+    testSkipCustomWeekend(x);
   }
 
   private void testSkipHoliday(X x) {
@@ -75,6 +77,26 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     Date expected = getDate(jan2_2020);
 
     test(expected.equals(result), "Should not skip business day");
+  }
+
+  private void testSkipCustomWeekend(X x) {
+    BankWeekend[] oldBankWeekends = bankHolidayService.getCustomBankWeekends();
+    bankHolidayService.setCustomBankWeekends(new BankWeekend[] {
+      new BankWeekend.Builder(x)
+        .setCountryId("CN")
+        .setSunday(false)
+        .build()
+    });
+    Address cn = new Address.Builder(x)
+      .setCountryId("CN")
+      .build();
+    LocalDate saturdayLocalDate = jan1_2020.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
+
+    Date result = bankHolidayService.skipBankHolidays(x, getDate(saturdayLocalDate), cn, 0);
+    Date expected = getDate(saturdayLocalDate.plusDays(1));
+
+    test(expected.equals(result), "Should skip custom weekend based on country/region");
+    bankHolidayService.setCustomBankWeekends(oldBankWeekends);
   }
 
   private void setUpBankHoliday(X x) {
