@@ -62,12 +62,28 @@ foam.CLASS({
               String firstName = arr[0];
               String lastName = arr[1];
 
-              PersonNameSearchData personSearchData = new PersonNameSearchData.Builder(x)
+              PersonNameSearchData directorSearchData = new PersonNameSearchData.Builder(x)
                 .setFirstName(firstName)
                 .setSurName(lastName)
                 .build();
 
-              dowJonesService.personNameSearch(x, personSearchData);
+              DowJonesResponse directorResponse = dowJonesService.personNameSearch(x, directorSearchData);
+              if ( directorResponse.getTotalMatches() > 0 ) {
+                agency.submit(x, new ContextAgent() {
+                  @Override
+                  public void execute(X x) {
+                    requestApproval(x,
+                      new DowJonesApprovalRequest.Builder(x)
+                        .setObjId(Long.toString(business.getId()))
+                        .setDaoKey("localUserDAO")
+                        .setCauseId(directorResponse.getId())
+                        .setCauseDaoKey("dowJonesResponseDAO")
+                        .setClassification("Validate Business Director Using Down Jones")
+                        .setMatches(directorResponse.getResponseBody().getMatches())
+                        .build());
+                  }
+                }, "Business Director Sanction Validator");
+              }
             }
           }
           ruler.putResult(status);
