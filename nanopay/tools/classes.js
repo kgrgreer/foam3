@@ -626,6 +626,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
+  'net.nanopay.meter.compliance.ruler.predicate.RecurringBeneficialOwnerComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',

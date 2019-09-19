@@ -69,7 +69,15 @@ p({
         }
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding"
+        "class": "foam.mlang.predicate.Or",
+        "args": [
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding"
+          },
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck"
+          }
+        ]
       }
     ]
   },
@@ -100,7 +108,16 @@ p({
         }
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"
+        "class": "foam.mlang.predicate.Or",
+        "args": [
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested",
+            "strict": true
+          },
+          {
+            "class": "net.nanopay.meter.compliance.ruler.predicate.RecurringBeneficialOwnerComplianceCheck"
+          }
+        ]
       }
     ]
   },

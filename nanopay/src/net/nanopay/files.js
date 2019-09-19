@@ -1023,6 +1023,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsSentTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringBeneficialOwnerComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
