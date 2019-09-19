@@ -229,6 +229,7 @@ var classes = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
+  'net.nanopay.invoice.InvoiceLineItem',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
