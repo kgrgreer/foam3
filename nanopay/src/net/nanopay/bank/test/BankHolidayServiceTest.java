@@ -6,10 +6,12 @@ import foam.nanos.auth.Address;
 import net.nanopay.bank.BankHoliday;
 import net.nanopay.bank.BankHolidayService;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
 import static foam.mlang.MLang.*;
@@ -31,11 +33,21 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
 
     setUpBankHoliday(x);
     testSkipHoliday(x);
+    testSkipWeekend(x);
+  }
+
+  private void testSkipWeekend(X x) {
+    LocalDate saturdayLocalDate = jan1_2020.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
+
+    Date result = bankHolidayService.skipBankHolidays(x, getDate(saturdayLocalDate), ca_ON, 0);
+    Date expected = getDate(saturdayLocalDate.plusDays(2));
+
+    test(expected.equals(result), "Should skip weekend");
   }
 
   private void testSkipHoliday(X x) {
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 0);
-    Date expected = getDate(jan1_2020.plus(1, ChronoUnit.DAYS));
+    Date expected = getDate(jan1_2020.plusDays(1));
 
     test(expected.equals(result), "Should skip bank holiday");
   }
