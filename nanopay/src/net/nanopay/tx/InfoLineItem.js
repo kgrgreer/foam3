@@ -38,7 +38,8 @@ foam.CLASS({
         return new Transfer[0];
       `
     },
-function toSummary() {
+    
+    function toSummary() {
       return this.name+ " : "+this.note;
     },
   ]
