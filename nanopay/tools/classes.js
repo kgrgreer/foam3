@@ -104,6 +104,8 @@ var classes = [
   'net.nanopay.model.PersonalIdentification',
   'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
+  'net.nanopay.bank.BankHolidayService',
+  'net.nanopay.bank.BankWeekend',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
