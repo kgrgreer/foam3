@@ -45,9 +45,9 @@ foam.CLASS({
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
               bulkTxn.setDestinationAccount(getAccountId(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()));
               parentQuote.setRequestTransaction(bulkTxn);
-              return (TransactionQuote) getDelegate().put_(x, parentQuote);
+              return getDelegate().put_(x, parentQuote);
             } else {
-              throw new RuntimeException("BulkTransaction missing Child transactions or payee.");
+              throw new RuntimeException("BulkTransaction missing child transactions or a payee.");
             }
           }
 
@@ -117,7 +117,7 @@ foam.CLASS({
             bulkTxn.clearNext();
             bulkTxn.addNext(cashInTransaction);
           } else {
-            // If the payer's digital account has sufficient balance, then cash-in is not required.
+            // If the payer's digital account has sufficient balance, then cash-in transaction is not required.
             // Add the compositeTransaction as the next of the bulk transaction.
             bulkTxn.clearNext();
             bulkTxn.addNext(ct);
@@ -159,7 +159,7 @@ foam.CLASS({
           if ( account != null ) {
             return account.getId();
           }
-          throw new RuntimeException(currency + " BankAccount not found for "+user.getId());
+          throw new RuntimeException(currency + " BankAccount not found for " + user.getId());
         } else {
           return DigitalAccount.findDefault(x, user, currency).getId();
         }
