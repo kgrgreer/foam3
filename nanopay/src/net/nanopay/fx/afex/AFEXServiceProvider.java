@@ -278,7 +278,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    Address userAddress = user.getAddress() == null ? user.getBusinessAddress() : user.getAddress();
+    // Check if business address is set and not empty
+    Address userAddress = null;
+    if ( user.getBusinessAddress() != null && ! SafetyUtil.equals(((Address)user.getBusinessAddress()).getCountryId(), "") ) {
+      userAddress = user.getBusinessAddress();
+    } else if (user.getAddress() != null && ! SafetyUtil.equals(((Address)user.getAddress()).getCountryId(), "") ){
+      userAddress = user.getAddress();
+    } 
     if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
