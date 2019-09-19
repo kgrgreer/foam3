@@ -1181,8 +1181,8 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
+  // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
   { name: 'net/nanopay/tx/gs/GsRowToTx'},
-
   { name: 'net/nanopay/script/CsvUploadScript'},
 ]);
