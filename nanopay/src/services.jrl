@@ -848,24 +848,26 @@ p({
 })
 
 p({
-    "class": "foam.nanos.boot.NSpec",
-    "name": "jobTitleDAO",
-    "lazy": true,
-    "serve": true,
-    "authenticate": false,
-    "serviceScript": """
-      return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setPipelinePm(true)
-        .setReadOnly(true)
-        .setAuthorize(false)
-        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-        .setJournalName(\"jobTitles\")
-        .setSeqNo(false)
-        .setOf(net.nanopay.model.JobTitle.getOwnClassInfo())
-        .build();
-    """,
-    "client": "{\"of\":\"net.nanopay.model.JobTitle\"}"
+  "class": "foam.nanos.boot.NSpec",
+  "name": "jobTitleDAO",
+  "lazy": true,
+  "serve": true,
+  "authenticate": false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setReadOnly(true)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("jobTitles")
+      .setSeqNo(false)
+      .setOf(net.nanopay.model.JobTitle.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    { "of": "net.nanopay.model.JobTitle" }
+  """
 })
 
 // Remove the "static" service since we don't depend on it and it provides unauthenticated access to highly sensitive information.
