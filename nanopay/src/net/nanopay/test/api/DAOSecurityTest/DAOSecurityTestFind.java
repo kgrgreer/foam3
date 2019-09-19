@@ -10,7 +10,8 @@ import java.util.stream.Stream;
 public class DAOSecurityTestFind extends DAOSecurityTest {
     protected static final List<String> FIND_IGNORES = new ArrayList<>();
 
-    DAOSecurityTestFind() {
+    public DAOSecurityTestFind() {
+      super();
       FIND_IGNORES.add("userCapabilityJunctionDAO");
     }
 

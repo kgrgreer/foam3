@@ -1,37 +1,32 @@
 package net.nanopay.test.api.DAOSecurityTest;
 
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
-import java.util.regex.*;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import net.nanopay.test.api.ApiTestBase;
-
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.boot.NSpec;
-import foam.util.SafetyUtil;
+import net.nanopay.test.api.ApiTestBase;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import static java.lang.System.exit;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
   protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
 
-  DAOSecurityTest() {
+  public DAOSecurityTest() {
     GLOBAL_IGNORES.add("businessTypeDAO");
     GLOBAL_IGNORES.add("canadianSanctionDAO");
     GLOBAL_IGNORES.add("countryDAO");
