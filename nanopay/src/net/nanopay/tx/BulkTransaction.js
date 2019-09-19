@@ -9,7 +9,7 @@ foam.CLASS({
       name: 'explicitCI',
       documentation: `
         When true, planners will add a Cash-In Transaction,
-        rather than rely on liquidity or manual Cash-In to found the appropriate
+        rather than rely on liquidity or manual Cash-In to fund the appropriate
         Digital account.
       `,
       value: true
