@@ -798,7 +798,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
           String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
-          logger.error(errorMsg);
           log.logResponse(response);
           afexLogDAO.put(log);
 
@@ -828,6 +827,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
               throw new RuntimeException(errorMsg2);
             }
             httpResponse = httpResponse2;
+          } else {
+            logger.error(errorMsg);
+            throw new RuntimeException("AFEX unexpected error for createTrade1");
           }
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
