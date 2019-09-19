@@ -27,6 +27,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
   protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
 
   public DAOSecurityTest() {
+    // TODO: Review this list.
     GLOBAL_IGNORES.add("businessTypeDAO");
     GLOBAL_IGNORES.add("canadianSanctionDAO");
     GLOBAL_IGNORES.add("countryDAO");

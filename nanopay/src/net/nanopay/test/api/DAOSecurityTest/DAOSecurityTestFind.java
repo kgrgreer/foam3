@@ -12,7 +12,7 @@ public class DAOSecurityTestFind extends DAOSecurityTest {
 
   public DAOSecurityTestFind() {
     super();
-    FIND_IGNORES.add("userCapabilityJunctionDAO");
+    FIND_IGNORES.add("userCapabilityJunctionDAO"); // TODO: Review
   }
 
   private static final String TEST_FIND = "{\n" +
