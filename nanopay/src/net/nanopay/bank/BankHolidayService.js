@@ -43,6 +43,8 @@ foam.CLASS({
           skipBankHoliday(x, january1_2020, ontario, 0); //  returns 2020-01-02 (Thursday)
           skipBankHoliday(x, january1_2010, ontario, 1); //  returns 2020-01-03 (Friday)
           skipBankHoliday(x, january1_2010, ontario, 2); //  returns 2020-01-06 (Monday) because weekend 04 and 05 are skipped
+
+        See more cases in BankHolidayServiceTest.
       `,
       args: [
         {
