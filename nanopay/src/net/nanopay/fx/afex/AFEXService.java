@@ -803,30 +803,32 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           afexLogDAO.put(log);
 
           // try again without account number
-          nvps.remove(accountNumber);
-          nvps.add(new BasicNameValuePair("Note", request.getNote()));
-          httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+          if ( response.toLowerCase().contains("account number") ) {
+            nvps.remove(accountNumber);
+            nvps.add(new BasicNameValuePair("Note", request.getNote()));
+            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-          log = new AFEXLog();
-          log.setApiKey(request.getClientAPIKey());
-          log.setName("createTrade2");
-          log.logRequest(EntityUtils.toString(httpPost.getEntity()));
-          omLogger.log("AFEX createTrade starting");
+            log = new AFEXLog();
+            log.setApiKey(request.getClientAPIKey());
+            log.setName("createTrade2");
+            log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+            omLogger.log("AFEX createTrade starting");
 
-          httpResponse2 = httpClient.execute(httpPost);
+            httpResponse2 = httpClient.execute(httpPost);
 
-          omLogger.log("AFEX createTrade completed");
+            omLogger.log("AFEX createTrade completed");
 
-          if ( httpResponse2.getStatusLine().getStatusCode() / 100 != 2 ) {
-            String response2 =  EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
-            String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
-              + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
-            logger.error(errorMsg2);
-            log.logResponse(response2);
-            afexLogDAO.put(log);
-            throw new RuntimeException(errorMsg2);
+            if (httpResponse2.getStatusLine().getStatusCode() / 100 != 2) {
+              String response2 = EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
+              String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
+                + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
+              logger.error(errorMsg2);
+              log.logResponse(response2);
+              afexLogDAO.put(log);
+              throw new RuntimeException(errorMsg2);
+            }
+            httpResponse = httpResponse2;
           }
-          httpResponse = httpResponse2;
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         log.logResponse(response);
