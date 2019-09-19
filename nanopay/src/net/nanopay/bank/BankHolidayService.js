@@ -68,7 +68,7 @@ foam.CLASS({
         }
         localDate = localDate.plusDays(1);
       }
-      return getDate(localDate, ZoneOffset.UTC);
+      return getDate(localDate, ZoneId.systemDefault());
       `
     },
     {
