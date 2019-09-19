@@ -829,7 +829,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             httpResponse = httpResponse2;
           } else {
             logger.error(errorMsg);
-            throw new RuntimeException("AFEX unexpected error for createTrade1");
+            throw new RuntimeException(errorMsg);
           }
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
