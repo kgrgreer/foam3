@@ -6,6 +6,8 @@ import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.dao.MapDAO;
 import foam.dao.java.JDAO;
+import foam.nanos.fs.FileSystemStorage;
+import foam.nanos.fs.ResourceStorage;
 import foam.nanos.fs.Storage;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -61,7 +63,7 @@ public class HashingJDAO
     X resourceStorageX = getX();
     if ( System.getProperty("resource.journals.dir") != null ) {
       resourceStorageX = x.put(foam.nanos.fs.Storage.class,
-                               new Storage(System.getProperty("resource.journals.dir"), true));
+                               new ResourceStorage(System.getProperty("resource.journals.dir")));
     }
 
     // replay repo journal
@@ -75,7 +77,7 @@ public class HashingJDAO
     repo.replay(x, delegate);
 
     // replay runtime journal
-    setJournal(new HashingJournal.Builder(getX())
+    setJournal(new HashingJournal.Builder(x)
       .setAlgorithm(algorithm)
       .setPreviousDigest(repo.getPreviousDigest())
       .setDigestRequired(digestRequired)

@@ -79,6 +79,15 @@ foam.CLASS({
       name: 'countXero',
       documentation: 'the number of times that this business has synced to Xero.',
       label: 'Sync Count to Xero'
+    },
+    {
+      class: 'StringArray',
+      name: 'businessDirectors',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ArrayView'
+        }
+      }
     }
   ],
 
@@ -259,10 +268,8 @@ foam.CLASS({
         var dDate = new Date(Date.now() + (1000*60*60*24*3));
         var url = window.location.origin
           + '/service/settlementReports?userId='+ this.id
-          + '&startDate='+ sDate
-          + '&endDate='+ dDate;
-
-        // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
+          + '&startDate=' // + sDate <- add(uncomment) to use above set dates.
+          + '&endDate='; // + dDate; <- add(uncomment) to use above set dates.
         window.location.assign(url);
       }
     }

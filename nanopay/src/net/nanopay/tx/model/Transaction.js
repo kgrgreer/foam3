@@ -3,13 +3,13 @@ foam.CLASS({
   name: 'Transaction',
 
   implements: [
+    'foam.mlang.Expressions',
+    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.analytics.Foldable',
-    'foam.mlang.Expressions',
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
@@ -196,13 +196,6 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
-      hidden: true
-    },
-    {
-      name: 'balances',
-      class: 'FObjectArray',
-      of: 'net.nanopay.account.Balance',
-      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {
@@ -500,10 +493,6 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'String',
-      name: 'paymentMethod'
-    },
-    {
       name: 'next',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
@@ -568,14 +557,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'doFolds',
-      javaCode: `
-for ( Balance b : getBalances() ) {
-  fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-}
-      `
-    },
     {
       name: 'limitedClone',
       args: [
@@ -978,6 +959,47 @@ for ( Balance b : getBalances() ) {
       Logger logger = (Logger) x.get("logger");
       logger.warning("Transaction failed to send notitfication. " + e.getMessage());
     }
+    `
+  },
+  {
+    name: 'authorizeOnCreate',
+    args: [
+      { name: 'x', type: 'Context' }
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnUpdate',
+    args: [
+      { name: 'x', type: 'Context' },
+      { name: 'oldObj', type: 'foam.core.FObject' }
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnDelete',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnRead',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
   },
 ],

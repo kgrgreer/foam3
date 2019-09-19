@@ -9,7 +9,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'startIntegration',
-      type: 'net.nanopay.plaid.model.PlaidError',
+      type: 'net.nanopay.plaid.PlaidResponseItem',
       async: true,
       javaThrows: ['java.io.IOException'],
       args: [
@@ -76,6 +76,10 @@ foam.INTERFACE({
         {
           name: 'selectedAccount',
           type: 'Map'
+        },
+        {
+          name: 'responseItem',
+          type: 'net.nanopay.plaid.PlaidResponseItem'
         }
       ]
     },
@@ -94,6 +98,22 @@ foam.INTERFACE({
           type: 'Long'
         },
       ]
-    }
+    },
+    {
+      name: 'saveAccount',
+      type: 'net.nanopay.plaid.PlaidResponseItem',
+      async: true,
+      javaThrows: ['java.io.IOException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'plaidResponseItem',
+          type: 'net.nanopay.plaid.PlaidResponseItem'
+        }
+      ]
+    },
   ]
 });

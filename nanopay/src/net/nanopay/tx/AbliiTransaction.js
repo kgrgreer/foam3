@@ -5,8 +5,14 @@ foam.CLASS({
 
   documentation: `Transaction to be created specifically for ablii users, enforces source/destination to always be bank accounts`,
 
+  implements: [
+    'foam.nanos.auth.Authorizable'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
@@ -17,6 +23,13 @@ foam.CLASS({
     'net.nanopay.model.Currency',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
+  ],
+
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to pay invoices.'
+    }
   ],
 
   methods: [
@@ -128,6 +141,57 @@ foam.CLASS({
 
       return tx;
     `
-    }
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnCreate(x);
+
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "invoice.pay") ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnUpdate(x, oldObj);
+
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "invoice.pay") ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnDelete(x);
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        super.authorizeOnRead(x);
+      `
+    },
   ]
 });

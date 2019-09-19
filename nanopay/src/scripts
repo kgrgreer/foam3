@@ -26,6 +26,7 @@ p({"class":"foam.nanos.script.Script","id":"encryptBankAccounts","description":"
 p({"class":"foam.nanos.script.Script","id":"fixPasswordExpiry","enabled":false,"description":"Updates all users so that password expiry is null","lastDuration":0,"server":true,"status":1,"code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser.setPasswordExpiry(null);\nuserDAO.put(user);\n}\n\nprint(\"done\");","output":""})
 p({"class":"foam.nanos.script.Script","id":"Migrate BusinessAddress address2 -> suite","description":"Migrate current user businessAddress address2 data to suite.","code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser = user.fclone();\naddress = user.getBusinessAddress();\nif ( address != null ) {\naddress2 = address.getAddress2();\naddress.setSuite(address2);\naddress.setAddress2(\"\");\nuser.setBusinessAddress(address);\nuserDAO.put(user);\n}\n}\n\nprint(\"Migration complete.\");\n"})
 p({"class":"foam.nanos.script.Script","id":"TestReporter","description":"Generate a report on the number of tests and post it to a Slack channel.","code":"reporter = new net.nanopay.test.TestsReporter();\nreporter.generateNewReport(x);"})
+p({"class":"foam.nanos.script.Script","id":"benchmarkHashing","description":"Concurrent Hashing Benchmark","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nx = x.put(\"pmLogger\", null);\nb = new HashingBenchmark();\nbuilder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(10000).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);"})
 p({"class":"foam.nanos.script.Script","id":"Set destinationCurrency on existing invoices","code":"invoiceDAO = x.get(\"invoiceDAO\");\n\ninvoices = invoiceDAO.select().getArray();\n\nfor ( int i = 0; i < invoices.size(); i++ ) {\ninvoice = invoices.get(i);\nif (invoice.getDestinationCurrency() == null){\ninvoice.setDestinationCurrency(\"CAD\");\ninvoiceDAO.put(invoice);\n}\n}\n\nprint(\"Done.\");"})
 p({"class":"foam.nanos.script.Script","id":"Transactions Script: Create","enabled":false,"code":"userDAO             = x.get(\"userDAO\");\naccountDAO          = x.get(\"accountDAO\");\ninstitutionDAO      = x.get(\"institutionDAO\");\ntransactionDAO      = x.get(\"localTransactionDAO\");\nbalanceDAO          = x.get(\"balanceDAO\");\nliquidityDAO        = x.get(\"liquiditySettingsDAO\");\nRandom ran          = new Random();\n\n//Create a Admin User\nuser = new foam.nanos.auth.User();\nuser.setId(Long.valueOf(9999));\nuser.setGroup(\"admin\");\nuser.setOrganization(\"Admin\");\nuser.setEmailVerified(true);\nuser.setFirstName(\"AD\");\nuser.setLastName(\"MIN\");\nuser.setEmail(\"ad@min.com\");\nuserDAO.put(user);\nadmin = (foam.nanos.auth.User) userDAO.find(9999);\nuserDigitalAccount  = net.nanopay.account.DigitalAccount.findDefault(x,admin,\"CAD\");\nls = new net.nanopay.liquidity.LiquiditySettings();\nls.setEnableCashIn(false);\nls.setEnableCashOut(false);\nls.setId(userDigitalAccount.getId());\nliquidityDAO.put(ls);\n\n//Create a bank account to User 9999\naccount = new  net.nanopay.bank.BankAccount();\naccount.setAccountNumber(\"\"+(ran.nextInt(1000000)+10000));\naccount.setInstitution(Long.valueOf(ran.nextInt(99)+1));\naccount.setOwner(admin.getId());\naccount.setName(\"\"+ran.nextInt(1000));\naccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);\naccount.setDenomination(\"CAD\");\naccount.setId(1351);\naccountDAO.put(account);\nprint(\"Account made\");\n\n//Cashin to User 1000\nfor( int i = 0 ; i< 100 ; i++ ) {\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(userDigitalAccount.getId());\ntransaction.setSourceAccount(1351);\ntransaction.setAmount(1000000);\\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n}\nprint(\"CashIn made\");\n\n//Create 1000 users and transfer some DC  \nfor ( int i = 3000 ; i < 4000 ; i++ ) {\nuser = new foam.nanos.auth.User();\nuser.setId(Long.valueOf(i));\nuser.setGroup(\"business\");\nuser.setOrganization(\"Balony\");\nuser.setEmailVerified(true);\nuser.setFirstName(\"account\");\nuser.setLastName(\"\"+i);\nuser.setEmail(\"test\"+i+\"@t.com\");\nuserDAO.put(user);\ndA = net.nanopay.account.DigitalAccount.findDefault(x,user,\"CAD\");\nls = new net.nanopay.liquidity.LiquiditySettings();\nls.setEnableCashIn(false);\nls.setEnableCashOut(false);\nls.setId(dA.getId());\nliquidityDAO.put(ls);\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(dA.getId());\ntransaction.setSourceAccount(userDigitalAccount.getId());\ntransaction.setAmount(100000);\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n}\nprint(\"DONE\");"})
 p({"class":"foam.nanos.script.Script","id":"Transactions Script: Transfer","enabled":false,"code":"userDAO        = x.get(\"userDAO\");\naccountDAO     = x.get(\"accountDAO\");\ninstitutionDAO = x.get(\"institutionDAO\");\ntransactionDAO = x.get(\"localTransactionDAO\");\nbalanceDAO     = x.get(\"balanceDAO\");\nRandom ran = new Random();\n\n// Creates x transactions between created accounts\nfor ( int i = 0 ; i<1000 ; i++ )\n{\nuser1 = (foam.nanos.auth.User) userDAO.find(Long.valueOf(ran.nextInt(1000)+3000));\nuser2 = (foam.nanos.auth.User) userDAO.find(Long.valueOf(ran.nextInt(1000)+3000));\nif ( user1.getId() == user2.getId()){\ni--;\ncontinue;\n}\naccount1 = net.nanopay.account.DigitalAccount.findDefault(x,user1,\"CAD\");\naccount2 = net.nanopay.account.DigitalAccount.findDefault(x,user2,\"CAD\");\n\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setDestinationAccount(account1.getId());\ntransaction.setSourceAccount(account2.getId());\ntransaction.setAmount(100);\ntransaction.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);\ntransactionDAO.put(transaction);\n\nif ( ((foam.mlang.sink.Sum) balanceDAO.select(foam.mlang.MLang.SUM(net.nanopay.account.Balance.BALANCE))).getValue() != 100000000) \n{print(\"\" + transaction.getId());\nthrow new Error(\"SUM out of sync\");} \n}\nprint(\"DONE\")"})
@@ -52,7 +53,7 @@ p({"class":"foam.nanos.script.Script","id":"PublicUserInfo update","description"
 p({"class":"foam.nanos.script.Script","id":"3247d52a-08a1-4793-80a2-2bd095ed714b","description":"Add action permissions to payment-ops group","lastRun":"2019-04-15T19:01:26.031Z","lastDuration":10,"code":"// Add action permissions to payment-ops group\u000a\u000aimport foam.core.X;\u000aimport foam.dao.DAO;\u000aimport foam.nanos.auth.AuthService;\u000aimport foam.nanos.auth.Group;\u000aimport foam.nanos.auth.Permission;\u000aimport java.security.BasicPermission;\u000a\u000agroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\u000aauth = (AuthService) x.get(\"auth\");\u000a\u000agroup = (Group) groupDAO.find(\"payment-ops\");\u000a\u000aX groupCtx = x.put(\"group\", group);\u000a\u000aString[] permissionsToAdd = {\u000a  \"foam.nanos.auth.User.permission.viewAccounts\",\u000a  \"foam.nanos.auth.User.permission.viewTransactions\",\u000a  \"foam.nanos.auth.User.permission.viewPayables\",\u000a  \"foam.nanos.auth.User.permission.viewReceivables\"\u000a};\u000a\u000afor ( String permissionId : permissionsToAdd ) {\u000a  if ( auth.check(groupCtx, permissionId) ) {\u000a    print(\"Already has \" + permissionId + \".\");\u000a  } else {\u000a    print(\"Need to add \" + permissionId + \".\");\u000a    Permission[] currentPermissions = group.getPermissions();\u000a    Permission[] newPermissions = new Permission[currentPermissions.length + 1];\u000a    for ( int i = 0; i < currentPermissions.length; i++ ) {\u000a      newPermissions[i] = currentPermissions[i];\u000a    }\u000a    newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\u000a    group.setPermissions(newPermissions);\u000a    print(\"Added \" + permissionId + \".\");\u000a  }\u000a}\u000a\u000agroupDAO.put(group);","output":"Already has foam.nanos.auth.User.permission.viewAccounts.\u000aAlready has foam.nanos.auth.User.permission.viewTransactions.\u000aAlready has foam.nanos.auth.User.permission.viewPayables.\u000aAlready has foam.nanos.auth.User.permission.viewReceivables.\u000a"})
 p({"class":"foam.nanos.script.Script","id":"d7bea66a-c769-4933-8445-4589066757c5","description":"Add service permissions to sme group","lastRun":"2019-04-17T21:17:29.747Z","lastDuration":15,"code":"// Add service permissions to sme group\u000a\u000aimport foam.core.X;\u000aimport foam.dao.DAO;\u000aimport foam.nanos.auth.AuthService;\u000aimport foam.nanos.auth.Group;\u000aimport foam.nanos.auth.Permission;\u000aimport java.security.BasicPermission;\u000a\u000agroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\u000aauth = (AuthService) x.get(\"auth\");\u000a\u000a// Adds permissions to the group.\u000avoid addPermissionsToGroup(String[] permissionsToAdd, String groupId) {\u000a  group = (Group) groupDAO.find(groupId);\u000a  X groupCtx = x.put(\"group\", group);\u000a  for ( String permissionId : permissionsToAdd ) {\u000a    if ( auth.check(groupCtx, permissionId) ) {\u000a      print(\"Group \" + groupId + \" already has \" + permissionId + \".\");\u000a    } else {\u000a      print(\"Need to add \" + permissionId + \" to \" + groupId + \".\");\u000a      Permission[] currentPermissions = group.getPermissions();\u000a      Permission[] newPermissions = new Permission[currentPermissions.length + 1];\u000a      for ( int i = 0; i < currentPermissions.length; i++ ) {\u000a        newPermissions[i] = currentPermissions[i];\u000a      }\u000a      newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\u000a      group.setPermissions(newPermissions);\u000a      print(\"Added \" + permissionId + \" to \" + groupId + \".\");\u000a    }\u000a  }\u000a  groupDAO.put(group);\u000a}\u000a\u000aString[] groups = {\u000a  \"sme\"\u000a};\u000a\u000aString[] permissionsToAdd = {\u000a  \"service.beneficialOwnerDAO\",\u000a  \"service.signingOfficerJunctionDAO\"\u000a};\u000a\u000afor ( String groupId : groups ) {\u000a  print(groupId + \":\");\u000a  addPermissionsToGroup(permissionsToAdd, groupId);\u000a  print(\"\");\u000a}\u000a","output":"sme:\u000aGroup sme already has service.beneficialOwnerDAO.\u000aGroup sme already has service.signingOfficerJunctionDAO.\u000a\u000a"})
 p({"class":"foam.nanos.script.Script","id":"addSupportLogs","server":false,"description":"To give the support logs menu access to payment-ops under the operations menu","code":"/**\n * TITLE: addSupportLogs\n * DESCRIPTION: To give the support logs menu access to payment-ops under the operations menu\n */\n\nprint(\"START 🏁\");\n\nconst promises = [];\n\n// 1. Create the submenu\nconst menuDAO = x['menuDAO'];\n\nconst supportLogMenu = foam.nanos.menu.Menu.create({\n  id: 'supportLogs',\n  parent: \"operation\",\n  handler: foam.nanos.menu.DAOMenu.create({\n      daoKey: 'logMessageDAO',\n      title: \"Server Log\",\n      createEnabled: false\n  }, x),\n  label: 'Support Logs',\n  order: 1000\n});\n\nmenuDAO.put(supportLogMenu);\n\n// 2. Give the Support group permissions to service.logMessageDAO\n// creating the permission to be added\nconst newPaymentOpsPermission = foam.nanos.auth.Permission.create({\n  id: \"service.logMessageDAO\"\n})\n\nconst  newSupportLogsPermission = foam.nanos.auth.Permission.create({\n  id: \"menu.read.supportLogs\"\n})\n\n// adding to permissionDAO\nconst permissionDAO = x['permissionDAO'];\npermissionDAO.put(newPaymentOpsPermission);\npermissionDAO.put(newSupportLogsPermission);\n\n\nconst updateSupportPermissions = async () => {\n  // grab current Support group\n  const groupDAO = x['groupDAO'];\n\n  const paymentOpsGroup = await groupDAO.find('payment-ops');\n\n  if ( ! paymentOpsGroup.permissions.includes(newPaymentOpsPermission) ){\n    // updating the support group array\n    paymentOpsGroup.permissions.push(newPaymentOpsPermission);\n\n    groupDAO.put(paymentOpsGroup);\n  }\n\n  if ( ! paymentOpsGroup.permissions.includes(newSupportLogsPermission) ){\n    // updating the support group array\n    paymentOpsGroup.permissions.push(newSupportLogsPermission);\n\n    groupDAO.put(paymentOpsGroup);\n  }\n}\n\nupdateSupportPermissions();\n\nprint(\"END 🔥\")"})
-p({"class":"foam.nanos.script.Script","id":"OnboardingSetup","server":false,"status":1,"code":"var services = [\n    {\n        name: 'businessOnboardingDAO',\n        serve: true,\n        authenticate: true, // Remove this?\n        serviceScript: `\nreturn new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x)\n  .setDelegate(new foam.dao.EasyDAO.Builder(x)\n                    .setAuthenticate(false)\n                    .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())\n                    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n                    .setJournalName(\"businessOnboardingDAO\")\n                    .build())\n  .build();\n        `,\n        client: '{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}'\n    }\n].map(o => foam.nanos.boot.NSpec.create(o, x));\n\nvar menus = [\n    {\n        id: 'onboarding',\n        label: 'Onboarding',\n        handler: {class:'foam.nanos.menu.SubMenu'}\n    },\n    {\n        parent: 'onboarding',\n        id: 'onboarding.business',\n        label: 'Business Onboarding',\n        handler: {\n            class:'foam.nanos.menu.DAOMenu',\n            daoKey: 'businessOnboardingDAO',\n            detailView: 'foam.u2.detail.SectionedDetailView'\n        }\n    }\n].map(o => foam.nanos.menu.Menu.create(o, x));\n\nPromise.all([].concat(\n    services.map(o => x['nSpecDAO'].put(o)),\n    menus.map(o => x['menuDAO'].put(o)),\n)).then(function() {\n    return x['groupDAO'].find('sme')\n}).then(function(g) {\n    if ( g.permissions.find(p => p.id == 'service.businessOnboardingDAO') ) return;\n    g.permissions.push(foam.nanos.auth.Permission.create({\n        id: 'service.businessOnboardingDAO'\n    }));\n    return x['groupDAO'].put(g);\n}).then(function() {\n    print('Done');\n});","output":"Done\n"})
+p({"class":"foam.nanos.script.Script","id":"OnboardingSetup","server":false,"status":1,"code":"var services = [\n    {\n        name: 'businessOnboardingDAO',\n        serve: true,\n        authenticate: true, // Remove this?\n        serviceScript: `\nreturn new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x)\n  .setDelegate(new foam.dao.EasyDAO.Builder(x)\n                    .setAuthorize(false)\n                    .setOf(net.nanopay.sme.onboarding.BusinessOnboarding.getOwnClassInfo())\n                    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n                    .setJournalName(\"businessOnboardingDAO\")\n                    .build())\n  .build();\n        `,\n        client: '{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}'\n    }\n].map(o => foam.nanos.boot.NSpec.create(o, x));\n\nvar menus = [\n    {\n        id: 'onboarding',\n        label: 'Onboarding',\n        handler: {class:'foam.nanos.menu.SubMenu'}\n    },\n    {\n        parent: 'onboarding',\n        id: 'onboarding.business',\n        label: 'Business Onboarding',\n        handler: {\n            class:'foam.nanos.menu.DAOMenu',\n            daoKey: 'businessOnboardingDAO',\n            detailView: 'foam.u2.detail.SectionedDetailView'\n        }\n    }\n].map(o => foam.nanos.menu.Menu.create(o, x));\n\nPromise.all([].concat(\n    services.map(o => x['nSpecDAO'].put(o)),\n    menus.map(o => x['menuDAO'].put(o)),\n)).then(function() {\n    return x['groupDAO'].find('sme')\n}).then(function(g) {\n    if ( g.permissions.find(p => p.id == 'service.businessOnboardingDAO') ) return;\n    g.permissions.push(foam.nanos.auth.Permission.create({\n        id: 'service.businessOnboardingDAO'\n    }));\n    return x['groupDAO'].put(g);\n}).then(function() {\n    print('Done');\n});","output":"Done\n"})
 p({
   "class": "foam.nanos.script.Script",
   "id": "Add USD permission to existing Ablii users",
@@ -104,7 +105,7 @@ p({"class":"foam.nanos.script.Script","id":"Generate Model Documentation","descr
 p({"class":"foam.nanos.script.Script","id":"DAO Security Test","description":"DAO Security Testl","enabled":true,"server":true,"code":"import net.nanopay.test.api.DAOSecurityTest.DAOSecurityTest;\n\ntestBody = \"nanopay/src/net/nanopay/test/api/DAOSecurityTest/test_body1.json\";\nresults = new DAOSecurityTest().runTest(x, testBody);\nprint(results);\n\n// Individual test - If necessary\n// If there are DAOs that need to be tested individual\n// comment out the above lines and then set the DAO name below\n// and rerun this test to see why the DAO isn't throwing a proper AuthenticationException\n\n//daoName = \"regionDAO\";\n//results = new DAOSecurityTest().runIndividualTest(x, testBody, daoName, false);\n//print(results);"})
 p({"class":"foam.nanos.script.Script","id":"addComplianceReadToSME","code":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.nanos.auth.AuthService;\nimport foam.nanos.auth.Group;\nimport foam.nanos.auth.Permission;\nimport java.security.BasicPermission;\n\ngroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\nauth = (AuthService) x.get(\"auth\");\n\ngroup = (Group) groupDAO.find(\"sme\");\n\nX groupCtx = x.put(\"group\", group);\n\nString[] permissionsToAdd = {\n  \"business.ro.compliance\",\n\"user.ro.compliance\"\n};\n\nfor ( String permissionId : permissionsToAdd ) {\n  if ( auth.check(groupCtx, permissionId) ) {\n    print(\"Already has \" + permissionId + \".\");\n  } else {\n    print(\"Need to add \" + permissionId + \".\");\n    Permission[] currentPermissions = group.getPermissions();\n    Permission[] newPermissions = new Permission[currentPermissions.length + 1];\n    for ( int i = 0; i < currentPermissions.length; i++ ) {\n      newPermissions[i] = currentPermissions[i];\n    }\n    newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\n    group.setPermissions(newPermissions);\n    print(\"Added \" + permissionId + \".\");\n  }\n}\n\ngroupDAO.put(group);","output":""})
 p({"class":"foam.nanos.script.Script","id":"LiquidLiquiditySettingsTest","description":"To test out liquidity settings on liquid","server":false,"code":"/**\n * TITLE: LiquidLiquiditySettingsTest\n * DESCRIPTION: To test out liquidity settings on liquid\n */\n// ==================================================================================\n\nconst main = async () => {\n  // grabbing DAOs\n  const accountDAO = x['accountDAO'];\n  const transactionDAO = x['transactionDAO'];\n  const liquiditySettingsDAO = x['liquiditySettingsDAO'];\n  const MLang = foam.mlang.ExpressionsSingleton.create();\n\n  // grabbing user id\n  const userId = x.user.id;\n  const fromName = 'Main Virtual [4][0][1]';\n  const toName = 'Main Virtual [1][0][1]';\n  const liquiditySettingName = 'Notify and Auto';\n  const rootName = 'Main Root Shadow [0][0][0]';\n\n  // grab the root id of the main tree\n\n  const rootAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, rootName)).select();\n\n  const lowLiquidity = {\n    enabled: true,\n    rebalancingEnabled: true,\n    threshold: 1,\n    resetBalance: 5000000,\n    pushPullAccount: rootAccount.array[0].id\n  }\n  \n  /**\n   * Essentially after this, the fromAccount should trigger a lowLiquidityThreshold and have its balance reset to $50,000 if enabled above\n   * the toAccount should trigger a highLiquidityThreshold and have its balance reset to $500,0000\n   */\n\n  const newLiquiditySettingArray = await liquiditySettingsDAO.limit(1).where(MLang.EQ(net.nanopay.liquidity.LiquiditySettings.NAME, liquiditySettingName)).select();\n\n  const newLiquiditySetting = newLiquiditySettingArray.array[0];\n\n  newLiquiditySetting.lowLiquidity = lowLiquidity;\n\n  // update the notify and auto setting in the DAO\n  await liquiditySettingsDAO.put(newLiquiditySetting);\n\n  // 1. grab the from account\n  // fromAccount = 204\t\tMain Virtual [4][0][1]\tDigitalAccount\tCAD\t$579,000.00\t\n  const fromAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, fromName)).select();\n\n  // 2. grab the to account\n  // toAccount = 189\t\tMain Virtual [1][0][1]\tDigitalAccount\tCAD\t$586,000.00\n  const toAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, toName)).select();\n\n  // 3. create a transaction of the entire balance from\n  const transaction = net.nanopay.tx.model.Transaction.create({\n    sourceAccount: fromAccount.array[0].id,\n    destinationAccount: toAccount.array[0].id,\n    amount: await fromAccount.array[0].findBalance(x),\n    createdBy: userId,\n    payerId: userId,\n    payeeId: userId\n  }, x);\n\n  await transactionDAO.put(transaction);\n\n  print('FIN');\n}\n\nmain();"})
-p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setAuthenticate(true)\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
+p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
 p({
   "class":"foam.nanos.script.Script",
   "id":"setupAbliiUsers",
@@ -273,6 +274,113 @@ for ( Business business : businesses ) {
 }
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Business",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import net.nanopay.model.Business;
+    import java.util.List;
+    import foam.util.SafetyUtil;
+
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    ArraySink businessSink = (ArraySink) localBusinessDAO.select(new ArraySink());
+    businessArray = businessSink.getArray();
+    print(" ");
+
+    for (Business business : businessArray) {
+      print(business.getOrganization());
+      print(" ");
+      business = (Business) business.fclone();
+      businessAddress = business.getBusinessAddress();
+      address = business.getAddress();
+
+      if( businessAddress == null )
+        continue;
+
+      // Migrate streetName
+      if ( SafetyUtil.isEmpty(address.getStreetName()) && ! SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
+        address.setStreetName(businessAddress.getStreetName());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetName()) && ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
+        print(business.getOrganization() + "'s street name needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate streetNumber
+      if ( SafetyUtil.isEmpty(address.getStreetNumber()) && ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) ) {
+        address.setStreetNumber(businessAddress.getStreetNumber());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) && ! SafetyUtil.equals(address.getStreetNumber(), businessAddress.getStreetNumber()) ) {
+        print(business.getOrganization() + "'s street number needs to be verified manually.");
+        continue;
+      }
+
+
+      // Migrate address 1
+      if ( SafetyUtil.isEmpty(address.getAddress1()) && ! SafetyUtil.isEmpty(businessAddress.getAddress1()) ) {
+        address.setAddress1(businessAddress.getAddress1());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress1()) && ! SafetyUtil.equals(address.getAddress1(), businessAddress.getAddress1()) ) {
+        print(business.getOrganization() + "'s address1 needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate address 2
+      if ( SafetyUtil.isEmpty(address.getAddress2()) && ! SafetyUtil.isEmpty(businessAddress.getAddress2()) ) {
+        address.setAddress2(businessAddress.getAddress2());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress2()) && ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
+        print(business.getOrganization() + "'s address2 needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate suite
+      if ( SafetyUtil.isEmpty(address.getSuite()) && ! SafetyUtil.isEmpty(businessAddress.getSuite()) ) {
+        address.setSuite(businessAddress.getSuite());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getSuite()) && ! SafetyUtil.equals(address.getSuite(), businessAddress.getSuite()) ) {
+        print(business.getOrganization() + "'s suite needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate postalCode
+      if ( SafetyUtil.isEmpty(address.getPostalCode()) && ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) ) {
+        address.setPostalCode(businessAddress.getPostalCode());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) && ! SafetyUtil.equals(address.getPostalCode(), businessAddress.getPostalCode()) ) {
+        print(business.getOrganization() + "'s postal code needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate city
+      if ( SafetyUtil.isEmpty(address.getCity()) && ! SafetyUtil.isEmpty(businessAddress.getCity()) ) {
+        address.setCity(businessAddress.getCity());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCity()) && ! SafetyUtil.equals(address.getCity(), businessAddress.getCity()) ) {
+        print(business.getOrganization() + "'s city needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate countryId
+      if ( SafetyUtil.isEmpty(address.getCountryId()) && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
+        address.setCountryId(businessAddress.getCountryId());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCountryId()) && ! SafetyUtil.equals(address.getCountryId(), businessAddress.getCountryId()) ) {
+        print(business.getOrganization() + "'s country needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate regionId
+      if ( SafetyUtil.isEmpty(address.getRegionId()) && ! SafetyUtil.isEmpty(businessAddress.getRegionId()) ) {
+        address.setRegionId(businessAddress.getRegionId());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getRegionId()) && ! SafetyUtil.equals(address.getRegionId(), businessAddress.getRegionId()) ) {
+        print(business.getOrganization() + "'s region/province needs to be verified manually.");
+        continue;
+      }
+
+      business.setPhone(business.getBusinessPhone());
+      localBusinessDAO.put(business);
+    }
+  """,
+  "output": ""
+})
+
 p({
   "class": "foam.nanos.script.Script",
   "id": "AuthService.check Performance Check",
@@ -390,3 +498,296 @@ executeCalls(context);
 })
 
 p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "AFX to AFEX Business Migration",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.auth.Group;
+    import foam.nanos.auth.Permission;
+    import foam.nanos.auth.User;
+    import net.nanopay.admin.model.ComplianceStatus;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.fx.afex.AFEXBusiness;
+    import net.nanopay.fx.afex.AFEXServiceProvider;
+    import net.nanopay.model.Business;
+    import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+    import net.nanopay.sme.onboarding.OnboardingStatus;
+    import java.util.List;
+    import javax.security.auth.AuthPermission;
+    import foam.util.SafetyUtil;
+
+    String businessEmail = "jan@ablii.com";
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
+    if ( null == business ) {
+      print(" Business not found for " + businessEmail);
+    } else {
+      if ( ! (business.getCompliance().equals(ComplianceStatus.PASSED)) ) {
+        print(" Compliance is not yet passed");
+        return;
+      }
+
+      DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
+      AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();      
+      if ( afexBusiness != null ) {
+        print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
+        DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+        CanadaUsBusinessOnboarding onboarding = canadaUsBusinessOnboardingDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.BUSINESS_ID,business.getId()),
+            foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficers.get(0).getId()) } ));
+        if ( onboarding == null ) {
+          onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+          onboarding.setUserId(signingOfficers.get(0).getId());
+          onboarding.setBusinessId(business.getId());
+          onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+          onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        } else if ( onboarding.getStatus() != OnboardingStatus.SUBMITTED ) {
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        }
+        
+      } else {
+          DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+          Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
+          Group group = (Group) localGroupDAO.find(business.getGroup());
+          if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
+            group.getPermissions(x).add(fxProvisionPermission); 
+          }
+
+          Boolean validFields = true;
+          DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+          BankAccount bankAccount = (BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER,business.getId()),
+            foam.mlang.MLang.INSTANCE_OF(BankAccount.class) } ));
+
+          if (bankAccount == null ) {
+            print("- Business does not have a bank account. Please run Script again when a bank account has been added and verified.");
+            validFields = false;
+          }
+
+          if ( business.getCompliance() != ComplianceStatus.PASSED ) {
+            print("- Business has not passed compliance. Please run Script again when compliance is passed.");
+            validFields = false;
+          }
+
+          if ( ! business.getOnboarded() ) {
+            print("- Business has not being on-boarded completely. Please run Script again when on-boarding is complete.");
+            validFields = false;
+          }
+
+          if ( business.getAddress().getCountryId().equals("US") && SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ) {
+            print("- Business Registration number/ EIN not found. Please set Business Registration number/ EIN and run Script again.");
+            validFields = false; 
+          }
+
+          if ( SafetyUtil.isEmpty(business.getCountryOfBusinessRegistration())) {
+            print("- Country of Business Registration is not set. Please set Country of Business Registration and run script again.");
+            validFields = false;
+          }  
+
+          if ( business.getBusinessRegistrationDate() == null ) {
+            print("- Business Registration Date is not set. Please set Business Registration Date and run script again.");
+            validFields = false;
+          }
+
+          if ( signingOfficers == null || signingOfficers.size() < 1 ) {
+            print("- No signing officer found. Please add at least one signing officer and run script again.");
+            validFields = false;
+          }
+
+          if ( validFields ) {
+            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+            Boolean onboarded = afexServiceProvider.onboardBusiness(business);
+            if ( onboarded && "CA".equals(business.getAddress().getCountryId()) ){
+              CanadaUsBusinessOnboarding onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+              onboarding.setUserId(signingOfficers.get(0).getId());
+              onboarding.setBusinessId(business.getId());
+              onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+              onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+              onboarding.setStatus(OnboardingStatus.SUBMITTED);
+              DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+              canadaUsBusinessOnboardingDAO.put(onboarding);
+            }
+            print(onboarded ? "Business: " + business.getBusinessName() + " has been onboarded to AFEX" : "Error onboarding business: " + business.getBusinessName());
+          } else {
+            print("Please complete the above mentioned fields and try again");
+            return;
+          }
+      } 
+    }
+    
+    print(" DONE ");
+  
+  """,
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Existing Business Contacts to AFEX",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.auth.Address;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.contacts.Contact;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.model.Business;
+    import foam.util.SafetyUtil;
+
+    String businessEmail = "unknown@ablii.com";
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+    DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO"));
+    Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
+    if ( null == business ) {
+      print(" Business not found for " + businessEmail);
+    } else {
+      print(" Migrating contacts, please wait... ");
+      DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+      DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+      DAO contactDAO = (DAO) x.get("localContactDAO");
+      java.util.List contacts = ((ArraySink) business.getContacts(x).select(new ArraySink())).getArray();
+      for( Object obj : contacts ) {
+        if ( ! (obj instanceof Contact) ) continue;
+        Contact contact = (Contact) obj;
+
+        print(" Migrating " + contact.getOrganization());
+
+        Business contactBusiness = (Business) localBusinessDAO.find(contact.getBusinessId());
+        Address contactBusinessAddress = contactBusiness == null ? null : contactBusiness.getAddress() == null ? contactBusiness.getBusinessAddress() : contactBusiness.getAddress();
+
+        String contactCountryId = contactBusinessAddress == null ?  contact.getBusinessAddress() == null ? "" : contact.getBusinessAddress().getCountryId() : contactBusinessAddress.getCountryId();
+        String contactOwnerCountryId = business.getAddress() == null ? "" : business.getAddress().getCountryId();
+       
+        if ( SafetyUtil.isEmpty(contactCountryId) ) {
+          print("Unable to migrate " + contact.getOrganization() + " because the address field is invalid. Check country id." );
+          continue;
+        }
+
+        if ( "CA".equals(contactCountryId) && "CA".equals(contactOwnerCountryId)) {
+          print("Skipping " + contact.getOrganization() + " migration because it is a CAD to CAD contact" );
+          continue;
+        }
+
+        BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
+          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} ))) 
+          : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
+
+        BankAccount contactBusinessBankAccount = contactBusiness == null ? null : 
+         ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
+
+        if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
+          print("Unable to migrate " + contact.getOrganization() + " because contact has no bank account." );
+          continue;
+        }
+
+        Address bankAddress = contactBusinessBankAccount == null ? contactBankAccount.getAddress() == null ? contactBankAccountbankAccount.getBankAddress() : contactBankAccount.getAddress() : contactBusinessBankAccount.getAddress() == null ? contactBusinessBankAccount.getBankAddress() : contactBusinessBankAccount.getAddress();
+        if ( bankAddress == null || SafetyUtil.isEmpty(bankAddress.getCountryId())) {
+          print("Unable to migrate " + contact.getOrganization() + " because bank address is missing." );
+          continue;
+        }
+        contact = (Contact) contactDAO.put(contact);
+        Long afexContactId = contactBusiness == null ? contact.getId() : contactBusiness.getId();
+        AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
+          foam.mlang.MLang.AND(new Predicate[] {
+            foam.mlang.MLang.EQ(AFEXBeneficiary.CONTACT, afexContactId),
+            foam.mlang.MLang.EQ(AFEXBeneficiary.OWNER, contact.getOwner())
+          })
+        );
+        if ( afexBeneficiary == null ) {
+          print( contact.getOrganization() + " was not migrated to AFEX " ); 
+        } else { 
+          print( contact.getOrganization() + " was successfully migrated to AFEX "); 
+        }
+      }
+
+    }
+
+    print(" Done ");
+  
+  """,
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
+})
+
+p({"class":"foam.nanos.script.Script","id":"On boarding businessRegistration -> tax #","code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport net.nanopay.sme.onboarding.USBusinessOnboarding;\nimport net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;\nimport net.nanopay.model.Business;\n\nusOnboardingDAO = x.get(\"uSBusinessOnboardingDAO\");\ncadUSOnboardingDAO = x.get(\"canadaUsBusinessOnboardingDAO\");\nbusinessDAO = x.get(\"businessDAO\");\n\nusOnboardings = (usOnboardingDAO.select(new ArraySink())).getArray();\n\n// Set business tax id from onboarding registration number\nfor (USBusinessOnboarding onboard : usOnboardings) {\nbusinessId = onboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(onboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\n}\n\ncadUsOnboardings = (cadUSOnboardingDAO.select(new ArraySink())).getArray();\n\nfor (CanadaUsBusinessOnboarding cadOnboard : cadUsOnboardings) {\nbusinessId = cadOnboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(cadOnboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\nprint(cadOnboard);\n}\n\nprint(\"Done\");"})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Move Currency Permission from SME to Business Employee Group",
+  "status": 2,
+  "code": """
+    import foam.dao.DAO;
+  import foam.dao.ArraySink;
+  import foam.mlang.MLang;
+  import foam.nanos.auth.Address;
+  import foam.nanos.auth.Group;
+  import foam.nanos.auth.Permission;
+  import net.nanopay.model.Business;
+  import javax.security.auth.AuthPermission;
+  import java.util.List;
+
+  String USD_PERMISSION = "currency.read.USD";
+  String CAD_PERMISSION = "currency.read.CAD";
+
+  DAO businessDAO = (DAO) x.get("businessDAO");
+  DAO groupDAO = (DAO) x.get("groupDAO");
+
+  businesses = businessDAO.select(new ArraySink()).getArray();
+  int businessCount = businesses.size();
+  int count = 0;
+  for ( Business business : businesses ) {
+
+    Address address = null == business.getAddress() ? business.getBusinessAddress() : business.getAddress();
+    if ( null == address ) {
+        print("Unable to move currency permission for " + business.getOrganization() + ". Please check to make sure address field is set.");
+        address = new Address();
+        address.setCountryId("CA");
+    }
+    
+    if ( ! "CA".equals(address.getCountryId()) && ! "US".equals(address.getCountryId())) {
+      count++;
+      print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
+      continue;
+    }
+
+    String permission = "CA".equals(address.getCountryId()) ? CAD_PERMISSION : USD_PERMISSION;
+    Permission domesticCurrencyPermission = new Permission.Builder(x).setId(permission).build();
+    Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
+    Group group = (Group) groupDAO.find(business.getGroup());
+    while ( group != null ) {
+      group = (Group) group.findParent(x);
+      if ( group != null && group.getId().endsWith("employee") ) break;
+    }
+    if ( group != null ) { 
+      group.getPermissions(x).add(domesticCurrencyPermission); 
+      group.getPermissions(x).add(cadPermission); 
+      count++;
+    }
+  }
+
+  print("Total number of businesses is " + businessCount + ". Number of business processed is " + count);
+
+  if ( businessCount == count ) {
+    Group smegroup = groupDAO.find("sme");
+    if ( null != smegroup && smegroup.implies(x, new AuthPermission(CAD_PERMISSION)) ) {
+      Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
+      smegroup.getPermissions(x).remove(cadPermission); 
+    }
+    print("currency.read.CAD permission was removed from the sme group.");
+  } else { print("currency.read.CAD permission was not removed from the sme group because there were issues with " + (businessCount - count) + " businesses."); }
+
+  print("DONE");
+  
+  """,
+  "output": ""
+})

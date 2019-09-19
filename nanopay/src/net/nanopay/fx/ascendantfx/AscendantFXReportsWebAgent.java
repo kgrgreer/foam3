@@ -9,6 +9,8 @@ import foam.blob.ProxyBlobService;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
@@ -84,6 +86,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       srcFiles[1] = generateBeneficialOwners(x, business);
       srcFiles[2] = generateBankInfo(x, business);
       srcFiles[3] = getBusinessDoc(x, business);
+      srcFiles[4] = generateCompanyDirectorsList(x, business);
       // srcFiles[4] = getUSBankAccountProof(x, business);
       // srcFiles[5] = getBeneficialOwnersDoc(x, business);
       int signingOfficerReportLength = signingOfficerReports == null ? 0 : signingOfficerReports.length;
@@ -135,6 +138,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = isBusinessAddressSet ? business.getBusinessAddress().getRegionId() : "-";;
     String country = isBusinessAddressSet ? business.getBusinessAddress().getCountryId() : "-";;
     String postalCode = isBusinessAddressSet ? business.getBusinessAddress().getPostalCode() : "-";;
+    String businessReg = business.getBusinessRegistrationDate() != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").format(business.getBusinessRegistrationDate()) : "-";
 
     String businessPhoneNumber;
     if ( isBusinessSet && business.getBusinessPhone() != null ) {
@@ -190,6 +194,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String annualDomesticVolume;
     String annualRevenue;
     String firstTradeDateDomestic;
+    
 
     if ( isBusinessSet && business.getSuggestedUserTransactionInfo() != null ) {
       internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
@@ -206,8 +211,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         purposeOfTransactions = "N/A";
       }
 
-      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount()) ) {
-        annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency()) ) {
+        annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency();
       } else {
         annualDomesticTransactionAmount = "N/A";
       }
@@ -251,6 +256,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Company Information"));
 
       List list = new List(List.UNORDERED);
+      list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO this is hardcoded for Currency choice AFEX wants confirmation of. Future this should be dynamically set.
+      list.add(new ListItem("Business Registration: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {
@@ -290,7 +297,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Domestic transfers: "));
       List domesticSubList = new List(true, false, 20);
       domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
-      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + baseCurrency + " " + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + annualDomesticTransactionAmount));
       domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
       domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
@@ -404,19 +411,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = signingOfficer.getAddress().getRegionId();
     String country = signingOfficer.getAddress().getCountryId();
     String postalCode = signingOfficer.getAddress().getPostalCode();
-    // AFX RELATED
-    // IdentificationType idType = (IdentificationType) identificationTypeDAO
-    //   .find(signingOfficer.getIdentification().getIdentificationTypeId());
-    // String identificationType = idType.getName();
-    // String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
-    // String countryOfIssue = signingOfficer.getIdentification().getCountryId();
-    // String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
-    // String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
-    // String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
-    String nameOfPerson = ipHistory.findUser(x).getLegalName();
-    String timestamp = sdf.format(ipHistory.getCreated());
-    String ipAddress = ipHistory.getIpAddress();
+    String nameOfPerson = ipHistory != null && ipHistory.findUser(x) != null ? ipHistory.findUser(x).getLegalName() : "N/A";
+    String timestamp = ipHistory != null ? sdf.format(ipHistory.getCreated()) : "N/A";
+    String ipAddress = ipHistory != null ? ipHistory.getIpAddress() : "N/A";
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
@@ -443,18 +442,34 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("State/Province: " + province));
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-      // AFX RELATED
-      // list.add(new ListItem("Type of identification: " + identificationType));
-      // if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
-      //   list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
-      // }
-      // list.add(new ListItem("Country of issue: " + countryOfIssue));
-      // list.add(new ListItem("Identification number: " + identificationNumber));
-      // list.add(new ListItem("Issue date: " + issueDate));
-      // list.add(new ListItem("Expiration date: " + expirationDate));
+
       list.add(new ListItem("Digital signature_Name of person: " + nameOfPerson));
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
+
+      if ( null != signingOfficer.getIdentification() 
+        && signingOfficer.getIdentification().getIdentificationTypeId() != 0 ) {
+        IdentificationType idType = (IdentificationType) identificationTypeDAO
+          .find(signingOfficer.getIdentification().getIdentificationTypeId());
+        String identificationType = idType.getName();
+        Region Identificationegion = (Region) ((DAO) getX().get("regionDAO")).find(signingOfficer.getIdentification().getRegionId());
+        String provinceOfIssue = null == Identificationegion ? "" : Identificationegion.getName();
+        Country identificationCountry = (Country) ((DAO) getX().get("countryDAO")).find(signingOfficer.getIdentification().getCountryId());
+        String countryOfIssue = null == identificationCountry ? "" : identificationCountry.getName();
+        String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
+        String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
+        String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
+        list.add(new ListItem("Type of identification: " + identificationType));
+        if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
+          list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+        }
+        list.add(new ListItem("Country of issue: " + countryOfIssue));
+        list.add(new ListItem("Identification number: " + identificationNumber));
+        list.add(new ListItem("Issue date: " + issueDate));
+        list.add(new ListItem("Expiration date: " + expirationDate));
+        
+      }
 
       document.add(list);
       document.add(Chunk.NEWLINE);
@@ -516,9 +531,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String province = beneficialOwner.getAddress().getRegionId();
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
-          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
+          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
           dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
+          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
@@ -549,6 +564,34 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       logger.error(e);
     }
 
+    return null;
+  }
+
+  private File generateCompanyDirectorsList(X x, Business business) {
+    if ( null == business ) return null;
+    Logger logger = (Logger) x.get("logger");
+    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]Directors.pdf";
+    try {
+      Document document = new Document();
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+      document.open();
+      document.add(new Paragraph("Company Directors"));
+
+      document.add(Chunk.NEWLINE);
+      List list = new List(List.UNORDERED);
+      for ( String directorName : business.getBusinessDirectors()) {
+        list.add(new ListItem(directorName));
+      }
+      document.add(list);
+      document.add(Chunk.NEWLINE);
+      document.close();
+      writer.close();
+
+      return new File(path);
+
+    } catch (DocumentException | IOException e) {
+      logger.error(e);
+    }
     return null;
   }
 
@@ -652,7 +695,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           );
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
-          String flinksRequestId = flinksAccountInformation.getRequestId();
+          String flinksRequestId = flinksAccountInformation !=  null ? flinksAccountInformation.getRequestId() : "N/A";
           list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
           list.add(new ListItem("Flink response ID: " + flinksRequestId));
         }

@@ -331,7 +331,7 @@ Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
 AlternaCITransaction txn = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 txn.setStatus(TransactionStatus.SENT);
-txn = (AlternaCITransaction) ((Transaction)transactionDAO.put_(x, txn)).fclone();
+txn = (AlternaCITransaction) transactionDAO.find(transactionDAO.put_(x, txn));
 test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());

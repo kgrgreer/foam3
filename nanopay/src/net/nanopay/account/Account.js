@@ -32,7 +32,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'name', 'id', 'denomination', 'type'
+    'name', 'id', 'denomination', 'type', 'isDefault'
   ],
 
   tableColumns: [
@@ -42,7 +42,8 @@ foam.CLASS({
     'type',
     'denomination',
     'balance',
-    'homeBalance'
+    'homeBalance',
+    'isDefault'
   ],
 
   axioms: [
@@ -177,9 +178,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDefault',
-      documentation: `Determines whether an account is the first preferred option of the User.`,
+      documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
-      value: false
+      value: false,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Default');
+      },
+      tableCellFormatter: function(value, obj, property) {
+        this
+          .start()
+            .callIf(value, function() {
+              this.style({ color: '#32bf5e' });
+            })
+            .add(value ? 'Y' : '-')
+          .end();
+      },
     },
     // TODO: access/scope: public, private
     {
@@ -237,15 +250,19 @@ foam.CLASS({
         var self = this;
 
         this.add(
-          obj.slot(homeDenomination => 
-            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
-              obj.findBalance(self.__subSubContext__).then(balance => 
-                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
-                )
-              )
-            )
-          )
+          obj.slot(homeDenomination => {
+            return Promise.all([
+              obj.denomination == homeDenomination ?
+                Promise.resolve(1) :
+                obj.fxService.getFXRate(obj.denomination, homeDenomination,
+                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
+              obj.findBalance(self.__subSubContext__),
+              self.__subSubContext__.currencyDAO.find(homeDenomination)
+            ]).then(arr => {
+              let [r, b, c] = arr;
+              return c.format(Math.floor((b || 0) * r))
+            })
+          })
         );
       },
       tableWidth: 145
@@ -303,12 +320,7 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        var self = this;
-        return new Promise(function(resolve, reject) {
-          x.balanceDAO.find(self.id).then(function(balance) {
-            resolve( balance != null ? balance.balance : 0);
-          });
-        });
+        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
       },
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");

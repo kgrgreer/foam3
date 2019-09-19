@@ -119,6 +119,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'valueType'
+        },
+        {
+          type: 'String',
+          name: 'businessApiKey'
         }
       ]
     },

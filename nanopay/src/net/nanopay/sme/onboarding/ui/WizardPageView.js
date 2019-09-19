@@ -62,6 +62,10 @@ foam.CLASS({
     ^ .property-signingOfficer .foam-u2-view-RadioView:last-child {
       margin: 0;
     }
+    
+    ^ .foam-u2-detail-SectionView {
+      max-height: 100%;
+    }
   `,
   properties: [
     {

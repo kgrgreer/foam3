@@ -84,7 +84,7 @@ public class SPSProcessor implements ContextAgent {
           TxnDetail txnDetail = new TxnDetail();
           // unique ID for duplicate transaction checking
           txnDetail.setOther(t.getId());
-          txnDetail.setName(t.getPayee().getFirstName() + " " + t.getPayee().getLastName());
+          txnDetail.setName(user.getFirstName() + " " + user.getLastName());
           generalRequestPacket.setTxnDetail(txnDetail);
 
           generalRequestPacket.setRouteCode(bankAccount.getBranchId());

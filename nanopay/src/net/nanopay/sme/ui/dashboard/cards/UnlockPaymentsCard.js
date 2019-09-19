@@ -26,7 +26,8 @@ foam.CLASS({
     'menuDAO',
     'stack',
     'user',
-    'auth'
+    'auth',
+    'appConfigService'
   ],
 
   css: `
@@ -34,67 +35,53 @@ foam.CLASS({
       width: 500px;
       height: 173px;
       box-sizing: border-box;
-
       border-radius: 4px;
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
-
       position: relative;
       padding: 24px;
-
       background-size: cover;
       background-repeat: no-repeat;
     }
-
     ^info-box {
       display: inline-block;
-
       width: 260px;
       height: 100px;
     }
-
     ^title {
       height: 24px;
       margin: 0;
-
       font-family: Lato;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
       color: /*%BLACK%*/ #1e1f21;
     }
-
     ^description {
       margin: 0;
       margin-top: 8px;
-
       font-family: Lato;
       font-size: 14px;
       line-height: 1.5;
       color: #525455;
     }
-
     ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
       margin-top: 16px;
     }
-
     ^complete-container {
       margin-top: 24px;
     }
-
     ^icon {
       display: inline-block;
       vertical-align: middle;
       width: 20px;
       height: 20px;
-
       margin-right: 8px;
     }
-
     ^complete {
       display: inline-block;
       vertical-align: middle;
       margin: 0;
-
+      
       font-size: 14px;
       line-height: 1.71;
       color: /*%BLACK%*/ #1e1f21;
@@ -113,6 +100,10 @@ foam.CLASS({
     {
       name: 'TITLE_INTERNATIONAL',
       message: 'Unlock international payments'
+    },
+    {
+      name: 'TITLE_INTERNATIONAL_CAD',
+      message: 'Unlock US payments'
     },
     {
       name: 'DESCRIPTION_DOMESTIC',
@@ -136,7 +127,11 @@ foam.CLASS({
     },
     {
       name: 'PENDING',
-      message: 'Pending!'
+      message: 'pending domestic completion!'
+    },
+    {
+      name: 'PENDING_TWO',
+      message: 'pending!'
     },
     {
       name: 'COMING_SOON',
@@ -182,10 +177,12 @@ foam.CLASS({
       class: 'String',
       name: 'title',
       expression: function(type) {
-        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
           return this.TITLE_INTERNATIONAL;
-        }       
-        
+        }
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
+          return this.TITLE_INTERNATIONAL_CAD;
+        }
         return this.isCanadianBusiness ? this.TITLE_DOMESTIC : this.TITLE_US_DOMESTIC;
       },
       documentation: `
@@ -222,38 +219,47 @@ foam.CLASS({
       expression: function(user) {
         return user.address.countryId === 'CA';
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isEmployee'
     }
   ],
 
   methods: [
-    function init() {
-      this.auth.check(null, 'fx.provision.payer').then((result) => {
-        this.hasFXProvisionPermission = result;
-      });
-    },
-    function initE() {
-
+    async function initE() {
       var self = this;
+      this.hasFXProvisionPermission = await this.auth.check(null, 'fx.provision.payer');
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type, hasFXProvisionPermission) {
+          .add(this.slot(function(isComplete, type) {
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
               .end();
             }
-
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness 
-                && ( ! hasFXProvisionPermission || ! this.user.onboarded ) ) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+                && ! this.hasFXProvisionPermission ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+              .end();
+            }
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+                && this.hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
-            }            
-
-            if ( ! isComplete ) {
+            }
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+              && this.hasFXProvisionPermission && this.isEmployee ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+              .end();
+            }
+            if ( ! isComplete && ! this.isEmployee ) {
               return this.E()
                 .startContext({ data: self })
                   .start(self.GET_STARTED, { buttonStyle: 'SECONDARY' }).end()
