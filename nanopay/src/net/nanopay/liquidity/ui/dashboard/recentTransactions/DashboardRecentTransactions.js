@@ -66,7 +66,7 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({
-          defaultColumns:["id","summary","lastStatusChange","payer","payee","destinationCurrency","destinationAmount"],
+          defaultColumns:["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"],
           dao: this.data
         });
       }

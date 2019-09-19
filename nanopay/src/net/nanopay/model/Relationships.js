@@ -653,7 +653,13 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  targetProperty: { visibility: 'RO', section: 'paymentInfo', }
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value, obj, axiom) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -667,7 +673,13 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
-  targetProperty: { visibility: 'RO', section: 'paymentInfo' }
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value, obj, axiom) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
