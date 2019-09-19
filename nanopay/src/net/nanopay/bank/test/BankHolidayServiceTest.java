@@ -17,18 +17,23 @@ import static foam.mlang.MLang.*;
 public class BankHolidayServiceTest extends foam.nanos.test.Test {
   private final LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
 
+  private BankHolidayService bankHolidayService;
+  private DAO bankHolidayDAO;
+  private Address ca_ON;
+
   public void runTest(X x) {
+    bankHolidayService = (BankHolidayService) x.get("bankHolidayService");
+    bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
+    ca_ON = new Address.Builder(x)
+      .setCountryId("CA")
+      .setRegionId("ON")
+      .build();
+
     setUpBankHoliday(x);
     testSkipHoliday(x);
   }
 
   private void testSkipHoliday(X x) {
-    BankHolidayService bankHolidayService = (BankHolidayService) x.get("bankHolidayService");
-    Address ca_ON = new Address.Builder(x)
-      .setCountryId("CA")
-      .setRegionId("ON")
-      .build();
-
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 0);
     Date expected = getDate(jan1_2020.plus(1, ChronoUnit.DAYS));
 
@@ -36,7 +41,6 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
   }
 
   private void setUpBankHoliday(X x) {
-    DAO bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
     Date holiday = Date.from(jan1_2020.atStartOfDay(ZoneOffset.UTC).toInstant());
     if ( null == bankHolidayDAO.find(AND(
                    EQ(BankHoliday.COUNTRY_ID, "CA"),
