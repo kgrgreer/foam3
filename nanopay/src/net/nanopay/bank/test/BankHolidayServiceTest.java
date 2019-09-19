@@ -61,14 +61,14 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan2_2020), ca_ON, 1);
     Date expected = getDate(jan2_2020.plusDays(1));
 
-    test(expected.equals(result), "Should skip with offset");
+    test(expected.equals(result), "Should skip offset days");
   }
 
   private void testSkipHolidayWeekendAndOffset(X x) {
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 2);
     Date expected = getDate(jan1_2020.plusDays(1 + 2 + 2)); // 1 holiday, 2 offset days, 2 days for Saturday and Sunday
 
-    test(expected.equals(result), "Should skip bank holiday, weekend and offset");
+    test(expected.equals(result), "Should skip bank holiday, weekend and offset days");
   }
 
   private void testNoSkipBusinessDay(X x) {
