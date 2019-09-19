@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'BulkTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `A decorator in the localTransactionQuotePlanDAO that handles one to many transactions`,
+  documentation: `
+    A decorator in the localTransactionQuotePlanDAO that supports 
+     the one to many transactions and the one to one transactions.
+  `,
 
   javaImports: [
     'foam.core.X',
@@ -35,7 +38,7 @@ foam.CLASS({
           User payer = (User) userDAO.find_(x, bulkTxn.getPayerId());
 
           // If only a single child transaction or no children and a non-null
-          // payee then quote a single Transaction.
+          // payee then quote a single transaction, which is a one to one transaction.
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
               bulkTxn.setSourceAccount(getAccountId(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI()));
@@ -48,7 +51,7 @@ foam.CLASS({
             }
           }
 
-          // Set the destination of parent transaction to payer's default digital account
+          // Set the destination of bulk transaction to payer's default digital account
           DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
           bulkTxn.setSourceAccount(payerDigitalAccount.getId());
           bulkTxn.setDestinationAccount(payerDigitalAccount.getId());
@@ -95,7 +98,7 @@ foam.CLASS({
 
           if ( sum > payerDigitalBalance ||
                bulkTxn.getExplicitCI() ) {
-            // If digital does not have sufficient funds, then set the source account to their default bank account.
+            // If digital does not have sufficient funds
             BankAccount payerDefaultBankAccount = BankAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
 
             // Create a Cash-In transaction
@@ -108,22 +111,20 @@ foam.CLASS({
             cashInTransactionQuote = (TransactionQuote) planDAO.put(cashInTransactionQuote);
             cashInTransaction = cashInTransactionQuote.getPlan();
 
-            // Add cash-in transaction as the next of the parent transaction
+            // Add the compositeTransaction as the next of the cash-in transaction.
             cashInTransaction.addNext(ct);
+            // Add the cash-in transaction as the next of the bulk transaction.
             bulkTxn.clearNext();
             bulkTxn.addNext(cashInTransaction);
           } else {
-            // If the payer digital account does have sufficient balance then
-            // set the source and destination as the default digital account.
-            // When this is quoted, the planners will do nothing (which is what we want).
-
-            // Add a compositeTransaction as the next of the parent transaction
+            // If the payer's digital account has sufficient balance, then cash-in is not required.
+            // Add the compositeTransaction as the next of the bulk transaction.
             bulkTxn.clearNext();
             bulkTxn.addNext(ct);
           }
           bulkTxn.setIsQuoted(true);
 
-          // Set parent transaction to the parent quote
+          // Set bulk transaction to the parent quote
           parentQuote.setPlan(bulkTxn);
 
           return parentQuote;
