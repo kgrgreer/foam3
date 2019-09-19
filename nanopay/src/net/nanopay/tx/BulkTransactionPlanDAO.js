@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: `
     A decorator in the localTransactionQuotePlanDAO that supports 
-     the one to many transactions and the one to one transactions.
+     the one to many transactions and one to one transactions.
   `,
 
   javaImports: [
