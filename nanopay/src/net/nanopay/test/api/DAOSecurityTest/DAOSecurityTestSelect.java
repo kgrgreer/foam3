@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DAOSecurityTestSelect extends DAOSecurityTest {
-  protected static final List<String> SELECT_IGNORES = new ArrayList<>();
+  private static final List<String> SELECT_IGNORES = new ArrayList<>();
 
   private static final String TEST_SELECT = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
@@ -37,8 +37,6 @@ public class DAOSecurityTestSelect extends DAOSecurityTest {
 
   @Override
   public void runTest(X x) {
-    List<String> ignores = new ArrayList<>();
     testAllDAOs(x, TEST_SELECT, "select", Stream.concat(SELECT_IGNORES.stream(), GLOBAL_IGNORES.stream()).collect(Collectors.toList()));
   }
-
 }
