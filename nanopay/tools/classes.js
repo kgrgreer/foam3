@@ -241,7 +241,6 @@ var classes = [
    'net.nanopay.accounting.ContactMismatchCode',
    'net.nanopay.accounting.AccountingContactEmailCache',
    'net.nanopay.accounting.AccountingErrorCodes',
-   'net.nanopay.accounting.AccountingLog',
 
    // xero
    'net.nanopay.accounting.xero.XeroToken',
