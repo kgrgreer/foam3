@@ -48,7 +48,7 @@ foam.CLASS({
                     .setDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Entity Using Down Jones")
+                    .setClassification("Validate Entity Using Dow Jones")
                     .setMatches(response.getResponseBody().getMatches())
                     .build());
               }
@@ -79,7 +79,7 @@ foam.CLASS({
                         .setDaoKey("localUserDAO")
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
-                        .setClassification("Validate Business Director Using Down Jones")
+                        .setClassification("Validate Business Director Using Dow Jones")
                         .setMatches(directorResponse.getResponseBody().getMatches())
                         .build());
                   }
