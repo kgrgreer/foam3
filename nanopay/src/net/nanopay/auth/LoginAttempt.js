@@ -41,6 +41,11 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'String',
+      name: 'group',
+      documentation: 'group for user whose login was attempted'
+    },
+    {
       name: 'loginSuccessful',
       class: 'Boolean',
       visibility: 'RO',
