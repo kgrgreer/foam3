@@ -285,8 +285,10 @@ public class BmoEftFileGenerator {
 
     String displayName = "";
 
-    if ( ! SafetyUtil.isEmpty(user.getBusinessName()) ) {
+    if ( ! SafetyUtil.isEmpty(user.getBusinessName().trim()) ) {
       displayName = user.getBusinessName();
+    } else if ( ! SafetyUtil.isEmpty(user.getOrganization().trim()) ) {
+      displayName = user.getOrganization();
     } else {
       displayName = user.getFirstName() + " " + user.getLastName();
     }

@@ -1,19 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.fx.afex',
-  name: 'AFEXLog',
-
+  package: 'net.nanopay.accounting',
+  name: 'AccountingLog',
+  
   javaImports: [
     'java.util.Date'
   ],
-
+  
   properties: [
     {
       class: 'Long',
       name: 'id',
-    },
-    {
-      class: 'String',
-      name: 'apiKey'
     },
     {
       class: 'String',
@@ -40,35 +36,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'logRequest',
-      args: [
-        {
-          name: 'request',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-      setRequest(request);
-      setRequestTime(new Date());
-      `
-    },
-    {
-      name: 'logResponse',
-      args: [
-        {
-          name: 'response',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-      setResponse(response);
-      setResponseTime(new Date());
-      `
-    }
-  ],
-
-    methods: [
     {
       name: 'logRequest',
       args: [
