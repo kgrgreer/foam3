@@ -7,7 +7,7 @@ foam.CLASS({
   documentation: '',
 
   javaImports: [
-    'foam.nanos.auth.User',
+    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.admin.model.ComplianceStatus',
     'foam.mlang.ContextObject',
     'foam.mlang.Expr',

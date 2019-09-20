@@ -65,6 +65,7 @@ foam.CLASS({
               PersonNameSearchData directorSearchData = new PersonNameSearchData.Builder(x)
                 .setFirstName(firstName)
                 .setSurName(lastName)
+                .setFilterLRDFrom(filterLRDFrom)
                 .build();
 
               DowJonesResponse directorResponse = dowJonesService.personNameSearch(x, directorSearchData);
