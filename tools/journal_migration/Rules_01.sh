@@ -1,10 +1,11 @@
 #!/usr/bin/perl -w
 
 # Rule - Id <- Name
+# RuleHistory - ruleId
 
 use File::Copy 'move';
-my $TMP = "/opt/nanopay/journals/rules.tmp";
 my $RULES = "/opt/nanopay/journals/rules";
+my $RULE_HISTORY = "/opt/nanopay/journals/ruleHistory";
 
 my %rule = (
     # net/nanopay/meter/compliance/ruler/rules.jrl
@@ -92,6 +93,9 @@ my %rule = (
     8005=>"Create AFEXBusiness Approval Request"
 );
 
+#
+# Migrate /opt/nanopay/journals/rules
+#
 open(FILE, "<$RULES") || die "File not found: $RULES";
 my @lines = <FILE>;
 close(FILE);
@@ -118,8 +122,32 @@ foreach $line ( @lines ) {
     push(@newlines, $line);
 }
 
-open(FILE, ">$TMP") || die "File not found";
+open(FILE, ">$RULES.tmp") || die "File not found";
 print FILE @newlines;
 close(FILE);
 
-move $TMP, $RULES || die "move $TMP, $RULES failed: $!";
+move "$RULES.tmp", $RULES || die "move $RULES.tmp, $RULES failed: $!";
+
+#
+# Migrate /opt/nanopay/journals/ruleHistory
+#
+open(FILE, "<$RULE_HISTORY") || die "File not found: $RULE_HISTORY";
+@lines = <FILE>;
+close(FILE);
+
+@newlines = ();
+# Replace "ruleId":{$rule.key} with "ruleId":"{$rule.value}"
+foreach $line ( @lines ) {
+    if ( $line =~ /ruleId\":(\d+)/ ) {
+        $key = $1;
+        $value = $rule{$key};
+        $line =~ s/ruleId\":$key/ruleId\":\"$value\"/;
+    }
+    push(@newlines, $line);
+}
+
+open(FILE, ">$RULE_HISTORY.tmp") || die "File not found";
+print FILE @newlines;
+close(FILE);
+
+move "$RULE_HISTORY.tmp", $RULE_HISTORY || die "move $RULE_HISTORY.tmp, $RULE_HISTORY failed: $!";
