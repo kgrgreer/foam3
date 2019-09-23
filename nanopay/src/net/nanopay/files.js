@@ -337,6 +337,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
   { name: 'net/nanopay/tx/ruler/ChangePropertyAction' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
+  { name: 'net/nanopay/tx/ruler/SendNotification' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
