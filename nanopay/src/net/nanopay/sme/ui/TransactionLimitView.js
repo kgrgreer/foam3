@@ -29,7 +29,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Transaction limits' },
     { name: 'LIMIT_LABEL', message: 'Limit amount' },
-    { name: 'TRANSACTION_LIMIT', message: '$75,000.00' }
+    { name: 'TRANSACTION_LIMIT', message: '$100,000.00' }
   ],
 
   methods: [
