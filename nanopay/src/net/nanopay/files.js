@@ -113,6 +113,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PersonalIdentification' },
   { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
+  { name: 'net/nanopay/bank/BankHolidayService' },
+  { name: 'net/nanopay/bank/BankWeekend' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -125,7 +127,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
-  { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
@@ -354,6 +355,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
+  { name: 'net/nanopay/tx/cico/ReverseCIRule'},
+  { name: 'net/nanopay/tx/cico/ReverseCORule'},
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
@@ -588,6 +591,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
+  { name: 'net/nanopay/invoice/InvoiceLineItem' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },

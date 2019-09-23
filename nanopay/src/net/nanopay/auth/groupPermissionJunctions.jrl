@@ -54,6 +54,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"beneficialowner.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.read.deleted"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.ro.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.rw.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.rw.deleted"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.rw.emailverified"})

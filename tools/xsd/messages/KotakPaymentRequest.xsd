@@ -82,7 +82,7 @@
       <xs:element name="MailToAddr4" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="MailTo" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="RemitterId" type="MaxChar20_ST" minOccurs="0"/>
-      x<s:element name="RemitterCountry" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="RemitterCountry" type="MaxChar20_ST" minOccurs="0"/>
       <xs:element name="ExchDoc" type="MaxChar30_ST" minOccurs="0"/>
       <xs:element name="InstChecksum" type="MaxChar400_ST" minOccurs="0"/>
       <xs:element name="InstRF1" type="MaxChar200_ST" minOccurs="0"/>

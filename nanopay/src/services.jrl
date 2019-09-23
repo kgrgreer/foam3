@@ -20,7 +20,14 @@ p({
     sas    = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(tfas).build();
     return sas;
   """,
-  "client":"{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
+  "client": """
+    {
+      "class": "foam.nanos.auth.CachedAuthServiceProxy",
+      "delegate": {
+        "class": "foam.nanos.auth.ClientLoginAuthService"
+      }
+    }
+  """
 })
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -490,7 +497,23 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"alternaSftp",                      "serve":true,  "service":{"class":"net.nanopay.tx.alterna.AlternaSFTPService","host":"ftp.eftcanada.com","port":22,"username":"eftcadtest2","password":"1a2$3d4f","directory":"/"}, "boxClass":"net.nanopay.tx.alterna.SFTPServiceSkeleton","client":"{ \"class\":\"net.nanopay.tx.alterna.client.ClientAlternaSFTPService\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/alternaSftp\" } }"})
-p({"class":"foam.nanos.boot.NSpec", "name":"deviceAuth",                       "serve":true,  "authenticate":false,"boxClass":"foam.nanos.auth.AuthServiceSkeleton","serviceScript":"return new net.nanopay.auth.DeviceAuthService(x, x.get(\"auth\"));","client":"{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "deviceAuth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
+  "serviceScript": """
+    return new net.nanopay.auth.DeviceAuthService(x, x.get("auth"));
+  """,
+  "client": """
+    {
+      "class": "foam.nanos.auth.ClientLoginAuthService"
+    }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"institutionDAO",                   "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.payment.Institution.getOwnClassInfo(), \"institutions\"))));","client":"{\"of\":\"net.nanopay.payment.Institution\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"institutionPurposeCodeDAO",        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.payment.InstitutionPurposeCode.getOwnClassInfo(), \"institutionPurposeCodes\")));","client":"{\"of\":\"net.nanopay.payment.InstitutionPurposeCode\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));","client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
@@ -824,7 +847,37 @@ p({
   }
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"jobTitleDAO",            "lazy":true,  "serve":true,  "authenticate": false, "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setReadOnly(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"jobTitles\").setSeqNo(false).setOf(net.nanopay.model.JobTitle.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.model.JobTitle\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "jobTitleDAO",
+  "lazy": true,
+  "serve": true,
+  "authenticate": false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setReadOnly(true)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("jobTitles")
+      .setSeqNo(false)
+      .setOf(net.nanopay.model.JobTitle.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    { "of": "net.nanopay.model.JobTitle" }
+  """
+})
 
 // Remove the "static" service since we don't depend on it and it provides unauthenticated access to highly sensitive information.
 r({"class":"foam.nanos.boot.NSpec","name":"static"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bankHolidayService",
+  "serve": false,
+  "service": {
+    "class": "net.nanopay.bank.BankHolidayService"
+  }
+})

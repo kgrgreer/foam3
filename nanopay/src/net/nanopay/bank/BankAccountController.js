@@ -172,10 +172,10 @@ foam.CLASS({
             arg2: net.nanopay.bank.USBankAccount.name
           })
         ).select();
-        if ( accountListCAD && accountListCAD.array.length > 0 && isCanadianBusiness ) {
+
+        if ( accountListCAD && accountListCAD.array.length > 0
+          || accountListUSD && accountListUSD.array.length > 0 ) {
           this.availableCAD = false;
-        }
-        if ( accountListUSD && accountListUSD.array.length > 0 && ! isCanadianBusiness ) {
           this.availableUSD = false;
         }
         if ( ! this.availableCAD && ! this.availableUSD ) {
@@ -189,7 +189,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD') {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD' ) {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account

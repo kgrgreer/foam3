@@ -11,6 +11,7 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
@@ -43,8 +44,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
-    user = checkUser(user, request.getUserId(), request);
-
+    user = checkUser(x, user, request.getUserId(), request);
     // Checks if the contact has a bank account
     // Needed for a better error message to improve user experience
     Count hasBankAccount = (Count) accountDAO
@@ -78,7 +78,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       User payer = (User) bareUserDAO.inX(x).find(request.getPayerId());
       contactPayCurrency = request.getUserId() == request.getPayerId(); // If user is payer then this check isn't needed.
       try {
-        payer = checkUser(payer, request.getPayerId(), request);
+        payer = checkUser(x, payer, request.getPayerId(), request);
         if ( payer != null && ! contactPayCurrency ) {
           AuthService auth = (AuthService) x.get("auth");
           contactPayCurrency = auth.checkUser(getX(), payer, "currency.read."+ request.getCurrencyId()) && (count.getValue() > 0);
@@ -107,8 +107,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     if ( ! isCompliant ) response.setMessage("Please be patient as we perform our due diligence. This business will be active shortly.");
     return response;
   }
-
-  public User checkUser(User user, long id, CanReceiveCurrency request) {
+  public User checkUser(X x, User user, long id, CanReceiveCurrency request) {
     if ( user == null ) {
       throw new RuntimeException("Warning: User " + id + " was not found.");
     }
@@ -120,7 +119,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         }
       } else {
         if (request.getUserId() != request.getPayerId()) {
-          throw new RuntimeException("Warning: User " + id + " is a contact with no Business Id.");
+          ((Logger) x.get("logger")).error("Warning: User " + id + " is a contact with no Business Id.");
+          return user;
         }
       }
     }
