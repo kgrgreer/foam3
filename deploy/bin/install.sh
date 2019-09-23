@@ -139,13 +139,15 @@ function installFiles {
         mkdir ${JOURNAL_HOME}
     fi
     mkdir -p ${JOURNAL_HOME}/sha256
+    mkdir -p ${JOURNAL_HOME}/tmp
     mkdir -p ${JOURNAL_HOME}/migrated
     mkdir -p ${JOURNAL_HOME}/migrated_backup
 
-    chgrp -R nanopay ${JOURNAL_HOME}
+    chown -R nanopay:nanopay ${JOURNAL_HOME}
     chmod 750 ${JOURNAL_HOME}
     chmod -R 640 ${JOURNAL_HOME}/*
     chmod 750 ${JOURNAL_HOME}/sha256
+    chmod 750 ${JOURNAL_HOME}/tmp
     chmod 750 ${JOURNAL_HOME}/migrated
     chmod 750 ${JOURNAL_HOME}/migrated_backup
 }
