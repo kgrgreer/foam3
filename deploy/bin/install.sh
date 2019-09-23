@@ -82,12 +82,12 @@ function installFiles {
     if [ ! -d $NANOPAY_HOME ]; then
         mkdir -p ${NANOPAY_HOME}
     fi
-    chgrp nanopay $NANOPAY_HOME
+    chown nanopay:nanopay $NANOPAY_HOME
 
     if [ ! -d ${NANOPAY_HOME}/lib ]; then
         mkdir -p ${NANOPAY_HOME}/lib
     fi
-    chgrp nanopay ${NANOPAY_HOME}/lib
+    chown nanopay:nanopay ${NANOPAY_HOME}/lib
     chmod 750 ${NANOPAY_HOME}/lib
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/lib/* ${NANOPAY_HOME}/lib
@@ -95,7 +95,7 @@ function installFiles {
     if [ ! -d ${NANOPAY_HOME}/bin ]; then
         mkdir -p ${NANOPAY_HOME}/bin
     fi
-    chgrp nanopay ${NANOPAY_HOME}/bin
+    chown nanopay:nanopay ${NANOPAY_HOME}/bin
     chmod 750 ${NANOPAY_HOME}/bin
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/bin/* ${NANOPAY_HOME}/bin
@@ -104,11 +104,11 @@ function installFiles {
         mkdir -p ${NANOPAY_HOME}/etc
     fi
     cp -r ${NANOPAY_REMOTE_OUTPUT}/etc/* ${NANOPAY_HOME}/etc
-    chgrp nanopay ${NANOPAY_HOME}/etc
+    chown nanopay:nanopay ${NANOPAY_HOME}/etc
     chmod -R 750 ${NANOPAY_HOME}/etc
 
     if [ -f ${NANOPAY_HOME}/etc/shrc.local ]; then
-        chgrp nanopay ${NANOPAY_HOME}/etc/shrc.local
+        chown nanopay:nanopay ${NANOPAY_HOME}/etc/shrc.local
     fi
 
     if [ ! -d ${MNT_HOME} ]; then
@@ -120,19 +120,19 @@ function installFiles {
     if [ ! -d ${CONF_HOME} ]; then
         mkdir -p ${CONF_HOME}
     fi
-    chgrp -R nanopay ${CONF_HOME}
+    chown -R nanopay:nanopay ${CONF_HOME}
     chmod -R 750 ${CONF_HOME}
 
     if [ ! -d ${LOG_HOME} ]; then
         mkdir -p ${LOG_HOME}
     fi
-    chgrp nanopay ${LOG_HOME}
+    chown nanopay:nanopay ${LOG_HOME}
     chmod 750 ${LOG_HOME}
 
     if [ ! -d ${VAR_HOME} ]; then
         mkdir -p ${VAR_HOME}
     fi
-    chgrp nanopay ${VAR_HOME}
+    chown nanopay:nanopay ${VAR_HOME}
     chmod 750 ${VAR_HOME}
 
     if [ ! -d ${JOURNAL_HOME} ]; then
@@ -140,13 +140,14 @@ function installFiles {
     fi
     mkdir -p ${JOURNAL_HOME}/sha256
     mkdir -p ${JOURNAL_HOME}/migrated
+    mkdir -p ${JOURNAL_HOME}/migrated_backup
 
     chgrp -R nanopay ${JOURNAL_HOME}
     chmod 750 ${JOURNAL_HOME}
     chmod -R 640 ${JOURNAL_HOME}/*
     chmod 750 ${JOURNAL_HOME}/sha256
     chmod 750 ${JOURNAL_HOME}/migrated
-
+    chmod 750 ${JOURNAL_HOME}/migrated_backup
 }
 
 function setupUser {
