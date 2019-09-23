@@ -90,7 +90,15 @@ my %rule = (
 
     # net/nanopay/tx/afex/rules.jrl
     8000=>"Add FX Currency Permission to Business",
-    8005=>"Create AFEXBusiness Approval Request"
+    8005=>"Create AFEXBusiness Approval Request",
+
+    # https://github.com/nanoPayinc/NANOPAY/pull/7965/files
+    3150=>"Transaction Final Compliance Rule",
+    3151=>"Compliance transaction approval",
+    3152=>"Estimate Transaction completionDate"
+    3153=>"Clear transaction approval requests",
+    3154=>"IdentityMind transfer transaction",
+    3155=>"Reset transaction lastModified/By properties"
 );
 
 #
