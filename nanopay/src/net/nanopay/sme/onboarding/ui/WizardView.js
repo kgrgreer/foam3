@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'notificationDAO',
     'userDAO'
   ],
 
@@ -199,6 +200,11 @@ foam.CLASS({
             // Invalidate auth cache to register new permissions on group.
             this.auth.cache = {};
             x.ctrl.notify('Business profile complete.');
+            if ( x.user.PEPHIORelated ) {
+              var notif = foam.nanos.notification.Notification.create({
+                // create notification for fraud ops user that onboarded user is PEP/HIO
+              });
+            }
             x.stack.back();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
