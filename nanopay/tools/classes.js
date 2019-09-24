@@ -180,6 +180,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
+  'net.nanopay.fx.afex.AFEXBankOnboardingRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -639,6 +640,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission',
   'net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified',
+  'net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessCreated',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded',
