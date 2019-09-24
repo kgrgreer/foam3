@@ -91,6 +91,7 @@ var classes = [
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
   'net.nanopay.model.BeneficialOwner',
+  'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
