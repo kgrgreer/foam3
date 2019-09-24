@@ -29,12 +29,18 @@ foam.CLASS({
         Business business = (Business) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
+          String filterRegion = "";
           Date filterLRDFrom = fetchLastExecutionDate(x, business.getId(), "Dow Jones Entity");
+          if ( business.getAddress().getCountryId().equals("CA") ) {
+            filterRegion = "Canada,CANA,CA,CAN";
+          } else if ( business.getAddress().getCountryId().equals("US") ) {
+            filterRegion = "United States,USA,US";
+          }
           EntityNameSearchData searchData = new EntityNameSearchData.Builder(x)
             .setSearchId(business.getId())
             .setEntityName(business.getOrganization())
             .setFilterLRDFrom(filterLRDFrom)
-            .setFilterRegion(business.getAddress().getCountryId())
+            .setFilterRegion(filterRegion)
             .build();
 
           DowJonesResponse response = dowJonesService.entityNameSearch(x, searchData);
