@@ -7,7 +7,7 @@ foam.CLASS({
    documentation: `Onboards bank account owner to AFEX if it is a business and passed comliance.`,
 
    javaImports: [
-    'foam.core.ContextAwareAgent',
+    'foam.core.ContextAgent',
     'foam.core.X',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.afex.AFEXServiceProvider',
@@ -17,11 +17,14 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: ` 
-        agency.submit(x, new ContextAwareAgent() {
+        agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
+            if ( ! (obj instanceof BankAccount) ) {
+              return;
+            }
             BankAccount bankAccount = (BankAccount) obj;
-            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) getX().get("afexServiceProvider");
+            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
             afexServiceProvider.onboardBusiness(bankAccount);
           }
         }, "Onboards bank account owner to AFEX if it is a business and passed comliance.");
