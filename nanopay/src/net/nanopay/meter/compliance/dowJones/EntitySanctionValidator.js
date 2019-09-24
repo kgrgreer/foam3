@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessDirector',
+    'java.util.Calendar',
     'java.util.Date',
     'static foam.mlang.MLang.*'
   ],
@@ -57,6 +58,11 @@ foam.CLASS({
           }
 
           if ( business.getBusinessDirectors().length > 0 ) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(filterLRDFrom);
+            calendar.add(Calendar.DATE, -1);
+            Date dayBefore = calendar.getTime();
+
             for ( int i = 0; i < business.getBusinessDirectors().length; i++ ) {
               BusinessDirector businessDirector = (BusinessDirector) business.getBusinessDirectors()[i];
               String firstName = businessDirector.getFirstName();
@@ -65,6 +71,7 @@ foam.CLASS({
               PersonNameSearchData directorSearchData = new PersonNameSearchData.Builder(x)
                 .setFirstName(firstName)
                 .setSurName(lastName)
+                .setFilterLRDFrom(dayBefore)
                 .build();
 
               DowJonesResponse directorResponse = dowJonesService.personNameSearch(x, directorSearchData);
