@@ -7,6 +7,7 @@ import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.lib.NetworkPropertyPredicate;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
 import okhttp3.OkHttpClient;
@@ -45,7 +46,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   private Logger logger;
   private String valueDate;
   private OMLogger omLogger;
-  private  DAO afexLogDAO;
 
   public AFEXService(X x) {
     setX(x);
@@ -59,8 +59,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     jsonParser = new JSONParser();
     jsonParser.setX(x);
     logger = (Logger) x.get("logger");
+    logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
     omLogger = (OMLogger) x.get("OMLogger");
-    afexLogDAO = (DAO) x.get("AFEXLogDAO");
   }
 
   protected AFEXCredentials getCredentials() {
@@ -90,11 +90,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(apiKey);
-      log.setName("getToken");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
-
+      logger.debug("{ apiKey: " + apiKey + ", name: getToken " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
       omLogger.log("AFEX getToken starting");
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
@@ -107,15 +103,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           String errorMsg = "AFEX get token failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + apiKey + ", name: getToken " + "response : " + response);
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + apiKey + ", name: getToken " + "response : " + response);
         return (Token) jsonParser.parseString(response, Token.class);
       } finally {
         httpResponse.close();
@@ -144,10 +138,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(apiKey);
-      log.setName("onboardCorporateClient");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + apiKey + ", name: onboardCorporateClient " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
@@ -165,14 +156,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + apiKey + ", name: onboardCorporateClient " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + apiKey + ", name: onboardCorporateClient " + "response : " + response);
         return (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
       } finally {
         httpResponse.close();
@@ -198,10 +187,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
       httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(apiKey);
-      log.setName("getClientAccountStatus");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + apiKey + ", name: getClientAccountStatus " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX getClientAccountStatus starting");
 
@@ -216,17 +202,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + apiKey + ", name: getClientAccountStatus " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logger.debug(response);
+        logger.debug("{ apiKey: " + apiKey + ", name: getClientAccountStatus " + "response : " + response);
 
-        log.logResponse(response);
-        afexLogDAO.put(log);
         return (GetClientAccountStatusResponse) jsonParser.parseString(response, GetClientAccountStatusResponse.class);
       } finally {
         httpResponse.close();
@@ -255,10 +237,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
       httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(apiKey);
-      log.setName("retrieveClientAccountDetails");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + apiKey + ", name: retrieveClientAccountDetails " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX retrieveClientAccountDetails starting");
 
@@ -274,15 +253,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + apiKey + ", name: retrieveClientAccountDetails " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
-
+        logger.debug("{ apiKey: " + apiKey + ", name: retrieveClientAccountDetails " + "response : " + response);
         return (RetrieveClientAccountDetailsResponse) jsonParser.parseString(response, RetrieveClientAccountDetailsResponse.class);
       } finally {
         httpResponse.close();
@@ -323,10 +299,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("createBeneficiary");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createBeneficiary " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX createBeneficiary starting");
 
@@ -342,14 +315,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createBeneficiary " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createBeneficiary " + "response : " + response);
         Object[] respArr = jsonParser.parseStringForArray(response, CreateBeneficiaryResponse.class);
         if ( respArr.length != 0 ) {
           return (CreateBeneficiaryResponse) respArr[0];
@@ -391,10 +362,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("updateBeneficiary");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: updateBeneficiary " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX updateBeneficiary starting");
 
@@ -409,14 +377,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: updateBeneficiary " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: updateBeneficiary " + "response : " + response);
         Object[] respArr = jsonParser.parseStringForArray(response, UpdateBeneficiaryResponse.class);
         if ( respArr.length != 0 ) {
           for ( Object resp : respArr) {
@@ -449,10 +415,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("disableBeneficiary");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: disableBeneficiary " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX disableBeneficiary starting");
 
@@ -466,15 +429,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           String errorMsg = "Disable AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
-          logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: disableBeneficiary " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: disableBeneficiary " + "response : " + response);
         return response.substring(1, response.length() - 1);
       } finally {
         httpResponse.close();
@@ -501,10 +461,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("findBeneficiary");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBeneficiary " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX findBeneficiary starting");
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
@@ -516,15 +473,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           String errorMsg = "Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
-          logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBeneficiary " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBeneficiary " + "response : " + response);
         return (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
       } finally {
         httpResponse.close();
@@ -554,10 +508,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("findBankByNationalID");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBankByNationalID " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX findBankByNationalID starting");
 
@@ -572,14 +523,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBankByNationalID " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: findBankByNationalID " + "response : " + response);
         Object[] respArr = jsonParser.parseStringForArray(response, FindBankByNationalIDResponse.class);
 
         if ( respArr.length != 0 ) {
@@ -609,10 +558,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", businessApiKey);
       httpGet.addHeader("Content-Type", "application/json");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(businessApiKey);
-      log.setName("getValueDate");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + businessApiKey + ", name: getValueDate " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX getValueDate starting");
 
@@ -628,14 +574,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + businessApiKey + ", name: getValueDate " + "Request : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + businessApiKey + ", name: getValueDate " + "Request : " + response);
         return response.substring(1, response.length() - 1);
       } finally {
         httpResponse.close();
@@ -662,10 +606,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("getValueDate");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getRate " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX getRate starting");
 
@@ -681,14 +622,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getRate " + "response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getRate " + "response : " + response);
         return (GetRateResponse) jsonParser.parseString(response, GetRateResponse.class);
       } finally {
         httpResponse.close();
@@ -722,10 +661,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       logger.debug("before execute");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("getQuote");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getQuote " + "Request : " + httpGet.toString());
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
       omLogger.log("AFEX getQuote complete");
@@ -738,13 +674,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getQuote " + "Request : " + response);
           throw new RuntimeException(errorMsg);
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: getQuote " + "Request : " + response);
         return (Quote) jsonParser.parseString(response, Quote.class);
       } finally {
         httpResponse.close();
@@ -780,10 +714,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("createTrade");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade1 " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX createTrade starting");
 
@@ -798,8 +729,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
           String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade1 non 200 " + "Response : " + response);
 
           // try again without account number
           if ( response.toLowerCase().contains("account number") ) {
@@ -807,10 +737,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             nvps.add(new BasicNameValuePair("Note", request.getNote()));
             httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-            log = new AFEXLog();
-            log.setApiKey(request.getClientAPIKey());
-            log.setName("createTrade2");
-            log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+            logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade2 " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
             omLogger.log("AFEX createTrade starting");
 
             httpResponse2 = httpClient.execute(httpPost);
@@ -822,8 +749,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
               String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
                 + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
               logger.error(errorMsg2);
-              log.logResponse(response2);
-              afexLogDAO.put(log);
+              logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade2 non 200 " + "Response : " + response);
               throw new RuntimeException(errorMsg2);
             }
             httpResponse = httpResponse2;
@@ -833,8 +759,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           }
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade" + "Response : " + response);
         return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
       } finally {
         httpResponse.close();
@@ -861,10 +786,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("checkTradeStatus");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkTradeStatus " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX checkTradeStatus starting");
 
@@ -880,14 +802,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkTradeStatus " + "Response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkTradeStatus " + "Response : " + response);
         return (CheckTradeStatusResponse) jsonParser.parseString(response, CheckTradeStatusResponse.class);
       } finally {
         httpResponse.close();
@@ -919,10 +839,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("createPayment");
-      log.logRequest(EntityUtils.toString(httpPost.getEntity()));
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createPayment " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX createPayment starting");
 
@@ -938,14 +855,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createPayment " + "Response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createPayment " + "Response : " + response);
         return (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
       } finally {
         httpResponse.close();
@@ -969,10 +884,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      AFEXLog log = new AFEXLog();
-      log.setApiKey(request.getClientAPIKey());
-      log.setName("checkPaymentStatus");
-      log.logRequest(httpGet.toString());
+      logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkPaymentStatus " + "Request : " + httpGet.toString());
 
       omLogger.log("AFEX checkPaymentStatus starting");
 
@@ -988,14 +900,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
           logger.error(errorMsg);
-          log.logResponse(response);
-          afexLogDAO.put(log);
+          logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkPaymentStatus " + "Response : " + response);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        log.logResponse(response);
-        afexLogDAO.put(log);
+        logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: checkPaymentStatus " + "Response : " + response);
         return (CheckPaymentStatusResponse) jsonParser.parseString(response, CheckPaymentStatusResponse.class);
       } finally {
         httpResponse.close();
@@ -1023,17 +933,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       .url(AFEXAPI + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
       .build();
 
-    AFEXLog log = new AFEXLog();
-    log.setApiKey(confirmationPDFRequest.getClientAPIKey());
-    log.setName("getTradeConfirmation");
-    log.logRequest(request.toString());
+    logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Request : " + request.toString());
 
     try {
       response = client.newCall(request).execute();
       byte[] bytes = response.body().bytes();
 
-      log.logResponse(bytes.toString());
-      afexLogDAO.put(log);
+      logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response : " + new String(bytes));
       return bytes;
 
     } catch ( Throwable t ) {
