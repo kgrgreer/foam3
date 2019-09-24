@@ -144,7 +144,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Must be at least a day before now.'
         }
       ]
     },
