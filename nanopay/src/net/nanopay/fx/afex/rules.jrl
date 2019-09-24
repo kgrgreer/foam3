@@ -52,3 +52,30 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":8006,
+  "name":"Onboard Business Bank Account Owner to AFEX",
+  "documentation":"Rule to onboard bank account owner to AFEX if it is a business and passed comliance.",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
