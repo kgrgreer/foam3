@@ -35,15 +35,24 @@ foam.CLASS({
           DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
           DAO balanceDAO = (DAO) x.get("localBalanceDAO");
 
+          Account sourceAccount = bulkTxn.findSourceAccount(x);
           User payer = (User) userDAO.find_(x, bulkTxn.getPayerId());
+          if ( payer == null && sourceAccount != null ) {
+            payer = sourceAccount.findOwner(x);
+          } else if ( payer != null && sourceAccount == null ) {
+            sourceAccount = getAccount(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI());
+          }
+          if ( payer == null || sourceAccount == null ) {
+              throw new RuntimeException("BulkTransaction failed to determine payer or sourceAccount. payerId: "+bulkTxn.getPayerId()+" sourceAccount: "+bulkTxn.getSourceAccount());
+          }
 
           // If only a single child transaction or no children and a non-null
           // payee then quote a single transaction, which is a one to one transaction.
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
-              bulkTxn.setSourceAccount(getAccountId(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI()));
+              bulkTxn.setSourceAccount(sourceAccount.getId());
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
-              bulkTxn.setDestinationAccount(getAccountId(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()));
+              bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
               parentQuote.setRequestTransaction(bulkTxn);
               return getDelegate().put_(x, parentQuote);
             } else {
@@ -78,7 +87,7 @@ foam.CLASS({
 
             // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            childTransaction.setDestinationAccount(getAccountId(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()));
+            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
 
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);
@@ -133,7 +142,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getAccountId',
+      name: 'getAccount',
       args: [
         {
           name: 'x',
@@ -152,16 +161,16 @@ foam.CLASS({
           type: 'Boolean'
         }
       ],
-      javaType: 'Long',
+      javaType: 'net.nanopay.account.Account',
       javaCode: `
         if ( cico ) {
           Account account = BankAccount.findDefault(x, user, currency);
           if ( account != null ) {
-            return account.getId();
+            return account;
           }
           throw new RuntimeException(currency + " BankAccount not found for " + user.getId());
         } else {
-          return DigitalAccount.findDefault(x, user, currency).getId();
+          return DigitalAccount.findDefault(x, user, currency);
         }
       `
     }
