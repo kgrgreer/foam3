@@ -4,6 +4,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.test.Test;
+import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.invoice.AbliiBillingCron;
 import net.nanopay.invoice.model.Invoice;
@@ -23,7 +25,7 @@ public class AbliiBillingCronTest extends Test {
 
   public void runTest(X x) {
     setUpAddress(x);
-    setUpPayerAndPayee(x);
+    setUpBusinesses(x);
     test1(x);
   }
 
@@ -68,35 +70,42 @@ public class AbliiBillingCronTest extends Test {
       .build();
   }
 
-  private void setUpPayerAndPayee(X x) {
-    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-    // Setup payer
-    payer = new Business.Builder(x)
-      .setBusinessName("payer")
-      .setAddress(ca_ON)
-      .build();
-    payer = (Business) localBusinessDAO.put(payer).fclone();
-    setUpAccountForBusiness(x, payer, "11111");
+  private void setUpBusinesses(X x) {
+    payer = findOrCreateBusiness(x, "payer@test.com");
+    setUpBankAccountForBusiness(x, payer, "11111");
 
-    // Setup payee
-    payee = new Business.Builder(x)
-      .setBusinessName("payee")
-      .setAddress(ca_ON)
-      .build();
-    payee = (Business) localBusinessDAO.put(payee).fclone();
-    setUpAccountForBusiness(x, payee, "22222");
+    payee = findOrCreateBusiness(x, "payee@test.com");
+    setUpBankAccountForBusiness(x, payee, "22222");
+  }
+
+  private Business findOrCreateBusiness(X x, String email) {
+    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+    Business business = (Business) localBusinessDAO.find(EQ(Business.EMAIL, email));
+    if ( business == null ) {
+      business = new Business.Builder(x)
+        .setEmail(email)
+        .setBusinessName("AbliiBillingCronTest Business")
+        .setAddress(ca_ON)
+        .build();
+    }
+    business.setEmailVerified(true);
+    business.setCompliance(ComplianceStatus.PASSED);
+    return (Business) localBusinessDAO.put(business).fclone();
+  }
+
+  private void setUpBankAccountForBusiness(X x, Business business, String accountNumber) {
+    business.getAccounts(x).put(
+      new CABankAccount.Builder(x)
+        .setAccountNumber(accountNumber)
+        .setName("AbliiBillingCronTest Account")
+        .setBranchId("00000")
+        .setInstitutionNumber("000")
+        .setStatus(BankAccountStatus.VERIFIED)
+        .build()
+    );
   }
 
   private Date getDate(LocalDate localDate) {
     return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-  }
-
-  private void setUpAccountForBusiness(X x, Business business, String accountNumber) {
-    business.getAccounts(x).put(
-      new CABankAccount.Builder(x)
-        .setAccountNumber(accountNumber)
-        .setName(business.getBusinessName() + "_test_account")
-        .build()
-    );
   }
 }
