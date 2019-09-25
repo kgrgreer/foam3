@@ -61,10 +61,10 @@ public class AbliiBillingCron implements ContextAgent {
   private Map<Long, Invoice> invoiceByPayer_ = new HashMap<>();
 
   /**
-   * Line item by payer/business.
+   * Invoice line items by payer/business.
    * Assuming one billing invoice per business.
    */
-  private Map<Invoice, List<InvoiceLineItem>> lineItemByPayer_ = new HashMap<>();
+  private Map<Long, List<InvoiceLineItem>> invoiceLineItemByPayer_ = new HashMap<>();
 
   /**
    * Cached payment date by region to avoid going through bank holiday multiple times
@@ -95,24 +95,25 @@ public class AbliiBillingCron implements ContextAgent {
         Transaction transaction = (Transaction) ((Transaction) obj).fclone();
         Account sourceAccount = transaction.findSourceAccount(x);
         Business business = (Business) sourceAccount.findOwner(x);
-        Invoice invoice = invoiceByPayer_.get(business.getId());
+        long payerId = business.getId();
+        Invoice invoice = invoiceByPayer_.get(payerId);
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, business.getAddress(), issueDate);
           invoice = new Invoice.Builder(x)
             .setIssueDate(new Date())
             .setPaymentDate(paymentDate)
             .setDueDate(paymentDate)
-            .setPayerId(business.getId())
+            .setPayerId(payerId)
             .setSourceCurrency(transaction.getSourceCurrency())
             .setDestinationAccount(feeAccount.getId())
             .setPayeeId(feeAccount.getOwner())
             .setDestinationCurrency(feeAccount.getDenomination())
             .build();
-          invoiceByPayer_.put(business.getId(), invoice);
-          lineItemByPayer_.put(invoice, new ArrayList<>());
+          invoiceByPayer_.put(payerId, invoice);
+          invoiceLineItemByPayer_.put(payerId, new ArrayList<>());
         }
 
-        List<InvoiceLineItem> invoiceLineItems = lineItemByPayer_.get(invoice);
+        List<InvoiceLineItem> invoiceLineItems = invoiceLineItemByPayer_.get(payerId);
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
           if ( lineItem instanceof InvoicedFeeLineItem ) {
             long amount = check90DaysPromotion(business, transaction) ? 0L : lineItem.getAmount();
@@ -190,7 +191,7 @@ public class AbliiBillingCron implements ContextAgent {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     for ( Map.Entry<Long, Invoice> entry : invoiceByPayer_.entrySet() ) {
       Invoice invoice = entry.getValue();
-      List<InvoiceLineItem> lineItems = lineItemByPayer_.get(invoice);
+      List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
       invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
       long totalAmount = 0;
       for ( InvoiceLineItem lineItem : lineItems ) {
