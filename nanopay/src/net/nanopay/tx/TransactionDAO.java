@@ -86,10 +86,9 @@ public class TransactionDAO
    */
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
     return ( ! SafetyUtil.isEmpty(txn.getId()) ||
-             txn instanceof DigitalTransaction ) &&
+      txn instanceof DigitalTransaction ) &&
       (txn.getNext() == null || txn.getNext().length == 0 ) &&
-      (txn.canTransfer(x, oldTxn) ||
-       txn.canReverseTransfer(x, oldTxn));
+      (txn.canTransfer(x, oldTxn));
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
@@ -174,11 +173,6 @@ public class TransactionDAO
       try {
         account.validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
-        if ( txn.getStatus() == TransactionStatus.REVERSE ) {
-          txn.setStatus(TransactionStatus.REVERSE_FAIL);
-          return super.put_(x, txn);
-        }
-        ((Logger) x.get("logger")).error(" Failed to validate amount for account " + account.getId(), e);
         throw e;
       }
     }

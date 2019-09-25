@@ -21,6 +21,8 @@ var classes = [
   'net.nanopay.tx.CreateExpediteApprovalRequest',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.ReverseCORule',
+  'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.tx.alterna.AlternaSFTPService',
@@ -102,6 +104,8 @@ var classes = [
   'net.nanopay.model.PersonalIdentification',
   'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
+  'net.nanopay.bank.BankHolidayService',
+  'net.nanopay.bank.BankWeekend',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',

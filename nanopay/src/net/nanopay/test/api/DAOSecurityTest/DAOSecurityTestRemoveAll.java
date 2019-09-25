@@ -10,10 +10,6 @@ import java.util.stream.Stream;
 public class DAOSecurityTestRemoveAll extends DAOSecurityTest {
   protected static final List<String> REMOVE_ALL_IGNORES = new ArrayList<>();
 
-  DAOSecurityTestRemoveAll() {
-
-  }
-
   private static final String TEST_REMOVE_ALL = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
     "\t\"attributes\":{\n" +

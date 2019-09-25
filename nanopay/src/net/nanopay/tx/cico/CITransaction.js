@@ -128,22 +128,10 @@ foam.CLASS({
         if ( oldTxn == null ) return;
 
         if (
-          getStatus() != TransactionStatus.REVERSE &&
-          getStatus() != TransactionStatus.REVERSE_FAIL &&
           getStatus() != TransactionStatus.DECLINED
         ) return;
 
         DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
-
-        if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
-          Notification notification = new Notification();
-          notification.setEmailIsEnabled(true);
-          notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
-          notification.setNotificationType("Cashin transaction declined");
-          notification.setGroupId("support");
-          notificationDAO.put(notification);
-          return;
-        }
 
         User sender = findSourceAccount(x).findOwner(x);
         User receiver = findDestinationAccount(x).findOwner(x);
@@ -233,13 +221,6 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-          getStatus() == TransactionStatus.DECLINED &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
-                 oldTxn.getStatus() == TransactionStatus.COMPLETED ) ) ) {
-          return true;
-        }
         return false;
       `
     },
@@ -282,30 +263,6 @@ foam.CLASS({
           for ( int i = 0; i < transfers.length; i++ ) {
             all.add(transfers[i]);
           }
-        }
-        else if ( canReverseTransfer(x, oldTxn ) ) {
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, true);
-            for ( int j = 0; j < transfers.length; j++ ) {
-              all.add(transfers[j]);
-            }
-          }
-          all.add( new Transfer.Builder(x)
-          .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In DECLINED")
-          .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
-          .setAmount(getTotal())
-          .build());
-        all.add(new Transfer.Builder(x)
-        .setDescription("Cash-In DECLINED")
-        .setAccount(getDestinationAccount())
-        .setAmount(-getTotal())
-        .build());
-          Transfer[] transfers = getReverseTransfers();
-          for ( int i = 0; i < transfers.length; i++ ) {
-            all.add(transfers[i]);
-          }
-          setStatus(TransactionStatus.REVERSE);
         }
       return (Transfer[]) all.toArray(new Transfer[0]);
       `

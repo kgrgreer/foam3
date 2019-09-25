@@ -34,7 +34,6 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -48,6 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -55,8 +55,8 @@ foam.CLASS({
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus'
- ],
+   'net.nanopay.tx.model.TransactionStatus',
+  ],
 
   constants: [
     {
@@ -558,8 +558,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   },
-   {
+    },
+    {
       class: 'DateTime',
       name: 'scheduledTime',
       section: 'basicInfo',
