@@ -644,6 +644,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.BusinessCreated',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
