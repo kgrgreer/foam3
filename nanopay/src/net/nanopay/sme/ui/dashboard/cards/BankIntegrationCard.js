@@ -52,6 +52,10 @@ foam.CLASS({
     {
       name: 'SUBTITLE_LINKED',
       message: 'Connected to'
+    },
+    {
+      name: 'SUBTITLE_VERIFING',
+      message: 'We are reviewing your bank account'
     }
   ],
 
@@ -70,6 +74,9 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
+        if(this.user.address.countryId === 'US') {
+          return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
+        }
         if ( isAccountThere && this.isVerified ) {
           var subtitle = this.SUBTITLE_LINKED + ' ';
           subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
@@ -121,7 +128,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : this.ADD_BANK
+              action: isAccountThere ? (this.user.address.countryId === 'US' ? this.VIEW_ACCOUNT  : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT)) : this.ADD_BANK
             }).end();
         }));
       })
