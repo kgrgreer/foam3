@@ -170,7 +170,7 @@ public class DowJonesResponseMsg
           matchPayload.setRiskIcons(riskIconsArrList.toArray(riskIconsArray));
           matchPayload.setPrimaryName(primaryName != null ? primaryName.getFirstChild().getNodeValue() : "");
           matchPayload.setCountryCode(countryCode != null ? countryCode.getFirstChild().getNodeValue() : "");
-          matchPayload.setTitle(title != null ? title.getNodeValue() : "");
+          matchPayload.setTitle((title != null && title.getFirstChild() != null) ? title.getFirstChild().getNodeValue() : "");
           matchPayload.setSubsidiary(Boolean.valueOf(subsidiary.getNodeValue()));
           matchPayload.setMatchedName(matchedNameObj);
           matchPayload.setMatchedDateOfBirth((matchedDateOfBirth != null && matchedDateOfBirth.getFirstChild() != null) ? matchedDateOfBirth.getFirstChild().getNodeValue() : "");
