@@ -173,7 +173,7 @@ public class DowJonesResponseMsg
           matchPayload.setTitle(title != null ? title.getNodeValue() : "");
           matchPayload.setSubsidiary(Boolean.valueOf(subsidiary.getNodeValue()));
           matchPayload.setMatchedName(matchedNameObj);
-          matchPayload.setMatchedDateOfBirth(matchedDateOfBirth != null ? matchedDateOfBirth.getFirstChild().getNodeValue() : "");
+          matchPayload.setMatchedDateOfBirth((matchedDateOfBirth != null && matchedDateOfBirth.getFirstChild() != null) ? matchedDateOfBirth.getFirstChild().getNodeValue() : "");
 
           String[] datesOfBirthArray = new String [ datesOfBirthArrList.size() ];
           matchPayload.setDatesOfBirth(datesOfBirthArrList.toArray(datesOfBirthArray));
