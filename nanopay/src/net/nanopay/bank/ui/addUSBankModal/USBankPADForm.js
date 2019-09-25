@@ -91,7 +91,7 @@ foam.CLASS({
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.' },
     { name: 'INSTRUCTIONS2', message: 'Please ensure your details are entered properly.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
-    { name: 'SUCCESS', message: 'This account will be verified. This process takes about 1-2 days. Thank you for your patience.' },
+    { name: 'SUCCESS', message: 'Your bank account was successfully added.' },
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
@@ -99,7 +99,8 @@ foam.CLASS({
     { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
     { name: 'ERROR_FNUMBER', message: 'First name cannot contain numbers.' },
     { name: 'ERROR_LNUMBER', message: 'Last name cannot contain numbers.' },
-    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
+    { name: 'SUCCESS_CHECK', message: 'This account will be verified. This process takes about 1-2 days. Thank you for your patience.' }
   ],
 
   methods: [
@@ -223,12 +224,11 @@ foam.CLASS({
         if ( this.plaidResponseItem != null ) {
           try {
             let response = await this.plaidService.saveAccount(null, this.plaidResponseItem);
-            if ( response.plaidError !== null ) {
-              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
-              this.closeDialog();
-            } else {
+            if ( response.plaidError ) {
               let message = error.display_message !== '' ? error.display_message : error.error_code;
               this.ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+              this.closeDialog();
+              return;
             }
           } catch (e) {
             this.ctrl.add(this.NotificationMessage.create({ message: e.message, type: 'error' }));
@@ -245,7 +245,9 @@ foam.CLASS({
         this.isConnecting = false;
       }
 
-      this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS}));
+      const successMessage = this.bank.status.name === 'UNVERIFIED' ? this.SUCCESS_CHECK : this.SUCCESS;
+      this.ctrl.add(this.NotificationMessage.create({ message: successMessage}));
+
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
     }
