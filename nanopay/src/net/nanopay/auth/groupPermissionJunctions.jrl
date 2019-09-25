@@ -18,7 +18,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpFileService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"user.ro.loginEnabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"cico.ci"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"currency.read.CAD"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"menu.read.accounts"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"menu.read.banks"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"menu.read.dashboard"})
