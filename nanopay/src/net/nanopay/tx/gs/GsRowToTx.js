@@ -22,9 +22,6 @@ foam.CLASS({
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.fx.ExchangeRate'
   ],
-  properties: [
-
-  ],
 
   methods: [
     {

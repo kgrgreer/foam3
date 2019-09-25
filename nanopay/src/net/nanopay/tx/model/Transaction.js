@@ -286,16 +286,10 @@ foam.CLASS({
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       tableWidth: 130,
-      view: function(args, x,value) {
-         if (x.controllerMode.name === 'EDIT')
-         return {
-           class: 'foam.u2.view.ChoiceView',
-           choices: x.data.statusChoices
-         };
-         else return { class: 'foam.u2.tag.Input',
-          mode: 'RO',
-          data: x.data.status.name,
-          size: 1000 };
+      view: function(_, x) {
+        return x.controllerMode.name === 'EDIT' 
+          ? { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices }
+          : { class: 'foam.u2.tag.Input', mode: 'RO', data: x.data.status.name, size: 1000 }
       }
     },
     {
