@@ -115,7 +115,7 @@ public class AbliiBillingCron implements ContextAgent {
         List<InvoiceLineItem> invoiceLineItems = lineItemByPayer_.get(invoice);
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
           if ( lineItem instanceof InvoicedFeeLineItem ) {
-            long amount = check90DaysPromotion(business, transaction) ? 0l : lineItem.getAmount();
+            long amount = check90DaysPromotion(business, transaction) ? 0L : lineItem.getAmount();
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")

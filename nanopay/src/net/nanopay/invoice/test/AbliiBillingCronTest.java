@@ -5,12 +5,13 @@ import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.test.Test;
 import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.invoice.AbliiBillingCron;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Business;
-import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.AbliiTransaction;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -22,6 +23,7 @@ import static foam.mlang.MLang.EQ;
 public class AbliiBillingCronTest extends Test {
   private Address ca_ON;
   private Business payer, payee;
+  private BankAccount payerBankAccount;
 
   public void runTest(X x) {
     setUpAddress(x);
@@ -35,22 +37,33 @@ public class AbliiBillingCronTest extends Test {
     LocalDate endDate = billingMonth.atEndOfMonth();
     AbliiBillingCron cron = new AbliiBillingCron(startDate, endDate);
 
-    createTransaction(x, billingMonth.atDay(5));
+    createAbliiTransaction(x, billingMonth.atDay(5));
     updatePayerCreatedBefore(x, 2019, 2);
     cron.execute(x);
 
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     Invoice invoice = (Invoice) invoiceDAO.find(EQ(Invoice.PAYER_ID, payer.getId()));
-    test(invoice.getAmount() == 75, "Billing invoice amount.");
+    test(invoice.getAmount() == 0, "Billing invoice amount.");
   }
 
-  private void createTransaction(X x, LocalDate created) {
-    DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
-    localTransactionDAO.put(
-      new Transaction.Builder(x)
+  private void createAbliiTransaction(X x, LocalDate created) {
+    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    Invoice invoice = (Invoice) invoiceDAO.put(
+      new Invoice.Builder(x)
         .setPayerId(payer.getId())
         .setPayeeId(payee.getId())
-        .setAmount(1000l)
+        .setAmount(1000L)
+        .build()
+    ).fclone();
+
+    DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
+    localTransactionDAO.put(
+      new AbliiTransaction.Builder(x)
+        .setInvoiceId(invoice.getId())
+        .setPayerId(payer.getId())
+        .setPayeeId(payee.getId())
+        .setSourceAccount(payerBankAccount.getId())
+        .setAmount(invoice.getAmount())
         .setCreated(getDate(created))
         .build()
     );
@@ -72,7 +85,7 @@ public class AbliiBillingCronTest extends Test {
 
   private void setUpBusinesses(X x) {
     payer = findOrCreateBusiness(x, "payer@test.com");
-    setUpBankAccountForBusiness(x, payer, "11111");
+    payerBankAccount = setUpBankAccountForBusiness(x, payer, "11111");
 
     payee = findOrCreateBusiness(x, "payee@test.com");
     setUpBankAccountForBusiness(x, payee, "22222");
@@ -93,8 +106,8 @@ public class AbliiBillingCronTest extends Test {
     return (Business) localBusinessDAO.put(business).fclone();
   }
 
-  private void setUpBankAccountForBusiness(X x, Business business, String accountNumber) {
-    business.getAccounts(x).put(
+  private BankAccount setUpBankAccountForBusiness(X x, Business business, String accountNumber) {
+    return (BankAccount) business.getAccounts(x).put(
       new CABankAccount.Builder(x)
         .setAccountNumber(accountNumber)
         .setName("AbliiBillingCronTest Account")
@@ -102,7 +115,7 @@ public class AbliiBillingCronTest extends Test {
         .setInstitutionNumber("000")
         .setStatus(BankAccountStatus.VERIFIED)
         .build()
-    );
+    ).fclone();
   }
 
   private Date getDate(LocalDate localDate) {
