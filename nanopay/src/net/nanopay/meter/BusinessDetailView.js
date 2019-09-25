@@ -45,7 +45,8 @@ foam.CLASS({
           this.Business.ACCOUNTS,
           this.Business.CONTACTS,
           this.Business.AGENTS,
-          this.Business.COMPLIANCE_RESPONSES
+          this.Business.COMPLIANCE_RESPONSES,
+          this.Business.BENEFICIAL_OWNERS
         ];
       }
     }
