@@ -43,7 +43,6 @@ my %rule = (
     1701=>"Add Domestic Currency Permission",
     1703=>"Add FX Provision Payer Permission after Business is onboarded",
     1704=>"Remove FX Provision Payer Permission after Business is not onboarded",
-    1710=>"Estimate Transaction completionDate",
 
     # foam/nanos/crunch/rules.jrl
     1800=>"Notify User On Top Level Capability Status Update",
