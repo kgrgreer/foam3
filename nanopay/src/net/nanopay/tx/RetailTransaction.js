@@ -5,10 +5,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.push.PushService',
+    'foam.util.SafetyUtil'
     'java.util.HashMap',
     'java.util.Map',
-    'foam.util.SafetyUtil'
+
   ],
 
   properties: [
@@ -98,16 +100,16 @@ foam.CLASS({
      `
    },
    {
-       name: 'executeAfterPut',
-       javaCode: `
-       super.executeAfterPut();
+     name: 'executeAfterPut',
+     javaCode: `
+       super.executeAfterPut(x, oldTxn);
        try {
          sendCompletedNotification(x, oldTxn);
        } catch (Exception e) {
          Logger logger = (Logger) x.get("logger");
          logger.warning("Transaction failed to send notitfication. " + e.getMessage());
        }
-       `
-     }
+     `
+   }
  ]
 });
