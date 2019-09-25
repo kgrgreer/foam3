@@ -81,12 +81,11 @@ foam.CLASS({
       label: 'Sync Count to Xero'
     },
     {
-      class: 'StringArray',
+      class: 'FObjectArray',
       name: 'businessDirectors',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ArrayView'
-        }
+      of: 'net.nanopay.model.BusinessDirector',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView'
       }
     }
   ],
