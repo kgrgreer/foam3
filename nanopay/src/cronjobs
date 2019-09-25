@@ -16,3 +16,25 @@ p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nano
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"AFEX Check Payment Status","description":"Check AFEX Payment Status","code":"import net.nanopay.fx.afex.cron.AFEXPaymentStatusCron;\ncron = new AFEXPaymentStatusCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"AFEX Check Business Compliance Status","description":"Check AFEX Business Compliance Status","code":"import net.nanopay.fx.afex.cron.AFEXBusinessComplianceStatusCron;\ncron = new AFEXBusinessComplianceStatusCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek": 1,"second":-1},"id": "AFEX Business ApprovalRequest Cron","description": "Auto-Approve AFEXBusiness ApprovalRequest ","code": "import net.nanopay.fx.afex.cron.AFEXBusinessApprovalRequestCron;\ncron = new AFEXBusinessApprovalRequestCron();\ncron.execute(x);\nprint(\"done\");"})
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": true,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "dayOfMonth": 1
+  },
+  "id": "Monthly Billing Invoices for Ablii",
+  "description": "Send billing invoices to Ablii users",
+  "code": """
+    import java.time.YearMonth;
+    import net.nanopay.invoice.AbliiBillingCron;
+
+    billingMonth = YearMonth.now().minusMonths(1);
+    startDate = billingMonth.atDay(1);
+    endDate = billingMonth.atEndOfMonth();
+
+    cron = new AbliiBillingCron(startDate, endDate);
+    cron.execute(x);
+    print("done");
+  """
+})

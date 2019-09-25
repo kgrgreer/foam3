@@ -585,9 +585,8 @@ foam.CLASS({
             throw new IllegalStateException("Destination currency is not valid.");
           }
         }
-
-        if ( this.getAmount() <= 0 ) {
-          throw new IllegalStateException("Amount must be a number and greater than zero.");
+        if ( this.getAmount() < 0 ) {
+          throw new IllegalStateException("Amount must be a number and no less than zero.");
         }
 
         boolean isInvoiceToContact = this.getContactId() != 0;
