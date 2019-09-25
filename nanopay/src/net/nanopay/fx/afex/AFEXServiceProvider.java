@@ -75,7 +75,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-        if ( afexBusiness != null ) return false;
+        if ( afexBusiness != null ) return true;
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
