@@ -272,6 +272,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequest' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequestRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankOnboardingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
   
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

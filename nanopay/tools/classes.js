@@ -181,7 +181,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
   'net.nanopay.fx.afex.AFEXBankOnboardingRule',
-
+  'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
