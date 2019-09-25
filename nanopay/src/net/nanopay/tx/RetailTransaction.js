@@ -96,6 +96,18 @@ foam.CLASS({
        data.put("amount", Long.toString(getAmount()));
        push.sendPush(receiver, "You've received money!", data);
      `
-   }
+   },
+   {
+       name: 'executeAfterPut',
+       javaCode: `
+       super.executeAfterPut();
+       try {
+         sendCompletedNotification(x, oldTxn);
+       } catch (Exception e) {
+         Logger logger = (Logger) x.get("logger");
+         logger.warning("Transaction failed to send notitfication. " + e.getMessage());
+       }
+       `
+     }
  ]
 });
