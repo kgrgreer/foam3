@@ -42,7 +42,7 @@ foam.CLASS({
         java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
         blob.read(os, 0, blob.getSize());
         foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());
-System.out.println("blob read");
+        System.out.println("blob read");
         foam.lib.parse.ParserContextImpl px = new foam.lib.parse.ParserContextImpl();
         px.set("X", x);
 
@@ -59,8 +59,8 @@ System.out.println("blob read");
             .setDao(gsTxCsvRowDAO)
             .build());
         csvParser.parse(ps, px);
-long ci = 0;
-long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
+        long ci = 0;
+        long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
         System.out.println("Lines read: "+am);
         long startTime = System.currentTimeMillis();
                   Object [] rows2 = ( (ArraySink) gsTxCsvRowDAO
@@ -85,37 +85,28 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
              .select(new ArraySink())).getArray().toArray();
           GsTxCsvRow row1 = (GsTxCsvRow) rows[0];
 
-           gsTxCsvRowDAO.remove(row1);
+          gsTxCsvRowDAO.remove(row1);
 
-           if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-             t = parseExternal(x,row1);
+          if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
+            t = parseExternal(x,row1);
 
-           }
-           else{
-              Object [] arr = ( (ArraySink) gsTxCsvRowDAO
-                 .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
-                 .limit(1)
-                 .select(new ArraySink())).getArray().toArray();
+          } else {
+          Object [] arr = ( (ArraySink) gsTxCsvRowDAO
+              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
+              .limit(1)
+              .select(new ArraySink())).getArray().toArray();
 
-              if ( arr.length == 0 ) {
-                 System.out.println("error unmatched internal transaction, no tx made");
-                 continue;
-              }
-              t = parseInternal(x,row1,(GsTxCsvRow)arr[0]);
-              gsTxCsvRowDAO.remove((GsTxCsvRow)arr[0]);
-           }
-           //t.setId(c+"");
-           checkTrusty(x,t);
-           if (! verifyBalance(x,t))
-              ci++;
-          // TransactionQuote quote = new TransactionQuote();
-           //quote.setRequestTransaction(t);
-           //t = (Transaction) ((TransactionQuote)transactionQuoteDAO.put(quote)).getPlan();
-           //t.setInitialStatus(t.getStatus());
-           //t.setStatus(TransactionStatus.SCHEDULED);
-           //t.setProperty("scheduledTime",offset+cleanTimeStamp(row1.getTimeStamp()));
-           transactionDAO.put(t);
-           //c++;
+          if ( arr.length == 0 ) {
+              System.out.println("error unmatched internal transaction, no tx made");
+              continue;
+          }
+          t = parseInternal(x,row1,(GsTxCsvRow)arr[0]);
+          gsTxCsvRowDAO.remove((GsTxCsvRow)arr[0]);
+          }
+          checkTrusty(x,t);
+          if (! verifyBalance(x,t))
+            ci++;
+          transactionDAO.put(t);
         }
         System.out.println("Made: " + ci + " Cash in transactions" );
         return transactionDAO;
@@ -134,7 +125,6 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
       javaCode: `
         Transaction t = new Transaction();
           if (row1.getCashUSD() < row2.getCashUSD()) {
-            //row1 ->row2
             t.setSourceAccount(findAcc(x,row1));
             t.setDestinationAccount(findAcc(x,row2));
             t.setSourceCurrency(row1.getCurrency());
@@ -147,10 +137,10 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
               t.setAmount((long) Math.abs(row1.getMarketValueLocal()));
               t.setDestinationAmount((long) Math.abs(row2.getMarketValueLocal()));
             }
-              t = assembleIFLs(t,row1,row2);
+            t = assembleIFLs(t,row1,row2);
           }
           else {
-            //row2 -> row1
+            // row2 -> row1
             t.setSourceAccount(findAcc(x,row2));
             t.setDestinationAccount(findAcc(x,row1));
             t.setSourceCurrency(row2.getCurrency());
@@ -165,8 +155,8 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
             }
             t = assembleIFLs(t,row2,row1);
           }
-          t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
-          return t;
+        t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
+        return t;
       `
     },
     {
@@ -196,7 +186,7 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
             t.setDestinationAmount((long) Math.abs(row1.getMarketValue()));
           }
         }
-        else{
+        else {
           //receiving
           t.setSourceAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
           t.setDestinationAccount(findAcc(x,row1));
@@ -212,7 +202,6 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           }
         }
         t = assembleIFLs(t,row1,row1);
-
 
         return t;
       `
@@ -241,8 +230,9 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
       javaCode: `
       DAO accountDAO = ((DAO) x.get("localAccountDAO"));
       String type = "SECURITIES";
-      if (SafetyUtil.equals("Cash",row.getSettleType()))
+      if (SafetyUtil.equals("Cash",row.getSettleType())){
         type = "CASH";
+      }
       String name = row.getCompany()+" "+type+" ("+row.getCurrency()+")";
       Account a = (Account) (accountDAO.find(MLang.EQ(Account.NAME, name)));
       if (a == null){
@@ -267,29 +257,29 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
       ],
       type: 'Boolean',
       javaCode: `
-         DAO accountDAO = ((DAO) x.get("localAccountDAO"));
-               DAO transactionDAO = ((DAO) x.get("transactionDAO"));
+        DAO accountDAO = ((DAO) x.get("localAccountDAO"));
+        DAO transactionDAO = ((DAO) x.get("transactionDAO"));
 
-               Account source = txn.findSourceAccount(x);
-               Account b = null;
-               if(! (source instanceof net.nanopay.account.ShadowAccount) ){
-                   b = (Account) accountDAO.find(MLang.EQ(Account.NAME,((source.getName()).substring(0,4)+" Shadow Account")));
-               }
-               else{
-                  b = (BankAccount) (accountDAO.find(MLang.EQ(Account.NAME,source.getDenomination()+" Bank Account")));
-               }
-               if( b == null){
-         b = new BankAccount.Builder(x)
-           .setOwner(8005)
-           .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
-           .setDenomination(txn.getSourceCurrency())
-           .setName(txn.getSourceCurrency() +" Bank Account")
-           .setAccountNumber("000000")
-           .build();
-         b = (BankAccount) accountDAO.put_(x,b).fclone();
-         System.out.println("woops "+txn.getSourceCurrency());
-       }
-         if((long)source.findBalance(x) < txn.getAmount()){
+        Account source = txn.findSourceAccount(x);
+        Account b = null;
+        if(! (source instanceof net.nanopay.account.ShadowAccount) ){
+            b = (Account) accountDAO.find(MLang.EQ(Account.NAME,((source.getName()).substring(0,4)+" Shadow Account")));
+        }
+        else {
+          b = (BankAccount) (accountDAO.find(MLang.EQ(Account.NAME,source.getDenomination()+" Bank Account")));
+        }
+        if ( b == null ) {
+          b = new BankAccount.Builder(x)
+            .setOwner(8005)
+            .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setDenomination(txn.getSourceCurrency())
+            .setName(txn.getSourceCurrency() +" Bank Account")
+            .setAccountNumber("000000")
+            .build();
+          b = (BankAccount) accountDAO.put_(x,b).fclone();
+          System.out.println("woops "+txn.getSourceCurrency());
+        }
+         if ( (long) source.findBalance(x) < txn.getAmount() ) {
 
            Transaction ci = new Transaction.Builder(x)
              .setDestinationAccount(source.getId())
@@ -299,45 +289,42 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
              .setDestinationAmount(txn.getAmount())
              .setLastStatusChange(txn.getLastStatusChange())
              .build();
-           if ( SafetyUtil.equals(ci.getSourceCurrency(),ci.getDestinationCurrency()))
+          if ( SafetyUtil.equals(ci.getSourceCurrency(),ci.getDestinationCurrency())) {
             ci.setAmount(ci.getDestinationAmount());
-           else {
+          } else {
             double w = 1.0;
             ArraySink ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
               MLang.AND(
                 MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getDestinationCurrency()),
                 MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getSourceCurrency())
-            )
-      ).select(new ArraySink());
-      if (((ex.getArray().toArray())).length == 0 ){
-        ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
-          MLang.AND(
-            MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getSourceCurrency()),
-            MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
-          )
-        ).select(new ArraySink());
-        w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
-      }
-      else {
-        w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
-      }
-      if ( w == 0) System.out.println("uuuuhhhohhh");
-              ci.setAmount((long) ((double) ci.getDestinationAmount()*w));
-           }
-           if (! (b instanceof BankAccount) ){
-              verifyBalance(x,ci);
-           }
-           checkTrusty(x,ci);
-           Transaction tx = (Transaction) transactionDAO.put(ci).fclone();
-           if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
-             tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
-             transactionDAO.put(tx);
-           }
-           return false;
-         }
-         return true;
+              )).select(new ArraySink());
+            if ( ((ex.getArray().toArray())).length == 0 ){
+              ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
+                MLang.AND(
+                  MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getSourceCurrency()),
+                  MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
+                )
+              ).select(new ArraySink());
+              w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
+            } else {
+              w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
+            }
+            if ( w == 0) System.out.println("uuuuhhhohhh");
+            ci.setAmount((long) ((double) ci.getDestinationAmount()*w));
+          }
+          if (! (b instanceof BankAccount) ){
+            verifyBalance(x,ci);
+          }
+          checkTrusty(x,ci);
+          Transaction tx = (Transaction) transactionDAO.put(ci).fclone();
+          if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
+            tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+            transactionDAO.put(tx);
+          }
+          return false;
+        }
+        return true;
       `
-
     },
     {
       name: 'assembleIFLs',
@@ -441,18 +428,19 @@ long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
       ],
       type: 'Long',
       javaCode: `
-      try{
-      java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
-      dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-        String t = ts.replace(":","");
-        String t1 = t.replace(".","");
-        String t2 = t1.replace(" ","");
-        Long time = Long.parseLong(t2);
-        time = time/1000;
-        String time2 = time+"";
-        return dateFormat.parse(time2).getTime();
+        try {
+          java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+          dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+          String t = ts.replace(":","");
+          String t1 = t.replace(".","");
+          String t2 = t1.replace(" ","");
+          Long time = Long.parseLong(t2);
+          time = time/1000;
+          String time2 = time+"";
+          return dateFormat.parse(time2).getTime();
+        } catch (Exception E) { 
+          System.out.println("cant parse: "+ts);
         }
-        catch (Exception E){ System.out.println("cant parse: "+ts);}
         return 0;
       `
     }

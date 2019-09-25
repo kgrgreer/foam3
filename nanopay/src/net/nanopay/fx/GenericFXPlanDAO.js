@@ -33,32 +33,14 @@ foam.CLASS({
       javaCode: `
         if (getEnabled()) {
           TransactionQuote quote = (TransactionQuote) obj;
-        //  if ( quote.getRequestTransaction() instanceof FXTransaction ) {
-            Transaction txn = (Transaction) quote.getRequestTransaction();
-            if ( ! SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
+          Transaction txn = (Transaction) quote.getRequestTransaction();
+          if ( ! SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
 
-              // has source and destination but no rate or has all 3.
-              if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
-               // if ( SafetyUtil.equals(txn.getFxRate(),0) ) {
-              //    txn.setFxRate((long)(txn.getDestinationAmount()/txn.getAmount()));
-              //  }
-                quote.setPlan(buildFxTransaction_(x,txn));
-                return quote;//super.put_(x,quote);
-              }
-
-              /*   // no source but has rate and destination.
-              if ( SafetyUtil.equals(txn.getAmount(),0) &&  ! SafetyUtil.equals(txn.getDestinationAmount(),0) && ! SafetyUtil.equals(txn.getFxRate(),0) ) {
-                txn.setAmount((long)(txn.getDestinationAmount()/txn.getFxRate()));
-                quote.addPlan(buildFxTransaction_(x,txn));
-                return super.put_(x,quote);
-              }
-                // no destination but has rate and source.
-              if ( ! SafetyUtil.equals(txn.getAmount(),0) &&  SafetyUtil.equals(txn.getDestinationAmount(),0) && ! SafetyUtil.equals(txn.getFxRate(),0) ) {
-                txn.setDestinationAmount((long)(txn.getAmount()*txn.getFxRate()));
-                quote.addPlan(buildFxTransaction_(x,txn));
-                return super.put_(x,quote);
-              }
-            }*/
+            // has source and destination but no rate or has all 3.
+            if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
+              quote.setPlan(buildFxTransaction_(x,txn));
+              return quote;//super.put_(x,quote);
+            }
           }
         }
         return super.put_(x, obj);

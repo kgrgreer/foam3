@@ -313,7 +313,6 @@ foam.CLASS({
 
       var curr = await this.accountDAO.find(accountId);
 
-
       while ( curr.id !== this.cview.view.root.data.id ){
         ancestry.push(curr.id);
         curr = await this.accountDAO.find(curr.parent);
