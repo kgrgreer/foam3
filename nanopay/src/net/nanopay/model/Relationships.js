@@ -665,8 +665,8 @@ foam.RELATIONSHIP({
   targetProperty: {
     visibility: 'RO',
     section: 'paymentInfo',
-    tableCellFormatter: function(value, obj, axiom) {
-      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name));
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
     }
   }
 });
@@ -685,8 +685,8 @@ foam.RELATIONSHIP({
   targetProperty: {
     visibility: 'RO',
     section: 'paymentInfo',
-    tableCellFormatter: function(value, obj, axiom) {
-      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name));
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
     }
   }
 });
