@@ -82,7 +82,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":8007,
-  "name":"Onboard Business to AFEX",
+  "id":"Onboard Business to AFEX",
   "documentation":"Rule to onboard business to AFEX if it has passed comliance and has a verified bank account.",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
