@@ -579,8 +579,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.add(Chunk.NEWLINE);
       List list = new List(List.UNORDERED);
-      for ( String directorName : business.getBusinessDirectors()) {
-        list.add(new ListItem(directorName));
+      for ( int i = 0; i < business.getBusinessDirectors().length; i++ ) {
+        BusinessDirector businessDirector = (BusinessDirector) business.getBusinessDirectors()[i];
+        list.add(new ListItem(businessDirector.getFirstName() + " " + businessDirector.getLastName()));
       }
       document.add(list);
       document.add(Chunk.NEWLINE);

@@ -528,3 +528,6 @@ p({"class":"foam.nanos.auth.Permission","id":"currency.read.XUA","description":"
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.NLG","description":"Permission to create invoices, transactions, bank accounts, and contacts in the NLG currency."})
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.DEM","description":"Permission to create invoices, transactions, bank accounts, and contacts in the DEM currency."})
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.CNH","description":"Permission to create invoices, transactions, bank accounts, and contacts in the CNH currency."})
+p({"class":"foam.nanos.auth.Permission","id":"user.ro.onboarded","description":"Allows the permission holder to read write the boolean property onboarded on user objects"})
+p({"class":"foam.nanos.auth.Permission","id":"business.rw.onboarded","description":"Allows the permission holder to read write the boolean property onboarded on business objects"})
+p({"class":"foam.nanos.auth.Permission","id":"business.ro.onboarded","description":"Allows the permission holder to read only the boolean property onboarded on business objects"})

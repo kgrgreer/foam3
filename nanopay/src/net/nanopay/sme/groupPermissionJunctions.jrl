@@ -76,6 +76,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"user.ro.loginEnabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"useruserjunction.ro.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"user.ro.onboarded"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"business.ro.onboarded"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"business.add.id.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"business.read.id.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"business.remove.id.*"})
