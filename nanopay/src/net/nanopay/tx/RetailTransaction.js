@@ -7,10 +7,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.push.PushService',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
     'java.util.HashMap',
-    'java.util.Map',
-
+    'java.util.Map'
   ],
 
   properties: [
