@@ -148,7 +148,6 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
-        var self = this;
         return {
           type: 'line',
           options: {

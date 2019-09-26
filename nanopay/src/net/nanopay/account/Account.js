@@ -304,8 +304,7 @@ foam.CLASS({
         a chosen property rather than the first alphabetical string property. In this
         case, we are using the account name.
       `,
-      code: function(x) {
-        var self = this;
+      code: function() {
         return this.name;
       },
     },
