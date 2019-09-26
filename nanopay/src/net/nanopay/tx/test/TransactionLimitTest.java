@@ -3,6 +3,7 @@ package net.nanopay.tx.test;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
 import foam.nanos.ruler.Operations;
@@ -34,7 +35,7 @@ public class TransactionLimitTest extends Test {
   public void runTest(X x) {
     createAccounts(x);
     populateSenderAccount(x);
-    DAO ruleDAO = new SequenceNumberDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
+    DAO ruleDAO = new GUIDDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
     x = x.put("ruleDAO", ruleDAO);
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO = new RulerDAO(x, txnDAO, "transactionDAO");
