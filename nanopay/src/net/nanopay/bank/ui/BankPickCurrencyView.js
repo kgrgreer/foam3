@@ -138,9 +138,6 @@ foam.CLASS({
     float: right;
     margin-right: 20px;
   }
-  ^ .institutionSearchContainerUs {
-    display: none;
-  }
   ^ .institutionSearchContainer img {
     position: absolute;
     width: 16px;
@@ -260,7 +257,7 @@ foam.CLASS({
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
-            .start().addClass(this.selection === 1 ? 'institutionSearchContainer' : 'institutionSearchContainerUs')
+            .start().addClass('institutionSearchContainer').hide(this.selection === 2)
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
               .start(this.FILTER_FOR)
                 .addClass('institutionSearch')
