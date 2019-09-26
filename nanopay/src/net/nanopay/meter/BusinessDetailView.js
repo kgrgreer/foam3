@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter',
   name: 'BusinessDetailView',
-  extends: 'foam.u2.DetailView',
+  extends: 'foam.u2.detail.SectionedDetailView',
 
   requires: [
     'net.nanopay.model.Business'
