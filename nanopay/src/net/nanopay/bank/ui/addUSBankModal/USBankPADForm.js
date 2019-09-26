@@ -245,7 +245,7 @@ foam.CLASS({
         this.isConnecting = false;
       }
 
-      const successMessage = this.bank.status.name === 'UNVERIFIED' ? this.SUCCESS_CHECK : this.SUCCESS;
+      const successMessage = this.bank.status === this.BankAccountStatus.UNVERIFIED ? this.SUCCESS_CHECK : this.SUCCESS;
       this.ctrl.add(this.NotificationMessage.create({ message: successMessage}));
 
       if ( this.onComplete ) this.onComplete();
