@@ -15,6 +15,7 @@ extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
+    
     FObject old = ((DAO)x.get("approvalRequestDAO")).find_(x, obj);
     ApprovalRequest ret = (ApprovalRequest) getDelegate().put_(x, obj);
     if ( old != null
@@ -25,9 +26,9 @@ extends ProxyDAO {
 
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
-    notification.setNotificationType("New approval request");
+    notification.setNotificationType("New approval request for id: " + ret.getObjId());
     notification.setEmailIsEnabled(true);
-    notification.setBody("New approval was requested");
+    notification.setBody("New approval was requested for id: " + ret.getObjId());
     //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
     //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
     ((DAO)x.get("localNotificationDAO")).put(notification);
