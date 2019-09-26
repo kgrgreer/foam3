@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXBankOnboardingRule',
-  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   implements: ['foam.nanos.ruler.RuleAction'],
 
    documentation: `Onboards bank account owner to AFEX if it is a business and passed comliance.`,
