@@ -26,7 +26,7 @@ extends ProxyDAO {
 
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
-    notification.setNotificationType("New approval request for id: " + ret.getObjId());
+    notification.setNotificationType("approval request for id: " + ret.getObjId());
     notification.setEmailIsEnabled(true);
     notification.setBody("New approval was requested for id: " + ret.getObjId());
     //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
