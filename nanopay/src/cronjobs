@@ -33,7 +33,7 @@ p({
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
 
-    cron = new AbliiBillingCron(startDate, endDate);
+    cron = new AbliiBillingCron(feeAccount, startDate, endDate);
     cron.execute(x);
     print("done");
   """
