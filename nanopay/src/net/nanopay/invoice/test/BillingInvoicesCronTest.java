@@ -39,13 +39,13 @@ public class BillingInvoicesCronTest extends Test {
     Test_BusinessCreatedBeforeFeb2019(x);
 
     resetTransactions(x);
-    Test_BusinessCreatedBetweenFeb1andJune302019(x);
+    Test_BusinessCreatedBetweenFeb1andJune30_2019(x);
 
     resetTransactions(x);
-    Test_BusinessCreatedBetweenJuly1andAug312019(x);
+    Test_BusinessCreatedBetweenJuly1andAug31_2019(x);
 
     resetTransactions(x);
-    Test_BusinessCreatedBetweenSept1andSept152019(x);
+    Test_BusinessCreatedBetweenSept1andSept15_2019(x);
 
     resetTransactions(x);
     Test_BusinessCreatedAfterSept152019(x);
@@ -121,10 +121,11 @@ public class BillingInvoicesCronTest extends Test {
     test(invoice.getAmount() == 500 + 75 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
+    test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
   }
 
-  private void Test_BusinessCreatedBetweenFeb1andJune302019(X x) {
-    print("Business created between February 1 and June 1 in 2019");
+  private void Test_BusinessCreatedBetweenFeb1andJune30_2019(X x) {
+    print("Business created between February 1 and June 30 in 2019");
     updatePayerCreated(x, LocalDate.of(2019, 6, 1));
 
     test(true, "Billing for September 2019");
@@ -157,9 +158,10 @@ public class BillingInvoicesCronTest extends Test {
     test(invoice.getAmount() == 500 + 75 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
+    test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
   }
 
-  private void Test_BusinessCreatedBetweenJuly1andAug312019(X x) {
+  private void Test_BusinessCreatedBetweenJuly1andAug31_2019(X x) {
     print("Business created between July 1 and August 31 in 2019");
     updatePayerCreated(x, LocalDate.of(2019, 8, 15));
 
@@ -193,9 +195,10 @@ public class BillingInvoicesCronTest extends Test {
     test(invoice.getAmount() == 500 + 0 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
+    test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
   }
 
-  private void Test_BusinessCreatedBetweenSept1andSept152019(X x) {
+  private void Test_BusinessCreatedBetweenSept1andSept15_2019(X x) {
     print("Business created between September 1 and September 15 in 2019");
     updatePayerCreated(x, LocalDate.of(2019, 9, 12));
 
@@ -229,6 +232,7 @@ public class BillingInvoicesCronTest extends Test {
     test(invoice.getAmount() == 500 + 0 + 0 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
+    test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
   }
 
   private void Test_BusinessCreatedAfterSept152019(X x) {
@@ -265,6 +269,7 @@ public class BillingInvoicesCronTest extends Test {
     test(invoice.getAmount() == 500 + 75 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
+    test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
   }
 
   private Invoice generateMonthlyBillingInvoice(X x, YearMonth billingMonth) {
@@ -274,7 +279,7 @@ public class BillingInvoicesCronTest extends Test {
   }
 
   private Invoice generateBillingInvoice(X x, LocalDate startDate, LocalDate endDate) {
-    BillingInvoicesCron cron = new BillingInvoicesCron(startDate, endDate, ownerAccount);
+    BillingInvoicesCron cron = new BillingInvoicesCron(startDate, endDate, ownerAccount, 5);
     cron.execute(x);
     return cron.getInvoiceByPayer().get(payer.getId());
   }

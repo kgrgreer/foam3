@@ -39,11 +39,6 @@ import static foam.mlang.MLang.*;
  */
 public class BillingInvoicesCron implements ContextAgent {
   /**
-   * Due in business days for invoice dueDate and paymentDate
-   */
-  private final int DUE_IN_BUSINESS_DAYS = 5;
-
-  /**
    * Start date of the billing
    */
   private final LocalDate startDate_;
@@ -57,6 +52,11 @@ public class BillingInvoicesCron implements ContextAgent {
    * Destination account
    */
   private final Account destinationAccount_;
+
+  /**
+   * The number of business days due before processing the invoices
+   */
+  private final int dueIn_;
 
   /**
    * Invoice by payer/business
@@ -74,10 +74,11 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
-  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
+  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount, int dueIn) {
     startDate_ = startDate;
     endDate_ = endDate;
     destinationAccount_ = destinationAccount;
+    dueIn_ = dueIn;
   }
 
   public Map<Long, Invoice> getInvoiceByPayer() {
@@ -176,8 +177,7 @@ public class BillingInvoicesCron implements ContextAgent {
     Date paymentDate = paymentDateByRegion_.get(countryRegion);
     if ( paymentDate == null ) {
       BankHolidayService bankHolidayService = (BankHolidayService) x.get("bankHolidayService");
-      paymentDate = bankHolidayService.skipBankHolidays(x, issueDate,
-        countryRegion, DUE_IN_BUSINESS_DAYS);
+      paymentDate = bankHolidayService.skipBankHolidays(x, issueDate, countryRegion, dueIn_);
       paymentDateByRegion_.put(countryRegion, paymentDate);
     }
     return paymentDate;
