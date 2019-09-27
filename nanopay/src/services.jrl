@@ -881,7 +881,8 @@ p({
     createdByAwareDAO = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(lastModifiedAwareDAO).build();
     createdAwareDAO = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(createdByAwareDAO).build();
     validatingDAO = new foam.dao.ValidatingDAO(x, createdAwareDAO);
-    return new net.nanopay.approval.SendGroupRequestApprovalDAO(x, validatingDAO);
+    sendGroupRequestApprovalDAO = new net.nanopay.approval.SendGroupRequestApprovalDAO(x, validatingDAO);
+    return sendGroupRequestApprovalDAO.orderBy(new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.approval.ApprovalRequest.CREATED).build());
   """,
   "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
 })
@@ -902,6 +903,7 @@ p({
       .setSeqNo(true)
       .setName("complianceItem")
       .setCreatedAware(true)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.meter.compliance.ComplianceItem.CREATED).build() })
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.meter.compliance.ComplianceItem\"}"
