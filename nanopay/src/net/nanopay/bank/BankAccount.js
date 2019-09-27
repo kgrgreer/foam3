@@ -91,7 +91,7 @@ foam.CLASS({
         this.start()
           .add(obj.slot((institution, institutionDAO) => {
             return institutionDAO.find(institution).then((result) => {
-              if ( result ) {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
                 return ' ' + obj.cls_.getAxiomByName('institution').label + ' ';
               }
             });
@@ -99,7 +99,7 @@ foam.CLASS({
         .end()
         .add(obj.slot((institution, institutionDAO) => {
           return institutionDAO.find(institution).then((result) => {
-            if ( result ) {
+            if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
               return result.name + ' |';
             }
           });
