@@ -1,14 +1,17 @@
 package net.nanopay.invoice.test;
 
 import foam.core.X;
-import foam.dao.*;
+import foam.dao.DAO;
+import foam.dao.GUIDDAO;
+import foam.dao.MDAO;
+import foam.dao.SequenceNumberDAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
-import net.nanopay.invoice.AbliiBillingCron;
+import net.nanopay.invoice.BillingInvoicesCron;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
@@ -22,12 +25,10 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Date;
 
-import static foam.mlang.MLang.*;
-
-public class AbliiBillingCronTest extends Test {
+public class BillingInvoicesCronTest extends Test {
   private Business owner, payer, payee;
-  private Account feeAccount, payerAccount, payeeAccount, payeeUSDAccount;
-  private DAO invoiceDAO, localAccountDAO, localBusinessDAO, localTransactionDAO, ascendantFXUserDAO;
+  private Account ownerAccount, payerAccount, payeeAccount, payeeUSDAccount;
+  private DAO localAccountDAO, localBusinessDAO, localTransactionDAO, ascendantFXUserDAO;
 
   public void runTest(X x) {
     x = setUpDAOs(x);
@@ -57,7 +58,6 @@ public class AbliiBillingCronTest extends Test {
     x = x.put("localTransactionDAO", new GUIDDAO(new MDAO(Transaction.getOwnClassInfo())));
     x = x.put("ascendantFXUserDAO", new SequenceNumberDAO(new MDAO(AscendantFXUser.getOwnClassInfo())));
 
-    invoiceDAO          = (DAO) x.get("invoiceDAO");
     localAccountDAO     = (DAO) x.get("localAccountDAO");
     localBusinessDAO    = (DAO) x.get("localBusinessDAO");
     localTransactionDAO = (DAO) x.get("localTransactionDAO");
@@ -72,7 +72,7 @@ public class AbliiBillingCronTest extends Test {
   }
 
   private void setUpAccounts(X x) {
-    feeAccount = createAccount(x, owner, "CAD");
+    ownerAccount = createAccount(x, owner, "CAD");
     payerAccount = createAccount(x, payer, "CAD");
     payeeAccount = createAccount(x, payee, "CAD");
     payeeUSDAccount = createAccount(x, payee, "USD");
@@ -274,7 +274,7 @@ public class AbliiBillingCronTest extends Test {
   }
 
   private Invoice generateBillingInvoice(X x, LocalDate startDate, LocalDate endDate) {
-    AbliiBillingCron cron = new AbliiBillingCron(feeAccount, startDate, endDate);
+    BillingInvoicesCron cron = new BillingInvoicesCron(startDate, endDate, ownerAccount);
     cron.execute(x);
     return cron.getInvoiceByPayer().get(payer.getId());
   }

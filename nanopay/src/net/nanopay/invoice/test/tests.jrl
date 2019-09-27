@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.invoice.test.AbliiBillingCronTest", "id":"AbliiBillingCronTest"})
+p({"class":"net.nanopay.invoice.test.BillingInvoicesCronTest", "id":"BillingInvoicesCronTest"})

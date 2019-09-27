@@ -37,7 +37,7 @@ import static foam.mlang.MLang.*;
  * No charge for domestic transactions during the first three months based on
  * https://docs.google.com/spreadsheets/d/1FJLpasAJUDI-qvoS_RvAvyvw5kbHaUT_nsoX72xZTw4/edit#gid=1070899663
  */
-public class AbliiBillingCron implements ContextAgent {
+public class BillingInvoicesCron implements ContextAgent {
   /**
    * Due in business days for invoice dueDate and paymentDate
    */
@@ -54,9 +54,9 @@ public class AbliiBillingCron implements ContextAgent {
   private final LocalDate endDate_;
 
   /**
-   * Fee account
+   * Destination account
    */
-  private final Account feeAccount_;
+  private final Account destinationAccount_;
 
   /**
    * Invoice by payer/business
@@ -74,10 +74,10 @@ public class AbliiBillingCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
-  public AbliiBillingCron(Account feeAccount, LocalDate startDate, LocalDate endDate) {
-    feeAccount_ = feeAccount;
+  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
     startDate_ = startDate;
     endDate_ = endDate;
+    destinationAccount_ = destinationAccount;
   }
 
   public Map<Long, Invoice> getInvoiceByPayer() {
@@ -111,9 +111,9 @@ public class AbliiBillingCron implements ContextAgent {
             .setDueDate(paymentDate)
             .setPayerId(payerId)
             .setSourceCurrency(transaction.getSourceCurrency())
-            .setDestinationAccount(feeAccount_.getId())
-            .setPayeeId(feeAccount_.getOwner())
-            .setDestinationCurrency(feeAccount_.getDenomination())
+            .setDestinationAccount(destinationAccount_.getId())
+            .setPayeeId(destinationAccount_.getOwner())
+            .setDestinationCurrency(destinationAccount_.getDenomination())
             .build();
           invoiceByPayer_.put(payerId, invoice);
           invoiceLineItemByPayer_.put(payerId, new ArrayList<>());
