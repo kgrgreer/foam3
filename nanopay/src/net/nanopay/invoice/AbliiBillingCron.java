@@ -156,8 +156,8 @@ public class AbliiBillingCron implements ContextAgent {
 
     if ( ! transactionCreated.isBefore(jan1_2020) ) return false;
     if ( ! isDomestic(transaction) ) {
-      return businessCreated.isBefore(feb1_2019)
-        && isAscendantFXUser
+      return isAscendantFXUser
+        && businessCreated.isBefore(sep16_2019)
         && transactionCreated.isBefore(oct1_2019);
     }
 
