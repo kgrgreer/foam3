@@ -37,10 +37,17 @@ public class AbliiBillingCronTest extends Test {
     resetTransactions(x);
     Test_BusinessCreatedBeforeFeb2019(x);
 
-//    resetTransactions(x);
-//    Test_BusinessCreatedOnJuly2019(x);
-//    ...
-//    Test_BusinessCreatedOnSept16_2019(x);
+    resetTransactions(x);
+    Test_BusinessCreatedBeforeJuly2019(x);
+
+    resetTransactions(x);
+    Test_BusinessCreatedBeforeSept2019(x);
+
+    resetTransactions(x);
+    Test_BusinessCreatedBeforeSept162019(x);
+
+    resetTransactions(x);
+    Test_BusinessCreatedAfterSept152019(x);
   }
 
   private X setUpDAOs(X x) {
@@ -105,6 +112,150 @@ public class AbliiBillingCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+
+    test(true, "Billing after promotion");
+    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
+    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 75 + 75 + 75
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge both domestic and international fees");
+  }
+
+  private void Test_BusinessCreatedBeforeJuly2019(X x) {
+    print("Business created before July 2019");
+    updatePayerCreated(x, LocalDate.of(2019, 6, 1));
+
+    test(true, "Billing for September 2019");
+    YearMonth sept_2019 = YearMonth.of(2019, 9);
+    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for domestic payments");
+
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for international payment");
+
+    // AscendantFX user
+    ascendantFXUserDAO.put(
+      new AscendantFXUser.Builder(x)
+        .setUser(payer.getId())
+        .build()
+    );
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+
+    test(true, "Billing after promotion");
+    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
+    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 75 + 75 + 75
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge both domestic and international fees");
+  }
+
+  private void Test_BusinessCreatedBeforeSept2019(X x) {
+    print("Business created before September 2019");
+    updatePayerCreated(x, LocalDate.of(2019, 8, 15));
+
+    test(true, "Billing for September 2019");
+    YearMonth sept_2019 = YearMonth.of(2019, 9);
+    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for domestic payments");
+
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for international payment");
+
+    // AscendantFX user
+    ascendantFXUserDAO.put(
+      new AscendantFXUser.Builder(x)
+        .setUser(payer.getId())
+        .build()
+    );
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+
+    test(true, "Billing after promotion");
+    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
+    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 0 + 75 + 75
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge both domestic and international fees");
+  }
+
+  private void Test_BusinessCreatedBeforeSept162019(X x) {
+    print("Business created before September 2019");
+    updatePayerCreated(x, LocalDate.of(2019, 9, 12));
+
+    test(true, "Billing for September 2019");
+    YearMonth sept_2019 = YearMonth.of(2019, 9);
+    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for domestic payments");
+
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+        && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for international payment");
+
+    // AscendantFX user
+    ascendantFXUserDAO.put(
+      new AscendantFXUser.Builder(x)
+        .setUser(payer.getId())
+        .build()
+    );
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+
+    test(true, "Billing after promotion");
+    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
+    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 0 + 0 + 75
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge both domestic and international fees");
+  }
+
+  private void Test_BusinessCreatedAfterSept152019(X x) {
+    print("Business created before September 2019");
+    updatePayerCreated(x, LocalDate.of(2019, 9, 16));
+
+    test(true, "Billing for September 2019");
+    YearMonth sept_2019 = YearMonth.of(2019, 9);
+    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 150
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for domestic payments");
+
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 650
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for international payment");
+
+    // AscendantFX user
+    ascendantFXUserDAO.put(
+      new AscendantFXUser.Builder(x)
+        .setUser(payer.getId())
+        .build()
+    );
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 650, "Charge fee (domestic + international) for AscendantFX user");
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
