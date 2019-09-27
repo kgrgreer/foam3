@@ -22,4 +22,3 @@ p({"class":"net.nanopay.payment.Institution", "id":21,  "name":"ICICI Bank Limit
 p({"class":"net.nanopay.payment.Institution", "id":22,  "name":"IndusInd Bank",       "abbreviation":"INBD",   "institutionNumber":"", "countryId":"IN"})
 p({"class":"net.nanopay.payment.Institution", "id":23,  "name":"Kotak Mahindra Bank", "abbreviation":"KKBK",   "institutionNumber":"", "countryId":"IN"})
 p({"class":"net.nanopay.payment.Institution", "id":35,  "name":"Alterna Savings and Credit Union", "abbreviation":"Alterna",   "institutionNumber":"842", "countryId":"CA"})
-p({"class":"net.nanopay.payment.Institution","id":100,  "name":"00000","institutionNumber":"n/a"})

@@ -214,8 +214,9 @@ foam.CLASS({
       }
 
       try {
-        let responseItem = this.PlaidResponseItem.create();
-        let response = await this.plaidService.startIntegration(null,
+        let responseItem = this.PlaidResponseItem.create();        
+        let response = await this.plaidService.startIntegration
+          ( null,
             this.PlaidPublicToken.create({
               userId: this.user.id,
               publicToken: publicToken,
@@ -228,7 +229,6 @@ foam.CLASS({
         responseItem.InstitutionId = response.InstitutionId;
         responseItem.accountDetail = response.accountDetail;
         responseItem.account = response.account;
-        responseItem.account.institution = 100;
         responseItem.plaidItem = response.plaidItem;
         responseItem.plaidError = response.plaidError;
 
