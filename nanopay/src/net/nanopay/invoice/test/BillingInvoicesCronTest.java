@@ -112,6 +112,7 @@ public class BillingInvoicesCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+    ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
@@ -137,9 +138,9 @@ public class BillingInvoicesCronTest extends Test {
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "No fee charge for international payment");
+    test(invoice.getAmount() == 500
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for international payment immediately");
 
     // AscendantFX user
     ascendantFXUserDAO.put(
@@ -149,6 +150,7 @@ public class BillingInvoicesCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+    ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
@@ -174,9 +176,9 @@ public class BillingInvoicesCronTest extends Test {
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "No fee charge for international payment");
+    test(invoice.getAmount() == 500
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for international payment immediately");
 
     // AscendantFX user
     ascendantFXUserDAO.put(
@@ -186,6 +188,7 @@ public class BillingInvoicesCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+    ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
@@ -211,9 +214,9 @@ public class BillingInvoicesCronTest extends Test {
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "No fee charge for international payment");
+    test(invoice.getAmount() == 500
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for international payment immediately");
 
     // AscendantFX user
     ascendantFXUserDAO.put(
@@ -223,6 +226,7 @@ public class BillingInvoicesCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
+    ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
@@ -250,7 +254,7 @@ public class BillingInvoicesCronTest extends Test {
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 650
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
-      , "Charge fee for international payment");
+      , "Charge fee for international payment immediately");
 
     // AscendantFX user
     ascendantFXUserDAO.put(
@@ -260,6 +264,7 @@ public class BillingInvoicesCronTest extends Test {
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
     test(invoice.getAmount() == 650, "Charge fee (domestic + international) for AscendantFX user");
+    ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
     LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
