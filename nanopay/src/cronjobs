@@ -35,12 +35,17 @@ p({
      */
     DESTINATION_ACCOUNT_ID = 2;
 
+    /**
+     * Configure the number of business days due before processing the invoices
+     */
+    DUE_IN = 5;
+
     billingMonth = YearMonth.now().minusMonths(1);
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
     destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
-    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount);
+    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount, DUE_IN);
     cron.execute(x);
     print("done");
   """
