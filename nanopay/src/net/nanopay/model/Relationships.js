@@ -21,7 +21,10 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        if ( branch ) self.add(branch.branchId);
+        if ( branch ) {
+          self.add(branch.branchId);
+          self.tooltip = branch.branchId;
+        }
       });
     }
   }
@@ -50,11 +53,14 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
+            var displayinstitution;
             if ( institution.institutionNumber !== "" ) {
-              self.add(institution.institutionNumber);
+              displayinstitution = institution.institutionNumber;
             }  else {
-              self.add(institution.name);
+              displayinstitution = institution.name;
             }
+            self.add(displayinstitution);
+            self.tooltip  = displayinstitution;
           }
         }).catch( function( error ) {
           self.add('N/A');
