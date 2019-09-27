@@ -26,14 +26,21 @@ p({
   "id": "Monthly Billing Invoices for Ablii",
   "description": "Send billing invoices to Ablii users",
   "code": """
+    import foam.dao.DAO;
     import java.time.YearMonth;
-    import net.nanopay.invoice.AbliiBillingCron;
+    import net.nanopay.invoice.BillingInvoicesCron;
+
+    /**
+     * Configure destination account for billing invoices
+     */
+    DESTINATION_ACCOUNT_ID = 2;
 
     billingMonth = YearMonth.now().minusMonths(1);
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
+    destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
-    cron = new AbliiBillingCron(feeAccount, startDate, endDate);
+    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount);
     cron.execute(x);
     print("done");
   """
