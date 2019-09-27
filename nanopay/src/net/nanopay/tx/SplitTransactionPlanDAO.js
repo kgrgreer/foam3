@@ -64,7 +64,7 @@ foam.CLASS({
         Transaction t1 = new Transaction.Builder(x).build();
         t1.copyFrom(request);
         // Get Payer Digital Account to fufil CASH-IN
-        t1.setDestinationAccount(sourceDigitalaccount.getId());
+        t1.setDestinationAccount(destinationDigitalaccount.getId());
         t1.setDestinationCurrency(t1.getSourceCurrency());
         q1.setRequestTransaction(t1);
         TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
@@ -167,7 +167,7 @@ foam.CLASS({
         t1.copyFrom(request);
         t1.setNext(null);
         // Get Payer Digital Account to fufil CASH-IN
-        t1.setDestinationAccount(sourceDigitalAccount.getId());
+        t1.setDestinationAccount(destinationDigitalAccount.getId());
         q1.setRequestTransaction(t1);
         TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
         // Split 2: ADigital -> BDigital
