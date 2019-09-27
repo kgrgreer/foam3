@@ -8,11 +8,14 @@ import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankHolidayService;
+import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -36,11 +39,6 @@ import static foam.mlang.MLang.*;
  */
 public class AbliiBillingCron implements ContextAgent {
   /**
-   * Nanopay fee account id used for billing
-   */
-  private final long NANOPAY_FEE_ACCOUNT_ID = 2;
-
-  /**
    * Due in business days for invoice dueDate and paymentDate
    */
   private final int DUE_IN_BUSINESS_DAYS = 5;
@@ -54,6 +52,11 @@ public class AbliiBillingCron implements ContextAgent {
    * End date of the billing
    */
   private final LocalDate endDate_;
+
+  /**
+   * Fee account
+   */
+  private final Account feeAccount_;
 
   /**
    * Invoice by payer/business
@@ -71,23 +74,24 @@ public class AbliiBillingCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
-  public AbliiBillingCron(LocalDate startDate, LocalDate endDate) {
+  public AbliiBillingCron(Account feeAccount, LocalDate startDate, LocalDate endDate) {
+    feeAccount_ = feeAccount;
     startDate_ = startDate;
     endDate_ = endDate;
   }
 
+  public Map<Long, Invoice> getInvoiceByPayer() {
+    return invoiceByPayer_;
+  }
+
   @Override
   public void execute(X x) {
-    DAO accountDAO = (DAO) x.get("localAccountDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    Account feeAccount = (Account) accountDAO.find(NANOPAY_FEE_ACCOUNT_ID);
+    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
     Date issueDate = new Date();
 
     transactionDAO.where(AND(
-      OR(
-        INSTANCE_OF(net.nanopay.tx.SummaryTransaction.class),
-        INSTANCE_OF(net.nanopay.fx.FXSummaryTransaction.class)
-      ),
+      EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
     )).select(new AbstractSink() {
@@ -96,6 +100,8 @@ public class AbliiBillingCron implements ContextAgent {
         Account sourceAccount = transaction.findSourceAccount(x);
         Business business = (Business) sourceAccount.findOwner(x);
         long payerId = business.getId();
+        boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
+          EQ(AscendantFXUser.USER, payerId));
         Invoice invoice = invoiceByPayer_.get(payerId);
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, business.getAddress(), issueDate);
@@ -105,9 +111,9 @@ public class AbliiBillingCron implements ContextAgent {
             .setDueDate(paymentDate)
             .setPayerId(payerId)
             .setSourceCurrency(transaction.getSourceCurrency())
-            .setDestinationAccount(feeAccount.getId())
-            .setPayeeId(feeAccount.getOwner())
-            .setDestinationCurrency(feeAccount.getDenomination())
+            .setDestinationAccount(feeAccount_.getId())
+            .setPayeeId(feeAccount_.getOwner())
+            .setDestinationCurrency(feeAccount_.getDenomination())
             .build();
           invoiceByPayer_.put(payerId, invoice);
           invoiceLineItemByPayer_.put(payerId, new ArrayList<>());
@@ -116,7 +122,7 @@ public class AbliiBillingCron implements ContextAgent {
         List<InvoiceLineItem> invoiceLineItems = invoiceLineItemByPayer_.get(payerId);
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
           if ( lineItem instanceof InvoicedFeeLineItem ) {
-            long amount = check90DaysPromotion(business, transaction) ? 0L : lineItem.getAmount();
+            long amount = check90DaysPromotion(business, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")
@@ -137,7 +143,7 @@ public class AbliiBillingCron implements ContextAgent {
     return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
   }
 
-  private boolean check90DaysPromotion(Business business, Transaction transaction) {
+  private boolean check90DaysPromotion(Business business, boolean isAscendantFXUser, Transaction transaction) {
     LocalDate businessCreated = toLocalDate(business.getCreated());
     LocalDate transactionCreated = toLocalDate(transaction.getCreated());
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
@@ -151,6 +157,7 @@ public class AbliiBillingCron implements ContextAgent {
     if ( ! transactionCreated.isBefore(jan1_2020) ) return false;
     if ( ! isDomestic(transaction) ) {
       return businessCreated.isBefore(feb1_2019)
+        && isAscendantFXUser
         && transactionCreated.isBefore(oct1_2019);
     }
 
@@ -189,16 +196,16 @@ public class AbliiBillingCron implements ContextAgent {
    */
   private void putInvoices(X x) {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    for ( Map.Entry<Long, Invoice> entry : invoiceByPayer_.entrySet() ) {
-      Invoice invoice = entry.getValue();
+    for ( Invoice invoice : invoiceByPayer_.values() ) {
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
       invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
-      long totalAmount = 0;
-      for ( InvoiceLineItem lineItem : lineItems ) {
-        totalAmount += lineItem.getAmount();
+      long amount = lineItems.stream().mapToLong(li -> li.getAmount())
+        .reduce(0, Long::sum);
+      if ( amount == 0 ) {
+        invoice.setPaymentMethod(PaymentStatus.NANOPAY);
       }
-      invoice.setAmount(totalAmount);
-      invoiceDAO.put(invoice);
+      invoice.setAmount(amount);
+      invoiceDAO.put_(x, invoice);
     }
   }
 }
