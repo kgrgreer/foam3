@@ -1,19 +1,21 @@
 package net.nanopay.invoice.test;
 
 import foam.core.X;
-import foam.dao.DAO;
+import foam.dao.*;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import net.nanopay.account.Account;
-import net.nanopay.admin.model.ComplianceStatus;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.bank.CABankAccount;
+import net.nanopay.account.DigitalAccount;
+import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.AbliiBillingCron;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
-import net.nanopay.tx.AbliiTransaction;
+import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -23,223 +25,147 @@ import java.util.Date;
 import static foam.mlang.MLang.*;
 
 public class AbliiBillingCronTest extends Test {
-  private Address ca_ON;
-  private Address us_NY;
-  private Business payer, payee;
-  private BankAccount payerBankAccount;
-  private final long NANOPAY_FEE_ACCOUNT_ID = 2;
+  private Business owner, payer, payee;
+  private Account feeAccount, payerAccount, payeeAccount, payeeUSDAccount;
+  private DAO invoiceDAO, localAccountDAO, localBusinessDAO, localTransactionDAO, ascendantFXUserDAO;
 
   public void runTest(X x) {
-    setUpAddress(x);
+    x = setUpDAOs(x);
     setUpBusinesses(x);
-    testSept(x);
-    testOct(x);
-//    testNov(x);
-//    testDec(x);
+    setUpAccounts(x);
+
+    resetTransactions(x);
+    Test_BusinessCreatedBeforeFeb2019(x);
+
+//    resetTransactions(x);
+//    Test_BusinessCreatedOnJuly2019(x);
+//    ...
+//    Test_BusinessCreatedOnSept16_2019(x);
   }
 
-  /**
-   * The billing month is September 2019.
-   */
-  private void testSept(X x) {
-    YearMonth billingMonth = YearMonth.of(2019, 9);
-    LocalDate startDate = billingMonth.atDay(1);
-    LocalDate endDate = billingMonth.atEndOfMonth();
-    AbliiBillingCron cron = new AbliiBillingCron(startDate, endDate);
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO accountDAO = (DAO) x.get("localAccountDAO");
-    Account feeAccount = (Account) accountDAO.find(NANOPAY_FEE_ACCOUNT_ID);
-    Invoice invoice;
+  private X setUpDAOs(X x) {
+    x = x.put("localUserDAO", new SequenceNumberDAO(new MDAO(User.getOwnClassInfo())));
+    x = x.put("invoiceDAO", new SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo())));
+    x = x.put("localAccountDAO", new SequenceNumberDAO(new MDAO(Account.getOwnClassInfo())));
+    x = x.put("localTransactionDAO", new GUIDDAO(new MDAO(Transaction.getOwnClassInfo())));
+    x = x.put("ascendantFXUserDAO", new SequenceNumberDAO(new MDAO(AscendantFXUser.getOwnClassInfo())));
 
-    // business created before 2019.2
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 2, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "September Billing invoice amount.");
-
-    // business created before 2019.7
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 7, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "September Billing invoice amount.");
-
-    // business created before 2019.9
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 9, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "September Billing invoice amount.");
-
-    // business created before 2019.9.16
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    createAbliiTransaction(x, billingMonth.atDay(20));
-    updatePayerCreatedBefore(x, 2019, 9, 16);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "September Billing invoice amount.");
-
-    // business created before 2019.10.1
-    createAbliiTransaction(x, billingMonth.atDay(20));
-    updatePayerCreatedBefore(x, 2019, 9, 20);
-    (new AbliiBillingCron(billingMonth.atDay(19), endDate)).execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 75, "September Billing invoice amount.");
+    invoiceDAO          = (DAO) x.get("invoiceDAO");
+    localAccountDAO     = (DAO) x.get("localAccountDAO");
+    localBusinessDAO    = (DAO) x.get("localBusinessDAO");
+    localTransactionDAO = (DAO) x.get("localTransactionDAO");
+    ascendantFXUserDAO  = (DAO) x.get("ascendantFXUserDAO");
+    return x;
   }
 
-  /**
-   * The billing month is October 2019.
-   */
-  private void testOct(X x) {
-    YearMonth billingMonth = YearMonth.of(2019, 10);
-    LocalDate startDate = billingMonth.atDay(1);
-    LocalDate endDate = billingMonth.atEndOfMonth();
-    AbliiBillingCron cron = new AbliiBillingCron(startDate, endDate);
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    DAO accountDAO = (DAO) x.get("localAccountDAO");
-    Account feeAccount = (Account) accountDAO.find(NANOPAY_FEE_ACCOUNT_ID);
-    Invoice invoice;
-
-    // business created before 2019.2
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 2, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "October Billing invoice amount.");
-
-    // business created before 2019.7
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 7, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "October Billing invoice amount.");
-
-    // business created before 2019.9
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 9, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "October Billing invoice amount.");
-
-    // business created before 2019.9.16
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 9, 16);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 0, "October Billing invoice amount.");
-
-    // business created before 2019.10.1
-    createAbliiTransaction(x, billingMonth.atDay(5));
-    updatePayerCreatedBefore(x, 2019, 10, 1);
-    cron.execute(x);
-    invoice = (Invoice) invoiceDAO.find(
-      AND(
-        EQ(Invoice.PAYER_ID, payer.getId()),
-        EQ(Invoice.PAYEE_ID, feeAccount.getOwner())));
-    test(invoice.getAmount() == 75, "October Billing invoice amount.");
+  private void setUpBusinesses(X x) {
+    owner = createBusiness(x, "Fee owner");
+    payer = createBusiness(x, "Payer business");
+    payee = createBusiness(x, "Payee business");
   }
 
-  private void createAbliiTransaction(X x, LocalDate created) {
-    DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    Invoice invoice = (Invoice) invoiceDAO.put(
-      new Invoice.Builder(x)
-        .setPayerId(payer.getId())
-        .setPayeeId(payee.getId())
-        .setAmount(1000L)
+  private void setUpAccounts(X x) {
+    feeAccount = createAccount(x, owner, "CAD");
+    payerAccount = createAccount(x, payer, "CAD");
+    payeeAccount = createAccount(x, payee, "CAD");
+    payeeUSDAccount = createAccount(x, payee, "USD");
+  }
+
+  private void resetTransactions(X x) {
+    localTransactionDAO.removeAll();
+    createTransaction(x, LocalDate.of(2019, 9, 15), payeeAccount, 75);
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeAccount, 75);
+    createTransaction(x, LocalDate.of(2019, 10, 1), payeeAccount, 75);
+    createTransaction(x, LocalDate.of(2019, 12, 1), payeeAccount, 75);
+    createTransaction(x, LocalDate.of(2020, 1, 1), payeeAccount, 75);
+  }
+
+  private void Test_BusinessCreatedBeforeFeb2019(X x) {
+    print("Business created before Feb 2019");
+    updatePayerCreated(x, LocalDate.of(2019, 1, 1));
+
+    test(true, "Billing for September 2019");
+    YearMonth sept_2019 = YearMonth.of(2019, 9);
+    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0
+      && invoice.getStatus() == InvoiceStatus.PAID
+      , "No fee charge for domestic payments");
+
+    createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 500
+      && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge fee for international payment");
+
+    // AscendantFX user
+    ascendantFXUserDAO.put(
+      new AscendantFXUser.Builder(x)
+        .setUser(payer.getId())
         .build()
-    ).fclone();
+    );
+    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
 
-    DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
-    Transaction transaction =
-      new AbliiTransaction.Builder(x)
-        .setInvoiceId(invoice.getId())
-        .setPayerId(payer.getId())
-        .setPayeeId(payee.getId())
-        .setSourceAccount(payerBankAccount.getId())
-        .setAmount(invoice.getAmount())
-        .build();
-    transaction = (Transaction) localTransactionDAO.put(transaction).fclone();
-    transaction.setCreated(getDate(created));
-    localTransactionDAO.put(transaction);
+    test(true, "Billing after promotion");
+    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
+    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 75 + 75 + 75
+        && invoice.getStatus() == InvoiceStatus.SCHEDULED
+      , "Charge both domestic and international fees");
   }
 
-  private void updatePayerCreatedBefore(X x, int year, int month, int day) {
-    LocalDate localDate = LocalDate.of(year, month, day).minusDays(1);
-    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+  private Invoice generateMonthlyBillingInvoice(X x, YearMonth billingMonth) {
+    LocalDate startDate = billingMonth.atDay(1);
+    LocalDate endDate = billingMonth.atEndOfMonth();
+    return generateBillingInvoice(x, startDate, endDate);
+  }
+
+  private Invoice generateBillingInvoice(X x, LocalDate startDate, LocalDate endDate) {
+    AbliiBillingCron cron = new AbliiBillingCron(feeAccount, startDate, endDate);
+    cron.execute(x);
+    return cron.getInvoiceByPayer().get(payer.getId());
+  }
+
+  private void createTransaction(X x, LocalDate created, Account payeeAccount, long feeAmount) {
+    localTransactionDAO.put_(x,
+      new Transaction.Builder(x)
+        .setSourceAccount(payerAccount.getId())
+        .setSourceCurrency(payerAccount.getDenomination())
+        .setDestinationAccount(payeeAccount.getId())
+        .setDestinationCurrency(payeeAccount.getDenomination())
+        .setAmount(1000L)
+        .setCreated(getDate(created))
+        .setLineItems(new TransactionLineItem[] {
+          new InvoicedFeeLineItem.Builder(x)
+            .setAmount(feeAmount)
+            .setCurrency(payerAccount.getDenomination())
+            .build() })
+        .setStatus(TransactionStatus.COMPLETED)
+        .build()
+    );
+  }
+
+  private void updatePayerCreated(X x, LocalDate localDate) {
     payer.setCreated(getDate(localDate));
     payer = (Business) localBusinessDAO.put(payer).fclone();
   }
 
-  private void setUpAddress(X x) {
-    ca_ON = new Address.Builder(x)
-      .setCountryId("CA")
-      .setRegionId("ON")
-      .build();
-    us_NY = new Address.Builder(x)
-      .setCountryId("US")
-      .setRegionId("NY")
-      .build();
+  private Business createBusiness(X x, String businessName) {
+    return (Business) localBusinessDAO.put(
+      new Business.Builder(x)
+        .setBusinessName(businessName)
+        .setAddress(new Address())
+        .build()
+    ).fclone();
   }
 
-  private void setUpBusinesses(X x) {
-    payer = findOrCreateBusiness(x, "payer@test.com");
-    payerBankAccount = setUpBankAccountForBusiness(x, payer, "11111");
-
-    payee = findOrCreateBusiness(x, "payee@test.com");
-    setUpBankAccountForBusiness(x, payee, "22222");
-  }
-
-  private Business findOrCreateBusiness(X x, String email) {
-    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-    Business business = (Business) localBusinessDAO.find(EQ(Business.EMAIL, email));
-    if ( business == null ) {
-      business = new Business.Builder(x)
-        .setEmail(email)
-        .setBusinessName("AbliiBillingCronTest Business")
-        .setAddress(ca_ON)
-        .build();
-    }
-    business.setEmailVerified(true);
-    business.setCompliance(ComplianceStatus.PASSED);
-    return (Business) localBusinessDAO.put(business).fclone();
-  }
-
-  private BankAccount setUpBankAccountForBusiness(X x, Business business, String accountNumber) {
-    return (BankAccount) business.getAccounts(x).put(
-      new CABankAccount.Builder(x)
-        .setAccountNumber(accountNumber)
-        .setName("AbliiBillingCronTest Account")
-        .setBranchId("00000")
-        .setInstitutionNumber("000")
-        .setStatus(BankAccountStatus.VERIFIED)
+  private Account createAccount(X x, Business business, String denomination) {
+    return (Account) localAccountDAO.put(
+      new DigitalAccount.Builder(x)
+        .setOwner(business.getId())
+        .setDenomination(denomination)
         .build()
     ).fclone();
   }
