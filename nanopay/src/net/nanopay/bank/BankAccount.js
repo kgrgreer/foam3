@@ -9,6 +9,11 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
+  imports: [
+    'institutionDAO',
+    'branchDAO'
+  ],
+
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -84,29 +89,37 @@ foam.CLASS({
       `,
       tableCellFormatter: function(_, obj) {
         this.start()
-          .add(obj.slot((institutionNumber) => {
-            if ( institutionNumber ) {
-              return ' ' + obj.cls_.getAxiomByName('institutionNumber').label + ' ';
-            }
-          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+          .add(obj.slot((institution, institutionDAO) => {
+            return institutionDAO.find(institution).then((result) => {
+              if ( result ) {
+                return ' ' + obj.cls_.getAxiomByName('institution').label + ' ';
+              }
+            });
+          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
         .end()
-        .add(obj.slot((institutionNumber) => {
-          if ( institutionNumber ) {
-            return institutionNumber + ' |';
-          }
+        .add(obj.slot((institution, institutionDAO) => {
+          return institutionDAO.find(institution).then((result) => {
+            if ( result ) {
+              return result.name + ' |';
+            }
+          });
         }))
 
         .start()
-          .add(obj.slot((branchId) => {
-            if ( branchId ) {
-              return ' ' + obj.cls_.getAxiomByName('branchId').label + ' ';
-            }
-          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return ' ' + obj.cls_.getAxiomByName('branch').label + ' ';
+              }
+            });
+          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
         .end()
-        .add(obj.slot((branchId) => {
-          if ( branchId ) {
-            return branchId + ' |';
-          }
+        .add(obj.slot((branch, branchDAO) => {
+          return branchDAO.find(branch).then((result) => {
+            if ( result ) {
+              return result.branchId + ' |';
+            }
+          });
         }))
 
         .start()
@@ -114,15 +127,15 @@ foam.CLASS({
             if ( accountNumber ) {
               return ' ' + obj.cls_.getAxiomByName('accountNumber').label + ' ';
             }
-          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
         .end()
         .add(obj.slot((accountNumber) => {
           if ( accountNumber ) {
-            return accountNumber;
+            return '***' + accountNumber.substring(accountNumber.length - 4, accountNumber.length);
           }
         }));
       },
-      tableWidth: 400
+      tableWidth: 500
     },
     {
       class: 'foam.core.Enum',
