@@ -80,8 +80,7 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
-      visibility: 'HIDDEN',
-      value: 'US0000000'
+      visibility: 'HIDDEN'
     },
     {
       name: 'denomination',

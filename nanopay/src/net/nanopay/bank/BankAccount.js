@@ -75,6 +75,56 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((institutionNumber) => {
+            if ( institutionNumber ) {
+              return ' ' + obj.cls_.getAxiomByName('institutionNumber').label + ' ';
+            }
+          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+        .end()
+        .add(obj.slot((institutionNumber) => {
+          if ( institutionNumber ) {
+            return institutionNumber + ' |';
+          }
+        }))
+
+        .start()
+          .add(obj.slot((branchId) => {
+            if ( branchId ) {
+              return ' ' + obj.cls_.getAxiomByName('branchId').label + ' ';
+            }
+          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+        .end()
+        .add(obj.slot((branchId) => {
+          if ( branchId ) {
+            return branchId + ' |';
+          }
+        }))
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+            if ( accountNumber ) {
+              return ' ' + obj.cls_.getAxiomByName('accountNumber').label + ' ';
+            }
+          })).style({ 'font-weight' : '500', 'white-space': 'pre-wrap' })
+        .end()
+        .add(obj.slot((accountNumber) => {
+          if ( accountNumber ) {
+            return accountNumber;
+          }
+        }));
+      },
+      tableWidth: 400
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
