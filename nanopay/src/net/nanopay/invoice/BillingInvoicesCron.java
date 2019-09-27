@@ -139,7 +139,8 @@ public class BillingInvoicesCron implements ContextAgent {
     putInvoices(x);
   }
 
-  // QUESTION: Can isDomestic a transient property on Transaction?
+  // Assume domestic transaction when sourceCurrency == destinationCurrency
+  // TODO: use country corridor to determine domestic/international transaction
   private boolean isDomestic(Transaction transaction) {
     return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
   }
