@@ -167,15 +167,16 @@ public class BillingInvoicesCronTest extends Test {
     print("Business created between July 1 and August 31 in 2019");
     updatePayerCreated(x, LocalDate.of(2019, 8, 15));
 
-    test(true, "Billing for September 2019");
-    YearMonth sept_2019 = YearMonth.of(2019, 9);
-    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(true, "Billing from September to November 2019");
+    LocalDate sept1_2019 = LocalDate.of(2019, 9, 1);
+    LocalDate nov30_2019 = LocalDate.of(2019, 11, 30);
+    Invoice invoice = generateBillingInvoice(x, sept1_2019, nov30_2019);
     test(invoice.getAmount() == 0
         && invoice.getStatus() == InvoiceStatus.PAID
       , "No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
-    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    invoice = generateBillingInvoice(x, sept1_2019, nov30_2019);
     test(invoice.getAmount() == 500
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge fee for international payment immediately");
@@ -186,16 +187,16 @@ public class BillingInvoicesCronTest extends Test {
         .setUser(payer.getId())
         .build()
     );
-    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    invoice = generateBillingInvoice(x, sept1_2019, nov30_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
     ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
-    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    LocalDate dec1_2019 = LocalDate.of(2019, 10, 1);
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
-    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
-    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
-    test(invoice.getAmount() == 500 + 0 + 75 + 75
+    createTransaction(x, dec1_2019, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, dec1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
     test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
@@ -205,15 +206,16 @@ public class BillingInvoicesCronTest extends Test {
     print("Business created between September 1 and September 15 in 2019");
     updatePayerCreated(x, LocalDate.of(2019, 9, 12));
 
-    test(true, "Billing for September 2019");
-    YearMonth sept_2019 = YearMonth.of(2019, 9);
-    Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    test(true, "Billing from September to December 2019");
+    LocalDate sept1_2019 = LocalDate.of(2019, 9, 1);
+    LocalDate dec31_2019 = LocalDate.of(2019, 12, 31);
+    Invoice invoice = generateBillingInvoice(x, sept1_2019, dec31_2019);
     test(invoice.getAmount() == 0
         && invoice.getStatus() == InvoiceStatus.PAID
       , "No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
-    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    invoice = generateBillingInvoice(x, sept1_2019, dec31_2019);
     test(invoice.getAmount() == 500
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge fee for international payment immediately");
@@ -224,16 +226,15 @@ public class BillingInvoicesCronTest extends Test {
         .setUser(payer.getId())
         .build()
     );
-    invoice = generateMonthlyBillingInvoice(x, sept_2019);
+    invoice = generateBillingInvoice(x, sept1_2019, dec31_2019);
     test(invoice.getAmount() == 0, "No fee charge (domestic + international) for AscendantFX user");
     ascendantFXUserDAO.removeAll();
 
     test(true, "Billing after promotion");
-    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
-    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
-    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
-    test(invoice.getAmount() == 500 + 0 + 0 + 75
+    createTransaction(x, jan1_2020, payeeUSDAccount, 500);
+    invoice = generateBillingInvoice(x, jan1_2020, jan1_2020);
+    test(invoice.getAmount() == 500 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
     test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
@@ -246,13 +247,13 @@ public class BillingInvoicesCronTest extends Test {
     test(true, "Billing for September 2019");
     YearMonth sept_2019 = YearMonth.of(2019, 9);
     Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 150
+    test(invoice.getAmount() == 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
-      , "Charge fee for domestic payments");
+      , "Charge fee for domestic payments immediately");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 650
+    test(invoice.getAmount() == 500 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge fee for international payment immediately");
 
@@ -263,15 +264,14 @@ public class BillingInvoicesCronTest extends Test {
         .build()
     );
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 650, "Charge fee (domestic + international) for AscendantFX user");
+    test(invoice.getAmount() == 500 + 75 + 75, "Charge fee (domestic + international) for AscendantFX user");
     ascendantFXUserDAO.removeAll();
 
-    test(true, "Billing after promotion");
-    LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
+    test(true, "Billing without promotion");
+    LocalDate sept1_2019 = LocalDate.of(2019, 9, 1);
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
-    createTransaction(x, oct1_2019, payeeUSDAccount, 500);
-    invoice = generateBillingInvoice(x, oct1_2019, jan1_2020);
-    test(invoice.getAmount() == 500 + 75 + 75 + 75
+    invoice = generateBillingInvoice(x, sept1_2019, jan1_2020);
+    test(invoice.getAmount() == 500 + 75 + 75 + 75 + 75 + 75
         && invoice.getStatus() == InvoiceStatus.SCHEDULED
       , "Charge both domestic and international fees");
     test(invoice.getPaymentDate().compareTo(new Date()) == 1, "Billing invoice payment date should be scheduled");
