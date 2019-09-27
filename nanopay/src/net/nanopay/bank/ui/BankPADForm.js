@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'auth',
     'countryDAO',
+    'userDAO',
     'user'
   ],
 
@@ -98,7 +99,7 @@ foam.CLASS({
     { name: 'LABEL_INSTITUTION', message: 'Institution #' },
     { name: 'LABEL_TRANSIT', message: 'Transit #' },
     { name: 'LABEL_ROUTING', message: 'Routing #' },
-    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AFEX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or AFEX (for international transactions) to withdraw from my (debit) account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit. I have agreed that we may reduce the standard period of pre-notification for variable amount PADs (Ablii Monthly Fee Invoice). We will send you notice of the amount of each Monthly Fee Invoice PAD five days before the PAD is due.' },
     { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
     { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation (for Canadian domestic transactions) or AFEX (for international transactions) or by visiting ' },
     { name: 'LINK', message: 'www.payments.ca' },
@@ -163,7 +164,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
       var self = this;
       this.nextLabel = this.ACCEPT;
@@ -178,7 +179,7 @@ foam.CLASS({
         this.viewData.agree3 = this.TC3;
       }
       this.viewData.user.address = this.user.address;
-
+      let updatedUser = await this.userDAO.find(this.user.id);
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
 
@@ -211,13 +212,7 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.AddressView',
             data: this.viewData.user.address,
             // Temporarily only allow businesses based in Canada for new users.
-            customCountryDAO: this.PromisedDAO.create({
-              promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                return hasPermission
-                  ? this.countryDAO.where(this.IN(this.Country.ID, ['CA', 'US']))
-                  : this.countryDAO.where(this.EQ(this.Country.ID, 'CA'));
-              })
-            })
+            customCountryDAO: updatedUser.address.countryId === 'CA' ? this.countryDAO.where(this.EQ(this.Country.ID, 'CA')) : this.countryDAO.where(this.EQ(this.Country.ID, 'US'))
           })
         .endContext()
 

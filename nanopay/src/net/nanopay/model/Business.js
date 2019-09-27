@@ -234,12 +234,11 @@ foam.CLASS({
       javaSetter: `setBusinessRegistrationNumber(val);`
     },
     {
-      class: 'StringArray',
+      class: 'FObjectArray',
       name: 'businessDirectors',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ArrayView'
-        };
+      of: 'net.nanopay.model.BusinessDirector',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView'
       }
     },
     {
@@ -431,10 +430,8 @@ foam.CLASS({
         var dDate = new Date(Date.now() + (1000*60*60*24*3));
         var url = window.location.origin
           + '/service/settlementReports?userId='+ this.id
-          + '&startDate='+ sDate
-          + '&endDate='+ dDate;
-
-        // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
+          + '&startDate=' // + sDate <- add(uncomment) to use above set dates.
+          + '&endDate='; // + dDate; <- add(uncomment) to use above set dates.
         window.location.assign(url);
       }
     }

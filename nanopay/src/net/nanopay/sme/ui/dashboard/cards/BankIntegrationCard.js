@@ -52,6 +52,10 @@ foam.CLASS({
     {
       name: 'SUBTITLE_LINKED',
       message: 'Connected to'
+    },
+    {
+      name: 'SUBTITLE_VERIFING',
+      message: 'We are reviewing your bank account'
     }
   ],
 
@@ -70,10 +74,13 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
+        if ( this.user.address.countryId === 'US' ) {
+          return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
+        }
         if ( isAccountThere && this.isVerified ) {
           var subtitle = this.SUBTITLE_LINKED + ' ';
           subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
-          subtitle += ' ****' + this.account.accountNumber.slice(-4)
+          subtitle += ' ****' + this.account.accountNumber.slice(-4);
           return subtitle;
         }
         return this.SUBTITLE_EMPTY;
@@ -102,7 +109,7 @@ foam.CLASS({
 
   methods: [
     async function getInstitution() {
-      if ( this.isAccountThere ) {      
+      if ( this.isAccountThere ) {
         this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
         let branch = await this.branchDAO.find(this.account.branch);
         let institution = await this.institutionDAO.find(branch.institution);
@@ -110,8 +117,8 @@ foam.CLASS({
           this.abbreviation = institution.abbreviation;
           this.bankName = institution.name;
         }
-      } 
-    }, 
+      }
+    },
 
     function initE() {
       this.getInstitution().then(() => {
@@ -121,7 +128,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : this.ADD_BANK
+              action: isAccountThere ? (this.user.address.countryId === 'US' ? this.VIEW_ACCOUNT  : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT)) : this.ADD_BANK
             }).end();
         }));
       })
@@ -138,7 +145,7 @@ foam.CLASS({
     },
     {
       name: 'verifyAccount',
-      label: 'Add',
+      label: 'Pending',
       code: function() {
         this.pushMenu('sme.main.banking');
       }

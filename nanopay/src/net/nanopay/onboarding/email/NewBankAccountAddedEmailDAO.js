@@ -46,28 +46,18 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
   
-      // Check 3: Doesn't send email if the status of the account isn't verified
-      if ( ! (BankAccountStatus.VERIFIED == account.getStatus()) ) {
-        return getDelegate().put_(x, obj);
-      }
-  
       // Gathering additional information
       BankAccount oldAccount = (BankAccount) find_(x, account.getId());
   
-      // Check 4: Under current implementation, BankAccount is added to dao prior verification so oldAccount should exist
-      if ( oldAccount == null ) {
-        return getDelegate().put_(x, obj);
-      }
-  
-      // Check 5: Don't send email if account has been previously verified
-      if ( oldAccount.getStatus() == account.getStatus() ) {
+      // Check 3: Don't send email if account has not changed status
+      if ( oldAccount != null && oldAccount.getStatus() == account.getStatus() ) {
         return getDelegate().put_(x, obj);
       }
   
       // Gathering additional information
       User owner = (User) account.findOwner(getX());
 
-      // Check 6: Confirm correct Bank Account properties set
+      // Check 4: Confirm correct Bank Account properties set
       if ( owner == null ) {
         String msg = String.format("Email meant for complaince team Error - account owner was null: Account name = %1$s", account.getName());
         ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), msg);
@@ -90,10 +80,10 @@ foam.CLASS({
       args.put("accId", account.getId());
 
       if ( owner instanceof Business &&  ((Business) owner).getOnboarded() ) {
-        args.put("title", "User added an Account & was previously onboarded");
+        args.put("title", "User added a (" + account.getStatus() + ") Account & was previously onboarded");
         args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
       } else {
-        args.put("title", "User has added a Bank Account");
+        args.put("title", "User has added a (" + account.getStatus() + ") Bank Account");
         args.put("subTitle1", "User(Account Owner) information: NOT ONBOARDED YET");
       }
 

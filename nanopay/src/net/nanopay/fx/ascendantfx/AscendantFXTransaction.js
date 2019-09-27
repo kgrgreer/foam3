@@ -113,6 +113,29 @@ foam.CLASS({
       `
     },
     {
+      name: 'findRootTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'transaction',
+          type: 'net.nanopay.tx.model.Transaction '
+        }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+      Transaction txn = transaction;
+      Transaction parent = txn;
+      while ( txn != null ) {
+        parent = txn;
+        txn = (Transaction) parent.findParent(x);
+      }
+      return parent;
+      `
+    },
+    {
       name: 'limitedCopyFrom',
       args: [
         {
@@ -168,6 +191,28 @@ foam.CLASS({
             File pdf = (File) fileDAO.inX(x).put(thePDF);
             addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
             ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
+
+            // Append file to related invoice.
+            try {
+              Transaction root = findRootTransaction(x, this);
+              if ( root.getInvoiceId() != 0 ) {
+                DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+              Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
+
+                if ( invoice == null ) {
+                  throw new RuntimeException("Couldn't fetch invoice associated to AFX transaction");
+                }
+
+                File[] files = invoice.getInvoiceFile();
+                File[] fileArray = new File[files.length + 1];
+                System.arraycopy(files, 0, fileArray, 0, files.length);
+                fileArray[files.length] = pdf;
+                invoice.setInvoiceFile(fileArray);
+                invoiceDAO.put(invoice);
+              }
+            } catch (Exception e) {
+            ((Logger) x.get("logger")).error("Error appending PDF to AscendantFXTransaction invoice", e);
+            }
           }
         } 
       `
@@ -209,8 +254,9 @@ foam.CLASS({
         : "3478 Buskirk Avenue, Suite 1000, Pleasant Hill, CA 94523";
   
       // Get the initiator, the person who created the invoice.
+      Transaction root = findRootTransaction(x, this);
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-      Invoice invoice = (Invoice) invoiceDAO.find(getInvoiceId());
+      Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
       long initiatorId = invoice.getCreatedBy();
       User initiator = (User) localUserDAO.find(initiatorId);
   

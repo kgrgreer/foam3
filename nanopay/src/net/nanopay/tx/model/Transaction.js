@@ -4,7 +4,6 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'foam.nanos.analytics.Foldable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -35,7 +34,6 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -49,6 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -56,8 +55,8 @@ foam.CLASS({
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus'
- ],
+   'net.nanopay.tx.model.TransactionStatus',
+  ],
 
   constants: [
     {
@@ -197,13 +196,6 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
-      hidden: true
-    },
-    {
-      name: 'balances',
-      class: 'FObjectArray',
-      of: 'net.nanopay.account.Balance',
-      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {
@@ -501,10 +493,6 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'String',
-      name: 'paymentMethod'
-    },
-    {
       name: 'next',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
@@ -547,8 +535,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   },
-   {
+    },
+    {
       class: 'DateTime',
       name: 'scheduledTime',
       section: 'basicInfo',
@@ -569,14 +557,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'doFolds',
-      javaCode: `
-for ( Balance b : getBalances() ) {
-  fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-}
-      `
-    },
     {
       name: 'limitedClone',
       args: [

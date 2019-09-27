@@ -499,3 +499,295 @@ executeCalls(context);
 
 p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})
 
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "AFX to AFEX Business Migration",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.auth.Group;
+    import foam.nanos.auth.Permission;
+    import foam.nanos.auth.User;
+    import net.nanopay.admin.model.ComplianceStatus;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.fx.afex.AFEXBusiness;
+    import net.nanopay.fx.afex.AFEXServiceProvider;
+    import net.nanopay.model.Business;
+    import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+    import net.nanopay.sme.onboarding.OnboardingStatus;
+    import java.util.List;
+    import javax.security.auth.AuthPermission;
+    import foam.util.SafetyUtil;
+
+    String businessEmail = "jan@ablii.com";
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
+    if ( null == business ) {
+      print(" Business not found for " + businessEmail);
+    } else {
+      if ( ! (business.getCompliance().equals(ComplianceStatus.PASSED)) ) {
+        print(" Compliance is not yet passed");
+        return;
+      }
+
+      DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
+      AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();      
+      if ( afexBusiness != null ) {
+        print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
+        DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+        CanadaUsBusinessOnboarding onboarding = canadaUsBusinessOnboardingDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.BUSINESS_ID,business.getId()),
+            foam.mlang.MLang.EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficers.get(0).getId()) } ));
+        if ( onboarding == null ) {
+          onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+          onboarding.setUserId(signingOfficers.get(0).getId());
+          onboarding.setBusinessId(business.getId());
+          onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+          onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        } else if ( onboarding.getStatus() != OnboardingStatus.SUBMITTED ) {
+          onboarding.setStatus(OnboardingStatus.SUBMITTED);
+          canadaUsBusinessOnboardingDAO.put(onboarding);
+        }
+        
+      } else {
+          DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+          Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
+          Group group = (Group) localGroupDAO.find(business.getGroup());
+          if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
+            group.getPermissions(x).add(fxProvisionPermission); 
+          }
+
+          Boolean validFields = true;
+          DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+          BankAccount bankAccount = (BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER,business.getId()),
+            foam.mlang.MLang.INSTANCE_OF(BankAccount.class) } ));
+
+          if (bankAccount == null ) {
+            print("- Business does not have a bank account. Please run Script again when a bank account has been added and verified.");
+            validFields = false;
+          }
+
+          if ( business.getCompliance() != ComplianceStatus.PASSED ) {
+            print("- Business has not passed compliance. Please run Script again when compliance is passed.");
+            validFields = false;
+          }
+
+          if ( ! business.getOnboarded() ) {
+            print("- Business has not being on-boarded completely. Please run Script again when on-boarding is complete.");
+            validFields = false;
+          }
+
+          if ( business.getAddress().getCountryId().equals("US") && SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ) {
+            print("- Business Registration number/ EIN not found. Please set Business Registration number/ EIN and run Script again.");
+            validFields = false; 
+          }
+
+          if ( SafetyUtil.isEmpty(business.getCountryOfBusinessRegistration())) {
+            print("- Country of Business Registration is not set. Please set Country of Business Registration and run script again.");
+            validFields = false;
+          }  
+
+          if ( business.getBusinessRegistrationDate() == null ) {
+            print("- Business Registration Date is not set. Please set Business Registration Date and run script again.");
+            validFields = false;
+          }
+
+          if ( signingOfficers == null || signingOfficers.size() < 1 ) {
+            print("- No signing officer found. Please add at least one signing officer and run script again.");
+            validFields = false;
+          }
+
+          if ( validFields ) {
+            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+            Boolean onboarded = afexServiceProvider.onboardBusiness(business);
+            if ( onboarded && "CA".equals(business.getAddress().getCountryId()) ){
+              CanadaUsBusinessOnboarding onboarding = new CanadaUsBusinessOnboarding.Builder(x).build();
+              onboarding.setUserId(signingOfficers.get(0).getId());
+              onboarding.setBusinessId(business.getId());
+              onboarding.setBusinessFormationDate(business.getBusinessRegistrationDate());
+              onboarding.setCountryOfBusinessFormation(business.getAddress().getCountryId());
+              onboarding.setStatus(OnboardingStatus.SUBMITTED);
+              DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
+              canadaUsBusinessOnboardingDAO.put(onboarding);
+            }
+            print(onboarded ? "Business: " + business.getBusinessName() + " has been onboarded to AFEX" : "Error onboarding business: " + business.getBusinessName());
+          } else {
+            print("Please complete the above mentioned fields and try again");
+            return;
+          }
+      } 
+    }
+    
+    print(" DONE ");
+  
+  """,
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Existing Business Contacts to AFEX",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.auth.Address;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.contacts.Contact;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.model.Business;
+    import foam.util.SafetyUtil;
+
+    String businessEmail = "unknown@ablii.com";
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+    DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO"));
+    Business business = (Business) localBusinessDAO.find(foam.mlang.MLang.EQ(Business.EMAIL, businessEmail));
+    if ( null == business ) {
+      print(" Business not found for " + businessEmail);
+    } else {
+      print(" Migrating contacts, please wait... ");
+      DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO"));
+      DAO localAccountDAO = ((DAO) x.get("localAccountDAO"));
+      DAO contactDAO = (DAO) x.get("localContactDAO");
+      java.util.List contacts = ((ArraySink) business.getContacts(x).select(new ArraySink())).getArray();
+      for( Object obj : contacts ) {
+        if ( ! (obj instanceof Contact) ) continue;
+        Contact contact = (Contact) obj;
+
+        print(" Migrating " + contact.getOrganization());
+
+        Business contactBusiness = (Business) localBusinessDAO.find(contact.getBusinessId());
+        Address contactBusinessAddress = contactBusiness == null ? null : contactBusiness.getAddress() == null ? contactBusiness.getBusinessAddress() : contactBusiness.getAddress();
+
+        String contactCountryId = contactBusinessAddress == null ?  contact.getBusinessAddress() == null ? "" : contact.getBusinessAddress().getCountryId() : contactBusinessAddress.getCountryId();
+        String contactOwnerCountryId = business.getAddress() == null ? "" : business.getAddress().getCountryId();
+       
+        if ( SafetyUtil.isEmpty(contactCountryId) ) {
+          print("Unable to migrate " + contact.getOrganization() + " because the address field is invalid. Check country id." );
+          continue;
+        }
+
+        if ( "CA".equals(contactCountryId) && "CA".equals(contactOwnerCountryId)) {
+          print("Skipping " + contact.getOrganization() + " migration because it is a CAD to CAD contact" );
+          continue;
+        }
+
+        BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
+          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} ))) 
+          : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
+
+        BankAccount contactBusinessBankAccount = contactBusiness == null ? null : 
+         ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
+
+        if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
+          print("Unable to migrate " + contact.getOrganization() + " because contact has no bank account." );
+          continue;
+        }
+
+        Address bankAddress = contactBusinessBankAccount == null ? contactBankAccount.getAddress() == null ? contactBankAccountbankAccount.getBankAddress() : contactBankAccount.getAddress() : contactBusinessBankAccount.getAddress() == null ? contactBusinessBankAccount.getBankAddress() : contactBusinessBankAccount.getAddress();
+        if ( bankAddress == null || SafetyUtil.isEmpty(bankAddress.getCountryId())) {
+          print("Unable to migrate " + contact.getOrganization() + " because bank address is missing." );
+          continue;
+        }
+        contact = (Contact) contactDAO.put(contact);
+        Long afexContactId = contactBusiness == null ? contact.getId() : contactBusiness.getId();
+        AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
+          foam.mlang.MLang.AND(new Predicate[] {
+            foam.mlang.MLang.EQ(AFEXBeneficiary.CONTACT, afexContactId),
+            foam.mlang.MLang.EQ(AFEXBeneficiary.OWNER, contact.getOwner())
+          })
+        );
+        if ( afexBeneficiary == null ) {
+          print( contact.getOrganization() + " was not migrated to AFEX " ); 
+        } else { 
+          print( contact.getOrganization() + " was successfully migrated to AFEX "); 
+        }
+      }
+
+    }
+
+    print(" Done ");
+  
+  """,
+  "output": "",
+  "notes": "Please replace businessEmail with the desired Business Email before running script."
+})
+
+p({"class":"foam.nanos.script.Script","id":"On boarding businessRegistration -> tax #","code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport net.nanopay.sme.onboarding.USBusinessOnboarding;\nimport net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;\nimport net.nanopay.model.Business;\n\nusOnboardingDAO = x.get(\"uSBusinessOnboardingDAO\");\ncadUSOnboardingDAO = x.get(\"canadaUsBusinessOnboardingDAO\");\nbusinessDAO = x.get(\"businessDAO\");\n\nusOnboardings = (usOnboardingDAO.select(new ArraySink())).getArray();\n\n// Set business tax id from onboarding registration number\nfor (USBusinessOnboarding onboard : usOnboardings) {\nbusinessId = onboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(onboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\n}\n\ncadUsOnboardings = (cadUSOnboardingDAO.select(new ArraySink())).getArray();\n\nfor (CanadaUsBusinessOnboarding cadOnboard : cadUsOnboardings) {\nbusinessId = cadOnboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(cadOnboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\nprint(cadOnboard);\n}\n\nprint(\"Done\");"})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Move Currency Permission from SME to Business Employee Group",
+  "status": 2,
+  "code": """
+    import foam.dao.DAO;
+  import foam.dao.ArraySink;
+  import foam.mlang.MLang;
+  import foam.nanos.auth.Address;
+  import foam.nanos.auth.Group;
+  import foam.nanos.auth.Permission;
+  import net.nanopay.model.Business;
+  import javax.security.auth.AuthPermission;
+  import java.util.List;
+
+  String USD_PERMISSION = "currency.read.USD";
+  String CAD_PERMISSION = "currency.read.CAD";
+
+  DAO businessDAO = (DAO) x.get("businessDAO");
+  DAO groupDAO = (DAO) x.get("groupDAO");
+
+  businesses = businessDAO.select(new ArraySink()).getArray();
+  int businessCount = businesses.size();
+  int count = 0;
+  for ( Business business : businesses ) {
+
+    Address address = null == business.getAddress() ? business.getBusinessAddress() : business.getAddress();
+    if ( null == address ) {
+        print("Unable to move currency permission for " + business.getOrganization() + ". Please check to make sure address field is set.");
+        address = new Address();
+        address.setCountryId("CA");
+    }
+    
+    if ( ! "CA".equals(address.getCountryId()) && ! "US".equals(address.getCountryId())) {
+      count++;
+      print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
+      continue;
+    }
+
+    String permission = "CA".equals(address.getCountryId()) ? CAD_PERMISSION : USD_PERMISSION;
+    Permission domesticCurrencyPermission = new Permission.Builder(x).setId(permission).build();
+    Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
+    Group group = (Group) groupDAO.find(business.getGroup());
+    while ( group != null ) {
+      group = (Group) group.findParent(x);
+      if ( group != null && group.getId().endsWith("employee") ) break;
+    }
+    if ( group != null ) { 
+      group.getPermissions(x).add(domesticCurrencyPermission); 
+      group.getPermissions(x).add(cadPermission); 
+      count++;
+    }
+  }
+
+  print("Total number of businesses is " + businessCount + ". Number of business processed is " + count);
+
+  if ( businessCount == count ) {
+    Group smegroup = groupDAO.find("sme");
+    if ( null != smegroup && smegroup.implies(x, new AuthPermission(CAD_PERMISSION)) ) {
+      Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
+      smegroup.getPermissions(x).remove(cadPermission); 
+    }
+    print("currency.read.CAD permission was removed from the sme group.");
+  } else { print("currency.read.CAD permission was not removed from the sme group because there were issues with " + (businessCount - count) + " businesses."); }
+
+  print("DONE");
+  
+  """,
+  "output": ""
+})

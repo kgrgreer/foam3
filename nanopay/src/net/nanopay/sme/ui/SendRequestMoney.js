@@ -29,8 +29,9 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'userDAO',
+    'transactionQuotePlanDAO',
     'quickbooksService',
-    'xeroService'
+    'xeroService',
   ],
 
   exports: [
@@ -44,7 +45,8 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
-    'refreshIntervalId'
+    'updateInvoiceDetails',
+    'forceUpdate'
   ],
 
   requires: [
@@ -57,7 +59,9 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -185,11 +189,14 @@ foam.CLASS({
       name: 'isLoading',
       value: false,
       postSet: function(_, n) {
+        this.loadingSpin.text = this.PROCESSING_NOTICE;
         if ( n ) {
           this.loadingSpin.show();
+          this.loadingSpin.showText = true;
           return;
         }
         this.loadingSpin.hide();
+        this.loadingSpin.showText = false;
       }
     },
     {
@@ -231,9 +238,11 @@ foam.CLASS({
       name: 'permitToPay'
     },
     {
-      class: 'String',
-      name: 'refreshIntervalId'
-    }
+      class: 'Boolean',
+      name: 'forceUpdate',
+      value: false
+    },
+    'updateInvoiceDetails'
   ],
 
   messages: [
@@ -245,11 +254,16 @@ foam.CLASS({
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
     { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
+    { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date.' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
     { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
+    { name: 'RATE_REFRESH', message: 'The exchange rate expired, please ' },
+    { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
+    { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
+    { name: 'PROCESSING_NOTICE', message: 'Processing your transaction, this can take up to 30 seconds.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
@@ -346,6 +360,9 @@ foam.CLASS({
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
         this.notify(this.DUE_DATE_ERROR, 'error');
         return false;
+      } else if ( ! (invoice.issueDate instanceof Date && ! isNaN(invoice.issueDate.getTime())) ) {
+        this.notify(this.ISSUE_DATE_ERROR, 'error');
+        return false;
       }
       return true;
     },
@@ -359,6 +376,31 @@ foam.CLASS({
         return false;
       }
       return true;
+    },
+  
+    function getExpiryTime( time, expiryTime) {
+      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
+      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
+      return Math.floor(( utc2-utc1 ));
+    },
+  
+    async function getFXQuote() {
+      var transaction = this.AbliiTransaction.create({
+        sourceAccount: this.invoice.account,
+        destinationAccount: this.invoice.destinationAccount,
+        sourceCurrency: this.invoice.sourceCurrency,
+        destinationCurrency: this.invoice.destinationCurrency,
+        payerId: this.invoice.payerId,
+        payeeId: this.invoice.payeeId,
+        destinationAmount: this.invoice.amount
+      });
+
+      var quote = await this.transactionQuotePlanDAO.put(
+        this.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      );
+      return quote.plan;
     },
 
     async function submit() {
@@ -391,20 +433,35 @@ foam.CLASS({
       if ( this.isPayable ) {
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         transaction.invoiceId = this.invoice.id;
+        // confirm fxquote is still valid
+        if ( transaction != null && transaction.fxExpiry && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
+          transaction = await this.getFXQuote();
+          transaction.invoiceId = this.invoice.id;
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');
+          this.isLoading = false;
+          this.updateInvoiceDetails = transaction;
+          this.forceUpdate = true;
+          return;
+        }
+
         if ( this.viewData.isDomestic ) {
           if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
           try {
-            await this.transactionDAO.put(transaction);
+            let tem = await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            this.notify(( error ? error.message : this.TRANSACTION_ERROR + this.type ), 'error');
+            if ( error.message.includes("exceed")) {
+              this.notify(error.message, 'error');
+            } else {
+              this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+            }
             this.isLoading = false;
             return;
           }
         } else {
           try {
             transaction.isQuoted = true;
-            await this.transactionDAO.put(transaction);
+            let tem = await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
             this.notify(this.TRANSACTION_ERROR + this.type, 'error');
@@ -490,8 +547,14 @@ foam.CLASS({
       isAvailable: function(hasNextOption) {
         return hasNextOption;
       },
-      isEnabled: function(errors) {
-        return ! errors && ! this.isLoading;
+      isEnabled: function(errors, isLoading) {
+        if ( this.user.address.countryId === 'CA' ) {
+          return ! errors && ! isLoading;
+        } else {
+          return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
+            return cadPerm && ! errors && ! isLoading;
+          });
+        }
       },
       code: function() {
         var currentViewId = this.views[this.position].id;
@@ -534,6 +597,9 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isEnabled: function(errors, isLoading) {
+        return ! isLoading;
+      },
       code: function() {
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
@@ -541,6 +607,22 @@ foam.CLASS({
           this.stack.back();
         }
       }
-    }
+    },
+    {
+      name: 'goBack',
+      isEnabled: function(isLoading) {
+        return ! isLoading;
+      },
+      isAvailable: function(hasBackOption) {
+        return hasBackOption;
+      },
+      code: function(X) {
+        if ( this.position <= 0 ) {
+          X.stack.back();
+          return;
+        }
+        this.subStack.back();
+      }
+    },
   ]
 });

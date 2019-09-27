@@ -24,6 +24,16 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'quoteExpiryTime'
+    },
+    {
+      class: 'Long',
+      name: 'internationalFee',
+      label: 'International fee'
+    },
+    {
+      class: 'Long',
+      name: 'domesticFee',
+      label: 'Domestic fee'
     }
   ]
 });

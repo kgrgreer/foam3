@@ -64,13 +64,22 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int totalClearingTime = transaction.getClearingTimes().values().stream()
+        Logger logger = (Logger) x.get("logger");
+        if ( ! (transaction instanceof ClearingTimesTrait) ) {
+          String message = String.format(
+            "Transaction %s does not support custom clearing", transaction.getId());
+          logger.debug(message, transaction);
+          return null;
+        }
+
+        ClearingTimesTrait trait = (ClearingTimesTrait) transaction;
+        int totalClearingTime = trait.getClearingTimes().values().stream()
           .reduce(0, Integer::sum);
-        if ( transaction.getClearingTimes().isEmpty()
+        if ( trait.getClearingTimes().isEmpty()
           || totalClearingTime < 0
         ) {
           String message = String.format(
-            "Transaction %s has %s clearing time. Use defaultClearingTime (%d) instead.",
+            "Transaction %s has %s clearing time. Use %d-day defaultClearingTime instead.",
             transaction.getId(),
             totalClearingTime == 0 ? "no" : Integer.toString(totalClearingTime),
             getDefaultClearingTime());
@@ -85,14 +94,15 @@ foam.CLASS({
         List<Integer> bankHolidays = CsvUtil.cadHolidays;
 
         int i = 0;
-        while ( i < totalClearingTime ) {
-          completionDate = completionDate.plusDays(1);
+        while ( true ) {
           if ( completionDate.getDayOfWeek() != DayOfWeek.SATURDAY
             && completionDate.getDayOfWeek() != DayOfWeek.SUNDAY
             && ! bankHolidays.contains(completionDate.getDayOfYear())
+            && ++i >= totalClearingTime
           ) {
-            i = i + 1;
+            break;
           }
+          completionDate = completionDate.plusDays(1);
         }
         return Date.from(completionDate.atStartOfDay()
           .atZone(ZoneId.systemDefault())

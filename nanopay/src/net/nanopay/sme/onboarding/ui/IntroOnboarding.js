@@ -40,7 +40,7 @@ foam.CLASS({
     {
       name: 'INTRO_TEXT',
       message: `I’ll be asking you for some information that will verify your personal 
-          identity and your businesses identity. It may feel like a lot, but we take 
+          identity and your organization's identity. It may feel like a lot, but we take 
           security very seriously, and we want to make sure that your account is protected 
           at all times.  We are dealing with your hard earned money after all, so a little 
           extra security goes a long way!`
@@ -59,7 +59,7 @@ foam.CLASS({
 		},
 		{
 			name: 'INTRO_SUB_TEXT_2',
-			message: 'Things like your businesses operating name and the type of business it is registered as'
+			message: 'Things like your organization\'s operating name and the type of business it is registered as'
 		},
 		{
 			name: 'INTRO_TITLE_3',
@@ -67,7 +67,7 @@ foam.CLASS({
 		},
 		{
 			name: 'INTRO_SUB_TEXT_3',
-			message: 'Things like the purpose of your transactions and your companies estimated annual sales'
+			message: 'Things like the purpose of your transactions and your company\'s estimated annual sales'
     }
   ],
 
