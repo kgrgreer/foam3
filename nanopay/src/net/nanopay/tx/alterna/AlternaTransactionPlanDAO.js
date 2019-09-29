@@ -94,10 +94,28 @@ foam.CLASS({
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
         }
-        AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
+        Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+
+        User digitalOwner = sourceAccount.findOwner(x);
+        User bankOwner = destinationAccount.findOwner(x);
+        if ( ! digitalOwner.equals(bankOwner) ) {
+          // craft digital to digital
+          Account digital = DigitalAccount.findDefault(x, bankOwner, t.getDestinationCurrency());
+          Transaction d = new Transaction();
+          d.copyFrom(request);
+          d.setDestinationAccount(digital.getId());
+          t.setSourceAccount(digital.getId());
+          TransactionQuote q = new TransactionQuote();
+          q.setRequestTransaction(d);
+          q = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q);
+          d = q.getPlan();
+          d.addNext(t);
+          t = d;
+        } 
+
         t.setIsQuoted(true);
         quote.addPlan(t);
       }
