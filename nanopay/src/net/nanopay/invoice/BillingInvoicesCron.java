@@ -154,7 +154,6 @@ public class BillingInvoicesCron implements ContextAgent {
     LocalDate sep16_2019 = LocalDate.of(2019, 9, 16);
     LocalDate sep1_2019 = LocalDate.of(2019, 9, 1);
     LocalDate jul1_2019 = LocalDate.of(2019, 7, 1);
-    LocalDate feb1_2019 = LocalDate.of(2019, 2, 1);
 
     if ( ! transactionCreated.isBefore(jan1_2020) ) return false;
     if ( ! isDomestic(transaction) ) {
