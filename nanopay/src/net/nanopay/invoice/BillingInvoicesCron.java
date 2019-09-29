@@ -127,7 +127,13 @@ public class BillingInvoicesCron implements ContextAgent {
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")
-              .setDescription("Fee charged for transaction " + transaction.getId())
+              .setDescription(String.format("%tF - %s ($%.2f %s) → $%.2f %s",
+                transaction.getCreated(),
+                business.getOrganization(),
+                transaction.getDestinationAmount() / 100.0,
+                transaction.getDestinationCurrency(),
+                amount / 100.0,
+                lineItem.getCurrency()))
               .setAmount(amount)
               .setCurrency(lineItem.getCurrency())
               .build();
