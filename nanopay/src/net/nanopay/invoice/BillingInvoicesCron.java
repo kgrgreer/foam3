@@ -6,12 +6,12 @@ import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.model.Business;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -99,13 +99,13 @@ public class BillingInvoicesCron implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         Transaction transaction = (Transaction) ((Transaction) obj).fclone();
         Account sourceAccount = transaction.findSourceAccount(x);
-        Business business = (Business) sourceAccount.findOwner(x);
-        long payerId = business.getId();
+        User payer = sourceAccount.findOwner(x);
+        long payerId = payer.getId();
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
           EQ(AscendantFXUser.USER, payerId));
         Invoice invoice = invoiceByPayer_.get(payerId);
         if ( invoice == null ) {
-          Date paymentDate = getPaymentDate(x, business.getAddress(), issueDate);
+          Date paymentDate = getPaymentDate(x, payer.getAddress(), issueDate);
           invoice = new Invoice.Builder(x)
             .setIssueDate(new Date())
             .setPaymentDate(paymentDate)
@@ -123,15 +123,12 @@ public class BillingInvoicesCron implements ContextAgent {
         List<InvoiceLineItem> invoiceLineItems = invoiceLineItemByPayer_.get(payerId);
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
           if ( lineItem instanceof InvoicedFeeLineItem ) {
-            long amount = check90DaysPromotion(business, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
+            long amount = check90DaysPromotion(payer, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")
-              .setDescription(String.format("%tF - %s ($%.2f %s) → $%.2f %s",
-                transaction.getCreated(),
-                business.getOrganization(),
-                transaction.getDestinationAmount() / 100.0,
-                transaction.getDestinationCurrency(),
+              .setDescription(String.format("%s → $%.2f %s",
+                formatTransaction(x, transaction),
                 amount / 100.0,
                 lineItem.getCurrency()))
               .setAmount(amount)
@@ -151,8 +148,25 @@ public class BillingInvoicesCron implements ContextAgent {
     return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
   }
 
-  private boolean check90DaysPromotion(Business business, boolean isAscendantFXUser, Transaction transaction) {
-    LocalDate businessCreated = toLocalDate(business.getCreated());
+  private String formatTransaction(X x, Transaction transaction) {
+    long transactionAmount = transaction.getAmount();
+    String transactionCurrency = transaction.getSourceCurrency();
+    if ( ! isDomestic(transaction) ) {
+      transactionAmount = transaction.getDestinationAmount();
+      transactionCurrency = transaction.getDestinationCurrency();
+    }
+    Account destinationAccount = transaction.findDestinationAccount(x);
+    User payee = destinationAccount.findOwner(x);
+
+    return String.format("%tF - %s ($%.2f %s)",
+      transaction.getCreated(),
+      payee.getOrganization(),
+      transactionAmount / 100.0,
+      transactionCurrency);
+  }
+
+  private boolean check90DaysPromotion(User payer, boolean isAscendantFXUser, Transaction transaction) {
+    LocalDate businessCreated = toLocalDate(payer.getCreated());
     LocalDate transactionCreated = toLocalDate(transaction.getCreated());
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
     LocalDate dec1_2020 = LocalDate.of(2019, 12, 1);
