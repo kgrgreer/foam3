@@ -203,6 +203,7 @@ public class BillingInvoicesCron implements ContextAgent {
         .reduce(0, Long::sum);
       if ( amount == 0 ) {
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
+        invoice.setPaymentDate(new Date());
       }
       invoice.setAmount(amount);
       invoiceDAO.put_(x, invoice);
