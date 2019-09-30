@@ -5,12 +5,14 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.mlang.Constant;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.BillingInvoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
@@ -59,9 +61,18 @@ public class BillingInvoicesCron implements ContextAgent {
   private final int dueIn_;
 
   /**
-   * Invoice by payer/business
+   * The note displayed on the billing invoice
    */
-  private Map<Long, Invoice> invoiceByPayer_ = new HashMap<>();
+  private static final String NOTE = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, " +
+    "shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount " +
+    "will be debited from your account on the 5th business day from the date this invoice was issued. Please " +
+    "ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly " +
+    "Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net. ";
+
+  /**
+   * BillingInvoice by payer/business
+   */
+  private Map<Long, BillingInvoice> invoiceByPayer_ = new HashMap<>();
 
   /**
    * Invoice line items by payer/business.
@@ -81,7 +92,7 @@ public class BillingInvoicesCron implements ContextAgent {
     dueIn_ = dueIn;
   }
 
-  public Map<Long, Invoice> getInvoiceByPayer() {
+  public Map<Long, BillingInvoice> getInvoiceByPayer() {
     return invoiceByPayer_;
   }
 
@@ -103,18 +114,21 @@ public class BillingInvoicesCron implements ContextAgent {
         long payerId = payer.getId();
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
           EQ(AscendantFXUser.USER, payerId));
-        Invoice invoice = invoiceByPayer_.get(payerId);
+        BillingInvoice invoice = invoiceByPayer_.get(payerId);
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, payer.getAddress(), issueDate);
-          invoice = new Invoice.Builder(x)
+          invoice = new BillingInvoice.Builder(x)
             .setIssueDate(new Date())
             .setPaymentDate(paymentDate)
+            .setBillingStartDate(getDate(startDate_))
+            .setBillingEndDate(getDate(endDate_))
             .setDueDate(paymentDate)
             .setPayerId(payerId)
             .setSourceCurrency(transaction.getSourceCurrency())
             .setDestinationAccount(destinationAccount_.getId())
             .setPayeeId(destinationAccount_.getOwner())
             .setDestinationCurrency(destinationAccount_.getDenomination())
+            .setNote(NOTE)
             .build();
           invoiceByPayer_.put(payerId, invoice);
           invoiceLineItemByPayer_.put(payerId, new ArrayList<>());
@@ -217,7 +231,7 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   protected void putInvoices(X x) {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-    for ( Invoice invoice : invoiceByPayer_.values() ) {
+    for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
       invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
       if ( invoice.getAmount() == 0 ) {

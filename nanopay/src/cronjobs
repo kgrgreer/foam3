@@ -28,6 +28,7 @@ p({
   "code": """
     import foam.dao.DAO;
     import java.time.YearMonth;
+    import net.nanopay.account.Account;
     import net.nanopay.invoice.BillingInvoicesCron;
 
     /**
