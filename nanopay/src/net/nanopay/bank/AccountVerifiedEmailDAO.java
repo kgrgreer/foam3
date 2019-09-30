@@ -41,7 +41,7 @@ public class AccountVerifiedEmailDAO
     Group       group      = owner.findGroup(x);
     AppConfig   config     = (AppConfig) group.getAppConfig(x);
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
-    
+
     // Doesn't send email if the account hasn't been made prior
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
