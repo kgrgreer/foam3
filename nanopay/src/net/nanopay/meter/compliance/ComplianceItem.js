@@ -89,7 +89,7 @@ foam.CLASS({
       label: 'ID',
       tableWidth: 50,
       expression: function(dowJones, identityMind, levResponse, sidniResponse) {
-        if( dowJones ) {
+        if ( dowJones ) {
           return dowJones;
         } else if ( identityMind ) {
           return identityMind;
@@ -104,27 +104,9 @@ foam.CLASS({
       hidden: true
     },
     {
-      class:'String',
+      class: 'String',
       name: 'type',
-      transient: true,
-      tableWidth: 300,
-      getter: function() {
-        if ( this.dowJones ) {
-          return this.dowJones$find.then(o => {
-            return "Dow Jones (" + o.searchType + ")";
-          })
-        } else if ( this.identityMind ) {
-          return this.identityMind$find.then(o => {
-            return "IdentityMind (" + o.apiName + ")";
-          })
-        } else if ( this.levResponse ) {
-          return "Secure Fact (LEV)";
-        } else if ( this.sidniResponse ) {
-          return "Secure Fact (SIDni)";
-        } else {
-        return "";
-        }
-      }
-    },
+      tableWidth: 300
+    }
   ]
 });
