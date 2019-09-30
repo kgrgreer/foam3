@@ -425,10 +425,10 @@ foam.CLASS({
         await this.user.contacts.put(newContact);
         this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
         this.closeDialog();
-        this.loading = false;
       } catch (err) {
         this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
       }
+      this.loading = false;
     }
   ],
 
