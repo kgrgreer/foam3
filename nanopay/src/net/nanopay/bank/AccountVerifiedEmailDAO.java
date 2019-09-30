@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
@@ -37,9 +38,10 @@ public class AccountVerifiedEmailDAO
     }
 
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
-    AppConfig   config     = (AppConfig) x.get("appConfig");
+    Group       group      = owner.findGroup(x);
+    AppConfig   config     = (AppConfig) group.getAppConfig(x);
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
-
+    
     // Doesn't send email if the account hasn't been made prior
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
@@ -52,7 +54,7 @@ public class AccountVerifiedEmailDAO
     if ( oldAccount.getStatus().equals(account.getStatus()) )
       return getDelegate().put_(x, obj);
 
-    account = (BankAccount) super.put_(x , obj);
+    account = (BankAccount) super.put_(x, obj);
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
 
