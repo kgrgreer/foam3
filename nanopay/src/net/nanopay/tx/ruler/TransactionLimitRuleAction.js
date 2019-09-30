@@ -12,11 +12,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.TestedRule',
-    'java.text.NumberFormat',
-    'java.util.Currency',
     'java.util.HashMap',
-    'java.util.Locale',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.model.Currency',
   ],
 
   properties: [
@@ -66,15 +64,16 @@ foam.CLASS({
         ((TestedRule)agency).setProbeInfo(info);
       }
       if ( ! limitState.check(this.getLimit(), this.getPeriod(), txn.getAmount()) ) {
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
+        Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
         switch (this.getPeriod()) {
           case DAILY:
             throw new RuntimeException("This transaction exceeds your daily transaction limit. Your current available limit is " +
-              nf.format((this.getLimit() - limitState.getSpent())/100.0) + ". If you require further assistance, please contact us. ");
+              currency.format(this.getLimit() - limitState.getSpent()) + ". If you require further assistance, please contact us. ");
           case WEEKLY:
             throw new RuntimeException("This transaction exceeds your weekly transaction limit. If you require further assistance, please contact us. ");
           case PER_TRANSACTION:
-            throw new RuntimeException("This transaction exceeds your " + nf.format((this.getLimit() - limitState.getSpent())/100.0) +
+            throw new RuntimeException("This transaction exceeds your " + currency.format(this.getLimit() - limitState.getSpent()) +
               " transaction limit. If you require further assistance, please contact us. ");
         }
       }
