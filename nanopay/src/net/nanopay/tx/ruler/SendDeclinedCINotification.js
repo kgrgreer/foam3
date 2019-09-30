@@ -35,22 +35,19 @@ foam.CLASS({
 
               Transaction tx = (Transaction) obj;
               DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
+              Transaction t = tx;
+              while ( !(t instanceof net.nanopay.tx.AbliiTransaction) ){
+                tx = (Transaction) tx.findParent(x);
+              }
               Logger logger  = (Logger) x.get("logger");
-              User sender = tx.findSourceAccount(x).findOwner(x);
-              User receiver = tx.findDestinationAccount(x).findOwner(x);
+              User sender = t.findSourceAccount(x).findOwner(x);
+              User receiver = t.findDestinationAccount(x).findOwner(x);
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
 
               // Traverse the chain to find the invoiceId if there is one.
               DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
-              String parent = tx.getParent();
-
-              while ( ! SafetyUtil.isEmpty(parent) ) {
-                tx = (Transaction) localTransactionDAO.inX(x).find(tx.getParent());
-                parent = tx.getParent();
-              }
-
-              long invoiceId = tx.getInvoiceId();
+              long invoiceId = t.getInvoiceId();
 
               if ( invoiceId != 0 ) {
                 notification.setBody("Transaction for invoice #" + invoiceId + " was rejected. Receiver's balance was reverted, invoice was not paid.");

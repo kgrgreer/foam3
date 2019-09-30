@@ -1043,6 +1043,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessNotOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceNotPassed' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsInstancePredicate' },
   { name: 'net/nanopay/meter/compliance/ruler/AddDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },

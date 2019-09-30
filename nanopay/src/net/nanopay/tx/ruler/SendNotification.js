@@ -30,6 +30,7 @@ foam.CLASS({
          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
+            System.out.println("sending a notification from the rule");
               DAO notificationDAO = (DAO) x.get("localNotificationDAO");
               Logger logger = (Logger) x.get("logger");
               if ( getNotification() != null && notificationDAO != null ) {
