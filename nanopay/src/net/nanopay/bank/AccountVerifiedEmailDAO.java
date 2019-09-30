@@ -39,7 +39,7 @@ public class AccountVerifiedEmailDAO
 
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     Group       group      = owner.findGroup(x);
-    AppConfig   config     = (AppConfig) group.getAppConfig(x);
+    AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
     // Doesn't send email if the account hasn't been made prior
@@ -52,6 +52,10 @@ public class AccountVerifiedEmailDAO
 
     // Doesn't send email if account has been previously verified
     if ( oldAccount.getStatus().equals(account.getStatus()) )
+      return getDelegate().put_(x, obj);
+
+    // Doesn't send email if group or group.appConfig was null
+    if ( config == null )
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x, obj);
