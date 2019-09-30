@@ -122,6 +122,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-action {
       height: 36px;
       padding: 8px 13px;
+      background-color: #ffffff;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       background-color: #ffffff;
