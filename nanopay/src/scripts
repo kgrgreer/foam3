@@ -808,7 +808,6 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import net.nanopay.account.Account;
-import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
@@ -819,8 +818,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static foam.mlang.MLang.*;
 
@@ -931,7 +929,6 @@ invoiceDAO = x.get("invoiceDAO");
 fileDAO = x.get("fileDAO");
 accountDAO = x.get("localAccountDAO");
 transactionDAO = x.get("localTransactionDAO");
-ascendantFXUserDAO = x.get("ascendantFXUserDAO");
 BlobService blobStore = (BlobService) x.get("blobStore");
 
 Account destinationAccount = (Account) accountDAO.find(DESTINATION_ACCOUNT_ID);
