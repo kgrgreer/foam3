@@ -658,8 +658,13 @@ foam.RELATIONSHIP({
   forwardName: 'debits',
   inverseName: 'sourceAccount',
   cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
@@ -677,8 +682,13 @@ foam.RELATIONSHIP({
   forwardName: 'credits',
   inverseName: 'destinationAccount',
   cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
