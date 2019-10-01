@@ -758,24 +758,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'sendCompletedNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
-      name: 'sendReverseNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
       documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
@@ -952,13 +934,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    try {
-      sendReverseNotification(x, oldTxn);
-      sendCompletedNotification(x, oldTxn);
-    } catch (Exception e) {
-      Logger logger = (Logger) x.get("logger");
-      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
-    }
     `
   },
   {
