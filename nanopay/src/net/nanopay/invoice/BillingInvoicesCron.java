@@ -97,7 +97,7 @@ public class BillingInvoicesCron implements ContextAgent {
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
     )).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
-        Transaction transaction = (Transaction) ((Transaction) obj).fclone();
+        Transaction transaction = (Transaction) obj;
         Account sourceAccount = transaction.findSourceAccount(x);
         User payer = sourceAccount.findOwner(x);
         long payerId = payer.getId();
@@ -135,6 +135,7 @@ public class BillingInvoicesCron implements ContextAgent {
               .setCurrency(lineItem.getCurrency())
               .build();
             invoiceLineItems.add(invoiceLineItem);
+            invoice.setAmount(invoice.getAmount() + amount);
           }
         }
       }
@@ -219,13 +220,10 @@ public class BillingInvoicesCron implements ContextAgent {
     for ( Invoice invoice : invoiceByPayer_.values() ) {
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
       invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
-      long amount = lineItems.stream().mapToLong(li -> li.getAmount())
-        .reduce(0, Long::sum);
-      if ( amount == 0 ) {
+      if ( invoice.getAmount() == 0 ) {
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoice.setPaymentDate(new Date());
       }
-      invoice.setAmount(amount);
       invoiceDAO.put_(x, invoice);
     }
   }
