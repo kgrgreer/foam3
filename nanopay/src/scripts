@@ -832,6 +832,53 @@ BILLING_MONTH = YearMonth.of(2019, 9);
 DUE_DATE = LocalDate.of(2019, 10, 7);
 DRY_RUN = true;
 
+// Fee exemption list (September 2019) - https://docs.google.com/spreadsheets/d/1c40CiZaNcnpWUMZj9EwASc9EYNy_XfM6YHfBK2Ig8BQ/edit#gid=0
+FEE_EXEMPTION_BUSINESS_LIST = new HashSet() {{
+  add(8596L);
+  add(8605L);
+  add(8628L);
+  add(8632L);
+  add(8667L);
+  add(8680L);
+  add(8697L);
+  add(8740L);
+  add(8460L);
+  add(8462L);
+  add(8481L);
+  add(8482L);
+  add(8489L);
+  add(8496L);
+  add(8498L);
+  add(8500L);
+  add(8502L);
+  add(8504L);
+  add(8507L);
+  add(8511L);
+  add(8515L);
+  add(8517L);
+  add(8519L);
+  add(8525L);
+  add(8537L);
+  add(8541L);
+  add(8543L);
+  add(8545L);
+  add(8548L);
+  add(8551L);
+  add(8555L);
+  add(8557L);
+  add(8560L);
+  add(8562L);
+  add(8564L);
+  add(8578L);
+  add(8580L);
+  add(8582L);
+  add(8584L);
+  add(8586L);
+  add(8588L);
+  add(8590L);
+  add(8592L);
+}};
+
 startDate = BILLING_MONTH.atDay(1);
 endDate = BILLING_MONTH.atEndOfMonth();
 Map invoiceByPayer = new HashMap();
@@ -842,30 +889,6 @@ Map invoiceLineItemByPayer = new HashMap();
 // *******************
 boolean isDomestic(Transaction transaction) {
   return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
-}
-
-boolean check90DaysPromotion(User payer, boolean isAscendantFXUser, Transaction transaction) {
-  LocalDate businessCreated = toLocalDate(payer.getCreated());
-  LocalDate transactionCreated = toLocalDate(transaction.getCreated());
-  LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
-  LocalDate dec1_2020 = LocalDate.of(2019, 12, 1);
-  LocalDate oct1_2019 = LocalDate.of(2019, 10, 1);
-  LocalDate sep16_2019 = LocalDate.of(2019, 9, 16);
-  LocalDate sep1_2019 = LocalDate.of(2019, 9, 1);
-  LocalDate jul1_2019 = LocalDate.of(2019, 7, 1);
-
-  if ( ! transactionCreated.isBefore(jan1_2020) ) return false;
-  if ( ! isDomestic(transaction) ) {
-    return isAscendantFXUser
-      && businessCreated.isBefore(sep16_2019)
-      && transactionCreated.isBefore(oct1_2019);
-  }
-
-  // Domestic transaction
-  if ( businessCreated.isBefore(jul1_2019) ) return transactionCreated.isBefore(oct1_2019);
-  if ( businessCreated.isBefore(sep1_2019) ) return transactionCreated.isBefore(dec1_2020);
-  if ( businessCreated.isBefore(sep16_2019) ) return transactionCreated.isBefore(jan1_2020);
-  return false;
 }
 
 void putInvoices(X x) {
@@ -925,8 +948,9 @@ transactionDAO.where(AND(new Predicate[] {
     Account sourceAccount = transaction.findSourceAccount(x);
     User payer = sourceAccount.findOwner(x);
     long payerId = payer.getId();
-    boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
-      EQ(AscendantFXUser.USER, payerId));
+    // Exclude fees for business in the exemption list
+    if ( FEE_EXEMPTION_BUSINESS_LIST.contains(payerId) ) return;
+
     Invoice invoice = invoiceByPayer.get(payerId);
     if ( invoice == null ) {
       Date paymentDate = getDate(DUE_DATE);
@@ -955,7 +979,7 @@ transactionDAO.where(AND(new Predicate[] {
     List invoiceLineItems = invoiceLineItemByPayer.get(payerId);
     for (TransactionLineItem lineItem : transaction.getLineItems()) {
       if ( lineItem instanceof InvoicedFeeLineItem ) {
-        long amount = check90DaysPromotion(payer, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
+        long amount = lineItem.getAmount();
         String invoiceLineItem = String.format("%tF,%s,$%.2f %s,$%.2f %s", new Object[] {
           transaction.getCreated(),
           payee.getOrganization(),
