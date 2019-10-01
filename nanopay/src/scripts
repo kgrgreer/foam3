@@ -909,7 +909,8 @@ void putInvoices(X x) {
       invoice.setPaymentMethod(PaymentStatus.NANOPAY);
       invoice.setPaymentDate(new Date());
     }
-    print(invoiceDAO.put_(x, invoice));
+    invoice.copyFrom(invoiceDAO.put_(x, invoice));
+    print(" . id: " + invoice.getId());
   }
 }
 
