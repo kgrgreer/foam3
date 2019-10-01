@@ -21,7 +21,9 @@ p({
   "enabled": true,
   "schedule": {
     "class": "foam.nanos.cron.CronSchedule",
-    "dayOfMonth": 1
+    "dayOfMonth": 1,
+    "hour": 1,
+    "minute": 0
   },
   "id": "Monthly Billing Invoices for Ablii",
   "description": "Send billing invoices to Ablii users",
