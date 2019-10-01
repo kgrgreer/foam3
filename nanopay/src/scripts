@@ -893,6 +893,10 @@ boolean isDomestic(Transaction transaction) {
 
 void dryRunInvoices(X x) {
  for ( Invoice invoice : invoiceByPayer.values() ) {
+   if ( invoice.getAmount() == 0 ) {
+     invoiceByPayer.remove(invoice.getPayerId());
+     continue;
+   }
    User payer = invoice.findPayerId(x);
    List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
 
@@ -903,6 +907,10 @@ void dryRunInvoices(X x) {
 
 void putInvoices(X x) {
   for ( Invoice invoice : invoiceByPayer.values() ) {
+    if ( invoice.getAmount() == 0 ) {
+      invoiceByPayer.remove(invoice.getPayerId());
+      continue;
+    }
     List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
     invoice.setInvoiceFile(new File[] { putLineItemsAsFile(x, lineItems) });
     if ( invoice.getAmount() == 0 ) {
