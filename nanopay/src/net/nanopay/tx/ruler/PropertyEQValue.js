@@ -33,11 +33,11 @@ foam.CLASS({
       javaCode: `
         if ( getIsNew() ) {
           FObject nu  = (FObject) NEW_OBJ.f(obj);
-          return foam.util.SafetyUtil.equals(nu.getProperty(getPropName()),getPropValue());
+          return EQ(nu.getClassInfo().getAxiomByName(getPropName()), getPropValue()).f(nu);
         }
         else {
           FObject old = (FObject) OLD_OBJ.f(obj);
-          return foam.util.SafetyUtil.equals(old.getProperty(getPropName()),getPropValue());
+          return EQ(old.getClassInfo().getAxiomByName(getPropName()), getPropValue()).f(old);
         }
       `
     }
