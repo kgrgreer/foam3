@@ -388,7 +388,7 @@ foam.CLASS({
             .add(this.NOTE_LABEL)
           .end()
           .start('span')
-            .addClass(this.myClass('invoice-content-block'))
+            .addClass(this.myClass('invoice-content'))
             .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
             .add(this.slot(function(invoice$note) {

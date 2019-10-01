@@ -791,3 +791,212 @@ p({
   """,
   "output": ""
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Generate September 2019 Billing Invoices",
+  "code": """
+import foam.blob.Blob;
+import foam.blob.BlobService;
+import foam.blob.InputStreamBlob;
+import foam.core.Detachable;
+import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.DAO;
+import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.User;
+import foam.nanos.fs.File;
+import net.nanopay.account.Account;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.invoice.model.PaymentStatus;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.YearMonth;
+import java.util.*;
+
+import static foam.mlang.MLang.*;
+
+// *******************
+// *       Vars      *
+// *******************
+DESTINATION_ACCOUNT_ID = 2;
+BILLING_MONTH = YearMonth.of(2019, 9);
+DUE_DATE = LocalDate.of(2019, 10, 7);
+DRY_RUN = true;
+
+// Fee exemption list (September 2019) - https://docs.google.com/spreadsheets/d/1c40CiZaNcnpWUMZj9EwASc9EYNy_XfM6YHfBK2Ig8BQ/edit#gid=0
+FEE_EXEMPTION_BUSINESS_LIST = new HashSet() {{
+  add(8596L);
+  add(8605L);
+  add(8628L);
+  add(8632L);
+  add(8667L);
+  add(8680L);
+  add(8697L);
+  add(8740L);
+  add(8460L);
+  add(8462L);
+  add(8481L);
+  add(8482L);
+  add(8489L);
+  add(8496L);
+  add(8498L);
+  add(8500L);
+  add(8502L);
+  add(8504L);
+  add(8507L);
+  add(8511L);
+  add(8515L);
+  add(8517L);
+  add(8519L);
+  add(8525L);
+  add(8537L);
+  add(8541L);
+  add(8543L);
+  add(8545L);
+  add(8548L);
+  add(8551L);
+  add(8555L);
+  add(8557L);
+  add(8560L);
+  add(8562L);
+  add(8564L);
+  add(8578L);
+  add(8580L);
+  add(8582L);
+  add(8584L);
+  add(8586L);
+  add(8588L);
+  add(8590L);
+  add(8592L);
+}};
+
+startDate = BILLING_MONTH.atDay(1);
+endDate = BILLING_MONTH.atEndOfMonth();
+Map invoiceByPayer = new HashMap();
+Map invoiceLineItemByPayer = new HashMap();
+
+// *******************
+// *    Functions    *
+// *******************
+boolean isDomestic(Transaction transaction) {
+  return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
+}
+
+void putInvoices(X x) {
+  for ( Invoice invoice : invoiceByPayer.values() ) {
+    List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
+    invoice.setInvoiceFile(new File[] { putLineItemsAsFile(x, lineItems) });
+    if ( invoice.getAmount() == 0 ) {
+      invoice.setPaymentMethod(PaymentStatus.NANOPAY);
+      invoice.setPaymentDate(new Date());
+    }
+    print(invoiceDAO.put_(x, invoice));
+  }
+}
+
+File putLineItemsAsFile(X x, List lineItems) {
+  StringBuilder sb = new StringBuilder();
+  sb.append("Date,Payee,Transaction Destination Amount,Fee Amount\\n");
+  sb.append(String.join("\\n", lineItems));
+  byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+  InputStream inputStream = new ByteArrayInputStream(bytes);
+  Blob data = blobStore.put(new InputStreamBlob(inputStream, bytes.length));
+  return (File) fileDAO.put_(x, new File.Builder(x)
+    .setData(data)
+    .setFilename("LineItems.csv")
+    .build());
+}
+
+Date getDate(LocalDate localDate) {
+  return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+}
+
+LocalDate toLocalDate(Date date) {
+  return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+}
+
+// ************************
+// * Billing Invoices     *
+// ************************
+invoiceDAO = x.get("invoiceDAO");
+fileDAO = x.get("fileDAO");
+accountDAO = x.get("localAccountDAO");
+transactionDAO = x.get("localTransactionDAO");
+BlobService blobStore = (BlobService) x.get("blobStore");
+
+Account destinationAccount = (Account) accountDAO.find(DESTINATION_ACCOUNT_ID);
+Date issueDate = new Date();
+
+print("Generating billing invoices (" + startDate.toString() + " to " + endDate.toString() + ")" + (DRY_RUN ? " for" : "") + ":");
+transactionDAO.where(AND(new Predicate[] {
+  EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
+  GTE(Transaction.CREATED, getDate(startDate)),
+  LT(Transaction.CREATED, getDate(endDate.plusDays(1)))
+})).select(new AbstractSink() {
+  public void put(Object obj, Detachable sub) {
+    Transaction transaction = (Transaction) obj;
+    Account sourceAccount = transaction.findSourceAccount(x);
+    User payer = sourceAccount.findOwner(x);
+    long payerId = payer.getId();
+    // Exclude fees for business in the exemption list
+    if ( FEE_EXEMPTION_BUSINESS_LIST.contains(payerId) ) return;
+
+    Invoice invoice = invoiceByPayer.get(payerId);
+    if ( invoice == null ) {
+      Date paymentDate = getDate(DUE_DATE);
+      invoice = new Invoice.Builder(x)
+        .setIssueDate(new Date())
+        .setPaymentDate(paymentDate)
+        .setDueDate(paymentDate)
+        .setPayerId(payerId)
+        .setSourceCurrency(transaction.getSourceCurrency())
+        .setDestinationAccount(destinationAccount.getId())
+        .setPayeeId(destinationAccount.getOwner())
+        .setDestinationCurrency(destinationAccount.getDenomination())
+        .setNote("Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount will be debited from your account on the 5th business day from the date this invoice was issued. Please ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net")
+        .build();
+      invoiceByPayer.put(payerId, invoice);
+      invoiceLineItemByPayer.put(payerId, new ArrayList());
+      if ( DRY_RUN ) print(" . " + payer.getOrganization() + " (id: " + payer.getId() + ")");
+    }
+    long transactionAmount = transaction.getAmount();
+    String transactionCurrency = transaction.getSourceCurrency();
+    if ( ! isDomestic(transaction) ) {
+      transactionAmount = transaction.getDestinationAmount();
+      transactionCurrency = transaction.getDestinationCurrency();
+    }
+    User payee = transaction.findDestinationAccount(x).findOwner(x);
+    List invoiceLineItems = invoiceLineItemByPayer.get(payerId);
+    for (TransactionLineItem lineItem : transaction.getLineItems()) {
+      if ( lineItem instanceof InvoicedFeeLineItem ) {
+        long amount = lineItem.getAmount();
+        String invoiceLineItem = String.format("%tF,%s,$%.2f %s,$%.2f %s", new Object[] {
+          transaction.getCreated(),
+          payee.getOrganization(),
+          transactionAmount / 100.0,
+          transactionCurrency,
+          amount / 100.0,
+          lineItem.getCurrency() });
+        invoiceLineItems.add(invoiceLineItem);
+        invoice.setAmount(invoice.getAmount() + amount);
+        if ( DRY_RUN ) print("    . " + invoiceLineItem);
+      }
+    }
+  }
+});
+
+if ( ! DRY_RUN ) {
+    putInvoices(x);
+}
+
+print("");
+print((DRY_RUN ? "DRY_RUN" : "DONE") + "! " + invoiceByPayer.size() + " invoice(s) created.");
+  """
+})
