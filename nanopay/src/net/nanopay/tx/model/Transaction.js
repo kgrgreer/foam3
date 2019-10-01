@@ -93,14 +93,15 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'basicInfo'
-    },
-    {
       name: 'paymentInfo'
     },
     {
+      name: 'basicInfo',
+      title: 'Transaction Info'
+    },
+    {
       name: 'lineItemsSection',
-      title: 'Line Items',
+      title: 'Additional Detail',
       isAvailable: function(id, lineItems) {
         return ! id || lineItems.length;
       }
@@ -114,7 +115,8 @@ foam.CLASS({
     },
     {
       name: '_defaultSection',
-      permissionRequired: true
+      permissionRequired: true,
+      hidden: true
     },
   ],
 
@@ -284,12 +286,10 @@ foam.CLASS({
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       tableWidth: 130,
-      view: function(args, x) {
-        self = this;
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          choices: x.data.statusChoices
-        };
+      view: function(_, x) {
+        return x.controllerMode.name === 'EDIT' 
+          ? { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices }
+          : { class: 'foam.u2.tag.Input', mode: 'RO', data: x.data.status.name, size: 1000 }
       }
     },
     {
@@ -314,24 +314,7 @@ foam.CLASS({
       visibility: 'RO',
       label: 'Reference'
     },
-    {
-      // FIXME: move to a ViewTransaction used on the client
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionEntity',
-      name: 'payee',
-      label: 'Receiver',
-      storageTransient: true,
-      visibility: 'RO',
-      section: 'paymentInfo',
-      tableCellFormatter: function(value) {
-        this.start()
-          .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.displayName : 'na')
-          .end()
-        .end();
-      },
-    },
-    {
+     {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
@@ -339,6 +322,12 @@ foam.CLASS({
       label: 'Sender',
       section: 'paymentInfo',
       visibility: 'RO',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payer$.map(p => p ? [[p, p.toSummary()]] : [])
+        };
+      },
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -348,6 +337,30 @@ foam.CLASS({
         .end();
       }
     },
+    {
+      // FIXME: move to a ViewTransaction used on the client
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      label: 'Receiver',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'paymentInfo',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payee$.map(p => p ? [[p, p.toSummary()]] : [])
+        };
+      },
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.displayName : 'na')
+          .end()
+        .end();
+      },
+    },
+
     {
       class: 'Long',
       name: 'payeeId',
@@ -363,6 +376,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
+      label: 'Source Amount',
       section: 'paymentInfo',
       visibility: 'RO'
     },
@@ -392,8 +406,8 @@ foam.CLASS({
               } else {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
                 output += ' → ';
-                output += dstCurrency 
-                            ? dstCurrency.format(obj.destinationAmount) 
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
@@ -464,12 +478,13 @@ foam.CLASS({
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId',
-      visibility: 'RO'
+      visibility: 'RO',
+      hidden: true
     },
     {
       class: 'String',
       name: 'sourceCurrency',
-      label: 'Currency',
+      label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
       value: 'CAD'
@@ -484,6 +499,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
           foam.u2.Visibility.HIDDEN :

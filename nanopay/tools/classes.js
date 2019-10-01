@@ -780,6 +780,11 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+
+  // goldman ingestion
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [
