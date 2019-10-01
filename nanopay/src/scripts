@@ -895,7 +895,7 @@ void dryRunInvoices(X x) {
    List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
 
    print(" . " + payer.getOrganization() + " (id:" + payer.getId() + ")");
-   print(String.join("\\n   . ", lineItems));
+   print("   . " + String.join("\\n   . ", lineItems));
  }
 }
 
