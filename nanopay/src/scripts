@@ -808,8 +808,10 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import net.nanopay.account.Account;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -889,15 +891,34 @@ boolean isDomestic(Transaction transaction) {
   return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
 }
 
+void dryRunInvoices(X x) {
+ for ( Invoice invoice : invoiceByPayer.values() ) {
+   if ( invoice.getAmount() == 0 ) {
+     invoiceByPayer.remove(invoice.getPayerId());
+     continue;
+   }
+   User payer = invoice.findPayerId(x);
+   List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
+
+   print(" . " + payer.getOrganization() + " (id:" + payer.getId() + ")");
+   print("   . " + String.join("\\n   . ", lineItems));
+ }
+}
+
 void putInvoices(X x) {
   for ( Invoice invoice : invoiceByPayer.values() ) {
+    if ( invoice.getAmount() == 0 ) {
+      invoiceByPayer.remove(invoice.getPayerId());
+      continue;
+    }
     List lineItems = invoiceLineItemByPayer.get(invoice.getPayerId());
     invoice.setInvoiceFile(new File[] { putLineItemsAsFile(x, lineItems) });
     if ( invoice.getAmount() == 0 ) {
       invoice.setPaymentMethod(PaymentStatus.NANOPAY);
       invoice.setPaymentDate(new Date());
     }
-    print(invoiceDAO.put_(x, invoice));
+    invoice.copyFrom(invoiceDAO.put_(x, invoice));
+    print(" . id: " + invoice.getId());
   }
 }
 
@@ -936,6 +957,10 @@ Date issueDate = new Date();
 
 print("Generating billing invoices (" + startDate.toString() + " to " + endDate.toString() + ")" + (DRY_RUN ? " for" : "") + ":");
 transactionDAO.where(AND(new Predicate[] {
+  OR(new Predicate[] {
+    INSTANCE_OF(SummaryTransaction.class),
+    INSTANCE_OF(FXSummaryTransaction.class)
+  }),
   EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
   GTE(Transaction.CREATED, getDate(startDate)),
   LT(Transaction.CREATED, getDate(endDate.plusDays(1)))
@@ -945,6 +970,7 @@ transactionDAO.where(AND(new Predicate[] {
     Account sourceAccount = transaction.findSourceAccount(x);
     User payer = sourceAccount.findOwner(x);
     long payerId = payer.getId();
+
     // Exclude fees for business in the exemption list
     if ( FEE_EXEMPTION_BUSINESS_LIST.contains(payerId) ) return;
 
@@ -964,7 +990,6 @@ transactionDAO.where(AND(new Predicate[] {
         .build();
       invoiceByPayer.put(payerId, invoice);
       invoiceLineItemByPayer.put(payerId, new ArrayList());
-      if ( DRY_RUN ) print(" . " + payer.getOrganization() + " (id: " + payer.getId() + ")");
     }
     long transactionAmount = transaction.getAmount();
     String transactionCurrency = transaction.getSourceCurrency();
@@ -986,17 +1011,21 @@ transactionDAO.where(AND(new Predicate[] {
           lineItem.getCurrency() });
         invoiceLineItems.add(invoiceLineItem);
         invoice.setAmount(invoice.getAmount() + amount);
-        if ( DRY_RUN ) print("    . " + invoiceLineItem);
       }
     }
   }
 });
 
-if ( ! DRY_RUN ) {
-    putInvoices(x);
+status = "";
+if ( DRY_RUN ) {
+  dryRunInvoices(x);
+  status = "DRY_RUN";
+} else {
+  putInvoices(x);
+  status = "DONE";
 }
 
 print("");
-print((DRY_RUN ? "DRY_RUN" : "DONE") + "! " + invoiceByPayer.size() + " invoice(s) created.");
+print(status + "! " + invoiceByPayer.size() + " invoice(s) created.");
   """
 })
