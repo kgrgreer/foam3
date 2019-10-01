@@ -808,8 +808,10 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import net.nanopay.account.Account;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -946,6 +948,10 @@ Date issueDate = new Date();
 
 print("Generating billing invoices (" + startDate.toString() + " to " + endDate.toString() + ")" + (DRY_RUN ? " for" : "") + ":");
 transactionDAO.where(AND(new Predicate[] {
+  OR(new Predicate[] {
+    INSTANCE_OF(SummaryTransaction.class),
+    INSTANCE_OF(FXSummaryTransaction.class)
+  }),
   EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
   GTE(Transaction.CREATED, getDate(startDate)),
   LT(Transaction.CREATED, getDate(endDate.plusDays(1)))
