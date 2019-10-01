@@ -374,7 +374,7 @@ foam.CLASS({
                        sender.setBusinessTypeId(0);
                        sender.setBusinessSectorId(1);
                        //sender.setStatus("Active");
-                       sender.setOnboarded(true);
+                      // sender.setOnboarded(true);
 
                        Address senderAddress = new Address();
                        addrLine = "";
@@ -472,7 +472,7 @@ foam.CLASS({
                       receiver.setBusinessTypeId(0);
                       receiver.setBusinessSectorId(1);
                       //receiver.setStatus("Active");
-                      receiver.setOnboarded(true);
+                      //receiver.setOnboarded(true);
 
                       Address receiverAddress = new Address();
                       addrLine = "";

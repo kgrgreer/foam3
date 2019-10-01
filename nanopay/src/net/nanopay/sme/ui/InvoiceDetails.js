@@ -270,7 +270,7 @@ foam.CLASS({
                 .add(this.payer$.map(function(payer) {
                   return payer.then(function(payer) {
                     if ( payer != null ) {
-                      var address = payer.businessAddress;
+                      var address = payer.address;
                       return self.E()
                         .start().add(payer.label()).end()
                         .start().add(self.formatStreetAddress(address)).end()

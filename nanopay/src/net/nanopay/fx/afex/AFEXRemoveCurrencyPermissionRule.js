@@ -44,7 +44,7 @@ foam.CLASS({
           
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
           if ( null != business ) {
-            Address businessAddress = business.getBusinessAddress();
+            Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String permissionString = "currency.read.";
               permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
