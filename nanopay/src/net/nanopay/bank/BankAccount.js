@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'institutionDAO',
-    'branchDAO'
+    'branchDAO',
+    'institutionDAO'
   ],
 
   javaImports: [
