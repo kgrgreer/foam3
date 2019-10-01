@@ -32,7 +32,7 @@ foam.CLASS({
           if( user instanceof Business || user.getGroup().equals("sme") ) { // <- maybe should be part of predicate
             if( cashIn.getStatus() == TransactionStatus.COMPLETED && oldCashIn.getStatus() != TransactionStatus.COMPLETED ) {
               Account OD = (Account) cashIn.findDestinationAccount(x);
-              if ( OD != null && OD.instanceof OverdraftAccount ) {
+              if ( OD != null && OD instanceof OverdraftAccount ) {
                 DebtAccount DA = ((OverdraftAccount) OD).findDebtAccount(x);
                 if ( DA != null && DA.getLimit() > 0 && ( (long) DA.findBalance(x) ) < 0 ) {
                   agency.submit(x, new ContextAgent() {
