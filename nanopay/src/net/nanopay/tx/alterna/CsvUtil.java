@@ -160,13 +160,8 @@ public class CsvUtil {
           User user;
           String txnType;
           String refNo;
-          Transaction t = (Transaction) ((Transaction) obj).fclone();
-
-          user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
-          // if user null, return
-          if ( user == null ) return;
-
           BankAccount bankAccount = null;
+          Transaction t = (Transaction) ((Transaction) obj).fclone();
 
           if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
@@ -207,6 +202,22 @@ public class CsvUtil {
               notificationDAO.put(notification);
               return;
             }
+          }
+
+          user = (User) userDAO.find_(x, bankAccount.getOwner());
+          if ( user == null ) {
+            StringBuilder message = new StringBuilder();
+              message.append("BankAccount owner not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getSourceAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
           }
 
           Branch branch = bankAccount.findBranch(x);

@@ -2,7 +2,7 @@ p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operations","handler
 
 // Payment Operation Views
 p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userUserDAO","detailView":"net.nanopay.meter.UserDetailView"},"order":1100,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO","detailView":"net.nanopay.meter.BusinessDetailView"},"order":1200,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1200,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","title":"Bank Accounts","customDAOController":"net.nanopay.meter.BankAccountController","detailView":"net.nanopay.meter.BankAccountDetailView"},"order":1300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO","detailView":"net.nanopay.meter.ContactDetailView"},"order":1250,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})

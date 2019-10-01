@@ -715,7 +715,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Business Formation Date must be a date in the past.'
         }
       ]
     },

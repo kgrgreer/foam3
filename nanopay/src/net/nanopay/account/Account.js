@@ -220,11 +220,17 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(_ => {
-          return obj.findBalance(this.__subSubContext__)
-            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
-            .then(curr => curr.format(balance != null ? balance : 0)))
-        }))
+        this.add(obj.homeDenomination$.map(function(_) {
+          return obj.findBalance(self.__subSubContext__).then(
+            function(balance) {
+              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+                function(curr) {
+                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  self.tooltip = displayBalance;
+                  return displayBalance;
+                })
+            })
+        }));
       },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -260,7 +266,9 @@ foam.CLASS({
               self.__subSubContext__.currencyDAO.find(homeDenomination)
             ]).then(arr => {
               let [r, b, c] = arr;
-              return c.format(Math.floor((b || 0) * r))
+              var displayBalance = c.format(Math.floor((b || 0) * r));
+              self.tooltip = displayBalance;
+              return displayBalance;
             })
           })
         );

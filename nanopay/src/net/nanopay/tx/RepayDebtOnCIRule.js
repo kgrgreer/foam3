@@ -18,6 +18,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.account.OverdraftAccount',
+    'net.nanopay.account.Account'
   ],
 
   methods: [
@@ -30,9 +31,9 @@ foam.CLASS({
           User user = cashIn.findDestinationAccount(x).findOwner(x);
           if( user instanceof Business || user.getGroup().equals("sme") ) { // <- maybe should be part of predicate
             if( cashIn.getStatus() == TransactionStatus.COMPLETED && oldCashIn.getStatus() != TransactionStatus.COMPLETED ) {
-              OverdraftAccount OD = (OverdraftAccount) cashIn.findDestinationAccount(x);
-              if ( OD != null ) {
-                DebtAccount DA = OD.findDebtAccount(x);
+              Account OD = (Account) cashIn.findDestinationAccount(x);
+              if ( OD != null && OD instanceof OverdraftAccount ) {
+                DebtAccount DA = ((OverdraftAccount) OD).findDebtAccount(x);
                 if ( DA != null && DA.getLimit() > 0 && ( (long) DA.findBalance(x) ) < 0 ) {
                   agency.submit(x, new ContextAgent() {
                     @Override

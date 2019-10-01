@@ -132,9 +132,13 @@ foam.CLASS({
         ) return;
 
         DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
-
+        Transaction tx = oldTxn;
         User sender = findSourceAccount(x).findOwner(x);
-        User receiver = findDestinationAccount(x).findOwner(x);
+        while ( !(tx instanceof net.nanopay.tx.AbliiTransaction) ){
+          tx = (Transaction) tx.findParent(x);
+        }
+
+        User receiver = (tx.findDestinationAccount(x)).findOwner(x);
         Notification notification = new Notification();
         notification.setEmailIsEnabled(true);
 

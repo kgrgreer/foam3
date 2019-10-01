@@ -257,7 +257,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO this is hardcoded for Currency choice AFEX wants confirmation of. Future this should be dynamically set.
-      list.add(new ListItem("Business Registration: " + businessReg));
+      if ( !country.equals("US") ) list.add(new ListItem("Business Registration: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {
