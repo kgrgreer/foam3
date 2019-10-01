@@ -144,11 +144,11 @@ public class BillingInvoicesCron implements ContextAgent {
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency
   // TODO: use country corridor to determine domestic/international transaction
-  private boolean isDomestic(Transaction transaction) {
+  public boolean isDomestic(Transaction transaction) {
     return transaction.getSourceCurrency().equals(transaction.getDestinationCurrency());
   }
 
-  private String formatTransaction(X x, Transaction transaction) {
+  public String formatTransaction(X x, Transaction transaction) {
     long transactionAmount = transaction.getAmount();
     String transactionCurrency = transaction.getSourceCurrency();
     if ( ! isDomestic(transaction) ) {
@@ -165,7 +165,7 @@ public class BillingInvoicesCron implements ContextAgent {
       transactionCurrency);
   }
 
-  private boolean check90DaysPromotion(User payer, boolean isAscendantFXUser, Transaction transaction) {
+  public boolean check90DaysPromotion(User payer, boolean isAscendantFXUser, Transaction transaction) {
     LocalDate businessCreated = toLocalDate(payer.getCreated());
     LocalDate transactionCreated = toLocalDate(transaction.getCreated());
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
@@ -189,7 +189,7 @@ public class BillingInvoicesCron implements ContextAgent {
     return false;
   }
 
-  private Date getPaymentDate(X x, Address address, Date issueDate) {
+  public Date getPaymentDate(X x, Address address, Date issueDate) {
     Address countryRegion = new Address.Builder(x)
       .setCountryId(address.getCountryId())
       .setRegionId(address.getRegionId())
@@ -203,18 +203,18 @@ public class BillingInvoicesCron implements ContextAgent {
     return paymentDate;
   }
 
-  private Date getDate(LocalDate localDate) {
+  public Date getDate(LocalDate localDate) {
     return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
   }
 
-  private LocalDate toLocalDate(Date date) {
+  public LocalDate toLocalDate(Date date) {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 
   /**
    * Put invoices along with line items into DAO.
    */
-  private void putInvoices(X x) {
+  protected void putInvoices(X x) {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     for ( Invoice invoice : invoiceByPayer_.values() ) {
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
