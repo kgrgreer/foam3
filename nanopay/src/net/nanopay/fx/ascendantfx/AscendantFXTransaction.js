@@ -107,7 +107,7 @@ foam.CLASS({
       try{
         if( fxService.acceptFXRate(getFxQuoteId(), getPayerId()) ) setAccepted(true);
       }catch(Throwable t) {
-        ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AscendantFX.", t);
+        ((Logger) x.get("logger")).error("Error sending Accept Quote Request to AscendantFX.", t);
       }
 
       `

@@ -61,8 +61,10 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
