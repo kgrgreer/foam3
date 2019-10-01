@@ -85,11 +85,12 @@ foam.CLASS({
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
         quote.addPlan(t);
-      } else if ( destinationAccount instanceof CABankAccount &&
-        sourceAccount instanceof DigitalAccount ) {
-        
+      } else if ( sourceAccount instanceof DigitalAccount &&
+                  destinationAccount instanceof CABankAccount &&
+                  sourceAccount.getOwner() == destinationAccount.getOwner() ) {
+      
         if ( ! useAlternaAsPaymentProvider(x, (BankAccount) destinationAccount) ) return getDelegate().put_(x, obj);
-        
+
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
@@ -98,24 +99,6 @@ foam.CLASS({
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
-
-        User digitalOwner = sourceAccount.findOwner(x);
-        User bankOwner = destinationAccount.findOwner(x);
-        if ( ! digitalOwner.equals(bankOwner) ) {
-          // craft digital to digital
-          Account digital = DigitalAccount.findDefault(x, bankOwner, t.getDestinationCurrency());
-          Transaction d = new Transaction();
-          d.copyFrom(request);
-          d.setDestinationAccount(digital.getId());
-          t.setSourceAccount(digital.getId());
-          TransactionQuote q = new TransactionQuote();
-          q.setRequestTransaction(d);
-          q = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q);
-          d = q.getPlan();
-          d.addNext(t);
-          t = d;
-        } 
-
         t.setIsQuoted(true);
         quote.addPlan(t);
       }
