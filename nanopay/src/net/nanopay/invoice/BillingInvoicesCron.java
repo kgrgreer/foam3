@@ -10,11 +10,13 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankHolidayService;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.BillingInvoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -26,7 +28,7 @@ import java.util.*;
 import static foam.mlang.MLang.*;
 
 /**
- * ================== AbliiBillingCron ==================
+ * ================== BillingInvoicesCron ==================
  * This cron job will run on the first day of each month.
  * It will create a billing invoice on all transactions they have done in the
  * last month and send to each business.
@@ -103,6 +105,13 @@ public class BillingInvoicesCron implements ContextAgent {
     Date issueDate = new Date();
 
     transactionDAO.where(AND(
+      // Check for SummaryTransaction and FXSummaryTransaction because there
+      // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
+      // from their parent transaction.
+      OR(
+        INSTANCE_OF(SummaryTransaction.class),
+        INSTANCE_OF(FXSummaryTransaction.class)
+      ),
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
@@ -238,7 +247,6 @@ public class BillingInvoicesCron implements ContextAgent {
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoice.setPaymentDate(new Date());
       }
-      invoiceDAO.put_(x, invoice);
     }
   }
 }
