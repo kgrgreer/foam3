@@ -800,6 +800,9 @@ p({
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
 
+    // Please remove DRY_RUN when you want to run this script in GD's instance.
+    DRY_RUN = true;
+
     // Create new gd-opt group
     employeeGroup = new Group();
     employeeGroup.setId("gd-ops");
