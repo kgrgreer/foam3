@@ -241,11 +241,10 @@ public class BillingInvoicesCron implements ContextAgent {
   protected void putInvoices(X x) {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
-      List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
-      invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
-      if ( invoice.getAmount() == 0 ) {
-        invoice.setPaymentMethod(PaymentStatus.NANOPAY);
-        invoice.setPaymentDate(new Date());
+      if ( invoice.getAmount() > 0 ) {
+        List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
+        invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
+        invoiceByPayer_.put(invoice.getPayeeId(), (BillingInvoice) invoiceDAO.put_(x, invoice));
       }
     }
   }
