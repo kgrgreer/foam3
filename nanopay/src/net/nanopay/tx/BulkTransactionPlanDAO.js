@@ -94,9 +94,20 @@ foam.CLASS({
 
             // Put all the child transaction quotes to TransactionQuotePlanDAO
             TransactionQuote result = (TransactionQuote) planDAO.put(childQuote);
+            Transaction digital = result.getPlan();
+
+            // if ( bulkTxn.getExplicitCO() ) {
+            //   Transaction co = new Transaction();
+            //   co.copyFrom(digital);
+            //   co.setDestinationAccount(getAccountId(x, payee, digital.getDestinationCurrency(), true));
+            //   TransactionQuote coQuote = new TransactionQuote();
+            //   coQuote.setRequestTransaction(co);
+            //   coQuote = (TransactionQuote) planDAO.put(coQuote);
+            //   digital.addNext(coQuote.getPlan());
+            // }
 
             // Add the child transaction plans as the next of the compositeTransaction
-            ct.addNext(result.getPlan());
+            ct.addNext(digital);
           }
 
           // TODO: consider FX.
