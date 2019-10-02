@@ -94,24 +94,25 @@ foam.CLASS({
         this.start()
           .add(obj.slot((institution, institutionDAO) => {
             return institutionDAO.find(institution).then((result) => {
-              if ( result ) {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
                 return this.E()
-                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }) .add(`${obj.cls_.getAxiomByName('institution').label} `).end()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                  .end()
                   .start('span').add(`${result.name} |`).end();
               }
-            })
+            });
           }))
         .end()
-
         .start()
           .add(obj.slot((branch, branchDAO) => {
             return branchDAO.find(branch).then((result) => {
               if ( result ) {
                 return this.E()
-                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
                   .start('span').add(` ${result.branchId} |`).end();
               }
-            })
+            });
           }))
         .end()
 
@@ -123,7 +124,7 @@ foam.CLASS({
                   .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
               }
           }))
-        .end()
+        .end();
       }
     },
     {
