@@ -14,10 +14,12 @@ clearingTimes
 corridors
 countries
 cronjobs
+csvUploadScripts
 currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 dugs
+exchangeRates
 emailTemplates
 exportDriverRegistrys
 fundTransferSystems

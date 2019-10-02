@@ -665,9 +665,21 @@ foam.RELATIONSHIP({
   inverseName: 'sourceAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -677,9 +689,22 @@ foam.RELATIONSHIP({
   inverseName: 'destinationAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  targetProperty: { visibility: 'RO' }
+  sourceProperty: { visibility: 'RO' },
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({

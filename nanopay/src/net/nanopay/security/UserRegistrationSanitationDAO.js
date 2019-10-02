@@ -40,7 +40,6 @@ foam.CLASS({
           .setDesiredPassword(user.getDesiredPassword())
           .setOrganization(user.getOrganization())
           .setSignUpToken(user.getSignUpToken())
-          .setBusinessAddress(user.getBusinessAddress())
           .setAddress(user.getAddress())
           .setBirthday(user.getBirthday())
 
