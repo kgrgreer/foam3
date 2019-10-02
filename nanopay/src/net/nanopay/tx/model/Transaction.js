@@ -411,7 +411,7 @@ foam.CLASS({
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
-              if ( obj.payer ) {
+              if ( obj.payer && obj.payee ) {
                 output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
               }
 
