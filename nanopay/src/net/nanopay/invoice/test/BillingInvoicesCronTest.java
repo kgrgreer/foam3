@@ -16,6 +16,7 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
 import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -93,9 +94,7 @@ public class BillingInvoicesCronTest extends Test {
     test(true, "Billing for September 2019 - Business created before Feb in 2019");
     YearMonth sept_2019 = YearMonth.of(2019, 9);
     Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 0
-      && invoice.getStatus() == InvoiceStatus.PAID
-      , "-> No fee charge for domestic payments");
+    test(invoice.getAmount() == 0, "-> No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
@@ -130,9 +129,7 @@ public class BillingInvoicesCronTest extends Test {
     test(true, "Billing for September 2019 - Business created between February 1 and June 30 in 2019");
     YearMonth sept_2019 = YearMonth.of(2019, 9);
     Invoice invoice = generateMonthlyBillingInvoice(x, sept_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "-> No fee charge for domestic payments");
+    test(invoice.getAmount() == 0, "-> No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     invoice = generateMonthlyBillingInvoice(x, sept_2019);
@@ -168,9 +165,7 @@ public class BillingInvoicesCronTest extends Test {
     LocalDate sept1_2019 = LocalDate.of(2019, 9, 1);
     LocalDate nov30_2019 = LocalDate.of(2019, 11, 30);
     Invoice invoice = generateBillingInvoice(x, sept1_2019, nov30_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "-> No fee charge for domestic payments");
+    test(invoice.getAmount() == 0, "-> No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     createTransaction(x, LocalDate.of(2019, 10, 1), payeeUSDAccount, 500);
@@ -207,9 +202,7 @@ public class BillingInvoicesCronTest extends Test {
     LocalDate sept1_2019 = LocalDate.of(2019, 9, 1);
     LocalDate dec31_2019 = LocalDate.of(2019, 12, 31);
     Invoice invoice = generateBillingInvoice(x, sept1_2019, dec31_2019);
-    test(invoice.getAmount() == 0
-        && invoice.getStatus() == InvoiceStatus.PAID
-      , "-> No fee charge for domestic payments");
+    test(invoice.getAmount() == 0, "-> No fee charge for domestic payments");
 
     createTransaction(x, LocalDate.of(2019, 9, 16), payeeUSDAccount, 500);
     createTransaction(x, LocalDate.of(2019, 10, 1), payeeUSDAccount, 500);
@@ -288,7 +281,7 @@ public class BillingInvoicesCronTest extends Test {
 
   private void createTransaction(X x, LocalDate created, Account payeeAccount, long feeAmount) {
     localTransactionDAO.put_(x,
-      new Transaction.Builder(x)
+      new SummaryTransaction.Builder(x)
         .setSourceAccount(payerAccount.getId())
         .setSourceCurrency(payerAccount.getDenomination())
         .setDestinationAccount(payeeAccount.getId())
