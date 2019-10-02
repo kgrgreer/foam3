@@ -27,7 +27,7 @@ foam.CLASS({
   messages: [
     {
       name: 'TITLE',
-      message: 'Accounting software'
+      message: 'Accounting software(BETA)'
     },
     {
       name: 'SUBTITLE_EMPTY',
