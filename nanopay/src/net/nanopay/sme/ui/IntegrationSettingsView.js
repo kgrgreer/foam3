@@ -376,7 +376,7 @@ foam.CLASS({
           .start()
             .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
             .start().addClass('integration-info-div')
-              .start().add('Intuit quickbooks(BETA)').addClass('integration-box-title').end()
+              .start().add('Intuit quickbooks (BETA)').addClass('integration-box-title').end()
               .start().add(this.qbConnected$).addClass('account-info').end()
             .end()
           .end()
