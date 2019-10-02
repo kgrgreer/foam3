@@ -101,12 +101,12 @@ foam.CLASS({
     { name: 'ERROR_FNUMBER', message: 'First name cannot contain numbers.' },
     { name: 'ERROR_LNUMBER', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
-    { name: 'SUCCESS_CHECK', message: 'This account will be verified. This process takes about 1-2 days. Thank you for your patience.' }
+    { name: 'SUCCESS_CHECK', message: 'We’re reviewing your bank account, which can take 1-2 business days. You will be notified by email once verified.' }
   ],
 
   methods: [
     function init() {
-      this.SUPER();
+      this.SUPER(); 
       if ( this.plaidResponseItem != null ) {
         this.viewData.bankAccounts = [this.plaidResponseItem.account];
       } else {
