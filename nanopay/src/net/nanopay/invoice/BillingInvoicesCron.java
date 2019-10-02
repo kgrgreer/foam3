@@ -5,16 +5,14 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
-import foam.mlang.Constant;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
-import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.BillingInvoice;
-import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
@@ -139,6 +137,10 @@ public class BillingInvoicesCron implements ContextAgent {
             .setDestinationCurrency(destinationAccount_.getDenomination())
             .setNote(NOTE)
             .build();
+          BankAccount payerBankAccount = BankAccount.findDefault(x, payer, transaction.getSourceCurrency());
+          if ( payerBankAccount != null ) {
+            invoice.setAccount(payerBankAccount.getId());
+          }
           invoiceByPayer_.put(payerId, invoice);
           invoiceLineItemByPayer_.put(payerId, new ArrayList<>());
         }
