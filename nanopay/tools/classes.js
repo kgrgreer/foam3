@@ -332,6 +332,7 @@ var classes = [
   'net.nanopay.tx.LineItemFee',
   'net.nanopay.tx.CompliancePlanDAO',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
