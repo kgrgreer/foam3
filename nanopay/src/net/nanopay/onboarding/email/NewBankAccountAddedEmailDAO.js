@@ -92,7 +92,7 @@ foam.CLASS({
         String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);
       }
-      
+
       return account;
       `
     }

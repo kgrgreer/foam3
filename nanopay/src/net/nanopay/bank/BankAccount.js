@@ -87,55 +87,42 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
+      tableWidth: 500,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((institution, institutionDAO) => {
             return institutionDAO.find(institution).then((result) => {
-              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
-                return ' ' + obj.cls_.getAxiomByName('institution').label + ' ';
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }) .add(`${obj.cls_.getAxiomByName('institution').label} `).end()
+                  .start('span').add(`${result.name} |`).end();
               }
-            });
-          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
+            })
+          }))
         .end()
-        .add(obj.slot((institution, institutionDAO) => {
-          return institutionDAO.find(institution).then((result) => {
-            if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
-              return result.name + ' |';
-            }
-          });
-        }))
 
         .start()
           .add(obj.slot((branch, branchDAO) => {
             return branchDAO.find(branch).then((result) => {
               if ( result ) {
-                return ' ' + obj.cls_.getAxiomByName('branch').label + ' ';
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
               }
-            });
-          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
+            })
+          }))
         .end()
-        .add(obj.slot((branch, branchDAO) => {
-          return branchDAO.find(branch).then((result) => {
-            if ( result ) {
-              return result.branchId + ' |';
-            }
-          });
-        }))
 
         .start()
           .add(obj.slot((accountNumber) => {
-            if ( accountNumber ) {
-              return ' ' + obj.cls_.getAxiomByName('accountNumber').label + ' ';
-            }
-          })).style({ 'font-weight' : '500', 'white-space': 'pre' })
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
         .end()
-        .add(obj.slot((accountNumber) => {
-          if ( accountNumber ) {
-            return '***' + accountNumber.substring(accountNumber.length - 4, accountNumber.length);
-          }
-        }));
-      },
-      tableWidth: 500
+      }
     },
     {
       class: 'foam.core.Enum',
