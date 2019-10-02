@@ -364,6 +364,12 @@ var classes = [
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
   'net.nanopay.tx.ruler.ChangePropertyAction',
+  'net.nanopay.tx.ruler.SendNotification',
+  'net.nanopay.tx.ruler.PropertyEQValue',
+  'net.nanopay.tx.ruler.PropertyNEQValue',
+  'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
+  'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -774,6 +780,11 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+
+  // goldman ingestion
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [

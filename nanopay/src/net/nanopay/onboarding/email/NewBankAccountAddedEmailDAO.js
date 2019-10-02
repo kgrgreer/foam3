@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.model.Business',
     'java.util.HashMap',
     'java.util.Map'
   ],
@@ -78,7 +79,7 @@ foam.CLASS({
       args.put("accName", account.getName());
       args.put("accId", account.getId());
 
-      if ( owner.getOnboarded() ) {
+      if ( owner instanceof Business &&  ((Business) owner).getOnboarded() ) {
         args.put("title", "User added a (" + account.getStatus() + ") Account & was previously onboarded");
         args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
       } else {

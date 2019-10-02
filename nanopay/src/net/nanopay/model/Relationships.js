@@ -21,7 +21,10 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        if ( branch ) self.add(branch.branchId);
+        if ( branch ) {
+          self.add(branch.branchId);
+          self.tooltip = branch.branchId;
+        }
       });
     }
   }
@@ -50,11 +53,14 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
+            var displayinstitution;
             if ( institution.institutionNumber !== "" ) {
-              self.add(institution.institutionNumber);
+              displayinstitution = institution.institutionNumber;
             }  else {
-              self.add(institution.name);
+              displayinstitution = institution.name;
             }
+            self.add(displayinstitution);
+            self.tooltip  = displayinstitution;
           }
         }).catch( function( error ) {
           self.add('N/A');
@@ -659,9 +665,21 @@ foam.RELATIONSHIP({
   inverseName: 'sourceAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -671,9 +689,22 @@ foam.RELATIONSHIP({
   inverseName: 'destinationAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  targetProperty: { visibility: 'RO' }
+  sourceProperty: { visibility: 'RO' },
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({

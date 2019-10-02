@@ -19,6 +19,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
+import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
@@ -108,7 +109,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
-            onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
+            onboardingRequest.setContactBusinessPhone(business.getPhone().getNumber());
             String businessRegDate = null;
             try {
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -279,12 +280,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
     // Check if business address is set and not empty
-    Address userAddress = null;
-    if ( user.getBusinessAddress() != null && ! SafetyUtil.equals(((Address)user.getBusinessAddress()).getCountryId(), "") ) {
-      userAddress = user.getBusinessAddress();
-    } else if (user.getAddress() != null && ! SafetyUtil.equals(((Address)user.getAddress()).getCountryId(), "") ){
+    Address userAddress = new Address();
+    if ( user instanceof Contact ) {
+      Contact contact = (Contact) user;
+      if ( contact.getBusinessAddress() != null && ! SafetyUtil.equals((contact.getBusinessAddress()).getCountryId(), "") ) {
+        userAddress = ((Contact) user).getBusinessAddress();
+      }
+    } else if (user.getAddress() != null && ! SafetyUtil.equals((user.getAddress()).getCountryId(), "") ){
       userAddress = user.getAddress();
-    } 
+    }
     if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
 
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);

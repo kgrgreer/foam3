@@ -107,7 +107,7 @@ foam.CLASS({
       try{
         if( fxService.acceptFXRate(getFxQuoteId(), getPayerId()) ) setAccepted(true);
       }catch(Throwable t) {
-        ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AscendantFX.", t);
+        ((Logger) x.get("logger")).error("Error sending Accept Quote Request to AscendantFX.", t);
       }
 
       `
@@ -235,7 +235,7 @@ foam.CLASS({
       User payee = (User) localUserDAO.find(destinationAccount.getOwner());
       User payer = (User) localUserDAO.find(sourceAccount.getOwner());
   
-      Address payerAddress = payer.getBusinessAddress();
+      Address payerAddress = payer.getAddress();
       String addressLine1 =
         (! SafetyUtil.isEmpty(payerAddress.getSuite()) ? payerAddress.getSuite() + "-" : "") +
         payerAddress.getStreetNumber() +
@@ -295,9 +295,7 @@ foam.CLASS({
       // the business address.
       AcceptanceDocument disclosure = null;
       DAO acceptanceDocumentDAO = ((DAO) x.get("acceptanceDocumentDAO")).inX(x);
-      Address address = (payer instanceof Business)
-        ? payer.getBusinessAddress()
-        : payer.getAddress();
+      Address address = payer.getAddress();
   
       if ( address != null ) {
         disclosure = (AcceptanceDocument) acceptanceDocumentDAO.find(
@@ -376,7 +374,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Tel:</b></td>\");
-      doc.append(\"    <td>\").append(payer.getBusinessPhone().getNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");
       doc.append(\"    <td><b>Deal Type:</b></td>\");
       doc.append(\"    <td>Spot</td>\");
       doc.append(\"  </tr>\");
