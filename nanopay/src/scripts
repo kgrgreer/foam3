@@ -791,3 +791,110 @@ p({
   """,
   "output": ""
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set up gd-ops group",
+  "code": """
+    import foam.nanos.auth.Group;
+    import foam.nanos.auth.GroupPermissionJunction;
+    import foam.nanos.auth.Permission;
+
+    // Create new gd-opt group
+    employeeGroup = new Group();
+    employeeGroup.setId("gd-ops");
+    employeeGroup.setParent("basicUser");
+    employeeGroup.setDefaultMenu("gd-operation");
+    employeeGroup.setRootMenu("gd-operation");
+    employeeGroup.setDescription("Grain Discovery Operations");
+
+    groupDAO = x.get("groupDAO");
+    groupDAO.put(employeeGroup);
+
+    // Add permissions to the gd-opt group
+    ArrayList permissionArray = new ArrayList();
+    permissionArray.add("AccountWithDetailModel.read.AccountNumber");
+    permissionArray.add("AccountWithDetailModel.read.Holder");
+    permissionArray.add("AccountWithDetailModel.read.Title");
+    permissionArray.add("account.read.*");
+    permissionArray.add("balance.read.*");
+    permissionArray.add("business.read.*");
+    permissionArray.add("currency.read.*");
+    permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
+    permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
+    permissionArray.add("menu.read.doc");
+    permissionArray.add("menu.read.gd-operation");
+    permissionArray.add("menu.read.gd-operation.accounts");
+    permissionArray.add("menu.read.gd-operation.businesses");
+    permissionArray.add("menu.read.gd-operation.sessions");
+    permissionArray.add("menu.read.gd-operation.transactions");
+    permissionArray.add("menu.read.gd-operation.users");
+    permissionArray.add("menu.read.notifications");
+    permissionArray.add("service.accountDAO");
+    permissionArray.add("service.balanceDAO");
+    permissionArray.add("service.branchDAO");
+    permissionArray.add("service.businessDAO");
+    permissionArray.add("service.businessSectorDAO");
+    permissionArray.add("service.currencyDAO");
+    permissionArray.add("service.digitalAccount");
+    permissionArray.add("service.groupDAO");
+    permissionArray.add("service.groupPermissionJunctionDAO");
+    permissionArray.add("service.institutionDAO");
+    permissionArray.add("service.languageDAO");
+    permissionArray.add("service.menuDAO");
+    permissionArray.add("service.nSpecDAO");
+    permissionArray.add("service.notificationDAO");
+    permissionArray.add("service.run.dig");
+    permissionArray.add("service.sessionDAO");
+    permissionArray.add("service.transactionDAO");
+    permissionArray.add("service.twofactor");
+    permissionArray.add("session.read.*");
+    permissionArray.add("stransaction.read.*");
+    permissionArray.add("user.read.*");
+
+    groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
+
+    for (int i =0; i<permissionArray.size(); i++) {
+      GroupPermissionJunction junction = new GroupPermissionJunction();
+      junction.setSourceId("gd-ops");
+      junction.setTargetId(permissionArray.get(i));
+      groupPermissionJunctionDAO.put(junction);
+    }
+
+    // Remove existing menu permissions for API users
+    ArrayList smeRemovePermissionArray = new ArrayList();
+    smeRemovePermissionArray.add("menu.read.sme.accountProfile.*");
+    smeRemovePermissionArray.add("menu.read.sme.main.*");
+    smeRemovePermissionArray.add("menu.read.sme.quickAction.*");
+
+    for (int i = 0; i < smeRemovePermissionArray.size(); i++) {
+      GroupPermissionJunction junction = new GroupPermissionJunction();
+      junction.setSourceId("sme");
+      junction.setTargetId(smeRemovePermissionArray.get(i));
+      groupPermissionJunctionDAO.remove(junction);
+    }
+
+    // Add new menu permissions for API users
+    Permission switchBusinessPermission = new Permission();
+    switchBusinessPermission.setId("menu.read.sme.accountProfile.switch-business");
+
+    permissionDAO = x.get("permissionDAO");
+    permissionDAO.put(switchBusinessPermission);
+
+    ArrayList smeAddPermissionArray = new ArrayList();
+    smeAddPermissionArray.add("menu.read.sme.main.banking");
+    smeAddPermissionArray.add("menu.read.sme.main.dashboard");
+    smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
+
+    for (int i = 0; i < smeAddPermissionArray.size(); i++) {
+      GroupPermissionJunction junction = new GroupPermissionJunction();
+      junction.setSourceId("sme");
+      junction.setTargetId(smeAddPermissionArray.get(i));
+      groupPermissionJunctionDAO.put(junction);
+    }
+
+    print("Done")
+  """,
+  "output": "",
+  "notes": "This script is for our clients who use our API (Grain Discovery). Please do not run this script in Ablii/Connect staging and production enviroment."
+})
