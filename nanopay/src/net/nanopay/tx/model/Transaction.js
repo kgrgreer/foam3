@@ -281,7 +281,8 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       tableWidth: 130,
       view: function(args, x) {
@@ -551,7 +552,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'deleted',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
   ],

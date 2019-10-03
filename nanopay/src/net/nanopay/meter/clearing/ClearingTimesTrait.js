@@ -10,7 +10,8 @@ foam.INTERFACE({
       documentation: 'Custom clearing times of a transaction.',
       help: 'A list of clearing times applied to the transaction when sent.',
       visibility: 'RO',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       javaType: 'java.util.Map<String, Integer>',
       javaFactory: ''
     }

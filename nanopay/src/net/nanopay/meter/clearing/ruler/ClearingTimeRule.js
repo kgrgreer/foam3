@@ -30,7 +30,8 @@ foam.CLASS({
       name: 'ruleGroup',
       value: 'ClearingTime',
       hidden: true,
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     },
     {
       name: 'operation',

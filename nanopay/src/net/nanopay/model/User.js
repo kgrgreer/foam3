@@ -281,7 +281,8 @@ foam.CLASS({
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
       value: false,
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     },
     {
       class: 'Boolean',
@@ -391,7 +392,7 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Determines whether the User is deleted.',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
     },
