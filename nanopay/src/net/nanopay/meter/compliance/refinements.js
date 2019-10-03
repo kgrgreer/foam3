@@ -16,7 +16,8 @@ foam.CLASS({
       tableCellFormatter: function(status) {
         return status.label;
       },
-      permissionRequired: true
+      permissionRequired: true,
+      section: 'administrative'
     }
   ]
 });
