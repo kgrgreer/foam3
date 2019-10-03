@@ -224,31 +224,27 @@ p({"class":"foam.nanos.boot.NSpec", "name":"smsToken",                         "
 p({"class":"foam.nanos.boot.NSpec", "name":"push",                             "serviceClass":"foam.nanos.notification.push.FirebasePushService","service":{"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}})
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"bareUserDAO",                      
-  "lazy":false,
-  "description":"Bare boned userDAO wrapped with essential decorators.", 
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "bareUserDAO",                      
+  "lazy": false,
+  "description": "Bare boned userDAO wrapped with essential decorators.", 
   "authenticate": false, 
-  "serviceScript":
-  """
-  return new foam.dao.EasyDAO.Builder(x)
-    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
-    .setPm(true)
-    .setPipelinePm(true)
-    .setSeqNo(true)
-    .setSeqStartingValue(1000)
-    .setOf(foam.nanos.auth.User.getOwnClassInfo())
-    .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
-    .setJournalName("users")
-    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-    .setAuthorize(false)
-    .build();
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setSeqStartingValue(1000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .build();
   """,
-  "client":
-  """
-  {
-    "of":"foam.nanos.auth.User"
-  }
+  "client": """
+    { "of":"foam.nanos.auth.User" }
   """
 })
 
@@ -260,16 +256,8 @@ p({
   "serviceScript":
   """
     bu = x.get("bareUserDAO");
-
-    // Note: can't use EasyDAO createdAware & deletedAware due to incorrect
-    //       chaining order.
-    da = new foam.nanos.auth.DeletedAwareDAO.Builder(x)
-      .setName("user")
-      .setDelegate(bu)
-      .build();
-    aect = new net.nanopay.contacts.AddExternalContactToken(x, da);
-    ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(aect).build();
-    r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
+    aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
+    r = new foam.nanos.ruler.RulerDAO(x, aect, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
@@ -287,14 +275,7 @@ p({
     pdce = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, asu);
     pde = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, pdce);
     cew = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, pde);
-    v = new foam.dao.ValidatingDAO(x, cew);
-
-    return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setOf(foam.nanos.auth.User.getOwnClassInfo())
-        .setInnerDAO(v)
-        .setAuthorize(false)
-        .build();
+    return new foam.dao.ValidatingDAO(x, cew);
   """
 })
 

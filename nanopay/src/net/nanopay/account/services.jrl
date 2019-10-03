@@ -69,6 +69,14 @@ p({
       .setInnerDAO(AAD)
       .setAuthorize(false)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
+
+      // These decorators are present on localAccountDAO.
+      .setDeletedAware(false)
+      .setCreatedAware(false)
+      .setCreatedByAware(false)
+      .setLastModifiedAware(false)
+      .setLastModifiedByAware(false)
+
       .build();
   """,
   "client":
