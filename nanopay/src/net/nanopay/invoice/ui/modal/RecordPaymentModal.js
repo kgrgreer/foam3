@@ -49,8 +49,8 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
-    { name: 'MSG_invail_date', message: 'Please enter a valid Paid date' },
-    { name: 'MSG_receive_date', message: 'Please enter the date you received payment' },
+    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
+    { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
@@ -160,7 +160,7 @@ foam.CLASS({
       label: 'Complete',
       code: function(X) {
         if ( ! X.data.paymentDate ) {
-          this.add(this.notify(this.MSG_invail_date, 'error'));
+          this.add(this.notify(this.MSG_RECEIVE_DATE, 'error'));
           return;
         }
 
@@ -170,7 +170,7 @@ foam.CLASS({
         var dateCheck = paymentDate > new Date();
 
         if ( isNaN(paymentDate) || dateCheck ) {
-          this.add(this.notify(this.MSG_receive_date, 'error'));
+          this.add(this.notify(this.MSG_INVALID_DATE, 'error'));
           return;
         }
         
