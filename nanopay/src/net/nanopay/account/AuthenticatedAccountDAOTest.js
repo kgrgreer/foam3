@@ -47,12 +47,13 @@ foam.CLASS({
       // run tests
       test(AuthenticatedAccountDAO_CreateAccountWithNullUser(x,accountDAO), "Put to the DAO without a user logged in fails");
       test(AuthenticatedAccountDAO_UpdateUnownedAccount(user1, user1Context, user2Context, accountDAO) , "Trying to update an unowned account throws an Exception");
-      test(AuthenticatedAccountDAO_findOwnedAccount(user1, user1Context, accountDAO), "A user can find an owned account");
       test(AuthenticatedAccountDAO_UpdateOwnedAccount(user1, user1Context, accountDAO), "A user can update an owned account");
       test(AuthenticatedAccountDAO_CreateAccountForOtherUser(user1, user2Context, accountDAO), "Trying to create an account with another user as owner throws an Exception");
       test(AuthenticatedAccountDAO_SelectOnTheDAO(user1, user2, user1Context, user2Context, accountDAO), "A select on the DAO only returns owned accounts");
       test(AuthenticatedAccountDAO_DeleteUnownedAccount(user1, user1Context, user2Context, accountDAO), "Cannot delete unowned bank account");
-      test(AuthenticatedAccountDAO_SummarilyDeleteAccounts(user1, user2, user1Context, user2Context, accountDAO), "A removeAll on the DAO only deletes owned accounts");
+
+      AuthenticatedAccountDAO_RunFindTests(user1, user1Context, user2, user2Context, accountDAO);
+      AuthenticatedAccountDAO_SummarilyDeleteAccounts(user1, user2, user1Context, user2Context, accountDAO);
 
       // cleanup
       userDAO.remove(user1);
@@ -115,27 +116,44 @@ foam.CLASS({
       `
     },
     {
-      name: 'AuthenticatedAccountDAO_findOwnedAccount',
-      type: 'boolean',
+      name: 'AuthenticatedAccountDAO_RunFindTests',
       args: [
         { name: 'user1', type: 'foam.nanos.auth.User' },
         { name: 'user1Context', type: 'Context' },
+        { name: 'user2', type: 'foam.nanos.auth.User' },
+        { name: 'user2Context', type: 'Context' },
         { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
       //  Create an account
       FObject putAccount = null;
       try {
-        DigitalAccount account = new DigitalAccount();
-        account.setOwner(user1.getId());
-        putAccount = accountDAO.put_(user1Context, account);
-        FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
-        return (updatedPutAccount != null);
+        // Create a new account as user 1.
+        DigitalAccount account1 = new DigitalAccount();
+        account1.setOwner(user1.getId());
+        account1 = (DigitalAccount) accountDAO.put_(user1Context, account1);
+
+        // Create a new account as user 2.
+        DigitalAccount account2 = new DigitalAccount();
+        account2.setOwner(user2.getId());
+        account2 = (DigitalAccount) accountDAO.put_(user2Context, account2);
+
+        // Find own account as user 1.
+        test(accountDAO.find_(user1Context, account1.getId()) != null, "A user can find an account that they own.");
+
+        // Try to find user 2's account as user 1.
+        boolean threw = false;
+        try {
+          accountDAO.find_(user1Context, account2.getId());
+        } catch (AuthorizationException e) {
+          threw = true;
+        }
+        test(threw, "A user cannot find an account that they do not own.");
       } catch (Throwable t) {
+        test(false, "Tests for 'find' failed due to an unexpected exception.");
         t.printStackTrace();
-        return false;
       } finally {
-        if ( putAccount != null) accountDAO.remove_(user1Context, putAccount);
+        accountDAO.removeAll();
       }
       `
     },
@@ -272,7 +290,6 @@ foam.CLASS({
     },
     {
       name: 'AuthenticatedAccountDAO_SummarilyDeleteAccounts',
-      type: 'boolean',
       args: [
         { name: 'user1', type: 'foam.nanos.auth.User' },
         { name: 'user2', type: 'foam.nanos.auth.User' },
@@ -281,27 +298,29 @@ foam.CLASS({
         { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
-      // create an accounts for different users, verify that a removeAll only deletes owned accounts
-      // create accounts
+      // Verify that removeAll only deletes accounts owned by the user doing the removeAll.
       try {
+        // Create an account as user 1.
         DigitalAccount account1 = new DigitalAccount();
         account1.setOwner(user1.getId());
-        accountDAO.put_(user1Context, account1);
+        account1 = (DigitalAccount) accountDAO.put_(user1Context, account1);
+
+        // Create an account as user 2.
         DigitalAccount account2 = new DigitalAccount();
         account2.setOwner(user2.getId());
-        FObject putAccount = accountDAO.put_(user2Context, account2);
+        account2 = (DigitalAccount) accountDAO.put_(user2Context, account2);
 
-        // delete accounts
+        // Call removeAll as user 2.
         accountDAO.removeAll_(user2Context, 0, 1000, null, null);
 
-        // check that User1 has accounts, and that User2 doesn't
-        FObject deletingUsersAccount = accountDAO.find_(user2Context, putAccount);
-        Sink sink =  accountDAO.select_(user1Context, new ArraySink(), 0, 1000, null, null);
-        List results = ((ArraySink) sink).getArray();
-        return (results.size() > 0 && deletingUsersAccount == null);
+        // Check that user 2's account was deleted.
+        test(accountDAO.find_(user2Context, account2.getId()) == null, "When a user calls 'removeAll', their accounts are deleted.");
+
+        // Check that user 1's account was not deleted.
+        test(accountDAO.find_(user1Context, account1.getId()) != null, "When a user calls 'removeAll', accounts owned by other users are not deleted.");
       } catch (Throwable t) {
+        test(false, "The 'removeAll' tests failed due to an unexpected exception.");
         t.printStackTrace();
-        return false;
       }
       `
     }

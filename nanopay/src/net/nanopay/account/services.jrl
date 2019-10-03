@@ -2,7 +2,8 @@ p({"class":"foam.nanos.boot.NSpec", "name":"localBalanceDAO",                   
 p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localAccountDAO",
   "lazy":false,
   "serviceScript":
   """
