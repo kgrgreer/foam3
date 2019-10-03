@@ -827,10 +827,11 @@ import static foam.mlang.MLang.*;
 // *******************
 // *       Vars      *
 // *******************
-DESTINATION_ACCOUNT_ID = 2;
-BILLING_MONTH = YearMonth.of(2019, 9);
-DUE_DATE = LocalDate.of(2019, 10, 7);
-DRY_RUN = true;
+CAD_REVENUE_ACCOUNT_ID = 2;             // Revenue (CAD) bank account id
+USD_REVENUE_ACCOUNT_ID = 2;             // Revenue (USD) bank account id
+BILLING_MONTH = YearMonth.of(2019, 9);  // 2019 September
+DUE_DATE = LocalDate.of(2019, 10, 14);  // 2019 October 14
+DRY_RUN = true;                         // Default to true
 
 // Fee exemption list (September 2019) - https://docs.google.com/spreadsheets/d/1c40CiZaNcnpWUMZj9EwASc9EYNy_XfM6YHfBK2Ig8BQ/edit#gid=0
 FEE_EXEMPTION_BUSINESS_LIST = new HashSet() {{
@@ -952,7 +953,8 @@ accountDAO = x.get("localAccountDAO");
 transactionDAO = x.get("localTransactionDAO");
 BlobService blobStore = (BlobService) x.get("blobStore");
 
-Account destinationAccount = (Account) accountDAO.find(DESTINATION_ACCOUNT_ID);
+cadRevenueAccount = accountDAO.find(CAD_REVENUE_ACCOUNT_ID);
+usdRevenueAccount = accountDAO.find(USD_REVENUE_ACCOUNT_ID);
 Date issueDate = new Date();
 
 print("Generating billing invoices (" + startDate.toString() + " to " + endDate.toString() + ")" + (DRY_RUN ? " for" : "") + ":");
@@ -977,6 +979,8 @@ transactionDAO.where(AND(new Predicate[] {
     Invoice invoice = invoiceByPayer.get(payerId);
     if ( invoice == null ) {
       Date paymentDate = getDate(DUE_DATE);
+      Account destinationAccount = transaction.getSourceCurrency().equals("CAD")
+        ? cadRevenueAccount : usdRevenueAccount;
       invoice = new Invoice.Builder(x)
         .setIssueDate(new Date())
         .setPaymentDate(paymentDate)
