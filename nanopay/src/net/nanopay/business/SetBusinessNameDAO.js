@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'net.nanopay.model.Business'
   ],
 
@@ -37,8 +38,9 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         long businessId = (long) getReferenceProperty().get(obj);
+        String name = (String) getNameProperty().get(obj);
 
-        if ( businessId == 0 ) return super.put_(x, obj);
+        if ( businessId == 0 || ! SafetyUtil.isEmpty(name) ) return super.put_(x, obj);
 
         Business business = (Business) ((DAO) getLocalBusinessDAO()).inX(x).find(businessId);
 
