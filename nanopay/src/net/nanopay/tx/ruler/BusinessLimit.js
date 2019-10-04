@@ -10,9 +10,16 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+      isAvailable: () => false
+    }
+  ],
+
   tableColumns: [
     'businessName',
-    'name',
+    'description',
     'business',
     'enabled'
   ],
@@ -34,31 +41,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'after',
-      hidden: true
-    },
-    {
-      name: 'validity',
-      hidden: true
-    },
-    {
-      name: 'saveHistory',
-      hidden: true
-    },
-    {
-      name: 'daoKey',
-      hidden: true
-    },
-    {
-      name: 'operation',
-      hidden: true
-    },
-    {
       name: 'ruleGroup',
-      hidden: true
-    },
-    {
-      name: 'currentLimits',
       hidden: true
     },
     {
@@ -92,7 +75,6 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      hidden: true,
       javaGetter: `
         BusinessLimitPredicate blp = new BusinessLimitPredicate();
         blp.setBusiness(getBusiness());
@@ -115,7 +97,7 @@ foam.CLASS({
       javaCode: `
         super.validate(x);
         BusinessLimit busLimit = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(AND(
-          EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
+          EQ(BusinessLimit.BUSINESS, this.getBusiness()),
           EQ(BusinessLimit.PERIOD, this.getPeriod()),
           EQ(BusinessLimit.SEND, this.getSend())
         ));
