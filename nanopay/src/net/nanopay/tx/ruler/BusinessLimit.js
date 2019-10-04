@@ -10,6 +10,13 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  tableColumns: [
+    'businessName',
+    'name',
+    'business',
+    'enabled'
+  ],
+
   properties: [
     {
       name: 'id',
@@ -63,11 +70,25 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: x.businessDAO,
           placeholder: '---- Please Select a Business ----',
-          objToChoice: function(a){
+          objToChoice: function(a) {
             return [a.id, a.businessName];
           }
         }, x);
-      }
+      },
+      tableHeaderFormatter: function() {
+        this.add('Business ID');
+      },
+      tableWidth: 120,
+      readMode: 'HIDDEN' // Show business name instead in read mode.
+    },
+    {
+      class: 'String',
+      name: 'businessName',
+      label: 'Business',
+      documentation: 'This property exists so we can display the business name in the table without doing a lookup for each row.',
+      createMode: 'HIDDEN',
+      updateMode: 'HIDDEN',
+      section: 'basicInfo'
     },
     {
       name: 'predicate',
@@ -77,7 +98,7 @@ foam.CLASS({
         blp.setBusiness(getBusiness());
         blp.setSend(getSend());
         return blp;
-      ` 
+      `
     }
   ],
 
