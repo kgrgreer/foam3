@@ -30,6 +30,23 @@ foam.CLASS({
     { name: 'COMPLIANCE_REPORT_WARNING', message: ' has not completed the business profile, and cannot generate compliance documents.' }
   ],
 
+  sections: [
+    {
+      name: 'business',
+      title: 'Business Information'
+    },
+    {
+      name: 'personal',
+      title: 'Personal Information',
+      isAvailable: () => false
+    },
+    {
+      name: 'administrative',
+      help: 'Properties that are used internally by the system.',
+      permissionRequired: true
+    },
+  ],
+
   properties: [
     {
       class: 'String',
@@ -41,6 +58,43 @@ foam.CLASS({
           return 'Business name cannot be greater than 35 characters.';
         }
       }
+    },
+     {
+      class: 'Reference',
+      targetDAOKey: 'businessTypeDAO',
+      name: 'businessTypeId',
+      of: 'net.nanopay.model.BusinessType',
+      documentation: 'The ID of the proprietary details of the business.',
+      section: 'business'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessSectorDAO',
+      name: 'businessSectorId',
+      of: 'net.nanopay.model.BusinessSector',
+      documentation: 'The ID of the general economic grouping for the business.',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true
+        };
+      },
+      section: 'business'
+    },
+    {
+      name: 'bic',
+      label: 'Business Identification Code',
+      documentation: 'ISO 9362 Business Identification Code (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
+      class: 'String',
+      section: 'business'
     },
     {
       class: 'String',
@@ -61,6 +115,32 @@ foam.CLASS({
       name: 'loginEnabled',
       documentation: 'Determines whether the User can login to the platform.',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'loginEnabled',
+      value: false,
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'emailVerified',
+      hidden: true
+    },
+    {
+      class: 'Password',
+      name: 'desiredPassword',
+      hidden: true,
+    },
+    {
+      class: 'DateTime',
+      name: 'passwordLastModified',
+      hidden: true,
+    },
+    {
+      class: 'DateTime',
+      name: 'passwordExpiry',
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -147,6 +227,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'businessHoursEnabled',
+      documentation: 'Determines whether business hours are enabled for the User to set.',
+      value: false,
+      section: 'business'
+    },
+    {
+      class: 'Boolean',
       name: 'onboarded',
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
@@ -200,10 +287,16 @@ foam.CLASS({
       the User.`
     },
     {
+      name: 'businessIdentificationCode',
+      documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
+      class: 'String',
+      section: 'business'
+    },
+    {
       class: 'String',
       name: 'businessRegistrationNumber',
       width: 35,
-      documentation: `The Business Identification Number (BIN) that identifies your business
+      documentation: `The Business Registration Number (BRN) that identifies your business
         to federal, provincial or municipal governments and is used by the business
         for tax purposes. This number is typically issued by an Issuing Authority such as
         the CRA.`,
@@ -249,9 +342,18 @@ foam.CLASS({
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/business-placeholder.png'
-      }
-    }
-  ],
+      },
+      section: 'business'
+    },
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+      value: false,
+      documentation: `Determines whether a user has been onboarded to
+        a partner platform to support international payments.`,
+      section: 'business'
+    },
+ ],
 
   javaImports: [
     'foam.dao.DAO',

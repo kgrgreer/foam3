@@ -371,8 +371,9 @@ foam.CLASS({
                        sender.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                        sender.setGroup("system");
                        sender.setSpid(spId);
-                       sender.setBusinessTypeId(0);
-                       sender.setBusinessSectorId(1);
+                       // REVIEW: removed with User/Business split
+                       // sender.setBusinessTypeId(0);
+                       // sender.setBusinessSectorId(1);
                        //sender.setStatus("Active");
                       // sender.setOnboarded(true);
 
@@ -469,8 +470,9 @@ foam.CLASS({
                       receiver.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                       receiver.setGroup("system");
                       receiver.setSpid(spId);
-                      receiver.setBusinessTypeId(0);
-                      receiver.setBusinessSectorId(1);
+                       // REVIEW: removed with User/Business split
+                      // receiver.setBusinessTypeId(0);
+                      // receiver.setBusinessSectorId(1);
                       //receiver.setStatus("Active");
                       //receiver.setOnboarded(true);
 
