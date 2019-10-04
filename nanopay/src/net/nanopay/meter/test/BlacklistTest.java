@@ -12,6 +12,9 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Business;
 import net.nanopay.tx.model.Transaction;
+import foam.nanos.session.Session;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.UserUserJunction;
 
 
 public class BlacklistTest extends Test {
@@ -22,6 +25,7 @@ public class BlacklistTest extends Test {
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
+    DAO groupDAO = (DAO) x.get("groupDAO");
 
     ////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// SETUP ////////////////////////////////////////////
@@ -104,9 +108,31 @@ public class BlacklistTest extends Test {
     busAdmin = (Business) busAdmin.fclone();
     busAdmin.setCompliance(ComplianceStatus.PASSED);
     busAdmin = (Business) bareUserDAO.put(busAdmin);
-    busAdminContext = Auth.sudo(x, busAdmin);
 
-    invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
+    // Group employeeGroup = new Group();
+    // employeeGroup.setId("smeBusinessEmployee");
+    // employeeGroup = (Group) groupDAO.put(employeeGroup);
+
+    // Group adminGroup = new Group();
+    // adminGroup.setId("smeBusinessAdmin");
+    // adminGroup = (Group) groupDAO.put(adminGroup);
+
+    // Create a junction to signify that employee2 is an employee of the business.
+    UserUserJunction junc = new UserUserJunction();
+    junc.setSourceId(employee2.getId());
+    junc.setTargetId(busAdmin.getId());
+    junc.setGroup("smeBusinessEmployee");
+    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    agentJunctionDAO.put(junc);
+
+    // busAdmin.getAgents(x).add(employee2);
+
+    Session session = (Session) x.get(Session.class);
+    session.setUserId(busAdmin.getId());
+    session.setAgentId(employee2.getId());
+    X businessAdminContext = session.applyTo(x);
+
+    invoice2 = (Invoice) invoiceDAO.inX(businessAdminContext).put(invoice2);
     Transaction transaction2 = new Transaction();
     transaction2.setSourceAccount(invoice2.getAccount());
     transaction2.setDestinationAccount(invoice2.getDestinationAccount());
@@ -116,7 +142,7 @@ public class BlacklistTest extends Test {
     transaction2.setInvoiceId(invoice2.getId());
 
     try {
-      Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction2);
+      Transaction result = (Transaction) transactionDAO.inX(businessAdminContext).put(transaction2);
       test(result != null, "Successfully put the transaction to the TransactionDAO after setting compliance to passed.");
     } catch (Throwable t) {
       test(false, "Unexpected exception putting transaction: " + t);
