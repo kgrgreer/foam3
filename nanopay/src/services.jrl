@@ -984,3 +984,32 @@ p({
     "class": "net.nanopay.bank.BankHolidayService"
   }
 })
+
+// We need to override ruleDAO on the nanopay side so we can add the
+// SetBusinessNameDAO decorator.
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ruleDAO",
+  "serve": true,
+  "serviceScript": """
+    setBusinessNameDAO = new net.nanopay.business.SetBusinessNameDAO.Builder(x)
+      .setReferenceProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS)
+      .setNameProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS_NAME)
+      .setDelegate(null)
+      .build();
+    ed = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setGuid(true)
+      .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("rules")
+      .setDecorator(setBusinessNameDAO)
+      .build();
+    return new foam.dao.ValidatingDAO(x, ed);
+  """,
+  "client": """
+    {
+      "of": "foam.nanos.ruler.Rule"
+    }
+  """
+})
