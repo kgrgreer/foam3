@@ -63,9 +63,7 @@ foam.CLASS({
             'name',
             'flagImage',
             'denomination',
-            'institution',
-            'branch',
-            'accountNumber',
+            'summary',
             'status'
           ],
           contextMenuActions: [
@@ -114,8 +112,7 @@ foam.CLASS({
                 cadAvailable: self.availableCAD
               }, self);
             }
-          },
-          // isAvailable: function() { return self.available; }
+          }
         });
       }
     },
