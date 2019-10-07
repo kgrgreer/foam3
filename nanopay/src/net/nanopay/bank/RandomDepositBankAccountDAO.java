@@ -35,7 +35,7 @@ public class RandomDepositBankAccountDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    if ( ! ( obj instanceof BankAccount ) ) {
+    if ( ! ( obj instanceof CABankAccount ) ) {
       return super.put_(x, obj);
     }
 
