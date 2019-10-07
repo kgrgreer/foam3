@@ -9,6 +9,8 @@ p({"class":"foam.nanos.auth.Permission","id":"abliitransaction.ro.status","descr
 p({"class":"foam.nanos.auth.Permission","id":"abliitransaction.rw.status","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"compliancetransaction.ro.status","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"compliancetransaction.rw.status","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"afexbeneficiarycompliancetransaction.ro.status","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"afexbeneficiarycompliancetransaction.rw.status","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"account.create","description":"Permission to create accounts."})
 p({"class":"foam.nanos.auth.Permission","id":"account.delete.*","description":"Permission to delete any account."})
 p({"class":"foam.nanos.auth.Permission","id":"account.read.*","description":"Permission to read any account."})
