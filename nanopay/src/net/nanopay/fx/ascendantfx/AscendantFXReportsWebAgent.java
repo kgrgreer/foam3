@@ -406,6 +406,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       phoneNumber = signingOfficer.getPhone().getNumber();
     }
     String email = signingOfficer.getEmail();
+    String suiteNumber = signingOfficer.getAddress().getSuite();
     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
     String city = signingOfficer.getAddress().getCity();
     String province = signingOfficer.getAddress().getRegionId();
@@ -437,6 +438,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
+      list.add(new ListItem("Suite No.: " + suiteNumber));
       list.add(new ListItem("Residential street address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + province));
@@ -526,6 +528,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
+          String suiteNumber = beneficialOwner.getAddress().getSuite();
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
@@ -541,6 +544,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
+          list.add(new ListItem("Suite No: " + suiteNumber));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
@@ -578,10 +582,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Company Directors"));
 
       document.add(Chunk.NEWLINE);
-      List list = new List(List.UNORDERED);
-      for ( int i = 0; i < business.getBusinessDirectors().length; i++ ) {
-        BusinessDirector businessDirector = (BusinessDirector) business.getBusinessDirectors()[i];
-        list.add(new ListItem(businessDirector.getFirstName() + " " + businessDirector.getLastName()));
+      for ( String directorName : business.getBusinessDirectors()) {
+        list.add(new ListItem(directorName));
       }
       document.add(list);
       document.add(Chunk.NEWLINE);
