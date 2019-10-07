@@ -107,11 +107,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the User can login to the platform.',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'loginEnabled',
       value: false,
       hidden: true
     },
