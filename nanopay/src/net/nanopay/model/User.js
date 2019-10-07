@@ -39,34 +39,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
-      targetDAOKey: 'businessTypeDAO',
-      name: 'businessTypeId',
-      of: 'net.nanopay.model.BusinessType',
-      documentation: 'The ID of the proprietary details of the business.',
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'businessSectorDAO',
-      name: 'businessSectorId',
-      of: 'net.nanopay.model.BusinessSector',
-      documentation: 'The ID of the general economic grouping for the business.',
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
-          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
-          sections: [
-            {
-              heading: 'Industries',
-              dao: X.businessSectorDAO
-            }
-          ],
-          search: true
-        };
-      }
-    },
-    {
       class: 'Boolean',
       name: 'invited',
       value: false,
@@ -250,16 +222,10 @@ foam.CLASS({
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-      value: false,
-      documentation: `Determines whether a user has been onboarded to 
-        a partner platform to support international payments.`
-    },
-  ],
+      },
+      section: 'personal'
+    }
+ ],
 
   methods: [
     {
