@@ -93,10 +93,17 @@ foam.CLASS({
     ^ .accountProfileView-hidden {
       display: none;
     }
-    ^ img {
-      padding-top: 0px;
-      height: 24px;
+    ^ .foam-nanos-u2-navigation-BusinessLogoView {
+      width: auto;
       display: inline-block;
+      text-align: center;
+      padding-top: 0px;
+      padding-left: 0px;
+    }
+    ^ .foam-nanos-u2-navigation-BusinessLogoView img {
+      padding-top: 0px;
+      display: inline-block;
+      height: 40px !important;
       width: 40px;
       padding-left: 0px;
       padding-top: 0px;
@@ -186,7 +193,7 @@ foam.CLASS({
           .start('a')
             .addClass('account-button')
             .addClass('sme-noselect')
-            .tag({ class: 'foam.u2.tag.Image', data: '/images/ablii-logo.svg' })
+            .tag({ class: 'foam.nanos.u2.navigation.BusinessLogoView' })
             .start()
               .addClass('account-button-info-block')
               .start()
