@@ -90,13 +90,6 @@ foam.CLASS({
       section: 'business'
     },
     {
-      name: 'bic',
-      label: 'Business Identification Code',
-      documentation: 'ISO 9362 Business Identification Code (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
-      class: 'String',
-      section: 'business'
-    },
-    {
       class: 'String',
       name: 'businessPermissionId',
       documentation: `A generated name used in permission strings related to the business.
