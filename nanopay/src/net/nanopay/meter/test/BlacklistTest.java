@@ -51,13 +51,23 @@ public class BlacklistTest extends Test {
     busAdminBankAccount.setStatus(BankAccountStatus.VERIFIED);
     busAdminBankAccount = (CABankAccount) busAdmin.getAccounts(busAdminContext).put_(x, busAdminBankAccount);
 
+    accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests business employee test account")).removeAll();
+    CABankAccount busEmployeeBankAccount = new CABankAccount();
+    busEmployeeBankAccount.setName("Blacklist Tests business employee test account");
+    busEmployeeBankAccount.setDenomination("CAD");
+    busEmployeeBankAccount.setAccountNumber("87654321");
+    busEmployeeBankAccount.setInstitution(1);
+    busEmployeeBankAccount.setBranchId("54321");
+    busEmployeeBankAccount.setStatus(BankAccountStatus.VERIFIED);
+    busEmployeeBankAccount = (CABankAccount) busAdmin.getAccounts(busAdminContext).put_(x, busEmployeeBankAccount);
+
 
     // Setup destination for invoice
     bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee2@example.com")).removeAll();
     User employee2 = new User();
     employee2.setEmail("employee2@example.com");
     employee2.setFirstName("Employee");
-    employee2.setGroup("smeBusinessEmployee");
+    employee2.setGroup("smeBusinessAdmin");
     employee2.setEmailVerified(true); // Required to send or receive money.
     employee2.setCompliance(ComplianceStatus.PASSED);
     employee2 = (User) bareUserDAO.put(employee2);
@@ -100,41 +110,38 @@ public class BlacklistTest extends Test {
     invoice2.setPayeeId(employee2.getId());
     invoice2.setDestinationCurrency("CAD");
     invoice2.setAccount(busAdminBankAccount.getId());
+    invoice2.setDestinationAccount(busEmployeeBankAccount.getId());
     try {
       invoiceDAO.inX(busAdminContext).put(invoice2);
     } catch (Throwable t) {
       test(true, "Invoice not created until business passes compliance passing proper compliance.");
     }
 
-    // Set compliance to passed and try to put the invoice and transaction again
+    // Set compliance to passed, 2FA?, wiring up the user-agent session
+    // and trying to put the invoice and payment transaction
     busAdmin = (Business) busAdmin.fclone();
     busAdmin.setCompliance(ComplianceStatus.PASSED);
     busAdmin = (Business) bareUserDAO.put(busAdmin);
-
-    // Group employeeGroup = new Group();
-    // employeeGroup.setId("smeBusinessEmployee");
-    // employeeGroup = (Group) groupDAO.put(employeeGroup);
-
-    // Group adminGroup = new Group();
-    // adminGroup.setId("smeBusinessAdmin");
-    // adminGroup = (Group) groupDAO.put(adminGroup);
 
     // Create a junction to signify that employee2 is an employee of the business.
     UserUserJunction junc = new UserUserJunction();
     junc.setSourceId(employee2.getId());
     junc.setTargetId(busAdmin.getId());
-    junc.setGroup("smeBusinessEmployee");
+    junc.setGroup("smeBusinessAdmin");
     DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     agentJunctionDAO.put(junc);
-
-    // busAdmin.getAgents(x).add(employee2);
 
     Session session = (Session) busAdminContext.get(Session.class);
     session.setUserId(busAdmin.getId());
     session.setAgentId(employee2.getId());
     busAdminContext = session.applyTo(busAdminContext);
 
-    invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
+    try {
+      invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
+    } catch (Throwable t) {
+      test(false, "Unexpected exception putting invoice after setting compliance to passed: " + t);
+    }
+
     Transaction transaction2 = new Transaction();
     transaction2.setSourceAccount(invoice2.getAccount());
     transaction2.setDestinationAccount(invoice2.getDestinationAccount());
@@ -147,7 +154,7 @@ public class BlacklistTest extends Test {
       Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction2);
       test(result != null, "Successfully put the transaction to the TransactionDAO after setting compliance to passed.");
     } catch (Throwable t) {
-      test(false, "Unexpected exception putting transaction: " + t);
+      test(false, "Unexpected exception putting transaction after setting compliance to passed: " + t);
     }
   }
 }
