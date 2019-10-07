@@ -101,10 +101,9 @@ foam.CLASS({
       padding-left: 0px;
     }
     ^ .foam-nanos-u2-navigation-BusinessLogoView img {
-      padding-top: 0px;
       display: inline-block;
-      height: 40px !important;
-      width: 40px;
+      height: 30px;
+      width: 30px;
       padding-left: 0px;
       padding-top: 0px;
       vertical-align: middle;
