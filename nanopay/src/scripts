@@ -808,6 +808,7 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.InvoicedFeeLineItem;
@@ -991,8 +992,12 @@ transactionDAO.where(AND(new Predicate[] {
         .setDestinationAccount(destinationAccount.getId())
         .setPayeeId(destinationAccount.getOwner())
         .setDestinationCurrency(destinationAccount.getDenomination())
-        .setNote(NOTE);
+        .setNote(NOTE)
         .build();
+      BankAccount payerBankAccount = BankAccount.findDefault(x, payer, transaction.getSourceCurrency());
+      if ( payerBankAccount != null ) {
+        invoice.setAccount(payerBankAccount.getId());
+      }
       invoiceByPayer.put(payerId, invoice);
       invoiceLineItemByPayer.put(payerId, new ArrayList());
     }
