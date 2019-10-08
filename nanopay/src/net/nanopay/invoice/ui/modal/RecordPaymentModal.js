@@ -111,6 +111,11 @@ foam.CLASS({
       margin-top: 20px;
       float: right;
     }
+    ^ .currency-view {
+      color: #9ba1a6 !important;
+      background-color: #f5f7fa !important;
+      border: 1px solid #cbcfd4 !important;
+    }
   `,
   
   methods: [
@@ -133,7 +138,7 @@ foam.CLASS({
         .start()
           .start().addClass('label').add(this.AMOUNT_LABEL).end()
           .start(this.CURRENCY_TYPE, { mode$: this.mode$ }).end()
-          .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).end()
+          .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).enableClass('currency-view', this.mode$.map((v)=> v === foam.u2.DisplayMode.DISABLED)).end()
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
