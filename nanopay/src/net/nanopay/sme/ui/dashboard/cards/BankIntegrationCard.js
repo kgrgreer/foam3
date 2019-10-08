@@ -74,7 +74,7 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
-        if ( this.user.address.countryId === 'US' ) {
+        if ( this.user.address.countryId === 'US' && !this.isVerified) {
           return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
         }
         if ( isAccountThere && this.isVerified ) {
