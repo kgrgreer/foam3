@@ -139,7 +139,7 @@ foam.CLASS({
           .start().addClass('label').add(this.AMOUNT_LABEL).end()
           .start(this.CURRENCY_TYPE, { mode$: this.mode$ }).end()
           .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).addClass('currency-view').end()
-          .end()
+        .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
           .start(this.NOTE).end()
