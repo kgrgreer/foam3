@@ -53,6 +53,10 @@ foam.CLASS({
     ^ .empty-state {
       color: #8e9090;
     }
+    ^ .empty-box {
+      height: 60px;
+      padding:14px 0;
+    }
   `,
 
   properties: [
@@ -96,7 +100,8 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .show(this.showEmptyState$)
-          .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
+          .addClass('empty-state')
+          .start().add(this.NO_ACTION_REQUIRED).addClass('empty-box').end()
         .end()
         .start()
           .start()
