@@ -92,10 +92,14 @@ foam.CLASS({
             newInvoiceStatus == InvoiceStatus.UNPAID
           &&
           isARecievable;
+        boolean invoiceIsPartOfFeesScheduledInvoice = 
+          oldInvoiceStatus == null
+          && 
+          newInvoiceStatus == InvoiceStatus.SCHEDULED;
     
         // Performing Actions based on whats been set to true.
-        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete ) {
-          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete" };
+        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete || invoiceIsPartOfFeesScheduledInvoice) {
+          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete", "scheduledEmail" };
           HashMap<String, Object> args = null;
           boolean invoiceIsToAnExternalUser = invoice.getExternal();
           DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -139,7 +143,10 @@ foam.CLASS({
               args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "receivable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-            
+            if ( invoiceIsPartOfFeesScheduledInvoice ) {
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+            }
           } catch (Exception e) {
             e.printStackTrace();
           }
