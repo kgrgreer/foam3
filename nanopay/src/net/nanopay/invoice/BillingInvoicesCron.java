@@ -22,6 +22,7 @@ import net.nanopay.tx.model.TransactionStatus;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.*;
 
@@ -68,6 +69,11 @@ public class BillingInvoicesCron implements ContextAgent {
     "will be debited from your account on the 5th business day from the date this invoice was issued. Please " +
     "ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly " +
     "Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net. ";
+
+  /**
+   * Dry run option
+   */
+  private static boolean DRY_RUN = false;
 
   /**
    * BillingInvoice by payer/business
@@ -165,7 +171,10 @@ public class BillingInvoicesCron implements ContextAgent {
         }
       }
     });
-    putInvoices(x);
+    if ( DRY_RUN )
+      dryRunInvoices(x);
+    else
+      putInvoices(x);
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency
@@ -237,6 +246,10 @@ public class BillingInvoicesCron implements ContextAgent {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 
+  public void setDryRun(boolean dry_run) {
+    DRY_RUN = dry_run;
+  }
+
   /**
    * Put invoices along with line items into DAO.
    */
@@ -248,6 +261,22 @@ public class BillingInvoicesCron implements ContextAgent {
         invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
         invoiceByPayer_.put(invoice.getPayeeId(), (BillingInvoice) invoiceDAO.put_(x, invoice));
       }
+    }
+  }
+
+  /**
+   * dryRunInvoices(x) will print out all the invoices generated instead of putting them into DAO.
+   */
+  protected void dryRunInvoices(X x) {
+    for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
+      if ( invoice.getAmount() == 0 ) continue;
+
+      User payer = invoice.findPayerId(x);
+      List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
+      System.out.print(" . " + payer.getOrganization() + " (id:" + payer.getId() + ")\n");
+      System.out.print("   . "
+        + lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\\n   . "))
+        + "\n");
     }
   }
 }
