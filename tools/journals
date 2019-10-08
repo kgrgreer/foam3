@@ -27,6 +27,7 @@ groupPermissionJunctions
 groups
 htmlDoc
 identificationTypes
+InstitutionPaymentProvider
 institutionPurposeCodes
 institutions
 jobTitles

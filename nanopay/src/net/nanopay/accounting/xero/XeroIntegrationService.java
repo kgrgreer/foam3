@@ -133,8 +133,8 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         .setPostalCode(xeroAddress.getPostalCode() != null ? xeroAddress.getPostalCode() : "")
         .setCountryId(country != null ? country.getCode() : null)
         .setRegionId(region != null ? region.getCode() : null)
-        .setType(xeroAddress.getAddressType().value())
-        .setVerified(true)
+        // .setType(xeroAddress.getAddressType().value())
+        // .setVerified(true)
         .build();
 
       newContact.setBusinessAddress(nanoAddress);

@@ -406,6 +406,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       phoneNumber = signingOfficer.getPhone().getNumber();
     }
     String email = signingOfficer.getEmail();
+    String suiteNumber = signingOfficer.getAddress().getSuite();
     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
     String city = signingOfficer.getAddress().getCity();
     String province = signingOfficer.getAddress().getRegionId();
@@ -420,7 +421,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
-    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]SigningOfficer" + Long.toString(number) + ".pdf";
+    String path = "/tmp/ComplianceReport/[" + (business.getBusinessName()).replace("/", "") + "]SigningOfficer" + Long.toString(number) + ".pdf";
 
     try {
       Document document = new Document();
@@ -437,6 +438,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
+      list.add(new ListItem("Suite No.: " + suiteNumber));
       list.add(new ListItem("Residential street address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + province));
@@ -497,7 +499,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateBeneficialOwners(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path = "/tmp/ComplianceReport/[" + businessName + "]BeneficialOwners.pdf";
 
     try {
@@ -526,6 +528,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
+          String suiteNumber = beneficialOwner.getAddress().getSuite();
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
@@ -541,6 +544,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
+          list.add(new ListItem("Suite No: " + suiteNumber));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
@@ -570,7 +574,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateCompanyDirectorsList(X x, Business business) {
     if ( null == business ) return null;
     Logger logger = (Logger) x.get("logger");
-    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]Directors.pdf";
+    String path = "/tmp/ComplianceReport/[" + (business.getBusinessName()).replace("/", "") + "]Directors.pdf";
     try {
       Document document = new Document();
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
@@ -607,7 +611,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
 
     BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
       .find(AND(
@@ -743,7 +747,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File getBusinessDoc(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
     try {
@@ -789,7 +793,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
   private File getSigningOfficerID(X x, Business business, User so, int number) {
     Logger logger  = (Logger) x.get("logger");
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
 
@@ -823,7 +827,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File getBeneficialOwnersDoc(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
 
     String path;
     Blob blob;
@@ -874,7 +878,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       return null;
     }
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
     try {
@@ -911,7 +915,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setContentType("multipart/form-data");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String downloadName = "[" + businessName + "]ComplianceDocs.zip";
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
