@@ -23,7 +23,7 @@ public class RandomDepositBankAccountDAO
     setX(x);
     setDelegate(delegate);
 
-    this.setUseBMO(false);
+    this.setUseBMO(true);
   }
 
   public DAO getTransactionDAO() {
