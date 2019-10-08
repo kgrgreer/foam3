@@ -105,9 +105,7 @@ foam.CLASS({
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
-          business.setBusinessPhone(businessOnboarding.getPhone());
           business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
           business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
           business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 

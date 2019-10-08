@@ -3,6 +3,7 @@ package net.nanopay.tx.test;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
 import foam.nanos.ruler.Operations;
@@ -34,7 +35,7 @@ public class TransactionLimitTest extends Test {
   public void runTest(X x) {
     createAccounts(x);
     populateSenderAccount(x);
-    DAO ruleDAO = new SequenceNumberDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
+    DAO ruleDAO = new GUIDDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
     x = x.put("ruleDAO", ruleDAO);
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO = new RulerDAO(x, txnDAO, "transactionDAO");
@@ -96,7 +97,7 @@ public class TransactionLimitTest extends Test {
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txDAO.put_(x, tx2),
-      "This transaction exceeds your daily transaction limit. Your current available limit is 0.1 dollars. If you require further assistance, please contact us. ",
+      "This transaction exceeds your daily transaction limit. Your current available limit is $0.10. If you require further assistance, please contact us. ",
       RuntimeException.class), "next transaction for 100L throws exception");
 
     DigitalTransaction tx3 = new DigitalTransaction();

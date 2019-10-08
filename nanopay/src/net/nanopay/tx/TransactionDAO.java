@@ -42,7 +42,12 @@ public class TransactionDAO
 {
   protected DAO balanceDAO_;
   protected DAO userDAO_;
-  private   DAO writableBalanceDAO_ = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+  private   DAO writableBalanceDAO_ = initWriteableBalanceDAO_();
+  private final DAO initWriteableBalanceDAO_() {
+    foam.dao.MDAO d = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+    d.addIndex(Balance.ACCOUNT);
+    return d;
+  }
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
