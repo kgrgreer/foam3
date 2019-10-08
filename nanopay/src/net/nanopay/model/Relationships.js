@@ -138,6 +138,10 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
+  targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     hidden: true
   },
