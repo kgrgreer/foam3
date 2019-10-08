@@ -31,48 +31,47 @@ public class BlacklistTest extends Test {
     ///////////////////////////////// SETUP ////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
-    // Setup the business admin and account to pay from
-    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "busadmin@example.com")).removeAll();
-    Business busAdmin = new Business();
-    busAdmin.setFirstName("BusinessAdmin");
-    busAdmin.setEmail("busadmin@example.com");
-    busAdmin.setGroup("smeBusinessAdmin");
-    busAdmin.setEmailVerified(true); // Required to send or receive money.
-    busAdmin = (Business) bareUserDAO.put(busAdmin);
-    X busAdminContext = Auth.sudo(x, busAdmin);
+    // Setup the business admin to pay from
+    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).removeAll();
+    Business myBusiness = new Business();
+    myBusiness.setBusinessName("MyBusiness");
+    myBusiness.setEmail("busadmin@example.com");
+    myBusiness.setGroup("smeBusinessAdmin");
+    myBusiness.setEmailVerified(true); // Required to send or receive money.
+    myBusiness = (Business) bareUserDAO.put(myBusiness);
+    X myBusinessContext = Auth.sudo(x, myBusiness);
 
-    accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests business admin test account")).removeAll();
-    CABankAccount busAdminBankAccount = new CABankAccount();
-    busAdminBankAccount.setName("Blacklist Tests business admin test account");
-    busAdminBankAccount.setDenomination("CAD");
-    busAdminBankAccount.setAccountNumber("12345678");
-    busAdminBankAccount.setInstitution(1);
-    busAdminBankAccount.setBranchId("12345");
-    busAdminBankAccount.setStatus(BankAccountStatus.VERIFIED);
-    busAdminBankAccount = (CABankAccount) busAdmin.getAccounts(busAdminContext).put_(x, busAdminBankAccount);
+    // Setting the external business to pay to
+    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "evilcorp@example.com")).removeAll();
+    Business externalBusiness = new Business();
+    externalBusiness.setEmail("evilcorp@example.com");
+    externalBusiness.setBusinessName("EvilCorp");
+    externalBusiness.setGroup("smeBusinessAdmin");
+    externalBusiness.setEmailVerified(true); // Required to send or receive money.
+    externalBusiness.setCompliance(ComplianceStatus.PASSED);
+    externalBusiness = (Business) bareUserDAO.put(externalBusiness);
+    X externalBusinessContext = Auth.sudo(x, externalBusiness);
 
-    accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests business employee test account")).removeAll();
-    CABankAccount busEmployeeBankAccount = new CABankAccount();
-    busEmployeeBankAccount.setName("Blacklist Tests business employee test account");
-    busEmployeeBankAccount.setDenomination("CAD");
-    busEmployeeBankAccount.setAccountNumber("87654321");
-    busEmployeeBankAccount.setInstitution(1);
-    busEmployeeBankAccount.setBranchId("54321");
-    busEmployeeBankAccount.setStatus(BankAccountStatus.VERIFIED);
-    busEmployeeBankAccount = (CABankAccount) busAdmin.getAccounts(busAdminContext).put_(x, busEmployeeBankAccount);
+    // setting up their respective accounts
+    accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests myBusiness test account")).removeAll();
+    CABankAccount myBusinessBankAccount = new CABankAccount();
+    myBusinessBankAccount.setName("Blacklist Tests myBusiness test account");
+    myBusinessBankAccount.setDenomination("CAD");
+    myBusinessBankAccount.setAccountNumber("12345678");
+    myBusinessBankAccount.setInstitution(1);
+    myBusinessBankAccount.setBranchId("12345");
+    myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myBusinessContext).put_(x, myBusinessBankAccount);
 
-
-    // Setup destination for invoice
-    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee2@example.com")).removeAll();
-    User employee2 = new User();
-    employee2.setEmail("employee2@example.com");
-    employee2.setFirstName("Employee");
-    employee2.setGroup("smeBusinessAdmin");
-    employee2.setEmailVerified(true); // Required to send or receive money.
-    employee2.setCompliance(ComplianceStatus.PASSED);
-    employee2 = (User) bareUserDAO.put(employee2);
-    //X employee2Context = Auth.sudo(x, employee2);
-
+    accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests externalBusiness test account")).removeAll();
+    CABankAccount externalBusinessBankAccount = new CABankAccount();
+    externalBusinessBankAccount.setName("Blacklist Tests externalBusiness test account");
+    externalBusinessBankAccount.setDenomination("CAD");
+    externalBusinessBankAccount.setAccountNumber("87654321");
+    externalBusinessBankAccount.setInstitution(1);
+    externalBusinessBankAccount.setBranchId("54321");
+    externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+    externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(externalBusinessContext).put_(x, externalBusinessBankAccount);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// TEST CODE ///////////////////////////////////////////
@@ -80,10 +79,11 @@ public class BlacklistTest extends Test {
 
     Invoice invoice = new Invoice();
     invoice.setAmount(1);
-    invoice.setPayerId(busAdmin.getId());
-    invoice.setPayeeId(employee2.getId());
+    invoice.setPayerId(myBusiness.getId());
+    invoice.setPayeeId(externalBusiness.getId());
     invoice.setDestinationCurrency("CAD");
-    invoice.setAccount(busAdminBankAccount.getId());
+    invoice.setAccount(myBusinessBankAccount.getId());
+    invoice.setDestinationAccount(externalBusinessBankAccount.getId());
 
     // Use system context to create invoice since invoice must exist for testing
     // the `transaction` below.
@@ -97,7 +97,7 @@ public class BlacklistTest extends Test {
     transaction.setAmount(invoice.getAmount());
     transaction.setInvoiceId(invoice.getId());
     try { 
-      Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction);
+      Transaction result = (Transaction) transactionDAO.inX(myBusinessContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
     } catch (Throwable t) {
       t.printStackTrace();
@@ -106,38 +106,38 @@ public class BlacklistTest extends Test {
 
     Invoice invoice2 = new Invoice();
     invoice2.setAmount(2);
-    invoice2.setPayerId(busAdmin.getId());
-    invoice2.setPayeeId(employee2.getId());
+    invoice2.setPayerId(myBusiness.getId());
+    invoice2.setPayeeId(externalBusiness.getId());
     invoice2.setDestinationCurrency("CAD");
-    invoice2.setAccount(busAdminBankAccount.getId());
-    invoice2.setDestinationAccount(busEmployeeBankAccount.getId());
+    invoice2.setAccount(myBusinessBankAccount.getId());
+    invoice2.setDestinationAccount(externalBusinessBankAccount.getId());
     try {
-      invoiceDAO.inX(busAdminContext).put(invoice2);
+      invoiceDAO.inX(myBusinessContext).put(invoice2);
     } catch (Throwable t) {
       test(true, "Invoice not created until business passes compliance passing proper compliance.");
     }
 
     // Set compliance to passed, 2FA?, wiring up the user-agent session
     // and trying to put the invoice and payment transaction
-    busAdmin = (Business) busAdmin.fclone();
-    busAdmin.setCompliance(ComplianceStatus.PASSED);
-    busAdmin = (Business) bareUserDAO.put(busAdmin);
+    myBusiness = (Business) myBusiness.fclone();
+    myBusiness.setCompliance(ComplianceStatus.PASSED);
+    myBusiness = (Business) bareUserDAO.put(myBusiness);
 
     // Create a junction to signify that employee2 is an employee of the business.
-    UserUserJunction junc = new UserUserJunction();
-    junc.setSourceId(employee2.getId());
-    junc.setTargetId(busAdmin.getId());
-    junc.setGroup("smeBusinessAdmin");
-    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-    agentJunctionDAO.put(junc);
+    // UserUserJunction junc = new UserUserJunction();
+    // junc.setSourceId(employee2.getId());
+    // junc.setTargetId(busAdmin.getId());
+    // junc.setGroup("smeBusinessAdmin");
+    // DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    // agentJunctionDAO.put(junc);
 
-    Session session = (Session) busAdminContext.get(Session.class);
-    session.setUserId(busAdmin.getId());
-    session.setAgentId(employee2.getId());
-    busAdminContext = session.applyTo(busAdminContext);
+    // Session session = (Session) busAdminContext.get(Session.class);
+    // session.setUserId(busAdmin.getId());
+    // session.setAgentId(employee2.getId());
+    // busAdminContext = session.applyTo(busAdminContext);
 
     try {
-      invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
+      invoice2 = (Invoice) invoiceDAO.inX(myBusinessContext).put(invoice2);
     } catch (Throwable t) {
       test(false, "Unexpected exception putting invoice after setting compliance to passed: " + t);
     }
@@ -151,7 +151,7 @@ public class BlacklistTest extends Test {
     transaction2.setInvoiceId(invoice2.getId());
 
     try {
-      Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction2);
+      Transaction result = (Transaction) transactionDAO.inX(myBusinessContext).put(transaction2);
       test(result != null, "Successfully put the transaction to the TransactionDAO after setting compliance to passed.");
     } catch (Throwable t) {
       test(false, "Unexpected exception putting transaction after setting compliance to passed: " + t);
