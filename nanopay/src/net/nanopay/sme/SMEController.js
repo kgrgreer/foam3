@@ -249,7 +249,7 @@ foam.CLASS({
       class: 'Array',
       name: 'complianceStatusArray',
       documentation: `
-        A customized array contains objects for the toast notification 
+        A customized array contains objects for the toast notification
         and banner to handle different cases of the business onboarding status
         and the bank account status.
       `,
@@ -264,7 +264,7 @@ foam.CLASS({
                 && accountArray.length === 0;
             },
             passed: false,
-            showBanner: false
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
