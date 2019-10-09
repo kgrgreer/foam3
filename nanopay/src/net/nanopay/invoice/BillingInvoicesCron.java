@@ -58,7 +58,7 @@ public class BillingInvoicesCron implements ContextAgent {
   /**
    * The number of business days due before processing the invoices
    */
-  private final int dueIn_;
+  private int dueIn_ = 5;
 
   /**
    * The note displayed on the billing invoice
@@ -85,11 +85,10 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
-  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount, int dueIn) {
+  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
     startDate_ = startDate;
     endDate_ = endDate;
     destinationAccount_ = destinationAccount;
-    dueIn_ = dueIn;
   }
 
   public Map<Long, BillingInvoice> getInvoiceByPayer() {
@@ -166,6 +165,10 @@ public class BillingInvoicesCron implements ContextAgent {
       }
     });
     putInvoices(x);
+  }
+
+  public void setDueIn(int dueIn) {
+    dueIn_ = dueIn;
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency

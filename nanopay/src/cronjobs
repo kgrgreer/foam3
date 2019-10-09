@@ -48,8 +48,9 @@ p({
     endDate = billingMonth.atEndOfMonth();
     destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
-    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount, DUE_IN);
-    cron.execute(x);
+    agent = new BillingInvoicesCron(startDate, endDate, destinationAccount);
+    agent.setDueIn(DUE_IN);
+    agent.execute(x);
     print("done");
   """
 })
