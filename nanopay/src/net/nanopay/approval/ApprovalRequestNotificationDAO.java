@@ -31,11 +31,11 @@ extends ProxyDAO {
     if ( ret instanceof ComplianceApprovalRequest ) {
       ComplianceApprovalRequest complianceApprovalRequest = (ComplianceApprovalRequest) ret;
       causeDAO = complianceApprovalRequest.getCauseDaoKey();
-      notificationType = "approval request for id: " + ret.getObjId() + " cause: " + causeDAO;
-      notificationBody = "New approval was requested for id: " + ret.getObjId() + " cause: " + causeDAO;
+      notificationType = "approval request for reference id: " + ret.getRefObj() + " cause: " + causeDAO;
+      notificationBody = "New approval was requested for reference id: " + ret.getRefObj() + " cause: " + causeDAO;
     } else {
-      notificationType = "approval request for id: " + ret.getObjId();
-      notificationBody = "New approval was requested for id: " + ret.getObjId();
+      notificationType = "approval request for reference id: " + ret.getRefObj();
+      notificationBody = "New approval was requested for reference id: " + ret.getRefObj();
     }
 
     Notification notification = new Notification();
