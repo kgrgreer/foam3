@@ -47,32 +47,26 @@ p({
      */
     DUE_IN = 5;
 
-    // Check for SummaryTransaction and FXSummaryTransaction because there
-    // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
-    // from their parent transaction.
-    isSummaryTransaction = OR(new Predicate[] {
-      INSTANCE_OF(SummaryTransaction.class),
-      INSTANCE_OF(FXSummaryTransaction.class)
-    });
+    /**
+     * Configure DRY_RUN option of the billing cron
+     */
+    DRY_RUN = false;
 
-    // Billing for last month period
     billingMonth = YearMonth.now().minusMonths(1);
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
+    print("Billing Invoice Date Range from " + startDate + " to " + endDate);
+    destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
-    accountDAO = x.get("localAccountDAO");
-
-    // Generate billing invoices for CAD-* transactions
-    cadBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(CAD_REVENUE_ACCOUNT_ID));
-    cadBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "CAD") }));
-    cadBillingAgent.setDueIn(DUE_IN);
-    cadBillingAgent.execute(x);
-
-    // Generate billing invoices for USD-* transactions
-    usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));
-    usdBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "USD") }));
-    usdBillingAgent.setDueIn(DUE_IN);
-    usdBillingAgent.execute(x);
+    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount, DUE_IN);
+    if ( DRY_RUN ) {
+      cron.setDryRun(true);
+      cron.execute(x);
+      print("Dry Run Result: ");
+      print(cron.getDryRunResult());
+    } else {
+      cron.execute(x);
+    }
 
     print("done");
   """
