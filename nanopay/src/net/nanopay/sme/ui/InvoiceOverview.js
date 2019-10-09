@@ -680,7 +680,7 @@ foam.CLASS({
     function markAsComplete() {
       this.add(this.Popup.create().tag({
         class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
-        invoice: this.invoice
+        invoice: this
       }));
     },
   ],

@@ -7,13 +7,14 @@ foam.CLASS({
     documentation: 'Modal for markig invoice as void',
 
     imports: [
-        'invoiceDAO'//,
-        //'notify'
+        'invoiceDAO',
+        'notify'
     ],
 
     requires: [
-        'foam.u2.PopupView',
-        'foam.u2.dialog.NotificationMessage'
+        'net.nanopay.invoice.model.PaymentStatus'//,
+        // 'foam.u2.PopupView',
+        //'foam.u2.dialog.NotificationMessage'
     ],
 
     messages: [
@@ -51,6 +52,11 @@ foam.CLASS({
     methods: [
         function initE() {
             this.SUPER();
+            self = this;
+            // PaymentStatus = this.PaymentStatus;
+            // invoice = this.invoice;
+            // invoiceDAO = this.invoiceDAO;
+            // notify = this.notify;
 
             this
             .addClass(this.myClass())
@@ -89,15 +95,15 @@ foam.CLASS({
             name: 'voidMethod',
             label: 'Void',
             code: function(X) {
-                this.invoice.paymentMethod = this.PaymentStatus.VOID;
-                this.invoice.note = this.note;
-                this.invoiceDAO.put(this.invoice).then((invoice) => {
-                  if (invoice.paymentMethod == this.PaymentStatus.VOID) {
-                    this.notify(this.VOID_SUCCESS, 'success');
+                self.invoice.paymentMethod = self.PaymentStatus.VOID;
+                self.invoice.note = self.note;
+                self.invoiceDAO.put(self.invoice).then((invoice) => {
+                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
+                    self.notify(self.VOID_SUCCESS, 'success');
                     X.closeDialog();
                   }
                 }).catch((err) => {
-                  if ( err ) this.notify(self.VOID_ERROR, 'error');
+                  if ( err ) self.notify(self.VOID_ERROR, 'error');
                     return;
                 });
             }
