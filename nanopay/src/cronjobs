@@ -43,13 +43,26 @@ p({
      */
     DUE_IN = 5;
 
+    /**
+     * Configure DRY_RUN option of the billing cron
+     */
+    DRY_RUN = false;
+
     billingMonth = YearMonth.now().minusMonths(1);
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
+    print("Billing Invoice Date Range from " + startDate + " to " + endDate);
     destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
     cron = new BillingInvoicesCron(startDate, endDate, destinationAccount, DUE_IN);
-    cron.execute(x);
+    if ( DRY_RUN ) {
+      cron.setDryRun(true);
+      cron.execute(x);
+      print("Dry Run Result: ");
+      print(cron.getDryRunResult());
+    } else {
+      cron.execute(x);
+    }
     print("done");
   """
 })
