@@ -70,8 +70,10 @@ foam.CLASS({
       List<Date> bankHolidayList = ((ArraySink) ((foam.mlang.sink.Map)
         bankHolidayDAO
           .where(AND(
-            EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-            EQ(BankHoliday.REGION_ID, address.getRegionId()),
+            OR(
+              EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+              EQ(BankHoliday.REGION_ID, address.getRegionId())
+            ),
             GTE(BankHoliday.DATE, getDate(localDate, ZoneOffset.UTC))))
           .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();
 
