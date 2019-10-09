@@ -280,8 +280,7 @@ public class BillingInvoicesCron implements ContextAgent {
 
       User payer = invoice.findPayerId(x);
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
-      dryRunResult_ += " . " + payer.getOrganization() + " (id:" + payer.getId() + ")\n"
-        +"   . "
+      dryRunResult_ += " . " + payer.getOrganization() + " (id:" + payer.getId() + ")\n   . "
         + lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\\n   . "))
         + "\n";
     }
