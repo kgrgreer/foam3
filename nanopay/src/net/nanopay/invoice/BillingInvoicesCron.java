@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
@@ -42,6 +43,15 @@ import static foam.mlang.MLang.*;
  */
 public class BillingInvoicesCron implements ContextAgent {
   /**
+   * The note displayed on the billing invoice
+   */
+  public static final String NOTE = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, " +
+    "shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount " +
+    "will be debited from your account on the 5th business day from the date this invoice was issued. Please " +
+    "ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly " +
+    "Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net. ";
+
+  /**
    * Start date of the billing
    */
   private final LocalDate startDate_;
@@ -59,16 +69,7 @@ public class BillingInvoicesCron implements ContextAgent {
   /**
    * The number of business days due before processing the invoices
    */
-  private final int dueIn_;
-
-  /**
-   * The note displayed on the billing invoice
-   */
-  private static final String NOTE = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, " +
-    "shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount " +
-    "will be debited from your account on the 5th business day from the date this invoice was issued. Please " +
-    "ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly " +
-    "Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net. ";
+  private int dueIn_ = 5;
 
   /**
    * Dry run option
@@ -96,11 +97,15 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
-  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount, int dueIn) {
+  /**
+   *
+   */
+  private Predicate predicate_ = TRUE;
+
+  public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
     startDate_ = startDate;
     endDate_ = endDate;
     destinationAccount_ = destinationAccount;
-    dueIn_ = dueIn;
   }
 
   public Map<Long, BillingInvoice> getInvoiceByPayer() {
@@ -114,13 +119,7 @@ public class BillingInvoicesCron implements ContextAgent {
     Date issueDate = new Date();
 
     transactionDAO.where(AND(
-      // Check for SummaryTransaction and FXSummaryTransaction because there
-      // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
-      // from their parent transaction.
-      OR(
-        INSTANCE_OF(SummaryTransaction.class),
-        INSTANCE_OF(FXSummaryTransaction.class)
-      ),
+      predicate_,
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
@@ -180,6 +179,14 @@ public class BillingInvoicesCron implements ContextAgent {
       dryRunInvoices(x);
     else
       putInvoices(x);
+  }
+
+  public void setDueIn(int dueIn) {
+    dueIn_ = dueIn;
+  }
+
+  public void setPredicate(Predicate predicate) {
+    predicate_ = predicate;
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency

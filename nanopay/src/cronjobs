@@ -28,15 +28,19 @@ p({
   "id": "Monthly Billing Invoices for Ablii",
   "description": "Send billing invoices to Ablii users",
   "code": """
-    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
     import java.time.YearMonth;
-    import net.nanopay.account.Account;
     import net.nanopay.invoice.BillingInvoicesCron;
+    import net.nanopay.tx.SummaryTransaction;
+    import net.nanopay.tx.model.Transaction;
+    import net.nanopay.fx.FXSummaryTransaction;
+    import static foam.mlang.MLang.*;
 
     /**
-     * Configure destination account for billing invoices
+     * Configure revenue accounts for billing invoices
      */
-    DESTINATION_ACCOUNT_ID = 2;
+    CAD_REVENUE_ACCOUNT_ID = 2
+    USD_REVENUE_ACCOUNT_ID = 2
 
     /**
      * Configure the number of business days due before processing the invoices
@@ -48,21 +52,46 @@ p({
      */
     DRY_RUN = false;
 
+    // Check for SummaryTransaction and FXSummaryTransaction because there
+    // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
+    // from their parent transaction.
+    isSummaryTransaction = OR(new Predicate[] {
+      INSTANCE_OF(SummaryTransaction.class),
+      INSTANCE_OF(FXSummaryTransaction.class)
+    });
+
+    // Billing for last month period
     billingMonth = YearMonth.now().minusMonths(1);
     startDate = billingMonth.atDay(1);
     endDate = billingMonth.atEndOfMonth();
     print("Billing Invoice Date Range from " + startDate + " to " + endDate);
-    destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).find(DESTINATION_ACCOUNT_ID);
 
-    cron = new BillingInvoicesCron(startDate, endDate, destinationAccount, DUE_IN);
+    accountDAO = x.get("localAccountDAO");
+
+    // Generate billing invoices for CAD-* transactions
+    cadBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(CAD_REVENUE_ACCOUNT_ID));
+    cadBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "CAD") }));
+    cadBillingAgent.setDueIn(DUE_IN);
     if ( DRY_RUN ) {
-      cron.setDryRun(true);
-      cron.execute(x);
-      print("Dry Run Result: ");
-      print(cron.getDryRunResult());
-    } else {
-      cron.execute(x);
-    }
+      cadBillingAgent.setDryRun(true);
+      cadBillingAgent.execute(x);
+      print("Dry Run Result for CAD Billing Agent:");
+      print(cadBillingAgent.getDryRunResult());
+    } else { cadBillingAgent.execute(x); }
+
+    print();
+
+    // Generate billing invoices for USD-* transactions
+    usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));
+    usdBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "USD") }));
+    usdBillingAgent.setDueIn(DUE_IN);
+    if ( DRY_RUN ) {
+      usdBillingAgent.setDryRun(true);
+      usdBillingAgent.execute(x);
+      print("Dry Run Result for USD Billing Agent:");
+      print(usdBillingAgent.getDryRunResult());
+    } else { usdBillingAgent.execute(x); }
+
     print("done");
   """
 })
