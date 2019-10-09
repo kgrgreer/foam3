@@ -336,6 +336,20 @@ foam.CLASS({
         a partner platform to support international payments.`,
       section: 'business'
     },
+    // Overwrite validateObj on firstName, lastName, and email so we can create
+    // businesses through the GUI.
+    {
+      name: 'firstName',
+      validateObj: function() {}
+    },
+    {
+      name: 'lastName',
+      validateObj: function() {}
+    },
+    {
+      name: 'email',
+      validateObj: function() {}
+    }
  ],
 
   javaImports: [
