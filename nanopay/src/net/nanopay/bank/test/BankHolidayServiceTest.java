@@ -2,6 +2,8 @@ package net.nanopay.bank.test;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.MDAO;
+import foam.dao.SequenceNumberDAO;
 import foam.nanos.auth.Address;
 import net.nanopay.bank.BankHoliday;
 import net.nanopay.bank.BankHolidayService;
@@ -24,6 +26,7 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
   private Address ca_ON;
 
   public void runTest(X x) {
+    x = x.put("bankHolidayDAO", new SequenceNumberDAO(new MDAO(BankHoliday.getOwnClassInfo())));
     bankHolidayService = (BankHolidayService) x.get("bankHolidayService");
     bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
     ca_ON = new Address.Builder(x)
@@ -74,7 +77,7 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
 
   private void Test_SkipCountryWideHoliday(X x) {
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 4);
-    Date expected = getDate(jan1_2020.plusDays(2 + 4 + 2)); // 2 holidays, 2 offset days, 2 days for Saturday and Sunday
+    Date expected = getDate(jan1_2020.plusDays(2 + 4 + 2)); // 2 holidays, 4 offset days, 2 days for Saturday and Sunday
 
     test(expected.equals(result), "Should skip bank holiday(country-wide), weekend and offset days");
   }
@@ -110,23 +113,17 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
   private void setUpBankHoliday(X x) {
     Date holiday = Date.from(jan1_2020.atStartOfDay(ZoneOffset.UTC).toInstant());
     Date CAHoliday = Date.from(jan1_2020.plusDays(7).atStartOfDay(ZoneOffset.UTC).toInstant());
-    if ( null == bankHolidayDAO.find(AND(
-                   EQ(BankHoliday.COUNTRY_ID, "CA"),
-                   EQ(BankHoliday.REGION_ID, "ON"),
-                   GTE(BankHoliday.DATE, holiday)))
-    ) {
-      bankHolidayDAO.put(new BankHoliday.Builder(x)
-        .setCountryId("CA")
-        .setRegionId("ON")
-        .setDate(holiday)
-        .build()
-      );
-      bankHolidayDAO.put(new BankHoliday.Builder(x)
-        .setCountryId("CA")
-        .setDate(CAHoliday)
-        .build()
-      );
-    }
+    bankHolidayDAO.put(new BankHoliday.Builder(x)
+      .setCountryId("CA")
+      .setRegionId("ON")
+      .setDate(holiday)
+      .build()
+    );
+    bankHolidayDAO.put(new BankHoliday.Builder(x)
+      .setCountryId("CA")
+      .setDate(CAHoliday)
+      .build()
+    );
   }
 
   private Date getDate(LocalDate localDate) {
