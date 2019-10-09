@@ -21,6 +21,7 @@ import foam.nanos.auth.UserUserJunction;
 
 accountDAO = (DAO) x.get("accountDAO");
 bareUserDAO = (DAO) x.get("bareUserDAO");
+localBusinessDAO = (DAO) x.get("localBusinessDAO");
 invoiceDAO = (DAO) x.get("invoiceDAO");
 transactionDAO = (DAO) x.get("transactionDAO");
 agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
@@ -33,17 +34,15 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).remov
 myBusiness = new Business();
 myBusiness.setBusinessName("MyBusiness");
 myBusiness.setEmail("busadmin@example.com");
-myBusiness.setGroup("smeBusinessAdmin");
 myBusiness.setEmailVerified(true); // Required to send or receive money.
 myBusiness.setCompliance(ComplianceStatus.PASSED);
-myBusiness = bareUserDAO.put(myBusiness);
-myBusinessContext = Auth.sudo(x, myBusiness);
+myBusiness = localBusinessDAO.put(myBusiness);
 
 bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).removeAll();
 myEmployee = new User();
 myEmployee.setFirstName("MyEmployee");
 myEmployee.setEmail("employee@example.com");
-myEmployee.setGroup("smeBusinessEmployee");
+myEmployee.setGroup("sme");
 myEmployee.setEmailVerified(true); // Required to send or receive money.
 myEmployee.setCompliance(ComplianceStatus.PASSED);
 myEmployee = bareUserDAO.put(myEmployee);
@@ -53,7 +52,7 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remov
 myApprover = new User();
 myApprover.setFirstName("MyEmployee");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup("smeBusinessApprover");
+myApprover.setGroup("approver");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover = bareUserDAO.put(myApprover);
@@ -63,23 +62,21 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "externalBusiness@example.com"
 externalBusiness = new Business();
 externalBusiness.setBusinessName("ExternalBusiness");
 externalBusiness.setEmail("externalBusiness@example.com");
-externalBusiness.setGroup("smeBusinessAdmin");
 externalBusiness.setEmailVerified(true); // Required to send or receive money.
 externalBusiness.setCompliance(ComplianceStatus.PASSED);
-externalBusiness = bareUserDAO.put(externalBusiness);
-externalBusinessContext = Auth.sudo(x, externalBusiness);
+externalBusiness = localBusinessDAO.put(externalBusiness);
 
 // Creating junctions my business users
 employeeToBusinessJunc = new UserUserJunction();
 employeeToBusinessJunc.setSourceId(myEmployee.getId());
 employeeToBusinessJunc.setTargetId(myBusiness.getId());
-employeeToBusinessJunc.setGroup("smeBusinessEmployee");
+employeeToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 agentJunctionDAO.put(employeeToBusinessJunc);
 
 approverToBusinessJunc = new UserUserJunction();
 approverToBusinessJunc.setSourceId(myApprover.getId());
 approverToBusinessJunc.setTargetId(myBusiness.getId());
-approverToBusinessJunc.setGroup("smeBusinessApprover");
+approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".approver");
 agentJunctionDAO.put(approverToBusinessJunc);
 
 // Creating respective contexts with user-agent enabled in their sessions
@@ -103,7 +100,7 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-myBusinessBankAccount = myBusiness.getAccounts(myBusinessContext).put_(x, myBusinessBankAccount);
+myBusinessBankAccount = myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests externalBusiness test account")).removeAll();
 externalBusinessBankAccount = new CABankAccount();
@@ -121,7 +118,7 @@ externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
 // it goes through a cloning procedure in the permissionedPropertyDAO, where it checks if the employee1's group (sme) 
 // has permissions to read/write bank account status, since they do not it would instead reset the status property to unverified
 // that is why we must use the override put_, in order to set the employee bank account using the global context permissions
-externalBusinessBankAccount = externalBusiness.getAccounts(externalBusinessContext).put_(x, externalBusinessBankAccount);
+externalBusinessBankAccount = externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -135,7 +132,6 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice.setDestinationAccount(externalBusinessBankAccount.getId());
 invoice = invoiceDAO.inX(myEmployeeContext).put(invoice);
 invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
 paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
@@ -182,7 +178,6 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice.setDestinationAccount(externalBusinessBankAccount.getId());
 invoice = invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
