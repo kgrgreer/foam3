@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
@@ -85,6 +86,11 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
+  /**
+   *
+   */
+  private Predicate predicate_ = TRUE;
+
   public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
     startDate_ = startDate;
     endDate_ = endDate;
@@ -102,13 +108,7 @@ public class BillingInvoicesCron implements ContextAgent {
     Date issueDate = new Date();
 
     transactionDAO.where(AND(
-      // Check for SummaryTransaction and FXSummaryTransaction because there
-      // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
-      // from their parent transaction.
-      OR(
-        INSTANCE_OF(SummaryTransaction.class),
-        INSTANCE_OF(FXSummaryTransaction.class)
-      ),
+      predicate_,
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
@@ -169,6 +169,10 @@ public class BillingInvoicesCron implements ContextAgent {
 
   public void setDueIn(int dueIn) {
     dueIn_ = dueIn;
+  }
+
+  public void setPredicate(Predicate predicate) {
+    predicate_ = predicate;
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency

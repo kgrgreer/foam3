@@ -274,14 +274,14 @@ public class BillingInvoicesCronTest extends Test {
   }
 
   private Invoice generateBillingInvoice(X x, LocalDate startDate, LocalDate endDate) {
-    BillingInvoicesCron cron = new BillingInvoicesCron(startDate, endDate, ownerAccount, 5);
+    BillingInvoicesCron cron = new BillingInvoicesCron(startDate, endDate, ownerAccount);
     cron.execute(x);
     return cron.getInvoiceByPayer().get(payer.getId());
   }
 
   private void createTransaction(X x, LocalDate created, Account payeeAccount, long feeAmount) {
     localTransactionDAO.put_(x,
-      new SummaryTransaction.Builder(x)
+      new Transaction.Builder(x)
         .setSourceAccount(payerAccount.getId())
         .setSourceCurrency(payerAccount.getDenomination())
         .setDestinationAccount(payeeAccount.getId())
