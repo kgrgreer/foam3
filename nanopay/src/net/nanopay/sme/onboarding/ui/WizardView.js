@@ -198,7 +198,7 @@ foam.CLASS({
             if ( user ) x.user.onboarded = user.onboarded;
             // Invalidate auth cache to register new permissions on group.
             this.auth.cache = {};
-            x.ctrl.notify('Business profile complete.');
+            x.ctrl.notify('Business profile submitted successfully.');
             x.stack.back();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
