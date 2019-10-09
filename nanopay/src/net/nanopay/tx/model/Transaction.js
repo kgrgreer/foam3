@@ -522,7 +522,7 @@ foam.CLASS({
     {
       name: 'statusHistory',
       class: 'FObjectArray',
-      of: 'HistoricStatus'
+      of: 'net.nanopay.tx.HistoricStatus'
     },
     // schedule TODO: future
     {
