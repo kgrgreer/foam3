@@ -639,11 +639,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( AFEXPaymentStatus.APPROVED.getLabel().equals(paymentStatus) )
       return TransactionStatus.COMPLETED;
 
+    if ( AFEXPaymentStatus.PROCESSED.getLabel().equals(paymentStatus) )
+      return TransactionStatus.COMPLETED;      
+
     if ( AFEXPaymentStatus.FAILED.getLabel().equals(paymentStatus) )
       return TransactionStatus.DECLINED;
 
     if ( AFEXPaymentStatus.CANCELLED.getLabel().equals(paymentStatus) )
       return TransactionStatus.DECLINED;
+
+      if ( AFEXPaymentStatus.PREPARED_CANCELLED.getLabel().equals(paymentStatus) )
+      return TransactionStatus.DECLINED;      
 
       return TransactionStatus.SENT;
 
