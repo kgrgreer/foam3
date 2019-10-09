@@ -53,6 +53,7 @@ foam.CLASS({
           this.Contact.SIGN_UP_STATUS,
           this.Contact.DELETED,
           this.Contact.SYNCED_FROM_ACCOUNTING,
+          this.Contact.ADDRESS,
           this.Contact.ACCOUNTS,
         ];
       }

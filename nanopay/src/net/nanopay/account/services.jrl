@@ -28,6 +28,7 @@ p({
       .build();
     afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, afexba);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
+    rdba.setUseBMO(true);
     eodbapc = new net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO.Builder(x)
       .setDelegate(rdba)
       .build();

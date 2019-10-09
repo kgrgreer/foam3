@@ -294,8 +294,7 @@ p({
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
     afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
     usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
-    nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(usus).build();
-    cb = new net.nanopay.onboarding.CreateBusinessDAO(x, nuoe);
+    cb = new net.nanopay.onboarding.CreateBusinessDAO(x, usus);
     rae = new net.nanopay.onboarding.email.RegistrationApprovedEmailDAO(x, cb);
     rse = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, rae);
     ev = new net.nanopay.auth.email.EmailVerificationDAO(x, rse);
@@ -307,11 +306,11 @@ p({
     v = new foam.dao.ValidatingDAO(x, cew);
 
     return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setOf(foam.nanos.auth.User.getOwnClassInfo())
-        .setInnerDAO(v)
-        .setAuthorize(false)
-        .build();
+      .setPm(true)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(v)
+      .setAuthorize(false)
+      .build();
   """
 })
 
@@ -434,9 +433,10 @@ p({
   """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
     inner = (new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get(\"localUserDAO\"))).where(predicate);
+    nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(inner).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
-      .setInnerDAO(inner)
+      .setInnerDAO(nuoe)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .build();
   """,
@@ -539,7 +539,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"institutionPurposeCodeDAO",        "
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));","client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksAuth",                       "serve":true,  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", "serviceClass":"net.nanopay.flinks.FlinksAuthService","client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksCredentials",                "lazy":false, "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                        "description":"","lazy":false,"parameters":false,"pm":true,"service":{"class":"foam.nanos.app.AppConfig","privacy":"Privacy Policy","privacyUrl":"https://nanopay.net/privacy-policy","copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.","urlLabel":"Powered by nanopay","termsAndCondLabel":"Terms and Conditions","termsAndCondLink":"net.nanopay.ui.modal.TandCModal","mode":0,"appLink":"","playLink":"https://play.google.com/store?hl=en","enableInternationalPayment":true}})
+p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                        "description":"","lazy":false,"parameters":false,"pm":true,"service":{"class":"foam.nanos.app.AppConfig","privacy":"Privacy Policy","privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf","copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.","urlLabel":"Powered by nanopay","termsAndCondLabel":"Terms and Conditions","termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf","mode":0,"appLink":"","playLink":"https://play.google.com/store?hl=en","enableInternationalPayment":true}})
 p({"class":"foam.nanos.boot.NSpec", "name":"EFTReturnFileCredentials",         "lazy":false, "service":{"class":"net.nanopay.cico.model.EFTReturnFileCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"blobService",                      "serve":true,  "client": "{ \"class\":\"foam.blob.RestBlobService\", \"serviceName\":\"service/httpFileService\" }"})
 

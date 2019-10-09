@@ -39,34 +39,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
-      targetDAOKey: 'businessTypeDAO',
-      name: 'businessTypeId',
-      of: 'net.nanopay.model.BusinessType',
-      documentation: 'The ID of the proprietary details of the business.',
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'businessSectorDAO',
-      name: 'businessSectorId',
-      of: 'net.nanopay.model.BusinessSector',
-      documentation: 'The ID of the general economic grouping for the business.',
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
-          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
-          sections: [
-            {
-              heading: 'Industries',
-              dao: X.businessSectorDAO
-            }
-          ],
-          search: true
-        };
-      }
-    },
-    {
       class: 'Boolean',
       name: 'invited',
       value: false,
@@ -147,12 +119,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'FObjectArray',
-      of: 'foam.nanos.auth.User',
-      name: 'principalOwners',
-      documentation: 'Represents the people who own the majority shares in a business.'
-    },
-    {
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',
@@ -169,119 +135,6 @@ foam.CLASS({
       name: 'portalAdminCreated',
       documentation: 'Determines whether a User was created by an admin user.',
       value: false,
-    },
-    // NOTE: The following is subject to change and is not finalized.
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'businessPhone',
-      documentation: 'The phone number of the business.',
-      factory: function() {
-        return this.Phone.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' }
-    },
-    {
-      class: 'String',
-      name: 'businessIdentificationNumber',
-      transient: true,
-      documentation: `The Business Identification Number (BIN) that identifies your business
-        to federal, provincial or municipal governments and is used by the business
-        for tax purposes. This number is typically issued by an Issuing Authority such as
-        the CRA.`,
-      getter: function() {
-        return this.businessRegistrationNumber;
-      },
-      setter: function(x) {
-        this.businessRegistrationNumber = x;
-      },
-      javaGetter: `return getBusinessRegistrationNumber();`,
-      javaSetter: `setBusinessRegistrationNumber(val);`
-    },
-    {
-      class: 'String',
-      name: 'businessRegistrationNumber',
-      width: 35,
-      documentation: `The Business Identification Number (BIN) that identifies your business
-        to federal, provincial or municipal governments and is used by the business
-        for tax purposes. This number is typically issued by an Issuing Authority such as
-        the CRA.`,
-
-      validateObj: function(businessRegistrationNumber) {
-        var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( businessRegistrationNumber.length > 0 &&
-              ! re.test(businessRegistrationNumber) ) {
-          return 'Invalid registration number.';
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'issuingAuthority',
-      transient: true,
-      documentation: 'An organization that has the power to issue an official document.',
-      getter: function() {
-        return this.businessRegistrationAuthority;
-      },
-      setter: function(x) {
-        this.businessRegistrationAuthority = x;
-      },
-      javaGetter: `return getBusinessRegistrationAuthority();`,
-      javaSetter: `setBusinessRegistrationAuthority(val);`
-    },
-    {
-      class: 'String',
-      name: 'businessRegistrationAuthority',
-      documentation: `An organization that has the power to issue and process a
-        business registration.`,
-      width: 35,
-      validateObj: function(businessRegistrationAuthority) {
-        var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( businessRegistrationAuthority.length > 0 &&
-            ! re.test(businessRegistrationAuthority) ) {
-          return 'Invalid issuing authority.';
-        }
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      name: 'countryOfBusinessRegistration',
-      documentation: `Country where business was registered.`,
-    },
-    {
-      class: 'Date',
-      name: 'businessRegistrationDate',
-      documentation: 'The date that the business was registered by their issuing authority.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'businessAddress',
-      documentation: `Returns the postal address of the business associated with the
-        User from the Address model.`,
-      factory: function() {
-        return this.Address.create();
-      },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
-    },
-    {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'businessProfilePicture',
-      documentation: `The profile picture of the business, such as a logo, initially
-        defaulting to a placeholder picture.`,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/business-placeholder.png'
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'onboarded',
-      documentation: `Determines whether completed business registration. This property
-        dictates portal views after compliance and account approval.`,
-      value: false,
-      permissionRequired: true
     },
     {
       class: 'Boolean',
@@ -306,12 +159,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'holdingCompany',
-      documentation: `Determines whether a User is a holding company.  A holding company
-        represent a corporate group which owns shares of multiple companies.`
-    },
-    {
-      class: 'Boolean',
       name: 'thirdParty',
       documentation: `Determines whether the User is taking instructions from and/or acting
         on behalf of a 3rd party.
@@ -332,34 +179,6 @@ foam.CLASS({
         Exposed Person (PEP), Head of an International Organization (HIO)_, or
         related to any such person.
       `
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'suggestedUserTransactionInfo',
-      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
-      documentation: `Returns the expected transaction types, frequency, amount and
-        currencies that the User anticipates making with the platform. This
-        information is required for KYC purposes.  It is drawn from the
-        suggestedUserTransactionInfo object.
-        `
-    },
-    {
-      class: 'String',
-      name: 'targetCustomers',
-      label: 'Who do you market your products and services to?',
-      documentation: `The type of clients that the business markets its products and
-        services.`
-    },
-    {
-      class: 'String',
-      name: 'sourceOfFunds',
-      documentation: 'The entities that provide funding to the business.'
-    },
-    {
-      class: 'String',
-      name: 'taxIdentificationNumber',
-      documentation: `The tax identification number associated with the business of
-      the User.`
     },
     {
       class: 'String',
@@ -403,16 +222,10 @@ foam.CLASS({
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-      value: false,
-      documentation: `Determines whether a user has been onboarded to 
-        a partner platform to support international payments.`
-    },
-  ],
+      },
+      section: 'personal'
+    }
+ ],
 
   methods: [
     {
@@ -459,7 +272,7 @@ foam.CLASS({
       name: 'label',
       type: 'String',
       code: function label() {
-        return ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName ) || this.organization || this.businessName;
+        return ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName ) 
       },
       javaCode: `
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();

@@ -28,13 +28,13 @@ foam.CLASS({
         if ( ! (obj instanceof CITransaction ) )
           return;
         Transaction oldTxn = (Transaction) oldObj;
-        Transaction txn = (Transaction) obj;
+        CITransaction txn = (CITransaction) obj;
         if (txn.getStatus() == TransactionStatus.DECLINED && oldTxn.getStatus() == TransactionStatus.COMPLETED){
           agency.submit(getX(), new ContextAgent() {
             @Override
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
-                .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
+                .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
