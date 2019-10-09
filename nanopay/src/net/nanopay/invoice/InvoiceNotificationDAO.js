@@ -135,9 +135,6 @@ foam.CLASS({
             if ( invoiceHasBeenMarkedComplete ) {
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
-
-              // args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "receivable");
-              // sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             
           } catch (Exception e) {
