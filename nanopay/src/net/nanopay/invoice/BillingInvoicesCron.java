@@ -279,7 +279,7 @@ public class BillingInvoicesCron implements ContextAgent {
   }
 
   /**
-   * dryRunInvoices(x) will print out all the invoices generated instead of putting them into DAO.
+   * dryRunInvoices(x) will save all the invoices generated into dryRunResult instead of putting them into DAO.
    */
   protected void dryRunInvoices(X x) {
     for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
