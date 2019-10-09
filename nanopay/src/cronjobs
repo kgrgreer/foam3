@@ -39,8 +39,8 @@ p({
     /**
      * Configure revenue accounts for billing invoices
      */
-    CAD_REVENUE_ACCOUNT_ID = 2
-    USD_REVENUE_ACCOUNT_ID = 2
+    CAD_REVENUE_ACCOUNT_ID = 2;
+    USD_REVENUE_ACCOUNT_ID = 2;
 
     /**
      * Configure the number of business days due before processing the invoices
@@ -78,8 +78,6 @@ p({
       print("Dry Run Result for CAD Billing Agent:");
       print(cadBillingAgent.getDryRunResult());
     } else { cadBillingAgent.execute(x); }
-
-    print();
 
     // Generate billing invoices for USD-* transactions
     usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));

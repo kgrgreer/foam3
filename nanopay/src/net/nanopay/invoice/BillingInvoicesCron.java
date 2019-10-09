@@ -79,7 +79,7 @@ public class BillingInvoicesCron implements ContextAgent {
   /**
    * Dry run result
    */
-  private String dryRunResult_ = "";
+  private StringBuilder dryRunResult_ = new StringBuilder();
 
   /**
    * BillingInvoice by payer/business
@@ -262,7 +262,7 @@ public class BillingInvoicesCron implements ContextAgent {
     dryRun_ = dry_run;
   }
 
-  public String getDryRunResult() { return dryRunResult_; }
+  public String getDryRunResult() { return dryRunResult_.toString(); }
 
   /**
    * Put invoices along with line items into DAO.
@@ -287,9 +287,11 @@ public class BillingInvoicesCron implements ContextAgent {
 
       User payer = invoice.findPayerId(x);
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
-      dryRunResult_ += " . " + payer.getOrganization() + " (id:" + payer.getId() + ")\n   . "
-        + lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\\n   . "))
-        + "\n";
+      dryRunResult_.append(" . ");
+      dryRunResult_.append(payer.getOrganization() + " (id:" + payer.getId() + ")\n");
+      dryRunResult_.append("   . ");
+      dryRunResult_.append(lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\n   . ")));
+      dryRunResult_.append("\n");
     }
   }
 }
