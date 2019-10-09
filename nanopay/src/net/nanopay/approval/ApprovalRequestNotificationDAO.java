@@ -20,6 +20,8 @@ extends ProxyDAO {
     FObject old = ((DAO)x.get("approvalRequestDAO")).find_(x, obj);
     ApprovalRequest ret = (ApprovalRequest) getDelegate().put_(x, obj);
     String causeDAO = "";
+    String notificationType = "";
+    String notificationBody = "";
     if ( old != null
       || ApprovalStatus.REQUESTED != ret.getStatus()
     ) { 
@@ -27,15 +29,20 @@ extends ProxyDAO {
     }
 
     if ( ret instanceof ComplianceApprovalRequest ) {
-      ComplianceApprovalRequest complainceApprovalRequest = (ComplianceApprovalRequest) ret;
-      causeDAO = complainceApprovalRequest.getCauseDaoKey();
+      ComplianceApprovalRequest complianceApprovalRequest = (ComplianceApprovalRequest) ret;
+      causeDAO = complianceApprovalRequest.getCauseDaoKey();
+      notificationType = "approval request for id: " + ret.getObjId() + " cause: " + causeDAO;
+      notificationBody = "New approval was requested for id: " + ret.getObjId() + " cause: " + causeDAO;
+    } else {
+      notificationType = "approval request for id: " + ret.getObjId();
+      notificationBody = "New approval was requested for id: " + ret.getObjId();
     }
 
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
-    notification.setNotificationType("approval request for id: " + ret.getObjId() + " " + causeDAO);
+    notification.setNotificationType(notificationType);
     notification.setEmailIsEnabled(true);
-    notification.setBody("New approval was requested for id: " + ret.getObjId() + " " + causeDAO);
+    notification.setBody(notificationBody);
     //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
     //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
     ((DAO)x.get("localNotificationDAO")).put(notification);
