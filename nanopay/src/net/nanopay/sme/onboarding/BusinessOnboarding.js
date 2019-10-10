@@ -638,14 +638,11 @@ foam.CLASS({
       section: 'businessDetailsSection',
       view: function(args, X) {
         return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          choiceView: {
             class: 'foam.u2.view.ChoiceView',
             placeholder: 'Select...',
             dao: X.businessTypeDAO,
             objToChoice: function(a) {
               return [a.id, a.name];
-            }
           }
         };
       },
