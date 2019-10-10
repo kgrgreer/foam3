@@ -38,12 +38,16 @@ foam.CLASS({
         ^ .padding-24 {
             padding: 24px 24px;
         }
-        ^ .padding-bottom-24 {
-            padding: 0px 0px 24px 0px;
-            }
-        ^ .padding-bottom-8 {
-            padding-bottom: 8px;
-            margin: 0px;
+        ^ .margin-bottom-24 {
+            margin: 0;
+            margin-bottom: 24px;
+        }
+        ^ .margin-bottom-8 {
+          margin: 0px;      
+          margin-bottom: 8px;
+        }
+        ^ .input-note {
+          width: 100%;
         }
     `,
     properties: [
@@ -69,28 +73,25 @@ foam.CLASS({
                 .start().addClass('padding-24').addClass('size')
                     .start()
                         .start('h2')
-                            .addClass('padding-bottom-8')
+                            .addClass('margin-bottom-8')
                             .add(this.TITLE)
                         .end()
                         .start()
-                            .addClass('padding-bottom-24')
+                            .addClass('margin-bottom-24')
                             .start('span')
                                 .add(this.MSG1)
                             .end()
-                            .start('br').end()
+                            .br()
                             .start('span')
                                 .add(this.MSG2)
                             .end()
                         .end()
                         .start()
                             .addClass('label')
-                            .addClass('padding-bottom-8')
+                            .addClass('margin-bottom-8')
                             .add('Note:')
                         .end()
-                        .start()
-                            .addClass('padding-bottom-24')
-                            .add(this.NOTE)
-                        .end()
+                        .start(this.NOTE).addClass('input-note').end()
                     .end()
                 .end()
                 .tag({
