@@ -55,7 +55,7 @@ foam.CLASS({
     },
     {
       name: 'SUBTITLE_VERIFING',
-      message: 'We are reviewing your bank account'
+      message: 'Back account added'
     }
   ],
 
@@ -80,6 +80,7 @@ foam.CLASS({
           subtitle += ' ****' + this.account.accountNumber.slice(-4);
           return subtitle;
         }
+
         return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
       }
     },
@@ -142,7 +143,7 @@ foam.CLASS({
     },
     {
       name: 'verifyAccount',
-      label: 'Pending',
+      label: 'Verify',
       code: function() {
         this.pushMenu('sme.main.banking');
       }
