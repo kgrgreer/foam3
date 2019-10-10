@@ -48,7 +48,7 @@ foam.CLASS({
                 .append(tx.getDestinationCurrency());
 
                 StringBuilder rb = new StringBuilder()
-                .append(" Received payment from ")
+                .append(" Payment has been initiated by ")
                 .append(sender.label());
               
               if (
