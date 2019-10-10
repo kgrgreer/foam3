@@ -611,9 +611,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException {
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
-    transaction = (Transaction) transaction.fclone();
     transaction.setPayerId(transaction.findSourceAccount(x).getOwner());
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.getPayerId());
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.findSourceAccount(x).getOwner());
     if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
 
     CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
