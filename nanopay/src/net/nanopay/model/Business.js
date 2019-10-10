@@ -206,7 +206,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
       class: 'Boolean',
