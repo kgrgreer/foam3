@@ -23,6 +23,7 @@ import net.nanopay.tx.model.TransactionStatus;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.*;
 
@@ -69,6 +70,16 @@ public class BillingInvoicesCron implements ContextAgent {
    * The number of business days due before processing the invoices
    */
   private int dueIn_ = 5;
+
+  /**
+   * Dry run option
+   */
+  private boolean dryRun_ = false;
+
+  /**
+   * Dry run result
+   */
+  private StringBuilder dryRunResult_ = new StringBuilder();
 
   /**
    * BillingInvoice by payer/business
@@ -164,7 +175,10 @@ public class BillingInvoicesCron implements ContextAgent {
         }
       }
     });
-    putInvoices(x);
+    if ( dryRun_ )
+      dryRunInvoices(x);
+    else
+      putInvoices(x);
   }
 
   public void setDueIn(int dueIn) {
@@ -244,6 +258,18 @@ public class BillingInvoicesCron implements ContextAgent {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 
+  public void setDryRun(boolean dry_run) {
+    dryRun_ = dry_run;
+  }
+
+  public boolean getDryRun() {
+    return dryRun_;
+  }
+
+  public String getDryRunResult() {
+    return dryRunResult_.toString();
+  }
+
   /**
    * Put invoices along with line items into DAO.
    */
@@ -255,6 +281,23 @@ public class BillingInvoicesCron implements ContextAgent {
         invoice.setLineItems(lineItems.toArray(new InvoiceLineItem[lineItems.size()]));
         invoiceByPayer_.put(invoice.getPayeeId(), (BillingInvoice) invoiceDAO.put_(x, invoice));
       }
+    }
+  }
+
+  /**
+   * dryRunInvoices(x) will save all the invoices generated into dryRunResult instead of putting them into DAO.
+   */
+  protected void dryRunInvoices(X x) {
+    for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
+      if ( invoice.getAmount() == 0 ) continue;
+
+      User payer = invoice.findPayerId(x);
+      List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
+      dryRunResult_.append(" . ");
+      dryRunResult_.append(payer.getOrganization() + " (id:" + payer.getId() + ")\n");
+      dryRunResult_.append("   . ");
+      dryRunResult_.append(lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\n   . ")));
+      dryRunResult_.append("\n");
     }
   }
 }
