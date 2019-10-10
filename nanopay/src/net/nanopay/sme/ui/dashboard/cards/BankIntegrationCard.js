@@ -74,16 +74,13 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
-        if ( this.user.address.countryId === 'US' && !this.isVerified) {
-          return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
-        }
         if ( isAccountThere && this.isVerified ) {
           var subtitle = this.SUBTITLE_LINKED + ' ';
           subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
           subtitle += ' ****' + this.account.accountNumber.slice(-4);
           return subtitle;
         }
-        return this.SUBTITLE_EMPTY;
+        return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
       }
     },
     {
