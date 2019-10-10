@@ -262,7 +262,13 @@ public class BillingInvoicesCron implements ContextAgent {
     dryRun_ = dry_run;
   }
 
-  public String getDryRunResult() { return dryRunResult_.toString(); }
+  public boolean getDryRun() {
+    return dryRun_;
+  }
+
+  public String getDryRunResult() {
+    return dryRunResult_.toString();
+  }
 
   /**
    * Put invoices along with line items into DAO.

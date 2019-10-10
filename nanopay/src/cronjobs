@@ -72,23 +72,23 @@ p({
     cadBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(CAD_REVENUE_ACCOUNT_ID));
     cadBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "CAD") }));
     cadBillingAgent.setDueIn(DUE_IN);
-    if ( DRY_RUN ) {
-      cadBillingAgent.setDryRun(true);
-      cadBillingAgent.execute(x);
+    cadBillingAgent.setDryRun(DRY_RUN);
+    cadBillingAgent.execute(x);
+    if ( cadBillingAgent.getDryRun() ) {
       print("Dry Run Result for CAD Billing Agent:");
       print(cadBillingAgent.getDryRunResult());
-    } else { cadBillingAgent.execute(x); }
+    }
 
     // Generate billing invoices for USD-* transactions
     usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));
     usdBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "USD") }));
     usdBillingAgent.setDueIn(DUE_IN);
-    if ( DRY_RUN ) {
-      usdBillingAgent.setDryRun(true);
-      usdBillingAgent.execute(x);
+    usdBillingAgent.setDryRun(DRY_RUN);
+    usdBillingAgent.execute(x);
+    if ( usdBillingAgent.getDryRun() ) {
       print("Dry Run Result for USD Billing Agent:");
       print(usdBillingAgent.getDryRunResult());
-    } else { usdBillingAgent.execute(x); }
+    }
 
     print("done");
   """
