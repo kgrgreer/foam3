@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.Address',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.Date',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankHolidayService',
@@ -92,13 +93,14 @@ foam.CLASS({
           totalClearingTime = getDefaultClearingTime();
         }
 
+        BankAccount bankAccount = findBankAccount(x, transaction);
         return ((BankHolidayService) getBankHolidayService()).skipBankHolidays(
-          x, processDate, findBankAddress(x, transaction), totalClearingTime);
+          x, processDate, getAddress(x, bankAccount), totalClearingTime);
       `
     },
     {
-      name: 'findBankAddress',
-      type: 'Address',
+      name: 'findBankAccount',
+      type: 'BankAccount',
       args: [
         {
           name: 'x',
@@ -110,27 +112,40 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! (transaction instanceof CITransaction)
-          && ! (transaction instanceof COTransaction)
-        ) {
-          return new Address.Builder(x)
-            .setCountryId("CA")
-            .build();
+        if ( transaction instanceof CITransaction ) {
+          return (BankAccount) transaction.findSourceAccount(x);
         }
-
-        BankAccount bankAccount = transaction instanceof CITransaction
-          ? (BankAccount) transaction.findSourceAccount(x)
-          : (BankAccount) transaction.findDestinationAccount(x);
-
-        if ( bankAccount.getAddress() != null ) {
-          return bankAccount.getAddress();
+        if ( transaction instanceof COTransaction ) {
+          return (BankAccount) transaction.findDestinationAccount(x);
         }
-        if ( bankAccount.getBankAddress() != null ) {
-          return bankAccount.getBankAddress();
+        return null;
+      `
+    },
+    {
+      name: 'getAddress',
+      type: 'Address',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'bankAccount',
+          type: 'net.nanopay.bank.BankAccount'
         }
-        return new Address.Builder(x)
-          .setCountryId(bankAccount.getCountry())
-          .build();
+      ],
+      javaCode: `
+        Address address = new Address.Builder(x).setCountryId("CA").build();
+        if ( bankAccount != null ) {
+          if ( bankAccount.getAddress() != null ) {
+            return bankAccount.getAddress();
+          }
+          if ( bankAccount.getBankAddress() != null ) {
+            return bankAccount.getBankAddress();
+          }
+          address.setCountryId(bankAccount.getCountry());
+        }
+        return address;
       `
     }
   ]
