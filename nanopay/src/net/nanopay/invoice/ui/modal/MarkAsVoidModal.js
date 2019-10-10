@@ -11,18 +11,13 @@ foam.CLASS({
     ],
 
     requires: [
-        'foam.u2.tag.TextArea',
         'net.nanopay.invoice.model.PaymentStatus'
     ],
 
     messages: [
         { name: 'TITLE', message: 'Mark as void?' },
-        { 
-            name: 'MSG1', 
-            message: 'Are you sure you want to void this invoice?'},
-            { 
-                name: 'MSG2', 
-                message: 'Once this invoice is voided, it cannot be edited.' },
+        { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
+        { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
         { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
         { name: 'NOTE_HINT', message: 'i.e. Why is it voided?'},
         { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
@@ -30,33 +25,36 @@ foam.CLASS({
     ],
 
     css: `
-    ^ {
-        max-width: 500vw;
-        margin: auto;
-      }
-    //     ^ .size {
-    //         width: 330px;
-    //   }
-    //   ^ .one-col {
-    //     margin: 20px;
-    //   }
-    //   ^ .padding {
-    //       padding: 0px 25px;
-    //   }
-    //   ^ .note-size {
-    //     margin-left: 20px;
-    //     padding: 10px 5px;
-    //     width: 90%;
-    //   }
+        ^ {
+            max-width: 500vw;
+            margin: auto;
+        }
+        ^ .size {
+            max-width: 330px;
+        }
+        ^ .one-col {
+            margin: 20px;
+        }
+        ^ .padding-24 {
+            padding: 24px 24px;
+        }
+        ^ .padding-bottom-24 {
+            padding: 0px 0px 24px 0px;
+            }
+        ^ .padding-bottom-8 {
+            padding-bottom: 8px;
+            margin: 0px;
+        }
     `,
-
     properties: [
         {
             class: 'String',
             name: 'note',
             view: {
-                class: 'foam.u2.TextField',
-                placeholder: 'i.e. Why is it voided?'
+                class: 'foam.u2.tag.TextArea',
+                placeholder: 'i.e. Why is it voided?',
+                rows: 4,
+                cols: 35
             }
         },
         'invoice'
@@ -68,22 +66,39 @@ foam.CLASS({
             this
             .addClass(this.myClass())
             .startContext({ data: this })
-                .start().addClass('size')
-                .start('h2').addClass('padding')
-                    .add(this.TITLE)
+                .start().addClass('padding-24').addClass('size')
+                    .start()
+                        .start('h2')
+                            .addClass('padding-bottom-8')
+                            .add(this.TITLE)
+                        .end()
+                        .start()
+                            .addClass('padding-bottom-24')
+                            .start('span')
+                                .add(this.MSG1)
+                            .end()
+                            .start('br').end()
+                            .start('span')
+                                .add(this.MSG2)
+                            .end()
+                        .end()
+                        .start()
+                            .addClass('label')
+                            .addClass('padding-bottom-8')
+                            .add('Note:')
+                        .end()
+                        .start()
+                            .addClass('padding-bottom-24')
+                            .add(this.NOTE)
+                        .end()
+                    .end()
                 .end()
-                .start().addClass('padding')
-                    .add(this.MSG1)
-                    .add(this.MSG2)
-                .end()
-                .start().add('Note:').end().start().add(this.NOTE).end()
                 .tag({
                     class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
                     back: this.CANCEL,
                     next: this.VOID_METHOD
                 })
-            .endContext()
-            .end();
+            .endContext();
         }
     ],
 
