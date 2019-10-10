@@ -12,13 +12,15 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'name',
-    'duration'
+    'description',
+    'duration',
+    'enabled'
   ],
 
   properties: [
     {
-      name: 'name',
+      class: 'String',
+      name: 'description',
       tableWidth: 600,
       section: 'basicInfo'
     },
