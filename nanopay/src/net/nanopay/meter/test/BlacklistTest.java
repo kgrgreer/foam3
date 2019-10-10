@@ -24,33 +24,55 @@ public class BlacklistTest extends Test {
     DAO accountDAO = (DAO) x.get("accountDAO");
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     DAO groupDAO = (DAO) x.get("groupDAO");
+    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
 
     ////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// SETUP ////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
-    // Setup the business admin to pay from
-    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).removeAll();
+    // Setup the business
+    localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).removeAll();
     Business myBusiness = new Business();
     myBusiness.setBusinessName("MyBusiness");
     myBusiness.setEmail("busadmin@example.com");
-    myBusiness.setGroup("smeBusinessAdmin");
     myBusiness.setEmailVerified(true); // Required to send or receive money.
-    myBusiness = (Business) bareUserDAO.put(myBusiness);
-    X myBusinessContext = Auth.sudo(x, myBusiness);
+    myBusiness = (Business) localBusinessDAO.put(myBusiness);
+
+    // Setup the business admin
+    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "admin@example.com")).removeAll();
+    User myAdmin = new User();
+    myAdmin.setFirstName("MyAdmin");
+    myAdmin.setEmail("admin@example.com");
+    myAdmin.setGroup("admin");
+    myAdmin.setEmailVerified(true); // Required to send or receive money.
+    myAdmin.setCompliance(ComplianceStatus.PASSED);
+    myAdmin = (User) bareUserDAO.put(myAdmin);
+    X myAdminContext = Auth.sudo(x, myAdmin);
 
     // Setting the external business to pay to
-    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "evilcorp@example.com")).removeAll();
+    localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "evilcorp@example.com")).removeAll();
     Business externalBusiness = new Business();
     externalBusiness.setEmail("evilcorp@example.com");
     externalBusiness.setBusinessName("EvilCorp");
-    externalBusiness.setGroup("smeBusinessAdmin");
     externalBusiness.setEmailVerified(true); // Required to send or receive money.
     externalBusiness.setCompliance(ComplianceStatus.PASSED);
-    externalBusiness = (Business) bareUserDAO.put(externalBusiness);
-    X externalBusinessContext = Auth.sudo(x, externalBusiness);
+    externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
+
+    // Creating junctions my business users
+    UserUserJunction adminToBusinessJunc = new UserUserJunction();
+    adminToBusinessJunc.setSourceId(myAdmin.getId());
+    adminToBusinessJunc.setTargetId(myBusiness.getId());
+    adminToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".admin");
+    agentJunctionDAO.put(adminToBusinessJunc);
+
+    // Creating respective contexts with user-agent enabled in their sessions
+    Session sessionAdmin = myAdminContext.get(Session.class);
+    sessionAdmin.setUserId(myBusiness.getId());
+    sessionAdmin.setAgentId(myAdmin.getId());
+    myAdminContext = sessionAdmin.applyTo(myAdminContext);
 
     // setting up their respective accounts
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests myBusiness test account")).removeAll();
@@ -61,7 +83,7 @@ public class BlacklistTest extends Test {
     myBusinessBankAccount.setInstitution(1);
     myBusinessBankAccount.setBranchId("12345");
     myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myBusinessContext).put_(x, myBusinessBankAccount);
+    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests externalBusiness test account")).removeAll();
     CABankAccount externalBusinessBankAccount = new CABankAccount();
@@ -71,7 +93,7 @@ public class BlacklistTest extends Test {
     externalBusinessBankAccount.setInstitution(1);
     externalBusinessBankAccount.setBranchId("54321");
     externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-    externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(externalBusinessContext).put_(x, externalBusinessBankAccount);
+    externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// TEST CODE ///////////////////////////////////////////
@@ -83,11 +105,10 @@ public class BlacklistTest extends Test {
     invoice.setPayeeId(externalBusiness.getId());
     invoice.setDestinationCurrency("CAD");
     invoice.setAccount(myBusinessBankAccount.getId());
-    invoice.setDestinationAccount(externalBusinessBankAccount.getId());
 
     // Use system context to create invoice since invoice must exist for testing
     // the `transaction` below.
-    invoice = (Invoice) invoiceDAO.put(invoice);
+    invoice = (Invoice) invoiceDAO.inX(x).put(invoice);
 
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(invoice.getAccount());
@@ -97,11 +118,11 @@ public class BlacklistTest extends Test {
     transaction.setAmount(invoice.getAmount());
     transaction.setInvoiceId(invoice.getId());
     try { 
-      Transaction result = (Transaction) transactionDAO.inX(myBusinessContext).put(transaction);
+      Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
     } catch (Throwable t) {
       t.printStackTrace();
-      test(false, "Unexpected exception: " + t);
+      test(false, "Unexpected exception putting transaction before business passes compliance: " + t);
     }
 
     Invoice invoice2 = new Invoice();
@@ -110,34 +131,19 @@ public class BlacklistTest extends Test {
     invoice2.setPayeeId(externalBusiness.getId());
     invoice2.setDestinationCurrency("CAD");
     invoice2.setAccount(myBusinessBankAccount.getId());
-    invoice2.setDestinationAccount(externalBusinessBankAccount.getId());
     try {
-      invoiceDAO.inX(myBusinessContext).put(invoice2);
+      invoiceDAO.inX(x).put(invoice2);
     } catch (Throwable t) {
       test(true, "Invoice not created until business passes compliance passing proper compliance.");
     }
 
-    // Set compliance to passed, 2FA?, wiring up the user-agent session
-    // and trying to put the invoice and payment transaction
+    // Set compliance to passed and will now try putting the invoice and paying it
     myBusiness = (Business) myBusiness.fclone();
     myBusiness.setCompliance(ComplianceStatus.PASSED);
-    myBusiness = (Business) bareUserDAO.put(myBusiness);
-
-    // Create a junction to signify that employee2 is an employee of the business.
-    // UserUserJunction junc = new UserUserJunction();
-    // junc.setSourceId(employee2.getId());
-    // junc.setTargetId(busAdmin.getId());
-    // junc.setGroup("smeBusinessAdmin");
-    // DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-    // agentJunctionDAO.put(junc);
-
-    // Session session = (Session) busAdminContext.get(Session.class);
-    // session.setUserId(busAdmin.getId());
-    // session.setAgentId(employee2.getId());
-    // busAdminContext = session.applyTo(busAdminContext);
+    myBusiness = (Business) localBusinessDAO.put(myBusiness);
 
     try {
-      invoice2 = (Invoice) invoiceDAO.inX(myBusinessContext).put(invoice2);
+      invoice2 = (Invoice) invoiceDAO.inX(x).put(invoice2);
     } catch (Throwable t) {
       test(false, "Unexpected exception putting invoice after setting compliance to passed: " + t);
     }
@@ -151,7 +157,7 @@ public class BlacklistTest extends Test {
     transaction2.setInvoiceId(invoice2.getId());
 
     try {
-      Transaction result = (Transaction) transactionDAO.inX(myBusinessContext).put(transaction2);
+      Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction2);
       test(result != null, "Successfully put the transaction to the TransactionDAO after setting compliance to passed.");
     } catch (Throwable t) {
       test(false, "Unexpected exception putting transaction after setting compliance to passed: " + t);
