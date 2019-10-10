@@ -1,7 +1,6 @@
 foam.CLASS({
     package: 'net.nanopay.invoice.ui.modal',
     name: 'MarkAsVoidModal',
-    // extends: 'foam.u2.Controller',
     extends: 'foam.u2.View',
 
     documentation: 'Modal for markig invoice as void',
@@ -12,9 +11,8 @@ foam.CLASS({
     ],
 
     requires: [
-        'net.nanopay.invoice.model.PaymentStatus'//,
-        // 'foam.u2.PopupView',
-        //'foam.u2.dialog.NotificationMessage'
+        'foam.u2.tag.TextArea',
+        'net.nanopay.invoice.model.PaymentStatus'
     ],
 
     messages: [
@@ -32,62 +30,59 @@ foam.CLASS({
     ],
 
     css: `
-        ^ .size {
-            width: 330px;
+    ^ {
+        max-width: 500vw;
+        margin: auto;
       }
-      ^ .padding {
-          padding: 0px 25px;
-      }
-      ^ .note-size {
-        margin-left: 20px;
-        padding: 10px 5px;
-        width: 90%;
-      }
+    //     ^ .size {
+    //         width: 330px;
+    //   }
+    //   ^ .one-col {
+    //     margin: 20px;
+    //   }
+    //   ^ .padding {
+    //       padding: 0px 25px;
+    //   }
+    //   ^ .note-size {
+    //     margin-left: 20px;
+    //     padding: 10px 5px;
+    //     width: 90%;
+    //   }
     `,
 
     properties: [
         {
-            name: 'note',
             class: 'String',
-            //placeholder: 'note',
-            value: 'note',
-            view: { class: 'foam.u2.tag.TextArea', rows: 1, cols: 1}
+            name: 'note',
+            view: {
+                class: 'foam.u2.TextField',
+                placeholder: 'i.e. Why is it voided?'
+            }
         },
         'invoice'
     ],
     methods: [
         function initE() {
             this.SUPER();
-            self = this;
-            // PaymentStatus = this.PaymentStatus;
-            // invoice = this.invoice;
-            // invoiceDAO = this.invoiceDAO;
-            // notify = this.notify;
 
             this
             .addClass(this.myClass())
-            .start().addClass('size')
+            .startContext({ data: this })
+                .start().addClass('size')
                 .start('h2').addClass('padding')
                     .add(this.TITLE)
                 .end()
-                .start('p').addClass('padding')
+                .start().addClass('padding')
                     .add(this.MSG1)
-                .end()
-                .start('p').addClass('padding')
                     .add(this.MSG2)
                 .end()
-                .start().addClass('label').add('Note').end()
-                .start(this.NOTE)//.addClass('input-box')//.addClass('padding').addClass('note-size')
-                .end()
-                .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', 
-                    back: this.CANCEL, next: this.VOID_METHOD})
-                    
-                .end()
-                // .start()
-                //     .addClass('button-container')
-                //     .tag(this.CANCEL)
-                //     .tag(this.VOID_METHOD)
-                // .end()
+                .start().add('Note:').end().start().add(this.NOTE).end()
+                .tag({
+                    class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+                    back: this.CANCEL,
+                    next: this.VOID_METHOD
+                })
+            .endContext()
             .end();
         }
     ],
@@ -103,16 +98,16 @@ foam.CLASS({
             name: 'voidMethod',
             label: 'Void',
             code: function(X) {
-                self.invoice.paymentMethod = self.PaymentStatus.VOID;
-                self.invoice.note = self.NOTE;
-                self.invoiceDAO.put(self.invoice).then((invoice) => {
-                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
-                    self.notify(self.VOID_SUCCESS, 'success');
+                this.invoice.paymentMethod = this.PaymentStatus.VOID;
+                this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
+                this.invoiceDAO.put(this.invoice).then((invoice) => {
+                  if (invoice.paymentMethod == this.PaymentStatus.VOID) {
+                    this.notify(this.VOID_SUCCESS, 'success');
                     X.closeDialog();
                   }
                 }).catch((err) => {
-                  if ( err ) self.notify(self.VOID_ERROR, 'error');
-                    return;
+                  if ( err ) this.notify(this.VOID_ERROR, 'error');
+                  X.closeDialog();
                 });
             }
         }
