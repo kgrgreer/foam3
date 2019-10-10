@@ -24,7 +24,8 @@ foam.CLASS({
             return [institution.id, institution.name];
           }
         });
-      }
+      },
+      section: 'basicInfo'
     },
     {
       name: 'action',

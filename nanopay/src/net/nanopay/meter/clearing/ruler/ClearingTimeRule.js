@@ -19,47 +19,28 @@ foam.CLASS({
   properties: [
     {
       name: 'name',
-      tableWidth: 600
+      tableWidth: 600,
+      section: 'basicInfo'
     },
     {
       name: 'daoKey',
-      value: 'localTransactionDAO',
-      hidden: true
+      value: 'localTransactionDAO'
     },
     {
       name: 'ruleGroup',
-      value: 'ClearingTime',
-      hidden: true,
-      permissionRequired: true
+      value: 'ClearingTime'
     },
     {
       name: 'operation',
-      value: 'UPDATE',
-      hidden: true
-    },
-    {
-      name: 'after',
-      value: false,
-      hidden: true
+      value: 'UPDATE'
     },
     {
       name: 'predicate',
-      javaFactory: 'return new DefaultClearingTimeRulePredicate();',
-      hidden: true
+      javaFactory: 'return new DefaultClearingTimeRulePredicate();'
     },
     {
       name: 'action',
       transient: true
-    },
-    {
-      name: 'saveHistory',
-      value: false,
-      hidden: true
-    },
-    {
-      name: 'validity',
-      value: 0,
-      hidden: true
     },
     {
       class: 'Int',
@@ -73,7 +54,12 @@ foam.CLASS({
           },
           errorString: 'Clearing time duration must be zero or greater'
         }
-      ]
+      ],
+      section: 'basicInfo'
+    },
+    {
+      name: 'enabled',
+      section: 'basicInfo'
     }
   ],
 
