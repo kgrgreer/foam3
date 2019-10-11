@@ -39,7 +39,7 @@ foam.CLASS({
                 DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
                 Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
-                StringBuilder sb = new StringBuilder(sender.label())
+                StringBuilder sb = new StringBuilder("You")
                 .append(" just request a payment from ")
                 .append(receiver.label())
                 .append(" for ")
@@ -47,9 +47,18 @@ foam.CLASS({
                 .append(" ")
                 .append(iv.getSourceCurrency());
 
-                sb.append(".");
-                String notificationMsg = sb.toString();
+                StringBuilder rb = new StringBuilder(sender.label())
+                .append(" just request a payment ")
+                .append(" for ")
+                .append(currency.format(iv.getAmount()))
+                .append(" ")
+                .append(iv.getSourceCurrency());
 
+                sb.append(".");
+                rb.append(".");
+                String notificationMsg = sb.toString();
+                String receiver_notificationMsg = rb.toString();
+                
                 // notification to sender
               Notification senderNotification = new Notification();
               senderNotification.setUserId(sender.getId());
@@ -65,7 +74,7 @@ foam.CLASS({
               if ( receiver.getId() != sender.getId() ) {
                 Notification receiverNotification = new Notification();
                 receiverNotification.setUserId(receiver.getId());
-                receiverNotification.setBody(notificationMsg);
+                receiverNotification.setBody(receiver_notificationMsg);
                 receiverNotification.setNotificationType("Transaction Initiated");
                 receiverNotification.setIssuedDate(iv.getIssueDate());
                 try {
