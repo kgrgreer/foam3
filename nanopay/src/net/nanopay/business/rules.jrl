@@ -1,7 +1,6 @@
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id": 6000,
-  "name": "Update business's email",
+  "id": "Update business's email",
   "priority": 100,
   "ruleGroup": "UpdateBusinessEmail",
   "documentation": "Update business email based on new signing officer",

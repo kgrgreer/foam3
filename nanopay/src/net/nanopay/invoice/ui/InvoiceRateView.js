@@ -48,7 +48,9 @@ foam.CLASS({
     'transactionQuotePlanDAO',
     'user',
     'viewData',
-    'wizard'
+    'wizard',
+    'updateInvoiceDetails',
+    'forceUpdate'
   ],
 
   javaImports: [
@@ -108,6 +110,9 @@ foam.CLASS({
     }
     ^exchange-rate-text {
       color: #8e9090
+    }
+    ^ .fees {
+      margin-top: 50px;
     }
   `,
 
@@ -173,7 +178,7 @@ foam.CLASS({
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
         return chosenBankAccount != null &&
-          invoice$destinationCurrency !== chosenBankAccount.denomination;
+          ! (invoice$destinationCurrency == chosenBankAccount.denomination && chosenBankAccount.denomination === 'CAD');
       }
     },
     {
@@ -190,8 +195,8 @@ foam.CLASS({
     },
     {
       name: 'exchangeRateNotice',
-      expression: function(isEmployee, isFx) {
-        return isEmployee && isFx;
+      expression: function(isEmployee) {
+        return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
       }
     }
   ],
@@ -205,7 +210,8 @@ foam.CLASS({
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
-    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
+    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction fee of ' },
+    { name: 'TRANSACTION_FEE_LABEL_2', message: ' will be charged at the end of the monthly billing cycle.' },
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
@@ -216,7 +222,8 @@ foam.CLASS({
     { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
     { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
     { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
-    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' }
+    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' },
+    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' }
   ],
 
   methods: [
@@ -239,6 +246,7 @@ foam.CLASS({
       }
     },
     function initE() {
+      let self = this;
       // Update the rates every time the selected account changes.
       if ( this.isPayable ) {
         this.invoice.account$.sub(this.fetchRates);
@@ -343,10 +351,19 @@ foam.CLASS({
           .end()
 
         /** Exchange rate details **/
-        .add(this.slot(function(showExchangeRateSection) {
+        .add(this.slot(function(showExchangeRateSection, updateInvoiceDetails) {
+          if ( this.forceUpdate ) {
+            this.quote = updateInvoiceDetails;
+            this.forceUpdate = false;
+          }
           return ! showExchangeRateSection ? null :
             this.E()
-              .start().show(this.showExchangeRateSection$)
+              .start().show(this.slot(function(showExchangeRateSection, sourceCurrency, invoice$destinationCurrency ) {
+                if ( sourceCurrency == null ) {
+                  return false;
+                }
+                return showExchangeRateSection && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+              }))
                 .start().addClass('exchange-amount-container')
                   .start()
                     .addClass(this.myClass('label-value-row'))
@@ -378,58 +395,19 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(this.slot(function(sourceCurrency) {
-                        if ( sourceCurrency && this.quote && this.quote.amount ) {
-                          return sourceCurrency.format(this.quote.amount);
+                      .add(this.slot(function(sourceCurrency, quote) {
+                        if ( sourceCurrency && quote && quote.amount ) {
+                          return sourceCurrency.format(quote.amount);
                         }
                         return '(-)';
                       }),
-                        ' ',
-                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
-                    .end()
-                  .end()
-                  .start().show(this.chosenBankAccount$)
-                    .start()
-                      .addClass('inline')
-                      .add(this.TRANSACTION_FEE_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
-                          if ( ! sourceCurrency ) return;
-                          return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees) :
-                            sourceCurrency.format(0);
-                        })
-                      )
-
                     .end()
                   .end()
                 .end()
               .end();
           }))
-          /** Fee for none AFX payables **/
-          .start()
-            .show(this.slot(function(chosenBankAccount, isFx, isPayable) {
-              return ! isFx && isPayable && chosenBankAccount;
-            }))
-            .start()
-              .addClass('inline')
-              .add(this.TRANSACTION_FEE_LABEL)
-            .end()
-            .start()
-              .addClass('float-right')
-              .add(this.chosenBankAccount$.map((bankAccount) => {
-                if ( ! bankAccount ) return '';
-                return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return currency.format(0);
-                });
-              }))
-            .end()
-          .end()
 
           /** Amount to be paid. **/
           .add(this.slot(function(quote, loadingSpinner$isHidden, sourceCurrency) {
@@ -451,14 +429,39 @@ foam.CLASS({
                           return this.sourceCurrency.format(amount);
                         }
                       }),
-                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                      this.isFx$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
           }))
+          .start().show(this.slot(function(quote) {
+            if ( quote == null ) {
+              return false;
+            }
+            return quote.getCost() == 0 ? false : true;
+          }))
+            .start()
+              .addClass('inline')
+              .addClass('fees')
+              .add(this.TRANSACTION_FEE_LABEL)
+              .add(
+                this.slot( function(quote, sourceCurrency) {
+                  if ( ! sourceCurrency || ! quote ) return;
+                  return quote.getCost() ?
+                    sourceCurrency.format(quote.getCost()) + this.TRANSACTION_FEE_LABEL_2:
+                    sourceCurrency.format(0) + this.TRANSACTION_FEE_LABEL_2;
+                })
+              )
+            .end()
+          .end()
         .end()
-        .start().show(this.exchangeRateNotice$)
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
+        .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency ) {
+          if ( sourceCurrency == null ) {
+            return false;
+          }
+          return isFx && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+        }))
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();
     },
 
@@ -483,6 +486,7 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,

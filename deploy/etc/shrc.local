@@ -7,6 +7,14 @@
 # See https://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.htmlString
 #########################
 
+if [ -z "${DEBUG_PORT}" ]; then
+  DEBUG_PORT=8000
+fi
+
+if [ -z "${DEBUG_SUSPEND}" ]; then
+  DEBUG_SUSPEND=n
+fi
+
 ###### Customer parameter File
 CUSTOM_CONFIG="${NANOPAY_HOME}/conf/shrc.custom"
 if [ -f "${CUSTOM_CONFIG}" ]; then
@@ -18,35 +26,6 @@ PROJECT_CONFIG="$NANOPAY_HOME/etc/shrc.project"
 if [ -f "${PROJECT_CONFIG}" ]; then
   . ${PROJECT_CONFIG} $1
 fi
-
-###### Memory
-# MEMORY_MODEL defaults to SMALL and can be defined in shrc.custom
-
-case "$MEMORY_MODEL" in
-
-  'SMALL')
-    # SMALL is the DEFAULT of this file.
-  ;;
-
-  'MEDIUM')
-    JAVA_OPTS="${JAVA_OPTS} -Xms1000m"
-    JAVA_OPTS="${JAVA_OPTS} -Xmx4000m"
-    JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
-    JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
-#    JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=512m"
-#    JAVA_OPTS="${JAVA_OPTS} -XX:MaxPermSize=1024m"
-  ;;
-
-  'LARGE')
-    JAVA_OPTS="${JAVA_OPTS} -Xms1000m"
-    JAVA_OPTS="${JAVA_OPTS} -Xmx16000m"
-    JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
-    JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
-#    JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=512m"
-#    JAVA_OPTS="${JAVA_OPTS} -XX:MaxPermSiz=1024m"
-  ;;
-
-esac
 
 # memory - heap
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
@@ -116,21 +95,14 @@ fi
 if [ "${DEBUG}" = "1" -o "${DEBUG_DEV}" = "1" ]; then
   JAVA_OPTS="${JAVA_OPTS} -Xdebug"
   JAVA_OPTS="${JAVA_OPTS} -Xnoagent"
-  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG_PORT}"
+  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
 fi
 
 ##### Garbage Collection
-case "$MEMORY_MODEL" in
-
-  'SMALL')
-    JVM_ARGS="${JVM_ARGS} -XX:+UseParNewGC"
-    JVM_ARGS="${JVM_ARGS} -XX:+UseConcMarkSweepGC"
-    JVM_ARGS="${JVM_ARGS} -XX:-CMSParallelRemarkEnabled"
-  ;;
-  *)
-    JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
-  ;;
-esac
+#JVM_ARGS="${JVM_ARGS} -XX:+UseParNewGC"
+#JVM_ARGS="${JVM_ARGS} -XX:+UseConcMarkSweepGC"
+#JVM_ARGS="${JVM_ARGS} -XX:-CMSParallelRemarkEnabled"
+JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
 
 # String heap optimization
 JAVA_OPTS=$"${JAVA_OPTS} -XX:+UseStringCache"

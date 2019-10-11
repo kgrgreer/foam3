@@ -568,6 +568,10 @@ foam.CLASS({
       display: inline-block;
       visibility: visible;
       border: 6px solid #604aff;
+      -webkit-border-before-width: 8px;
+      -webkit-border-end-width: 8px;
+      -webkit-border-start-width: 8px;
+      -webkit-border-after-width: 8px;
     }
 
     input[type='checkbox']:checked:after {
@@ -1007,7 +1011,7 @@ foam.CLASS({
       display: none !important;
     }
 
-    .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
+    .net-nanopay-ui-banner-Banner .foam-u2-stack-StackView {
       height: calc(100% - 36px);
     }
 

@@ -5,6 +5,7 @@ foam.RELATIONSHIP({
   inverseName: 'branch',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -20,7 +21,10 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        if ( branch ) self.add(branch.branchId);
+        if ( branch ) {
+          self.add(branch.branchId);
+          self.tooltip = branch.branchId;
+        }
       });
     }
   }
@@ -33,6 +37,7 @@ foam.RELATIONSHIP({
   inverseName: 'institution',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -48,11 +53,14 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
+            var displayinstitution;
             if ( institution.institutionNumber !== "" ) {
-              self.add(institution.institutionNumber);
+              displayinstitution = institution.institutionNumber;
             }  else {
-              self.add(institution.name);
+              displayinstitution = institution.name;
             }
+            self.add(displayinstitution);
+            self.tooltip  = displayinstitution;
           }
         }).catch( function( error ) {
           self.add('N/A');
@@ -109,6 +117,7 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     section: 'accountsSection',
     label: ''
@@ -240,11 +249,18 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent',
+  inverseName: 'parent'
+});
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'associatedTransactions',
+  inverseName: 'associateTransaction',
   sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
-
 
 foam.RELATIONSHIP({
   cardinality: '1:*',
@@ -510,6 +526,7 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
+  unauthorizedTargetDAOKey: 'localContactDAO',
 });
 
 foam.RELATIONSHIP({
@@ -648,8 +665,21 @@ foam.RELATIONSHIP({
   inverseName: 'sourceAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -659,8 +689,22 @@ foam.RELATIONSHIP({
   inverseName: 'destinationAccount',
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
+  // The following code is the correct way to implement but it breaks dev,
+  // will be dealing with it in another PR
+  /*
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
+  */
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
+  sourceProperty: { visibility: 'RO' },
+  targetProperty: {
+    visibility: 'RO',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -670,6 +714,7 @@ foam.RELATIONSHIP({
   inverseName: 'flinksAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -681,6 +726,7 @@ foam.RELATIONSHIP({
   inverseName: 'plaidAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -692,6 +738,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -703,6 +750,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -714,6 +762,7 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -721,10 +770,11 @@ foam.RELATIONSHIP({
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
-  forwardName: 'complianceItems',
+  forwardName: 'complianceResponses',
   inverseName: 'transactionId',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });

@@ -3,21 +3,21 @@ foam.CLASS({
   name: 'Transaction',
 
   implements: [
+    'foam.mlang.Expressions',
+    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.analytics.Foldable',
-    'foam.mlang.Expressions',
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
     'addCommas',
-    'currencyDAO',
-    'userDAO',
     'complianceHistoryDAO',
-    'homeDenomination'
+    'currencyDAO',
+    'homeDenomination',
+    'stack?'
   ],
 
   javaImports: [
@@ -34,7 +34,6 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -48,6 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -55,8 +55,8 @@ foam.CLASS({
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus'
- ],
+   'net.nanopay.tx.model.TransactionStatus',
+  ],
 
   constants: [
     {
@@ -93,14 +93,15 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'basicInfo'
-    },
-    {
       name: 'paymentInfo'
     },
     {
+      name: 'basicInfo',
+      title: 'Transaction Info'
+    },
+    {
       name: 'lineItemsSection',
-      title: 'Line Items',
+      title: 'Additional Detail',
       isAvailable: function(id, lineItems) {
         return ! id || lineItems.length;
       }
@@ -114,7 +115,8 @@ foam.CLASS({
     },
     {
       name: '_defaultSection',
-      permissionRequired: true
+      permissionRequired: true,
+      hidden: true
     },
   ],
 
@@ -130,21 +132,27 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Scheduled',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.SCHEDULED);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.SCHEDULED);
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Pending',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.PENDING);
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Completed',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.COMPLETED);
       }
     }
   ],
@@ -197,13 +205,6 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
-      hidden: true
-    },
-    {
-      name: 'balances',
-      class: 'FObjectArray',
-      of: 'net.nanopay.account.Balance',
-      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {
@@ -279,9 +280,8 @@ foam.CLASS({
         return this.invoiceId;
       },
       tableCellFormatter: function(value, obj) {
-        var self = this;
-        this.__subSubContext__.invoiceDAO.find(value).then( function( invoice ) {
-          if ( invoice ) self.start().add(invoice.invoiceNumber).end();
+        this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
+          if ( invoice ) this.start().add(invoice.invoiceNumber).end();
         });
       }
     },
@@ -304,12 +304,8 @@ foam.CLASS({
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
       tableWidth: 130,
-      view: function(args, x) {
-        self = this;
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          choices: x.data.statusChoices
-        };
+      view: function(_, x) {
+        return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       }
     },
     {
@@ -334,15 +330,21 @@ foam.CLASS({
       visibility: 'RO',
       label: 'Reference'
     },
-    {
+     {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
-      name: 'payee',
-      label: 'Receiver',
-      storageTransient: true,
-      visibility: 'RO',
+      name: 'payer',
+      label: 'Sender',
       section: 'paymentInfo',
+      visibility: 'RO',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payer$.map((p) => p ? [[p, p.toSummary()]] : [])
+        };
+      },
+      storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -368,11 +370,17 @@ foam.CLASS({
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
-      name: 'payer',
-      label: 'Sender',
-      section: 'paymentInfo',
-      visibility: 'RO',
+      name: 'payee',
+      label: 'Receiver',
       storageTransient: true,
+      visibility: 'RO',
+      section: 'paymentInfo',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payee$.map((p) => p ? [[p, p.toSummary()]] : [])
+        };
+      },
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -394,6 +402,7 @@ foam.CLASS({
       outputter.outputValue(receiver.getEmail());
       `
     },
+
     {
       class: 'Long',
       name: 'payeeId',
@@ -409,6 +418,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
+      label: 'Source Amount',
       section: 'paymentInfo',
       visibility: 'RO',
       javaToCSV: `
@@ -441,30 +451,30 @@ foam.CLASS({
             destinationCurrency,
             currencyDAO,
             homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
-          ){
+          ) {
             return Promise.all([
               currencyDAO.find(sourceCurrency),
               currencyDAO.find(destinationCurrency)
             ]).then(([srcCurrency, dstCurrency]) => {
-              let output = "";
+              let output = '';
 
               if ( sourceCurrency === destinationCurrency ) {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
               } else {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
                 output += ' → ';
-                output += dstCurrency 
-                            ? dstCurrency.format(obj.destinationAmount) 
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
-              if ( obj.payer ) {
+              if ( obj.payer && obj.payee ) {
                 output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
               }
 
               return output;
-            })
-        }))
+            });
+        }));
       }
     },
     {
@@ -539,12 +549,13 @@ foam.CLASS({
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId',
-      visibility: 'RO'
+      visibility: 'RO',
+      hidden: true
     },
     {
       class: 'String',
       name: 'sourceCurrency',
-      label: 'Currency',
+      label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
       value: 'CAD'
@@ -559,6 +570,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
           foam.u2.Visibility.HIDDEN :
@@ -566,10 +578,6 @@ foam.CLASS({
       },
       section: 'paymentInfo',
       value: 'CAD'
-    },
-    {
-      class: 'String',
-      name: 'paymentMethod'
     },
     {
       name: 'next',
@@ -591,6 +599,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'lastStatusChange',
+      class: 'DateTime',
+      section: 'basicInfo',
+      documentation: `The date that a transaction changed to its current status`,
+      visibility: 'RO'
+    },
+    {
       name: 'lineItems',
       label: '',
       section: 'lineItemsSection',
@@ -607,8 +622,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   },
-   {
+    },
+    {
       class: 'DateTime',
       name: 'scheduledTime',
       section: 'basicInfo',
@@ -629,14 +644,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'doFolds',
-      javaCode: `
-for ( Balance b : getBalances() ) {
-  fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-}
-      `
-    },
     {
       name: 'limitedClone',
       args: [
@@ -838,24 +845,6 @@ for ( Balance b : getBalances() ) {
       `
     },
     {
-      name: 'sendCompletedNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
-      name: 'sendReverseNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
       documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
@@ -984,14 +973,17 @@ for ( Balance b : getBalances() ) {
       ],
       javaCode: `
       Transaction tx = this;
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+
       if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
-         if ( tx.getNext().length > 1) throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+         if ( tx.getNext().length > 1) {
+           throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+         }
          Transaction [] t = tx.getNext();
          t[0].addNext(txn);
       }
       else {
-        txn.setInitialStatus(txn.getStatus());
-        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
         Transaction [] t2 = new Transaction [1];
         t2[0] = txn;
         tx.setNext(t2);
@@ -1032,15 +1024,49 @@ for ( Balance b : getBalances() ) {
       }
     ],
     javaCode: `
-    try {
-      sendReverseNotification(x, oldTxn);
-      sendCompletedNotification(x, oldTxn);
-    } catch (Exception e) {
-      Logger logger = (Logger) x.get("logger");
-      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
-    }
     `
-  }
+  },
+  {
+    name: 'authorizeOnCreate',
+    args: [
+      { name: 'x', type: 'Context' }
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnUpdate',
+    args: [
+      { name: 'x', type: 'Context' },
+      { name: 'oldObj', type: 'foam.core.FObject' }
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnDelete',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'authorizeOnRead',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    javaThrows: ['AuthorizationException'],
+    javaCode: `
+      // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
 ],
   actions: [
     {
@@ -1049,7 +1075,7 @@ for ( Balance b : getBalances() ) {
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        this.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,

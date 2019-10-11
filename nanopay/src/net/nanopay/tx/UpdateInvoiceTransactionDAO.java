@@ -43,7 +43,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction transaction = (Transaction) obj;
 
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
-      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
+      ( transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
     ) {
       transaction = (Transaction) super.put_(x, obj);
 
@@ -117,8 +117,8 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         HashMap<String, Object> args = new HashMap();
         args.put("transactionId", transaction.getId());
         args.put("invoiceId", invoice.getId());
-        invoice.setPaymentMethod(null);
-        invoice.setPaymentDate(null);
+        invoice.clearPaymentMethod();
+        invoice.clearPaymentDate();
         invoiceDAO.put(invoice);
         // Send a notification to the payment-ops team.
         FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)

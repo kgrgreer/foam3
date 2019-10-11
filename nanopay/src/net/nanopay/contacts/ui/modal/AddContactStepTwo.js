@@ -109,13 +109,6 @@ foam.CLASS({
     ^adding-account{
       margin-top: 16px;
     }
-    ^ .net-nanopay-sme-ui-AddressView .label-input .label {
-      margin-top: 16px;
-      padding-bottom: 0px !important;
-    }
-    ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
-      margin-bottom: 0px !important;
-    }
   `,
 
   messages: [
@@ -309,13 +302,6 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
-                .startContext({ data: this.wizard })
-                  .start()
-                    .hide(this.isEdit)
-                    .addClass(this.myClass('invite'))
-                    .add(this.wizard.SHOULD_INVITE)
-                  .end()
-                .endContext()
               .endContext();
           } else {
             return this.E()
@@ -349,15 +335,16 @@ foam.CLASS({
                     .setAttribute('placeholder', this.US_ACCOUNT_NAME_PLACEHOLDER)
                   .end()
                 .end()
-                .tag(self.usAccount.ADDRESS.clone().copyFrom({
-                  view: {
-                    class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true
-                  }
-                }))
               .endContext();
           }
         }))
+        .startContext({ data: this.wizard })
+          .start()
+            .hide(this.isEdit)
+            .addClass(this.myClass('invite'))
+            .add(this.wizard.SHOULD_INVITE)
+          .end()
+        .endContext()
         .start(this.ADDING_BANK_ACCOUNT)
           .addClass(this.myClass('adding-account'))
         .end()
@@ -427,7 +414,6 @@ foam.CLASS({
         else correctFields = this.validateBank(this.usAccount, 'US');
         if ( ! correctFields ) return;
 
-        // // Validate the contact address fields.
         X.pushToId('AddContactStepThree');
       }
     },

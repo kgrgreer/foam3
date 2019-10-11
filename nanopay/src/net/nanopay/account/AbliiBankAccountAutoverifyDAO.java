@@ -41,12 +41,6 @@ public class AbliiBankAccountAutoverifyDAO
      * account and verify it using the micro-deposit even if they are using the same bank information
      * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
      * 
-     * 2. FOR US BANK ACCOUNTS
-     * Just need to check if the bank account obj is an instance of USBankAccount
-     * If it is, then we can automatically verify it
-     * This is to account when the user is adding a US Bank Account for themselves
-     * As the requirement is to automatically verify US Bank Accounts
-     * 
      * 3. FOR FLINKS BANK ACCOUNTS
      * NOTE: MIGHT WANT TO INCLUDE THIS IN THE FUTURE FOR INSTITUTIONS IDS BETWEEN 1 to 23 SINCE THESE WILL ALL REQUIRE TO LOGIN VIA THE CLIENT
      * Since flinks bank accounts are being verified by logging in from the client, 
@@ -72,11 +66,6 @@ public class AbliiBankAccountAutoverifyDAO
     if ( bankAccountOwner instanceof Contact ) {
       obj.setProperty("status", BankAccountStatus.VERIFIED);
     }
-   }
-
-   // 2. US BANK ACCOUNTS
-   if ( bankAccountObj instanceof USBankAccount ) {
-     obj.setProperty("status", BankAccountStatus.VERIFIED);
    }
 
    // 3. FLINKS ACCOUNTS

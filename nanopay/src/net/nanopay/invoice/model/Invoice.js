@@ -38,11 +38,13 @@ foam.CLASS({
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.model.Currency',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.invoice.InvoiceLineItem'
   ],
 
   imports: [
-    'currencyDAO'
+    'currencyDAO',
+    'user'
   ],
 
   properties: [
@@ -391,7 +393,10 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PROCESSING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
-        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
+        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) {
+          if (this.user.id === this.payeeId ) return this.InvoiceStatus.UNPAID;
+          else return this.InvoiceStatus.PENDING_APPROVAL;
+        }
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
@@ -546,14 +551,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'AFXConfirmationPDF',
-      documentation: `Generates an order confirmation, as a PDF, for the Payer, 
-        if the invoice is associated with an AFX transaction. This property exists 
-        to keep  that PDF in such a scenario.
-      `
-    },
-    {
       class: 'Boolean',
       name: 'isSyncedWithAccounting',
       factory: function() {
@@ -561,6 +558,13 @@ foam.CLASS({
         net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
       },
       documentation: 'Checks if invoice has been synced with accounting software.',
+      visibility: 'RO'
+    },
+    {
+      name: 'lineItems',
+      class: 'FObjectArray',
+      of: 'net.nanopay.invoice.InvoiceLineItem',
+      javaValue: 'new InvoiceLineItem[] {}',
       visibility: 'RO'
     }
   ],

@@ -24,6 +24,10 @@ foam.CLASS({
         @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
         @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
         @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+        ^ .processing-notice {
+          text-align: center;
+        }
       */}
     })
   ],
@@ -33,16 +37,30 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isHidden',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showText',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'text'
     }
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
 
       this
         .addClass(this.myClass()).enableClass('hidden', this.isHidden$)
-        .start({class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg'}).end();
+        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg' }).end()
+        .start()
+            .show(this.showText$)
+            .addClass('processing-notice')
+            .add(this.text)
+        .end();
     },
 
     function show() {

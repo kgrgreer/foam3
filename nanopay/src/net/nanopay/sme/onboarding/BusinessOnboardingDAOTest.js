@@ -54,7 +54,6 @@ foam.CLASS({
         Business business = new Business();
         business.setId(8007);
         business.setAddress(businessAddress);
-        business.setBusinessAddress(businessAddress);
         localBusinessDAO.put(business);
 
         isSigningOffer(user, business, onboardService, x);
@@ -97,7 +96,7 @@ foam.CLASS({
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
-        onboarding.setDualPartyAgreement(true);
+        onboarding.setDualPartyAgreement(3);
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);

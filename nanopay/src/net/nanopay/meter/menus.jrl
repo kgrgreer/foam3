@@ -2,7 +2,7 @@ p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operations","handler
 
 // Payment Operation Views
 p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userUserDAO","detailView":"net.nanopay.meter.UserDetailView"},"order":1100,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO","detailView":"net.nanopay.meter.BusinessDetailView"},"order":1200,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1200,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","title":"Bank Accounts","customDAOController":"net.nanopay.meter.BankAccountController","detailView":"net.nanopay.meter.BankAccountDetailView"},"order":1300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO","detailView":"net.nanopay.meter.ContactDetailView"},"order":1250,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})
@@ -15,6 +15,44 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"App
 
 // Payment Operations Functionality
 p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.bus_limits",
+  "label": "Business Limits",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.tx.ruler.BusinessLimit"
+      },
+      "of": "net.nanopay.tx.ruler.BusinessLimit"
+    }
+  },
+  "order": 2100,
+  "parent": "operation"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.clearingTimes",
+  "label": "Clearing Times",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+      },
+      "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+    }
+  },
+  "order": 2010,
+  "parent": "operation"
+})
 
 // Payment Operation Reports
 p({"class":"foam.nanos.menu.Menu","id":"operation.reports","label":"Reports","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"reportDAO"},"order":3000,"parent":"operation"})
@@ -31,7 +69,10 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.emailmessage","label":"Email M
 p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":4000,"parent":"operation"})
 
 // Business Onboarding
-p({"class":"foam.nanos.menu.Menu","id":"operation.BusinessOnboarding","label":"Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.CAD_BusinessOnboarding","label":"Canadian only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.US_BusinessOnboarding","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"uSBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.CAD-US_BusinessOnboarding","label":"Canadian Upgraded Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"canadaUsBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc","label":"Acceptance Document List","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userAcceptanceDocumentDAO"},"parent":"operation"})
 
 // ComplianceItem
 p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})

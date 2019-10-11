@@ -26,16 +26,14 @@ foam.CLASS({
   ],
 
   documentation: `
-    /**
-    * Invoice decorator for dictating and setting up new invoice notifications and emails.
-    * Responsible for sending notifications to both internal and external users on invoice create.
-    * Triggers on invoices that send emails are as follows:
-    * 1) invoiceIsBeingPaidButNotComplete
-    * 2) invoiceIsANewRecievable
-    * 3) invoiceNeedsApproval
-    * 4) invoiceIsBeingPaidAndCompleted 
-    **/
-   `,
+    Invoice decorator for dictating and setting up new invoice notifications and emails.
+    Responsible for sending notifications to both internal and external users on invoice create.
+    Triggers on invoices that send emails are as follows:
+    1) invoiceIsBeingPaidButNotComplete
+    2) invoiceIsANewRecievable
+    3) invoiceNeedsApproval
+    4) invoiceIsBeingPaidAndCompleted
+  `,
 
   methods: [
     {
@@ -94,10 +92,14 @@ foam.CLASS({
             newInvoiceStatus == InvoiceStatus.UNPAID
           &&
           isARecievable;
+        boolean invoiceIsPartOfFeesScheduledInvoice = 
+          oldInvoiceStatus == null
+          && 
+          newInvoiceStatus == InvoiceStatus.SCHEDULED;
     
         // Performing Actions based on whats been set to true.
-        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete ) {
-          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete" };
+        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete || invoiceIsPartOfFeesScheduledInvoice) {
+          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete", "scheduledEmail" };
           HashMap<String, Object> args = null;
           boolean invoiceIsToAnExternalUser = invoice.getExternal();
           DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -109,7 +111,7 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
@@ -137,11 +139,11 @@ foam.CLASS({
             if ( invoiceHasBeenMarkedComplete ) {
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
-
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "receivable");
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-            
+            if ( invoiceIsPartOfFeesScheduledInvoice ) {
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+            }
           } catch (Exception e) {
             e.printStackTrace();
           }

@@ -2,12 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboarding',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
-  ],
+  ids: ['userId'],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
@@ -17,15 +15,26 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
-    'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
   ],
 
   imports: [
     'countryDAO',
-    'ctrl',
   ],
 
-  ids: ['userId'],
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
+
+  tableColumns: [
+    'userId',
+    'status',
+    'created',
+    'lastModified'
+  ],
 
   sections: [
     {
@@ -40,8 +49,9 @@ foam.CLASS({
     },
     {
       name: 'internationalTransactionSection',
-      title: 'We need a few information about your buisness and signing officer',
+      title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
   ],
 
@@ -65,27 +75,6 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      name: 'businessId',
-      label: 'Business Name',
-      section: 'adminReferenceSection'
-    },
-    {
-      documentation: 'Creation date.',
-      name: 'created',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      documentation: 'Last modified date.',
-      name: 'lastModified',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
       section: 'adminReferenceSection',
@@ -104,14 +93,39 @@ foam.CLASS({
       }
     },
     {
-      section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'signingOfficerIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'businessId',
+      label: 'Business Name',
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        var m = foam.mlang.Expressions.create();
+        this.businessId$find.then((business) => {
+          business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
+          .then((o) => {
+            this.signingOfficer = o && o.id != 0 ;
+          });
+        });
+      }
+    },
+    {
+      documentation: 'Creation date.',
+      name: 'created',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      documentation: 'Last modified date.',
+      name: 'lastModified',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
+      hidden: true,
     },
     {
       section: 'internationalTransactionSection',
@@ -120,19 +134,20 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['businessFormationDate'],
+          args: ['signingOfficer','businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
                 timeMs: 24 * 60 * 60 * 1000
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Business Formation Date must be a date in the past.'
         }
       ]
-    },   
+    },
     {
       section: 'internationalTransactionSection',
       class: 'Reference',
@@ -146,8 +161,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: '- Please select -',
           dao: X.countryDAO.where(m.OR(
-            m.EQ(foam.nanos.auth.Country.NAME, 'Canada'),
-            m.EQ(foam.nanos.auth.Country.NAME, 'USA')
+            m.EQ(foam.nanos.auth.Country.ID, 'CA')
           )),
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -156,9 +170,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessFormation'],
+          args: ['signingOfficer', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
             );
@@ -168,16 +183,118 @@ foam.CLASS({
       ],
     },
     {
-      section: 'internationalTransactionSection',
       class: 'String',
       name: 'businessRegistrationNumber',
-      label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      minLength: 1,
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
+      hidden: true
     },
+    {
+      section: 'internationalTransactionSection',
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      label: 'Federal Tax ID Number (EIN)',
+      documentation: 'Federal Tax ID Number (EIN)',
+      visibilityExpression: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'taxIdentificationNumber', 'countryOfBusinessFormation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.REG_EXP(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.TAX_IDENTIFICATION_NUMBER,/^[0-9]{9}$/),
+            );
+          },
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN)'
+        }
+      ]
+    },
+    {
+      section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
+      docName: 'CAD_AFEX_Terms',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'agreementAFEX'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.AGREEMENT_AFEX, 0)
+            );
+          },
+          errorString: 'Must acknowledge the AFEX agreement.'
+        }
+      ]
+    },
+    {
+      section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      name: 'nanopayInternationalPaymentsCustomerAgreement',
+      documentation: 'Verifies if the user has accepted nanopayInternationalPaymentsCustomerAgreement.',
+      docName: 'nanopayInternationalPaymentsCustomerAgreement',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'nanopayInternationalPaymentsCustomerAgreement'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.NANOPAY_INTERNATIONAL_PAYMENTS_CUSTOMER_AGREEMENT, 0)
+            );
+          },
+          errorString: 'Must acknowledge the nanopay International Payments Customer Agreement.'
+        }
+      ]
+    }
+  ],
+
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to update a submitted onboard profile.'
+    }
   ],
 
   methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        DAO canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+
+        CanadaUsBusinessOnboarding obj = (CanadaUsBusinessOnboarding) this;
+        CanadaUsBusinessOnboarding oldObj = (CanadaUsBusinessOnboarding) canadaUsBusinessOnboardingDAO.find(this.getId());
+
+        if ( auth.check(x, "onboarding.update.*") ) return;
+
+        if (
+          oldObj != null &&
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
+          oldObj.getSigningOfficer()
+        ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+      `
+    },
     {
       name: 'authorizeOnCreate',
       javaCode: `

@@ -40,8 +40,13 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       label: 'Name',
-      documentation: 'Name of acceptance document.',
+      documentation: 'Name of acceptance document. Unique Identifier',
       required: true
+    },
+    {
+      class: 'String',
+      name: 'title',
+      documentation: 'Title of acceptance document to be displayed.'
     },
     {
       class: 'String',

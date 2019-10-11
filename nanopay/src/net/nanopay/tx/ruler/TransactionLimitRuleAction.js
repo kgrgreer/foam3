@@ -13,7 +13,33 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.model.Currency',
+  ],
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'limit'
+    },
+    {
+      class: 'Boolean',
+      name: 'send',
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.util.Frequency',
+      name: 'period',
+      value: 'DAILY',
+    },
+    {
+      class: 'Map',
+      name: 'currentLimits',
+      visibility: 'RO',
+      javaFactory: `
+        return new java.util.HashMap<Object, TransactionLimitState>();
+      `
+    }
   ],
 
   methods: [
@@ -24,48 +50,53 @@ foam.CLASS({
         ((TestedRule)agency).setName("transactionLimits");
       }
       Transaction txn = (Transaction) obj;
+
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
       Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
-      if ( ! txn.canTransfer(x, oldTxn) ) {
-        return;
-      }
-      Object id = rule_.getObjectToMap(txn, x);
+
+      Object id = this.getSend() ? txn.getSourceAccount() : txn.getDestinationAccount();
 
       TransactionLimitState limitState = getLimitState(id);
       if ( agency instanceof TestedRule ) {
         TransactionLimitProbeInfo info = new TransactionLimitProbeInfo();
-        info.setRemainingLimit(rule_.getLimit() - limitState.getLastSpentAmount());
-        info.setMessage("Your remaining limit is " + (rule_.getLimit() - limitState.getLastSpentAmount()) );
+        info.setRemainingLimit(this.getLimit() - limitState.getSpent());
+        info.setMessage("Your remaining limit is " + (this.getLimit() - limitState.getSpent()) );
         ((TestedRule)agency).setProbeInfo(info);
       }
-      if ( ! limitState.check(rule_, txn.getAmount()) ) {
-        throw new RuntimeException("Your limit is exceeded");
+      if ( ! limitState.check(this.getLimit(), this.getPeriod(), txn.getAmount()) ) {
+        DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
+        Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
+        switch (this.getPeriod()) {
+          case DAILY:
+            throw new RuntimeException("This transaction exceeds your daily transaction limit. Your current available limit is " +
+              currency.format(this.getLimit() - limitState.getSpent()) + ". If you require further assistance, please contact us. ");
+          case WEEKLY:
+            throw new RuntimeException("This transaction exceeds your weekly transaction limit. If you require further assistance, please contact us. ");
+          case PER_TRANSACTION:
+            throw new RuntimeException("This transaction exceeds your " + currency.format(this.getLimit() - limitState.getSpent()) +
+              " transaction limit. If you require further assistance, please contact us. ");
+        }
       }
-      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
+      agency.submit(x, x1 -> limitState.updateSpent(Long.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
-    }
-  ],
-
-  axioms: [
+    },
     {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
-        net.nanopay.tx.ruler.TransactionLimitRule rule_;
-        public TransactionLimitRuleAction(net.nanopay.tx.ruler.TransactionLimitRule rule) {
-          rule_ = rule;
+      name: 'getLimitState',
+      type: 'TransactionLimitState',
+      args: [
+        {
+          name: 'id', type: 'Object'
         }
-
-        public TransactionLimitState getLimitState(Object id) {
-          TransactionLimitState state = (TransactionLimitState) rule_.getCurrentLimits().get(id);
-          if ( state == null ) {
-            state = new TransactionLimitState();
-            rule_.getCurrentLimits().put(id, state);
-          }
-          return state;
+      ],
+      javaCode: `
+        TransactionLimitState state = (TransactionLimitState) this.getCurrentLimits().get(id);
+        if ( state == null ) {
+          state = new TransactionLimitState();
+          this.getCurrentLimits().put(id, state);
         }
-        `);
-      }
+        return state;
+      `
     }
   ]
 });
+

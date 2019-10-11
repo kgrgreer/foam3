@@ -46,10 +46,15 @@ foam.CLASS({
         var i = this.index;
         return [
           {
-            args: ['signingOfficer', 'amountOfOwners', `owner${i}$errors_`],
+            args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', `owner${i}$errors_`],
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+                e.AND(
+                  e.EQ(i, 1),
+                  e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true)
+                ),
                 e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
@@ -67,24 +72,16 @@ foam.CLASS({
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'USBusinessOnboarding',
+  documentation: `Multifunctional model used for business onboarding`,
 
   ids: ['userId'],
 
-  tableColumns: [
-    'userId',
-    'legalName',
-    'status',
-    'created',
-    'lastModified'
-  ],
-
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
-
-  documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
     'foam.nanos.auth.Address',
@@ -101,6 +98,21 @@ foam.CLASS({
     'pushMenu',
     'appConfig',
     'identificationTypeDAO'
+  ],
+
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
+
+  tableColumns: [
+    'userId',
+    'legalName',
+    'status',
+    'created',
+    'lastModified'
   ],
 
   sections: [
@@ -152,14 +164,7 @@ foam.CLASS({
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
-    },
-    {
-      name: 'ownershipYesOrNoSection',
-      title: 'Does your company have anyone that owns 25% or more of the business?',
-      help: `Great, almost done! In accordance with banking laws, we need to document
-          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      help: `Thanks! Now let’s get some details on your company's transactions.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
@@ -171,7 +176,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Please select your principal type and percentage of ownership',
+      title: 'Please select your percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
         return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
@@ -320,16 +325,37 @@ foam.CLASS({
         ],
       }
     },
-
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+    {
+      class: 'String',
+      name: 'jobTitle',
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Chief Visionary Officer'
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
       },
-      minLength: 1,
-      maxLength: 50
-    }),
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.JOB_TITLE
+              }), 0);
+          },
+          errorString: 'Please select a job title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
@@ -377,10 +403,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'signingOfficerIdentification',
       of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
       factory: function() {
         return this.PersonalIdentification.create({});
       },
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      view: {
+        class: 'foam.u2.detail.SectionedDetailView',
+        border: 'foam.u2.borders.NullBorder'
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER_IDENTIFICATION
+              }), true)
+            );
+          },
+          errorString: 'Invalid identification.'
+        }
+      ]
     },
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
@@ -389,26 +435,6 @@ foam.CLASS({
         A political exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
-      `,
-      value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
-      help: `
-        A third party is a person or entity who instructs another person or entity
-        to conduct an activity or financial transaction on their behalf
       `,
       value: false,
       view: {
@@ -505,13 +531,14 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+    net.nanopay.model.Business.ADDRESS.clone().copyFrom({
+      name: 'businessAddress',
       label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'US'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -555,10 +582,19 @@ foam.CLASS({
       ],
       validationTextVisible: true
     }),
-    foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
+    net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
-      placeholder: 'Select...',
+      view: function(args, X) {
+        return {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            dao: X.businessTypeDAO,
+            objToChoice: function(a) {
+              return [a.id, a.name];
+            }
+        };
+      },
       validationPredicates: [
         {
           args: ['signingOfficer', 'businessTypeId'],
@@ -593,15 +629,16 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
+    net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Purchase of goods produced',
             'Completion of service contracts',
@@ -613,6 +650,7 @@ foam.CLASS({
             'Grants, loans, and other sources of financing',
             'Other'
           ]
+        }
         }
       },
       validationPredicates: [
@@ -678,19 +716,20 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['businessFormationDate'],
+          args: ['signingOfficer','businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
                 timeMs: 24 * 60 * 60 * 1000
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Business Formation Date must be a date in the past.'
         }
       ]
-    },   
+    },
     {
       section: 'businessDetailsSection',
       class: 'Reference',
@@ -704,8 +743,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: '- Please select -',
           dao: X.countryDAO.where(m.OR(
-            m.EQ(foam.nanos.auth.Country.NAME, 'Canada'),
-            m.EQ(foam.nanos.auth.Country.NAME, 'USA')
+            m.EQ(foam.nanos.auth.Country.ID, 'US')
           )),
           objToChoice: function(a) {
             return [a.id, a.name];
@@ -714,9 +752,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessFormation'],
+          args: ['signingOfficer', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
             );
@@ -726,18 +765,38 @@ foam.CLASS({
       ],
     },
     {
-      section: 'businessDetailsSection',
       class: 'String',
       name: 'businessRegistrationNumber',
-      label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      minLength: 1,
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
+      hidden: true
+    },
+    {
+      section: 'businessDetailsSection',
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      label: 'Federal Tax ID Number (EIN)',
+      documentation: 'Federal Tax ID Number (EIN)',
+      visibilityExpression: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'taxIdentificationNumber'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.TAX_IDENTIFICATION_NUMBER,/^[0-9]{9}$/),
+            );
+          },
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
+        }
+      ]
     },
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -745,6 +804,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -764,9 +824,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -774,6 +835,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -793,9 +855,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '1 to 99',
           '100 to 199',
@@ -803,6 +866,7 @@ foam.CLASS({
           '500 to 999',
           'Over 1000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -824,12 +888,13 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Payables for products and/or services',
             'Working capital',
@@ -838,6 +903,7 @@ foam.CLASS({
             'Government fee and taxes',
             'Other'
           ]
+        }
         }
       },
       validationPredicates: [
@@ -857,7 +923,7 @@ foam.CLASS({
       ]
     }),
 
-    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+    net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
@@ -881,24 +947,9 @@ foam.CLASS({
       ]
     }),
     {
-      class: 'Boolean',
-      name: 'ownershipAbovePercent',
-      label: '',
-      section: 'ownershipYesOrNoSection',
-      postSet: function(_, n) {
-        if ( ! n ) this.amountOfOwners = 0;
-      },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [false, 'No (or this is a publicly traded company)'],
-          [true, 'Yes, we have owners with 25% +']
-        ],
-      },
-    },
-    {
       class: 'Long',
       name: 'amountOfOwners',
+      label: '',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
@@ -906,7 +957,7 @@ foam.CLASS({
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = this.userOwnsPercent = false;
+        this.publiclyTraded = false;
       },
       validationPredicates: [
         {
@@ -931,7 +982,20 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) {
+          // note: owner1.ownershipPercent is set in its own property
+          this.owner1.jobTitle = this.jobTitle;
+          this.owner1.firstName = this.firstName;
+          this.owner1.lastName = this.lastName;
+          this.owner1.birthday = this.birthday;
+          this.owner1.address = this.address;
+          return;
+        }
+        if ( this.owner1.firstName === this.firstName && this.owner1.lastName === this.lastName && foam.util.equals(this.owner1.birthday, this.birthday) ) {
+          // to fix a problem that comes from cloning which resets owner1
+          this.clearProperty('owner1');
+        }
+        this.clearProperty('ownershipPercent');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -944,7 +1008,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -968,17 +1032,19 @@ foam.CLASS({
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
-
-    // FIXME: IntView not respecting the min-max range
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
+      postSet: function(o, n) {
+        this.owner1.ownershipPercent = n;
+      },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'userOwnsPercent', 'ownershipPercent'],
+          args: ['signingOfficer', 'amountOfOwners', 'ownershipPercent', 'userOwnsPercent'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, false),
               e.AND(
                 e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.OWNERSHIP_PERCENT, 100),
@@ -992,16 +1058,7 @@ foam.CLASS({
     }),
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 1,
-      postSet: function(_, n) {
-        if ( ! this.userOwnsPercent ) return;
-        this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
-        this.onDetach(n.jobTitle$.follow(this.jobTitle$));
-        this.onDetach(n.firstName$.follow(this.firstName$));
-        this.onDetach(n.lastName$.follow(this.lastName$));
-        this.onDetach(n.birthday$.follow(this.birthday$));
-        this.onDetach(n.address$.follow(this.address$));
-      }
+      index: 1
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
@@ -1096,38 +1153,52 @@ foam.CLASS({
         }
       ]
     },
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       section: 'reviewOwnersSection',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
+      docName: 'USD_AFEX_Terms',
       label: '',
-      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      label2Formatter: function() {
-        this.
-          add('I acknowledge that I have read and accept the ').
-          start('a').
-            attrs({
-              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
-              target: "blank"
-            }).
-            add('Dual Party Agreement').
-          end().
-          add(' for Ablii Canadian Payment Services.');
-      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'dualPartyAgreement'],
+          args: ['signingOfficer', 'agreementAFEX'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
+              e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AGREEMENT_AFEX, 0)
             );
           },
-          errorString: 'Must acknowledge the dual party agreement.'
+          errorString: 'Must acknowledge the AFEX agreement.'
         }
       ]
-    })
+    },
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      section: 'reviewOwnersSection',
+      name: 'nanopayInternationalPaymentsCustomerAgreement',
+      documentation: 'Verifies if the user is accept the dual-party agreement.',
+      docName: 'nanopayInternationalPaymentsCustomerAgreement', // TODO Make this the USD version. Waiting on USD doc from complaince
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'nanopayInternationalPaymentsCustomerAgreement'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.NANOPAY_INTERNATIONAL_PAYMENTS_CUSTOMER_AGREEMENT, 0)
+            );
+          },
+          errorString: 'Must acknowledge the nanopay International Payments Customer Agreement.'
+        }
+      ]
+    }
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
@@ -1152,7 +1223,47 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to update a submitted onboard profile.'
+    },
+    {
+      name: 'PLACE_HOLDER',
+      message: 'Please select...'
+    }
+  ],
+
   methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+
+        USBusinessOnboarding obj = (USBusinessOnboarding) this;
+        USBusinessOnboarding oldObj = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(this.getId());
+
+        if ( auth.check(x, "onboarding.update.*") ) return;
+
+        if (
+          oldObj != null &&
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
+          oldObj.getSigningOfficer()
+        ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+      `
+    },
     {
       name: 'authorizeOnCreate',
       javaCode: `

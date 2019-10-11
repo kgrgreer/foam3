@@ -6,7 +6,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer',
     'java.util.Arrays',
@@ -53,7 +52,7 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      value: '219',
+      value: '842',
       visibility: 'Hidden'
     }
   ],

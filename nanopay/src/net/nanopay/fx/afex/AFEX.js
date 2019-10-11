@@ -119,6 +119,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'valueType'
+        },
+        {
+          type: 'String',
+          name: 'businessApiKey'
         }
       ]
     },
@@ -191,6 +195,18 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CheckPaymentStatusRequest',
           name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'getTradeConfirmation',
+      documentation: 'retreives trade confirmatiom PDF for a trade',
+      async: true,
+      type: 'byte[]',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetConfirmationPDFRequest',
+          name: 'confirmationPDFRequest'
         }
       ]
     }

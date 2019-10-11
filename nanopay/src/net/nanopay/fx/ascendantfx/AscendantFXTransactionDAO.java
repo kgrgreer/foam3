@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.util.SafetyUtil;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ public class AscendantFXTransactionDAO
     }
 
     AscendantFXTransaction transaction = (AscendantFXTransaction) obj;
-    if ( transaction.getStatus() != TransactionStatus.PENDING || getDelegate().find(transaction.getId()) != null) {
+    if ( transaction.getStatus() != TransactionStatus.PENDING || ! SafetyUtil.isEmpty(transaction.getReferenceNumber()) ) {
       return getDelegate().put_(x, obj);
     }
 
