@@ -6,7 +6,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'net.nanopay.tx.HistoricStatus',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.Date'
   ],
 
 
@@ -14,13 +17,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        HistoricStatus [] hOld = obj.getStatusHistory();
+        Transaction tx = (Transaction) obj;
+        HistoricStatus [] hOld = tx.getStatusHistory();
         HistoricStatus [] hNu = new HistoricStatus[hOld.length + 1];
         System.arraycopy(hOld, 0, hNu, 0, hOld.length);
         HistoricStatus hs = new HistoricStatus();
-        hs.setStatus(obj.getStatus());
+        hs.setStatus(tx.getStatus());
+        hs.setTimeStamp(new Date());
         hNu[hNu.length-1] = hs;
-        obj.setStatusHistory(hNu);
+        tx.setStatusHistory(hNu);
       `
     }
   ]

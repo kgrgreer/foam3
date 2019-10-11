@@ -520,8 +520,12 @@ foam.CLASS({
       name: 'statusHistory',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.HistoricStatus',
-      javaFactory: `net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
-      h[0] = new net.nanopay.tx.HistoricStatus(); h[0].setStatus(getStatus()); return h;`
+      javaFactory: `
+        net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
+        h[0] = new net.nanopay.tx.HistoricStatus();
+        h[0].setStatus(getStatus());
+        h[0].setTimeStamp(new Date());
+        return h;`
     },
     // schedule TODO: future
     {

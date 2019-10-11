@@ -12,8 +12,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'timeStamp',
-      //javaFactory: 'return new Date();',
-      //factory: 'return new DateTime;',
+      visibility: 'RO',
       documentation: 'Time at which status entry was created'
     },
     {
