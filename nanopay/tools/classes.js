@@ -237,6 +237,7 @@ var classes = [
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
+  'net.nanopay.invoice.ruler.RequestPaymentNotificationRule',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
