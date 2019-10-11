@@ -39,15 +39,21 @@ public class AFEXPaymentStatusCron implements ContextAgent {
     .select(new ArraySink());
     List<Transaction> pendingTransactions = sink.getArray();
     for (Transaction transaction : pendingTransactions) {
-      Calendar txnCompletionDate = Calendar.getInstance();
-      if ( transaction.getCompletionDate() != null ) {
-        txnCompletionDate.setTime(transaction.getCompletionDate());
-        if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
-          Transaction txn = afexServiceProvider.updatePaymentStatus(transaction);
-          transaction.setStatus(txn.getStatus());
-          transactionDAO.put(transaction.fclone());
+      try{
+        Calendar txnCompletionDate = Calendar.getInstance();
+        if ( transaction.getCompletionDate() != null ) {
+          txnCompletionDate.setTime(transaction.getCompletionDate());
+          if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
+            Transaction txn = afexServiceProvider.updatePaymentStatus(transaction);
+            transaction = (Transaction) transaction.fclone();
+            transaction.setStatus(txn.getStatus());
+            transactionDAO.put(transaction);
+          }
         }
+      } catch(Throwable t){
+        logger.error("Error fetching status for transaction: " + transaction.getId(), t);
       }
+
     }
   }
 }

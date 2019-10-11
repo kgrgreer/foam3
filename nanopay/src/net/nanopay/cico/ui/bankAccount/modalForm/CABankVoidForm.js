@@ -228,6 +228,13 @@ foam.CLASS({
     },
 
     function validateForm() {
+      if ( this.institutionNumber === '' ) {
+        ctrl.notify('Institution number required', 'error');
+        return false;
+      } else if ( ! RegExp('^[0-9]{3}$').test(this.institutionNumber) ) {
+        ctrl.notify('Invalid institution number.', 'error');
+        return false;
+      }
       if ( this.bank.errors_ ) {
         ctrl.notify(this.bank.errors_[0][1], 'error');
         return false;
