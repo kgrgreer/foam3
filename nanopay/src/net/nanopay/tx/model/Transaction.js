@@ -217,7 +217,11 @@ foam.CLASS({
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
+      storageTransient: true,
       section: 'basicInfo',
+      expression: function(statusHistory) {
+        return statusHistory[0].timeStamp;
+      },
       tableWidth: 172
     },
     {
