@@ -352,8 +352,6 @@ foam.CLASS({
  ],
 
   javaImports: [
-    'foam.core.ClassInfo',
-    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.Address',
@@ -503,13 +501,9 @@ foam.CLASS({
         return '';
       },
       javaCode: `
-      ClassInfo    info = this.getClassInfo();
-      PropertyInfo prop = (PropertyInfo) info.getAxiomByName("organization");
-      if ( prop.isSet(this.getOrganization()) ) return this.getOrganization();
-      prop = (PropertyInfo) info.getAxiomByName("businessName");
-      if ( prop.isSet(this.getOrganization()) ) return this.getBusinessName();
-      prop = (PropertyInfo) info.getAxiomByName("legalName");
-      if ( prop.isSet(this.getLegalName()) ) return this.getLegalName();
+      if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+      if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+      if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
       return "";
       `
     }
