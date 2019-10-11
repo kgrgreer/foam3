@@ -372,6 +372,7 @@ var classes = [
   'net.nanopay.tx.ruler.PropertyNEQValue',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.tx.ruler.UpdateArrayPropertyAction',
   'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
