@@ -11,7 +11,9 @@ foam.CLASS({
   properties: [
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      label: 'Transaction Type',
+      section: 'basicInfo'
     },
     {
       name: 'action',
