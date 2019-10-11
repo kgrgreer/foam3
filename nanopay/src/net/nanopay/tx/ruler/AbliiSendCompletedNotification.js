@@ -43,7 +43,7 @@ foam.CLASS({
                 .append(" just initiated a payment to ")
                 .append(receiver.label())
                 .append(" for ")
-                .append(currency.format(tx.getAmount()))
+                .append(currency.format(tx.getDestinationAmount()))
                 .append(" ")
                 .append(tx.getDestinationCurrency());
 
