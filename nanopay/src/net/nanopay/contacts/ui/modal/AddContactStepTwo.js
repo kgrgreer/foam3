@@ -9,6 +9,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'auth',
     'accountDAO as bankAccountDAO',
     'addContact',
     'branchDAO',
@@ -141,7 +142,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
+    async function init() {
       if ( this.viewData.isBankingProvided && this.wizard.data.bankAccount ) {
         this.isConnecting = true;
         this.bankAccountDAO
@@ -216,6 +217,8 @@ foam.CLASS({
             this.ctrl.notify(msg, 'error');
             this.isConnecting = false;
           });
+      } else {
+        this.isCABank = await this.auth.check(null, 'currency.read.CAD');
       }
     },
 

@@ -400,24 +400,14 @@ foam.CLASS({
         return '';
       },
       javaCode: `
-        ClassInfo    info = this.getClassInfo();
-        PropertyInfo prop = (PropertyInfo) info.getAxiomByName("organization");
-        PropertyInfo propTwo = (PropertyInfo) info.getAxiomByName("businessName");
-
-        if ( prop != null && prop.isSet(this.getOrganization()) ) return this.getOrganization();
-        if ( propTwo != null && propTwo.isSet(this.getOrganization()) ) return this.getBusinessName();
-
-        prop = (PropertyInfo) info.getAxiomByName("legalName");
-        if ( prop != null && prop.isSet(this.getLegalName()) ) return this.getLegalName();
-
-        prop = (PropertyInfo) info.getAxiomByName("firstName");
-        propTwo = (PropertyInfo) info.getAxiomByName("lastName");
-
-        if ( prop != null && prop.isSet(this.getFirstName()) && propTwo != null && propTwo.isSet(this.getLastName())) return this.getFirstName() + " " + this.getLastName();
-        if ( prop != null && ! prop.isSet(this.getFirstName()) && propTwo != null && propTwo.isSet(this.getLastName()) ) return this.getLastName();
-        if ( prop != null && prop.isSet(this.getFirstName()) && propTwo != null && ! propTwo.isSet(this.getLastName()) ) return this.getFirstName();
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        if ( SafetyUtil.isEmpty(this.getLastName()) && SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
+        if ( SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) && SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName();
         return "";
       `
-    },
+    }
   ]
 });

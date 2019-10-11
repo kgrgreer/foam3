@@ -416,7 +416,8 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      if ( this.user.emailVerified ) {
+      if ( (this.user && this.user.emailVerified) ||
+           (this.agent && this.agent.emailVerified) ) {
         this.add(this.SMEModal.create({ closeable: false }).tag({
           class: 'net.nanopay.ui.modal.SessionTimeoutModal',
         }));
