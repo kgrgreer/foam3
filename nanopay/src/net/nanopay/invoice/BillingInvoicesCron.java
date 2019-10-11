@@ -301,16 +301,22 @@ public class BillingInvoicesCron implements ContextAgent {
    * dryRunInvoices(x) will save all the invoices generated into dryRunResult instead of putting them into DAO.
    */
   protected void dryRunInvoices(X x) {
+    dryRunResult_.append("[DRY_RUN] Generate billing invoices:\n");
+    int i = 0;
     for ( BillingInvoice invoice : invoiceByPayer_.values() ) {
       if ( invoice.getAmount() == 0 ) continue;
 
       User payer = invoice.findPayerId(x);
       List<InvoiceLineItem> lineItems = invoiceLineItemByPayer_.get(invoice.getPayerId());
-      dryRunResult_.append(" . ");
-      dryRunResult_.append(payer.getOrganization() + " (id:" + payer.getId() + ")\n");
-      dryRunResult_.append("   . ");
-      dryRunResult_.append(lineItems.stream().map(InvoiceLineItem::getDescription).collect(Collectors.joining("\n   . ")));
-      dryRunResult_.append("\n");
+      String strPayer = " . " + payer.getOrganization() + " (id: " + payer.getId() + ")";
+      String strLineItems = "   . " + lineItems.stream()
+        .map(InvoiceLineItem::getDescription)
+        .collect(Collectors.joining("\n   . "));
+      dryRunResult_
+        .append(strPayer).append("\n")
+        .append(strLineItems).append("\n");
+      ++i;
     }
+    dryRunResult_.append("\n").append(i).append(" invoice(s) to be created.");
   }
 }
