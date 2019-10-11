@@ -3,7 +3,7 @@ foam.CLASS({
     name: 'MarkAsVoidModal',
     extends: 'foam.u2.View',
 
-    documentation: 'Modal for markig invoice as void',
+    documentation: 'odal for marking invoice as void.',
 
     imports: [
         'invoiceDAO',
@@ -19,6 +19,7 @@ foam.CLASS({
         { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
         { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
         { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
+        { name: 'NOTE_LABEL', message: 'Note:'},
         { name: 'NOTE_HINT', message: 'i.e. Why is it voided?'},
         { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
         { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}        
@@ -54,11 +55,12 @@ foam.CLASS({
         {
             class: 'String',
             name: 'note',
-            view: {
-                class: 'foam.u2.tag.TextArea',
-                placeholder: 'i.e. Why is it voided?',
-                rows: 4,
-                cols: 35
+            view:  function(args, X) {
+                return foam.u2.tag.TextArea.create({
+                    placeholder: X.data.NOTE_HINT,               
+                    rows: 4,
+                    cols: 35
+                });
             }
         },
         'invoice'
@@ -89,7 +91,7 @@ foam.CLASS({
                         .start()
                             .addClass('label')
                             .addClass('margin-bottom-8')
-                            .add('Note:')
+                            .add(this.NOTE_LABEL)
                         .end()
                         .start(this.NOTE).addClass('input-note').end()
                     .end()
