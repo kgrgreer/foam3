@@ -52,6 +52,13 @@ p({
      */
     DRY_RUN = false;
 
+    /**
+     * Configure exemption list
+     */
+    EXEMPTION_LIST = new Long[] {
+      // Add PAYER_IDS separated by comma
+    };
+
     // Check for SummaryTransaction and FXSummaryTransaction because there
     // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
     // from their parent transaction.

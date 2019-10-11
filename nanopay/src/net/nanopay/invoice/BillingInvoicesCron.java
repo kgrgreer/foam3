@@ -11,11 +11,9 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
-import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.BillingInvoice;
 import net.nanopay.tx.InvoicedFeeLineItem;
-import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -102,6 +100,11 @@ public class BillingInvoicesCron implements ContextAgent {
    */
   private Predicate predicate_ = TRUE;
 
+  /**
+   * Fee exemption payer list
+   */
+  private Set<Long> exemptionPayerList_ = new HashSet<>();
+
   public BillingInvoicesCron(LocalDate startDate, LocalDate endDate, Account destinationAccount) {
     startDate_ = startDate;
     endDate_ = endDate;
@@ -132,6 +135,12 @@ public class BillingInvoicesCron implements ContextAgent {
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
           EQ(AscendantFXUser.USER, payerId));
         BillingInvoice invoice = invoiceByPayer_.get(payerId);
+
+        // Exclude fee for payer in the exemption list
+        if ( exemptionPayerList_.contains(payerId) ) {
+          return;
+        }
+
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, payer.getAddress(), issueDate);
           invoice = new BillingInvoice.Builder(x)
@@ -187,6 +196,10 @@ public class BillingInvoicesCron implements ContextAgent {
 
   public void setPredicate(Predicate predicate) {
     predicate_ = predicate;
+  }
+
+  public void addToExemptionPayerList(Long... payerIds) {
+    Collections.addAll(exemptionPayerList_, payerIds);
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency
