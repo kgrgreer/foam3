@@ -107,7 +107,7 @@ public class BillingInvoicesCron implements ContextAgent {
   private Map<Address, Date> paymentDateByRegion_ = new HashMap<>();
 
   /**
-   *
+   * Predicate to add filter for transactions
    */
   private Predicate predicate_ = TRUE;
 
