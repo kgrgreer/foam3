@@ -43,7 +43,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currencyDAO'
+    'currencyDAO',
+    'user'
   ],
 
   properties: [
@@ -392,7 +393,10 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PROCESSING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
-        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
+        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) {
+          if (this.user.id === this.payeeId ) return this.InvoiceStatus.UNPAID;
+          else return this.InvoiceStatus.PENDING_APPROVAL;
+        }
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;

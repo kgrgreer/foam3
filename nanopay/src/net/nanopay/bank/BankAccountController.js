@@ -63,9 +63,7 @@ foam.CLASS({
             'name',
             'flagImage',
             'denomination',
-            'institution',
-            'branch',
-            'accountNumber',
+            'summary',
             'status'
           ],
           contextMenuActions: [
@@ -114,8 +112,7 @@ foam.CLASS({
                 cadAvailable: self.availableCAD
               }, self);
             }
-          },
-          // isAvailable: function() { return self.available; }
+          }
         });
       }
     },
@@ -159,7 +156,6 @@ foam.CLASS({
         this.available = true;
         this.availableCAD = true;
         this.availableUSD = true;
-        var isCanadianBusiness = ctrl.user.businessAddress.countryId == 'CA';
         var accountListCAD = await ctrl.user.accounts.where(
             foam.mlang.predicate.Eq.create({
               arg1: net.nanopay.account.Account.TYPE,

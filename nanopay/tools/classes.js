@@ -36,6 +36,8 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
+  'net.nanopay.tx.BulkTransaction',
+  'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -91,6 +93,7 @@ var classes = [
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
   'net.nanopay.model.BeneficialOwner',
+  'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
@@ -364,6 +367,12 @@ var classes = [
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
   'net.nanopay.tx.ruler.ChangePropertyAction',
+  'net.nanopay.tx.ruler.SendNotification',
+  'net.nanopay.tx.ruler.PropertyEQValue',
+  'net.nanopay.tx.ruler.PropertyNEQValue',
+  'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
+  'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -632,6 +641,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
+  'net.nanopay.meter.compliance.ruler.predicate.RecurringBeneficialOwnerComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
@@ -773,6 +783,11 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+
+  // goldman ingestion
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [

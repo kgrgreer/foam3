@@ -42,7 +42,12 @@ public class TransactionDAO
 {
   protected DAO balanceDAO_;
   protected DAO userDAO_;
-  private   DAO writableBalanceDAO_ = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+  private   DAO writableBalanceDAO_ = initWriteableBalanceDAO_();
+  private final DAO initWriteableBalanceDAO_() {
+    foam.dao.MDAO d = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+    d.addIndex(Balance.ACCOUNT);
+    return d;
+  }
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -72,7 +77,6 @@ public class TransactionDAO
     } else {
       txn = (Transaction) super.put_(x, txn);
     }
-
     return txn;
   }
 
@@ -90,7 +94,7 @@ public class TransactionDAO
     X y = getX().put("balanceDAO",getBalanceDAO());
     Transfer[] ts = txn.createTransfers(y, oldTxn);
 
-    // TODO: disallow or merge duplicate accounts
+    // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
     if ( ts.length != 1 ) {
       validateTransfers(x, txn, ts);
     }
@@ -135,9 +139,11 @@ public class TransactionDAO
     HashMap<Long, Transfer> hm = new HashMap();
 
     for ( Transfer tr : ts ) {
-      if ( hm.get(tr.getAccount()) != null ) {
-        tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
-      }
+      // REVIEW: as the TODO above suggest, this creates an incorrect transfer list
+      // when transfers to the same account exist.
+      // if ( hm.get(tr.getAccount()) != null ) {
+      //   tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+      // }
       hm.put(tr.getAccount(), tr);
     }
 

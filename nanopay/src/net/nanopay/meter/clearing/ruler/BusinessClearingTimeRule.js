@@ -32,7 +32,8 @@ foam.CLASS({
             }
           ]
         };
-      }
+      },
+      section: 'basicInfo'
     },
     {
       name: 'duration',

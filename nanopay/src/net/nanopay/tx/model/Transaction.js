@@ -93,14 +93,15 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'basicInfo'
-    },
-    {
       name: 'paymentInfo'
     },
     {
+      name: 'basicInfo',
+      title: 'Transaction Info'
+    },
+    {
       name: 'lineItemsSection',
-      title: 'Line Items',
+      title: 'Additional Detail',
       isAvailable: function(id, lineItems) {
         return ! id || lineItems.length;
       }
@@ -114,7 +115,8 @@ foam.CLASS({
     },
     {
       name: '_defaultSection',
-      permissionRequired: true
+      permissionRequired: true,
+      hidden: true
     },
   ],
 
@@ -284,12 +286,8 @@ foam.CLASS({
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       tableWidth: 130,
-      view: function(args, x) {
-        self = this;
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          choices: x.data.statusChoices
-        };
+      view: function(_, x) {
+        return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       }
     },
     {
@@ -314,24 +312,7 @@ foam.CLASS({
       visibility: 'RO',
       label: 'Reference'
     },
-    {
-      // FIXME: move to a ViewTransaction used on the client
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionEntity',
-      name: 'payee',
-      label: 'Receiver',
-      storageTransient: true,
-      visibility: 'RO',
-      section: 'paymentInfo',
-      tableCellFormatter: function(value) {
-        this.start()
-          .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.displayName : 'na')
-          .end()
-        .end();
-      },
-    },
-    {
+     {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
@@ -339,6 +320,12 @@ foam.CLASS({
       label: 'Sender',
       section: 'paymentInfo',
       visibility: 'RO',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payer$.map(p => p ? [[p, p.toSummary()]] : [])
+        };
+      },
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -348,6 +335,30 @@ foam.CLASS({
         .end();
       }
     },
+    {
+      // FIXME: move to a ViewTransaction used on the client
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.TransactionEntity',
+      name: 'payee',
+      label: 'Receiver',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'paymentInfo',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: x.data.payee$.map(p => p ? [[p, p.toSummary()]] : [])
+        };
+      },
+      tableCellFormatter: function(value) {
+        this.start()
+          .start('p').style({ 'margin-bottom': 0 })
+            .add(value ? value.displayName : 'na')
+          .end()
+        .end();
+      },
+    },
+
     {
       class: 'Long',
       name: 'payeeId',
@@ -363,6 +374,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
+      label: 'Source Amount',
       section: 'paymentInfo',
       visibility: 'RO'
     },
@@ -392,12 +404,12 @@ foam.CLASS({
               } else {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
                 output += ' → ';
-                output += dstCurrency 
-                            ? dstCurrency.format(obj.destinationAmount) 
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
                             : `${obj.destinationAmount} ${destinationCurrency}`;
               }
 
-              if ( obj.payer ) {
+              if ( obj.payer && obj.payee ) {
                 output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
               }
 
@@ -464,12 +476,13 @@ foam.CLASS({
       documentation: `Defined by ISO 20220 (Pacs008)`,
       class: 'String',
       name: 'messageId',
-      visibility: 'RO'
+      visibility: 'RO',
+      hidden: true
     },
     {
       class: 'String',
       name: 'sourceCurrency',
-      label: 'Currency',
+      label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
       value: 'CAD'
@@ -484,6 +497,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
           foam.u2.Visibility.HIDDEN :
@@ -758,24 +772,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'sendCompletedNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
-      name: 'sendReverseNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-      `
-    },
-    {
       documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
@@ -904,14 +900,17 @@ foam.CLASS({
       ],
       javaCode: `
       Transaction tx = this;
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+
       if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
-         if ( tx.getNext().length > 1) throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+         if ( tx.getNext().length > 1) {
+           throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+         }
          Transaction [] t = tx.getNext();
          t[0].addNext(txn);
       }
       else {
-        txn.setInitialStatus(txn.getStatus());
-        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
         Transaction [] t2 = new Transaction [1];
         t2[0] = txn;
         tx.setNext(t2);
@@ -952,13 +951,6 @@ foam.CLASS({
       }
     ],
     javaCode: `
-    try {
-      sendReverseNotification(x, oldTxn);
-      sendCompletedNotification(x, oldTxn);
-    } catch (Exception e) {
-      Logger logger = (Logger) x.get("logger");
-      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
-    }
     `
   },
   {

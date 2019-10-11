@@ -22,6 +22,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction',
     'foam.nanos.app.Mode',
     'foam.nanos.app.AppConfig'
 
@@ -56,7 +57,19 @@ foam.CLASS({
       CITransaction t = new CITransaction.Builder(x).build();
       t.copyFrom(request);
       t.setIsQuoted(true);
-      quote.addPlan(t);
+      t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      quote.setPlan(t);
+      return quote;
+    }
+    if ( destinationAccount instanceof BankAccount &&
+       sourceAccount instanceof DigitalAccount ) {
+
+      COTransaction t = new COTransaction.Builder(x).build();
+      t.copyFrom(request);
+      t.setIsQuoted(true);
+      t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      quote.setPlan(t);
+      return quote;
     }
     return getDelegate().put_(x, quote);
     `

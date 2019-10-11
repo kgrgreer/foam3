@@ -52,6 +52,10 @@ foam.CLASS({
     {
       name: 'SUBTITLE_LINKED',
       message: 'Connected to'
+    },
+    {
+      name: 'SUBTITLE_VERIFING',
+      message: 'We are reviewing your bank account'
     }
   ],
 
@@ -76,7 +80,7 @@ foam.CLASS({
           subtitle += ' ****' + this.account.accountNumber.slice(-4);
           return subtitle;
         }
-        return this.SUBTITLE_EMPTY;
+        return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
       }
     },
     {
@@ -121,7 +125,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : this.ADD_BANK
+              action: isAccountThere ? (this.user.address.countryId === 'US' ? this.VIEW_ACCOUNT  : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT)) : this.ADD_BANK
             }).end();
         }));
       })
