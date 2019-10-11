@@ -353,6 +353,8 @@ foam.CLASS({
  ],
 
   javaImports: [
+    'foam.core.ClassInfo',
+    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.Address',
@@ -490,6 +492,26 @@ foam.CLASS({
         if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        return '';
+      },
+      javaCode: `
+      ClassInfo    info = this.getClassInfo();
+      PropertyInfo prop = (PropertyInfo) info.getAxiomByName("organization");
+      if ( prop.isSet(this.getOrganization()) ) return this.getOrganization();
+      prop = (PropertyInfo) info.getAxiomByName("businessName");
+      if ( prop.isSet(this.getOrganization()) ) return this.getBusinessName();
+      prop = (PropertyInfo) info.getAxiomByName("legalName");
+      if ( prop.isSet(this.getLegalName()) ) return this.getLegalName();
+      return "";
       `
     }
   ],

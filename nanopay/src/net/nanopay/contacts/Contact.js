@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ClassInfo',
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
@@ -385,6 +386,38 @@ foam.CLASS({
           throw new AuthorizationException();
         }
       `
-    }
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
+        if ( this.lastName && ! this.firstName ) return this.lastName;
+        if ( ! this.lastName && this.firstName ) return this.firstName;
+        return '';
+      },
+      javaCode: `
+        ClassInfo    info = this.getClassInfo();
+        PropertyInfo prop = (PropertyInfo) info.getAxiomByName("organization");
+        PropertyInfo propTwo = (PropertyInfo) info.getAxiomByName("businessName");
+
+        if ( prop != null && prop.isSet(this.getOrganization()) ) return this.getOrganization();
+        if ( propTwo != null && propTwo.isSet(this.getOrganization()) ) return this.getBusinessName();
+
+        prop = (PropertyInfo) info.getAxiomByName("legalName");
+        if ( prop != null && prop.isSet(this.getLegalName()) ) return this.getLegalName();
+
+        prop = (PropertyInfo) info.getAxiomByName("firstName");
+        propTwo = (PropertyInfo) info.getAxiomByName("lastName");
+
+        if ( prop != null && prop.isSet(this.getFirstName()) && propTwo != null && propTwo.isSet(this.getLastName())) return this.getFirstName() + " " + this.getLastName();
+        if ( prop != null && ! prop.isSet(this.getFirstName()) && propTwo != null && propTwo.isSet(this.getLastName()) ) return this.getLastName();
+        if ( prop != null && prop.isSet(this.getFirstName()) && propTwo != null && ! propTwo.isSet(this.getLastName()) ) return this.getFirstName();
+        return "";
+      `
+    },
   ]
 });
