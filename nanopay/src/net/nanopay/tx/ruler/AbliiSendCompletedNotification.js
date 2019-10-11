@@ -43,9 +43,9 @@ foam.CLASS({
                 .append(" just initiated a payment to ")
                 .append(receiver.label())
                 .append(" for ")
-                .append(currency.format(tx.getDestinationAmount()))
+                .append(currency.format(tx.getAmount()))
                 .append(" ")
-                .append(tx.getDestinationCurrency());
+                .append(tx.getSourceCurrency());
 
                 StringBuilder rb = new StringBuilder()
                 .append(" Payment has been initiated by ")
