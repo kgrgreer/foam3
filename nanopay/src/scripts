@@ -797,6 +797,7 @@ p({
   "id": "Update declined transaction invoices",
   "status": 1,
   "code": """
+ 
   import foam.dao.DAO;
   import foam.mlang.MLang;
   import foam.dao.ArraySink;
@@ -804,20 +805,28 @@ p({
   import net.nanopay.tx.model.Transaction;
   import net.nanopay.invoice.model.InvoiceStatus;
   import net.nanopay.tx.model.TransactionStatus;
+  import foam.nanos.logger.Logger;
 
   invoiceDAO =(DAO) x.get("invoiceDAO");
   transactionDAO = (DAO) x.get("localTransactionDAO");
+  logger = (Logger) x.get("logger");
+
   filteredInvoices = ((ArraySink) invoiceDAO
     .where(MLang.EQ(Invoice.STATUS, InvoiceStatus.PROCESSING)).select(new ArraySink())).getArray();
   for(Object invoiceObj : filteredInvoices) {
     Invoice invoice = (Invoice) invoiceObj;
     txn = transactionDAO.find(MLang.EQ(Transaction.ID, invoice.getPaymentId()));
     if ( txn != null && txn.getState(x) == TransactionStatus.DECLINED ) {
-      print(txn);
-      invoice.clearPaymentId();
-      invoice.clearPaymentDate();
-      invoice.clearPaymentMethod();
-      invoiceDAO.put(invoice);
+      print(txn.getId());
+      try {
+        invoice.clearPaymentId();
+        invoice.clearPaymentDate();
+        invoice.clearPaymentMethod();
+        invoiceDAO.put(invoice);
+      } catch (Exception e) {
+        print("Failed to save invoice " + invoice.getId());
+        logger.error(new Object[] {"Error saving invoice", e, invoice});
+      }
     }
   }
   print("done");
