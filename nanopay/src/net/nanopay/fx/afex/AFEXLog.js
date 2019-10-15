@@ -67,4 +67,33 @@ foam.CLASS({
       `
     }
   ],
+
+    methods: [
+    {
+      name: 'logRequest',
+      args: [
+        {
+          name: 'request',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+      setRequest(request);
+      setRequestTime(new Date());
+      `
+    },
+    {
+      name: 'logResponse',
+      args: [
+        {
+          name: 'response',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+      setResponse(response);
+      setResponseTime(new Date());
+      `
+    }
+  ],
 });
