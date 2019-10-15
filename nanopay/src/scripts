@@ -804,15 +804,15 @@ p({
     DRY_RUN = true;
 
     // Create new gd-opt group
-    employeeGroup = new Group();
-    employeeGroup.setId("gd-ops");
-    employeeGroup.setParent("basicUser");
-    employeeGroup.setDefaultMenu("gd-operation");
-    employeeGroup.setRootMenu("gd-operation");
-    employeeGroup.setDescription("Grain Discovery Operations");
+    optGroup = new Group();
+    optGroup.setId("gd-ops");
+    optGroup.setParent("basicUser");
+    optGroup.setDefaultMenu("gd-operation");
+    optGroup.setRootMenu("gd-operation");
+    optGroup.setDescription("Grain Discovery Operations");
 
     groupDAO = x.get("groupDAO");
-    groupDAO.put(employeeGroup);
+    groupDAO.put(optGroup);
 
     // Add permissions to the gd-opt group
     ArrayList permissionArray = new ArrayList();
