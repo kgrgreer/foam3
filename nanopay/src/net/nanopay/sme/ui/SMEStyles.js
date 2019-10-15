@@ -844,6 +844,14 @@ foam.CLASS({
       display: inline-block;
     }
 
+    .generic-status-circle.Scheduled {
+      background: #406dea;
+    }
+
+    .Invoice-Status.Scheduled {
+      color: #406dea !important;
+    }
+
     .generic-status-circle.Complete {
       background: #07941f;
     }
