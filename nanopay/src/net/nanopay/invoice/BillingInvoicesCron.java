@@ -141,6 +141,11 @@ public class BillingInvoicesCron implements ContextAgent {
           return;
         }
 
+        // Prevent charging fee on billing invoice transaction
+        if ( transaction.findInvoiceId(x) instanceof BillingInvoice ) {
+          return;
+        }
+
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, payer.getAddress(), issueDate);
           invoice = new BillingInvoice.Builder(x)
