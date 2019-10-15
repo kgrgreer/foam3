@@ -42,7 +42,7 @@ public class AccountVerifiedEmailDAO
     if ( ! account.getEnabled() ) {
       return super.put_(x, obj);
     }
-    
+
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     Group       group      = owner.findGroup(x);
     AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
@@ -63,7 +63,7 @@ public class AccountVerifiedEmailDAO
     // Doesn't send email if group or group.appConfig was null
     if ( config == null )
       return getDelegate().put_(x, obj);
-
+    
     account = (BankAccount) super.put_(x, obj);
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
@@ -74,10 +74,12 @@ public class AccountVerifiedEmailDAO
 
     List<Institution> institutions = ((ArraySink)institutionSink).getArray();
 
+    String institution = institutions.size() == 0 ? " - " : ((institutions.get(0).getAbbreviation() == null  || institutions.get(0).getAbbreviation().isEmpty()) ? institutions.get(0).getName() : institutions.get(0).getAbbreviation());
+    
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
-    args.put("name",    owner.getFirstName());
-    args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+    args.put("name",    owner.label());
+    args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
     args.put("institution", institution);
 
     try {
