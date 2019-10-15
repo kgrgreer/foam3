@@ -218,8 +218,9 @@ public class BillingInvoicesCron implements ContextAgent {
       putInvoices(x);
 
     if ( error_.length() > 0 ) {
-      error_.insert(0, "Failed to process transactions:\n");
-      result_.append("\n").append(error_.toString());
+      result_
+        .append("\nFailed to process transactions:\n")
+        .append(error_.toString());
       if ( ! dryRun_ ) {
         ((DAO) x.get("localNotificationDAO")).put(
           new Notification.Builder(x)
