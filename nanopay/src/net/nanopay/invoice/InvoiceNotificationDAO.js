@@ -56,6 +56,8 @@ foam.CLASS({
     
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
+
+        String businessName = payeeUser.getOrganization();
     
         InvoiceStatus newInvoiceStatus = invoice.getStatus();
         InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
@@ -138,7 +140,7 @@ foam.CLASS({
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, businessName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
