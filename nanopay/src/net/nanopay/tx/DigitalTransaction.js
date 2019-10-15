@@ -93,39 +93,5 @@ foam.CLASS({
       }
       `
     },
-    {
-      name: 'sendCompletedNotification',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-        // if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() != 0 ) return;
-        // User sender = findSourceAccount(x).findOwner(x);
-        // User receiver = findDestinationAccount(x).findOwner(x);
-        // if ( sender.getId() == receiver.getId() ) return;
-
-        // Notification notification = new Notification();
-        // notification.setUserId(receiver.getId());
-        // notification.setEmailIsEnabled(true);
-        // AppConfig    config    = (AppConfig) x.get("appConfig");
-        // NumberFormat formatter = NumberFormat.getCurrencyInstance();
-
-        // HashMap<String, Object> args = new HashMap<>();
-        // args.put("amount",    formatter.format(getAmount()/100.00));
-        // args.put("name",      receiver.getFirstName());
-        // args.put("link",      config.getUrl());
-
-        // notification.setEmailName("transfer-paid");
-        // notification.setBody("You received $" + getAmount()/100.00 + " from " + sender.label());
-        // notification.setNotificationType("Received transfer");
-        // args.put("email",     receiver.getEmail());
-        // args.put("applink" ,  config.getAppLink());
-        // args.put("playlink" , config.getPlayLink());
-
-        // notification.setEmailArgs(args);
-        // ((DAO)x.get("localNotificationDAO")).put_(x, notification);
-      `
-    }
   ]
 });

@@ -220,11 +220,17 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(_ => {
-          return obj.findBalance(this.__subSubContext__)
-            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
-            .then(curr => curr.format(balance != null ? balance : 0)))
-        }))
+        this.add(obj.homeDenomination$.map(function(_) {
+          return obj.findBalance(self.__subSubContext__).then(
+            function(balance) {
+              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+                function(curr) {
+                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  self.tooltip = displayBalance;
+                  return displayBalance;
+                })
+            })
+        }));
       },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -250,15 +256,21 @@ foam.CLASS({
         var self = this;
 
         this.add(
-          obj.slot(homeDenomination => 
-            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
-              obj.findBalance(self.__subSubContext__).then(balance => 
-                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
-                )
-              )
-            )
-          )
+          obj.slot(homeDenomination => {
+            return Promise.all([
+              obj.denomination == homeDenomination ?
+                Promise.resolve(1) :
+                obj.fxService.getFXRate(obj.denomination, homeDenomination,
+                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
+              obj.findBalance(self.__subSubContext__),
+              self.__subSubContext__.currencyDAO.find(homeDenomination)
+            ]).then(arr => {
+              let [r, b, c] = arr;
+              var displayBalance = c.format(Math.floor((b || 0) * r));
+              self.tooltip = displayBalance;
+              return displayBalance;
+            })
+          })
         );
       },
       tableWidth: 145
@@ -300,8 +312,7 @@ foam.CLASS({
         a chosen property rather than the first alphabetical string property. In this
         case, we are using the account name.
       `,
-      code: function(x) {
-        var self = this;
+      code: function() {
         return this.name;
       },
     },
@@ -316,12 +327,7 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        var self = this;
-        return new Promise(function(resolve, reject) {
-          x.balanceDAO.find(self.id).then(function(balance) {
-            resolve( balance != null ? balance.balance : 0);
-          });
-        });
+        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
       },
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");

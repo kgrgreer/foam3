@@ -143,7 +143,7 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
+    DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
 
@@ -181,10 +181,8 @@ public class BusinessInvitationDAO
       throw new RuntimeException(e);
     }
 
-    String country = business.isPropertySet("businessAddress") ?
-      ((foam.nanos.auth.Address)business.getBusinessAddress()).getCountryId() : (business.isPropertySet("address") ?
-      ((foam.nanos.auth.Address)business.getAddress()).getCountryId() : null);
-    
+    String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
+
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
     url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";

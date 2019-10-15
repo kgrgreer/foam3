@@ -211,8 +211,8 @@ foam.CLASS({
       name: 'isComplete'
     },
     {
-      name: 'hasFXProvisionPermission',
-      value: false
+      class: 'Boolean',
+      name: 'hasFXProvisionPermission'
     },
     {
       name: 'isCanadianBusiness',

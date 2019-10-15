@@ -1,12 +1,16 @@
 FOAM_FILES([
+  // DAO
+  { name: 'net/nanopay/dao/EasyDAO'},
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
+  { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/test/BulkTransactionTest' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
@@ -110,6 +114,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/PersonalIdentification' },
   { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
+  { name: 'net/nanopay/bank/BankHolidayService' },
+  { name: 'net/nanopay/bank/BankWeekend' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -122,7 +128,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
-  { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
@@ -326,14 +331,18 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
-  { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimit' },
+  { name: 'net/nanopay/tx/ruler/BusinessLimitPredicate' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
   { name: 'net/nanopay/tx/ruler/ChangePropertyAction' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
+  { name: 'net/nanopay/tx/ruler/SendNotification' },
+  { name: 'net/nanopay/tx/ruler/PropertyEQValue' },
+  { name: 'net/nanopay/tx/ruler/PropertyNEQValue' },
+  { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
+  { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -352,6 +361,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
+  { name: 'net/nanopay/tx/cico/ReverseCIRule'},
+  { name: 'net/nanopay/tx/cico/ReverseCORule'},
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
@@ -458,6 +469,8 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/ComplianceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/DocumentStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/admin/SkipUserEmailVerification' },
+  { name: 'net/nanopay/admin/predicate/IsCurrentUser' },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
   { name: 'net/nanopay/plaid/PlaidResponseItem' },
@@ -491,6 +504,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
+  { name: 'net/nanopay/tx/AccountRelationship' },
+  { name: 'net/nanopay/tx/AccountRelationshipLineItem' },
   { name: 'net/nanopay/tx/ConfirmationFileLineItem' },
   { name: 'net/nanopay/tx/LineItemType' },
   { name: 'net/nanopay/tx/LineItemTypeAccount' },
@@ -505,6 +520,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/InfoLineItem' },
   { name: 'net/nanopay/tx/ExpediteCICOApprovalRequest' },
   { name: 'net/nanopay/tx/ExpenseLineItem' },
+  { name: 'net/nanopay/tx/PurposeCode' },
+  { name: 'net/nanopay/tx/PurposeCodeLineItem' },
+  { name: 'net/nanopay/tx/PurposeCodeSelectionView' },
+  { name: 'net/nanopay/tx/PurposeGroup' },
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItemCitationView' },
@@ -578,6 +597,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
+  { name: 'net/nanopay/invoice/InvoiceLineItem' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
@@ -798,6 +818,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/PublicBusinessInfo' },
   { name: 'net/nanopay/auth/BusinessToPublicBusinessInfoDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
+  { name: 'net/nanopay/model/BusinessDirector' },
   { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
@@ -855,6 +876,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/BusinessOnboardingDAOTest' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -954,12 +976,25 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/reports/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
-  { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
+
+  // clearing
+  { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
+  { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
+  { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
+  { name: 'net/nanopay/meter/clearing/ruler/BusinessClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRuleDAOCreateView' },
+  { name: 'net/nanopay/meter/clearing/ruler/EstimateTransactionCompletionDate' },
+  { name: 'net/nanopay/meter/clearing/ruler/InstitutionClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/TransactionTypeClearingTimeRule' },
+  { name: 'net/nanopay/meter/clearing/ruler/predicate/DefaultClearingTimeRulePredicate' },
+
+  // compliance
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
@@ -998,6 +1033,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsSentTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringBeneficialOwnerComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
@@ -1007,6 +1043,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessNotOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceNotPassed' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsInstancePredicate' },
   { name: 'net/nanopay/meter/compliance/ruler/AddDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
@@ -1094,7 +1131,6 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
-  { name: 'net/nanopay/tx/ui/AccountTransactionLimitRulePredicateView' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
@@ -1115,7 +1151,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
-  { name: 'net/nanopay/meter/test/IdentityMindIntegrationTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
@@ -1129,6 +1164,7 @@ FOAM_FILES([
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
   { name: 'net/nanopay/approval/ApprovalStatus' },
+  { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
@@ -1157,4 +1193,8 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
+  // goldman ingestion
+  { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
+  { name: 'net/nanopay/tx/gs/GsRowToTx'},
+  { name: 'net/nanopay/script/CsvUploadScript'},
 ]);

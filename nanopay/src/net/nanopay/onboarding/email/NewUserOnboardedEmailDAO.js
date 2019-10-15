@@ -25,6 +25,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.model.Business',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map'
@@ -34,8 +35,8 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        User newUser = (User) obj;
-        User oldUser = (User) getDelegate().inX(x).find(newUser.getId());
+        Business newUser = (Business) obj;
+        Business oldUser = (Business) getDelegate().inX(x).find(newUser.getId());
 
         // Send email only when user property onboarded is changed from false to true
         if ( oldUser != null && ! oldUser.getOnboarded() && newUser.getOnboarded() ) {
@@ -78,7 +79,7 @@ foam.CLASS({
           try {
             EmailsUtility.sendEmailFromTemplate(x, newUser, message, "notification-to-onboarding-team", args);
           } catch (Throwable t) {
-            String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has finished onboarding.", newUser.getId());
+            String msg = String.format("Email meant for complaince team Error: Business (id = %1$s) has finished onboarding.", newUser.getId());
             ((Logger) x.get("logger")).error(msg, t);
           }
         }

@@ -20,6 +20,7 @@ foam.CLASS({
     'net.nanopay.cico.model.EFTConfirmationFileRecord',
     'net.nanopay.cico.model.EFTReturnRecord',
     'net.nanopay.cico.model.EFTReturnFileCredentials',
+    'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
@@ -82,6 +83,13 @@ String testReturnFile = "25404857|"+referenceNum+"|905|"+completionDate+"|0.12|D
 returnFileProcessingTest(x, testReturnFile);
 
 completionTest(x, testBankAccount, testDigitalAccount);
+
+User user2 = (User) user.fclone();
+user2.setId(1384);
+user2.setEmail("eft_user2@foam.com");
+userDAO.put_(x, user2);
+Transaction testAlternaCOTransaction = createTestCOTransaction(x, createCOBankAccount(x), testDigitalAccount);
+
     `
     },
     {
@@ -130,6 +138,51 @@ if ( account == null ) {
     `
     },
     {
+      name: 'createCOBankAccount',
+      type: 'net.nanopay.bank.CABankAccount',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+DAO bankAccountDao = (DAO)x.get("accountDAO");
+
+CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "EFT CO Test Account"));
+
+if ( account == null ) {
+
+  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
+  final DAO  branchDAO      = (DAO) x.get("branchDAO");
+
+  Institution institution = new Institution.Builder(x)
+    .setInstitutionNumber("999")
+    .setName("EFT Test institution")
+    .build();
+  institution = (Institution) institutionDAO.put_(x, institution);
+
+  Branch branch = new Branch.Builder(x)
+    .setBranchId("99999")
+    .setInstitution(institution.getId())
+    .build();
+  branch = (Branch) branchDAO.put_(x, branch);
+
+  BankAccount testBankAccount = new CABankAccount.Builder(x)
+    .setAccountNumber("123456789")
+    .setBranch( branch.getId() )
+    .setOwner(1384)
+    .setName("EFT CO Test Account")
+    .setStatus(BankAccountStatus.VERIFIED)
+    .build();
+
+  return (CABankAccount) bankAccountDao.put(testBankAccount);
+} else {
+  return account;
+}
+    `
+    },
+    {
       name: 'createTestDigitalAccount',
       type: 'net.nanopay.account.DigitalAccount',
       args: [
@@ -148,7 +201,26 @@ User user = (User) userDAO.find_(x, testBankAccount.getOwner());
 return DigitalAccount.findDefault(x, user, "CAD");
     `
     },
-    {
+     {
+      name: 'createTestCODigitalAccount',
+      type: 'net.nanopay.account.DigitalAccount',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'testBankAccount',
+          type: 'net.nanopay.bank.CABankAccount'
+        },
+      ],
+      javaCode: `
+DAO userDAO        = (DAO) x.get("localUserDAO");
+User user = (User) userDAO.find_(x, testBankAccount.getOwner());
+return DigitalAccount.findDefault(x, user, "CAD");
+    `
+    },
+   {
       name: 'createTestCITransaction',
       type: 'net.nanopay.tx.alterna.AlternaCITransaction',
       args: [
@@ -191,7 +263,48 @@ System.out.println("createTEstCItransaction after initial put status: "+plan.get
 throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
     `
     },
-    {
+     {
+      name: 'createTestCOTransaction',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'testBankAccount',
+          type: 'net.nanopay.bank.CABankAccount'
+        },
+        {
+          name: 'testDigitalAccount',
+          type: 'net.nanopay.account.DigitalAccount'
+        }
+      ],
+      javaCode: `
+Logger logger = (Logger) x.get("logger");
+DAO transactionDAO = (DAO)x.get("localTransactionDAO");
+DAO planDAO = (DAO)x.get("localTransactionQuotePlanDAO");
+
+Transaction requestTransaction = new Transaction.Builder(x)
+  //.setStatus(TransactionStatus.PENDING)
+  .setAmount(21)
+  .setSourceAccount(testDigitalAccount.getId())
+  .setDestinationAccount(testBankAccount.getId())
+  .build();
+TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(requestTransaction).build();
+quote = (TransactionQuote) planDAO.put(quote);
+Transaction plan = (Transaction) quote.getPlan();
+test ( plan != null, "Plan transaction is not null");
+test ( plan instanceof DigitalTransaction, "Plan transaction instance of DigitalTransaction" );
+test ( plan.getNext() != null, "Plan transaction.next not null");
+test ( plan.getNext().length > 0, "Plan transaction.next.length > 0");
+Transaction n = plan.getNext()[0];
+test ( n instanceof AlternaCOTransaction, "Plan transaction.next[0] instance of AlternaCOTransaction");
+test ( plan.getDestinationAccount() == n.getSourceAccount(), "Digital destination "+plan.getSourceAccount()+", "+plan.getDestinationAccount()+" equals CO source "+n.getSourceAccount());
+return plan;
+    `
+    },
+   {
       name: 'CSVFileSendingTest',
       type: 'Void',
       args: [
@@ -331,7 +444,7 @@ Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
 AlternaCITransaction txn = createTestCITransaction(x, testBankAccount, testDigitalAccount);
 txn.setStatus(TransactionStatus.SENT);
-txn = (AlternaCITransaction) ((Transaction)transactionDAO.put_(x, txn)).fclone();
+txn = (AlternaCITransaction) transactionDAO.find(transactionDAO.put_(x, txn));
 test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
