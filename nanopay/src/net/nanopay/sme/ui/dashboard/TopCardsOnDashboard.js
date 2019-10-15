@@ -147,14 +147,15 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.canadaUsBusinessOnboardingDAO.find(
-        this.AND(
-          this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
-          this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
-        )
-      ).then((o) => {
-        this.internationalPaymentEnabled = o && o.status === this.OnboardingStatus.SUBMITTED;
-      });
+      // this.canadaUsBusinessOnboardingDAO.find(
+      //   this.AND(
+      //     this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
+      //     this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
+      //   )
+      // ).then((o) => {
+      //   this.internationalPaymentEnabled = o && o.status === this.OnboardingStatus.SUBMITTED;
+      // });
+      this.internationalPaymentEnabled = this.user.businessRegistrationDate && this.user.countryOfBusinessRegistration;
     },
     function initE() {
       this.addClass(this.myClass())

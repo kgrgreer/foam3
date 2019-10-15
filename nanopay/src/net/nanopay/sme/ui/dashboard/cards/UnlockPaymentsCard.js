@@ -242,7 +242,7 @@ foam.CLASS({
               .end();
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-                && ! this.hasFXProvisionPermission ) {
+                && ! this.hasFXProvisionPermission && ! this.isComplete ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
               .end();
@@ -253,12 +253,12 @@ foam.CLASS({
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
             }
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-              && this.hasFXProvisionPermission && this.isEmployee ) {
-              return this.E().start().addClass(self.myClass('complete-container'))
-                .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
-              .end();
-            }
+            // if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
+            //   && this.hasFXProvisionPermission && this.isEmployee ) {
+            //   return this.E().start().addClass(self.myClass('complete-container'))
+            //     .start('p').addClass(self.myClass('complete')).add(self.PENDING_TWO).end()
+            //   .end();
+            // }
             if ( ! isComplete && ! this.isEmployee ) {
               return this.E()
                 .startContext({ data: self })
