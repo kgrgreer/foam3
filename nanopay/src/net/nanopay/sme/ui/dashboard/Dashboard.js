@@ -237,7 +237,7 @@ foam.CLASS({
         .then((sink) => {
           this.bankAccount = sink.array[0];
         });
-      this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+     this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
 
       // We need to find the BusinessOnboarding by checking both the userId and
       // the businessId. Previously we were only checking the userId, which
@@ -331,8 +331,8 @@ foam.CLASS({
           .start()
             .hide(this.payablesCount$.map((value) => value > 0))
             .addClass('empty-state')
-            .start('p').add(this.NO_RECENT_PAYABLES).end()
             .start().add(this.SEND_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_PAYABLES).end()
           .end();
 
         var botL = this.Element.create()
@@ -355,7 +355,9 @@ foam.CLASS({
             .start()
               .hide(this.notificationsCount$.map((value) => value > 0))
               .addClass('empty-state')
-              .start().add(this.NO_LATEST_ACTIVITY).addClass('empty-box').end()
+              .start().addClass('empty-box')
+                .start('p').add(this.NO_LATEST_ACTIVITY).end()
+              .end()
           .end();
 
         var botR = this.Element.create()
@@ -392,8 +394,8 @@ foam.CLASS({
           .start()
             .hide(this.receivablesCount$.map((value) => value > 0))
             .addClass('empty-state')
-            .start('p').add(this.NO_RECENT_RECEIVABLES).end()
             .start().add(this.REQUEST_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_RECEIVABLES).end()
           .end();
 
         split.topButtons.add(top);
@@ -412,10 +414,10 @@ foam.CLASS({
       label: 'Send payment',
       code: function() {
         this.checkAndNotifyAbilityToPay().then((result) => {
-          if(result) {
+          if ( result ) {
             this.pushMenu('sme.quickAction.send');
           }
-        })
+        });
       }
     },
     {
@@ -423,10 +425,10 @@ foam.CLASS({
       label: 'Request payment',
       code: function() {
         this.checkAndNotifyAbilityToReceive().then((result) => {
-          if(result) {
+          if ( result ) {
             this.pushMenu('sme.quickAction.request');
           }
-        })
+        });
       }
     }
   ]
