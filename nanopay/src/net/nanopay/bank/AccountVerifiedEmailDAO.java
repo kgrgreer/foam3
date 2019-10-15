@@ -13,6 +13,12 @@ import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
+import static foam.mlang.MLang.EQ;
+import net.nanopay.payment.Institution;
+import foam.dao.ArraySink;
+import java.util.List;
+import foam.dao.Sink;
+
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
@@ -36,7 +42,7 @@ public class AccountVerifiedEmailDAO
     if ( ! account.getEnabled() ) {
       return super.put_(x, obj);
     }
-
+    
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     Group       group      = owner.findGroup(x);
     AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
@@ -62,10 +68,17 @@ public class AccountVerifiedEmailDAO
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
 
+    Sink institutionSink = new ArraySink();    
+    DAO  institutionDAO = (DAO) x.get("institutionDAO");
+    institutionSink= institutionDAO.where(EQ(Institution.INSTITUTION_NUMBER, account.getInstitutionNumber())).limit(1).select(institutionSink);
+
+    List<Institution> institutions = ((ArraySink)institutionSink).getArray();
+
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
     args.put("name",    owner.getFirstName());
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+    args.put("institution", institution);
 
     try {
       EmailsUtility.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
