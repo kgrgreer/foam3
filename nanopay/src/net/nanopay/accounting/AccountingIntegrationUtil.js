@@ -83,13 +83,13 @@ foam.CLASS({
         return null;
       }
       if ( ! contactResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // invoice sync
       let invoiceResult = await service.invoiceSync(null);
       if ( ! invoiceResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // build final result

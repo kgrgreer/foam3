@@ -50,20 +50,28 @@ function backupFiles {
     if [ ! -d ${BACKUP_HOME} ]; then
         mkdir -p ${BACKUP_HOME} 
         chgrp nanopay ${BACKUP_HOME}
-        chmod 770 ${BACKUP_HOME}
+        chmod 750 ${BACKUP_HOME}
     fi
 
+    # clear and copy journals and logs
+    # tar'ing the live directories will fail with changed files.
+    rm -rf ${BACKUP_HOME}/journals
+    rm -rf ${BACKUP_HOME}/logs
+    cp -r ${MNT_HOME}/journals ${BACKUP_HOME}/
+    cp -r ${MNT_HOME}/logs ${BACKUP_HOME}/
+    
     # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
         NANOPAY_BACKUP=${BACKUP_HOME}/$(basename ${NANOPAY_HOME})-$(date +%s)-backup.tar.gz
         echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
-        tar -czf ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} .
+        tar -czf  ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} . ${BACKUP_HOME}/journals ${BACKUP_HOME}/logs
+        
         if [ ! $? -eq 0 ]; then
             echo "ERROR :: Couldn't backup ${NANOPAY_HOME} to ${NANOPAY_BACKUP}"
             quit
         fi
         chgrp nanopay ${NANOPAY_BACKUP}
-        chmod 770 ${NANOPAY_BACKUP}
+        chmod 750 ${NANOPAY_BACKUP}
         rm -rf ${NANOPAY_HOME}
     fi
 }
@@ -74,12 +82,12 @@ function installFiles {
     if [ ! -d $NANOPAY_HOME ]; then
         mkdir -p ${NANOPAY_HOME}
     fi
-    chgrp nanopay $NANOPAY_HOME
+    chown nanopay:nanopay $NANOPAY_HOME
 
     if [ ! -d ${NANOPAY_HOME}/lib ]; then
         mkdir -p ${NANOPAY_HOME}/lib
     fi
-    chgrp nanopay ${NANOPAY_HOME}/lib
+    chown nanopay:nanopay ${NANOPAY_HOME}/lib
     chmod 750 ${NANOPAY_HOME}/lib
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/lib/* ${NANOPAY_HOME}/lib
@@ -87,7 +95,7 @@ function installFiles {
     if [ ! -d ${NANOPAY_HOME}/bin ]; then
         mkdir -p ${NANOPAY_HOME}/bin
     fi
-    chgrp nanopay ${NANOPAY_HOME}/bin
+    chown nanopay:nanopay ${NANOPAY_HOME}/bin
     chmod 750 ${NANOPAY_HOME}/bin
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/bin/* ${NANOPAY_HOME}/bin
@@ -96,49 +104,52 @@ function installFiles {
         mkdir -p ${NANOPAY_HOME}/etc
     fi
     cp -r ${NANOPAY_REMOTE_OUTPUT}/etc/* ${NANOPAY_HOME}/etc
-    chgrp nanopay ${NANOPAY_HOME}/etc
+    chown nanopay:nanopay ${NANOPAY_HOME}/etc
     chmod -R 750 ${NANOPAY_HOME}/etc
 
     if [ -f ${NANOPAY_HOME}/etc/shrc.local ]; then
-        chgrp nanopay ${NANOPAY_HOME}/etc/shrc.local
+        chown nanopay:nanopay ${NANOPAY_HOME}/etc/shrc.local
     fi
 
     if [ ! -d ${MNT_HOME} ]; then
         mkdir -p ${MNT_HOME}
     fi
-    chgrp nanopay ${MNT_HOME}
-    chmod 770 ${MNT_HOME}
+    chown nanopay:nanopay ${MNT_HOME}
+    chmod 750 ${MNT_HOME}
 
     if [ ! -d ${CONF_HOME} ]; then
         mkdir -p ${CONF_HOME}
     fi
-    chgrp -R nanopay ${CONF_HOME}
-    chmod -R 770 ${CONF_HOME}
+    chown -R nanopay:nanopay ${CONF_HOME}
+    chmod -R 750 ${CONF_HOME}
 
     if [ ! -d ${LOG_HOME} ]; then
         mkdir -p ${LOG_HOME}
     fi
-    chgrp nanopay ${LOG_HOME}
-    chmod 770 ${LOG_HOME}
+    chown nanopay:nanopay ${LOG_HOME}
+    chmod 750 ${LOG_HOME}
 
     if [ ! -d ${VAR_HOME} ]; then
         mkdir -p ${VAR_HOME}
     fi
-    chgrp nanopay ${VAR_HOME}
-    chmod 770 ${VAR_HOME}
+    chown nanopay:nanopay ${VAR_HOME}
+    chmod 750 ${VAR_HOME}
 
     if [ ! -d ${JOURNAL_HOME} ]; then
         mkdir ${JOURNAL_HOME}
     fi
     mkdir -p ${JOURNAL_HOME}/sha256
+    mkdir -p ${JOURNAL_HOME}/tmp
     mkdir -p ${JOURNAL_HOME}/migrated
+    mkdir -p ${JOURNAL_HOME}/migrated_backup
 
-    chgrp -R nanopay ${JOURNAL_HOME}
-    chmod 770 ${JOURNAL_HOME}
-    chmod -R 760 ${JOURNAL_HOME}/*
-    chmod 770 ${JOURNAL_HOME}/sha256
-    chmod 770 ${JOURNAL_HOME}/migrated
-
+    chown -R nanopay:nanopay ${JOURNAL_HOME}
+    chmod 750 ${JOURNAL_HOME}
+    chmod -R 640 ${JOURNAL_HOME}/*
+    chmod 750 ${JOURNAL_HOME}/sha256
+    chmod 750 ${JOURNAL_HOME}/tmp
+    chmod 750 ${JOURNAL_HOME}/migrated
+    chmod 750 ${JOURNAL_HOME}/migrated_backup
 }
 
 function setupUser {
@@ -162,6 +173,11 @@ function setupUser {
         sed -i 's/umask.*/umask 027/' "$BASHRC"
     else
        echo "umask 027" >> "$BASHRC"
+    fi
+
+    # Setup ubuntu user
+    if id "ubuntu" > /dev/null 2>&1 && ! id -nG "ubuntu" | grep -qw "nanopay"; then
+        sudo usermod -a -G nanopay ubuntu
     fi
 }
 

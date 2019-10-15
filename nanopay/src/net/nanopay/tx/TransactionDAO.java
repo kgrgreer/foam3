@@ -42,7 +42,12 @@ public class TransactionDAO
 {
   protected DAO balanceDAO_;
   protected DAO userDAO_;
-  private   DAO writableBalanceDAO_ = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+  private   DAO writableBalanceDAO_ = initWriteableBalanceDAO_();
+  private final DAO initWriteableBalanceDAO_() {
+    foam.dao.MDAO d = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
+    d.addIndex(Balance.ACCOUNT);
+    return d;
+  }
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -72,7 +77,6 @@ public class TransactionDAO
     } else {
       txn = (Transaction) super.put_(x, txn);
     }
-
     return txn;
   }
 
@@ -81,17 +85,16 @@ public class TransactionDAO
    */
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
     return ( ! SafetyUtil.isEmpty(txn.getId()) ||
-             txn instanceof DigitalTransaction ) &&
+      txn instanceof DigitalTransaction ) &&
       (txn.getNext() == null || txn.getNext().length == 0 ) &&
-      (txn.canTransfer(x, oldTxn) ||
-       txn.canReverseTransfer(x, oldTxn));
+      (txn.canTransfer(x, oldTxn));
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
     Transfer[] ts = txn.createTransfers(y, oldTxn);
 
-    // TODO: disallow or merge duplicate accounts
+    // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
     if ( ts.length != 1 ) {
       validateTransfers(x, txn, ts);
     }
@@ -136,9 +139,11 @@ public class TransactionDAO
     HashMap<Long, Transfer> hm = new HashMap();
 
     for ( Transfer tr : ts ) {
-      if ( hm.get(tr.getAccount()) != null ) {
-        tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
-      }
+      // REVIEW: as the TODO above suggest, this creates an incorrect transfer list
+      // when transfers to the same account exist.
+      // if ( hm.get(tr.getAccount()) != null ) {
+      //   tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+      // }
       hm.put(tr.getAccount(), tr);
     }
 
@@ -169,11 +174,6 @@ public class TransactionDAO
       try {
         account.validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
-        if ( txn.getStatus() == TransactionStatus.REVERSE ) {
-          txn.setStatus(TransactionStatus.REVERSE_FAIL);
-          return super.put_(x, txn);
-        }
-        ((Logger) x.get("logger")).error(" Failed to validate amount for account " + account.getId(), e);
         throw e;
       }
     }
@@ -183,9 +183,7 @@ public class TransactionDAO
       t.validate();
       Balance balance = finalBalanceArr[i];
       t.execute(balance);
-      finalBalanceArr[i] = (Balance) balance.fclone();
     }
-    txn.setBalances(finalBalanceArr);
 
     return getDelegate().put_(x, txn);
   }

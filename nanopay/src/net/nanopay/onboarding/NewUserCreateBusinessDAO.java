@@ -41,7 +41,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     super(x, delegate);
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
 
@@ -137,8 +137,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
 
     // Put the user so that it gets an id.
     // Remove business address collected from signup form.
-    Address businessAddress = user.getBusinessAddress();
-    user.setBusinessAddress(null);
+    Address businessAddress = user.getAddress();
+    user.setAddress(null);
     user = (User) super.put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;

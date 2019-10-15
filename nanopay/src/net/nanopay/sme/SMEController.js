@@ -16,6 +16,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
@@ -44,6 +46,10 @@ foam.CLASS({
     'currentAccount',
     'privacyUrl',
     'termsUrl',
+  ],
+
+  imports: [
+    'canadaUsBusinessOnboardingDAO',
   ],
 
   implements: [
@@ -148,7 +154,15 @@ foam.CLASS({
     },
     {
       name: 'PASSED_BANNER',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic payments!'
+    },
+    {
+      name: 'PASSED_BANNER_DOMESTIC_US',
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to send and receive payments between Canada and the US!'
+    },
+    {
+      name: 'PASSED_BANNER_INTERNATIONAL',
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic and international payments to USA!'
     },
     {
       name: 'TWO_FACTOR_REQUIRED_ONE',
@@ -228,10 +242,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'caUsOnboardingComplete'
+    },
+    {
       class: 'Array',
       name: 'complianceStatusArray',
       documentation: `
-        A customized array contains objects for the toast notification 
+        A customized array contains objects for the toast notification
         and banner to handle different cases of the business onboarding status
         and the bank account status.
       `,
@@ -246,7 +264,7 @@ foam.CLASS({
                 && accountArray.length === 0;
             },
             passed: false,
-            showBanner: false
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
@@ -328,8 +346,35 @@ foam.CLASS({
             bannerMode: this.BannerMode.ACCOMPLISHED,
             condition: function(user, accountArray) {
               return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && ! self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_INTERNATIONAL,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_DOMESTIC_US,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED
+                && user.address.countryId === 'US';
             },
             passed: true,
             showBanner: true
@@ -371,7 +416,8 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      if ( this.user.emailVerified ) {
+      if ( (this.user && this.user.emailVerified) ||
+           (this.agent && this.agent.emailVerified) ) {
         this.add(this.SMEModal.create({ closeable: false }).tag({
           class: 'net.nanopay.ui.modal.SessionTimeoutModal',
         }));
@@ -458,7 +504,8 @@ foam.CLASS({
             companyNameField: searchParams.has('companyName')
               ? searchParams.get('companyName')
               : '',
-            disableCompanyName: searchParams.has('companyName')
+            disableCompanyName: searchParams.has('companyName'),
+            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
           };
         }
       }
@@ -476,6 +523,7 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      await this.getCAUSPaymentEnabled(user, this.agent);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -604,6 +652,21 @@ foam.CLASS({
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
+      }
+    },
+    /**
+     * Set caUsOnboardingComplete based on CA/US oboarding status.
+     */
+    async function getCAUSPaymentEnabled(user, agent) {
+      if ( this.Business.isInstance(user) ) {
+        this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
+          this.AND(
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, user.id)
+          )
+        ).then((o) => {
+          this.caUsOnboardingComplete = o && o.status === this.OnboardingStatus.SUBMITTED;
+        });
       }
     },
 

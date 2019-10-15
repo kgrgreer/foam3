@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.recentTransactions',
   name: 'DashboardRecentTransactions',
@@ -34,7 +28,8 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.comics.v2.DAOBrowserView'
+    'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig'
   ],
 
   messages: [
@@ -48,6 +43,17 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'data'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.DAOControllerConfig',
+      name: 'config',
+      factory: function() {
+        return this.DAOControllerConfig.create({
+          defaultColumns:["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"],
+          dao: this.data
+        });
+      }
     }
   ],
 
@@ -59,14 +65,15 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data) {
           return self.E()
-              .start(self.Rows).addClass(this.myClass('card-container'))
-                .start()
-                  .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
-                .end()
-                .tag(foam.comics.v2.DAOBrowserView, {
-                  data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20)
-                })
-              .end();
+            .start(self.Rows).addClass(this.myClass('card-container'))
+              .start()
+                .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
+              .end()
+              .start(foam.comics.v2.DAOBrowserView, {
+                data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20),
+                config: self.config
+              }).end()
+            .end();
         }));
     }
   ]

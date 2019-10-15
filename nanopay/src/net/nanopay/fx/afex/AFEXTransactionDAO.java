@@ -4,12 +4,16 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.ascendantfx.AscendantFX;
 import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
@@ -43,9 +47,7 @@ public class AFEXTransactionDAO
     if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED && transaction.getAfexTradeResponseNumber() == 0 ) {
       try {
         int result = afexService.createTrade(transaction);
-        if ( result != -1 ) {
-          transaction.setAfexTradeResponseNumber(result);
-        }
+        transaction.setAfexTradeResponseNumber(result);
       } catch (Throwable t) {
         logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
         throw new RuntimeException(t.getMessage());
@@ -62,6 +64,18 @@ public class AFEXTransactionDAO
       if ( ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
         transaction.setStatus(TransactionStatus.SENT);
         transaction.setReferenceNumber(txn.getReferenceNumber());
+        FXQuote fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(transaction.getFxQuoteId()));
+        
+        if ( null != fxQuote ) {
+          Date date = null;
+          try{
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+            transaction.setCompletionDate(format.parse(fxQuote.getValueDate()));
+          } catch ( Exception e) {
+            ((Logger) x.get("logger")).error(" Error parsing FX quote value date ", e);
+          }
+          
+        }
       } else {
         transaction.setStatus(TransactionStatus.DECLINED);
         logger.error("Error submitting payment to AFEX.");

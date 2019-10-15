@@ -198,11 +198,17 @@ foam.CLASS({
           this.bank.voidCheckImage = n[0];
         }
       }
-    }
+    },
+    'skip'
   ],
 
   methods: [
     function initE() {
+
+      if ( this.skip ) {
+        this.next();
+      }
+      
       this.SUPER();
       var self = this;
       this.addClass(this.myClass())
@@ -291,8 +297,10 @@ foam.CLASS({
       name: 'next',
       label: 'Next',
       code: function(X) {
-        var model = X.void;
-        if ( ! model.validateInputs() ) return;
+        if ( ! this.skip ) {
+          var model = X.void;
+          if ( ! model.validateInputs() ) return;
+        }
         X.pushToId('pad');
       }
     },

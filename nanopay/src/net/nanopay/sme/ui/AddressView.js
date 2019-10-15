@@ -74,15 +74,7 @@ foam.CLASS({
       var choices = this.data$.dot('countryId').map(function(countryId) {
         if ( countryId == 'US' ) {
           return self.regionDAO.where(
-            self.AND(
-              self.EQ(self.Region.COUNTRY_ID, countryId || ''),
-              self.NOT(
-                self.IN(self.Region.NAME, ['Alaska', 'Hawaii', 'Utah', 'South Dakota', 'Iowa',
-                  'Arkansas', 'Louisiana', 'Mississippi', 'South Carolina',
-                  'West Virginia', 'Ohio', 'Michigan', 'Rhode Island', 'Vermont']
-                )
-              )
-            )
+            self.EQ(self.Region.COUNTRY_ID, countryId || '')
           );
         } else {
           return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
@@ -151,8 +143,7 @@ foam.CLASS({
           })
         .end()
         .start()
-          .enableClass('three-column', this.withoutCountrySelection)
-          .enableClass('two-column', ! this.withoutCountrySelection)
+          .addClass('two-column')
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,

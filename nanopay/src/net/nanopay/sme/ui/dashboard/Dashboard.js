@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
@@ -33,6 +34,7 @@ foam.CLASS({
     'auth',
     'accountingIntegrationUtil',
     'agent',
+    'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'ctrl',
@@ -42,9 +44,12 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'quickbooksService',
+    'uSBusinessOnboardingDAO',
     'user',
     'userDAO',
-    'xeroService'
+    'xeroService',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
   ],
 
   exports: [
@@ -79,13 +84,23 @@ foam.CLASS({
     }
     ^ .empty-state {
       text-align: center;
-      padding: 45px 27px;
+      padding: 64px 27px;
       border: 1px solid #e2e2e3;
       background: inherit;
       border-radius: 3px;
       font-size: 14px;
       line-height: 25px;
       color: #8e9090;
+    }
+    ^ .empty-box {
+      height: 60px;
+      padding:14px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-requestPayment {
+      width: 200px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-sendPayment {
+      width: 200px;
     }
   `,
 
@@ -222,7 +237,7 @@ foam.CLASS({
         .then((sink) => {
           this.bankAccount = sink.array[0];
         });
-      this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+     this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
 
       // We need to find the BusinessOnboarding by checking both the userId and
       // the businessId. Previously we were only checking the userId, which
@@ -236,7 +251,13 @@ foam.CLASS({
           this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
         )
+      ) || await this.uSBusinessOnboardingDAO.find(
+        this.AND(
+          this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
+        )
       );
+      this.user = await this.businessDAO.find(this.user.id);
       this.onboardingStatus = this.user.onboarded;
     },
 
@@ -255,7 +276,6 @@ foam.CLASS({
             class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
-            userData: this.user,
             businessOnboarding: this.businessOnboarding,
             onboardingStatus: this.onboardingStatus
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
@@ -310,7 +330,9 @@ foam.CLASS({
           .end()
           .start()
             .hide(this.payablesCount$.map((value) => value > 0))
-            .addClass('empty-state').add(this.NO_RECENT_PAYABLES)
+            .addClass('empty-state')
+            .start().add(this.SEND_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_PAYABLES).end()
           .end();
 
         var botL = this.Element.create()
@@ -332,7 +354,10 @@ foam.CLASS({
             .end()
             .start()
               .hide(this.notificationsCount$.map((value) => value > 0))
-              .addClass('empty-state').add(this.NO_LATEST_ACTIVITY)
+              .addClass('empty-state')
+              .start().addClass('empty-box')
+                .start('p').add(this.NO_LATEST_ACTIVITY).end()
+              .end()
           .end();
 
         var botR = this.Element.create()
@@ -368,7 +393,9 @@ foam.CLASS({
           .end()
           .start()
             .hide(this.receivablesCount$.map((value) => value > 0))
-            .addClass('empty-state').add(this.NO_RECENT_RECEIVABLES)
+            .addClass('empty-state')
+            .start().add(this.REQUEST_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_RECEIVABLES).end()
           .end();
 
         split.topButtons.add(top);
@@ -379,6 +406,30 @@ foam.CLASS({
 
         this.addClass(this.myClass()).add(split).end();
       });
+    }
+  ],
+  actions: [
+    {
+      name: 'sendPayment',
+      label: 'Send payment',
+      code: function() {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            this.pushMenu('sme.quickAction.send');
+          }
+        });
+      }
+    },
+    {
+      name: 'requestPayment',
+      label: 'Request payment',
+      code: function() {
+        this.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            this.pushMenu('sme.quickAction.request');
+          }
+        });
+      }
     }
   ]
 });

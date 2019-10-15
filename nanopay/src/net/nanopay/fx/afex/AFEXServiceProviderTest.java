@@ -98,36 +98,34 @@ public class AFEXServiceProviderTest
       user1 = new User();
       user1.setFirstName("AFEXTestPayer");
       user1.setLastName("AFEXTwo");
-      user1.setGroup("business");
       user1.setEmail("afexpayee@nanopay.net");
       user1.setDesiredPassword("AFXTestPassword123$");
-      user1.setGroup("sme");
       user1.setAddress(businessAddress);
       user1.setType("Business");
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
       user1.setLanguage("en");
       user1.setBirthday(new Date());
-      user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
-      user1.setEnabled(true);
-      user1.setLoginEnabled(true);
-      user1.setEmailVerified(true);
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
       Phone phone = new Phone();
       phone.setNumber("123-456-7890");
       user1.setPhone(phone);
-      smeBusinessRegistrationDAO.put(user1);
+      user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
+
+      // Set properties that can't be set during registration.
+      user1.setEmailVerified(true);
+      user1 = (User) localUserDAO.put(user1);
 
       business = (Business) businessDAO.find(EQ(Business.EMAIL, user1.getEmail()));
       business = (Business) business.fclone();
       business.setStatus(AccountStatus.ACTIVE);
-      business.setBusinessAddress(businessAddress);
+      business.setAddress(businessAddress);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      business.setBusinessPhone(phone);
+      business.setPhone(phone);
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
@@ -142,13 +140,10 @@ public class AFEXServiceProviderTest
       }
       Group group = (Group) ((DAO) x.get("localGroupDAO")).find(business.getGroup());
       Permission newPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-      Permission currencyPermission = new Permission.Builder(x).setId("currency.read.USD").build();
       group.getPermissions(x).add(newPermission);
-      group.getPermissions(x).add(currencyPermission);
       business.getSigningOfficers(x).add(user1);
 
     } else {
-      user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
       user1.setEnabled(true);
       user1.setEmailVerified(true);
@@ -164,7 +159,6 @@ public class AFEXServiceProviderTest
       user2.setEmail("testafxpayee20@nanopay.net");
     }
 
-    user2.setBusinessAddress(businessAddress);
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
     localUserDAO.put(user2);

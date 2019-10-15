@@ -1,5 +1,6 @@
 package net.nanopay.accounting.quickbooks;
 
+import com.google.gson.Gson;
 import com.intuit.ipp.core.Context;
 import com.intuit.ipp.core.IEntity;
 import com.intuit.ipp.core.ServiceType;
@@ -9,6 +10,7 @@ import com.intuit.ipp.security.OAuth2Authorizer;
 import com.intuit.ipp.services.BatchOperation;
 import com.intuit.ipp.services.CallbackHandler;
 import com.intuit.ipp.services.DataService;
+import com.intuit.ipp.services.QueryResult;
 import com.intuit.ipp.util.Config;
 import foam.blob.BlobService;
 import foam.core.ContextAwareSupport;
@@ -56,7 +58,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   private DAO currencyDAO;
   private DAO resultDAO;
   private Logger logger;
-
+  private OMLogger omLogger;
   @Override
   public void start() throws Exception {
     this.tokenDAO = (DAO) getX().get("quickbooksTokenDAO");
@@ -67,6 +69,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     this.currencyDAO = (DAO) getX().get("currencyDAO");
     this.resultDAO  = (DAO) getX().get("accountingResultDAO");
     this.logger         = (Logger) getX().get("logger");
+    this.omLogger = (OMLogger) getX().get("OMLogger");
   }
 
   @Override
@@ -266,7 +269,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     try {
       String query = "select * from account where AccountType = 'Bank'";
-      List<Account> accounts = sendRequest(x, query);
+      List<Account> accounts = sendRequest(x, query, "account");
 
       for ( Account account : accounts ) {
         AccountingBankAccount xBank = new AccountingBankAccount();
@@ -339,7 +342,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public void reSyncInvoices(X x) {
     User            user           = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-
+    Logger logger = (Logger) x.get("logger");
     // 1. find all the deSync invoices
     ArraySink select = (ArraySink) invoiceDAO.inX(x).where(AND(
       EQ(QuickbooksInvoice.REALM_ID, token.getRealmId()),
@@ -349,13 +352,19 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // 2. prepare the batch request
     BatchOperation batchOperation = new BatchOperation();
-
+    String request = "";
+    Gson gson = new Gson();
     for ( QuickbooksInvoice quickInvoice : quickInvoices ) {
-      batchOperation.addEntity(createPaymentFor(x, quickInvoice), OperationEnum.CREATE, quickInvoice.getQuickId());
+      Transaction paymentFor = createPaymentFor(x, quickInvoice);
+      batchOperation.addEntity(paymentFor, OperationEnum.CREATE, quickInvoice.getQuickId());
+      String json1 = gson.toJson(paymentFor);
+      request = request + "{ " + json1 + ", quickInvoiceId:" + quickInvoice.getId() + " }, ";
     }
+    logger.debug("QBO batch request: " + request);
 
     batchOperation(x, batchOperation, null);
-
+    String json = gson.toJson(batchOperation.getFaultResult());
+    logger.debug("QBO batch response: " + json);
     // 3. get the result of the batch request
     Set<String> failedSet = new HashSet<>();
     for (String batchId : batchOperation.getFaultResult().keySet()) {
@@ -380,7 +389,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     if ( e instanceof AccountingException ) {
       AccountingException accountingException = (AccountingException) e;
-      OMLogger omLogger = ((OMLogger) getX().get("OMLogger"));
 
       // if error codes has already been set
       if ( accountingException.getErrorCodes() != null ) {
@@ -395,9 +403,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         if ( temp instanceof AuthenticationException ) {
           resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
           resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
-          omLogger.log("Quickbooks post request");
+          this.omLogger.log("Quickbooks post request");
         } else {
-          omLogger.log("Quickbooks timeout");
+          this.omLogger.log("Quickbooks timeout");
           resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
           resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
         }
@@ -444,14 +452,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
-    cacheDAO.inX(x).put(
-      new AccountingContactEmailCache.Builder(x)
-        .setQuickId(importContact.getId())
-        .setRealmId(token.getRealmId())
-        .setEmail(email.getAddress().toLowerCase())
-        .build()
-    );
-
     Contact existContact = (Contact) contactDAO.inX(x).find(AND(
       EQ(Contact.EMAIL, email.getAddress().toLowerCase()),
       EQ(Contact.OWNER, user.getId())
@@ -470,6 +470,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // If the contact is a existing contact
     if ( existContact != null ) {
+      existContact = (Contact) existContact.fclone();
 
       // existing user
       if ( existUser != null ) {
@@ -541,6 +542,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       if ( existUser == null ) {
         contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false, contactErrors));
+        cacheDAO.inX(x).put(
+          new AccountingContactEmailCache.Builder(x)
+            .setQuickId(importContact.getId())
+            .setRealmId(token.getRealmId())
+            .setEmail(email.getAddress().toLowerCase())
+            .build()
+        );
       }
     }
 
@@ -769,7 +777,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         EQ(QuickbooksContact.EMAIL, cache.getEmail()),
         EQ(QuickbooksContact.OWNER, user.getId())
       ));
-    if ( contact == null ) {
+    if ( contact == null ||  ! ( contact instanceof  QuickbooksContact)) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
@@ -834,7 +843,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     String query = "select * from attachable where AttachableRef.EntityRef.Type = '" + type +
                    "' and AttachableRef.EntityRef.value = '" + id + "'";
 
-    List<Attachable> list = sendRequest(x, query);
+    List<Attachable> list = sendRequest(x, query, "attachable");
 
     List<File> files = list.stream().map(attachment -> {
       try {
@@ -946,20 +955,20 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     String queryCustomer = "select * from customer";
     String queryVendor   = "select * from vendor";
 
-    result.addAll(sendRequest(x, queryCustomer));
-    result.addAll(sendRequest(x, queryVendor));
+    result.addAll(sendRequest(x, queryCustomer, "customer"));
+    result.addAll(sendRequest(x, queryVendor, "vendor"));
 
     return result;
   }
 
   public NameBase fetchContactById(foam.core.X x, String type, String id) {
     String query = "select * from "+ type +" where id = '"+ id +"'";
-    return (NameBase) sendRequest(x, query).get(0);
+    return (NameBase) sendRequest(x, query, type).get(0);
   }
 
   public Transaction fetchInvoiceById(X x, String type, String id) {
     String query = "select * from "+ type +" where id = '"+ id +"'";
-    return (Transaction) sendRequest(x, query).get(0);
+    return (Transaction) sendRequest(x, query, type).get(0);
   }
 
   public List fetchInvoices(X x) throws Exception {
@@ -969,8 +978,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     String queryBill    = "select * from bill";
     String queryInvoice = "select * from invoice";
 
-    result.addAll(sendRequest(x, queryBill));
-    result.addAll(sendRequest(x, queryInvoice));
+    result.addAll(sendRequest(x, queryBill, "bill"));
+    result.addAll(sendRequest(x, queryInvoice, "invoice"));
 
     return result;
   }
@@ -981,22 +990,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     String query = "select * from CompanyInfo";
 
-    result.addAll(sendRequest(x, query));
+    result.addAll(sendRequest(x, query,"CompanyInfo"));
 
     return (CompanyInfo) result.get(0);
   }
 
 
-  public List sendRequest(foam.core.X x, String query) {
+  public List sendRequest(foam.core.X x, String query, String table) {
     User user       = (User) x.get("user");
     DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
+    Logger logger = (Logger) x.get("logger");
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
     DAO                 configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
-
 
     if ( token == null || token.getRealmId() == null || token.getBusinessName() == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
@@ -1008,10 +1016,24 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       OAuth2Authorizer oauth = new OAuth2Authorizer(token.getAccessToken());
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
-
-      omLogger.log("Quickbooks pre request");
-      List response = service.executeQuery(query).getEntities();
-      omLogger.log("Quickbooks post request");
+      logger.debug("QBO request: " + query);
+      List response = new ArrayList() ;
+      if ( query.startsWith("select") ) {
+        QueryResult queryResult = service.executeQuery("select count(*) from " + table);
+        int count =  queryResult.getTotalCount() == null ? 1 : queryResult.getTotalCount();
+        int i = 1;
+        while (i < count + 1) {
+          response.addAll(service.executeQuery(query+ " STARTPOSITION " + String.valueOf(i) + " MAXRESULTS 100" ).getEntities());
+          i += 100;
+        }
+      } else {
+        this.omLogger.log("Quickbooks pre request");
+        response = service.executeQuery(query).getEntities();
+        this.omLogger.log("Quickbooks post request");
+      }
+      Gson gson = new Gson();
+      String json = gson.toJson(response);
+      logger.debug("QBO response: " + json);
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1026,7 +1048,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
 
     if ( token == null ) {
@@ -1040,9 +1061,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       IEntity response = service.add(object);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
       return response;
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
@@ -1057,7 +1078,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
-    OMLogger omLogger = (OMLogger) x.get("OMLogger");
 
     if ( token == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
@@ -1070,9 +1090,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
-      omLogger.log("Quickbooks pre request");
+      this.omLogger.log("Quickbooks pre request");
       service.executeBatch(operation);
-      omLogger.log("Quickbooks post request");
+      this.omLogger.log("Quickbooks post request");
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }

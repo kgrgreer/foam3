@@ -63,9 +63,7 @@ foam.CLASS({
             'name',
             'flagImage',
             'denomination',
-            'institution',
-            'branch',
-            'accountNumber',
+            'summary',
             'status'
           ],
           contextMenuActions: [
@@ -114,8 +112,7 @@ foam.CLASS({
                 cadAvailable: self.availableCAD
               }, self);
             }
-          },
-          // isAvailable: function() { return self.available; }
+          }
         });
       }
     },
@@ -171,10 +168,10 @@ foam.CLASS({
             arg2: net.nanopay.bank.USBankAccount.name
           })
         ).select();
-        if ( accountListCAD && accountListCAD.array.length > 0 ) {
+
+        if ( accountListCAD && accountListCAD.array.length > 0
+          || accountListUSD && accountListUSD.array.length > 0 ) {
           this.availableCAD = false;
-        }
-        if ( accountListUSD && accountListUSD.array.length > 0 ) {
           this.availableUSD = false;
         }
         if ( ! this.availableCAD && ! this.availableUSD ) {
@@ -188,7 +185,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination != 'CAD') {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD' ) {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account

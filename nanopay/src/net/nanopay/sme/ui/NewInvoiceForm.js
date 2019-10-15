@@ -122,6 +122,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-action {
       height: 36px;
       padding: 8px 13px;
+      background-color: #ffffff;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       background-color: #ffffff;
@@ -200,7 +201,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'You do not have a verified bank account in that currency.'
+      message: 'User does not have the ability to exchange funds in this currency.'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
@@ -556,9 +557,11 @@ foam.CLASS({
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
       var partyId = isPayable ? this.invoice.contactId : this.user.id;
-      if ( partyId && destinationCurrency ) {
+      if ( partyId && destinationCurrency && this.invoice.contactId ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
+          isRecievable: ! isPayable,
+          payerId: this.invoice.contactId,
           currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {

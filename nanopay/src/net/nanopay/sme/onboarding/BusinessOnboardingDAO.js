@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -26,7 +27,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -44,9 +45,16 @@ foam.CLASS({
       ],
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
-        // TODO: Please call the java validator of the businessOnboarding here
 
-        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+        
+        BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
+
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+        
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
@@ -57,13 +65,9 @@ foam.CLASS({
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
-        }
-
-        businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
@@ -76,10 +80,19 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
+          user.setBirthday( businessOnboarding.getBirthday() );
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
+          if ( businessOnboarding.getPEPHIORelated() ) {
+            Notification notification = new Notification();
+            notification.setEmailIsEnabled(true);
+            notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " + 
+                                  business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
+            notification.setNotificationType("A PEP/HIO related user has been Onboarded");
+            notification.setGroupId("fraud-ops");
+            localNotificationDAO.put(notification);
+          }
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
           
@@ -94,9 +107,7 @@ foam.CLASS({
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
-          business.setBusinessPhone(businessOnboarding.getPhone());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
@@ -135,7 +146,7 @@ foam.CLASS({
 
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
 
           Invitation invitation = new Invitation();
           /**

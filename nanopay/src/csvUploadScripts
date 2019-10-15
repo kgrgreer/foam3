@@ -1,0 +1,1 @@
+p({"class":"net.nanopay.script.CsvUploadScript","id":"CSVUploadTest","lastRun":"2019-09-11T14:00:00.000Z","lastDuration":1337,"status":1,"code":"import foam.lib.parse.*;\n\nhello = new net.nanopay.tx.gs.GsRowToTx();\nmaDAO = hello.process(x,currentScript.getCsv().getData());","output":"nothing outputted.."})

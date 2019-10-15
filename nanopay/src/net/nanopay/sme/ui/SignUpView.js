@@ -20,7 +20,8 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail'
+    'validateEmail',
+    'appConfigService'
   ],
 
   requires: [
@@ -184,6 +185,19 @@ foam.CLASS({
         fails. Used to prevent the user from clicking multiple times on the
         button which will create duplicate users.
       `
+    },
+    {
+      name: 'predicate',
+      expression: function(choice) {
+        if ( choice instanceof Array ) {
+          return this.IN(this.Country.ID, choice);
+        }
+        return this.EQ(this.Country.ID, choice);
+      }
+    },
+    {
+      name: 'choice',
+      value: ['CA', 'US']
     }
   ],
 
@@ -217,9 +231,8 @@ foam.CLASS({
       this.loadAcceptanceDocument();
     },
 
-    function initE() {
+    async function initE() {
       this.SUPER();
-
       var self = this;
       var emailDisplayMode = this.disableEmail ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
@@ -238,6 +251,11 @@ foam.CLASS({
           .addClass(this.myClass('disclaimer'))
           .add(this.QUEBEC_DISCLAIMER)
         .end();
+
+      let enableAFEX = await this.appConfigService.getAppConfig();
+      var country = enableAFEX.afexEnabled ?
+        this.countryDAO.where(this.predicate) :
+        this.countryDAO.where(this.IN(this.Country.ID, ['CA']));
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -273,10 +291,7 @@ foam.CLASS({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select your country',
-                  dao: this.countryDAO.where(this.OR(
-                    this.EQ(this.Country.NAME, 'Canada'),
-                    this.EQ(this.Country.NAME, 'USA')
-                  )),
+                  dao: country,
                   objToChoice: function(a) {
                     return [a.id, a.name];
                   }
@@ -465,11 +480,10 @@ foam.CLASS({
           signUpToken: this.signUpToken,
           // Address is removed from the user and used as the business address for the business created in
           // the smeRegistrationDAO
-          businessAddress: businessAddress,
+          address: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
-          welcomeEmailSent: true,
-          group: 'sme'
+          welcomeEmailSent: true
         });
 
         this.smeBusinessRegistrationDAO

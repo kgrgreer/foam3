@@ -224,6 +224,7 @@ foam.CLASS({
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'LINE_ITEMS', message: 'Items' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
@@ -269,7 +270,7 @@ foam.CLASS({
                 .add(this.payer$.map(function(payer) {
                   return payer.then(function(payer) {
                     if ( payer != null ) {
-                      var address = payer.businessAddress;
+                      var address = payer.address;
                       return self.E()
                         .start().add(payer.label()).end()
                         .start().add(self.formatStreetAddress(address)).end()
@@ -337,6 +338,34 @@ foam.CLASS({
               .end()
             .end()
           .end()
+          .start()
+            .addClass('invoice-row')
+            .start()
+              .add(this.LINE_ITEMS)
+              .addClass('bold-label')
+            .end()
+            .start()
+              .add(this.slot(function(invoice$lineItems) {
+                if ( invoice$lineItems.length !== 0 ) {
+                  return self.E()
+                    .startContext({
+                      data: self.invoice,
+                      controllerMode: foam.u2.ControllerMode.VIEW
+                    })
+                      .add(self.Invoice.LINE_ITEMS)
+                    .endContext();
+                } else {
+                 return self.E()
+                   .start()
+                     .addClass(this.myClass('invoice-content-block'))
+                     .addClass(this.myClass('invoice-content-text'))
+                     .addClass(this.myClass('italic'))
+                     .add('No items provided')
+                   .end();
+                }
+              }))
+            .end()
+          .end()
         .end()
         .start().addClass('invoice-row')
           .start()
@@ -388,7 +417,7 @@ foam.CLASS({
             .add(this.NOTE_LABEL)
           .end()
           .start('span')
-            .addClass(this.myClass('invoice-content-block'))
+            .addClass(this.myClass('invoice-content'))
             .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
             .add(this.slot(function(invoice$note) {
