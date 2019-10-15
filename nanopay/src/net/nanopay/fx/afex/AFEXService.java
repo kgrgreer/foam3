@@ -939,7 +939,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       response = client.newCall(request).execute();
       byte[] bytes = response.body().bytes();
 
-      logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response : " + new String(bytes));
+      logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response recieved" );
       return bytes;
 
     } catch ( Throwable t ) {

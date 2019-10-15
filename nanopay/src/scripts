@@ -791,3 +791,35 @@ p({
   """,
   "output": ""
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Update declined transaction invoices",
+  "status": 1,
+  "code": """
+  import foam.dao.DAO;
+  import foam.mlang.MLang;
+  import foam.dao.ArraySink;
+  import net.nanopay.invoice.model.Invoice;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.invoice.model.InvoiceStatus;
+  import net.nanopay.tx.model.TransactionStatus;
+
+  invoiceDAO =(DAO) x.get("invoiceDAO");
+  transactionDAO = (DAO) x.get("localTransactionDAO");
+  filteredInvoices = ((ArraySink) invoiceDAO
+    .where(MLang.EQ(Invoice.STATUS, InvoiceStatus.PROCESSING)).select(new ArraySink())).getArray();
+  for(Object invoiceObj : filteredInvoices) {
+    Invoice invoice = (Invoice) invoiceObj;
+    txn = transactionDAO.find(MLang.EQ(Transaction.ID, invoice.getPaymentId()));
+    if ( txn != null && txn.getState(x) == TransactionStatus.DECLINED ) {
+      print(txn);
+      invoice.clearPaymentId();
+      invoice.clearPaymentDate();
+      invoice.clearPaymentMethod();
+      invoiceDAO.put(invoice);
+    }
+  }
+  print("done");
+  """
+})
