@@ -25,6 +25,7 @@ p({
     "hour": 1,
     "minute": 0
   },
+  "scheduledTime": "2019-11-01T05:00:00.000Z",
   "id": "Monthly Billing Invoices for Ablii",
   "description": "Send billing invoices to Ablii users",
   "code": """
@@ -84,7 +85,7 @@ p({
     cadBillingAgent.execute(x);
     print(cadBillingAgent.getResult());
 
-    print("\n\n");
+    print("\\n\\n");
 
     // Generate billing invoices for USD-* transactions
     usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));
