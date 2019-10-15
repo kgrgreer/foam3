@@ -1,11 +1,11 @@
 foam.CLASS({
     package: 'net.nanopay.invoice.ruler',
     name: 'RequestPaymentNotificationRule',
-  
+
     documentation: 'An action that sends a notification to both sender and receiver of request payment invoice',
-  
+
     implements: ['foam.nanos.ruler.RuleAction'],
-  
+
     javaImports: [
       'foam.core.FObject',
       'foam.core.X',
@@ -17,9 +17,10 @@ foam.CLASS({
       'foam.util.SafetyUtil',
       'net.nanopay.invoice.model.Invoice',
       'net.nanopay.model.Currency',
-      'net.nanopay.auth.PublicUserInfo'
+      'net.nanopay.auth.PublicUserInfo',
+      'static foam.mlang.MLang.*',
     ],
-  
+
     methods: [
       {
         name: 'applyAction',
@@ -36,11 +37,18 @@ foam.CLASS({
                 PublicUserInfo receiver = (PublicUserInfo) iv.getPayer();
                 User sender = (User) x.get("user");
 
+                Boolean payeeIsCreator =
+                    sender.getId() == iv.getCreatedBy() &&
+                    iv.getPayee().getId() == sender.getId();
+
+                if ( ! payeeIsCreator ) return;
+
+
                 DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
                 Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
                 StringBuilder sb = new StringBuilder("You")
-                .append(" just request a payment from ")
+                .append(" requested a payment from ")
                 .append(receiver.label())
                 .append(" for ")
                 .append(currency.format(iv.getAmount()))
