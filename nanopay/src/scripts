@@ -849,7 +849,7 @@ p({
     permissionArray.add("service.transactionDAO");
     permissionArray.add("service.twofactor");
     permissionArray.add("session.read.*");
-    permissionArray.add("stransaction.read.*");
+    permissionArray.add("transaction.read.*");
     permissionArray.add("user.read.*");
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
