@@ -8,6 +8,7 @@ import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
+import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
@@ -80,6 +81,16 @@ public class BillingInvoicesCron implements ContextAgent {
   private StringBuilder result_ = new StringBuilder();
 
   /**
+   * Error text when processing transactions
+   */
+  private StringBuilder error_ = new StringBuilder();
+
+  /**
+   * Error notification group id
+   */
+  private String errorNotificationGroupId_ = "payment-ops";
+
+  /**
    * BillingInvoice by payer/business
    */
   private Map<Long, BillingInvoice> invoiceByPayer_ = new HashMap<>();
@@ -121,6 +132,7 @@ public class BillingInvoicesCron implements ContextAgent {
     DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
     Date issueDate = new Date();
 
+    error_.setLength(0);
     transactionDAO.where(AND(
       predicate_,
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
@@ -130,6 +142,11 @@ public class BillingInvoicesCron implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         Transaction transaction = (Transaction) obj;
         Account sourceAccount = transaction.findSourceAccount(x);
+        if ( sourceAccount == null ) {
+          error_.append(" . id: ").append(transaction.getId())
+                .append(" sourceAccount is missing\n");
+          return;
+        }
         User payer = sourceAccount.findOwner(x);
         long payerId = payer.getId();
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
@@ -199,6 +216,21 @@ public class BillingInvoicesCron implements ContextAgent {
       dryRunInvoices(x);
     else
       putInvoices(x);
+
+    if ( error_.length() > 0 ) {
+      result_
+        .append("\nFailed to process transactions:\n")
+        .append(error_.toString());
+      if ( ! dryRun_ ) {
+        ((DAO) x.get("localNotificationDAO")).put(
+          new Notification.Builder(x)
+            .setEmailIsEnabled(true)
+            .setBody(result_.toString())
+            .setNotificationType("BillingInvoicesCron")
+            .setGroupId(errorNotificationGroupId_)
+            .build());
+      }
+    }
   }
 
   public void setDueIn(int dueIn) {
@@ -211,6 +243,10 @@ public class BillingInvoicesCron implements ContextAgent {
 
   public void addToExemptionPayerList(Long... payerIds) {
     Collections.addAll(exemptionPayerList_, payerIds);
+  }
+
+  public void setErrorNotificationGroupId(String groupId) {
+    errorNotificationGroupId_ = groupId;
   }
 
   // Assume domestic transaction when sourceCurrency == destinationCurrency
