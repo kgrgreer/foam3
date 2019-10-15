@@ -17,7 +17,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.payment.Institution',
-    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard'
+    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
+    'foam.u2.dialog.Popup'
   ],
 
   implements: [
@@ -55,7 +56,11 @@ foam.CLASS({
     },
     {
       name: 'SUBTITLE_VERIFING',
-      message: 'Back account added'
+      message: 'We are reviewing your bank account'
+    },
+    {
+      name: 'SUBTITLE_VERIF',
+      message: 'bank account is added, Please Verify'
     }
   ],
 
@@ -81,7 +86,7 @@ foam.CLASS({
           return subtitle;
         }
 
-        return isAccountThere ? this.SUBTITLE_VERIFING : this.SUBTITLE_EMPTY;
+        return isAccountThere ? (this.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
       }
     },
     {
@@ -119,6 +124,7 @@ foam.CLASS({
     },
 
     function initE() {
+      this.account$.sub(this.updateBankCard);
       this.getInstitution().then(() => {
         this.add(this.slot((subtitleToUse, isAccountThere) => {
           return this.E()
@@ -126,10 +132,19 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.user.address.countryId === 'US' ? this.VIEW_ACCOUNT  : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT)) : this.ADD_BANK
+              action: isAccountThere ? (this.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
             }).end();
         }));
-      })
+      });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateBankCard',
+      code: function() {
+       this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
+      }
     }
   ],
 
@@ -143,7 +158,7 @@ foam.CLASS({
     },
     {
       name: 'verifyAccount',
-      label: 'Verify',
+      label: 'Pending',
       code: function() {
         this.pushMenu('sme.main.banking');
       }
@@ -156,7 +171,17 @@ foam.CLASS({
           class: 'net.nanopay.bank.ui.BankPickCurrencyView',
           cadAvailable: true,
           usdAvailable: true
-        })
+        });
+      }
+    },
+    {
+      name: 'verifyBank',
+      label: 'verify',
+      code: function(X) {
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+          bank$: this.account$
+        }));
       }
     }
   ]
