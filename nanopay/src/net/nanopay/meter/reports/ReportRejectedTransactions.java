@@ -46,7 +46,7 @@ public class ReportRejectedTransactions extends AbstractReport {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     CSVSink sink = new CSVSink.Builder(x)
       .setOf(transactionDAO.getOf())
-      .setProps(new String[]{ "id", "created", "status", "type", "payee", "payer", "amount", "destinationAmount" })
+      .setProps(new String[]{ "id", "created", "status", "type", "destinationAccount", "sourceAccount", "amount", "destinationAmount" })
       .build();
 
     transactionDAO.where(

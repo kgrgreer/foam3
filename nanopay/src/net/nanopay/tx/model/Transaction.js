@@ -351,20 +351,7 @@ foam.CLASS({
             .add(value ? value.displayName : 'na')
           .end()
         .end();
-      },
-      javaToCSVLabel: `
-      // Format that Reports use: can be moved onto another property
-      // but if that is done the Reportxxxxxx.java props list should be adjusted
-      outputter.outputValue("Sender User Id");
-      outputter.outputValue("Sender Name");
-      outputter.outputValue("Sender Email");
-      `,
-      javaToCSV: `
-      User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
-      outputter.outputValue(sender.getId());
-      outputter.outputValue(sender.label());
-      outputter.outputValue(sender.getEmail());
-      `
+      }
     },
     {
       // FIXME: move to a ViewTransaction used on the client
@@ -387,20 +374,7 @@ foam.CLASS({
             .add(value ? value.displayName : 'na')
           .end()
         .end();
-      },
-      javaToCSVLabel: `
-      // Format that Reports use: can be moved onto another property
-      // but if that is done the Reportxxxxxx.java props list should be adjusted
-      outputter.outputValue("Receiver User Id");
-      outputter.outputValue("Receiver Name");
-      outputter.outputValue("Receiver Email");
-      `,
-      javaToCSV: `
-      User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
-      outputter.outputValue(receiver.getId());
-      outputter.outputValue(receiver.label());
-      outputter.outputValue(receiver.getEmail());
-      `
+      }
     },
 
     {
