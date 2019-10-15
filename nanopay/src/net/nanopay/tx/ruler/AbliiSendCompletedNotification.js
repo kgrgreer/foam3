@@ -45,8 +45,12 @@ foam.CLASS({
                 .append(" for ")
                 .append(currency.format(tx.getAmount()))
                 .append(" ")
-                .append(tx.getDestinationCurrency());
+                .append(tx.getSourceCurrency());
 
+                StringBuilder rb = new StringBuilder()
+                .append(" Payment has been initiated by ")
+                .append(sender.label());
+              
               if (
                 invoice.getInvoiceNumber() != null &&
                 ! SafetyUtil.isEmpty(invoice.getInvoiceNumber())
@@ -62,6 +66,7 @@ foam.CLASS({
 
               sb.append(".");
               String notificationMsg = sb.toString();
+              String receiver_notificationMsg = rb.toString();
 
               // notification to sender
               Notification senderNotification = new Notification();
@@ -78,7 +83,7 @@ foam.CLASS({
               if ( receiver.getId() != sender.getId() ) {
                 Notification receiverNotification = new Notification();
                 receiverNotification.setUserId(receiver.getId());
-                receiverNotification.setBody(notificationMsg);
+                receiverNotification.setBody(receiver_notificationMsg);
                 receiverNotification.setNotificationType("Transaction Initiated");
                 receiverNotification.setIssuedDate(invoice.getIssueDate());
                 try {

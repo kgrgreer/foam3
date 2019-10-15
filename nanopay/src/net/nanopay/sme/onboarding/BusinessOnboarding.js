@@ -396,7 +396,7 @@ foam.CLASS({
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Select...',
+            placeholder: X.data.PLACE_HOLDER,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
               return [a.name, a.label];
@@ -636,7 +636,17 @@ foam.CLASS({
     net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
-      placeholder: 'Select...',
+      view: function(args, X) {
+        return {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            dao: X.businessTypeDAO,
+            objToChoice: function(a) {
+              return [a.id, a.name];
+          }
+        };
+      },
+      
       validationPredicates: [
         {
           args: ['signingOfficer', 'businessTypeId'],
@@ -674,12 +684,13 @@ foam.CLASS({
     net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Purchase of goods produced',
             'Completion of service contracts',
@@ -692,6 +703,7 @@ foam.CLASS({
             'Other'
           ]
         }
+      }
       },
       validationPredicates: [
         {
@@ -751,9 +763,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -761,6 +774,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -780,9 +794,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(arg, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -790,6 +805,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -809,9 +825,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X){
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '1 to 99',
           '100 to 199',
@@ -819,6 +836,7 @@ foam.CLASS({
           '500 to 999',
           'Over 1000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -840,12 +858,13 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Payables for products and/or services',
             'Working capital',
@@ -854,6 +873,7 @@ foam.CLASS({
             'Government fee and taxes',
             'Other'
           ]
+        }
         }
       },
       validationPredicates: [
@@ -1154,6 +1174,10 @@ foam.CLASS({
     {
       name: 'PROHIBITED_MESSAGE',
       message: 'You do not have permission to update a submitted onboard profile.'
+    },
+    {
+      name: 'PLACE_HOLDER',
+      message: 'Please select...'
     }
   ],
 

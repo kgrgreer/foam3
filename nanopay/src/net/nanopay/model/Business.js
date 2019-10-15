@@ -52,12 +52,7 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
-      width: 50,
-      validateObj: function(businessName) {
-        if ( businessName.length > 35 ) {
-          return 'Business name cannot be greater than 35 characters.';
-        }
-      }
+      width: 50
     },
      {
       class: 'Reference',
@@ -211,7 +206,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
       class: 'Boolean',
@@ -341,6 +335,20 @@ foam.CLASS({
         a partner platform to support international payments.`,
       section: 'business'
     },
+    // Overwrite validateObj on firstName, lastName, and email so we can create
+    // businesses through the GUI.
+    {
+      name: 'firstName',
+      validateObj: function() {}
+    },
+    {
+      name: 'lastName',
+      validateObj: function() {}
+    },
+    {
+      name: 'email',
+      validateObj: function() {}
+    }
  ],
 
   javaImports: [
