@@ -231,6 +231,7 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.BillingInvoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',

@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'java.text.SimpleDateFormat',
     'java.util.*',
+    'net.nanopay.invoice.model.BillingInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -266,7 +267,15 @@ foam.CLASS({
     
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         args.put("date", date != null ? dateFormat.format(date) : "n/a");
-    
+
+        if ( invoice instanceof BillingInvoice ) {
+          BillingInvoice billingInvoice = (BillingInvoice) invoice;
+          args.put("billingPeriod", String.format("from %s to %s",
+            dateFormat.format(billingInvoice.getBillingStartDate()),
+            dateFormat.format(billingInvoice.getBillingEndDate()))
+          );
+        }
+
         return args;
       `
     },

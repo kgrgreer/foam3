@@ -21,11 +21,9 @@ foam.CLASS({
           if ( plan instanceof SummaryTransaction || plan instanceof FXSummaryTransaction) {
             ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
             ct.copyFrom(plan);
+            ct.clearLineItems();
             ct.setIsQuoted(true);
-            ct.setNext(plan.getNext());
-            Transaction [] ctArray = new Transaction [1];
-            ctArray[0] = ct;
-            plan.setNext(ctArray);
+            plan.setNext(new Transaction[] { ct });
           }
         }
         return quote;
