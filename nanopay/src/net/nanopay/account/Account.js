@@ -126,7 +126,7 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
     },

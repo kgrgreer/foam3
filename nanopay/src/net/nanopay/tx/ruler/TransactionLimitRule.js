@@ -27,7 +27,8 @@ foam.CLASS({
       name: 'ruleGroup',
       value: 'transactionLimits',
       visibility: 'RO',
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     },
     {
       class: 'Enum',
@@ -78,7 +79,8 @@ foam.CLASS({
       class: 'Map',
       name: 'currentLimits',
       visibility: 'RO',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       javaFactory: `
         return new java.util.HashMap<Object, TransactionLimitState>();
       `,

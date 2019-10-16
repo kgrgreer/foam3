@@ -16,7 +16,8 @@ foam.CLASS({
       tableCellFormatter: function(status) {
         return status.label;
       },
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       section: 'administrative'
     }
   ]
@@ -40,7 +41,8 @@ foam.CLASS({
       tableCellFormatter: function(status) {
         return status.label;
       },
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     }
   ]
 });
@@ -63,7 +65,8 @@ foam.CLASS({
       tableCellFormatter: function(status) {
         return status.label;
       },
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     }
   ]
 });

@@ -144,7 +144,6 @@ foam.CLASS({
       name: 'portalAdminCreated',
       documentation: 'Determines whether a User was created by an admin user.',
       value: false,
-      section: 'administrative'
     },
     {
       class: 'Boolean',
@@ -212,7 +211,7 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Determines whether the User is deleted.',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85,
       section: 'administrative'
