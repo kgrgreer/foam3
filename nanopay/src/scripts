@@ -803,6 +803,8 @@ p({
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
 
+    groupDAO = x.get("groupDAO");
+
     // Create new gd-ops group
     opsGroup = new Group();
     opsGroup.setId("gd-ops");
@@ -815,6 +817,18 @@ p({
       print("Payment ops group is created.");
     } else {
       groupDAO.put(opsGroup);
+    }
+
+    // Create new gd-api group
+    apiGroup = new Group();
+    apiGroup.setId("gd-api");
+    apiGroup.setParent("gd-ops");
+    apiGroup.setDescription("API Access");
+
+    if ( DRY_RUN ) {
+      print("API group is created.");
+    } else {
+      groupDAO.put(apiGroup);
     }
 
     // Add permissions to the gd-ops group
@@ -913,6 +927,16 @@ p({
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
+    }
+
+    themeDAO = x.get("themeDAO");
+    gdTheme = themeDAO.find(3);
+    gdTheme.setPriority(3);
+    gdTheme.setLogo("images/nanopay_logo_blue.png");
+    if ( DRY_RUN ) {
+      print("GD Theme is created.");
+    } else {
+      themeDAO.put(gdTheme);
     }
 
     print("Done");
