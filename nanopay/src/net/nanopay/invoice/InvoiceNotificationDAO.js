@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.exchangeable.Currency',
+    'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'static foam.mlang.MLang.*'
   ],
 
@@ -56,7 +57,7 @@ foam.CLASS({
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
 
-        String businessName = payeeUser.getOrganization();
+        String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
     
         InvoiceStatus newInvoiceStatus = invoice.getStatus();
         InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
