@@ -43,7 +43,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currencyDAO'
+    'currencyDAO',
+    'user'
   ],
 
   properties: [
@@ -392,7 +393,10 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PROCESSING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
-        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
+        if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) {
+          if (this.user.id === this.payeeId ) return this.InvoiceStatus.UNPAID;
+          else return this.InvoiceStatus.PENDING_APPROVAL;
+        }
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
@@ -428,16 +432,16 @@ foam.CLASS({
         }
       },
       tableCellFormatter: function(state, obj, rel) {
-        var label;
-        label = state.label;
+        var status = state.label;
+        var label = state.label;
         if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
           label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
         }
 
         this.start()
           .addClass('invoice-status-container')
-          .start().addClass('generic-status-circle').addClass(label.replace(/\W+/g, '-')).end()
-          .start().addClass('Invoice-Status').addClass(label.replace(/\W+/g, '-'))
+          .start().addClass('generic-status-circle').addClass(status.replace(/\W+/g, '-')).end()
+          .start().addClass('Invoice-Status').addClass(status.replace(/\W+/g, '-'))
             .add(label)
           .end()
         .end();

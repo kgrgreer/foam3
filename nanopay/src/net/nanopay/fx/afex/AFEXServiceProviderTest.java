@@ -106,7 +106,6 @@ public class AFEXServiceProviderTest
       user1.setBusinessName("Test Company");
       user1.setLanguage("en");
       user1.setBirthday(new Date());
-      user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
@@ -123,10 +122,10 @@ public class AFEXServiceProviderTest
       business = (Business) businessDAO.find(EQ(Business.EMAIL, user1.getEmail()));
       business = (Business) business.fclone();
       business.setStatus(AccountStatus.ACTIVE);
-      business.setBusinessAddress(businessAddress);
+      business.setAddress(businessAddress);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      business.setBusinessPhone(phone);
+      business.setPhone(phone);
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
@@ -145,7 +144,6 @@ public class AFEXServiceProviderTest
       business.getSigningOfficers(x).add(user1);
 
     } else {
-      user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
       user1.setEnabled(true);
       user1.setEmailVerified(true);
@@ -161,7 +159,6 @@ public class AFEXServiceProviderTest
       user2.setEmail("testafxpayee20@nanopay.net");
     }
 
-    user2.setBusinessAddress(businessAddress);
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
     localUserDAO.put(user2);

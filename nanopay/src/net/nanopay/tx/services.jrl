@@ -26,13 +26,15 @@ p({
       .setDelegate(nlifd)
       .build(); 
     atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
+      .setEnabled(false)
       .setDelegate(nlitd)
       .build();
     bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
-      .setEnabled(false).setDelegate(atpd)
+      .setEnabled(true)
+      .setDelegate(atpd)
       .build(); 
     afextpd = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
-      .setEnabled(false)
+      .setEnabled(true)
       .setDelegate(bmopd)
       .build(); 
     afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
@@ -98,13 +100,17 @@ p({
     import net.nanopay.fx.afex.AFEXTransactionDAO;
     import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
     MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.TYPE});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.PARENT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
     fm = new DAOFoldManager.Builder(x)
       .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)    
-      .build();\nfoldingDAO = new FoldManagerDAODecorator.Builder(x)
+      .build();
+    foldingDAO = new FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
       .setFm(fm)
       .build();

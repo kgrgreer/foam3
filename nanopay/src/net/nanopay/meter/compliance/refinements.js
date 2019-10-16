@@ -17,7 +17,8 @@ foam.CLASS({
         return status.label;
       },
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      section: 'administrative'
     }
   ]
 });

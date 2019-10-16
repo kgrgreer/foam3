@@ -9,6 +9,11 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
+  imports: [
+    'branchDAO',
+    'institutionDAO'
+  ],
+
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -61,8 +66,10 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
@@ -72,6 +79,52 @@ foam.CLASS({
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';
         }
+      }
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((institution, institutionDAO) => {
+            return institutionDAO.find(institution).then((result) => {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                  .end()
+                  .start('span').add(`${result.name} |`).end();
+              }
+            });
+          }))
+        .end()
+        .start()
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
+              }
+            });
+          }))
+        .end()
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
+        .end();
       }
     },
     {
@@ -225,7 +278,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
       class: 'FObjectProperty',
@@ -235,7 +287,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     }
   ],
   methods: [

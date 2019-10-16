@@ -33,11 +33,12 @@ foam.CLASS({
             }
             Business business = (Business) obj.fclone();
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-            Address businessAddress = business.getBusinessAddress();
+            Address businessAddress = business.getAddress();
             if ( business.getOnboarded() && null != businessAddress 
                 && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-              Group group = (Group) localGroupDAO.find(business.getGroup());
+              String businessGroup = business.getGroup();
+              Group group = (Group) localGroupDAO.find(businessGroup.substring(0, businessGroup.length() - 5).concat("employee"));
               if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
                 try {
                   group.getPermissions(getX()).add(fxProvisionPermission);  

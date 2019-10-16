@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.accounts',
   name: 'DashboardAccounts',
@@ -21,7 +15,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -37,7 +31,11 @@ foam.CLASS({
     }
 
     ^card-container {
-      padding: 34px 16px;
+      padding: 34px 0;
+    }
+
+    ^balance-card {
+      padding: 0 16px;
     }
 
     ^balance-note {
@@ -59,15 +57,11 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
     'foam.mlang.sink.GroupBy',
     'foam.u2.borders.CardBorder',
     'net.nanopay.account.Account',
     'foam.comics.v2.DAOBrowserView',
     'foam.comics.v2.DAOControllerConfig'
-  ],
-  exports: [
-    'controllerMode'
   ],
 
   messages: [
@@ -87,19 +81,13 @@ foam.CLASS({
       name: 'currency'
     },
     {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create({ 
-          defaultColumns: ["name","balance","homeBalance","type","owner"],
-          dao: this.accountDAO,
+        return this.DAOControllerConfig.create({
+          defaultColumns: ["name","balance","homeBalance"],
+          dao: this.accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
         });
       }
     },
@@ -138,7 +126,7 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(self.TRUE),
+                    data: accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
                     config
                   })
                     .addClass(this.myClass('accounts-table'))

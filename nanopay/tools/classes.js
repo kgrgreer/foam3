@@ -36,6 +36,8 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
+  'net.nanopay.tx.BulkTransaction',
+  'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -332,6 +334,7 @@ var classes = [
   'net.nanopay.tx.LineItemFee',
   'net.nanopay.tx.CompliancePlanDAO',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
@@ -364,6 +367,13 @@ var classes = [
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
   'net.nanopay.tx.ruler.ChangePropertyAction',
+  'net.nanopay.tx.ruler.SendNotification',
+  'net.nanopay.tx.ruler.PropertyEQValue',
+  'net.nanopay.tx.ruler.PropertyNEQValue',
+  'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
+  'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.tx.ruler.AddStatusHistoryAction',
+  'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -740,6 +750,7 @@ var classes = [
   'net.nanopay.business.JoinBusinessTokenService',
   'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
+  'net.nanopay.business.SetBusinessNameDAO',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -774,6 +785,11 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+
+  // goldman ingestion
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [

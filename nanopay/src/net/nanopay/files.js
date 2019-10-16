@@ -10,6 +10,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/test/BulkTransactionTest' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
@@ -337,6 +338,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
   { name: 'net/nanopay/tx/ruler/ChangePropertyAction' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
+  { name: 'net/nanopay/tx/ruler/SendNotification' },
+  { name: 'net/nanopay/tx/ruler/PropertyEQValue' },
+  { name: 'net/nanopay/tx/ruler/PropertyNEQValue' },
+  { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
+  { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
+  { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -362,6 +369,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
   { name: 'net/nanopay/tx/InvoicedFeeLineItem' },
+  { name: 'net/nanopay/tx/HistoricStatus' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -1037,6 +1045,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessNotOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceNotPassed' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsInstancePredicate' },
   { name: 'net/nanopay/meter/compliance/ruler/AddDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
@@ -1186,4 +1195,8 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
+  // goldman ingestion
+  { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
+  { name: 'net/nanopay/tx/gs/GsRowToTx'},
+  { name: 'net/nanopay/script/CsvUploadScript'},
 ]);

@@ -12,6 +12,7 @@ import net.nanopay.kotak.model.paymentRequest.Payment;
 import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
+import net.nanopay.model.Business;
 import net.nanopay.tx.KotakCOTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -63,7 +64,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           long remitterId = kotakCOTxn.getPayerId();
           requestInstrument.setRemitterId(String.valueOf(remitterId));
           User remitter = (User) userDAO.find(EQ(User.ID, remitterId));
-          if ( remitter != null ) requestInstrument.setRemitterCountry(remitter.getCountryOfBusinessRegistration());
+          if ( remitter != null ) requestInstrument.setRemitterCountry(((Business)remitter).getCountryOfBusinessRegistration());
           requestInstrument.setBeneAcctNo(String.valueOf(kotakCOTxn.getDestinationAccount()));
           requestInstrument.setBeneName(payee.getFirstName() + " " + payee.getLastName());
           requestInstrument.setBeneEmail(payee.getEmail());
