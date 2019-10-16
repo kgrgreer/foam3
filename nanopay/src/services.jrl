@@ -283,7 +283,7 @@ p({
 
     // Note: can't use EasyDAO createdAware & deletedAware due to incorrect
     //       chaining order.
-    da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
+    da = new foam.nanos.auth.DeletedAwareDAO(x, "user", (foam.dao.DAO) bu);
     aect = new net.nanopay.contacts.AddExternalContactToken(x, da);
     ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(aect).build();
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
