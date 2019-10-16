@@ -258,6 +258,8 @@ p({
     .setSeqNo(true)
     .setSeqStartingValue(1000)
     .setOf(foam.nanos.auth.User.getOwnClassInfo())
+    .setDeletedAware(true)
+    .setCreatedAware(true)
     .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
     .setJournalName("users")
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -283,10 +285,10 @@ p({
 
     // Note: can't use EasyDAO createdAware & deletedAware due to incorrect
     //       chaining order.
-    da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
-    aect = new net.nanopay.contacts.AddExternalContactToken(x, da);
-    ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(aect).build();
-    r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
+    // da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
+    aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
+    // ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(aect).build();
+    r = new foam.nanos.ruler.RulerDAO(x, aect, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
