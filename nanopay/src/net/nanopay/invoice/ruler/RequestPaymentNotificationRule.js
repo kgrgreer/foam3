@@ -2,7 +2,7 @@ foam.CLASS({
     package: 'net.nanopay.invoice.ruler',
     name: 'RequestPaymentNotificationRule',
 
-    documentation: 'An action that sends a notification to both user and payer of request payment invoice',
+    documentation: `A rule that sends a notification to both payee and payer of a request payment invoice.`,
 
     implements: ['foam.nanos.ruler.RuleAction'],
 
