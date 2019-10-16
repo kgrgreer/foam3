@@ -36,7 +36,7 @@ foam.CLASS({
                 PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
                 User user = (User) x.get("user");
 
-                User payee = iv.getPayee()
+                PublicUserInfo payee = (PublicUserInfo) iv.getPayee();
 
                 Boolean payeeIsCreator =
                     user.getId() == iv.getCreatedBy() &&
