@@ -1,0 +1,18 @@
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Request payment notification rule",
+    "priority":100,
+    "ruleGroup":"InvoiceNotification",
+    "documentation":"Sends notification when request payment is made.",
+    "daoKey":"invoiceDAO",
+    "operation":1,
+    "after":true,
+    "predicate": {
+      "class": "net.nanopay.invoice.ruler.IsCompletePayment"
+    },
+    "action":{
+      "class":"net.nanopay.invoice.ruler.CompletePaymentNotification"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
