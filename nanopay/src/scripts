@@ -803,18 +803,21 @@ p({
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
 
-    // Create new gd-opt group
-    optGroup = new Group();
-    optGroup.setId("gd-ops");
-    optGroup.setParent("basicUser");
-    optGroup.setDefaultMenu("gd-operation");
-    optGroup.setRootMenu("gd-operation");
-    optGroup.setDescription("Grain Discovery Operations");
+    // Create new gd-ops group
+    opsGroup = new Group();
+    opsGroup.setId("gd-ops");
+    opsGroup.setParent("basicUser");
+    opsGroup.setDefaultMenu("gd-operation");
+    opsGroup.setRootMenu("gd-operation");
+    opsGroup.setDescription("Grain Discovery Operations");
+    
+    if ( DRY_RUN ) {
+      print("Payment ops group is created.");
+    } else {
+      groupDAO.put(opsGroup);
+    }
 
-    groupDAO = x.get("groupDAO");
-    groupDAO.put(optGroup);
-
-    // Add permissions to the gd-opt group
+    // Add permissions to the gd-ops group
     ArrayList permissionArray = new ArrayList();
     permissionArray.add("AccountWithDetailModel.read.AccountNumber");
     permissionArray.add("AccountWithDetailModel.read.Holder");
@@ -857,11 +860,15 @@ p({
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
 
-    for (int i =0; i<permissionArray.size(); i++) {
+    for ( int i = 0; i < permissionArray.size(); i++ ) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
       junction.setSourceId("gd-ops");
       junction.setTargetId(permissionArray.get(i));
-      groupPermissionJunctionDAO.put(junction);
+      if ( DRY_RUN ) {
+        print(permissionArray.get(i) + " permissions are added in gd-ops group.");
+      } else {
+        groupPermissionJunctionDAO.put(junction);
+      }
     }
 
     // Remove existing menu permissions for API users
@@ -874,15 +881,23 @@ p({
       GroupPermissionJunction junction = new GroupPermissionJunction();
       junction.setSourceId("sme");
       junction.setTargetId(smeRemovePermissionArray.get(i));
-      groupPermissionJunctionDAO.remove(junction);
+      if ( DRY_RUN ) {
+        print("'menu.read.sme.accountProfile.*', 'menu.read.sme.main.*' and 'menu.read.sme.quickAction.*' are removed from sme group.");
+      } else {
+        groupPermissionJunctionDAO.remove(junction);
+      }
     }
 
-    // Add new menu permissions for API users
+    // Add new menu permission (switch-business) for API users
     Permission switchBusinessPermission = new Permission();
     switchBusinessPermission.setId("menu.read.sme.accountProfile.switch-business");
 
     permissionDAO = x.get("permissionDAO");
-    permissionDAO.put(switchBusinessPermission);
+      if ( DRY_RUN ) {
+        print("'menu.read.sme.accountProfile.switch-business' permission is created.");
+      } else {
+        permissionDAO.put(switchBusinessPermission);
+      }
 
     ArrayList smeAddPermissionArray = new ArrayList();
     smeAddPermissionArray.add("menu.read.sme.main.banking");
@@ -893,10 +908,14 @@ p({
       GroupPermissionJunction junction = new GroupPermissionJunction();
       junction.setSourceId("sme");
       junction.setTargetId(smeAddPermissionArray.get(i));
-      groupPermissionJunctionDAO.put(junction);
+      if ( DRY_RUN ) {
+        print("'menu.read.sme.main.banking', 'menu.read.sme.main.dashboard' and 'menu.read.sme.accountProfile.switch-business' are added in sme group.");
+      } else {
+        groupPermissionJunctionDAO.put(junction);
+      }
     }
 
-    print("Done")
+    print("Done");
   """,
   "output": "",
   "notes": "This script is for our clients who use our API (Grain Discovery). Please do not run this script in Ablii/Connect staging and production enviroment."
