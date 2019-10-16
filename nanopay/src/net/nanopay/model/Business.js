@@ -501,10 +501,10 @@ foam.CLASS({
         return '';
       },
       javaCode: `
-      if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
-      if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
-      if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
-      return "";
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        return "";
       `
     }
   ],
