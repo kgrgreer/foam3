@@ -92,7 +92,7 @@ foam.CLASS({
                 prop: this.Address.COUNTRY_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Select...',
+                  placeholder: 'Please select...',
                   dao: this.customCountryDAO,
                   objToChoice: function(a) {
                     return [a.id, a.name];
@@ -108,7 +108,7 @@ foam.CLASS({
                 prop: this.Address.REGION_ID.clone().copyFrom({
                   view: {
                     class: 'foam.u2.view.ChoiceView',
-                    placeholder: 'Select...',
+                    placeholder: 'Please select...',
                     objToChoice: function(region) {
                       return [region.id, region.name];
                     },

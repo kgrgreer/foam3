@@ -65,7 +65,7 @@ foam.CLASS({
               ],
               search: true,
               searchPlaceholder: 'Search...',
-              choosePlaceholder: 'Select...'
+              choosePlaceholder: 'Please select...'
             })
 
           .end()
@@ -85,7 +85,7 @@ foam.CLASS({
                   ],
                   search: true,
                   searchPlaceholder: 'Search...',
-                  choosePlaceholder: 'Select...'
+                  choosePlaceholder: 'Please select...'
                 });
             }))
           .end()
