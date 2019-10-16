@@ -142,13 +142,7 @@ foam.CLASS({
         test(accountDAO.find_(user1Context, account1.getId()) != null, "A user can find an account that they own.");
 
         // Try to find user 2's account as user 1.
-        boolean threw = false;
-        try {
-          accountDAO.find_(user1Context, account2.getId());
-        } catch (AuthorizationException e) {
-          threw = true;
-        }
-        test(threw, "A user cannot find an account that they do not own.");
+        test(accountDAO.inX(user1Context).find(account2.getId()) == null, "A user cannot find an account that they do not own.");
       } catch (Throwable t) {
         test(false, "Tests for 'find' failed due to an unexpected exception.");
         t.printStackTrace();
