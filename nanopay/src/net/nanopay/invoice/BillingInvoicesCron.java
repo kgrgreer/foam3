@@ -159,7 +159,9 @@ public class BillingInvoicesCron implements ContextAgent {
         }
 
         // Prevent charging fee on billing invoice transaction
-        if ( transaction.findInvoiceId(x) instanceof BillingInvoice ) {
+        if ( transaction.findInvoiceId(x) instanceof BillingInvoice
+          || transaction.getDestinationAccount() == destinationAccount_.getId()
+        ) {
           return;
         }
 
