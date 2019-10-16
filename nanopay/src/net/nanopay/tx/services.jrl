@@ -109,7 +109,8 @@ p({
     fm = new DAOFoldManager.Builder(x)
       .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)    
-      .build();\nfoldingDAO = new FoldManagerDAODecorator.Builder(x)
+      .build();
+    foldingDAO = new FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
       .setFm(fm)
       .build();

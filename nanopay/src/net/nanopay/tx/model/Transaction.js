@@ -4,6 +4,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'foam.nanos.analytics.Foldable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -168,6 +169,13 @@ foam.CLASS({
       javaFactory: `
     return getType();
       `,
+    },
+    {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
+      hidden: true
     },
     {
       name: 'type',
@@ -593,6 +601,14 @@ foam.CLASS({
   ],
 
   methods: [
+      {
+        name: 'doFolds',
+        javaCode: `
+          for ( Balance b : getBalances() ) {
+            fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+          }
+        `
+      },
     {
       name: 'limitedClone',
       args: [

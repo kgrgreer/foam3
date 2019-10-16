@@ -750,6 +750,7 @@ var classes = [
   'net.nanopay.business.JoinBusinessTokenService',
   'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
+  'net.nanopay.business.SetBusinessNameDAO',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

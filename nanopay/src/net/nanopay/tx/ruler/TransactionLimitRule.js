@@ -15,7 +15,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'name',
+      name: 'description',
+      transient: true,
       visibility: 'RO',
       expression: function(limit, send, period) {
         return `${limit} ${send ? 'sending' : 'receiving'} ${period.label} transaction limit`;

@@ -244,7 +244,9 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'transactionLimits',
-      of: 'net.nanopay.tx.model.TransactionLimit'
+      of: 'net.nanopay.tx.model.TransactionLimit',
+      createMode: 'HIDDEN',
+      section: 'administrative'
     }
   ]
 });
@@ -280,7 +282,15 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
   inverseName: 'partnered',
-  junctionDAOKey: 'partnerJunctionDAO'
+  junctionDAOKey: 'partnerJunctionDAO',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  },
+  targetProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  }
 });
 
 foam.CLASS({
@@ -593,6 +603,10 @@ foam.RELATIONSHIP({
   cardinality: '*:*',
   forwardName: 'signingOfficers',
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'business'
+  },
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });

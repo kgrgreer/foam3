@@ -183,8 +183,9 @@ public class TransactionDAO
       t.validate();
       Balance balance = finalBalanceArr[i];
       t.execute(balance);
+      finalBalanceArr[i] = (Balance) balance.fclone();
     }
-
+    txn.setBalances(finalBalanceArr);
     return getDelegate().put_(x, txn);
   }
 
