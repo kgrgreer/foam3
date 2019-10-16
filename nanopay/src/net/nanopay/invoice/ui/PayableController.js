@@ -180,7 +180,6 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
               code: function() {
-                debugger;
                 self.ctrl.add(self.Popup.create().tag({
                   class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
                   invoice: this
