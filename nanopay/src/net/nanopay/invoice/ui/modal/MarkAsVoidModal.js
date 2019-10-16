@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'MarkAsVoidModal',
   extends: 'foam.u2.View',
 
-  documentation: 'odal for marking invoice as void.',
+  documentation: 'Modal for marking invoice as void.',
 
   imports: [
     'invoiceDAO',
