@@ -9,10 +9,10 @@ foam.CLASS({
     javaImports: [
       'foam.core.FObject',
       'foam.core.X',
+      'foam.core.ContextAgent',
       'foam.dao.DAO',
       'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
-      'foam.core.ContextAgent',
       'foam.nanos.notification.Notification',
       'foam.util.SafetyUtil',
       'net.nanopay.auth.PublicUserInfo',
