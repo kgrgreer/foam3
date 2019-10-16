@@ -2,7 +2,7 @@ foam.CLASS({
     package: 'net.nanopay.invoice.ruler',
     name: 'RequestPaymentNotificationRule',
 
-    documentation: 'An action that sends a notification to both sender and receiver of request payment invoice',
+    documentation: 'An action that sends a notification to both user and payer of request payment invoice',
 
     implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -15,9 +15,9 @@ foam.CLASS({
       'foam.core.ContextAgent',
       'foam.nanos.notification.Notification',
       'foam.util.SafetyUtil',
+      'net.nanopay.auth.PublicUserInfo',
       'net.nanopay.invoice.model.Invoice',
       'net.nanopay.model.Currency',
-      'net.nanopay.auth.PublicUserInfo',
       'static foam.mlang.MLang.*',
     ],
 
@@ -33,30 +33,29 @@ foam.CLASS({
                 DAO notificationDAO = (DAO) x.get("localNotificationDAO");
                 Logger logger = (Logger) x.get("logger");
 
+                PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
+                User user = (User) x.get("user");
 
-                PublicUserInfo receiver = (PublicUserInfo) iv.getPayer();
-                User sender = (User) x.get("user");
+                User payee = iv.getPayee()
 
                 Boolean payeeIsCreator =
-                    sender.getId() == iv.getCreatedBy() &&
-                    iv.getPayee().getId() == sender.getId();
+                    user.getId() == iv.getCreatedBy() &&
+                    payee.getId() == user.getId();
 
                 if ( ! payeeIsCreator ) return;
-
 
                 DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
                 Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
-                StringBuilder sb = new StringBuilder("You")
-                .append(" requested a payment from ")
-                .append(receiver.label())
+                StringBuilder sb = new StringBuilder("You requested a payment from ")
+                .append(payer.label())
                 .append(" for ")
                 .append(currency.format(iv.getAmount()))
                 .append(" ")
                 .append(iv.getSourceCurrency());
 
-                StringBuilder rb = new StringBuilder(sender.label())
-                .append(" just request a payment ")
+                StringBuilder rb = new StringBuilder(user.label())
+                .append(" just requested a payment ")
                 .append(" for ")
                 .append(currency.format(iv.getAmount()))
                 .append(" ")
@@ -65,28 +64,28 @@ foam.CLASS({
                 sb.append(".");
                 rb.append(".");
                 String notificationMsg = sb.toString();
-                String receiver_notificationMsg = rb.toString();
+                String payer_notificationMsg = rb.toString();
                 
-                // notification to sender
-              Notification senderNotification = new Notification();
-              senderNotification.setUserId(sender.getId());
-              senderNotification.setBody(notificationMsg);
-              senderNotification.setNotificationType("Transaction Initiated");
-              senderNotification.setIssuedDate(iv.getIssueDate());
-              try {
-                notificationDAO.put_(x, senderNotification);
-              }
-              catch (Exception E) { logger.error("Failed to put notification. "+E); };
-
-              // notification to receiver
-              if ( receiver.getId() != sender.getId() ) {
-                Notification receiverNotification = new Notification();
-                receiverNotification.setUserId(receiver.getId());
-                receiverNotification.setBody(receiver_notificationMsg);
-                receiverNotification.setNotificationType("Transaction Initiated");
-                receiverNotification.setIssuedDate(iv.getIssueDate());
+                // notification to user
+                Notification userNotification = new Notification();
+                userNotification.setUserId(user.getId());
+                userNotification.setBody(notificationMsg);
+                userNotification.setNotificationType("Transaction Initiated");
+                userNotification.setIssuedDate(iv.getIssueDate());
                 try {
-                  notificationDAO.put_(x, receiverNotification);
+                  notificationDAO.put_(x, userNotification);
+                }
+                catch (Exception E) { logger.error("Failed to put notification. "+E); };
+
+                // notification to payer
+                if ( payer.getId() != user.getId() ) {
+                Notification payerNotification = new Notification();
+                payerNotification.setUserId(payer.getId());
+                payerNotification.setBody(payer_notificationMsg);
+                payerNotification.setNotificationType("Transaction Initiated");
+                payerNotification.setIssuedDate(iv.getIssueDate());
+                try {
+                  notificationDAO.put_(x, payerNotification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
               }
