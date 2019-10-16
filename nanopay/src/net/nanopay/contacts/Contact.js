@@ -15,7 +15,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
@@ -384,6 +383,28 @@ foam.CLASS({
         ) {
           throw new AuthorizationException();
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
+        if ( this.lastName ) return this.lastName;
+        if ( this.firstName ) return this.firstName;
+        return '';
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) ) return this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName();
+        return "";
       `
     }
   ]
