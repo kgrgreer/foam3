@@ -2,6 +2,7 @@ package net.nanopay.meter.reports;
 
 import foam.core.X;
 import foam.dao.ArraySink;
+import foam.dao.CSVSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
@@ -12,35 +13,6 @@ import net.nanopay.tx.model.TransactionStatus;
 import java.util.*;
 
 public class ReportRejectedTransactions extends AbstractReport {
-
-  final static int NUM_ELEMENTS = 18;
-
-  private void appendTransaction(X x, StringBuilder builder, Transaction transaction) {
-    Account sourceAccount = transaction.findSourceAccount(x);
-    User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
-    Account destinationAccount = transaction.findDestinationAccount(x);
-    User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
-    builder.append(buildCSVLine(NUM_ELEMENTS,
-      transaction.getId(),
-      nullCheckToString(transaction.getCreated(), Object::toString),
-      "N/A",  // Settlement status
-      nullCheckToString(transaction.getStatus(), Object::toString),
-      transaction.getType(),
-      "N/A",  // Dispute status
-      nullCheckToString(sender, (s) -> Long.toString(s.getId())),
-      nullCheckToString(sender, User::getEmail),
-      nullCheckToString(sender, User::label),
-      nullCheckToString(receiver, (r) -> Long.toString(r.getId())),
-      nullCheckToString(receiver, User::getEmail),
-      nullCheckToString(receiver, User::label),
-      Long.toString(transaction.getAmount()),
-      Long.toString(transaction.getDestinationAmount()),
-      "N/A",  // Location name
-      "N/A",  // Location id
-      "N/A",  // Gateway
-      "N/A"   // Transaction from gateway
-    ));
-  }
 
   // Create the transaction summary report
   public String createReport(X x, Date startDate, Date endDate) {
@@ -72,8 +44,12 @@ public class ReportRejectedTransactions extends AbstractReport {
 
     // retrieve the daos
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    CSVSink sink = new CSVSink.Builder(x)
+      .setOf(transactionDAO.getOf())
+      .setProps(new String[]{ "id", "created", "status", "type", "destinationAccount", "sourceAccount", "amount", "destinationAmount" })
+      .build();
 
-    List transactions = ((ArraySink) transactionDAO.where(
+    transactionDAO.where(
       MLang.AND(
         MLang.OR(
           MLang.GTE(Transaction.CREATED, startDate),
@@ -89,36 +65,9 @@ public class ReportRejectedTransactions extends AbstractReport {
           MLang.EQ(Transaction.STATUS, TransactionStatus.FAILED)
         )
       )
-    ).select(new ArraySink())).getArray();
+    ).select(sink);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append(buildCSVLine(NUM_ELEMENTS,
-      "Transaction ID",
-      "Transaction Request Date",
-      "Settlement Status",
-      "Transaction Status",
-      "Transaction Type",
-      "Rejection Reason",
-      "Sender User ID",
-      "Sender Name",
-      "Sender Email",
-      "Receiver User ID",
-      "Receiver Name",
-      "Receiver Email",
-      "Amount Attempted",
-      "Amount Settled",
-      "Location Name",
-      "Location ID",
-      "Gateway Name",
-      "Transaction ID from gateway"
-    ));
-
-    for ( Object obj : transactions ) {
-      Transaction transaction = (Transaction) obj;
-      appendTransaction(x, sb, transaction);
-    }
-
-    return sb.toString();
+    return sink.getCsv();
   }
 
 }
