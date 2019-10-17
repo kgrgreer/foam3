@@ -794,7 +794,7 @@ p({
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "Set up gd-ops group",
+  "id": "Set up groups and permissions for API (GD)",
   "code": """
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
@@ -802,6 +802,13 @@ p({
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
+
+    if ( DRY_RUN ) {
+      print("--------------------");
+      print("In DRY_RUN mode");
+      print("--------------------");
+    }
+
 
     groupDAO = x.get("groupDAO");
 
@@ -942,5 +949,5 @@ p({
     print("Done");
   """,
   "output": "",
-  "notes": "This script is for our clients who use our API (Grain Discovery). Please do not run this script in Ablii/Connect staging and production enviroment."
+  "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
 })
