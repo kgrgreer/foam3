@@ -276,7 +276,8 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
       visibility: 'RO',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
+      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
+      javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
      {
       name: 'invoiceNumber',
