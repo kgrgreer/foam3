@@ -14,9 +14,7 @@ import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.BillingInvoicesCron;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
-import net.nanopay.model.Business;
 import net.nanopay.tx.InvoicedFeeLineItem;
-import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -27,13 +25,13 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class BillingInvoicesCronTest extends Test {
-  private Business owner, payer, payee;
+  private User owner, payer, payee;
   private Account ownerAccount, payerAccount, payeeAccount, payeeUSDAccount;
-  private DAO localAccountDAO, localBusinessDAO, localTransactionDAO, ascendantFXUserDAO;
+  private DAO localAccountDAO, localUserDAO, localTransactionDAO, ascendantFXUserDAO;
 
   public void runTest(X x) {
     x = setUpDAOs(x);
-    setUpBusinesses(x);
+    setUpUsers(x);
     setUpAccounts(x);
 
     resetTransactions(x);
@@ -59,17 +57,17 @@ public class BillingInvoicesCronTest extends Test {
     x = x.put("localTransactionDAO", new GUIDDAO(new MDAO(Transaction.getOwnClassInfo())));
     x = x.put("ascendantFXUserDAO", new SequenceNumberDAO(new MDAO(AscendantFXUser.getOwnClassInfo())));
 
+    localUserDAO        = (DAO) x.get("localUserDAO");
     localAccountDAO     = (DAO) x.get("localAccountDAO");
-    localBusinessDAO    = (DAO) x.get("localBusinessDAO");
     localTransactionDAO = (DAO) x.get("localTransactionDAO");
     ascendantFXUserDAO  = (DAO) x.get("ascendantFXUserDAO");
     return x;
   }
 
-  private void setUpBusinesses(X x) {
-    owner = createBusiness(x, "Fee owner");
-    payer = createBusiness(x, "Payer business");
-    payee = createBusiness(x, "Payee business");
+  private void setUpUsers(X x) {
+    owner = createUser(x, "Fee owner");
+    payer = createUser(x, "Payer business");
+    payee = createUser(x, "Payee business");
   }
 
   private void setUpAccounts(X x) {
@@ -300,22 +298,22 @@ public class BillingInvoicesCronTest extends Test {
 
   private void updatePayerCreated(X x, LocalDate localDate) {
     payer.setCreated(getDate(localDate));
-    payer = (Business) localBusinessDAO.put(payer).fclone();
+    payer = (User) localUserDAO.put(payer).fclone();
   }
 
-  private Business createBusiness(X x, String businessName) {
-    return (Business) localBusinessDAO.put(
-      new Business.Builder(x)
-        .setBusinessName(businessName)
+  private User createUser(X x, String name) {
+    return (User) localUserDAO.put(
+      new User.Builder(x)
+        .setFirstName(name)
         .setAddress(new Address())
         .build()
     ).fclone();
   }
 
-  private Account createAccount(X x, Business business, String denomination) {
+  private Account createAccount(X x, User user, String denomination) {
     return (Account) localAccountDAO.put(
       new DigitalAccount.Builder(x)
-        .setOwner(business.getId())
+        .setOwner(user.getId())
         .setDenomination(denomination)
         .build()
     ).fclone();
