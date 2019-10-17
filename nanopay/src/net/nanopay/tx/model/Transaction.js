@@ -4,6 +4,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'foam.nanos.analytics.Foldable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -47,6 +48,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.HistoricStatus',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
@@ -56,6 +58,7 @@ foam.CLASS({
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
    'net.nanopay.tx.model.TransactionStatus',
+   'net.nanopay.tx.HistoricStatus'
   ],
 
   constants: [
@@ -174,6 +177,13 @@ foam.CLASS({
       `,
     },
     {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
+      hidden: true
+    },
+    {
       name: 'type',
       class: 'String',
       visibility: 'RO',
@@ -223,8 +233,12 @@ foam.CLASS({
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
+      storageTransient: true,
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
+      expression: function(statusHistory) {
+        return statusHistory[0].timeStamp;
+      },
       tableWidth: 172
     },
     {
@@ -291,7 +305,8 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
         // Outputting two columns: "this transaction status" and "Returns childrens status"
@@ -306,7 +321,7 @@ foam.CLASS({
       tableWidth: 130,
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
-      }
+      },
     },
     {
       name: 'statusChoices',
@@ -317,12 +332,13 @@ foam.CLASS({
       documentation: 'Returns available statuses for each transaction depending on current status'
     },
     {
+    // can this also be storage transient and just take the first entry in the historicStatus array?
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
       javaFactory: 'return TransactionStatus.COMPLETED;',
-      hidden: true
+      hidden: true,
     },
     {
       class: 'String',
@@ -560,6 +576,17 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'HIDDEN'
     },
+    {
+      name: 'statusHistory',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.HistoricStatus',
+      javaFactory: `
+        net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
+        h[0] = new net.nanopay.tx.HistoricStatus();
+        h[0].setStatus(getStatus());
+        h[0].setTimeStamp(new Date());
+        return h;`
+    },
     // schedule TODO: future
     {
       // TODO: Why do we have this and scheduledTime?
@@ -576,8 +603,12 @@ foam.CLASS({
       name: 'lastStatusChange',
       class: 'DateTime',
       section: 'basicInfo',
-      documentation: `The date that a transaction changed to its current status`,
-      visibility: 'RO'
+      documentation: 'The date that a transaction changed to its current status',
+      visibility: 'RO',
+      storageTransient: true,
+      expression: function (statusHistory) {
+        return statusHistory[statusHistory.length-1].timeStamp;
+      }
     },
     {
       name: 'lineItems',
@@ -612,12 +643,20 @@ foam.CLASS({
       class: 'Boolean',
       name: 'deleted',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
   ],
 
   methods: [
+      {
+        name: 'doFolds',
+        javaCode: `
+          for ( Balance b : getBalances() ) {
+            fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+          }
+        `
+      },
     {
       name: 'limitedClone',
       args: [

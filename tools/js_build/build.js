@@ -30,6 +30,7 @@ require(npRoot + 'nanopay/src/net/nanopay/files.js');
 require(npRoot + 'nanopay/src/net/nanopay/iso20022/files.js');
 require(npRoot + 'nanopay/src/net/nanopay/iso8583/files.js');
 require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
+require(npRoot + 'nanopay/src/net/nanopay/merchant/merchant.js');
 global.FOAM_FLAGS.src = old;
 global.FOAM_ROOT = oldRoot;
 

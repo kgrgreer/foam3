@@ -43,19 +43,22 @@ foam.CLASS({
       name: 'invited',
       value: false,
       documentation: `Determines whether the User was invited to the platform by
-        an invitation email.`
+        an invitation email.`,
+      section: 'administrative'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'invitedBy',
-      documentation: 'The ID of the person who invited the User to the platform.'
+      documentation: 'The ID of the person who invited the User to the platform.',
+      section: 'administrative'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
-      documentation: `Tracks the previous status of the User.`
+      documentation: `Tracks the previous status of the User.`,
+      section: 'administrative'
     },
     {
       class: 'Boolean',
@@ -65,7 +68,8 @@ foam.CLASS({
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
-      hidden: true
+      hidden: true,
+      section: 'administrative'
     },
     {
       class: 'foam.core.Enum',
@@ -98,14 +102,16 @@ foam.CLASS({
             })
           .end();
         }
-      }
+      },
+      section: 'administrative'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
       documentation: `Returns the response from the User to a questionnaire from the
-        Questionnaire model.`
+        Questionnaire model.`,
+      section: 'administrative'
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -116,19 +122,22 @@ foam.CLASS({
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.data.additionalDocuments$
         };
-      }
+      },
+      section: 'business'
     },
     {
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.'
+      documentation: 'The job title of the individual person, or real user.',
+      section: 'business'
     },
     {
       class: 'Boolean',
       name: 'welcomeEmailSent',
       documentation: 'Determines whether a welcome email has been sent to the User.',
       value: false,
+      section: 'administrative'
     },
     {
       class: 'Boolean',
@@ -141,13 +150,15 @@ foam.CLASS({
       name: 'createdPwd',
       value: false,
       documentation: `Determines whether the User is using its own unique password or one
-        that was system-generated.`
+        that was system-generated.`,
+      section: 'administrative'
     },
     {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Defines the number of attempts to invite the user.',
+      section: 'administrative'
     },
     {
       class: 'String',
@@ -155,14 +166,15 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
-
+      section: 'business'
     },
     {
       class: 'Boolean',
       name: 'thirdParty',
       documentation: `Determines whether the User is taking instructions from and/or acting
         on behalf of a 3rd party.
-      `
+      `,
+      section: 'business'
     },
     {
       class: 'FObjectProperty',
@@ -170,7 +182,8 @@ foam.CLASS({
       of: 'net.nanopay.model.PersonalIdentification',
       documentation: `A placeholder for the photo identification image, such as a
         passport, of the individual person, or real user.
-      `
+      `,
+      section: 'personal'
     },
     {
       class: 'Boolean',
@@ -178,7 +191,8 @@ foam.CLASS({
       documentation: `Determines whether the user is a domestic or foreign _Politically
         Exposed Person (PEP), Head of an International Organization (HIO)_, or
         related to any such person.
-      `
+      `,
+      section: 'business'
     },
     {
       class: 'String',
@@ -189,30 +203,18 @@ foam.CLASS({
         is embedded in the email link.  This token includes a property that allows the
         backend to verify the email of the User and associate the User with the Contact
         that was created when inviting the User.
-      `
-    },
-    {
-      name: 'type',
-      class: 'String',
-      visibility: 'RO',
-      storageTransient: true,
-      documentation: `The type of the User.`,
-      tableWidth: 75,
-      getter: function() {
-         return this.cls_.name;
-      },
-      javaGetter: `
-    return getClass().getSimpleName();
-      `
+      `,
+      section: 'administrative'
     },
     {
       class: 'Boolean',
       name: 'deleted',
       documentation: 'Determines whether the User is deleted.',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'RO',
-      tableWidth: 85
+      tableWidth: 85,
+      section: 'administrative'
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -225,7 +227,7 @@ foam.CLASS({
       },
       section: 'personal'
     }
- ],
+  ],
 
   methods: [
     {
@@ -266,20 +268,6 @@ foam.CLASS({
         } else if ( ! isValidEmail ) {
           throw new IllegalStateException("Invalid email address.");
         }
-      `
-    },
-    {
-      name: 'label',
-      type: 'String',
-      code: function label() {
-        return ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName ) 
-      },
-      javaCode: `
-        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
-        if ( ! SafetyUtil.isEmpty(getLegalName()) ) return getLegalName();
-        if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
-        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
-        return "";
       `
     }
   ],

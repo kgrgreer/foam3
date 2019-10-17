@@ -233,6 +233,7 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
+  'net.nanopay.invoice.ruler.RequestPaymentNotificationRule',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
@@ -334,6 +335,7 @@ var classes = [
   'net.nanopay.tx.LineItemFee',
   'net.nanopay.tx.CompliancePlanDAO',
   'net.nanopay.tx.model.TransactionStatus',
+  'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.model.Transaction',
@@ -371,6 +373,7 @@ var classes = [
   'net.nanopay.tx.ruler.PropertyNEQValue',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.tx.ruler.AddStatusHistoryAction',
   'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
@@ -748,6 +751,7 @@ var classes = [
   'net.nanopay.business.JoinBusinessTokenService',
   'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
+  'net.nanopay.business.SetBusinessNameDAO',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

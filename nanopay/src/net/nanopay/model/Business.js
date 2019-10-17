@@ -96,7 +96,10 @@ foam.CLASS({
       type: 'String',
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
-      `
+      `,
+      createMode: 'HIDDEN',
+      updateMode: 'RO',
+      section: 'administrative'
     },
     {
       class: 'Boolean',
@@ -128,7 +131,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'residenceOperated',
-      documentation: 'Determines whether a business is operated at the residence of the owner.'
+      documentation: 'Determines whether a business is operated at the residence of the owner.',
+      section: 'business'
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -140,13 +144,17 @@ foam.CLASS({
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.data.beneficialOwnerDocuments$
         };
-      }
+      },
+      section: 'business'
     },
     {
       class: 'Int',
       name: 'countQBO',
       documentation: 'the number of times that this business has synced to QuickBook Online.',
-      label: 'Sync Count to QBO'
+      label: 'Sync Count to QBO',
+      createMode: 'HIDDEN',
+      updateMode: 'RO',
+      section: 'administrative'
     },
     {
       class: 'String',
@@ -160,7 +168,8 @@ foam.CLASS({
             ! re.test(businessRegistrationAuthority) ) {
           return 'Invalid issuing authority.';
         }
-      }
+      },
+      section: 'business'
     },
     {
       class: 'String',
@@ -174,18 +183,21 @@ foam.CLASS({
         this.businessRegistrationAuthority = x;
       },
       javaGetter: `return getBusinessRegistrationAuthority();`,
-      javaSetter: `setBusinessRegistrationAuthority(val);`
+      javaSetter: `setBusinessRegistrationAuthority(val);`,
+      section: 'business'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'countryOfBusinessRegistration',
       documentation: `Country where business was registered.`,
+      section: 'business'
     },
     {
       class: 'Date',
       name: 'businessRegistrationDate',
-      documentation: 'The date that the business was registered by their issuing authority.'
+      documentation: 'The date that the business was registered by their issuing authority.',
+      section: 'business'
     },
     {
       class: 'FObjectProperty',
@@ -195,7 +207,8 @@ foam.CLASS({
       factory: function() {
         return this.Phone.create();
       },
-      view: { class: 'foam.u2.detail.VerticalDetailView' }
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
+      section: 'business'
     },
     {
       class: 'FObjectProperty',
@@ -220,37 +233,46 @@ foam.CLASS({
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
       value: false,
-      permissionRequired: true
+      permissionRequired: true,
+      section: 'administrative'
     },
     {
       class: 'Int',
       name: 'countXero',
       documentation: 'the number of times that this business has synced to Xero.',
-      label: 'Sync Count to Xero'
+      label: 'Sync Count to Xero',
+      createMode: 'HIDDEN',
+      updateMode: 'RO',
+      section: 'administrative'
     },
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
-      documentation: 'Represents the people who own the majority shares in a business.'
+      documentation: 'Represents the people who own the majority shares in a business.',
+      createMode: 'HIDDEN',
+      section: 'business'
     },
     {
       class: 'Boolean',
       name: 'holdingCompany',
       documentation: `Determines whether a Business is a holding company.  A holding company
-        represent a corporate group which owns shares of multiple companies.`
+        represent a corporate group which owns shares of multiple companies.`,
+      section: 'business'
     },
     {
       class: 'String',
       name: 'sourceOfFunds',
-      documentation: 'The entities that provide funding to the business.'
+      documentation: 'The entities that provide funding to the business.',
+      section: 'business'
     },
     {
       class: 'String',
       name: 'targetCustomers',
       label: 'Who do you market your products and services to?',
       documentation: `The type of clients that the business markets its products and
-        services.`
+        services.`,
+      section: 'business'
     },
     {
       class: 'FObjectProperty',
@@ -260,13 +282,15 @@ foam.CLASS({
         currencies that the User anticipates making with the platform. This
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
-        `
+        `,
+      section: 'business'
     },
     {
       class: 'String',
       name: 'taxIdentificationNumber',
       documentation: `The tax identification number associated with the business of
-      the User.`
+      the User.`,
+      section: 'business'
     },
     {
       name: 'businessIdentificationCode',
@@ -289,7 +313,8 @@ foam.CLASS({
               ! re.test(businessRegistrationNumber) ) {
           return 'Invalid registration number.';
         }
-      }
+      },
+      section: 'business'
     },
     {
       class: 'String',
@@ -306,7 +331,8 @@ foam.CLASS({
         this.businessRegistrationNumber = x;
       },
       javaGetter: `return getBusinessRegistrationNumber();`,
-      javaSetter: `setBusinessRegistrationNumber(val);`
+      javaSetter: `setBusinessRegistrationNumber(val);`,
+      section: 'business'
     },
     {
       class: 'FObjectArray',
@@ -314,7 +340,8 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessDirector',
       view: {
         class: 'foam.u2.view.FObjectArrayView'
-      }
+      },
+      section: 'business'
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -495,13 +522,16 @@ foam.CLASS({
       name: 'label',
       type: 'String',
       code: function label() {
-        return this.organization || this.businessName || ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName );
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        return '';
       },
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
-        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
-        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
-        return getFirstName() + " " + getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        return "";
       `
     }
   ],

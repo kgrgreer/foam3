@@ -10,6 +10,20 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+      isAvailable: () => false
+    }
+  ],
+
+  tableColumns: [
+    'businessName',
+    'description',
+    'business',
+    'enabled'
+  ],
+
   properties: [
     {
       name: 'id',
@@ -27,31 +41,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'after',
-      hidden: true
-    },
-    {
-      name: 'validity',
-      hidden: true
-    },
-    {
-      name: 'saveHistory',
-      hidden: true
-    },
-    {
-      name: 'daoKey',
-      hidden: true
-    },
-    {
-      name: 'operation',
-      hidden: true
-    },
-    {
       name: 'ruleGroup',
-      hidden: true
-    },
-    {
-      name: 'currentLimits',
       hidden: true
     },
     {
@@ -63,21 +53,34 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: x.businessDAO,
           placeholder: '---- Please Select a Business ----',
-          objToChoice: function(a){
+          objToChoice: function(a) {
             return [a.id, a.businessName];
           }
         }, x);
-      }
+      },
+      tableHeaderFormatter: function() {
+        this.add('Business ID');
+      },
+      tableWidth: 120,
+      readMode: 'HIDDEN' // Show business name instead in read mode.
+    },
+    {
+      class: 'String',
+      name: 'businessName',
+      label: 'Business',
+      documentation: 'This property exists so we can display the business name in the table without doing a lookup for each row.',
+      createMode: 'HIDDEN',
+      updateMode: 'HIDDEN',
+      section: 'basicInfo'
     },
     {
       name: 'predicate',
-      hidden: true,
       javaGetter: `
         BusinessLimitPredicate blp = new BusinessLimitPredicate();
         blp.setBusiness(getBusiness());
         blp.setSend(getSend());
         return blp;
-      ` 
+      `
     }
   ],
 
@@ -93,12 +96,12 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        BusinessLimit busLimit = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(AND(
-          EQ(BusinessLimit.BUSINESS, this.getBusiness()), 
+        BusinessLimit old = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(AND(
+          EQ(BusinessLimit.BUSINESS, this.getBusiness()),
           EQ(BusinessLimit.PERIOD, this.getPeriod()),
           EQ(BusinessLimit.SEND, this.getSend())
         ));
-        if ( busLimit != null ) {
+        if ( old != null && ! getId().equals(old.getId()) ) {
           throw new IllegalStateException("BusinessLimit for the business and period already exists. ");
         }
       `

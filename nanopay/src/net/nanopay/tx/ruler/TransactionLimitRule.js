@@ -15,7 +15,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'name',
+      name: 'description',
+      transient: true,
       visibility: 'RO',
       expression: function(limit, send, period) {
         return `${limit} ${send ? 'sending' : 'receiving'} ${period.label} transaction limit`;
@@ -26,7 +27,8 @@ foam.CLASS({
       name: 'ruleGroup',
       value: 'transactionLimits',
       visibility: 'RO',
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     },
     {
       class: 'Enum',
@@ -77,7 +79,8 @@ foam.CLASS({
       class: 'Map',
       name: 'currentLimits',
       visibility: 'RO',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       javaFactory: `
         return new java.util.HashMap<Object, TransactionLimitState>();
       `,
