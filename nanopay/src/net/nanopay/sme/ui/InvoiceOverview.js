@@ -661,16 +661,10 @@ foam.CLASS({
     },
 
     function saveAsVoid() {
-      if ( ! this.isVoidable ) return;
-      this.invoice.paymentMethod = this.PaymentStatus.VOID;
-      this.invoiceDAO.put(this.invoice).then(
-        (_) => {
-          this.isVoidable = false;
-          this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_SUCCESS}`);
-        }
-      ).catch( (_) => {
-        this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_ERROR}`);
-      });
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+        invoice: this.invoice
+      }));
     },
 
     function markAsComplete() {
