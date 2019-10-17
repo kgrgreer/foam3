@@ -794,7 +794,7 @@ p({
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "Set up gd-ops group",
+  "id": "Set up groups and permissions for API (GD)",
   "code": """
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
@@ -802,6 +802,15 @@ p({
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
+
+    if ( DRY_RUN ) {
+      print("--------------------");
+      print("In DRY_RUN mode");
+      print("--------------------");
+    }
+
+
+    groupDAO = x.get("groupDAO");
 
     // Create new gd-ops group
     opsGroup = new Group();
@@ -815,6 +824,18 @@ p({
       print("Payment ops group is created.");
     } else {
       groupDAO.put(opsGroup);
+    }
+
+    // Create new gd-api group
+    apiGroup = new Group();
+    apiGroup.setId("gd-api");
+    apiGroup.setParent("gd-ops");
+    apiGroup.setDescription("API Access");
+
+    if ( DRY_RUN ) {
+      print("API group is created.");
+    } else {
+      groupDAO.put(apiGroup);
     }
 
     // Add permissions to the gd-ops group
@@ -915,8 +936,18 @@ p({
       }
     }
 
+    themeDAO = x.get("themeDAO");
+    gdTheme = themeDAO.find(3);
+    gdTheme.setPriority(3);
+    gdTheme.setLogo("images/nanopay_logo_blue.png");
+    if ( DRY_RUN ) {
+      print("GD Theme is created.");
+    } else {
+      themeDAO.put(gdTheme);
+    }
+
     print("Done");
   """,
   "output": "",
-  "notes": "This script is for our clients who use our API (Grain Discovery). Please do not run this script in Ablii/Connect staging and production enviroment."
+  "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
 })
