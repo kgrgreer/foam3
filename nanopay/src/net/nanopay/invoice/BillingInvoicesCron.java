@@ -147,6 +147,12 @@ public class BillingInvoicesCron implements ContextAgent {
                 .append(" sourceAccount is missing\n");
           return;
         }
+        if ( transaction.findDestinationAccount(x) == null ) {
+          error_.append(" . id: ").append(transaction.getId())
+            .append(" destinationAccount is missing\n");
+          return;
+        }
+
         User payer = sourceAccount.findOwner(x);
         long payerId = payer.getId();
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
