@@ -47,6 +47,8 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
+        // TODO: check permission to create authToken for other user
+
         DAO tokenDAO = (DAO) x.get("tokenDAO");
         Token token = (Token) tokenDAO.put(
           new Token.Builder(x)
@@ -56,7 +58,7 @@ foam.CLASS({
             .setParameters(parameters)
             .build()
         );
-        
+
         String callbackUrl = (String) parameters.get("callback_url");
         if ( ! SafetyUtil.isEmpty(callbackUrl) ) {
           try {
@@ -73,33 +75,38 @@ foam.CLASS({
       javaCode: `
         DAO tokenDAO = (DAO) getTokenDAO();
         Calendar calendar = Calendar.getInstance();
-        
+
         List data = ((ArraySink) tokenDAO.where(AND(
           EQ(Token.PROCESSED, false),
           GT(Token.EXPIRY, calendar.getTime()),
           EQ(Token.DATA, token))
         ).limit(1).select(new ArraySink())).getArray();
-        
+
         if ( data.size() == 0 ) {
           throw new RuntimeException("Token not found");
         }
-        
+
         // find user from token
         Token tokenResult = (Token) data.get(0);
         DAO localUserDAO = (DAO) x.get("localUserDAO");
+        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         User userResult = (User) localUserDAO.find(tokenResult.getUserId());
+
         if ( userResult == null ) {
           throw new RuntimeException("User not found");
         }
-        
-        // authenticate userResult
+
+        // authenticate
         DAO localSessionDAO = (DAO) x.get("localSessionDAO");
-        localSessionDAO.put(
-          new Session.Builder(x)
-            .setUserId(userResult.getId())
-            .build()
-        );
-        
+        Session session = new Session();
+        session.setUserId(userResult.getId());
+        Long businessId = (Long) tokenResult.getParameters().get("businessId");
+        if ( businessId != null ) {
+          session.setUserId(businessId);
+          session.setAgentId(userResult.getId());
+        }
+        localSessionDAO.put(session);
+
         // set token processed to true
         tokenResult.setProcessed(true);
         tokenDAO.put(tokenResult);

@@ -10,3 +10,10 @@ p({
       {"class": "foam.nanos.auth.token.ClientTokenService"}
    """
 })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "authToken",
+  "serve": false,
+  "authenticate": true,
+  "serviceClass": "net.nanopay.auth.AuthTokenServiceWebAgent"
+})
