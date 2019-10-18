@@ -16,21 +16,24 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
     'net.nanopay.model.Currency',
     'net.nanopay.payment.Institution',
-    
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.model.Transaction',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
+    'java.util.ArrayList',
     'java.util.List'
   ],
 
@@ -375,6 +378,81 @@ foam.CLASS({
             throw new IllegalStateException("Bank account with same name already registered.");
           }
         }
+      `
+    },
+    {
+      name: 'findTrustAccount',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'TrustAccount',
+      javaCode: `
+        return null;
+     `
+    },
+    {
+      name: 'createCITransfers',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'txn',
+          type: 'Transaction'
+        },
+      ],
+      type: 'Transfer[]',
+      javaCode: `
+      BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
+      TrustAccount trustAccount = findTrustAccount(x);
+      List all = new ArrayList();
+      all.add(new Transfer.Builder(x)
+          .setDescription(trustAccount.getName()+" Cash-In")
+          .setAccount(trustAccount.getId())
+          .setAmount(-txn.getTotal())
+          .build());
+      all.add(new Transfer.Builder(x)
+          .setDescription("Cash-In")
+          .setAccount(txn.getDestinationAccount())
+          .setAmount(txn.getTotal())
+          .build());
+
+      return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+    {
+      name: 'createCOTransfers',
+      static: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'txn',
+          type: 'Transaction'
+        },
+      ],
+      type: 'Transfer[]',
+      javaCode: `
+      BankAccount sourceAccount = (BankAccount) txn.findDestinationAccount(x);
+      TrustAccount trustAccount = findTrustAccount(x);
+      List all = new ArrayList();
+      all.add(new Transfer.Builder(x)
+          .setDescription(trustAccount.getName()+" Cash-Out")
+          .setAccount(trustAccount.getId())
+          .setAmount(txn.getTotal())
+          .build());
+      all.add( new Transfer.Builder(x)
+          .setDescription("Cash-Out")
+          .setAccount(txn.getSourceAccount())
+          .setAmount(-txn.getTotal())
+          .build());
+
+      return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
   ],

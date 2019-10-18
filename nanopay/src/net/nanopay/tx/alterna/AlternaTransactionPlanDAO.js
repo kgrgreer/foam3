@@ -81,6 +81,7 @@ foam.CLASS({
         }
         AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
         t.copyFrom(request);
+        t.setTransfers(((BankAccount) sourceAccount).createCITransfers(x, t));
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
@@ -97,6 +98,7 @@ foam.CLASS({
         }
         Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
+        t.setTransfers(((BankAccount) destinationAccount).createCOTransfers(x, t));
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);

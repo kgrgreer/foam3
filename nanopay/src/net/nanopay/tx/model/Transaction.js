@@ -775,11 +775,15 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
+        if (! canTransfer(x, oldTxn) ) {
+          return new Transfer[0];
+        }
+
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
           for ( int j = 0; j < transfers.length; j++ ) {
             all.add(transfers[j]);
           }

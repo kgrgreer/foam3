@@ -46,3 +46,18 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'TransferRefine',
+  refines: 'net.nanopay.tx.Transfer',
+  properties: [
+    {
+      class: 'List',
+      name: 'signatures',
+      documentation: 'List of signatures for a given transaction',
+      javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
+      includeInSignature: false,
+    }
+  ]
+});

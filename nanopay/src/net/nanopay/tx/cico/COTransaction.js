@@ -4,20 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.TransactionLineItem',
-    'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'java.util.ArrayList',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.account.Account'
   ],
   properties: [
     {
@@ -156,78 +148,6 @@ foam.CLASS({
       }
       return false;
       `
-    },
-    {
-      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-        getStatus() == TransactionStatus.DECLINED &&
-        ( oldTxn != null &&
-           ( oldTxn.getStatus() == TransactionStatus.SENT ||
-             oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-             oldTxn.getStatus() == TransactionStatus.PENDING )
-        ) ||
-        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
-        getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
-        return true;
-      }
-      return false;
-      `
-    },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-      List all = new ArrayList();
-      TransactionLineItem[] lineItems = getLineItems();
-
-        if ( canTransfer(x, oldTxn) ) {
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
-            for ( int j = 0; j < transfers.length; j++ ) {
-              all.add(transfers[j]);
-            }
-          }
-          all.add(new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-Out")
-            .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
-            .setAmount(getTotal())
-            .build());
-          all.add(new Transfer.Builder(x)
-            .setDescription("Cash-Out")
-            .setAccount(getSourceAccount())
-            .setAmount(-getTotal())
-            .build());
-          Transfer[] transfers = getTransfers();
-          for ( int i = 0; i < transfers.length; i++ ) {
-            all.add(transfers[i]);
-          }
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
     }
-  ]
+ ]
 });

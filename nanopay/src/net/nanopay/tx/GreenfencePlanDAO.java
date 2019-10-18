@@ -15,6 +15,8 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GreenfencePlanDAO extends ProxyDAO {
 
@@ -39,6 +41,8 @@ public class GreenfencePlanDAO extends ProxyDAO {
       .setAmount(txn.getAmount())
       .setPayable(true)
       .build();
+     // TODO: add createTransfers - does this work here or does createTransfer have to occur at runtime?
+     // when the percentComplete is set
      invoice1.addLineItems(txn.getLineItems(), null);
 
      InvoiceTransaction invoice2 = new InvoiceTransaction.Builder(x)
@@ -86,5 +90,20 @@ public class GreenfencePlanDAO extends ProxyDAO {
     txn.addNext(tx2);
     quote.setPlan(txn);
     return quote;
+  }
+
+  public Transfer[] createTransfers(X x, Transaction txn) {
+    List all = new ArrayList();
+    // commented out during CPF-3184
+    // TransactionLineItem[] lineItems = txn.getLineItems();
+    // for ( int i = 0; i < lineItems.length; i++ ) {
+    //   TransactionLineItem lineItem = lineItems[i];
+    //   Transfer[] transfers = lineItem.createTransfers(x, txn, this);
+    //   for ( int j = 0; j < transfers.length; j++ ) {
+    //     transfers[j].setAmount((long)(transfers[j].getAmount()*0.01*getServiceCompleted()));
+    //     all.add(transfers[j]);
+    //   }
+    // }
+    return (Transfer[]) all.toArray(new Transfer[0]);
   }
 }

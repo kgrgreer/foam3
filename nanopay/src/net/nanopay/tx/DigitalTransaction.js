@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'DigitalTransaction',
@@ -5,22 +11,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'java.text.NumberFormat',
-    'java.util.HashMap',
-    'java.util.List',
-    'java.util.ArrayList',
-    'foam.util.SafetyUtil',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.liquidity.LiquiditySettings',
-    'net.nanopay.util.Frequency',
-    'net.nanopay.account.Account'
-],
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
 
   properties: [
     {
@@ -45,38 +39,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        List all = new ArrayList();
-        TransactionLineItem[] lineItems = getLineItems();
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
-          }
-        }
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
     {
       name: `validate`,
       args: [

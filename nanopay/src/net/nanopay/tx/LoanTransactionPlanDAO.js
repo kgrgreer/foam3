@@ -1,27 +1,39 @@
-package net.nanopay.tx;
+/**
+ * @license
+ * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 
-import foam.core.FObject;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.mlang.MLang;
-import foam.nanos.logger.Logger;
-import net.nanopay.account.Account;
-import net.nanopay.account.LoanAccount;
-import net.nanopay.account.LoanedTotalAccount;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+foam.CLASS({
+  package: 'net.nanopay.tx',
+  name: 'LoanTransactionPlanDAO',
+  extends: 'foam.dao.ProxyDAO',
 
-public class LoanTransactionPlanDAO extends ProxyDAO {
+  documentation: 'Plans Loan transactions',
 
-  public LoanTransactionPlanDAO(X x, DAO delegate) {
-    setX(x);
-    setDelegate(delegate);
-  }
+  javaImports: [
+    'foam.core.FObject',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.dao.ProxyDAO',
+    'foam.mlang.MLang',
+    'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.LoanAccount',
+    'net.nanopay.account.LoanedTotalAccount',
+    'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'java.util.List',
+    'java.util.ArrayList',
+  ],
 
-  @Override
-  public FObject put_(X x, FObject obj) {
-
+  methods: [
+    {
+      name: 'put_',
+      javaCode: `
     TransactionQuote quote = (TransactionQuote) obj;
     Account sourceAccount = quote.getSourceAccount();
     Account destinationAccount = quote.getDestinationAccount();
@@ -98,5 +110,27 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     if ( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
     if ( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
     return quote;
-  }
-}
+    `
+    },
+    {
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'txn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+        List all = new ArrayList();
+        all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getTotal()).build());
+        return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    } 
+  ]
+});

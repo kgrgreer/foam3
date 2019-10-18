@@ -89,6 +89,7 @@ foam.CLASS({
 
       BmoCITransaction t = new BmoCITransaction.Builder(x).build();
       t.copyFrom(request);
+      t.setTransfers(((BankAccount) sourceAccount).createCITransfers(x, t));
 
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
@@ -108,6 +109,7 @@ foam.CLASS({
 
       Transaction t = new BmoCOTransaction.Builder(x).build();
       t.copyFrom(request);
+      t.setTransfers(((BankAccount) destinationAccount).createCOTransfers(x, t));
       // TODO: use EFT calculation process
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);
@@ -134,6 +136,6 @@ foam.CLASS({
       ArrayList<PaymentProvider> paymentProviders = PaymentProvider.findPaymentProvider(x, bankAccount);
       return paymentProviders.stream().filter( (paymentProvider)-> paymentProvider.getName().equals(PROVIDER_ID)).count() > 0;
       `
-   }
+    }
   ]
 });
