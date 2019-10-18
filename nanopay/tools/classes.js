@@ -472,6 +472,7 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
+  'net.nanopay.auth.AuthTokenService',
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.auth.NanopayResetPasswordTokenService',

@@ -508,6 +508,13 @@ foam.CLASS({
             choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
           };
         }
+
+        if ( locHash === '#sign-in' && ! self.loginSuccess ) {
+          var user = this.User.create({
+            email: searchParams.get('email')
+          });
+          this.client.autoLoginToken.processToken(null, user, searchParams.get('token'));
+        }
       }
 
       return new Promise(function(resolve, reject) {

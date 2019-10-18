@@ -1,1 +1,12 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"resetPasswordToken",                "serve":true,  "authenticate": false, "serviceClass":"net.nanopay.auth.NanopayResetPasswordTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+   "class": "foam.nanos.boot.NSpec",
+   "name": "authTokenService",
+   "serve": true,
+   "authenticate": true,
+   "serviceClass": "net.nanopay.auth.AuthTokenService",
+   "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
+   "client": """
+      {"class": "foam.nanos.auth.token.ClientTokenService"}
+   """
+})
