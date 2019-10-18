@@ -166,6 +166,31 @@ p({
   """
 })
 
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securitiesDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("currencies")
+    .setPm(true)
+    .setPipelinePm(true)
+    .setOf(net.nanopay.model.Security.getOwnClassInfo())
+    .setName("security")
+    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.model.Security.NAME})
+    .build();
+  """, 
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Denomination",
+    "cache":true
+  }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"localCorridorDAO",                 "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.Corridor.getOwnClassInfo(), \"corridors\")));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"corridorDAO",                      "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"corridor\", x.get(\"localCorridorDAO\"))));","client":"{\"of\":\"net.nanopay.fx.Corridor\"}"})
 // p({"class":"foam.nanos.boot.NSpec", "name":"localPayoutOptionsDAO",         "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.fx.interac.ValidatePayoutOptionsDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.fx.interac.model.PayoutOptions.getOwnClassInfo(), \"payoutOptions\")))));"})

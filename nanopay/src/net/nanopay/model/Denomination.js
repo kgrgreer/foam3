@@ -9,9 +9,6 @@ foam.CLASS({
     'alphabeticCode'
   ],
 
-  imports: [
-    'homeDenomination'
-  ],
   javaImports: [
     'foam.util.SafetyUtil'
   ],
@@ -20,7 +17,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'name of the asset'
+      documentation: 'name of the asset',
       required: true
     },
     {
@@ -51,7 +48,6 @@ foam.CLASS({
     },
     {
       name: 'format',
-      abstract: true,
       args: [
         {
           class: 'foam.core.Currency',

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Currency',
-  extends: 'net.nanopay.model.Denomination'
+  extends: 'net.nanopay.model.Denomination',
 
   documentation: `The base model for storing, using and managing currency information.
     All class properties require a return of *true* in order to pass.`,
