@@ -47,6 +47,11 @@ foam.CLASS({
       }
     }
   ],
+
+  messages: [
+    { name: 'PLACE_HOLDER', message: 'Please select...' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -65,7 +70,7 @@ foam.CLASS({
               ],
               search: true,
               searchPlaceholder: 'Search...',
-              choosePlaceholder: 'Please select...'
+              choosePlaceholder: this.PLACE_HOLDER
             })
 
           .end()
@@ -85,7 +90,7 @@ foam.CLASS({
                   ],
                   search: true,
                   searchPlaceholder: 'Search...',
-                  choosePlaceholder: 'Please select...'
+                  choosePlaceholder: this.PLACE_HOLDER
                 });
             }))
           .end()

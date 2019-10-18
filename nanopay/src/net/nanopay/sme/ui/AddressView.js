@@ -62,7 +62,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PROVINCE_LABEL', message: 'Province/State' },
-    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' }
+    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
+    { name: 'PLACE_HOLDER', message: 'Please select...' }
   ],
 
   methods: [
@@ -92,7 +93,7 @@ foam.CLASS({
                 prop: this.Address.COUNTRY_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Please select...',
+                  placeholder: this.PLACE_HOLDER,
                   dao: this.customCountryDAO,
                   objToChoice: function(a) {
                     return [a.id, a.name];
@@ -108,7 +109,7 @@ foam.CLASS({
                 prop: this.Address.REGION_ID.clone().copyFrom({
                   view: {
                     class: 'foam.u2.view.ChoiceView',
-                    placeholder: 'Please select...',
+                    placeholder: this.PLACE_HOLDER,
                     objToChoice: function(region) {
                       return [region.id, region.name];
                     },
