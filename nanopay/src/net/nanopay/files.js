@@ -992,7 +992,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
   { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
   { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
-  { name: 'net/nanopay/meter/clearing/TransferRefinement' },
   { name: 'net/nanopay/meter/clearing/ruler/BusinessClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRuleDAOCreateView' },
