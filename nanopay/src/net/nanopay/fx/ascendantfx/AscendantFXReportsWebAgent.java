@@ -24,6 +24,10 @@ import net.nanopay.bank.USBankAccount;
 import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.plaid.PlaidResultReport;
 import org.apache.commons.io.FileUtils;
@@ -121,8 +125,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateCompanyInfo(X x, Business business) {
     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
+    DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
+    DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+    DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
     Logger logger            = (Logger) x.get("logger");
 
+    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink()); canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink); uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
@@ -334,6 +342,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(subList);
       }
 
+      java.util.List<BusinessOnboarding> onboardings = businessOnBoardingSink.getArray();
+      if( onboardings.size() != 0) {
+        list.add(new ListItem("Compliance related timespans:"));
+        List subList2 = new List(true, false, 20);
+        for(BusinessOnboarding onboarding: onboardings) {
+          subList2.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), onboarding.getCreated())));
+        }
+        list.add(subList2);
+      }
       document.add(list);
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
