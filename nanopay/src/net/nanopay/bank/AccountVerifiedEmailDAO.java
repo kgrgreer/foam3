@@ -14,6 +14,8 @@ import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import static foam.mlang.MLang.EQ;
+
+import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
 import foam.dao.ArraySink;
 import java.util.List;
@@ -68,19 +70,21 @@ public class AccountVerifiedEmailDAO
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
 
-    Sink institutionSink = new ArraySink();    
-    DAO  institutionDAO = (DAO) x.get("institutionDAO");
-    institutionSink= institutionDAO.where(EQ(Institution.INSTITUTION_NUMBER, account.getInstitutionNumber())).limit(1).select(institutionSink);
+    Branch currBranch = (Branch) account.findBranch(x);
 
-    List<Institution> institutions = ((ArraySink)institutionSink).getArray();
-
-    String institution = institutions.size() == 0 ? " - " : ((institutions.get(0).getAbbreviation() == null  || institutions.get(0).getAbbreviation().isEmpty()) ? institutions.get(0).getName() : institutions.get(0).getAbbreviation());
+    String institutionStr;
+    if(currBranch != null) {
+      Institution currInstitution = (Institution) currBranch.findInstitution(x);
+      institutionStr = currInstitution == null ? " - " : ((currInstitution.getAbbreviation() == null  || currInstitution.getAbbreviation().isEmpty()) ? currInstitution.getName() : currInstitution.getAbbreviation());
+    } else {
+      institutionStr = " - ";
+    }
     
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
     args.put("name",    owner.label());
     args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-    args.put("institution", institution);
+    args.put("institution", institutionStr);
 
     try {
       EmailsUtility.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
