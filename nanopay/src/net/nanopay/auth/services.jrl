@@ -16,5 +16,5 @@ p({
   "name": "authToken",
   "serve": false,
   "authenticate": true,
-  "serviceClass": "net.nanopay.auth.AuthTokenServiceWebAgent"
+  "serviceClass": "net.nanopay.auth.AuthTokenWebAgent"
 })

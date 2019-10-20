@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthTokenServiceWebAgent implements WebAgent {
+public class AuthTokenWebAgent implements WebAgent {
   @Override
   public void execute(X x) {
     PrintWriter out = x.get(PrintWriter.class);
