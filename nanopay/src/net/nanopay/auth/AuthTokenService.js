@@ -32,7 +32,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'expiryMs',
-      value: 10000 // 10 seconds
+      value: 150 * 1000 // 150 seconds
     }
   ],
 
@@ -96,7 +96,7 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
-        // authenticate
+        // update the current session
         DAO localSessionDAO = (DAO) x.get("localSessionDAO");
         Session session = x.get(Session.class);
         session.setUserId(userResult.getId());

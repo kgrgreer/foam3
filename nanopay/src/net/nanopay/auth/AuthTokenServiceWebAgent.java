@@ -3,6 +3,7 @@ package net.nanopay.auth;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.TokenService;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
 
@@ -15,7 +16,7 @@ public class AuthTokenServiceWebAgent implements WebAgent {
   @Override
   public void execute(X x) {
     PrintWriter out = x.get(PrintWriter.class);
-    AuthTokenService tokenService = (AuthTokenService) x.get("authTokenService");
+    TokenService tokenService = (TokenService) x.get("authTokenService");
     HttpServletRequest request = x.get(HttpServletRequest.class);
     String callbackUrl = request.getParameter("callbackUrl");
     String userId = request.getParameter("userId");

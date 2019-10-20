@@ -67,7 +67,7 @@ foam.CLASS({
       padding: 3px;
       width: auto;
     }
-    
+
     /*
      * The following CSS is for styling flow documents because they don't have
      * much in terms of default styling.
@@ -281,8 +281,6 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
-
-      // debugger
 
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' )
