@@ -509,13 +509,13 @@ foam.CLASS({
           };
         }
 
-        // Process the auth token
-        if ( locHash === '#auth' && ! self.loginSuccess ) {
-          var result = await this.client.authTokenService.processToken(null, null, searchParams.get('token'));
-          if ( result ) {
-            location = '/';
-          }
-        }
+       // Process the auth token
+       if ( locHash === '#auth' && ! self.loginSuccess ) {
+         var result = await this.client.authTokenService.processToken(null, null, searchParams.get('token'));
+         if ( result ) {
+           location = '/';
+         }
+       }
       }
 
       return new Promise(function(resolve, reject) {

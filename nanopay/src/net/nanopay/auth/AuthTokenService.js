@@ -13,8 +13,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.dao.HTTPSink',
-    'foam.nanos.auth.token.Token',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.io.IOException',
@@ -32,7 +34,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'expiryMs',
-      value: 150 * 1000 // 150 seconds
+      value: 15 * 1000 // 150 seconds
     }
   ],
 
@@ -40,9 +42,13 @@ foam.CLASS({
     {
       name: 'generateTokenWithParameters',
       javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "service.run.authToken") ) {
+          throw new AuthorizationException();
+        }
+        
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         user = (User) localUserDAO.find(user);
-
         if ( user == null ) {
           throw new RuntimeException("User not found");
         }
