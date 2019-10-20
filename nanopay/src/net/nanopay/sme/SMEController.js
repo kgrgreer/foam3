@@ -481,7 +481,7 @@ foam.CLASS({
       });
     },
 
-    function requestLogin() {
+    async function requestLogin() {
       var self = this;
       var locHash = location.hash;
       var view = { class: 'net.nanopay.sme.ui.SignInView' };
@@ -509,11 +509,12 @@ foam.CLASS({
           };
         }
 
-        if ( locHash === '#sign-in' && ! self.loginSuccess ) {
-          var user = this.User.create({
-            email: searchParams.get('email')
-          });
-          this.client.autoLoginToken.processToken(null, user, searchParams.get('token'));
+        // Process the auth token
+        if ( locHash === '#auth' && ! self.loginSuccess ) {
+          var result = await this.client.authTokenService.processToken(null, null, searchParams.get('token'));
+          if ( result ) {
+            location = '/';
+          }
         }
       }
 

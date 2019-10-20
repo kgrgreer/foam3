@@ -59,7 +59,7 @@ foam.CLASS({
             .build()
         );
 
-        String callbackUrl = (String) parameters.get("callback_url");
+        String callbackUrl = (String) parameters.get("callbackUrl");
         if ( ! SafetyUtil.isEmpty(callbackUrl) ) {
           try {
             tokenDAO.where(
@@ -98,7 +98,7 @@ foam.CLASS({
 
         // authenticate
         DAO localSessionDAO = (DAO) x.get("localSessionDAO");
-        Session session = new Session();
+        Session session = x.get(Session.class);
         session.setUserId(userResult.getId());
         Long businessId = (Long) tokenResult.getParameters().get("businessId");
         if ( businessId != null ) {
@@ -106,6 +106,7 @@ foam.CLASS({
           session.setAgentId(userResult.getId());
         }
         localSessionDAO.put(session);
+        session.setContext(session.applyTo(session.getContext()));
 
         // set token processed to true
         tokenResult.setProcessed(true);

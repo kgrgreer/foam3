@@ -3,7 +3,8 @@ p({
    "class": "foam.nanos.boot.NSpec",
    "name": "authTokenService",
    "serve": true,
-   "authenticate": true,
+   "authenticate": false,
+   "authNotes": "This service does not require authentication to access because we need users to be able to process the auth token.",
    "serviceClass": "net.nanopay.auth.AuthTokenService",
    "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
    "client": """
