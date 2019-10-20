@@ -452,7 +452,9 @@ foam.CLASS({
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
-          this.findBalance();
+          if ( this.loginSuccess ) {
+            this.findBalance();
+          }
           this.addClass(this.myClass())
             .tag('div', null, this.topNavigation_$)
             .start()
@@ -481,7 +483,7 @@ foam.CLASS({
       });
     },
 
-    async function requestLogin() {
+    function requestLogin() {
       var self = this;
       var locHash = location.hash;
       var view = { class: 'net.nanopay.sme.ui.SignInView' };
@@ -509,13 +511,15 @@ foam.CLASS({
           };
         }
 
-       // Process the auth token
-       if ( locHash === '#auth' && ! self.loginSuccess ) {
-         var result = await this.client.authTokenService.processToken(null, null, searchParams.get('token'));
-         if ( result ) {
-           location = '/';
-         }
-       }
+        // Process the auth token
+        if ( locHash === '#auth' && ! self.loginSuccess ) {
+          self.client.authTokenService.processToken(null, null,
+            searchParams.get('token')).then((result) => {
+              if ( result === true ) {
+                location = '/';
+              }
+            });
+        }
       }
 
       return new Promise(function(resolve, reject) {
