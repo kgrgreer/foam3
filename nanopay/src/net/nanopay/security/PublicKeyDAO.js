@@ -22,6 +22,8 @@ foam.CLASS({
           throw new RuntimeException("Public key not found");
         }
 
+        if ( entry.getPublicKey() != null ) return entry;
+
         try {
           // initialize key factory to rebuild public key
           KeyFactory factory = KeyFactory.getInstance(entry.getAlgorithm());
