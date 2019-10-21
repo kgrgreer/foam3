@@ -19,7 +19,8 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -30,7 +31,11 @@ foam.CLASS({
 
       // Checks if User exists.
       User user = (User) obj;
+
       if ( user == null || user.getId() == 0 )
+        return getDelegate().put_(x, obj);
+
+      if ( user instanceof Business )
         return getDelegate().put_(x, obj);
 
       // Checks if User has existed which is really just a duplicate check of user.getId() == 0, or at least it should.
@@ -71,7 +76,7 @@ foam.CLASS({
       } catch (Exception e) {
         logger.error("Error sending compliance-notification-to-user email.", e);
       }
-      
+
       return user;
       `
     }
