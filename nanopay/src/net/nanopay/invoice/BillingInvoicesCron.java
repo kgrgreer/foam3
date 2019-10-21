@@ -147,6 +147,12 @@ public class BillingInvoicesCron implements ContextAgent {
                 .append(" sourceAccount is missing\n");
           return;
         }
+        if ( transaction.findDestinationAccount(x) == null ) {
+          error_.append(" . id: ").append(transaction.getId())
+            .append(" destinationAccount is missing\n");
+          return;
+        }
+
         User payer = sourceAccount.findOwner(x);
         long payerId = payer.getId();
         boolean isAscendantFXUser = null != ascendantFXUserDAO.find(
@@ -275,7 +281,17 @@ public class BillingInvoicesCron implements ContextAgent {
   }
 
   public boolean check90DaysPromotion(User payer, boolean isAscendantFXUser, Transaction transaction) {
-    LocalDate businessCreated = toLocalDate(payer.getCreated());
+    // NOTE: There are some businesses that do not have CREATED date set (may be
+    // due to issue with EasyDAO + CreatedAwareDAO previously), which is needed
+    // for calculating the 90 days promotion eligibility.
+    //
+    // Businesses created on and after 2019-05-23 are having CREATED date set
+    // properly. Thus, for businesses with missing CREATED date we are assuming
+    // the businessCreated to be 2019-05-23 for the calculation.
+    LocalDate businessCreated = LocalDate.of(2019, 5, 23);
+    if ( payer.getCreated() != null ) {
+      businessCreated = toLocalDate(payer.getCreated());
+    }
     LocalDate transactionCreated = toLocalDate(transaction.getCreated());
     LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
     LocalDate dec1_2020 = LocalDate.of(2019, 12, 1);
