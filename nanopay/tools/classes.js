@@ -110,6 +110,9 @@ var classes = [
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.BankWeekend',
 
+  //Exchangeable
+  'net.nanopay.exchangeable.AssetClass'
+
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
   'net.nanopay.sps.GeneralRequestResponse',
