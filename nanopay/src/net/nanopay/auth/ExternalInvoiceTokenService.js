@@ -47,7 +47,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.contacts.Contact'
   ],
 

@@ -12,7 +12,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;

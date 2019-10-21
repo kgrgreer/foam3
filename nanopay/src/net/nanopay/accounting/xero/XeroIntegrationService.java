@@ -26,7 +26,7 @@ import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
