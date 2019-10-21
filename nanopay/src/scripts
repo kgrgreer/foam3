@@ -832,3 +832,132 @@ p({
   print("done");
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Generate Billing Invoice Transactions",
+  "status": 1,
+  "code": """
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import foam.nanos.logger.Logger;
+  import foam.nanos.auth.User;
+  import net.nanopay.invoice.model.BillingInvoice;
+  import net.nanopay.invoice.model.Invoice;
+  import net.nanopay.tx.AbliiTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.TransactionQuote;
+  import java.text.SimpleDateFormat;
+  import java.time.LocalDate;
+  import java.time.ZoneId;
+  import java.time.YearMonth;
+  import java.util.*;
+  import static foam.mlang.MLang.*;
+  import foam.mlang.predicate.Predicate;
+
+  // *******************
+  // *       Vars      *
+  // *******************
+  DRY_RUN = true;                         // Default to true
+  DUE_DATE = LocalDate.now();             // LocalDate.of(2019, 10, 17) to set specific date
+
+  // *******************
+  // *    Functions    *
+  // *******************
+  Transaction quoteTransaction(Invoice invoice) {
+    AbliiTransaction transaction = new AbliiTransaction();
+
+    // sets accountId to be used for CICO transaction
+    if ( invoice.findDestinationAccount(x) != null ) {
+      transaction.setDestinationAccount(invoice.getDestinationAccount());
+    } else {
+      transaction.setPayeeId(invoice.getPayeeId());
+    }
+
+    if ( invoice.findAccount(x) != null ) {
+      transaction.setSourceAccount(invoice.getAccount());
+    } else {
+      transaction.setPayerId(invoice.getPayerId());
+    }
+    
+    long invAmount = invoice.getAmount();
+    transaction.setInvoiceId(invoice.getId());
+    transaction.setAmount(invAmount);
+
+    TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(transaction).build();
+    quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
+    Transaction plan = quote.getPlan();
+    if ( plan == null ) {
+      throw new RuntimeException("Failed to quote Invoice: "+transaction);
+    }
+    return plan;
+  }
+
+  Date getDate(LocalDate localDate) {
+    return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  }
+
+  // ************************
+  // * Billing Invoices     *
+  // ************************
+  invoiceDAO = x.get("invoiceDAO");
+  transactionDAO = x.get("localTransactionDAO");
+  userDAO = (DAO) x.get("localUserDAO");
+  localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+  logger = (Logger) x.get("logger");
+  successCount = 0;
+  failedCount = 0;
+  if ( DRY_RUN ) {
+    print("Generating billing Transactions DRY_RUN");
+  } else {
+    print("Generating billing Transactions");
+  }
+  invoiceDAO.where(AND(new Predicate[] {
+      INSTANCE_OF(BillingInvoice.class),
+      EQ(Invoice.PAYMENT_ID, ""),
+      EQ(Invoice.PAYMENT_DATE, Invoice.DUE_DATE),
+    })).select(new AbstractSink() {
+    public void put(Object obj, Detachable sub) {
+      Invoice invoice = (Invoice) obj;
+      txn = null;
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        Date invPaymentDate = invoice.getPaymentDate();
+
+        //Creates transaction only based on invoices scheduled for today.
+        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) ) 
+        {
+          print(invoice.getId());
+          txn = quoteTransaction(invoice);
+          if ( DRY_RUN ) {
+            print("(DRY_RUN) Transaction created for Invoice " + invoice.getId());
+            successCount++;
+          } else {
+            try {
+              transactionDAO.put(txn);
+              print("Transaction created for Invoice " + invoice.getId());
+              successCount++;           
+            }
+            catch ( Throwable e) {
+              print("Failed to put transaction for invoice " + invoice.getId());
+              print(e);
+              failedCount++;
+            logger.error(new Object[] {"Failed to put transaction for invoice", e, txn, invoice});
+            }
+          }
+        } 
+      } catch ( Throwable e) {
+        print("Error quoting transaction for invoice " + invoice.getId() + " " + e.getMessage());
+        logger.error(new Object[] {"Error quoting transaction for invoice", e, invoice});
+        failedCount++;
+      }
+    }
+  });
+
+  print("Done");
+  print("Created " + successCount + " transaction(s)");
+  print("Failed " + failedCount + " transaction(s)");  
+  """
+}),
