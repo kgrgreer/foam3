@@ -77,8 +77,6 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account, String institutionNumber) {
-            Logger logger   = (Logger) x.get("logger");
-            logger.info("TrustAccount.find", "account", account, "institution", institutionNumber);
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }

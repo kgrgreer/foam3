@@ -84,15 +84,45 @@ public class TransactionDAO
    * return true when status change is such that Transfers should be executed (applied)
    */
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
-    return ( ! SafetyUtil.isEmpty(txn.getId()) ||
-      txn instanceof DigitalTransaction ) &&
-      (txn.getNext() == null || txn.getNext().length == 0 ) &&
-      (txn.canTransfer(x, oldTxn));
+    if ( ( ! SafetyUtil.isEmpty(txn.getId()) ||
+           txn instanceof DigitalTransaction ) &&
+         (txn.getNext() == null || txn.getNext().length == 0 ) &&
+         (txn.canTransfer(x, oldTxn)) ) {
+      return true;
+    }
+    // legacy support for REVERSE
+    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
+         txn.getStatus() == TransactionStatus.REVERSE &&
+         oldTxn.getStatus() != TransactionStatus.REVERSE) {
+      return true;
+    }
+    return false;
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
     Transfer[] ts = txn.createTransfers(y, oldTxn);
+
+        // legacy support for REVERSE
+    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
+         txn.getStatus() == TransactionStatus.REVERSE &&
+         oldTxn.getStatus() != TransactionStatus.REVERSE) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("TransactionDAO adding REVERSE transfers for", txn);
+      List all = new ArrayList();
+      Collections.addAll(all, ts);
+      all.add(new Transfer.Builder(x)
+              .setDescription("nanopay Alterna Trust Account (CAD) Cash-Out DECLINED")
+              .setAccount(1L)
+              .setAmount(-txn.getTotal())
+              .build());
+      all.add(new Transfer.Builder(x)
+              .setDescription("Cash-Out DECLINED")
+              .setAccount(txn.getSourceAccount())
+              .setAmount(txn.getTotal())
+              .build());
+      ts = (Transfer[]) all.toArray(new Transfer[0]);
+    }
 
     // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
     if ( ts.length != 1 ) {
