@@ -994,3 +994,28 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"assetClassDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("assetClasses")
+    .setPm(true)
+    .setPipelinePm(true)
+    .setOf(net.nanopay.exchangeable.AssetClass.getOwnClassInfo())
+    .setName("assetClass")
+    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.AssetClass.COUNTRY})
+    .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.exchangeable.AssetClass",
+    "cache":true
+  }
+  """
+})
