@@ -58,14 +58,14 @@ foam.CLASS({
             mdao.put(o);
             return null;
           }
-          var condition = status.newValue === self.InvoiceStatus.UNPAID || self.InvoiceStatus.OVERDUE ? true : false;
+          var newValueUnpaidOrOverdue = status.newValue === self.InvoiceStatus.UNPAID || status.newValue === self.InvoiceStatus.OVERDUE;
           if (
             previousStatus &&
-            condition &&
+            newValueUnpaidOrOverdue &&
             previousStatus.newValue === self.InvoiceStatus.PROCESSING
           ) {
             var declinedTimestamp = new Date(o.timestamp);
-            declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1) // Failed status will appear before unpaid
+            declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1); // Failed status will appear before unpaid
             mdao.put(self.HistoryRecord.create({
               objectId: id,
               timestamp: declinedTimestamp,
