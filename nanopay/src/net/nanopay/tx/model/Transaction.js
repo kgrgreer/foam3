@@ -546,6 +546,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      aliases: ['sourceDenomination'],
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
@@ -561,6 +562,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      aliases: ['destinationDenomination'],
       label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?

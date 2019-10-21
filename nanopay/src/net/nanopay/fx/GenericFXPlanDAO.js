@@ -8,15 +8,27 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
-   javaImports: [
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.mlang.MLang',
      'foam.util.SafetyUtil',
+     'net.nanopay.account.Account',
      'net.nanopay.account.TrustAccount',
+    'net.nanopay.bank.BankAccount',
      'net.nanopay.tx.model.Transaction',
      'net.nanopay.tx.TransactionQuote',
      'net.nanopay.tx.Transfer',
      'net.nanopay.tx.model.TransactionStatus',
      'java.util.ArrayList',
      'java.util.List'
+  ],
+
+  constants: [
+    {
+      name: 'PROVIDER_ID',
+      type: 'String',
+      value: 'Generic'
+    }
   ],
 
   properties: [
@@ -70,9 +82,10 @@ foam.CLASS({
         f.setDestinationAccount(txn.getDestinationAccount());
         f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
+        TrustAccount sourceTrust = ((BankAccount)f.findSourceAccount(x)).findTrustAccount(x);
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
+            .setDescription(sourceTrust.getName()+" FX Transfer COMPLETED")
+            .setAccount(sourceTrust.getId())
             .setAmount(txn.getAmount())
             .build());
         all.add( new Transfer.Builder(getX())
@@ -80,9 +93,11 @@ foam.CLASS({
             .setAccount(txn.getSourceAccount())
             .setAmount(-txn.getAmount())
             .build());
+
+        TrustAccount destinationTrust = ((BankAccount)f.findDestinationAccount(x)).findTrustAccount(x);
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findDestinationAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findDestinationAccount(x)).getId())
+            .setDescription(destinationTrust.getName()+" FX Transfer COMPLETED")
+            .setAccount(destinationTrust.getId())
             .setAmount(-txn.getDestinationAmount())
             .build());
         all.add( new Transfer.Builder(getX())

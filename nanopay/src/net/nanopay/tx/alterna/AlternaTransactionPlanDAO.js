@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.alterna',
   name: 'AlternaTransactionPlanDAO',
-  extends: 'foam.dao.ProxyDAO',
+  extends: 'net.nanopay.tx.cico.CABankTransactionPlanDAO',
 
   documentation: ``,
 
@@ -16,27 +16,27 @@ foam.CLASS({
   ],
 
   javaImports: [
-  'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.EnabledAware',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.mlang.sink.Count',
+    'static foam.mlang.MLang.*',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.*',
-    'foam.dao.DAO',
     'net.nanopay.tx.cico.VerificationTransaction',
-    'net.nanopay.payment.PaymentProvider',
-    'java.util.ArrayList',
-    'java.util.List'
+  ],
+
+   constants: [
+    {
+      name: 'PROVIDER_ID',
+      type: 'String',
+      value: 'Alterna'
+    }
   ],
 
   properties: [
@@ -73,7 +73,7 @@ foam.CLASS({
       if ( sourceAccount instanceof CABankAccount &&
         destinationAccount instanceof DigitalAccount ) {
         
-        if ( ! useAlternaAsPaymentProvider(x, (BankAccount) sourceAccount) ) return getDelegate().put_(x, obj);
+        if ( ! usePaymentProvider(x, PROVIDER_ID, (BankAccount) sourceAccount, false) ) return getDelegate().put_(x, obj);
         
         if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashin " + sourceAccount.getId());
@@ -81,7 +81,7 @@ foam.CLASS({
         }
         AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
         t.copyFrom(request);
-        t.setTransfers(((BankAccount) sourceAccount).createCITransfers(x, t));
+        t.setTransfers(createCITransfers(x, t));
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
@@ -90,7 +90,7 @@ foam.CLASS({
                   destinationAccount instanceof CABankAccount &&
                   sourceAccount.getOwner() == destinationAccount.getOwner() ) {
       
-        if ( ! useAlternaAsPaymentProvider(x, (BankAccount) destinationAccount) ) return getDelegate().put_(x, obj);
+        if ( ! usePaymentProvider(x, PROVIDER_ID, (BankAccount) destinationAccount, false) ) return getDelegate().put_(x, obj);
 
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
@@ -98,34 +98,13 @@ foam.CLASS({
         }
         Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
-        t.setTransfers(((BankAccount) destinationAccount).createCOTransfers(x, t));
+        t.setTransfers(createCOTransfers(x, t));
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
         quote.addPlan(t);
       }
       return getDelegate().put_(x, quote);`
-    },
-    {
-      name: 'useAlternaAsPaymentProvider',
-      type: 'Boolean',
-      args: [
-        {
-          name: 'x',
-          type: 'foam.core.X'
-        },
-        {
-          name: 'bankAccount',
-          type: 'net.nanopay.bank.BankAccount'
-        }
-      ],
-      javaCode: `
-      ArrayList<PaymentProvider> paymentProviders = PaymentProvider.findPaymentProvider(x, bankAccount);
-  
-      // no payment provider found, default to alterna
-      if ( paymentProviders.size() == 0 ) return true;
-      return paymentProviders.stream().filter( (paymentProvider)-> paymentProvider.getName().equals("Alterna")).count() > 0;
-      `
     }
   ]
 });

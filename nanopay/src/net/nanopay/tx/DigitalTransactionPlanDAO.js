@@ -24,7 +24,21 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
   ],
-
+  
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+    public DigitalTransactionPlanDAO(X x, DAO delegate) {
+      setX(x);
+      setDelegate(delegate);
+      System.err.println("Direct constructor use is deprecated. Use Builder instead.");
+    }
+        `);
+      }
+    }
+  ],
+  
   methods: [
     {
       name: 'put_',

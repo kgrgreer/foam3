@@ -77,13 +77,7 @@ foam.CLASS({
         }
         return ['No status to choose'];
       }
-    },
-    {
-      name: 'institutionNumber',
-      class: 'String',
-      value: "",
-      visibility: 'Hidden'
-    },
+    }
   ],
 
   methods: [

@@ -9,12 +9,13 @@ foam.RELATIONSHIP({
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
-        dao: X.accountDAO.where(
-          foam.mlang.MLang.EQ(net.nanopay.account.Account.CLASS_OF, net.nanopay.account.TrustAccount.class)
-        ),
+        dao: X.accountDAO.where(foam.mlang.MLang.EQ(
+          net.nanopay.account.Account.TYPE,
+          net.nanopay.account.TrustAccount.class.getSimpleName()
+        )),
         placeholder: '--',
-        objToChoice: function(trust) {
-          return [trust.id, trust.id+'-'+trust.name+' ('+trust.denomination+')'];
+        objToChoice: function(account) {
+          return [account.id, account.id+'-'+account.name+' ('+account.denomination+')'];
         }
       });
     },

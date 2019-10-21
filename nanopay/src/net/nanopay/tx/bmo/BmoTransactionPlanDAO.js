@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.bmo',
   name: 'BmoTransactionPlanDAO',
-  extends: 'foam.dao.ProxyDAO',
+  extends: 'net.nanopay.tx.cico.CABankTransactionPlanDAO',
 
   implements: [
     'foam.nanos.auth.EnabledAware'
@@ -79,7 +79,7 @@ foam.CLASS({
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
       
-      if ( ! useBmoAsPaymentProvider(x, (BankAccount) sourceAccount) ) return this.getDelegate().put_(x, obj);
+      if ( ! usePaymentProvider(x, PROVIDER_ID, (BankAccount) sourceAccount, true /* default */ ) ) return this.getDelegate().put_(x, obj);
 
       if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
         logger.warning("Bank account needs to be verified for cashin for bank account id: " + sourceAccount.getId() +
@@ -89,7 +89,7 @@ foam.CLASS({
 
       BmoCITransaction t = new BmoCITransaction.Builder(x).build();
       t.copyFrom(request);
-      t.setTransfers(((BankAccount) sourceAccount).createCITransfers(x, t));
+      t.setTransfers(createCITransfers(x, t));
 
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
@@ -99,7 +99,7 @@ foam.CLASS({
                 destinationAccount instanceof CABankAccount &&
                 sourceAccount.getOwner() == destinationAccount.getOwner() ) {
 
-      if ( ! useBmoAsPaymentProvider(x, (BankAccount) destinationAccount) ) return this.getDelegate().put_(x, obj);
+      if ( ! usePaymentProvider(x, PROVIDER_ID, (BankAccount) destinationAccount, true /* default */) ) return this.getDelegate().put_(x, obj);
 
       if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) { 
         logger.warning("Bank account needs to be verified for cashout for bank account id: " + sourceAccount.getId() +
@@ -109,8 +109,8 @@ foam.CLASS({
 
       Transaction t = new BmoCOTransaction.Builder(x).build();
       t.copyFrom(request);
-      t.setTransfers(((BankAccount) destinationAccount).createCOTransfers(x, t));
-      // TODO: use EFT calculation process
+      t.setTransfers(createCOTransfers(x, t));
+      // TODO: use EFT calculation process - ClearingTimeService
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);
       quote.addPlan(t);
@@ -118,24 +118,6 @@ foam.CLASS({
 
     return getDelegate().put_(x, quote);
     `
-    },
-    {
-      name: 'useBmoAsPaymentProvider',
-      type: 'Boolean',
-      args: [
-        {
-          name: 'x',
-          type: 'foam.core.X'
-        },
-        {
-          name: 'bankAccount',
-          type: 'net.nanopay.bank.BankAccount'
-        }
-      ],
-      javaCode: `
-      ArrayList<PaymentProvider> paymentProviders = PaymentProvider.findPaymentProvider(x, bankAccount);
-      return paymentProviders.stream().filter( (paymentProvider)-> paymentProvider.getName().equals(PROVIDER_ID)).count() > 0;
-      `
     }
   ]
 });
