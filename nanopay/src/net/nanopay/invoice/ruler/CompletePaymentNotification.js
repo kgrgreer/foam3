@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ruler',
-  name: 'CompletePaymentNotification',
+  name: 'CompleteInvoiceNotification',
 
   documentation: 'An action that sends a notification to both sender and receiver of ablii transaction',
 
