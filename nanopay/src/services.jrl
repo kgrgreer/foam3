@@ -152,15 +152,15 @@ p({
     .setJournalName("currencies")
     .setPm(true)
     .setPipelinePm(true)
-    .setOf(net.nanopay.model.Currency.getOwnClassInfo())
+    .setOf(net.nanopay.exchangeable.Currency.getOwnClassInfo())
     .setName("currency")
-    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.model.Currency.COUNTRY})
+    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.Currency.COUNTRY})
     .build();
   """, 
   "client":
   """
   {
-    "of":"net.nanopay.model.Currency",
+    "of":"net.nanopay.exchangeable.Currency",
     "cache":true
   }
   """
@@ -177,15 +177,15 @@ p({
     .setJournalName("currencies")
     .setPm(true)
     .setPipelinePm(true)
-    .setOf(net.nanopay.model.Security.getOwnClassInfo())
+    .setOf(net.nanopay.exchangeable.Security.getOwnClassInfo())
     .setName("security")
-    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.model.Security.NAME})
+    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.Security.NAME})
     .build();
   """, 
   "client":
   """
   {
-    "of":"net.nanopay.model.Denomination",
+    "of":"net.nanopay.exchangeable.Security",
     "cache":true
   }
   """

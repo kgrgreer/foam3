@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.model',
+  package: 'net.nanopay.exchangeable.Currency',
   name: 'Currency',
   extends: 'net.nanopay.exchangeable.Denomination',
 
