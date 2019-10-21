@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 

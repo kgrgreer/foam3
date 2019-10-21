@@ -35,7 +35,7 @@ foam.CLASS({
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
     'net.nanopay.model.Business',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.TransactionLineItem',

@@ -17,7 +17,7 @@ import foam.nanos.logger.Logger;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FixerIOExchangeRate;
 import net.nanopay.fx.FXProvider;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;

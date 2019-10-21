@@ -42,7 +42,7 @@ foam.CLASS({
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.tx.alterna.AlternaCOTransaction',
     'net.nanopay.tx.alterna.AlternaCITransaction'
   ],

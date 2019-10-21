@@ -9,7 +9,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.DigitalAccountService',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
 
     'foam.core.FObject',
     'foam.core.X',

@@ -103,7 +103,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/exchangeable/Denomination' },
   { name: 'net/nanopay/exchangeable/Security' },
-  { name: 'net/nanopay/model/Currency' },
+  { name: 'net/nanopay/exchangeable/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },

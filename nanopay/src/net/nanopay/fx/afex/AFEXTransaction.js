@@ -30,7 +30,7 @@ foam.CLASS({
     'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
