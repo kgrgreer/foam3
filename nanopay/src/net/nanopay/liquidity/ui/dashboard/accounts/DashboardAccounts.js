@@ -126,7 +126,6 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
                     config
                   })
                     .addClass(this.myClass('accounts-table'))

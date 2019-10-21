@@ -33,10 +33,7 @@ foam.CLASS({
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
   ],
-
-  exports: [
-    'digitalAccountDAO'
-  ],
+  
 
   css: `
     ^ {
@@ -85,10 +82,10 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'digitalAccountDAO',
+      targetDAOKey: 'filteredAccountDAO',
       name: 'account',
       factory: function() {
-        this.digitalAccountDAO.limit(1).select().then(a => {
+        this.filteredAccountDAO.limit(1).select().then(a => {
           if ( a.array.length ) this.account = a.array[0].id;
         });
         return net.nanopay.account.Account.ID.value;
@@ -96,7 +93,7 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'digitalAccountDAO',
+      name: 'filteredAccountDAO',
       factory: function() {
         return this.accountDAO.where(this.IsClassOf.create({
           targetClass: this.DigitalAccount
@@ -107,7 +104,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
-      value: 'WEEKLY'
+      value: 'HOURLY'
     },
     {
       class: 'Date',

@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
   imports: [
+    'filteredAccountDAO?',
     'accountDAO',
     'balanceDAO',
     'homeDenomination',
@@ -23,8 +24,9 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
-      expression: function(homeDenomination, fxService, user) {
-        var accountDenominationGroupBy = this.accountDAO
+      expression: function(homeDenomination, fxService, user, filteredAccountDAO, accountDAO) {
+        var daoToUse = filteredAccountDAO ? filteredAccountDAO : accountDAO;
+        var accountDenominationGroupBy = daoToUse
           .select(
             this.GROUP_BY(
               this.Account.DENOMINATION,
