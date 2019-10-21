@@ -211,16 +211,6 @@ foam.CLASS({
               all.add(transfers[j]);
             }
           }
-net.nanopay.account.Account sourceAccount = findSourceAccount(x);
-if ( sourceAccount == null ) {
-  foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-  logger.error("COTransaction.createTransfers findSourceAccount(x) returned null for id", getSourceAccount());
-  foam.dao.DAO dao = (foam.dao.DAO) x.get("localAccountDAO");
-  sourceAccount = (net.nanopay.account.Account) dao.find(getSourceAccount());
-  if ( sourceAccount != null ) {
-    logger.warning("COTransaction.createTransfers localAccountDAO.find returned not null for id", getSourceAccount());
-  }
-}
           all.add(new Transfer.Builder(x)
             .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-Out")
             .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
