@@ -96,9 +96,6 @@ var classes = [
   'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
-  'net.nanopay.exchangeable.Denomination',
-  'net.nanopay.exchangeable.Currency',
-  'net.nanopay.exchangeable.Security',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
   'net.nanopay.model.Identification',
@@ -113,7 +110,10 @@ var classes = [
   'net.nanopay.bank.BankWeekend',
 
   //Exchangeable
-  'net.nanopay.exchangeable.AssetClass'
+  'net.nanopay.exchangeable.Denomination',
+  'net.nanopay.exchangeable.Currency',
+  'net.nanopay.exchangeable.Security',
+  'net.nanopay.exchangeable.AssetClass',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
