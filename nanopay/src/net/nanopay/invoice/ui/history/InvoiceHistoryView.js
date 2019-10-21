@@ -58,10 +58,10 @@ foam.CLASS({
             mdao.put(o);
             return null;
           }
-
+          var condition = status.newValue === self.InvoiceStatus.UNPAID || self.InvoiceStatus.OVERDUE ? true : false;
           if (
             previousStatus &&
-            status.newValue === self.InvoiceStatus.UNPAID &&
+            condition &&
             previousStatus.newValue === self.InvoiceStatus.PROCESSING
           ) {
             var declinedTimestamp = new Date(o.timestamp);
