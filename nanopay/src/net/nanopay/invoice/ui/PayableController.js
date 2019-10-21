@@ -181,14 +181,10 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
               code: function() {
-                this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.expenses.put(this).then((invoice)=> {
-                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
-                    self.notify(self.VOID_SUCCESS, 'success');
-                  }
-                }).catch((err) => {
-                  if ( err ) self.notify(self.VOID_ERROR, 'error');
-                });
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+                  invoice: this
+                }));
               }
             }),
 

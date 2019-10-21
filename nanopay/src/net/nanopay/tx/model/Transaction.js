@@ -135,21 +135,27 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Scheduled',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.SCHEDULED);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.SCHEDULED);
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Pending',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.PENDING);
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Completed',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        return e.EQ(
+          net.nanopay.tx.model.Transaction.STATUS,
+          net.nanopay.tx.model.TransactionStatus.COMPLETED);
       }
     }
   ],
@@ -186,6 +192,7 @@ foam.CLASS({
       getter: function() {
          return this.cls_.name;
       },
+      javaToCSVLabel: 'outputter.outputValue("Transaction Type");',
       javaGetter: `
     return getClass().getSimpleName();
       `,
@@ -218,6 +225,7 @@ foam.CLASS({
       section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
+      javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
       tableWidth: 150
     },
     {
@@ -227,6 +235,7 @@ foam.CLASS({
       visibility: 'RO',
       storageTransient: true,
       section: 'basicInfo',
+      javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
@@ -276,7 +285,8 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
       visibility: 'RO',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
+      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
+      javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
      {
       name: 'invoiceNumber',
@@ -285,9 +295,8 @@ foam.CLASS({
         return this.invoiceId;
       },
       tableCellFormatter: function(value, obj) {
-        var self = this;
-        this.__subSubContext__.invoiceDAO.find(value).then( function( invoice ) {
-          if ( invoice ) self.start().add(invoice.invoiceNumber).end();
+        this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
+          if ( invoice ) this.start().add(invoice.invoiceNumber).end();
         });
       }
     },
@@ -300,6 +309,16 @@ foam.CLASS({
       readPermissionRequired: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
+      javaToCSVLabel: `
+        // Outputting two columns: "this transaction status" and "Returns childrens status"
+        outputter.outputValue("Transaction Status");
+        outputter.outputValue("Transaction State");
+      `,
+      javaToCSV: `
+        // Outputting two columns: "this transaction status" and "Returns childrens status"
+        outputter.outputValue(get_(obj));
+        outputter.outputValue(((Transaction)obj).getState(x));
+      `,
       tableWidth: 130,
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
@@ -339,7 +358,7 @@ foam.CLASS({
       view: function(_, x) {
         return {
           class: 'foam.u2.view.ChoiceView',
-          choices$: x.data.payer$.map(p => p ? [[p, p.toSummary()]] : [])
+          choices$: x.data.payer$.map((p) => p ? [[p, p.toSummary()]] : [])
         };
       },
       storageTransient: true,
@@ -363,7 +382,7 @@ foam.CLASS({
       view: function(_, x) {
         return {
           class: 'foam.u2.view.ChoiceView',
-          choices$: x.data.payee$.map(p => p ? [[p, p.toSummary()]] : [])
+          choices$: x.data.payee$.map((p) => p ? [[p, p.toSummary()]] : [])
         };
       },
       tableCellFormatter: function(value) {
@@ -372,7 +391,7 @@ foam.CLASS({
             .add(value ? value.displayName : 'na')
           .end()
         .end();
-      },
+      }
     },
 
     {
@@ -392,7 +411,22 @@ foam.CLASS({
       name: 'amount',
       label: 'Source Amount',
       section: 'paymentInfo',
-      visibility: 'RO'
+      visibility: 'RO',
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String srcCurrency = ((Transaction)obj).getSourceCurrency();
+        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(srcCurrency);
+        
+        // Outputting two columns: "amount", "Currency"
+          // Hacky way of making get_(obj) into String below
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(srcCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue("Source Amount");
+        outputter.outputValue("Source Currency");
+      `
     },
     {
       class: 'String',
@@ -408,12 +442,12 @@ foam.CLASS({
             destinationCurrency,
             currencyDAO,
             homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
-          ){
+          ) {
             return Promise.all([
               currencyDAO.find(sourceCurrency),
               currencyDAO.find(destinationCurrency)
             ]).then(([srcCurrency, dstCurrency]) => {
-              let output = "";
+              let output = '';
 
               if ( sourceCurrency === destinationCurrency ) {
                 output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
@@ -430,8 +464,8 @@ foam.CLASS({
               }
 
               return output;
-            })
-        }))
+            });
+        }));
       }
     },
     {
@@ -473,7 +507,21 @@ foam.CLASS({
           .start()
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
-      }
+      },
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String dstCurrency = ((Transaction)obj).getDestinationCurrency();
+        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(dstCurrency);
+        
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(dstCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue("Destination Amount");
+        outputter.outputValue("Destination Currency");
+      `
     },
     {
       // REVIEW: processDate and completionDate are Alterna specific?

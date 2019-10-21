@@ -7,6 +7,7 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'java.util.Date',
     'foam.core.FObject',
     'foam.core.X',
     'foam.core.ContextAgent',
@@ -47,7 +48,7 @@ foam.CLASS({
               .append(iv.getSourceCurrency());
 
               StringBuilder rb = new StringBuilder(payee.label())
-              .append(" has revieved your payment ")
+              .append(" has received your payment ")
               .append(" for ")
               .append(currency.format(iv.getAmount()))
               .append(" ")
@@ -62,7 +63,7 @@ foam.CLASS({
               payeeNotification.setUserId(payee.getId());
               payeeNotification.setBody(notificationMsg);
               payeeNotification.setNotificationType("Transaction Initiated");
-              payeeNotification.setIssuedDate(iv.getIssueDate());
+              payeeNotification.setIssuedDate(new Date());
               try {
                 notificationDAO.put_(x, payeeNotification);
               }
@@ -73,7 +74,7 @@ foam.CLASS({
               payerNotification.setUserId(payer.getId());
               payerNotification.setBody(payer_notificationMsg);
               payerNotification.setNotificationType("Transaction Initiated");
-              payerNotification.setIssuedDate(iv.getIssueDate());
+              payerNotification.setIssuedDate(new Date());
               try {
                 notificationDAO.put_(x, payerNotification);
               }

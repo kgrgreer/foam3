@@ -74,7 +74,7 @@ foam.CLASS({
   name: 'USBusinessOnboarding',
   documentation: `Multifunctional model used for business onboarding`,
 
-  ids: ['userId'],
+  ids: ['userId', 'businessId'],
 
   implements: [
     'foam.core.Validatable',
@@ -109,7 +109,7 @@ foam.CLASS({
 
   tableColumns: [
     'userId',
-    'legalName',
+    'businessId',
     'status',
     'created',
     'lastModified'
@@ -232,7 +232,14 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       name: 'businessId',
       section: 'adminReferenceSection',
-      label: 'Business Name'
+      label: 'Business Name',
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.businessId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
+        });
+      }
     },
     {
       class: 'Reference',
@@ -240,16 +247,22 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        this.userId$find.then((user) => {
-          if ( this.userId != n ) return;
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
+        try {
+          this.userId$find.then((user) => {
+            if ( this.userId != n ) return;
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+          });
+        } catch (_) {
+            // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
+            // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        }
       },
       tableCellFormatter: function(id, o) {
         var e = this.start('span').add(id).end();
-        o.userId$find.then(function(b) {
-          e.add(' - ', b.businessName || b.organization);
+        o.userId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -291,9 +304,9 @@ foam.CLASS({
       hidden: true,
       getter: function() {
         return this.userId$find.then((user) => {
-          return user.lastName ? user.firstName + " " + user.lastName : user.firstName;
+          if ( ! user ) return;
+          return user.lastName ? user.firstName + ' ' + user.lastName : user.firstName;
         });
-
       }
     },
     {
