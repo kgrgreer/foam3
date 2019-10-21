@@ -714,7 +714,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a day before now.'
+          errorString: 'Must be at least one day in the past.'
         }
       ]
     },

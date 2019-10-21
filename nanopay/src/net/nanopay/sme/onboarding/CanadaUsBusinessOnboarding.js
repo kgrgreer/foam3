@@ -51,11 +51,11 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      isAvailable: function(signingOfficer) { return signingOfficer; }
     },
   ],
 
-  properties: [ 
+  properties: [
     {
       name: 'welcome',
       section: 'gettingStartedSection',
@@ -134,7 +134,7 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['signingOfficer','businessFormationDate'],
+          args: ['signingOfficer', 'businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
@@ -144,7 +144,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a day before now.'
+          errorString: 'Must be at least one day in the past.'
         }
       ]
     },
