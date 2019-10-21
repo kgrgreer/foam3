@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'expiryMs',
-      value: 15 * 1000 // 150 seconds
+      value: 15 * 1000 // 15 seconds
     }
   ],
 
@@ -55,7 +55,7 @@ foam.CLASS({
 
         // TODO: check permission to create authToken for other user
 
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) getTokenDAO();
         Token token = (Token) tokenDAO.put(
           new Token.Builder(x)
             .setUserId(user.getId())
