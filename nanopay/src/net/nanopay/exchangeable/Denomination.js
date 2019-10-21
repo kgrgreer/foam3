@@ -25,36 +25,16 @@ foam.CLASS({
       name: 'alphabeticCode',
       label: 'Code',
       documentation: 'The alphabetic code associated with the asset. Used as an ID.',
-      required: true
+      required: true,
+      aliases: [
+        'id'
+      ]
     },
     {
       class: 'Int',
       name: 'precision',
       documentation: 'Defines the number of digits that come after the decimal point. ',
       required: true
-    }
-  ],
-
-  methods: [
-    {
-      name: 'toSummary',
-      documentation: `When using a reference to the currencyDAO, the labels associated
-        to it will show a chosen property rather than the first alphabetical string
-        property. In this case, we are using the alphabeticCode.
-      `,
-      code: function(x) {
-        return this.alphabeticCode;
-      }
-    },
-    {
-      name: 'format',
-      args: [
-        {
-          class: 'foam.core.Currency',
-          name: 'amount'
-        }
-      ],
-      type: 'String'
     }
   ]
 });

@@ -116,6 +116,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      documentation: `When using a reference to the currencyDAO, the labels associated
+        to it will show a chosen property rather than the first alphabetical string
+        property. In this case, we are using the alphabeticCode.
+      `,
+      code: function(x) {
+        return this.alphabeticCode;
+      }
+    },
+    {
       name: 'format',
       code: function(amount) {
         /**
