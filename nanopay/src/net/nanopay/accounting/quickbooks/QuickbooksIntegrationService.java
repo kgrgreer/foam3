@@ -35,7 +35,7 @@ import net.nanopay.accounting.quickbooks.model.QuickbooksInvoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 
 import java.math.BigDecimal;
 import java.net.URL;

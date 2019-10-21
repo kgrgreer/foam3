@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;

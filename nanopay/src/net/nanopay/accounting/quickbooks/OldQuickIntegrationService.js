@@ -30,7 +30,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.accounting.AccountingBankAccount',
     'net.nanopay.accounting.AccountingContactEmailCache',
     'net.nanopay.accounting.ResultResponse',
