@@ -221,6 +221,8 @@ var classes = [
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
+  'net.nanopay.sme.OnboardingPaymentOpsNotification',
+  'net.nanopay.sme.ruler.PaymentOpsNotification',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 

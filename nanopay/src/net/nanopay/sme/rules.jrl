@@ -1,0 +1,15 @@
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send notification to payment group when a user sign up",
+    "priority":100,
+    "ruleGroup":"smeBusinessRegistration",
+    "documentation":"Sends notification when request payment is made.",
+    "daoKey":"smeBusinessRegistrationDAO",
+    "operation":0,
+    "after":true,
+    "action":{
+        "class":"net.nanopay.sme.ruler.PaymentOpsNotification"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
