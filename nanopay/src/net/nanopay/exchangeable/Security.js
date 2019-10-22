@@ -3,8 +3,8 @@ foam.CLASS({
   name: 'Security',
   extends: 'net.nanopay.exchangeable.Denomination',
 
-  documentation: `The base model for storing, using and managing currency information.
-    All class properties require a return of *true* in order to pass.`,
+  documentation: `The base model for storing, using and managing securities information. (such as
+  stocks bonds etc.`,
 
   ids: [
     'alphabeticCode'
@@ -20,7 +20,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      documentation: `When using a reference to the securityDAO, the labels associated
+      documentation: `When using a reference to the securitiesDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string
         property. In this case, we are using the alphabeticCode.
       `,
