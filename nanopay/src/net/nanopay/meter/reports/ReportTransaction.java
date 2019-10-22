@@ -133,7 +133,7 @@ public class ReportTransaction {
             }),
             MLang.LTE(Transaction.CREATED, endDate)
           })
-        ).orderBy(Transaction.INVOICE_ID).select(new ArraySink())).getArray();
+        ).select(new ArraySink())).getArray();
 
         // List all transactions
         for (Object t : transactions) {
