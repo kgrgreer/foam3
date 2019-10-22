@@ -31,6 +31,7 @@ foam.CLASS({
     'java.io.IOException',
     'java.time.LocalDateTime',
     'java.time.ZoneId',
+    'java.time.ZoneOffset',
     'java.time.temporal.ChronoUnit',
     'java.util.Calendar',
     'java.util.Date',
@@ -102,7 +103,7 @@ foam.CLASS({
           throw new RuntimeException("Token has already been used");
         }
 
-        LocalDateTime expiry = tokenResult.getExpiry().toInstant().
+        LocalDateTime expiry = tokenResult.getExpiry().toInstant()
           .atZone(ZoneOffset.UTC).toLocalDateTime();
         if ( expiry.isBefore(LocalDateTime.now()) ) {
           throw new RuntimeException("Token has expired");
