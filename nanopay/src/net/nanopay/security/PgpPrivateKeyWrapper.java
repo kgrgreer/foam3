@@ -52,18 +52,18 @@ public class PgpPrivateKeyWrapper implements PrivateKey {
 
     PGPSecretKey pgpSecKey = null;
     Iterator<PGPSecretKeyRing> rIt = pgpSec.getKeyRings();
-    while (pgpSecKey == null && rIt.hasNext()) {
+    while ( pgpSecKey == null && rIt.hasNext() ) {
       PGPSecretKeyRing kRing = rIt.next();
       Iterator<PGPSecretKey> kIt = kRing.getSecretKeys();
-      while (pgpSecKey == null && kIt.hasNext()) {
+      while ( pgpSecKey == null && kIt.hasNext() ) {
         PGPSecretKey k = kIt.next();
-        if (k.isMasterKey()) {
+        if ( k.isMasterKey() ) {
           pgpSecKey = k;
         }
       }
     }
 
-    if (pgpSecKey == null) {
+    if ( pgpSecKey == null ) {
       return null;
     }
 
