@@ -637,7 +637,8 @@ p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorUserReferenceDAO",     "
 p({"class":"foam.nanos.boot.NSpec", "name":"encryptedUserDAO",                 "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, foam.nanos.auth.User.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedUsers\"))));","client":"{\"of\":\"foam.nanos.auth.User\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"encryptedBankAccountDAO",          "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, net.nanopay.bank.BankAccount.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedBankAccounts\"))));","client":"{\"of\":\"net.nanopay.bank.BankAccount\"}"})
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"privateKeyDAO",                    
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"privateKeyDAO",                    
   "serviceScript":"""
     easyDAO = new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
@@ -647,10 +648,13 @@ p({
       .setJournalName(\"privateKeys\")
       .setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo())
       .build();
-    pgpPrivateKeyDAO = new net.nanopay.security.PGPPrivateKeyDAO.Builder(x).setDelegate(easyDAO);
+    pgpPrivateKeyDAO = new net.nanopay.security.PGPPrivateKeyDAO.Builder(x)
+      .setDelegate(easyDAO)
+      .build();
     privateKeyDAO = new net.nanopay.security.PrivateKeyDAO.Builder(x)
       .setAlias(\"net.nanopay.security.PrivateKeyDAO\")
-      .setDelegate(pgpPrivateKeyDAO);
+      .setDelegate(pgpPrivateKeyDAO)
+      .build();
     return privateKeyDAO;
   """
 })
