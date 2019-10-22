@@ -118,24 +118,24 @@ foam.CLASS({
       copyClearingTimesFrom(other);
       `
     },
-    {
-      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
-    },
+    // {
+    //   documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
+    //   name: 'canReverseTransfer',
+    //   args: [
+    //     {
+    //       name: 'x',
+    //       type: 'Context'
+    //     },
+    //     {
+    //       name: 'oldTxn',
+    //       type: 'net.nanopay.tx.model.Transaction'
+    //     }
+    //   ],
+    //   type: 'Boolean',
+    //   javaCode: `
+    //     return false;
+    //   `
+    // },
     {
       name: 'createTransfers',
       args: [
@@ -175,7 +175,7 @@ foam.CLASS({
           for ( int i = 0; i < transfers.length; i++ ) {
             all.add(transfers[i]);
           }
-        }
+      }
       return (Transfer[]) all.toArray(new Transfer[0]);
       `
     },
