@@ -348,11 +348,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       java.util.List<BusinessOnboarding> onboardings = businessOnBoardingSink.getArray();
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
-        List subList2 = new List(true, false, 20);
         for(BusinessOnboarding onboarding: onboardings) {
-          subList2.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), onboarding.getCreated())));
+          list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), onboarding.getLastModified())));
         }
-        list.add(subList2);
       }
       document.add(list);
       document.add(Chunk.NEWLINE);
