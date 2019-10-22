@@ -76,6 +76,8 @@ foam.CLASS({
           throw new RuntimeException("Private key not found");
         }
 
+        if ( entry.getPrivateKey() != null ) return entry;
+
         try {
           // initialize cipher for key unwrapping
           KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");
@@ -110,6 +112,9 @@ foam.CLASS({
         if ( privateKey == null ) {
           throw new RuntimeException("Private key not found");
         }
+        
+        entry.setAlias(getAlias()); 
+        if ( privateKey instanceof PgpPrivateKeyWrapper ) return getDelegate().put_(x, entry);
 
         try {
           // initialize cipher for key wrapping
