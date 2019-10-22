@@ -27,13 +27,13 @@ public class AuthTokenWebAgent implements WebAgent {
     User user = (User) localUserDAO.find(Long.valueOf(userId));
 
     try {
-      if (user == null) {
+      if ( user == null ) {
         throw new RuntimeException("User not found");
       }
 
       Map<String, Object> parameters = new HashMap<>();
       parameters.put("callbackUrl", callbackUrl);
-      if (!SafetyUtil.isEmpty(businessId)) {
+      if ( ! SafetyUtil.isEmpty(businessId) ) {
         parameters.put("businessId", Long.valueOf(businessId));
       }
       result = tokenService.generateTokenWithParameters(x, user, parameters);

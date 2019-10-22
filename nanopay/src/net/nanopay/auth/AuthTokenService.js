@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.dao.HTTPSink',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
@@ -46,7 +46,7 @@ foam.CLASS({
         if ( ! auth.check(x, "service.run.authToken") ) {
           throw new AuthorizationException();
         }
-        
+
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         user = (User) localUserDAO.find(user);
         if ( user == null ) {
@@ -111,7 +111,7 @@ foam.CLASS({
           session.setUserId(businessId);
           session.setAgentId(userResult.getId());
         }
-        localSessionDAO.put(session);
+        session = (Session) localSessionDAO.put(session);
         session.setContext(session.applyTo(session.getContext()));
 
         // set token processed to true
