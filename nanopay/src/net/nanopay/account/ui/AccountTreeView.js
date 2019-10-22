@@ -115,28 +115,40 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
       name: 'accounts',
-      of: 'net.nanopay.account.Account',
-      visibilityExpression: function(canvasContainer) {
-        return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
-      },
-      postSet: function(_, n){
-        this.scrollToAccount(n);
-      },
-      view: function(_, x) {
+      expression: function(cview){
+        console.log(cview);
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'selectedRoot',
+      of :'net.nanopay.account.Account',
+      view: function(_,x){
         var self = x.data;
         var prop = this;
         var v = foam.u2.view.ReferenceView.create(null, x);
         v.fromProperty(prop);
-        v.dao = v.dao.where(self.OR(
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.DigitalAccount
-          }),
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.AggregateAccount
-          })
-        ));
+        v.dao = v.dao.where(
+          self.AND(
+            self.EQ(
+              // TODO: hiding the automatically created default virtual account until later
+              net.nanopay.account.Account.IS_DEFAULT, false
+            ),
+            self.OR(
+              foam.mlang.predicate.IsClassOf.create({
+                targetClass: self.DigitalAccount
+              }),
+              foam.mlang.predicate.IsClassOf.create({
+                targetClass: self.AggregateAccount
+              })
+            ),
+            self.EQ(
+              net.nanopay.account.Account.PARENT,
+              0
+            )
+          )
+        );
         return v;
       }
     },
@@ -189,6 +201,9 @@ foam.CLASS({
             .start().addClass(this.myClass('selector'))
               .add(this.ACCOUNTS)
             .end()
+            .start().addClass(this.myClass('selector'))
+              .add(this.SELECTED_ROOT)
+            .end()
           .endContext()
           .start().addClass(this.myClass('title'))
             .add(this.VIEW_HEADER)
@@ -215,20 +230,24 @@ foam.CLASS({
           .end()
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-          .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
-            var v = self.AccountTreeGraph.create({ data: a.array[0] });
-            self.cview = self.ZoomMapView.create({
+          .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
+            var v = this.AccountTreeGraph.create({
+              data: a,
+            });
+            
+            this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
-              width: self.el().clientWidth,
+              width: this.el().clientWidth,
               viewBorder: '#d9170e',
               navBorder: 'black',
               handleHeight: '10',
-              handleColor: '#406dea'
+              handleColor: '#406dea',
             });
-            return self.cview;
-          })
+            return this.cview;
+          }))
         )
+
         .end()
     },
 
