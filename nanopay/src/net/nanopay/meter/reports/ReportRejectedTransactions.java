@@ -65,7 +65,7 @@ public class ReportRejectedTransactions extends AbstractReport {
           MLang.EQ(Transaction.STATUS, TransactionStatus.FAILED)
         )
       )
-    ).select(sink);
+    ).orderBy(Transaction.INVOICE_ID).select(sink);
 
     return sink.getCsv();
   }
