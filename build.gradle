@@ -40,7 +40,7 @@ dependencies {
 	compile "com.jcraft:jsch:0.1.54"
 	compile "org.apache-extras.beanshell:bsh:2.0b6"
 	compile "com.google.api-client:google-api-client:1.22.0"
-    compile "org.bouncycastle:bcpg-jdk15on:1.57"
+  compile "org.bouncycastle:bcpg-jdk15on:1.57"
 	compile "org.bouncycastle:bcpkix-jdk15on:1.57"
 	compile "org.bouncycastle:bcprov-jdk15on:1.57"
 	compile "org.mindrot:jbcrypt:0.3m"
