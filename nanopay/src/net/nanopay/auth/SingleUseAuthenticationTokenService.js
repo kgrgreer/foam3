@@ -1,9 +1,18 @@
 foam.CLASS({
   package: 'net.nanopay.auth',
-  name: 'AuthTokenService',
+  name: 'SingleUseAuthenticationTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  documentation: 'Implementation of Token Service used for authentication',
+  documentation: `Implementation of Token Service used for creating a short-lived,
+    single-use tokens that allow clients to authenticate as a given user.
+
+    One use case is to generate a single-use token that can be included in a
+    link's URL. The token will allow the user to authenticate when following the
+    link.
+
+    The key feature is that the token is single-use, so if the token is
+    exposed in the URL in cleartext, an attacker can't re-use it to impersonate
+    the user it was meant for.`,
 
   imports: [
     'tokenDAO'
@@ -43,7 +52,7 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "service.run.authToken") ) {
+        if ( ! auth.check(x, "service.run.authenticationToken") ) {
           throw new AuthorizationException();
         }
 

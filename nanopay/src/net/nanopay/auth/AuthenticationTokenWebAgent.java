@@ -12,11 +12,11 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthTokenWebAgent implements WebAgent {
+public class AuthenticationTokenWebAgent implements WebAgent {
   @Override
   public void execute(X x) {
     PrintWriter out = x.get(PrintWriter.class);
-    TokenService tokenService = (TokenService) x.get("authTokenService");
+    TokenService tokenService = (TokenService) x.get("authenticationTokenService");
     HttpServletRequest request = x.get(HttpServletRequest.class);
     String callbackUrl = request.getParameter("callbackUrl");
     String userId = request.getParameter("userId");

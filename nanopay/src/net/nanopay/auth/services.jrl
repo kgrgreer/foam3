@@ -1,11 +1,11 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"resetPasswordToken",                "serve":true,  "authenticate": false, "serviceClass":"net.nanopay.auth.NanopayResetPasswordTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
 p({
    "class": "foam.nanos.boot.NSpec",
-   "name": "authTokenService",
+   "name": "authenticationTokenService",
    "serve": true,
    "authenticate": false,
-   "authNotes": "This service does not require authentication to access because we need users to be able to process the auth token.",
-   "serviceClass": "net.nanopay.auth.AuthTokenService",
+   "authNotes": "This service does not require authentication to access because we need users to be able to process the token (TokenService.processToken). However, when generating a token (TokenService.generateTokenWithParameters) 'service.run.authenticationToken' permission is required.",
+   "serviceClass": "net.nanopay.auth.SingleUseAuthenticationTokenService",
    "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
    "client": """
       {"class": "foam.nanos.auth.token.ClientTokenService"}
@@ -13,8 +13,8 @@ p({
 })
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "authToken",
+  "name": "authenticationToken",
   "serve": false,
   "authenticate": true,
-  "serviceClass": "net.nanopay.auth.AuthTokenWebAgent"
+  "serviceClass": "net.nanopay.auth.AuthenticationTokenWebAgent"
 })

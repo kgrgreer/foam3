@@ -513,7 +513,7 @@ foam.CLASS({
 
         // Process auth token
         if ( locHash === '#auth' && ! self.loginSuccess ) {
-          self.client.authTokenService.processToken(null, null,
+          self.client.authenticationTokenService.processToken(null, null,
             searchParams.get('token')).then((result) => {
               if ( result === true ) {
                 location = '/';
