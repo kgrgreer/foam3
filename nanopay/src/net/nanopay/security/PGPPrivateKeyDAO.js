@@ -7,17 +7,18 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.SecurityUtil',
-    'org.bouncycastle.util.encoders.Base64',
+
+    'java.io.ByteArrayInputStream',
+    'java.io.InputStream',
+    'java.io.IOException',
+    'java.security.KeyStore',
+    'java.security.PrivateKey',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
-    'java.security.KeyStore',
-    'java.security.PrivateKey',
-    'java.io.IOException',
-    'java.io.ByteArrayInputStream',
-    'java.io.InputStream',
 
     'org.bouncycastle.openpgp.PGPPrivateKey',
+    'org.bouncycastle.util.encoders.Base64',
   ],
 
   methods: [
@@ -46,16 +47,15 @@ foam.CLASS({
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.DECRYPT_MODE, key);
 
-          // unwrap private key
+          // decrypt private key
           byte[] encryptedBytes = Base64.decode(entry.getEncryptedPrivateKey());
           byte[] decodedBytes = cipher.doFinal(encryptedBytes);
           InputStream privateKeyIs = new ByteArrayInputStream(decodedBytes);
-          PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(PgpPrivateKeyWrapper.findSecretKey(privateKeyIs, "nanopay".toCharArray()));
+          PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(PgpPrivateKeyWrapper.findSecretKey(privateKeyIs, entry.getParaphrase().toCharArray()));
           entry.setPrivateKey(privateKey);
           
           return entry;
         } catch ( Throwable t ) {
-           t.printStackTrace();
           throw new RuntimeException(t);
         }
       `

@@ -20,6 +20,11 @@ foam.CLASS({
       documentation: 'Alias of the encrypting key'
     },
     {
+      class: 'String',
+      name: 'paraphrase',
+      documentation: 'Paraphrase for key if any'
+    },    
+    {
       class: 'Object',
       name: 'privateKey',
       javaType: 'java.security.PrivateKey',
