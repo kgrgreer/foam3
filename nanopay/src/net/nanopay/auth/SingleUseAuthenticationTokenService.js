@@ -92,20 +92,23 @@ foam.CLASS({
       name: 'processToken',
       javaCode: `
         DAO tokenDAO = (DAO) getTokenDAO();
-        Calendar calendar = Calendar.getInstance();
+        Token tokenResult = (Token) tokenDAO.find(EQ(Token.DATA, token));
 
-        List data = ((ArraySink) tokenDAO.where(AND(
-          EQ(Token.PROCESSED, false),
-          GT(Token.EXPIRY, calendar.getTime()),
-          EQ(Token.DATA, token))
-        ).limit(1).select(new ArraySink())).getArray();
-
-        if ( data.size() == 0 ) {
+        if ( tokenResult == null ) {
           throw new RuntimeException("Token not found");
         }
 
+        if ( tokenResult.getProcessed() ) {
+          throw new RuntimeException("Token has already been used");
+        }
+
+        LocalDateTime expiry = tokenResult.getExpiry().toInstant().
+          .atZone(ZoneOffset.UTC).toLocalDateTime();
+        if ( expiry.isBefore(LocalDateTime.now()) ) {
+          throw new RuntimeException("Token has expired");
+        }
+
         // find user from token
-        Token tokenResult = (Token) data.get(0);
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         User userResult = (User) localUserDAO.find(tokenResult.getUserId());
