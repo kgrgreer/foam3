@@ -21,6 +21,8 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
+import net.nanopay.documents.AcceptanceDocument;
+import net.nanopay.documents.UserAcceptanceDocument;
 import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
@@ -128,6 +130,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
     DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO    acceptanceDocumentDAO = (DAO) getX().get("acceptanceDocumentDAO");
+    DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
     ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink());
@@ -349,7 +353,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
         for(BusinessOnboarding onboarding: onboardings) {
-          list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), onboarding.getLastModified())));
+          AcceptanceDocument acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO.find(onboarding.getDualPartyAgreement());
+          UserAcceptanceDocument userAcceptanceDocument = acceptanceDocument == null ? null : (UserAcceptanceDocument) userAcceptanceDocumentDAO.find(AND(EQ(UserAcceptanceDocument.USER, onboarding.getUserId())));//, EQ(UserAcceptanceDocument.ACCEPTED_DOCUMENT, acceptanceDocument.getId())
+          list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), userAcceptanceDocument == null ? "" : userAcceptanceDocument.getLastModified())));
         }
       }
       document.add(list);
