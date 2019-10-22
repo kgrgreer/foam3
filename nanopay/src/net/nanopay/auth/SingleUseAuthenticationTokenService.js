@@ -62,7 +62,10 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
-        // TODO: check permission to create authToken for other user
+        // Check spid.create.<spid> permission to create an authentication token
+        if ( ! auth.check(x, "spid.create." + user.getSpid()) ) {
+          throw new AuthorizationException();
+        }
 
         DAO tokenDAO = (DAO) getTokenDAO();
         Token token = (Token) tokenDAO.put(
