@@ -227,16 +227,17 @@ foam.CLASS({
               all.add(transfers[j]);
             }
           }
-net.nanopay.account.Account sourceAccount = findSourceAccount(x);
-if ( sourceAccount == null ) {
-  foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-  logger.error("COTransaction.createTransfers findSourceAccount(x) returned null for id", getSourceAccount());
-  foam.dao.DAO dao = (foam.dao.DAO) x.get("localAccountDAO");
-  sourceAccount = (net.nanopay.account.Account) dao.find(getSourceAccount());
-  if ( sourceAccount != null ) {
-    logger.warning("COTransaction.createTransfers localAccountDAO.find returned not null for id", getSourceAccount());
-  }
-}
+
+          BankAccount bankAccount = (BankAccount) findDestinationAccount(x);
+          if ( bankAccount == null ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (findDestinationAccount).", this);
+            bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(getDestinationAccount());
+            if ( bankAccount == null ) {
+              logger.error(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (localAccountDAO)", this);
+            }
+          }
+          TrustAccount trustAccount = TrustAccount.find(x, bankAccount, getInstitutionNumber());
           all.add(new Transfer.Builder(x)
             .setDescription(trustAccount.getName()+" Cash-Out")
             .setAccount(trustAccount.getId())
