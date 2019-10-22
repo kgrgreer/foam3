@@ -480,6 +480,7 @@ var classes = [
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
+  'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
