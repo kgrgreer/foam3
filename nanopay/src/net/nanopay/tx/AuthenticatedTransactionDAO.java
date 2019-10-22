@@ -130,11 +130,25 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    Transaction t = (Transaction) getDelegate().find_(x, id);
+    Transaction t = (Transaction) getDelegate().find_(getX(), id);
+    if ( t == null ) {
+      return t;
+    }
+
+    Logger logger = (Logger) x.get("logger");
+    Account destinationAccount = t.findDestinationAccount(x);
+    if ( destinationAccount == null ) {
+      logger.error(this.getClass().getSimpleName(), id, "destination account", t.getDestinationAccount(), "not found.", t);
+    }
+    Account sourceAccount = t.findSourceAccount(x);
+    if ( sourceAccount == null ) {
+      logger.error(this.getClass().getSimpleName(), id, "source account", t.getSourceAccount(), "not found.", t);
+    }
+    logger.error(this.getClass().getSimpleName(), id, "user", (user == null) ? "null" : user.getId());
+
     if ( t != null && t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
-
     return t;
   }
 
