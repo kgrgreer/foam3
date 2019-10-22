@@ -5,7 +5,7 @@ p({
    "serve": true,
    "authenticate": false,
    "authNotes": "This service does not require authentication to access because we need users to be able to process the token (TokenService.processToken). However, when generating a token (TokenService.generateTokenWithParameters) 'service.run.authenticationToken' permission is required.",
-   "serviceClass": "net.nanopay.auth.SingleUseAuthenticationTokenService",
+   "serviceClass": "net.nanopay.auth.OneTimeAuthenticationTokenService",
    "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
    "client": """
       {"class": "foam.nanos.auth.token.ClientTokenService"}

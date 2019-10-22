@@ -1,10 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.auth',
-  name: 'SingleUseAuthenticationTokenService',
+  name: 'OneTimeAuthenticationTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  documentation: `Implementation of Token Service used for creating a short-lived,
-    single-use tokens that allow clients to authenticate as a given user.
+  documentation: `Implementation of Token Service used for creating a
+    short-lived, single-use (aka. one-time) tokens that allow clients to
+    authenticate as a given user.
 
     One use case is to generate a single-use token that can be included in a
     link's URL. The token will allow the user to authenticate when following the
