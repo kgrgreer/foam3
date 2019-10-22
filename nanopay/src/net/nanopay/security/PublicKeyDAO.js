@@ -22,6 +22,7 @@ foam.CLASS({
           throw new RuntimeException("Public key not found");
         }
 
+        // A decorator lower down in the chain might have already decoded the public key
         if ( entry.getPublicKey() != null ) return entry;
 
         try {
