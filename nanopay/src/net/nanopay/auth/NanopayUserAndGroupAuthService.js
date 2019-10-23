@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.auth.User',
     'foam.nanos.session.Session',
     'foam.util.Password',
@@ -67,6 +68,9 @@ foam.CLASS({
           throw new AuthenticationException("User group disabled");
         }
 
+        // validate the password
+        super.validatePassword(x, user, newPassword);
+
         // old password does not match
         if ( ! Password.verify(oldPassword, user.getPassword()) ) {
           throw new RuntimeException("Old password is incorrect");
@@ -90,7 +94,6 @@ foam.CLASS({
       name: 'validatePassword',
       javaCode: `
         PasswordEntropy passwordEntropy = (PasswordEntropy) getPasswordEntropyService();
-
         if ( SafetyUtil.isEmpty(potentialPassword) ) {
           throw new RuntimeException("Password is required");
         }
