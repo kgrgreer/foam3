@@ -134,9 +134,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
-    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink());
-    canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(USBusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
+    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(
+      AND(
+        EQ( BusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(BusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(new ArraySink());
+    canadaUsBusinessOnboardingDAO.where(
+      AND(
+        EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(businessOnBoardingSink);
+    uSBusinessOnboardingDAO.where(
+      AND(
+        EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(USBusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(businessOnBoardingSink);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -202,7 +217,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
     String baseCurrency;
-    String internationalTransactions;
+    String internationalTransactions = "No";
     String purposeOfTransactions;
     String annualDomesticTransactionAmount;
     String annualDomesticVolume;
@@ -212,16 +227,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
 
     if ( isBusinessSet && business.getSuggestedUserTransactionInfo() != null ) {
-      internationalTransactions = "No";
-
-      for(Object onboarding: onboardings) {
-
-        if(onboarding instanceof CanadaUsBusinessOnboarding) {
-          internationalTransactions = "Yes";
-          break;
-        }
-      }
-
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
@@ -323,6 +328,32 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       domesticSubList.add(new ListItem("Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
       domesticSubList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
+
+      if( onboardings.size() != 0) {
+        list.add(new ListItem("Compliance related timespans:"));
+        for(Object onboarding: onboardings) {
+
+          if(internationalTransactions.equals("No") && (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding)) {
+            internationalTransactions = "Yes";
+          }
+
+          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
+          java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
+          for(UserAcceptanceDocument doc: documents) {
+
+            User user = doc.findUser(x);
+            AcceptanceDocument accDoc = doc.findAcceptedDocument(x);
+
+            list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
+              accDoc.getTitle(),
+              user.label(),
+              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId(),
+              business.getAddress().getCountryId(),
+              doc.getLastModified())));
+          }
+        }
+      }
+
       document.add(Chunk.NEWLINE);
       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
       document.add(Chunk.NEWLINE);
@@ -367,20 +398,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(subList);
       }
 
-      if( onboardings.size() != 0) {
-        list.add(new ListItem("Compliance related timespans:"));
-        for(Object onboarding: onboardings) {
-          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
-          java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
-          for(UserAcceptanceDocument doc: documents) {
-            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s",
-                              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId(),
-                              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId(),
-                              business.getAddress().getCountryId(),
-                              doc.getLastModified())));
-          }
-        }
-      }
       document.add(list);
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
