@@ -43,7 +43,7 @@ foam.CLASS({
           || ! axioms.contains(getNameProperty())
         ) {
           ((Logger) getLogger()).debug(
-            String.format("%s/%s is not a property on %s.",
+            String.format("%s/%s property pair on %s is missing.",
               getReferenceProperty().getName(),
               getNameProperty().getName(),
               obj.getClass().getCanonicalName())
