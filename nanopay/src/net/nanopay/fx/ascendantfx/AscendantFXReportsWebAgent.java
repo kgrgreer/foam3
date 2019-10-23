@@ -199,7 +199,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       sourceOfFunds = "N/A";
     }
 
-    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
     String baseCurrency;
     String internationalTransactions;
@@ -292,7 +291,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
-      list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
         String otherPurposeOfTransactions;
