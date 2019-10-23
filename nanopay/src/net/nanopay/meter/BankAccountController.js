@@ -50,9 +50,9 @@ foam.CLASS({
             this.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({ tableWidth: 120 }),
             this.BankAccount.STATUS.clone().copyFrom({ tableWidth: 110 }),
             foam.core.String.create({
-              name: 'OwnerType',
+              name: 'ownerType',
               tableCellFormatter: function(_, obj) {
-                self.userDAO.find(obj.owner).then((user) => {
+                obj.owner$find.then((user) => {
                   this.add(user.cls_.name);
                 });
               }
