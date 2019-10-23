@@ -130,7 +130,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
     DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
-    DAO    acceptanceDocumentDAO = (DAO) getX().get("acceptanceDocumentDAO");
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
@@ -353,9 +352,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
         for(BusinessOnboarding onboarding: onboardings) {
-          AcceptanceDocument acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO.find(onboarding.getDualPartyAgreement());
-          UserAcceptanceDocument userAcceptanceDocument = acceptanceDocument == null ? null : (UserAcceptanceDocument) userAcceptanceDocumentDAO.find(AND(EQ(UserAcceptanceDocument.USER, onboarding.getUserId())));//, EQ(UserAcceptanceDocument.ACCEPTED_DOCUMENT, acceptanceDocument.getId())
-          list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), userAcceptanceDocument == null ? "" : userAcceptanceDocument.getLastModified())));
+          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding.getUserId())).select(new ArraySink());
+          java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
+          for(UserAcceptanceDocument doc: documents) {
+            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), doc.getLastModified())));
+          }
         }
       }
       document.add(list);
