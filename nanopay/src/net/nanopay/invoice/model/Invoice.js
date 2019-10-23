@@ -253,19 +253,6 @@ foam.CLASS({
         'destinationAmount'
       ],
       required: true,
-      tableCellFormatter: function(value, invoice) {
-        // Needed to show amount value for old invoices that don't have destination currency set
-        if ( ! invoice.destinationCurrency ) {
-          this.add(value);
-        }
-        this.__subContext__.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            this.start()
-              .add(currency.format(value))
-            .end();
-          });
-      },
       tableWidth: 120,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -287,14 +274,6 @@ foam.CLASS({
       name: 'sourceAmount',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
       `,
-      tableCellFormatter: function(value, invoice) {
-        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
-          .then(function(currency) {
-            this.start()
-              .add(currency.format(value))
-            .end();
-        }.bind(this));
-      }
     },
     {
       class: 'Reference',
@@ -570,6 +549,17 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      this.AMOUNT.currency$ = this.slot(function(destinationCurrency) {
+        return destinationCurrency;
+      });
+
+      this.SOURCE_AMOUNT.currency$ = this.slot(function(sourceCurrency) {
+        return sourceCurrency;
+      });
+    },
     {
       name: `validate`,
       args: [

@@ -211,27 +211,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'Currency',
       name: 'balance',
       label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
-            })
-        }));
-      },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -243,7 +228,7 @@ foam.CLASS({
       tableWidth: 145
     },
     {
-      class: 'Long',
+      class: 'Currency',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -252,27 +237,7 @@ foam.CLASS({
       `,
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        var self = this;
 
-        this.add(
-          obj.slot(homeDenomination => {
-            return Promise.all([
-              obj.denomination == homeDenomination ?
-                Promise.resolve(1) :
-                obj.fxService.getFXRate(obj.denomination, homeDenomination,
-                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
-              obj.findBalance(self.__subSubContext__),
-              self.__subSubContext__.currencyDAO.find(homeDenomination)
-            ]).then(arr => {
-              let [r, b, c] = arr;
-              var displayBalance = c.format(Math.floor((b || 0) * r));
-              self.tooltip = displayBalance;
-              return displayBalance;
-            })
-          })
-        );
-      },
       tableWidth: 145
     },
     {
@@ -305,6 +270,21 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      this.BALANCE.currency$ = this.slot(function(denomination) {
+        return denomination;
+      });
+
+      this.HOME_BALANCE.currency$ = this.slot(function(denomination) {
+        return denomination;
+      })
+
+      this.HOME_BALANCE.homeCurrency$ = this.slot(function(homeDenomination) {
+        return homeDenomination;
+      })
+    },
     {
       name: 'toSummary',
       documentation: `
