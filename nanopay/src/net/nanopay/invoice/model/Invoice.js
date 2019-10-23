@@ -261,8 +261,10 @@ foam.CLASS({
         this.__subContext__.currencyDAO
           .find(invoice.destinationCurrency)
           .then((currency) => {
+            var formatted = currency.format(value);
+            this.tooltip = formatted;
             this.start()
-              .add(currency.format(value))
+              .add(formatted)
             .end();
           });
       },
