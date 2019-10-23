@@ -136,7 +136,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink());
     canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink);
     uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink);
-    
+
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
@@ -207,12 +207,22 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String annualDomesticVolume;
     String annualRevenue;
     String firstTradeDateDomestic;
-    
+
+    java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
 
     if ( isBusinessSet && business.getSuggestedUserTransactionInfo() != null ) {
-      internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+      internationalTransactions = "No";
 
-      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+      for(Object onboarding: onboardings) {
+
+        if(onboarding instanceof CanadaUsBusinessOnboarding) {
+          internationalTransactions = "Yes";
+          break;
+        }
+      }
+
+
+        if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
         baseCurrency = "N/A";
@@ -357,14 +367,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(subList);
       }
 
-      java.util.List<BusinessOnboarding> onboardings = businessOnBoardingSink.getArray();
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
-        for(BusinessOnboarding onboarding: onboardings) {
-          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding.getUserId())).select(new ArraySink());
+        for(Object onboarding: onboardings) {
+          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
           java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
           for(UserAcceptanceDocument doc: documents) {
-            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", onboarding.getUserId(), onboarding.getBusinessId(), business.getAddress().getCountryId(), doc.getLastModified())));
+            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", ((BusinessOnboarding)onboarding).getUserId(), ((BusinessOnboarding)onboarding).getBusinessId(), business.getAddress().getCountryId(), doc.getLastModified())));
           }
         }
       }
