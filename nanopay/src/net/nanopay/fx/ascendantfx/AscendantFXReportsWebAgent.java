@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -133,9 +134,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
-    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(new ArraySink());
-    canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
+    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink());
+    canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
+    uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(USBusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -369,10 +370,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
         for(Object onboarding: onboardings) {
-          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
+          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
           java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
           for(UserAcceptanceDocument doc: documents) {
-            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s", ((BusinessOnboarding)onboarding).getUserId(), ((BusinessOnboarding)onboarding).getBusinessId(), business.getAddress().getCountryId(), doc.getLastModified())));
+            list.add(new ListItem(String.format("userId: %s businessId: %s businessType: %s date: %s",
+                              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId(),
+                              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId(),
+                              business.getAddress().getCountryId(),
+                              doc.getLastModified())));
           }
         }
       }
