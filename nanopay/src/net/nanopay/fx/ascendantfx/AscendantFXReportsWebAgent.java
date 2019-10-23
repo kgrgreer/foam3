@@ -308,12 +308,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
-      list.add(new ListItem("Domestic transfers: "));
+      list.add(new ListItem("Transfers: "));
       List domesticSubList = new List(true, false, 20);
       domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
-      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + annualDomesticTransactionAmount));
-      domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
-      domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
+      domesticSubList.add(new ListItem("Annual Number of Transactions: " + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
+      domesticSubList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
       document.add(Chunk.NEWLINE);
       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
