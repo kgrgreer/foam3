@@ -199,6 +199,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       sourceOfFunds = "N/A";
     }
 
+    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
     String baseCurrency;
     String internationalTransactions;
@@ -291,6 +292,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
+      list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
         String otherPurposeOfTransactions;
@@ -306,6 +308,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
+      list.add(new ListItem("Domestic transfers: "));
+      List domesticSubList = new List(true, false, 20);
+      domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
+      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
+      domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
+      list.add(domesticSubList);
+      document.add(Chunk.NEWLINE);
+      list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
       document.add(Chunk.NEWLINE);
       // if user going to do transactions to the USA, we add International transfers report
       if ( internationalTransactions.equals("Yes") ) {
