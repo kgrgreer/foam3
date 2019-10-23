@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'userDAO'
   ],
 
   properties: [
@@ -39,6 +40,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
       factory: function() {
+        var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
           columns: [
@@ -47,6 +49,14 @@ foam.CLASS({
             this.BankAccount.FLAG_IMAGE.clone().copyFrom({ tableWidth: 90 }),
             this.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({ tableWidth: 120 }),
             this.BankAccount.STATUS.clone().copyFrom({ tableWidth: 110 }),
+            foam.core.String.create({
+              name: 'OwnerType',
+              tableCellFormatter: function(value, obj) {
+                self.userDAO.find(obj.owner).then((user) => {
+                  this.add(user.cls_.name);
+                });
+              }
+            })
           ]
         };
       }
