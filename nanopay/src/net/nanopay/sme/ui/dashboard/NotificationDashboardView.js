@@ -5,7 +5,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'foam.nanos.notification.NotificationView',
   ],
 

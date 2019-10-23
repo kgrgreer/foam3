@@ -18,7 +18,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.payment.Institution',
     
     'foam.core.X',

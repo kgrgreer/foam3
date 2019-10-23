@@ -415,7 +415,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
-        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(srcCurrency);
+        net.nanopay.exchangeable.Currency currency = (net.nanopay.exchangeable.Currency) currencyDAO.find(srcCurrency);
         
         // Outputting two columns: "amount", "Currency"
           // Hacky way of making get_(obj) into String below
@@ -511,7 +511,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Transaction)obj).getDestinationCurrency();
-        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(dstCurrency);
+        net.nanopay.exchangeable.Currency currency = (net.nanopay.exchangeable.Currency) currencyDAO.find(dstCurrency);
         
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue(currency.format(get_(obj)));

@@ -24,7 +24,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.modal.ModalStyling',
@@ -67,7 +67,7 @@ foam.CLASS({
       padding: 3px;
       width: auto;
     }
-    
+
     /*
      * The following CSS is for styling flow documents because they don't have
      * much in terms of default styling.
@@ -155,11 +155,11 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Currency',
+      of: 'net.nanopay.exchangeable.Currency',
       name: 'homeDenomination',
       factory: function() {
         /**
-         * TODO: Currently our storing the home denomination preferences, just need it 
+         * TODO: Currently our storing the home denomination preferences, just need it
          * to default to USD for Goldman, also added a hacky way to persist it via local storage
          * we will later on think of a better way to handle default user preferences
          */

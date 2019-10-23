@@ -20,7 +20,7 @@ foam.CLASS({
     'java.lang.StringBuilder',
     'net.nanopay.account.Account',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],

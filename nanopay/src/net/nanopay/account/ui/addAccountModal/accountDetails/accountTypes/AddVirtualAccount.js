@@ -85,7 +85,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Currency',
+      of: 'net.nanopay.exchangeable.Currency',
       name: 'currencyPicker',
       label: 'Currency',
       documentation: `

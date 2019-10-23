@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

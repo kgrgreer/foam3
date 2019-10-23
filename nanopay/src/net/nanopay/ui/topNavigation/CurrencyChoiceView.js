@@ -21,7 +21,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'foam.u2.PopupView',
   ],
 
@@ -115,7 +115,7 @@ foam.CLASS({
     'optionsBtn_',
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Currency',
+      of: 'net.nanopay.exchangeable.Currency',
       name: 'lastCurrency'
     }
   ],

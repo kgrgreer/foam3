@@ -79,7 +79,7 @@ var classes = [
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.admin.model.AccountStatus',
   'net.nanopay.admin.model.ComplianceStatus',
-  'net.nanopay.model.Currency',
+  'net.nanopay.exchangeable.Currency',
   'net.nanopay.model.Branch',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',

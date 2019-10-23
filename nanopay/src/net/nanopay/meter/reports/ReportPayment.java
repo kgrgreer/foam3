@@ -9,7 +9,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 import java.util.UUID;
 import java.util.*;
 import java.util.function.Function;
@@ -61,7 +61,7 @@ public class ReportPayment extends AbstractReport {
         ),
         MLang.LTE(Transaction.CREATED, endDate)
       )
-    ).select(sink);
+    ).orderBy(Transaction.INVOICE_ID).select(sink);
 
     return sink.getCsv();
   }

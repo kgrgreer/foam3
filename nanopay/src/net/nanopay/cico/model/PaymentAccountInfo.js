@@ -35,7 +35,7 @@ foam.CLASS({
       class: 'Reference',
       // targetDAOKey: 'currencyDAO',
       name: 'currencyId',
-      of: 'net.nanopay.model.Currency'
+      of: 'net.nanopay.exchangeable.Currency'
     }
   ]
 });

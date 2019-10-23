@@ -20,7 +20,7 @@ import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
 import net.nanopay.accounting.xero.XeroIntegrationService;
 import net.nanopay.accounting.xero.XeroToken;
 import net.nanopay.iso20022.CurrencyReference2;
-import net.nanopay.model.Currency;
+import net.nanopay.exchangeable.Currency;
 
 import java.io.IOException;
 import java.math.BigDecimal;

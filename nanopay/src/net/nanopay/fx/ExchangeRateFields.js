@@ -25,12 +25,12 @@ foam.CLASS({
       },
       {
         class: 'Reference',
-        of: 'net.nanopay.model.Currency',
+        of: 'net.nanopay.exchangeable.Currency',
         name: 'sourceCurrency'
       },
       {
         class: 'Reference',
-        of: 'net.nanopay.model.Currency',
+        of: 'net.nanopay.exchangeable.Currency',
         name: 'targetCurrency'
       },
       {

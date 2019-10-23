@@ -37,7 +37,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.model.Currency',
+    'net.nanopay.exchangeable.Currency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.InvoiceLineItem'
   ],
