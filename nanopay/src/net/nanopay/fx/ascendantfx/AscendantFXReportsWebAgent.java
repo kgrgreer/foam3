@@ -133,9 +133,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
-    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(new ArraySink());
-    canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED))).select(businessOnBoardingSink);
+    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(AND(EQ( BusinessOnboarding.BUSINESS_ID, business.getId()), EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(new ArraySink());
+    canadaUsBusinessOnboardingDAO.where(AND(EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
+    uSBusinessOnboardingDAO.where(AND(EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()), EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED), EQ(BusinessOnboarding.SIGNING_OFFICER, true))).select(businessOnBoardingSink);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -221,8 +221,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       }
 
-
-        if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
         baseCurrency = "N/A";
