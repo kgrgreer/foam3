@@ -302,11 +302,11 @@ p({
   """
     bu = x.get("bareUserDAO");
     aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
-    r = new foam.nanos.ruler.RulerDAO(x, aect, "localUserDAO");
+    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, aect);
+    r = new foam.nanos.ruler.RulerDAO(x, uph, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
-    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
-    aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(uph).build();
+    aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(ldu).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
     afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
     usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
