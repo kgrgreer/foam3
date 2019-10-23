@@ -76,6 +76,7 @@ foam.CLASS({
           throw new RuntimeException("Private key not found");
         }
 
+        // A decorator lower down in the chain might have already decoded the private key
         if ( entry.getPrivateKey() != null ) return entry;
 
         try {
@@ -113,6 +114,7 @@ foam.CLASS({
           throw new RuntimeException("Private key not found");
         }
         
+        // PGPPrivate keys need to be encrypted and not wrapped, this is handled by PGPPrivateKeyDAo dow the line
         entry.setAlias(getAlias()); 
         if ( privateKey instanceof PgpPrivateKeyWrapper ) return getDelegate().put_(x, entry);
 

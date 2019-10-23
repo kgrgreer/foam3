@@ -22,7 +22,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paraphrase',
-      documentation: 'Paraphrase for key if any'
+      documentation: 'Paraphrase for private key if any'
     },    
     {
       class: 'Object',
