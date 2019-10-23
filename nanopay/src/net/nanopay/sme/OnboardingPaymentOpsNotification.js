@@ -11,14 +11,14 @@ foam.CLASS({
       javaValue: '"payment-ops"'
     },
     ['emailIsEnabled', true],
-    ['emailName', 'failed-sdd'],
-    ['notificationType', 'FailedTransactions'],
+    ['emailName', 'user-signup'],
+    ['notificationType', 'UserSignup'],
     {
       name: 'body',
       expression: function() {
-        return `User UserID has been add to the platform.`;
+        return `A new user has been add to the platform.\n userId:${userId}\n userEmail: ${userEmail}`;
       }
-    }
+    },
   ]
 });
 
