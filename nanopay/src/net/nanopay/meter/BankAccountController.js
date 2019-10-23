@@ -39,7 +39,6 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
       factory: function() {
-        var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
           columns: [
