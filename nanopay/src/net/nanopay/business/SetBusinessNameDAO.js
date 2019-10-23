@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.List',
     'net.nanopay.model.Business'
   ],
 
@@ -37,6 +38,19 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+        List axioms = obj.getClassInfo().getAxioms();
+        if ( ! axioms.contains(getReferenceProperty())
+          || ! axioms.contains(getNameProperty())
+        ) {
+          ((Logger) getLogger()).debug(
+            String.format("%s/%s is not a property on %s.",
+              getReferenceProperty().getName(),
+              getNameProperty().getName(),
+              obj.getClass().getCanonicalName())
+          );
+          return super.put_(x, obj);
+        }
+
         long businessId = (long) getReferenceProperty().get(obj);
         String name = (String) getNameProperty().get(obj);
 
