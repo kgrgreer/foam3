@@ -30,7 +30,8 @@ foam.CLASS({
       'net.nanopay.sme.OnboardingPaymentOpsNotification',
       'java.util.HashMap',
       'java.util.List',
-      'java.util.Map'
+      'java.util.Map',
+      'static foam.mlang.MLang.*'
     ],
 
     methods: [
@@ -41,17 +42,24 @@ foam.CLASS({
             @Override
              public void execute(X x) {
               User user = (User) obj; 
+
+              DAO businessDAO = (DAO) x.get("businessDAO");
+              Business bs = (Business) businessDAO.find(EQ(Business.EMAIL, user.getEmail()));
               if (user == null && user.getId() <= 0) return;
               EmailMessage message = new EmailMessage();
               Map<String, Object>  args = new HashMap<>();
+              args.put("userId", user.getId());
+              args.put("userEmail", user.getEmail());
+              args.put("businessId", bs.getId());
+              args.put("businessName", bs.getBusinessName());
+              args.put("businessEmail", bs.getEmail());
 
-              String bobo = user.getId() + " is the user that";
-              Notification notification = new Notification.Builder(x)
+              OnboardingPaymentOpsNotification notification = new OnboardingPaymentOpsNotification.Builder(x)
               .setEmailArgs(args)
-              .setBody(bobo)
-              .setUserId(user.getId())
               .build();
-              
+
+              DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
+              notificationDAO.put(notification);            
           }
         }, "send notification");
         `
