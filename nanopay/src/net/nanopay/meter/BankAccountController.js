@@ -15,8 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
-    'userDAO'
+    'accountDAO'
   ],
 
   properties: [
