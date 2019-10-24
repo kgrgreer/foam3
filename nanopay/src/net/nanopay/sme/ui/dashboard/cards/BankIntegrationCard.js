@@ -58,7 +58,6 @@ foam.CLASS({
       name: 'SUBTITLE_VERIFING',
       message: 'We are reviewing your bank account'
        description: 'This used for accounts that need a manual operations process for verification.',
-       message: 'We are reviewing your bank account'
     },
     {
       name: 'SUBTITLE_VERIF',
