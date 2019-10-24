@@ -148,15 +148,6 @@ foam.CLASS({
       section: 'business'
     },
     {
-      class: 'Int',
-      name: 'countQBO',
-      documentation: 'the number of times that this business has synced to QuickBook Online.',
-      label: 'Sync Count to QBO',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      section: 'administrative'
-    },
-    {
       class: 'String',
       name: 'businessRegistrationAuthority',
       documentation: `An organization that has the power to issue and process a
