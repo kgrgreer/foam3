@@ -52,6 +52,7 @@ foam.CLASS({
         DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         PublicKeyEntry publicKeyEntry = new PublicKeyEntry.Builder(getX())
           .setAlgorithm(publicKey.getAlgorithm())
+          .setAlias(entry.getAlias())
           .setPublicKey(publicKey)
           .build();
 

@@ -15,6 +15,11 @@ foam.CLASS({
       documentation: 'Public Key algorithm'
     },
     {
+      class: 'String',
+      name: 'alias',
+      documentation: 'Alias to identify public key.'
+    },     
+    {
       class: 'Object',
       name: 'publicKey',
       javaType: 'java.security.PublicKey',
