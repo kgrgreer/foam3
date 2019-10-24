@@ -60,6 +60,7 @@ foam.CLASS({
     },
     {
       name: 'SUBTITLE_VERIF',
+      description: 'This used for accounts that have a micro-deposit verification. Users can manually verify',
       message: 'bank account is added, Please Verify'
     }
   ],
