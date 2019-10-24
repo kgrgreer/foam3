@@ -143,7 +143,7 @@ foam.CLASS({
     {
       name: 'updateBankCard',
       code: function() {
-       this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
+        this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
       }
     }
   ],
