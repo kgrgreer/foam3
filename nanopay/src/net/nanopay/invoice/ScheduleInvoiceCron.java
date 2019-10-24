@@ -32,7 +32,7 @@ public class ScheduleInvoiceCron
         logger.log("Finding scheduled Invoices...");
         ArraySink sink = (ArraySink) invoiceDAO_.where(
           AND(
-            EQ(Invoice.PAYMENT_ID, 0),
+            EQ(Invoice.PAYMENT_ID, ""),
             EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE),
             NEQ(Invoice.PAYMENT_DATE, null)
           )
@@ -77,13 +77,18 @@ public class ScheduleInvoiceCron
 
         // sets accountId to be used for CICO transaction
         if ( invoice.findDestinationAccount(getX()) != null ) {
-          transaction.setDestinationAccount(invoice.getAccount());
+          transaction.setDestinationAccount(invoice.getDestinationAccount());
         } else {
           transaction.setPayeeId(invoice.getPayeeId());
         }
 
+        if ( invoice.findAccount(getX()) != null ) {
+          transaction.setSourceAccount(invoice.getAccount());
+        } else {
+          transaction.setPayerId(invoice.getPayerId());
+        }
+
         long invAmount = invoice.getAmount();
-        transaction.setSourceAccount(invoice.getAccount());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
 
