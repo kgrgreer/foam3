@@ -37,8 +37,7 @@ foam.CLASS({
             if ( business.getOnboarded() && null != businessAddress 
                 && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-              String businessGroup = business.getGroup();
-              Group group = (Group) localGroupDAO.find(businessGroup.substring(0, businessGroup.length() - 5).concat("employee"));
+              Group group = (Group) localGroupDAO.find(business.getGroup());
               if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
                 try {
                   group.getPermissions(getX()).add(fxProvisionPermission);  

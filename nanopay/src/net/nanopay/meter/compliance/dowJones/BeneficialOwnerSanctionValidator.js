@@ -26,7 +26,7 @@ foam.CLASS({
         BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Person");
+          Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Beneficial Owner");
           String filterRegion = "";
 
           if ( beneficialOwner.getAddress().getCountryId().equals("CA") ) {

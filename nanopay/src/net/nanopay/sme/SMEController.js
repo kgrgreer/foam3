@@ -452,7 +452,9 @@ foam.CLASS({
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
-          this.findBalance();
+          if ( this.loginSuccess ) {
+            this.findBalance();
+          }
           this.addClass(this.myClass())
             .tag('div', null, this.topNavigation_$)
             .start()
@@ -507,6 +509,16 @@ foam.CLASS({
             disableCompanyName: searchParams.has('companyName'),
             choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
           };
+        }
+
+        // Process auth token
+        if ( locHash === '#auth' && ! self.loginSuccess ) {
+          self.client.authenticationTokenService.processToken(null, null,
+            searchParams.get('token')).then((result) => {
+              if ( result === true ) {
+                location = '/';
+              }
+            });
         }
       }
 

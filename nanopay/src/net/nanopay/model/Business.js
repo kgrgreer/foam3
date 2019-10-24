@@ -148,15 +148,6 @@ foam.CLASS({
       section: 'business'
     },
     {
-      class: 'Int',
-      name: 'countQBO',
-      documentation: 'the number of times that this business has synced to QuickBook Online.',
-      label: 'Sync Count to QBO',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      section: 'administrative'
-    },
-    {
       class: 'String',
       name: 'businessRegistrationAuthority',
       documentation: `An organization that has the power to issue and process a
@@ -233,16 +224,7 @@ foam.CLASS({
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
       value: false,
-      permissionRequired: true,
-      section: 'administrative'
-    },
-    {
-      class: 'Int',
-      name: 'countXero',
-      documentation: 'the number of times that this business has synced to Xero.',
-      label: 'Sync Count to Xero',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
+      writePermissionRequired: true,
       section: 'administrative'
     },
     {
