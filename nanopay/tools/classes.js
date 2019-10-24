@@ -96,8 +96,6 @@ var classes = [
   'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
-  'net.nanopay.exchangeable.Denomination',
-  'net.nanopay.exchangeable.Currency',
   'net.nanopay.exchangeable.Security',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',

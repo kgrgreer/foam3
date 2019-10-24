@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.exchangeable',
   name: 'Security',
-  extends: 'net.nanopay.exchangeable.Denomination',
+  extends: 'foam.core.Unit',
 
   documentation: `The base model for storing, using and managing currency information.
     All class properties require a return of *true* in order to pass.`,
@@ -57,7 +57,7 @@ foam.CLASS({
       },
       args: [
         {
-          class: 'foam.core.Currency',
+          class: 'foam.core.UnitValue',
           name: 'amount'
         }
       ],

@@ -151,7 +151,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'sourceCurrency',
       documentation: 'Stores the source currency for the exchange.'
     },

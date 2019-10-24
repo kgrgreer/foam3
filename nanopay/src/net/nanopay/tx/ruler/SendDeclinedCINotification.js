@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction',
     'java.text.NumberFormat',
     'java.util.HashMap',

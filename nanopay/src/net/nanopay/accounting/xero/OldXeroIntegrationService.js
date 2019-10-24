@@ -36,7 +36,7 @@ foam.CLASS({
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.contacts.Contact',
     'java.math.BigDecimal',
     'java.util.ArrayList',

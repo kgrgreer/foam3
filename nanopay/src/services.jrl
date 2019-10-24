@@ -152,15 +152,15 @@ p({
     .setJournalName("currencies")
     .setPm(true)
     .setPipelinePm(true)
-    .setOf(net.nanopay.exchangeable.Currency.getOwnClassInfo())
+    .setOf(foam.core.Currency.getOwnClassInfo())
     .setName("currency")
-    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.Currency.COUNTRY})
+    .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
     .build();
   """, 
   "client":
   """
   {
-    "of":"net.nanopay.exchangeable.Currency",
+    "of":"foam.core.Currency",
     "cache":true
   }
   """

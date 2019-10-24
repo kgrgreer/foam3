@@ -15,7 +15,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.View',
-    'net.nanopay.exchangeable.Currency'
+    'foam.core.Currency'
   ],
 
   exports: [
@@ -155,7 +155,7 @@ foam.CLASS({
     'optionsBtn_',
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'chosenCurrency',
       postSet: function() {
         this.data = this.chosenCurrency;
