@@ -237,15 +237,6 @@ foam.CLASS({
       section: 'administrative'
     },
     {
-      class: 'Int',
-      name: 'countXero',
-      documentation: 'the number of times that this business has synced to Xero.',
-      label: 'Sync Count to Xero',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      section: 'administrative'
-    },
-    {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
