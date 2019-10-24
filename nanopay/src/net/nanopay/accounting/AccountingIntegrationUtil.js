@@ -66,7 +66,6 @@ foam.CLASS({
 
       if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;
-        this.user.countXero++;
       }
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         service = this.quickbooksService;
