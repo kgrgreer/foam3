@@ -77,11 +77,12 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account, String institutionNumber) {
+            Logger logger   = (Logger) x.get("logger");
+            logger.info("TrustAccount.find", "account", account, "institution", institutionNumber);
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }
 
-            Logger logger   = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
             List accountList = ((ArraySink)accounts.select(new ArraySink())).getArray();
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());

@@ -737,9 +737,9 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
-   return true;
- }
- return false;
+        return true;
+      }
+      return false;
       `
     },
     {
