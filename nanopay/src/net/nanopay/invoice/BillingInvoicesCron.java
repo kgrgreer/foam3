@@ -71,15 +71,6 @@ public class BillingInvoicesCron implements ContextAgent {
   private int dueIn_ = 5;
 
   /**
-   * The note displayed on the billing invoice
-   */
-  private static final String NOTE = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, " +
-    "shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount " +
-    "will be debited from your account on the 5th business day from the date this invoice was issued. Please " +
-    "ensure you have enough funds in your bank account to cover the transaction fees as displayed in the Monthly " +
-    "Invoice Fee amount. If you have any questions, please contact our customer service at support@nanopay.net. ";
-
-  /**
    * Dry run option
    */
   private boolean dryRun_ = false;
