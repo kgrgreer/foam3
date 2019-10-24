@@ -233,6 +233,7 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.BillingInvoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.ruler.RequestPaymentNotificationRule',
@@ -240,6 +241,8 @@ var classes = [
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
+  'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
+  'net.nanopay.invoice.ruler.IsCompletePayment',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -367,8 +370,7 @@ var classes = [
   'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
-  'net.nanopay.tx.ruler.SlowDownRule',
-  'net.nanopay.tx.ruler.PropertyChangePredicate',
+  'net.nanopay.tx.ruler.SlowDownRule',  
   'net.nanopay.tx.ruler.ChangePropertyAction',
   'net.nanopay.tx.ruler.SendNotification',
   'net.nanopay.tx.ruler.PropertyEQValue',

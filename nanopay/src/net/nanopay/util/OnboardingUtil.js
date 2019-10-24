@@ -62,9 +62,8 @@ foam.CLASS({
 
     async function initOnboardingView() {
       if ( this.isfirstTimeLogin ) return;
-      var isSigningOfficer = await this.isSigningOfficer();
       var businessOnboardingInfor = await this.getBusinessOnboarding();
-      if ( businessOnboardingInfor && ! isSigningOfficer && businessOnboardingInfor.status === this.OnboardingStatus.DRAFT ) {
+      if ( businessOnboardingInfor && businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED ) {
         this.stack.push({
           class: 'net.nanopay.sme.onboarding.ui.WizardView',
           data: businessOnboardingInfor
