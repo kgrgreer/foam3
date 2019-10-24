@@ -61,7 +61,7 @@ foam.CLASS({
     },
 
     async function initOnboardingView() {
-      if ( this.isfirstTimeLogin ) return;
+      if ( ! window.localStorage.getItem('firstTimeOnBoarding') ) return;
       var businessOnboardingInfor = await this.getBusinessOnboarding();
       if ( businessOnboardingInfor && businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED ) {
         this.stack.push({
@@ -69,7 +69,7 @@ foam.CLASS({
           data: businessOnboardingInfor
         });
       }
-      this.isfirstTimeLogin = true;
+      window.localStorage.removeItem('firstTimeOnBoarding');
     }
   ]
 
