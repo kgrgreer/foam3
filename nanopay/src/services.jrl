@@ -302,7 +302,6 @@ p({
   "serviceScript":
   """
     bu = x.get("bareUserDAO");
-
     aect = new net.nanopay.contacts.AddExternalContactToken(x, da);
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
