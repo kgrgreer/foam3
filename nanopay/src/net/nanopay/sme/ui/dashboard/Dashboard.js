@@ -263,7 +263,7 @@ foam.CLASS({
     },
 
     function initE() {
-      // this.onboardingUtil.initOnboardingView();
+      this.onboardingUtil.initOnboardingView();
       this.ctrl.bannerizeCompliance();
       this.SUPER();
       this.getUserAccounts().then(() => {
