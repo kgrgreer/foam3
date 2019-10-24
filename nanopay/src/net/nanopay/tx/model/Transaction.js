@@ -306,7 +306,6 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      readPermissionRequired: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
