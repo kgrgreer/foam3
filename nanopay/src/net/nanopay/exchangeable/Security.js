@@ -6,11 +6,6 @@ foam.CLASS({
   documentation: `The base model for storing, using and managing currency information.
     All class properties require a return of *true* in order to pass.`,
 
-  ids: [
-    'id'
-  ],
-
-
   tableColumns: [
     'name',
     'id'
@@ -69,7 +64,7 @@ foam.CLASS({
         String formatted = isNegative ? "-" : "";
         formatted += amountStr;
         formatted += " ";
-        formatted += this.getid();
+        formatted += this.getId();
         return formatted;
       `
     }

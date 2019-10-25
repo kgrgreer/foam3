@@ -64,7 +64,7 @@ foam.CLASS({
           }
 
           static public LossesAccount find(X x, User sourceUser, Currency currency) {
-            return find(x, sourceUser, currency.getid());
+            return find(x, sourceUser, currency.getId());
           }
       `);
       }

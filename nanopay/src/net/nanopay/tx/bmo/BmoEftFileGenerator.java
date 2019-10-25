@@ -320,7 +320,7 @@ public class BmoEftFileGenerator {
       throw new RuntimeException("Wrong currency type");
     }
 
-    Currency currency = (Currency) this.currencyDAO.inX(x).find(MLang.EQ(Currency.ALPHABETIC_CODE, "CAD"));
+    Currency currency = (Currency) this.currencyDAO.inX(x).find(MLang.EQ(Currency.ID, "CAD"));
     if ( currency.getPrecision() != 2 ) {
       throw new RuntimeException("Currently only support 2 decimals");
     }
