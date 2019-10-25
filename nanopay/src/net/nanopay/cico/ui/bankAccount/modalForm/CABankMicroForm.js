@@ -16,7 +16,8 @@ foam.CLASS({
   imports: [
     'bankAccountVerification',
     'ctrl',
-    'user'
+    'user',
+    'accountDAO'
   ],
 
   css: `
@@ -151,6 +152,11 @@ foam.CLASS({
         ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO);
         if ( this.onComplete ) this.onComplete();
 
+        try {
+          this.bank = await this.accountDAO.find(this.bank.id);
+        } catch (error) {
+          this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        }
         // Force the view to update.
         this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.closeDialog();
