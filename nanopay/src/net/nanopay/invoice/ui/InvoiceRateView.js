@@ -362,7 +362,7 @@ foam.CLASS({
                 if ( sourceCurrency == null ) {
                   return false;
                 }
-                return showExchangeRateSection && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+                return showExchangeRateSection && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') );
               }))
                 .start().addClass('exchange-amount-container')
                   .start()
@@ -459,7 +459,7 @@ foam.CLASS({
           if ( sourceCurrency == null ) {
             return false;
           }
-          return isFx && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+          return isFx && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') );
         }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();

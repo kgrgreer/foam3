@@ -7,13 +7,13 @@ foam.CLASS({
     All class properties require a return of *true* in order to pass.`,
 
   ids: [
-    'alphabeticCode'
+    'id'
   ],
 
 
   tableColumns: [
     'name',
-    'alphabeticCode'
+    'id'
   ],
 
 
@@ -22,10 +22,10 @@ foam.CLASS({
       name: 'toSummary',
       documentation: `When using a reference to the securityDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string
-        property. In this case, we are using the alphabeticCode.
+        property. In this case, we are using the id.
       `,
       code: function(x) {
-        return this.alphabeticCode;
+        return this.id;
       }
     },
     {
@@ -50,7 +50,7 @@ foam.CLASS({
         formatted+= amount;
 
         formatted += ' ';
-        formatted += this.alphabeticCode;
+        formatted += this.id;
 
 
         return formatted;
@@ -69,7 +69,7 @@ foam.CLASS({
         String formatted = isNegative ? "-" : "";
         formatted += amountStr;
         formatted += " ";
-        formatted += this.getAlphabeticCode();
+        formatted += this.getid();
         return formatted;
       `
     }

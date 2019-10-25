@@ -91,7 +91,7 @@ foam.CLASS({
                 .where(EQ(Currency.COUNTRY, country)).limit(2)
                 .select(new ArraySink())).getArray();
               if ( currencies.size() == 1 ) {
-                denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                denomination = ((Currency) currencies.get(0)).getid();
               } else if ( currencies.size() > 1 ) {
                 logger.warning(DigitalAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
               }

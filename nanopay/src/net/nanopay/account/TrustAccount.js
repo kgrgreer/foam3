@@ -113,7 +113,7 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
-            DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
+            DAO accounts = find(x, sourceUser, currency.getid());
             return (TrustAccount) ((ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
       `);

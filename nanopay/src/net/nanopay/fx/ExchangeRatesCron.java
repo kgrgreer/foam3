@@ -77,7 +77,7 @@ public class ExchangeRatesCron
     Count count = (Count) exchangeRateDAO_
       .where(
              AND(
-                 EQ(ExchangeRate.FROM_CURRENCY, currency.getAlphabeticCode()),
+                 EQ(ExchangeRate.FROM_CURRENCY, currency.getid()),
                  GT(ExchangeRate.EXPIRATION_DATE, calendar.getTime())
                  )
              )
@@ -88,7 +88,7 @@ public class ExchangeRatesCron
       BufferedReader reader = null;
 
       try {
-        URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getAlphabeticCode());
+        URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getid());
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(5 * 1000);
