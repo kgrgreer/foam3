@@ -406,7 +406,7 @@ foam.CLASS({
       visibility: 'HIDDEN',
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
       section: 'paymentInfo',
@@ -469,7 +469,7 @@ foam.CLASS({
     },
     {
       // REVIEW: why do we have total and amount?
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'total',
       visibility: 'RO',
       label: 'Total Amount',
@@ -490,7 +490,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',

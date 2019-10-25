@@ -13,7 +13,7 @@ foam.CLASS({
       name: 'token'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'fee'
     },
     {

@@ -229,7 +229,7 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'chequeAmount',
       documentation: `The amount paid for an invoice using an external transaction system.`
     },
@@ -240,7 +240,7 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
@@ -285,7 +285,7 @@ foam.CLASS({
       `
     },
     { // How is this used? - display only?,
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'sourceAmount',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
       `,
@@ -305,7 +305,7 @@ foam.CLASS({
       documentation: `The bank account into which funds are to be deposited.`
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'exchangeRate',
       documentation: 'The exchange rate captured at the time of payment.'
     },
