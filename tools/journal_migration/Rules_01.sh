@@ -95,7 +95,7 @@ my %rule = (
     # https://github.com/nanoPayinc/NANOPAY/pull/7965/files
     3150=>"Transaction Final Compliance Rule",
     3151=>"Compliance transaction approval",
-    3152=>"Estimate Transaction completionDate"
+    3152=>"Estimate Transaction completionDate",
     3153=>"Clear transaction approval requests",
     3154=>"IdentityMind transfer transaction",
     3155=>"Reset transaction lastModified/By properties"
