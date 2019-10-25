@@ -17,6 +17,7 @@ my %rule = (
     1200=>"Dow Jones Person KYC - User onboarding",
     1201=>"Dow Jones Entity KYC - Business onboarding",
     1202=>"Dow Jones Beneficial Owner KYC - Beneficial Owner onboarding",
+    1203=>"DJ Approval Request",
     1300=>"User Final Compliance Rule",
     1301=>"Business Final Compliance Rule",
     1310=>"Transaction Final Compliance Rule",
@@ -123,8 +124,10 @@ my @newlines;
 foreach $line ( @lines ) {
     if ( $line =~ /id\":(\d+)/ ) {
         $key = $1;
-        $value = $rule{$key};
-        $line =~ s/id\":$key/id\":\"$value\"/;
+        if ( exists($rule{$key}) ) {
+            $value = $rule{$key};
+            $line =~ s/id\":$key/id\":\"$value\"/;
+        }
     }
     push(@newlines, $line);
 }
