@@ -20,7 +20,6 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.exchangeable.Currency',
     'net.nanopay.payment.Institution',
-    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -51,6 +50,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'net.nanopay.exchangeable.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
+    },
     {
       class: 'String',
       name: 'accountNumber',

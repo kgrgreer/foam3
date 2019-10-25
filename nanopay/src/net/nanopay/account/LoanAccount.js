@@ -24,6 +24,16 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'net.nanopay.exchangeable.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3
+    },
+    {
       class: 'Double',
       name: 'rate',
       documentation: 'The interest rate for the loan'

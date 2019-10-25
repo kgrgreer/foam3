@@ -43,10 +43,17 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'net.nanopay.exchangeable.Currency',
+      targetDAOKey: 'currencyDAO',
       name: 'denomination',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
-    }
+    },
   ],
 
   actions: [
