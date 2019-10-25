@@ -150,8 +150,10 @@ close(FILE);
 foreach $line ( @lines ) {
     if ( $line =~ /ruleId\":(\d+)/ ) {
         $key = $1;
-        $value = $rule{$key};
-        $line =~ s/ruleId\":$key/ruleId\":\"$value\"/;
+        if ( exists($rule{$key}) ) {
+            $value = $rule{$key};
+            $line =~ s/ruleId\":$key/ruleId\":\"$value\"/;
+        }
     }
     push(@newlines, $line);
 }
