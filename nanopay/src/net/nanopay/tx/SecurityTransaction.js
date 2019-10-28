@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
