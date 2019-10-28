@@ -19,7 +19,6 @@ import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -45,10 +44,9 @@ public class BillingInvoicesCron implements ContextAgent {
   /**
    * The note displayed on the billing invoice
    */
-  public static final String NOTEPART1 = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, " +
-    "shown above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount " +
-    "will be debited from your account on ";
-  public static final String NOTEPART2 = ". Please ensure you have enough funds in your bank account to cover the " +
+  public static final String NOTE = "Please note, as per our Fee Schedule, the Monthly Invoice Fee amount, shown " +
+    "above, will be debited by Ablii from the bank account assigned to your Ablii account. This amount will be " +
+    "debited from your account on %tF. Please ensure you have enough funds in your bank account to cover the " +
     "transaction fees as displayed in the Monthly Invoice Fee amount. If you have any questions, please contact " +
     "our customer service at support@nanopay.net. ";
 
@@ -180,7 +178,7 @@ public class BillingInvoicesCron implements ContextAgent {
             .setDestinationAccount(destinationAccount_.getId())
             .setPayeeId(destinationAccount_.getOwner())
             .setDestinationCurrency(destinationAccount_.getDenomination())
-            .setNote(NOTEPART1 + new SimpleDateFormat("yyyy-MM-dd").format(paymentDate) + NOTEPART2)
+            .setNote(String.format(NOTE, paymentDate))
             .build();
           BankAccount payerBankAccount = BankAccount.findDefault(x, payer, transaction.getSourceCurrency());
           if ( payerBankAccount != null ) {
