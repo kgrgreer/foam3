@@ -116,7 +116,7 @@ foam.CLASS({
     {
       name: 'submitted',
       type: 'Boolean'
-    },
+    }
   ],
   messages: [
     { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully.' }
