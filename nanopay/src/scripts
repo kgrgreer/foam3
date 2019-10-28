@@ -961,3 +961,79 @@ p({
   print("Failed " + failedCount + " transaction(s)");  
   """
 }),
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set up Transaction WebHook for Grain Discover",
+  "code": """
+    import foam.core.X;
+    import foam.dao.DAO;
+    import foam.nanos.dig.DUGRule;
+    import foam.nanos.http.Format;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.tx.cico.CITransaction;
+    import net.nanopay.tx.cico.COTransaction;
+    import net.nanopay.tx.model.Transaction;
+    import foam.nanos.ruler.predicate.PropertyChangePredicate;
+    import static foam.mlang.MLang.*;
+
+    url = "http://localhost:8080/service/ping";
+
+    ruleDAO = x.get("ruleDAO");
+    rule = new DUGRule.Builder(x)
+      .setId("Grain Discovery WebHook")
+      .setUrl(url)
+      .setFormat(Format.JSON)
+      .setDaoKey("localTransactionDAO")
+      .build();
+
+    pred = AND ( new Predicate[] {
+      new PropertyChangePredicate("status"),
+      OR ( new Predicate[] {
+        EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
+        EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
+      })
+    });
+
+    rule.setPredicate(pred);
+    ruleDAO.put(rule);
+    print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Change Predicate for DUG",
+  "code": """
+      import foam.core.X;
+      import foam.dao.DAO;
+      import foam.nanos.dig.DUGRule;
+      import foam.mlang.predicate.Predicate;
+      import net.nanopay.tx.cico.CITransaction;
+      import net.nanopay.tx.cico.COTransaction;
+      import net.nanopay.tx.model.Transaction;
+      import net.nanopay.tx.ruler.PropertyChangePredicate;
+      import static foam.mlang.MLang.*;
+
+      /***********************************
+      ***            SETUP           *****
+      ***********************************/
+      
+      ruleId = "";
+
+      pred = AND ( new Predicate[] {
+        new PropertyChangePredicate("status"),
+        OR ( new Predicate[] {
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
+        })
+      });
+
+
+      ruleDAO = x.get("ruleDAO");
+      rule = ruleDAO.find(ruleId);
+      rule.setPredicate(pred);
+      ruleDAO.put(rule);
+      print("done");
+  """
+})
