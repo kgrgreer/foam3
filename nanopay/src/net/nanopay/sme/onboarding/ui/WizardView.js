@@ -116,7 +116,7 @@ foam.CLASS({
     {
       name: 'submitted',
       type: 'Boolean'
-    }
+    },
   ],
   messages: [
     { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully.' }
@@ -163,7 +163,10 @@ foam.CLASS({
                 })
               .end()
               .start()
-                .tag(this.NEXT, { size: 'LARGE' })
+                .tag(this.NEXT, {
+                  size: 'LARGE',
+                  label$: self.currentIndex$.map((ci) => ci === 0 ? 'Get Start' : 'Continue')
+                })
                 .tag(this.SUBMIT, { size: 'LARGE' })
               .end()
             .end()
