@@ -61,9 +61,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-      this.onDetach(this.startDate$.sub(function() {
-        self.updateDAO();
+      this.onDetach(this.startDate$.sub(() => {
+        this.updateDAO();
+      }));
+      this.onDetach(this.endDate$.sub(() => {
+        this.updateDAO();
       }));
 
       this.addClass(this.myClass())
@@ -71,6 +73,12 @@ foam.CLASS({
           {
             showTimeOfDay: false,
             data$: this.startDate$
+          })
+        .end()
+        .start(this.DateTimePicker,
+          {
+            showTimeOfDay: false,
+            data$: this.endDate$
           })
         .end()
         .add(this.TXN_REPORT_DAO);
@@ -98,7 +106,7 @@ foam.CLASS({
             payeeId: txn.payeeId,
             payerId: txn.payerId,
             amount: formattedAmount,
-            fee: formattedFee,
+            fee: formattedFee
           });
 
           this.txnReportDAO.put(report);
