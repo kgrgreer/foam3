@@ -165,7 +165,7 @@ foam.CLASS({
               .start()
                 .tag(this.NEXT, {
                   size: 'LARGE',
-                  label$: self.currentIndex$.map((ci) => ci === 0 ? 'Get Start' : 'Continue')
+                  label$: self.currentIndex$.map((ci) => ci === 0 ? 'Get Started' : 'Continue')
                 })
                 .tag(this.SUBMIT, { size: 'LARGE' })
               .end()
