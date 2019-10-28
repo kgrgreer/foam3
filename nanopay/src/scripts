@@ -794,160 +794,170 @@ p({
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "Set up groups and permissions for API (GD)",
+  "id": "Update declined transaction invoices",
+  "status": 1,
   "code": """
-    import foam.nanos.auth.Group;
-    import foam.nanos.auth.GroupPermissionJunction;
-    import foam.nanos.auth.Permission;
+ 
+  import foam.dao.DAO;
+  import foam.mlang.MLang;
+  import foam.dao.ArraySink;
+  import net.nanopay.invoice.model.Invoice;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.invoice.model.InvoiceStatus;
+  import net.nanopay.tx.model.TransactionStatus;
+  import foam.nanos.logger.Logger;
 
-    // Please remove DRY_RUN when you want to run this script in GD's instance.
-    DRY_RUN = true;
+  invoiceDAO =(DAO) x.get("invoiceDAO");
+  transactionDAO = (DAO) x.get("localTransactionDAO");
+  logger = (Logger) x.get("logger");
 
-    if ( DRY_RUN ) {
-      print("--------------------");
-      print("In DRY_RUN mode");
-      print("--------------------");
-    }
-
-
-    groupDAO = x.get("groupDAO");
-
-    // Create new gd-ops group
-    opsGroup = new Group();
-    opsGroup.setId("gd-ops");
-    opsGroup.setParent("basicUser");
-    opsGroup.setDefaultMenu("gd-operation");
-    opsGroup.setRootMenu("gd-operation");
-    opsGroup.setDescription("Grain Discovery Operations");
-    
-    if ( DRY_RUN ) {
-      print("Payment ops group is created.");
-    } else {
-      groupDAO.put(opsGroup);
-    }
-
-    // Create new gd-api group
-    apiGroup = new Group();
-    apiGroup.setId("gd-api");
-    apiGroup.setParent("gd-ops");
-    apiGroup.setDescription("API Access");
-
-    if ( DRY_RUN ) {
-      print("API group is created.");
-    } else {
-      groupDAO.put(apiGroup);
-    }
-
-    // Add permissions to the gd-ops group
-    ArrayList permissionArray = new ArrayList();
-    permissionArray.add("AccountWithDetailModel.read.AccountNumber");
-    permissionArray.add("AccountWithDetailModel.read.Holder");
-    permissionArray.add("AccountWithDetailModel.read.Title");
-    permissionArray.add("account.read.*");
-    permissionArray.add("balance.read.*");
-    permissionArray.add("business.read.*");
-    permissionArray.add("currency.read.*");
-    permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
-    permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
-    permissionArray.add("menu.read.doc");
-    permissionArray.add("menu.read.gd-operation");
-    permissionArray.add("menu.read.gd-operation.accounts");
-    permissionArray.add("menu.read.gd-operation.businesses");
-    permissionArray.add("menu.read.gd-operation.sessions");
-    permissionArray.add("menu.read.gd-operation.transactions");
-    permissionArray.add("menu.read.gd-operation.users");
-    permissionArray.add("menu.read.notifications");
-    permissionArray.add("service.accountDAO");
-    permissionArray.add("service.balanceDAO");
-    permissionArray.add("service.branchDAO");
-    permissionArray.add("service.businessDAO");
-    permissionArray.add("service.businessSectorDAO");
-    permissionArray.add("service.currencyDAO");
-    permissionArray.add("service.digitalAccount");
-    permissionArray.add("service.groupDAO");
-    permissionArray.add("service.groupPermissionJunctionDAO");
-    permissionArray.add("service.institutionDAO");
-    permissionArray.add("service.languageDAO");
-    permissionArray.add("service.menuDAO");
-    permissionArray.add("service.nSpecDAO");
-    permissionArray.add("service.notificationDAO");
-    permissionArray.add("service.run.dig");
-    permissionArray.add("service.sessionDAO");
-    permissionArray.add("service.transactionDAO");
-    permissionArray.add("service.twofactor");
-    permissionArray.add("session.read.*");
-    permissionArray.add("transaction.read.*");
-    permissionArray.add("user.read.*");
-
-    groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
-
-    for ( int i = 0; i < permissionArray.size(); i++ ) {
-      GroupPermissionJunction junction = new GroupPermissionJunction();
-      junction.setSourceId("gd-ops");
-      junction.setTargetId(permissionArray.get(i));
-      if ( DRY_RUN ) {
-        print(permissionArray.get(i) + " permissions are added in gd-ops group.");
-      } else {
-        groupPermissionJunctionDAO.put(junction);
+  filteredInvoices = ((ArraySink) invoiceDAO
+    .where(MLang.EQ(Invoice.STATUS, InvoiceStatus.PROCESSING)).select(new ArraySink())).getArray();
+  for(Object invoiceObj : filteredInvoices) {
+    Invoice invoice = (Invoice) invoiceObj;
+    txn = transactionDAO.find(MLang.EQ(Transaction.ID, invoice.getPaymentId()));
+    if ( txn != null && txn.getState(x) == TransactionStatus.DECLINED ) {
+      print(txn.getId());
+      try {
+        invoice.clearPaymentId();
+        invoice.clearPaymentDate();
+        invoice.clearPaymentMethod();
+        invoiceDAO.put(invoice);
+      } catch (Exception e) {
+        print("Failed to save invoice " + invoice.getId());
+        logger.error(new Object[] {"Error saving invoice", e, invoice});
       }
     }
-
-    // Remove existing menu permissions for API users
-    ArrayList smeRemovePermissionArray = new ArrayList();
-    smeRemovePermissionArray.add("menu.read.sme.accountProfile.*");
-    smeRemovePermissionArray.add("menu.read.sme.main.*");
-    smeRemovePermissionArray.add("menu.read.sme.quickAction.*");
-
-    for (int i = 0; i < smeRemovePermissionArray.size(); i++) {
-      GroupPermissionJunction junction = new GroupPermissionJunction();
-      junction.setSourceId("sme");
-      junction.setTargetId(smeRemovePermissionArray.get(i));
-      if ( DRY_RUN ) {
-        print("'menu.read.sme.accountProfile.*', 'menu.read.sme.main.*' and 'menu.read.sme.quickAction.*' are removed from sme group.");
-      } else {
-        groupPermissionJunctionDAO.remove(junction);
-      }
-    }
-
-    // Add new menu permission (switch-business) for API users
-    Permission switchBusinessPermission = new Permission();
-    switchBusinessPermission.setId("menu.read.sme.accountProfile.switch-business");
-
-    permissionDAO = x.get("permissionDAO");
-      if ( DRY_RUN ) {
-        print("'menu.read.sme.accountProfile.switch-business' permission is created.");
-      } else {
-        permissionDAO.put(switchBusinessPermission);
-      }
-
-    ArrayList smeAddPermissionArray = new ArrayList();
-    smeAddPermissionArray.add("menu.read.sme.main.banking");
-    smeAddPermissionArray.add("menu.read.sme.main.dashboard");
-    smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
-
-    for (int i = 0; i < smeAddPermissionArray.size(); i++) {
-      GroupPermissionJunction junction = new GroupPermissionJunction();
-      junction.setSourceId("sme");
-      junction.setTargetId(smeAddPermissionArray.get(i));
-      if ( DRY_RUN ) {
-        print("'menu.read.sme.main.banking', 'menu.read.sme.main.dashboard' and 'menu.read.sme.accountProfile.switch-business' are added in sme group.");
-      } else {
-        groupPermissionJunctionDAO.put(junction);
-      }
-    }
-
-    themeDAO = x.get("themeDAO");
-    gdTheme = themeDAO.find(3);
-    gdTheme.setPriority(3);
-    gdTheme.setLogo("images/nanopay_logo_blue.png");
-    if ( DRY_RUN ) {
-      print("GD Theme is created.");
-    } else {
-      themeDAO.put(gdTheme);
-    }
-
-    print("Done");
-  """,
-  "output": "",
-  "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
+  }
+  print("done");
+  """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Generate Billing Invoice Transactions",
+  "status": 1,
+  "code": """
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import foam.nanos.logger.Logger;
+  import foam.nanos.auth.User;
+  import net.nanopay.invoice.model.BillingInvoice;
+  import net.nanopay.invoice.model.Invoice;
+  import net.nanopay.tx.AbliiTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.TransactionQuote;
+  import java.text.SimpleDateFormat;
+  import java.time.LocalDate;
+  import java.time.ZoneId;
+  import java.time.YearMonth;
+  import java.util.*;
+  import static foam.mlang.MLang.*;
+  import foam.mlang.predicate.Predicate;
+
+  // *******************
+  // *       Vars      *
+  // *******************
+  DRY_RUN = true;                         // Default to true
+  DUE_DATE = LocalDate.now();             // LocalDate.of(2019, 10, 17) to set specific date
+
+  // *******************
+  // *    Functions    *
+  // *******************
+  Transaction quoteTransaction(Invoice invoice) {
+    AbliiTransaction transaction = new AbliiTransaction();
+
+    // sets accountId to be used for CICO transaction
+    if ( invoice.findDestinationAccount(x) != null ) {
+      transaction.setDestinationAccount(invoice.getDestinationAccount());
+    } else {
+      transaction.setPayeeId(invoice.getPayeeId());
+    }
+
+    if ( invoice.findAccount(x) != null ) {
+      transaction.setSourceAccount(invoice.getAccount());
+    } else {
+      transaction.setPayerId(invoice.getPayerId());
+    }
+    
+    long invAmount = invoice.getAmount();
+    transaction.setInvoiceId(invoice.getId());
+    transaction.setAmount(invAmount);
+
+    TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(transaction).build();
+    quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
+    Transaction plan = quote.getPlan();
+    if ( plan == null ) {
+      throw new RuntimeException("Failed to quote Invoice: "+transaction);
+    }
+    return plan;
+  }
+
+  Date getDate(LocalDate localDate) {
+    return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  }
+
+  // ************************
+  // * Billing Invoices     *
+  // ************************
+  invoiceDAO = x.get("invoiceDAO");
+  transactionDAO = x.get("localTransactionDAO");
+  userDAO = (DAO) x.get("localUserDAO");
+  localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+  logger = (Logger) x.get("logger");
+  successCount = 0;
+  failedCount = 0;
+  if ( DRY_RUN ) {
+    print("Generating billing Transactions DRY_RUN");
+  } else {
+    print("Generating billing Transactions");
+  }
+  invoiceDAO.where(AND(new Predicate[] {
+      INSTANCE_OF(BillingInvoice.class),
+      EQ(Invoice.PAYMENT_ID, ""),
+      EQ(Invoice.PAYMENT_DATE, Invoice.DUE_DATE),
+    })).select(new AbstractSink() {
+    public void put(Object obj, Detachable sub) {
+      Invoice invoice = (Invoice) obj;
+      txn = null;
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        Date invPaymentDate = invoice.getPaymentDate();
+
+        //Creates transaction only based on invoices scheduled for today.
+        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) ) 
+        {
+          print(invoice.getId());
+          txn = quoteTransaction(invoice);
+          if ( DRY_RUN ) {
+            print("(DRY_RUN) Transaction created for Invoice " + invoice.getId());
+            successCount++;
+          } else {
+            try {
+              transactionDAO.put(txn);
+              print("Transaction created for Invoice " + invoice.getId());
+              successCount++;           
+            }
+            catch ( Throwable e) {
+              print("Failed to put transaction for invoice " + invoice.getId());
+              print(e);
+              failedCount++;
+            logger.error(new Object[] {"Failed to put transaction for invoice", e, txn, invoice});
+            }
+          }
+        } 
+      } catch ( Throwable e) {
+        print("Error quoting transaction for invoice " + invoice.getId() + " " + e.getMessage());
+        logger.error(new Object[] {"Error quoting transaction for invoice", e, invoice});
+        failedCount++;
+      }
+    }
+  });
+
+  print("Done");
+  print("Created " + successCount + " transaction(s)");
+  print("Failed " + failedCount + " transaction(s)");  
+  """
+}),

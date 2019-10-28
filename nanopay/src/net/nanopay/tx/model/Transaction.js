@@ -306,7 +306,6 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      readPermissionRequired: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -738,9 +737,9 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
-   return true;
- }
- return false;
+        return true;
+      }
+      return false;
       `
     },
     {

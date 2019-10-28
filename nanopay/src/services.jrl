@@ -274,19 +274,20 @@ p({
   "lazy": false,
   "description": "Bare boned userDAO wrapped with essential decorators.", 
   "authenticate": false, 
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
-      .setPm(true)
-      .setPipelinePm(true)
-      .setSeqNo(true)
-      .setSeqStartingValue(1000)
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
-      .setJournalName("users")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
-      .build();
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+    .setPm(true)
+    .setPipelinePm(true)
+    .setSeqNo(true)
+    .setSeqStartingValue(1000)
+    .setOf(foam.nanos.auth.User.getOwnClassInfo())
+    .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
+    .setJournalName("users")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setAuthorize(false)
+    .build();
   """,
   "client": """
     { "of":"foam.nanos.auth.User" }
@@ -301,6 +302,7 @@ p({
   "serviceScript":
   """
     bu = x.get("bareUserDAO");
+
     aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, aect);
     r = new foam.nanos.ruler.RulerDAO(x, uph, "localUserDAO");

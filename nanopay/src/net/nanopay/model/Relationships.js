@@ -162,7 +162,7 @@ foam.RELATIONSHIP({
       this.__subSubContext__.userDAO
         .find(value)
         .then((user) => {
-          this.add('[', user.cls_.name, '] ', user.label());
+          this.add(user.label());
         })
         .catch((error) => {
           this.add(value);
