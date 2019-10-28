@@ -13,8 +13,6 @@ p({
       .setOf(net.nanopay.tx.bmo.eftfile.BmoEftFile.getOwnClassInfo())
       .setAuthorize(false)
       .build();
-
-    // return new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.tx.bmo.eftfile.BmoEftFile.getOwnClassInfo(), \"bmoEftFile\"));
   """, 
   "client":"{\"of\":\"net.nanopay.tx.bmo.eftfile.BmoEftFile\"}"
 })
@@ -34,8 +32,6 @@ p({
       .setOf(net.nanopay.tx.bmo.BmoReferenceNumber.getOwnClassInfo())
       .setAuthorize(false)
       .build();
-
-    // return new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.tx.bmo.BmoReferenceNumber.getOwnClassInfo(), \"bmoRef\"));
   """, 
   "client":"{\"of\":\"net.nanopay.tx.bmo.BmoReferenceNumber\"}"
 })
