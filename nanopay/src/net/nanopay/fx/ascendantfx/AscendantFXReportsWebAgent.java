@@ -2,7 +2,9 @@ package net.nanopay.fx.ascendantfx;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Image;
 import foam.blob.Blob;
+import foam.blob.FileBlob;
 import foam.blob.BlobService;
 import foam.blob.IdentifiedBlob;
 import foam.blob.ProxyBlobService;
@@ -605,6 +607,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
+    Image img = null;
 
     Logger logger = (Logger) x.get("logger");
 
@@ -693,7 +696,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String verification = sdf.format(microVerificationTimestamp);
           String bankAddedDate = sdf.format(createDate);
           list.add(new ListItem("Micro transaction verification date: " + verification));
-          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
+          list.add(new ListItem("PAD agreement date: " + bankAddedDate));         
         } else { // flinks
           FlinksAccountsDetailResponse flinksAccountInformation = (FlinksAccountsDetailResponse) flinksResponseDAO.find(
             EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())
@@ -706,6 +709,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        try {
+          foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+          IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
+          Blob blob = getDelegate().find_(getX(), voidCheck.getId());
+          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+          img.scaleAbsolute(130, 60);
+        } catch (Exception e) {
+          logger.error(e);
+        }
         Date createDate = usBankAccount.getCreated();
         String bankAddedDate = sdf.format(createDate);
         list.add(new ListItem("PAD agreement date: " + bankAddedDate));
@@ -713,6 +725,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
+      if ( img != null ) {
+        document.add(img);
+      }
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
@@ -883,7 +898,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Blob blob;
     try {
       if ( bankAccount instanceof USBankAccount) {
-
 
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
         foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
