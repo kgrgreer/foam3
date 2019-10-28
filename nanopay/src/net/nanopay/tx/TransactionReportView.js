@@ -32,13 +32,6 @@ foam.CLASS({
       name: 'endDate',
     },
     {
-      name: 'filteredTransactionDAO',
-      expression: function(startDate) {
-        if ( ! startDate ) return this.transactionDAO;
-        return this.transactionDAO.where(this.GTE(this.Transaction.CREATED, startDate));
-      }
-    },
-    {
       name: 'txnReportDAO',
       factory: function() {
         return this.MDAO.create({ of: this.TransactionReport });
@@ -46,13 +39,14 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TableView',
         columns: [
+          'created',
           'id',
           'parent',
-          'created',
           'payeeId',
           'payerId',
           'amount',
-          'fee'
+          'fee',
+          'status'
         ]
       }
     }
@@ -82,6 +76,25 @@ foam.CLASS({
           })
         .end()
         .add(this.TXN_REPORT_DAO);
+    },
+
+    async function getFilteredTransactions() {
+      if ( ! this.startDate || ! this.endDate ) return [];
+      return this.transactionDAO.select().then((transactions) => {
+        return transactions.array.reduce((arr, transaction) => {
+          var statusHistoryArr = transaction.statusHistory;
+          if ( statusHistoryArr.length < 1 ) return arr;
+          if ( statusHistoryArr[0].timeStamp > this.endDate ) return arr;
+          if ( statusHistoryArr[statusHistoryArr.length-1].timeStamp < this.startDate ) return arr;
+          for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
+            if ( statusHistoryArr[i].timeStamp <= this.endDate && statusHistoryArr[i].timeStamp >= this.startDate ) {
+              transaction.status = statusHistoryArr[i].status;
+              arr.push(transaction);
+              return arr;
+            }
+          }
+        }, []);
+      });
     }
   ],
 
@@ -90,26 +103,29 @@ foam.CLASS({
       name: 'updateDAO',
       code: async function() {
         this.txnReportDAO = this.MDAO.create({ of: this.TransactionReport });
-        var transactions = await this.filteredTransactionDAO.select();
+        var transactions = await this.getFilteredTransactions();
 
-        for ( var i = 0; i < transactions.array.length; i++ ) {
-          var txn = transactions.array[i];
-          var currency  = await this.currencyDAO.find(txn.sourceCurrency);
-          var formattedFee = currency.format(txn.getCost());
-          var formattedAmount = currency.format(txn.amount);
-  
-          var report = this.TransactionReport.create({
-            id: txn.id,
-            parent: txn.parent ? txn.parent : 'N/A',
-            created: txn.created,
-            type: txn.type,
-            payeeId: txn.payeeId,
-            payerId: txn.payerId,
-            amount: formattedAmount,
-            fee: formattedFee
-          });
+        if ( transactions ) {
+          for ( var i = 0; i < transactions.length; i++ ) {
+            var txn = transactions[i];
+            var currency  = await this.currencyDAO.find(txn.sourceCurrency);
+            var formattedFee = currency.format(txn.getCost());
+            var formattedAmount = currency.format(txn.amount);
 
-          this.txnReportDAO.put(report);
+            var report = this.TransactionReport.create({
+              id: txn.id,
+              parent: txn.parent ? txn.parent : 'N/A',
+              created: txn.created,
+              type: txn.type,
+              payeeId: txn.payeeId,
+              payerId: txn.payerId,
+              amount: formattedAmount,
+              fee: formattedFee,
+              status: txn.status
+            });
+
+            this.txnReportDAO.put(report);
+          }
         }
       }
     }

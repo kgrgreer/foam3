@@ -26,11 +26,11 @@ foam.CLASS({
         class: 'String',
         name: 'amount'
       },
-      // {
-      //   class: 'foam.core.Enum',
-      //   of: 'net.nanopay.tx.HistoricStatus',
-      //   name: 'status',
-      // },
+      {
+        class: 'foam.core.Enum',
+        of: 'net.nanopay.tx.model.TransactionStatus',
+        name: 'status',
+      },
       {
         class: 'String',
         name: 'fee'
