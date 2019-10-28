@@ -285,7 +285,7 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' )
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+          self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView.' });
           self.loginSuccess$.sub(resolve);
         });
 

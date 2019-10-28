@@ -19,9 +19,9 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
+    'net.nanopay.sme.ui.SignInView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -445,12 +445,12 @@ foam.CLASS({
           this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
           this.__subContext__.register(this.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
           this.__subContext__.register(this.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
-          this.__subContext__.register(this.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
           this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
           this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
+          this.__subContext__.register(this.SignInView, 'foam.nanos.auth.SignInView');
 
           if ( this.loginSuccess ) {
             this.findBalance();
@@ -491,7 +491,7 @@ foam.CLASS({
       if ( locHash ) {
         // Don't go to log in screen if going to reset password screen.
         if ( locHash === '#reset' ) {
-          view = { class: 'foam.nanos.auth.resetPassword.ResetView' };
+          view = { class: 'foam.nanos.auth.ChangePasswordView' };
         }
 
         var searchParams = new URLSearchParams(location.search);
