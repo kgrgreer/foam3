@@ -179,6 +179,7 @@ p({
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,stripe));
     """
 })
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTransactionQuotePlanDAO",
@@ -239,13 +240,13 @@ p({
         new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x).setDelegate(
         new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x).setDelegate(
         new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x).setDelegate(
-          null).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()))).build()).build(), new net.nanopay.tx.RequestTransactionValidator()))).build()).build()).build()
-      )
+          null).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()).build()))).build()).build(), new net.nanopay.tx.RequestTransactionValidator()))).build()).build()).build())
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setInnerDAO()
       .setAuthorize(false)
+      .build();
   """
 })
+
 p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})

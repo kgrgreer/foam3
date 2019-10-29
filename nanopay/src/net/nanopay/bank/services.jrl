@@ -1,1 +1,15 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"canReceiveCurrencyDAO", "serve":true, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.bank.CanReceiveCurrencyDAO(x, new foam.dao.MDAO(net.nanopay.bank.CanReceiveCurrency.getOwnClassInfo()))));", "client":"{\"of\":\"net.nanopay.bank.CanReceiveCurrency\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "canReceiveCurrencyDAO",
+  "serve":true, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setDecorator(new net.nanopay.bank.CanReceiveCurrencyDAO(x, null))
+      .setOf(net.nanopay.bank.CanReceiveCurrency.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"net.nanopay.bank.CanReceiveCurrency\"}"})
