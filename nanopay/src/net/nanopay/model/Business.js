@@ -224,7 +224,7 @@ foam.CLASS({
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       section: 'administrative'
     },
     {

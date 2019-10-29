@@ -132,7 +132,6 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
-      readPermissionRequired: true,
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -233,7 +232,6 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify 
         ownership of the bank account.`,
       value: 0,
-      readPermissionRequired: true,
       writePermissionRequired: true
     },
     {

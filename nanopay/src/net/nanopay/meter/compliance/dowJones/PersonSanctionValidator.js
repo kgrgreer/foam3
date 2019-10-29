@@ -27,7 +27,7 @@ foam.CLASS({
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
           String filterRegion = "";
-          Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones Person");
+          Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
           if ( user.getAddress().getCountryId().equals("CA") ) {
             filterRegion = "Canada,CANA,CA,CAN";
           } else if ( user.getAddress().getCountryId().equals("US") ) {
