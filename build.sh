@@ -510,12 +510,13 @@ function usage {
 # Print Nanopay text (very important, otherwise nothing will work)
 if [ $(date +%m) -eq 10 ] && [ $(date +%d) -gt 25 ]; then
   ostart="\033[38;5;214m"
-  echo -e "$ostart                                 #'\""
-  echo -e " _ __   __ _ _ __   ___  _ __ @ @ @ @_   _ "
-  echo -e "| '_ \\ / _\` | '_ \\ / _ \\| '_@ /\\   /\\ @ | |"
-  echo -e "| | | | (_| | | | | (_) | |@     ^     @| |"
-  echo -e "|_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
-  echo -e "                        |_| @ @ @ @ @ @__/\033[0m"
+  echo -e " $ostart                                 #'\""
+  echo -e "  _ __   __ _ _ __   ___  _ __ @ @ @ @_   _ "
+  echo -e " | '_ \\ / _\` | '_ \\ / _ \\| '_@ /\\   /\\ @ | |"
+  echo -e " | | | | (_| | | | | (_) | |@     ^     @| |"
+  echo -e " |_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
+  echo -e " (c) nanopay Corporation |_| @ @ @ @ @ @__/\033[0m"
+  echo ""
 else
   echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
   echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
