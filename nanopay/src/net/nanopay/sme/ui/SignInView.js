@@ -13,7 +13,8 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail'
+    'validateEmail',
+    'onboardingUtil'
   ],
 
   requires: [
@@ -273,6 +274,7 @@ foam.CLASS({
               });
             } else {
               // This is required for signin
+              window.localStorage.setItem('setOnboardingWizardPush', true);
               window.location.hash = '';
               window.location.reload();
             }
