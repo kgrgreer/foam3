@@ -466,29 +466,26 @@ foam.CLASS({
             this.findBalance();
           }
           this.addClass(this.myClass())
-            .tag('div', null, this.topNavigation_$)
-            .start()
-              .addClass('stack-wrapper')
-              .start({
-                class: 'net.nanopay.ui.banner.Banner',
-                data$: this.bannerData$
-              })
-              .end()
-              .tag({
-                class: 'foam.u2.stack.StackView',
-                data: this.stack,
-                showActions: false
-              })
+          .start()
+            .tag(this.topNavigation_$.map(
+              (s) => {
+                if ( ! s ) s = { class: this.TopNavigation };
+                return foam.u2.ViewSpec.createView(s, {}, this, this.__subContext__);
+              }))
+          .end()
+          .start()
+            .addClass('stack-wrapper')
+            .start({
+              class: 'net.nanopay.ui.banner.Banner',
+              data$: this.bannerData$
+            })
             .end()
-            .tag('div', null, this.footerView_$);
-
-            /*
-              This is mandatory.
-              'topNavigation_' & 'footerView' need empty view when initialize,
-              otherwise they won't toggle after signin.
-            */
-            this.topNavigation_.add(foam.u2.View.create());
-            this.footerView_.hide();
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: this.stack,
+              showActions: false
+            })
+          .end();
         });
       });
     },
