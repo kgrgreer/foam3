@@ -31,13 +31,6 @@ foam.CLASS({
     'user',
   ],
 
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'isfirstTimeLogin',
-    }
-  ],
-
   methods: [
     async function getBusinessOnboarding() {
       return this.ctrl.user.address.countryId === 'CA' ?
@@ -61,7 +54,7 @@ foam.CLASS({
     },
 
     async function initOnboardingView() {
-      if ( ! window.localStorage.getItem('firstTimeOnBoarding') ) return;
+      if ( ! window.localStorage.getItem('setOnboardingWizardPush') ) return;
       var businessOnboardingInfor = await this.getBusinessOnboarding();
       if ( businessOnboardingInfor && businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED ) {
         this.stack.push({
@@ -69,7 +62,7 @@ foam.CLASS({
           data: businessOnboardingInfor
         });
       }
-      window.localStorage.removeItem('firstTimeOnBoarding');
+      window.localStorage.removeItem('setOnboardingWizardPush');
     }
   ]
 

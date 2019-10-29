@@ -274,7 +274,7 @@ foam.CLASS({
               });
             } else {
               // This is required for signin
-              window.localStorage.setItem('firstTimeOnBoarding', true);
+              window.localStorage.setItem('setOnboardingWizardPush', true);
               window.location.hash = '';
               window.location.reload();
             }
