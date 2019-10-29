@@ -274,19 +274,20 @@ p({
   "lazy": false,
   "description": "Bare boned userDAO wrapped with essential decorators.", 
   "authenticate": false, 
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
-      .setPm(true)
-      .setPipelinePm(true)
-      .setSeqNo(true)
-      .setSeqStartingValue(1000)
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
-      .setJournalName("users")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
-      .build();
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+    .setPm(true)
+    .setPipelinePm(true)
+    .setSeqNo(true)
+    .setSeqStartingValue(1000)
+    .setOf(foam.nanos.auth.User.getOwnClassInfo())
+    .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
+    .setJournalName("users")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setAuthorize(false)
+    .build();
   """,
   "client": """
     { "of":"foam.nanos.auth.User" }
@@ -301,12 +302,13 @@ p({
   "serviceScript":
   """
     bu = x.get("bareUserDAO");
+
     aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
-    r = new foam.nanos.ruler.RulerDAO(x, aect, "localUserDAO");
+    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, aect);
+    r = new foam.nanos.ruler.RulerDAO(x, uph, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
-    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
-    aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(uph).build();
+    aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(ldu).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
     afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
     usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);

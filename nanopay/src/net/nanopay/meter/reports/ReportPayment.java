@@ -61,7 +61,7 @@ public class ReportPayment extends AbstractReport {
         ),
         MLang.LTE(Transaction.CREATED, endDate)
       )
-    ).select(sink);
+    ).orderBy(Transaction.INVOICE_ID).select(sink);
 
     return sink.getCsv();
   }
