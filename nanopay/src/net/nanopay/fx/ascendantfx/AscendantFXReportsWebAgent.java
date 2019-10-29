@@ -714,7 +714,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
           Blob blob = getDelegate().find_(getX(), voidCheck.getId());
           img = Image.getInstance(((FileBlob) blob).getFile().getPath());
-          img.scaleAbsolute(130, 60);
         } catch (Exception e) {
           logger.error(e);
         }
