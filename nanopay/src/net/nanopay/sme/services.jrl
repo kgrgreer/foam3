@@ -4,14 +4,30 @@ p({
   "lazy": false,
   "serve": true,
   "authenticate": false,
-  "serviceScript": """
-    newUserCreateBusinessDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get(\"localUserDAO\"));
-    userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", newUserCreateBusinessDAO);
-    userPasswordHashingDAO = new foam.nanos.auth.UserPasswordHashingDAO(x, userRegistrationDAO);
-    userRegistrationSanitationDAO = new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(userPasswordHashingDAO).build();
-    piplinePMDAO = new foam.dao.PipelinePMDAO(x, userRegistrationSanitationDAO);
-    pmDAO = new foam.dao.PMDAO(x, piplinePMDAO);
-    return new foam.dao.ValidatingDAO(x, pmDAO, new net.nanopay.onboarding.UserRegistrationValidator());
+  "serviceScript": 
+  """
+    // newUserCreateBusinessDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get(\"localUserDAO\"));
+    // userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", newUserCreateBusinessDAO);
+    // userPasswordHashingDAO = new foam.nanos.auth.UserPasswordHashingDAO(x, userRegistrationDAO);
+    // userRegistrationSanitationDAO = new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(userPasswordHashingDAO).build();
+    // piplinePMDAO = new foam.dao.PipelinePMDAO(x, userRegistrationSanitationDAO);
+    //pmDAO = new foam.dao.PMDAO(x, piplinePMDAO);
+    //return new foam.dao.ValidatingDAO(x, pmDAO, new net.nanopay.onboarding.UserRegistrationValidator());
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .setDecorator(
+        new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
+        new foam.nanos.auth.UserPasswordHashingDAO(x, 
+        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", 
+        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null)))).build())
+      .setValidated(true)
+      .setInnerDAO(x.get("localUserDAO"))
+      .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .build();
   """,
   "client": """
     {
