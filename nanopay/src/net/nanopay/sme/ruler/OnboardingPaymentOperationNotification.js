@@ -1,9 +1,9 @@
 foam.CLASS({
     package: 'net.nanopay.sme.ruler',
-    name: 'PaymentOpsNotification',
+    name: 'OnboardingPaymentOperationNotification',
     extends: 'foam.dao.ProxyDAO',
 
-    documentation: `A rule that sends a notification to both payee and payer of a request payment invoice.`,
+    documentation: ` A rule that send notification and email to Payment Operation team when a new bussiness is onboarding`,
 
     implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -29,7 +29,6 @@ foam.CLASS({
       'net.nanopay.model.Business',
       'net.nanopay.sme.OnboardingPaymentOpsNotification',
       'java.util.HashMap',
-      'java.util.List',
       'java.util.Map',
       'static foam.mlang.MLang.*'
     ],
