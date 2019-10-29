@@ -26,6 +26,26 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "businessRegistrationDAO",
+  "lazy": false,
+  "serve": true,
+  "authenticate": true,
+  "serviceScript": """
+    nullDAO = new foam.dao.NullDAO.Builder(x)
+      .setOf(net.nanopay.onboarding.BusinessRegistration.getOwnClassInfo())
+      .build();
+    businessRegistrationAdapterDAO = new net.nanopay.onboarding.BusinessRegistrationAdapterDAO(x, nullDAO);
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, businessRegistrationAdapterDAO));
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.onboarding.BusinessRegistration"
+    }
+  """
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"businessInvitationDAO",
   "serve":true,
