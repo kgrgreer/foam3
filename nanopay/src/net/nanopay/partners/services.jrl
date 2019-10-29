@@ -1,24 +1,27 @@
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class": "foam.nanos.boot.NSpec", 
   "name": "partnerJunctionDAO", 
   "serve": true, 
   "serviceScript": 
   """
-    foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, foam.nanos.auth.UserUserJunction.getOwnClassInfo(), "partnerJunctions"); 
-    return new net.nanopay.partners.AuthenticatedUserUserJunctionDAO(x, "partnerJunction", 
-    new net.nanopay.auth.PublicUserInfoDAO(x, "yourId", "yourInfo", 
-    new net.nanopay.auth.PublicUserInfoDAO(x, "partnerId", "partnerInfo", 
-    new net.nanopay.partners.PartnerInfoDAO(x, 
-    new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("partnerJunctionDAO"))
-      .setInnerDAO(hashingJDAO)
-      .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo()).build()))));
+      .setDecorator(
+        new net.nanopay.partners.AuthenticatedUserUserJunctionDAO(x, "partnerJunction", 
+        new net.nanopay.auth.PublicUserInfoDAO(x, false, "yourId", "yourInfo", 
+        new net.nanopay.auth.PublicUserInfoDAO(x, false, "partnerId", "partnerInfo", 
+        new net.nanopay.partners.PartnerInfoDAO(x, null))))
+      )
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("partnerJunctions")
+      .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo())
+      .build()))));
   """,
-  "client":"{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
+  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class": "foam.nanos.boot.NSpec", 
   "name": "invitationDAO",      
   "serve": true, 
   "serviceScript": 
@@ -31,14 +34,13 @@ p({
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "inviteeId", "invitee",  
         new net.nanopay.partners.AuthenticatedInvitationDAO(x, 
         new net.nanopay.partners.MakeConnectionDAO(x, 
-        new net.nanopay.partners.SendInvitationDAO(x, null)))))
-      )
+        new net.nanopay.partners.SendInvitationDAO(x, null))))))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("invitations")
       .setOf(net.nanopay.model.Invitation.getOwnClassInfo())
       .setAuthorize(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.model.Invitation\"}"
+  "client": "{\"of\":\"net.nanopay.model.Invitation\"}"
 })
 
