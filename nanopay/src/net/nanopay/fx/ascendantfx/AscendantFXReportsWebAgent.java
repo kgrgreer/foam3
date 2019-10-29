@@ -696,7 +696,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String verification = sdf.format(microVerificationTimestamp);
           String bankAddedDate = sdf.format(createDate);
           list.add(new ListItem("Micro transaction verification date: " + verification));
-          list.add(new ListItem("PAD agreement date: " + bankAddedDate));         
+          list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
           FlinksAccountsDetailResponse flinksAccountInformation = (FlinksAccountsDetailResponse) flinksResponseDAO.find(
             EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())
@@ -726,6 +726,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.add(list);
       if ( img != null ) {
+        document.add(new ListItem("Bank void check:"));
         document.add(img);
       }
       document.add(Chunk.NEWLINE);
