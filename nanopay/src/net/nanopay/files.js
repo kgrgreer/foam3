@@ -101,9 +101,6 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
-  { name: 'net/nanopay/exchangeable/Denomination' },
-  { name: 'net/nanopay/exchangeable/Security' },
-  { name: 'net/nanopay/exchangeable/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
@@ -160,6 +157,12 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+
+  // Exchangeable
+  { name: 'net/nanopay/exchangeable/Denomination' },
+  { name: 'net/nanopay/exchangeable/Security' },
+  { name: 'net/nanopay/exchangeable/Currency' },
+  { name: 'net/nanopay/exchangeable/AssetClass' },
 
   // AddCABankModal
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },

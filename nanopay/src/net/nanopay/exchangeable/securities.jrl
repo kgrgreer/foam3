@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.exchangeable.Security","assetClass":"Government","name":"GIC 10 year @ 2% interest","alphabeticCode":"CUSIP0001","precision":0})
+p({"class":"net.nanopay.exchangeable.Security","assetClass":"Equities","name":"Nanopay Preffered Stock","alphabeticCode":"NANO.TO","precision":0})
+p({"class":"net.nanopay.exchangeable.Security","assetClass":"Corporate Bonds","name":"Nanopay 3 yr Bond. Class A","alphabeticCode":"94823 bondA","precision":0})
