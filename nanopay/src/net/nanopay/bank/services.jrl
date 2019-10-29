@@ -12,4 +12,5 @@ p({
       .setAuthorize(false)
       .build();
   """, 
-  "client": "{\"of\":\"net.nanopay.bank.CanReceiveCurrency\"}"})
+  "client": "{\"of\":\"net.nanopay.bank.CanReceiveCurrency\"}"
+})
