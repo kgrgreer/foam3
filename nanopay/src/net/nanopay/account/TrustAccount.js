@@ -88,8 +88,14 @@ foam.CLASS({
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());
 
             for ( int i =0 ; i<accountList.size(); i++ ) {
-              reserveAccs.put( ( (TrustAccount) accountList.get(i) ).findReserveAccount(x) );
+              Account reserveAccount = ((TrustAccount) accountList.get(i)).findReserveAccount(x);
+              if ( reserveAccount != null ) {
+                reserveAccs.put( reserveAccount );
+              } else {
+                logger.warning("ReserveAccount not found for account", accountList.get(i));
+              }
             }
+
             Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.INSTITUTION_NUMBER,institutionNumber));
             List reserveAccsList = ( (ArraySink) reserveAccs.where(
               AND(
