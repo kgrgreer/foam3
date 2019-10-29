@@ -206,6 +206,7 @@ foam.CLASS({
       title: 'Enter your signing officer\'s email',
       help: `For security, we require the approval of a signing officer before you can continue.
           I can email your signing officer directly for the approval.`,
+      isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
       name: 'businessAddressSection',
