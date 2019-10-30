@@ -21,7 +21,7 @@ foam.CLASS({
 
         DAO smeBusinessRegistrationDAO = (DAO) x.get("smeBusinessRegistrationDAO");
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-        User user = (User) smeBusinessRegistrationDAO.put_(x, adapt(x, ret));
+        User user = (User) smeBusinessRegistrationDAO.inX(x).put(adapt(x, ret));
         UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
           EQ(UserUserJunction.SOURCE_ID, user.getId()));
 
