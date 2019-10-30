@@ -192,6 +192,8 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
   { name: 'net/nanopay/onboarding/email/NewBankAccountAddedEmailDAO' },
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
+  { name: 'net/nanopay/onboarding/BusinessRegistration' },
+  { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
