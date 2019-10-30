@@ -890,6 +890,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboardingDAOTest' },
+  { name: 'net/nanopay/sme/OnboardingPaymentOpsNotification' },
+  { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

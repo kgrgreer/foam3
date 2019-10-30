@@ -6,11 +6,19 @@ p({
   "authenticate": false,
   "serviceScript": """
     newUserCreateBusinessDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get(\"localUserDAO\"));
-    userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", newUserCreateBusinessDAO);
+
+    rulerDAO = new foam.nanos.ruler.RulerDAO(x, newUserCreateBusinessDAO, "smeBusinessRegistrationDAO");
+
+    userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", rulerDAO);
+
     userPasswordHashingDAO = new foam.nanos.auth.UserPasswordHashingDAO(x, userRegistrationDAO);
+
     userRegistrationSanitationDAO = new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(userPasswordHashingDAO).build();
+
     piplinePMDAO = new foam.dao.PipelinePMDAO(x, userRegistrationSanitationDAO);
+
     pmDAO = new foam.dao.PMDAO(x, piplinePMDAO);
+
     return new foam.dao.ValidatingDAO(x, pmDAO, new net.nanopay.onboarding.UserRegistrationValidator());
   """,
   "client": """
