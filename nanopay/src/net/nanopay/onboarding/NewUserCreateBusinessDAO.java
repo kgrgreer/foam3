@@ -59,6 +59,9 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
 
+    // We want to use current user spid and context only when the user have
+    // spid.create.<user.spid> permission. Otherwise, set spid="nanopay" and use
+    // system user context for creating user and business.
     User currentUser = (User) x.get("user");
     boolean hasSpidCreatePermission = false;
     if ( currentUser != null ) {

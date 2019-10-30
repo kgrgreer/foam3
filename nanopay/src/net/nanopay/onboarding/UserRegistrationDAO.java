@@ -59,6 +59,9 @@ public class UserRegistrationDAO
       throw new RuntimeException("Email required");
     }
 
+    // We want to use current user spid and context only when the user have
+    // spid.create.<user.spid> permission. Otherwise, set spid=this.spid_ and
+    // use system user context for creating user and business.
     User currentUser = (User) x.get("user");
     boolean hasSpidCreatePermission = false;
     if ( currentUser != null ) {

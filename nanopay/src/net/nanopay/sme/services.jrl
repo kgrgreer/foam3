@@ -47,7 +47,9 @@ p({
     {
       "of": "net.nanopay.onboarding.BusinessRegistration"
     }
-  """
+  """,
+  "documentation": "An authenticated business registration DAO to register user/business under a certain service provider. It uses smeBusinessRegistration under the hood and would not actually save the business registration data therefore querying data back from the DAO is not supported.",
+  "authNotes": "The serve:true for accessing the DAO from dig and authenticate:true because it is intended to be used by the users with spid.create.<user.spid> permission."
 })
 
 p({

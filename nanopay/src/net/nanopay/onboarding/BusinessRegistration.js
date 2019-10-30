@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.onboarding',
   name: 'BusinessRegistration',
 
-  documentation: 'Business registration which contains a subset of User information along with userId and businessId',
+  documentation: 'Business registration information used with businessRegistrationDAO',
 
   properties: [
     {
