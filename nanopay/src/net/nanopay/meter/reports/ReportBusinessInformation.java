@@ -28,7 +28,7 @@ public class ReportBusinessInformation {
 
     // Setup the column headers for the Business
     StringBuilder businessDetailBuffer = new StringBuilder();
-    businessDetailBuffer.append("Business ID, Sign Up Date, Country of Origin, Compliance Status");
+    businessDetailBuffer.append("Business ID, Business Name, Sign Up Date, Country of Origin, Compliance Status");
     businessDetailBuffer.append(System.getProperty("line.separator"));
 
     for (Object b : businesses ) {
@@ -36,10 +36,11 @@ public class ReportBusinessInformation {
       Address address = business.getAddress();
 
       businessDetailBuffer
-        .append("Business ID: " + business.getId()).append(COMMA_SEPARATOR)
-        .append("Sign Up Date: " + business.getCreated()).append(COMMA_SEPARATOR)
-        .append("Country of Origin: " + address.getCountryId()).append(COMMA_SEPARATOR)
-        .append("Compliance Status: " + business.getCompliance())
+        .append(business.getId()).append(COMMA_SEPARATOR)
+        .append(business.getBusinessName()).append(COMMA_SEPARATOR)
+        .append(business.getCreated()).append(COMMA_SEPARATOR)
+        .append(address.getCountryId()).append(COMMA_SEPARATOR)
+        .append(business.getCompliance())
         .append(System.getProperty("line.separator"));
     }
 
