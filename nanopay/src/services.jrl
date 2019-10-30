@@ -278,7 +278,8 @@ p({
     bu = x.get("bareUserDAO");
 
     aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
-    r = new foam.nanos.ruler.RulerDAO(x, aect, "localUserDAO");
+    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, aect);
+    r = new foam.nanos.ruler.RulerDAO(x, uph, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
     aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(ldu).build();
@@ -992,5 +993,29 @@ p({
     {
       "of": "foam.nanos.ruler.Rule"
     }
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"assetClassDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("assetClasses")
+    .setPm(true)
+    .setPipelinePm(true)
+    .setOf(net.nanopay.exchangeable.AssetClass.getOwnClassInfo())
+    .setName("assetClass")
+    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.AssetClass.NAME})
+    .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.exchangeable.AssetClass",
+    "cache":true
+  }
   """
 })
