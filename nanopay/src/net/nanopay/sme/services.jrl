@@ -34,6 +34,33 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "businessRegistrationDAO",
+  "lazy": false,
+  "serve": true,
+  "authenticate": true,
+  "serviceScript": """
+    of = net.nanopay.onboarding.BusinessRegistration.getOwnClassInfo();
+    nullDAO = new foam.dao.NullDAO.Builder(x)
+      .setOf(of)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(nullDAO)
+      .setOf(of)
+      .setDecorator(new net.nanopay.onboarding.BusinessRegistrationAdapterDAO(x))
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.onboarding.BusinessRegistration"
+    }
+  """,
+  "documentation": "An authenticated business registration DAO to register user/business under a certain service provider. It uses smeBusinessRegistration under the hood and would not actually save the business registration data therefore querying data back from the DAO is not supported.",
+  "authNotes": "The serve:true for accessing the DAO from dig and authenticate:true because it is intended to be used by the users with spid.create.<user.spid> permission."
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"businessInvitationDAO",
   "serve":true,
