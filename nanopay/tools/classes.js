@@ -224,6 +224,7 @@ var classes = [
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.BusinessRegistration',
+  'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
