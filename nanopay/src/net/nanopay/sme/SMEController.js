@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingIntegrationUtil',
+    'net.nanopay.util.OnboardingUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -46,6 +47,7 @@ foam.CLASS({
     'currentAccount',
     'privacyUrl',
     'termsUrl',
+    'onboardingUtil'
   ],
 
   imports: [
@@ -239,6 +241,14 @@ foam.CLASS({
       name: 'accountingIntegrationUtil',
       factory: function() {
         return this.AccountingIntegrationUtil.create();
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.util.OnboardingUtil',
+      name: 'onboardingUtil',
+      factory: function() {
+        return this.OnboardingUtil.create();
       }
     },
     {

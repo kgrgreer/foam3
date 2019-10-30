@@ -811,3 +811,13 @@ foam.RELATIONSHIP({
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.exchangeable.AssetClass',
+  targetModel: 'net.nanopay.exchangeable.Security',
+  forwardName: 'members',
+  inverseName: 'assetClass',
+  cardinality: '1:*',
+  sourceDAOKey: 'assetClassDAO',
+  targetDAOKey: 'securitiesDAO',
+});

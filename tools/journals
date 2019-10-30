@@ -3,6 +3,7 @@ accounts
 alarmConfig
 ascendantfxusers
 ascendantUserPayeeJunctions
+assetClasses
 blacklists
 branches
 brokers
@@ -53,6 +54,7 @@ regions
 reports
 rules
 scripts
+securities
 services
 sessions
 spids
