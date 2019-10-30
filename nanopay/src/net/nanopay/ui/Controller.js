@@ -215,11 +215,7 @@ foam.CLASS({
           this
             .addClass(this.myClass())
             .start()
-              .tag(this.topNavigation_$.map(
-                (s) => {
-                  if ( ! s ) s = { class: this.TopNavigation };
-                  return foam.u2.ViewSpec.createView(s, {}, this, this.__subContext__);
-                }))
+              .tag(this.topNavigation_)
             .end()
             .start()
               .addClass('stack-wrapper')
@@ -233,11 +229,7 @@ foam.CLASS({
               })
             .end()
             .start()
-              .tag(this.footerView_$.map(
-                (s) => {
-                  if ( ! s ) s = { class: this.FooterView };
-                  return foam.u2.ViewSpec.createView(s, {}, this, this.__subContext__);
-                }))
+              .tag(this.footerView_)
             .end();
         });
       });
