@@ -2,20 +2,34 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localContactDAO",
   "serve": false,
-  "serviceScript": """
+  "serviceScript": 
+  """
     localUserDAO = x.get("localUserDAO");
     filteredDAO = new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), localUserDAO, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID);
     afexContactDAO = new net.nanopay.fx.afex.AFEXContactDAO(x, filteredDAO);
     checkContactExistsDAO = new net.nanopay.contacts.CheckContactExistsDAO(x, afexContactDAO);
     return new foam.dao.ValidatingDAO(x, checkContactExistsDAO);
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
+      .setValidated(true)
+      .setDecorator(
+        new net.nanopay.contacts.CheckContactExistsDAO(x, 
+        new net.nanopay.fx.afex.AFEXContactDAO(x, 
+        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), localUserDAO, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
+      .setAuthenticate(false)
+      .setInnerDAO(x.get("localUserDAO"))
+      .build();
   """,
   "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
 })
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "contactDAO",
   "serve": true,
-  "serviceScript": """
+  "serviceScript": 
+  """
     return new net.nanopay.meter.BusinessStatusContactDAO.Builder(x)
       .setDelegate(new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localContactDAO\"), new foam.nanos.auth.AuthorizableAuthorizer(\"contact\")))
       .build();
