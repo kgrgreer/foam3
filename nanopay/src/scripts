@@ -1122,7 +1122,7 @@ p({
     spidDAO = x.get("serviceProviderDAO");
     ServiceProvider spid = new ServiceProvider.Builder(x)
       .setEnabled(true)
-      .setId("GD")
+      .setId("gd")
       .setDescription("Grain Discovery")
       .build();
     if ( DRY_RUN ) {
@@ -1200,7 +1200,7 @@ p({
       .build();
 
     if ( DRY_RUN ) {
-      print("GD Menu's Created.");
+      print("GD Menu's Created: Operations, Accounts, Businesses, Transactions, User");
     } else {
       menuDAO.put(menu);
       menuDAO.put(accountMenu);

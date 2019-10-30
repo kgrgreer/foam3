@@ -777,7 +777,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' },
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
   sourceProperty: {
     readPermissionRequired: true,
     section: 'administrative'
@@ -793,7 +796,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
-  targetProperty: { visibility: 'RO' },
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
   sourceProperty: {
     readPermissionRequired: true,
     section: 'administrative'
@@ -809,7 +815,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
-  targetProperty: { visibility: 'RO' },
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
   sourceProperty: {
     readPermissionRequired: true,
     section: 'administrative'
