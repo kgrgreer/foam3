@@ -84,3 +84,4 @@ p({"class":"foam.nanos.ruler.Rule","id":"statusHistory Update Rule","priority":1
 p({"class":"foam.nanos.ruler.Rule","id":"FOP Transaction Planner","priority":100,"ruleGroup":"SecurityPlanner","daoKey":"securityPlanner"})
 p({"class":"foam.nanos.ruler.Rule","id":"DVP Transaction Planner","priority":90,"ruleGroup":"SecurityPlanner","daoKey":"securityPlanner"})
 p({"class":"foam.nanos.ruler.Rule","id":"Bucket Transaction Planner","priority":80,"ruleGroup":"SecurityPlanner","daoKey":"securityPlanner"})
+p({"class":"foam.nanos.ruler.Rule","id":"Validator Rule","priority":1,"ruleGroup":"SecurityPlanner","daoKey":"securityPlanner","after":true})
