@@ -527,3 +527,7 @@ p({"class":"foam.nanos.auth.Permission","id":"currency.read.CNH","description":"
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.onboarded","description":"Allows the permission holder to read write the boolean property onboarded on user objects"})
 p({"class":"foam.nanos.auth.Permission","id":"business.rw.onboarded","description":"Allows the permission holder to read write the boolean property onboarded on business objects"})
 p({"class":"foam.nanos.auth.Permission","id":"business.ro.onboarded","description":"Allows the permission holder to read only the boolean property onboarded on business objects"})
+p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceResponses","description":"Permission to read and write to the compliance responses table in users"})
+p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceHistories","description":"Permission to read and write to the compliance histories table in users"})
+p({"class":"foam.nanos.auth.Permission","id":"user.ro.approvalRequests","description":"Permission to read and write to the compliance approval requests table in users"})
+p({"class":"foam.nanos.auth.Permission","id":"user.ro.paymentCards","description":"Permission to read and write to the payment cards table in users"})

@@ -969,6 +969,10 @@ p({
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
+    import foam.nanos.auth.ServiceProvider;
+    import foam.nanos.menu.DAOMenu;
+    import foam.nanos.menu.Menu;
+    import foam.nanos.menu.SubMenu;
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
@@ -1019,11 +1023,9 @@ p({
     permissionArray.add("currency.read.*");
     permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
     permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
-    permissionArray.add("menu.read.doc");
     permissionArray.add("menu.read.gd-operation");
     permissionArray.add("menu.read.gd-operation.accounts");
     permissionArray.add("menu.read.gd-operation.businesses");
-    permissionArray.add("menu.read.gd-operation.sessions");
     permissionArray.add("menu.read.gd-operation.transactions");
     permissionArray.add("menu.read.gd-operation.users");
     permissionArray.add("menu.read.notifications");
@@ -1114,6 +1116,97 @@ p({
       print("GD Theme is created.");
     } else {
       themeDAO.put(gdTheme);
+    }
+
+    // Create GD SPID
+    spidDAO = x.get("serviceProviderDAO");
+    ServiceProvider spid = new ServiceProvider.Builder(x)
+      .setEnabled(true)
+      .setId("GD")
+      .setDescription("Grain Discovery")
+      .build();
+    if ( DRY_RUN ) {
+      print("Grain Discovery SPID created");
+    } else {
+      spidDAO.put(spid);
+    }
+
+    // Create the Grain Discovery menu
+    menuDAO = x.get("menuDAO");
+
+    // create parent menu
+    menu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setDescription("Grain Discovery")
+      .setHandler(new SubMenu())
+      .setLabel("Operations")
+      .setId("gd-operation")
+      .build();
+
+    // create account submenu
+    accountDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("accountDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    accountMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(accountDaoMenu)
+      .setLabel("Accounts")
+      .setId("gd-operation.accounts")
+      .build();
+
+    // create Businesses submenu
+    businessDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("businessDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    businessMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(businessDaoMenu)
+      .setLabel("Businesses")
+      .setId("gd-operation.businesses")
+      .build();
+
+    // create Transactions submenu
+    txnDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("transactionDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    txnMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(txnDaoMenu)
+      .setLabel("Transactions")
+      .setId("gd-operation.transactions")
+      .build();
+
+    // create user submenu
+    userDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("userDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    userMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(userDaoMenu)
+      .setLabel("Users")
+      .setId("gd-operation.users")
+      .build();
+
+    if ( DRY_RUN ) {
+      print("GD Menu's Created.");
+    } else {
+      menuDAO.put(menu);
+      menuDAO.put(accountMenu);
+      menuDAO.put(businessMenu);
+      menuDAO.put(txnMenu);
+      menuDAO.put(userMenu);
     }
 
     print("Done");
