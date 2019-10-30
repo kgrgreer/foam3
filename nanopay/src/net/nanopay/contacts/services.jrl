@@ -10,7 +10,7 @@ p({
       .setDecorator(
         new net.nanopay.contacts.CheckContactExistsDAO(x, 
         new net.nanopay.fx.afex.AFEXContactDAO(x, 
-        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), localUserDAO, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
+        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), null, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
       .setAuthorize(false)
       .setInnerDAO(x.get("localUserDAO"))
       .build();
@@ -24,10 +24,6 @@ p({
   "serve": true,
   "serviceScript": 
   """
-    return new net.nanopay.meter.BusinessStatusContactDAO.Builder(x)
-      .setDelegate(new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localContactDAO\"), new foam.nanos.auth.AuthorizableAuthorizer(\"contact\")))
-      .build();
-    
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).build())
