@@ -42,11 +42,13 @@ foam.CLASS({
           'created',
           'id',
           'parent',
-          'payeeId',
+          'type',
           'payerId',
+          'payeeId',
           'amount',
           'fee',
-          'status'
+          'status',
+          'statusUpdateTime'
         ]
       }
     }
@@ -75,6 +77,9 @@ foam.CLASS({
             data$: this.endDate$
           })
         .end()
+        .start('div')
+          .tag(this.EXPORT_TXN_REPORT)
+        .end()
         .add(this.TXN_REPORT_DAO);
     },
 
@@ -89,6 +94,7 @@ foam.CLASS({
           for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
             if ( statusHistoryArr[i].timeStamp <= this.endDate && statusHistoryArr[i].timeStamp >= this.startDate ) {
               transaction.status = statusHistoryArr[i].status;
+              transaction.lastModified = statusHistoryArr[i].timeStamp;
               arr.push(transaction);
               return arr;
             }
@@ -121,12 +127,28 @@ foam.CLASS({
               payerId: txn.payerId,
               amount: formattedAmount,
               fee: formattedFee,
-              status: txn.status
+              status: txn.status,
+              statusUpdateTime: txn.lastModified
             });
 
             this.txnReportDAO.put(report);
           }
         }
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'exportTxnReport',
+      label: 'Download Transaction Report',
+      code: function() {
+        var url = window.location.origin
+          + '/service/genTxnReport?startDate='
+          + this.startDate.toDateString()
+          +'&endDate='
+          + this.endDate.toDateString();
+      window.location.assign(url);
       }
     }
   ]
