@@ -1,8 +1,8 @@
 p({
   "class":"foam.nanos.boot.NSpec", 
-  "name":"bmoEftFileDAO",                   
-  "lazy":false,  
-  "serve":true, 
+  "name": "bmoEftFileDAO",                   
+  "lazy": false,  
+  "serve": true, 
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -14,14 +14,14 @@ p({
       .setAuthorize(false)
       .build();
   """, 
-  "client":"{\"of\":\"net.nanopay.tx.bmo.eftfile.BmoEftFile\"}"
+  "client": "{\"of\":\"net.nanopay.tx.bmo.eftfile.BmoEftFile\"}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"bmoRefDAO",                       
-  "lazy":false,  
-  "serve":true, 
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "bmoRefDAO",                       
+  "lazy": false,  
+  "serve": true, 
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -33,7 +33,7 @@ p({
       .setAuthorize(false)
       .build();
   """, 
-  "client":"{\"of\":\"net.nanopay.tx.bmo.BmoReferenceNumber\"}"
+  "client": "{\"of\":\"net.nanopay.tx.bmo.BmoReferenceNumber\"}"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"bmoSFTPCredential",               "lazy":false,  "service":{"class":"net.nanopay.tx.bmo.BmoSFTPCredential"}})
