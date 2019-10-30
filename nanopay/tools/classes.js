@@ -224,8 +224,12 @@ var classes = [
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
+  'net.nanopay.sme.OnboardingPaymentOpsNotification',
+  'net.nanopay.sme.ruler.OnboardingPaymentOperationNotification',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
+  'net.nanopay.onboarding.BusinessRegistration',
+  'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
@@ -374,7 +378,7 @@ var classes = [
   'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
-  'net.nanopay.tx.ruler.SlowDownRule',  
+  'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.ChangePropertyAction',
   'net.nanopay.tx.ruler.SendNotification',
   'net.nanopay.tx.ruler.PropertyEQValue',

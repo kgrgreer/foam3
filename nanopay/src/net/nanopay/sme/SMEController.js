@@ -20,7 +20,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.SignInView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -451,40 +451,37 @@ foam.CLASS({
           this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
           this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
           this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
-          this.__subContext__.register(this.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
           this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
           this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
+          this.__subContext__.register(this.SignInView, 'foam.nanos.auth.SignInView');
 
           if ( this.loginSuccess ) {
             this.findBalance();
           }
           this.addClass(this.myClass())
-            .tag('div', null, this.topNavigation_$)
-            .start()
-              .addClass('stack-wrapper')
-              .start({
-                class: 'net.nanopay.ui.banner.Banner',
-                data$: this.bannerData$
-              })
-              .end()
-              .tag({
-                class: 'foam.u2.stack.StackView',
-                data: this.stack,
-                showActions: false
-              })
+          .start()
+            .tag(this.topNavigation_$.map(
+              (s) => {
+                if ( ! s ) s = { class: this.TopNavigation };
+                return foam.u2.ViewSpec.createView(s, {}, this, this.__subContext__);
+              }))
+          .end()
+          .start()
+            .addClass('stack-wrapper')
+            .start({
+              class: 'net.nanopay.ui.banner.Banner',
+              data$: this.bannerData$
+            })
             .end()
-            .tag('div', null, this.footerView_$);
-
-            /*
-              This is mandatory.
-              'topNavigation_' & 'footerView' need empty view when initialize,
-              otherwise they won't toggle after signin.
-            */
-            this.topNavigation_.add(foam.u2.View.create());
-            this.footerView_.hide();
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: this.stack,
+              showActions: false
+            })
+          .end();
         });
       });
     },
@@ -497,7 +494,7 @@ foam.CLASS({
       if ( locHash ) {
         // Don't go to log in screen if going to reset password screen.
         if ( locHash === '#reset' ) {
-          view = { class: 'foam.nanos.auth.resetPassword.ResetView' };
+          view = { class: 'foam.nanos.auth.ChangePasswordView' };
         }
 
         var searchParams = new URLSearchParams(location.search);

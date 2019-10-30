@@ -7,34 +7,17 @@ foam.CLASS({
 
   imports: [
     'agent',
-    'auth',
-    'ctrl',
-    'twofactor',
-    'user'
+    'twofactor'
   ],
 
   requires: [
     'foam.u2.dialog.Popup',
-    'net.nanopay.ui.NewPasswordView'
   ],
 
   css: `
     ^ {
       margin: auto;
       max-width: 1100px;
-    }
-    ^password-wrapper {
-      vertical-align: top;
-      width: 300px;
-      display: inline-block;
-      margin-right: 50px;
-    }
-    ^change-password-card {
-      padding: 24px;
-      min-width: 350px;
-    }
-    ^change-password-card input {
-      width: 100%;
     }
     ^two-factor-card {
       padding: 24px;
@@ -111,26 +94,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
-      name: 'passwordStrength',
-      value: 0
-    },
-    {
-      class: 'String',
-      name: 'originalPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
-    },
-    {
-      class: 'String',
-      name: 'newPassword',
-      view: { class: 'net.nanopay.ui.NewPasswordView' }
-    },
-    {
-      class: 'String',
-      name: 'confirmPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
-    },
-    {
       class: 'String',
       name: 'twoFactorQrCode',
       documentation: 'Two-factor authentication QR code string'
@@ -144,13 +107,6 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Personal Settings' },
-    { name: 'CHANGE_PASSWORD_SUBTITLE', message: 'Change Password' },
-    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
-    { name: 'emptyOriginal', message: 'Please enter your original password' },
-    { name: 'emptyPassword', message: 'Please enter your new password' },
-    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
     { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
     { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
@@ -166,35 +122,8 @@ foam.CLASS({
       .addClass(this.myClass())
       .start('h1').add(this.TITLE).end()
 
-      .start().addClass('card').addClass(this.myClass('change-password-card'))
-        .start()
-          .addClass('sub-heading')
-          .add(this.CHANGE_PASSWORD_SUBTITLE)
-        .end()
-        .start().addClass(this.myClass('change-password-content'))
-          .start().addClass('input-wrapper')
-            .addClass(this.myClass('password-wrapper'))
-            .start().add('Original Password').addClass('input-label').end()
-            .start(this.ORIGINAL_PASSWORD).end()
-          .end()
-          .start().addClass('input-wrapper')
-            .addClass(this.myClass('password-wrapper'))
-            .start().add('New Password').addClass('input-label').end()
-            .start(this.NEW_PASSWORD, {
-              passwordStrength$: this.passwordStrength$
-            })
-            .end()
-          .end()
-          .start().addClass('input-wrapper')
-            .addClass(this.myClass('password-wrapper'))
-            .start().add('Confirm Password').addClass('input-label').end()
-            .start(this.CONFIRM_PASSWORD).end()
-          .end()
-        .end()
-        .start(this.UPDATE_PASSWORD)
-          .addClass('input-wrapper')
-          .addClass('sme').addClass('button').addClass('primary')
-        .end()
+      .start().addClass('card')
+        .start().tag( { class: foam.nanos.auth.ChangePasswordView, horizontal: true, topBarShow: false } ).end()
       .end()
 
       .br()
@@ -207,7 +136,6 @@ foam.CLASS({
         .add(this.slot(function(twoFactorEnabled) {
           if ( ! twoFactorEnabled ) {
             // two factor disabled
-
             return this.E()
               .start().addClass(this.myClass('two-factor-instr'))
                 .start().addClass(this.myClass('two-factor-instr-left'))
@@ -246,59 +174,6 @@ foam.CLASS({
           }
         }, this.agent.twoFactorEnabled$))
       .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'updatePassword',
-      label: 'Update',
-      code: function(X) {
-        var self = this;
-
-        // check if original password entered
-        if ( ! this.originalPassword ) {
-          this.ctrl.notify(this.emptyOriginal, 'error');
-          return;
-        }
-
-        // validate new password
-        if ( ! this.newPassword ) {
-          this.ctrl.notify(this.emptyPassword, 'error');
-          return;
-        }
-
-        if ( this.passwordStrength < 3 ) {
-          this.ctrl.notify(this.PASSWORD_STRENGTH_ERROR, 'error');
-          return false;
-        }
-
-        // check if confirmation entered
-        if ( ! this.confirmPassword ) {
-          this.ctrl.notify(this.emptyConfirmation, 'error');
-          return;
-        }
-
-        // check if passwords match
-        if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
-          this.ctrl.notify(this.passwordMismatch, 'error');
-          return;
-        }
-
-        // update password
-        this.auth.updatePassword(null, this.originalPassword, this.newPassword)
-          .then(function(result) {
-            // copy new user, clear password fields, show success
-            self.user.copyFrom(result);
-            self.originalPassword = null;
-            self.newPassword = null;
-            self.confirmPassword = null;
-            self.ctrl.notify(self.passwordSuccess);
-          })
-          .catch(function(err) {
-            self.ctrl.notify(err.message, 'error');
-          });
-      }
     }
   ]
 });
