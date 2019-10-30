@@ -5,6 +5,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
+  { name: 'net/nanopay/tx/SecurityTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/BulkTransaction' },
@@ -101,9 +102,6 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
-  { name: 'net/nanopay/exchangeable/Denomination' },
-  { name: 'net/nanopay/exchangeable/Security' },
-  { name: 'net/nanopay/exchangeable/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
@@ -160,6 +158,12 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+
+  // Exchangeable
+  { name: 'net/nanopay/exchangeable/Denomination' },
+  { name: 'net/nanopay/exchangeable/Security' },
+  { name: 'net/nanopay/exchangeable/Currency' },
+  { name: 'net/nanopay/exchangeable/AssetClass' },
 
   // AddCABankModal
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
@@ -756,6 +760,7 @@ FOAM_FILES([
   { name: 'net/nanopay/util/FormValidation' },
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
+  { name: 'net/nanopay/util/OnboardingUtil' },
 
   // transfer
   { name: 'net/nanopay/ui/transfer/TransferWizard', flags: ['web'] },
@@ -867,9 +872,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ResetPasswordView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ResendPasswordView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
