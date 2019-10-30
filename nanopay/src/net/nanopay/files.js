@@ -872,8 +872,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ResetPasswordView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ResendPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },

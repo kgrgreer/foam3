@@ -188,7 +188,7 @@ foam.CLASS({
               .add(this.FORGET_PASSWORD_LABEL)
               .on('click', function() {
                 self.stack.push({
-                  class: 'foam.nanos.auth.resetPassword.EmailView'
+                  class: 'foam.nanos.auth.resetPassword.ForgotPasswordView'
                 });
               })
             .end()

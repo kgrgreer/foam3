@@ -21,8 +21,6 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ChangePasswordView',
-    'net.nanopay.sme.ui.ResendPasswordView',
-    'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -453,8 +451,6 @@ foam.CLASS({
           this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
           this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
           this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
-          this.__subContext__.register(this.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
-          this.__subContext__.register(this.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
           this.__subContext__.register(this.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
           this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
           this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
