@@ -32,11 +32,16 @@ p({
   "serve": true,
   "authenticate": true,
   "serviceScript": """
+    of = net.nanopay.onboarding.BusinessRegistration.getOwnClassInfo();
     nullDAO = new foam.dao.NullDAO.Builder(x)
-      .setOf(net.nanopay.onboarding.BusinessRegistration.getOwnClassInfo())
+      .setOf(of)
       .build();
-    businessRegistrationAdapterDAO = new net.nanopay.onboarding.BusinessRegistrationAdapterDAO(x, nullDAO);
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, businessRegistrationAdapterDAO));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(nullDAO)
+      .setOf(of)
+      .setDecorator(new net.nanopay.onboarding.BusinessRegistrationAdapterDAO(x))
+      .build();
   """,
   "client": """
     {
