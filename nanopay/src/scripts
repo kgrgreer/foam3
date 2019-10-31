@@ -1158,6 +1158,15 @@ p({
       }
     }
 
+    GroupPermissionJunction smeBusinessJunction = new GroupPermissionJunction();
+    smeBusinessJunction.setSourceId("smeBusinessAdmin");
+    smeBusinessJunction.setTargetId("menu.read.sme.*");
+    if ( DRY_RUN ) {
+      print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
+    } else {
+      groupPermissionJunctionDAO.remove(smeBusinessJunction);
+    }
+
     // Add new menu permission (switch-business) for API users
     Permission switchBusinessPermission = new Permission();
     switchBusinessPermission.setId("menu.read.sme.accountProfile.switch-business");
