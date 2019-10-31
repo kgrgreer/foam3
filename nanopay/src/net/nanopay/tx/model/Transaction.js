@@ -226,7 +226,9 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150
+      tableWidth: 150,
+      includeInSignature: true,
+      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -239,7 +241,9 @@ foam.CLASS({
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
-      tableWidth: 172
+      tableWidth: 172,
+      includeInSignature: true,
+      includeInDigest: true
     },
     {
       class: 'Reference',

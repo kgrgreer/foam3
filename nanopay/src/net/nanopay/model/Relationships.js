@@ -704,8 +704,10 @@ foam.RELATIONSHIP({
       outputter.outputValue(sender.getId());
       outputter.outputValue(sender.label());
       outputter.outputValue(sender.getEmail());
-    `
-},
+    `,
+    includeInSignature: true,
+    includeInDigest: true
+  },
 });
 
 foam.RELATIONSHIP({
@@ -736,7 +738,9 @@ foam.RELATIONSHIP({
       outputter.outputValue(receiver.getId());
       outputter.outputValue(receiver.label());
       outputter.outputValue(receiver.getEmail());
-    `
+    `,
+    includeInSignature: true,
+    includeInDigest: true
   },
 });
 
