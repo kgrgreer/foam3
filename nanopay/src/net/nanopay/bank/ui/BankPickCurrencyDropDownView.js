@@ -58,7 +58,7 @@ foam.CLASS({
         class: 'net.nanopay.tx.ui.CurrencyChoice',
       },
       value: {
-        alphabeticCode: 'CAD'
+        id: 'CAD'
       }
     },
     {
@@ -75,7 +75,7 @@ foam.CLASS({
       .start('div').addClass('currency-pick-container')
         .start('div').addClass('currency-pick-container-header')
           .start('h1').add('Connect to a new bank').end()
-          .start(this.CURRENCY_TYPE).on('click', ()=> {this.selection = this.currencyType.alphabeticCode}).end()
+          .start(this.CURRENCY_TYPE).on('click', ()=> {this.selection = this.currencyType.id}).end()
         .end()
         .start().show(this.selection$.map((v) => { return v === 'CAD'}))
           .start().tag({ class: 'net.nanopay.flinks.view.form.FlinksForm', isCustomNavigation: true, hideBottomBar: true }).end()

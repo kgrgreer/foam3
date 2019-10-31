@@ -25,7 +25,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       targetDAOKey: 'currencyDAO',
       name: 'denomination',
       documentation: 'The currency that this account stores.',

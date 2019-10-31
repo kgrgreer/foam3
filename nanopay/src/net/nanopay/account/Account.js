@@ -28,7 +28,7 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.exchangeable.Currency'
+    'foam.core.Currency'
   ],
 
   searchColumns: [
@@ -166,7 +166,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Denomination',
+      of: 'foam.core.Unit',
       name: 'denomination',
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle

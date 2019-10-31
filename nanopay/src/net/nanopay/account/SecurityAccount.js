@@ -12,7 +12,7 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.exchangeable.Currency'
+    'foam.core.Currency'
   ],
 
   searchColumns: [
