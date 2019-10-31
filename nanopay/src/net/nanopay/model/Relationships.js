@@ -223,7 +223,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.cico.paymentCard.model.PaymentCard',
   forwardName: 'paymentCards',
   inverseName: 'owner',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 /*
@@ -773,7 +777,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -785,7 +796,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -797,7 +815,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -810,4 +835,14 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.exchangeable.AssetClass',
+  targetModel: 'net.nanopay.exchangeable.Security',
+  forwardName: 'members',
+  inverseName: 'assetClass',
+  cardinality: '1:*',
+  sourceDAOKey: 'assetClassDAO',
+  targetDAOKey: 'securitiesDAO',
 });

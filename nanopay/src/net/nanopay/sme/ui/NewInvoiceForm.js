@@ -69,7 +69,6 @@ foam.CLASS({
       height: 40px;
       border-radius: 0 4px 4px 0;
       outline: none;
-      padding-left: 5px;
       padding-right: 5px;
     }
     ^ .invoice-amount-input {
@@ -110,6 +109,9 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-CurrencyChoice > span {
       font-size: 10px !important;
+    }
+    ^ .foam-u2-CurrencyView {
+      width: 100%;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       position: relative;
@@ -424,7 +426,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
+                      this.invoice.destinationCurrency = this.currencyType.id;
                     })
                   .end()
                 .endContext()
@@ -550,8 +552,8 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.alphabeticCode;
-      this.checkUser(this.currencyType.alphabeticCode);
+      this.selectedCurrency = this.currencyType.id;
+      this.checkUser(this.currencyType.id);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';

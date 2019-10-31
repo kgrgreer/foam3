@@ -15,7 +15,7 @@ foam.CLASS({
   properties: [
     {
       documentation: `For retail purposes. Tip`,
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'tip',
       label: 'Tip',
       visibility: foam.u2.Visibility.RO,
@@ -28,7 +28,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'total',
       visibility: foam.u2.Visibility.RO,
       label: 'Total Amount',
