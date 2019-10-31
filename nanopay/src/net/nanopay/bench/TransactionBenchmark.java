@@ -52,12 +52,12 @@ public class TransactionBenchmark
 
     logger_ = (Logger) x.get("logger");
     logger_.info(this.getClass().getSimpleName(), "setup");
+    System.gc();
 
     accountDAO_ = (DAO)x.get("localAccountDAO");
     branchDAO_ = (DAO)x.get("branchDAO");
     institutionDAO_ = (DAO)x.get("institutionDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
-    //    transactionDAO_.removeAll();
     transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
 
@@ -125,20 +125,6 @@ public class TransactionBenchmark
     // through for those users.
     userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), GT(User.ID, 10000)));
     users = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
-
-    // clear transactions between runs
-    dao = (DAO) x.get("localTransactionDAO");
-    while( dao instanceof ProxyDAO ){
-      if ( dao instanceof MDAO ) {
-        logger_.warning(this.getClass().getSimpleName(), "transactions removeAll - begin.");
-        ((MDAO) dao).removeAll();
-        logger_.warning(this.getClass().getSimpleName(), "transactions removeAll - end.");
-        logger_.warning(this.getClass().getSimpleName(), "gc.");
-        System.gc();
-        break;
-      }
-      dao = ((ProxyDAO) dao).getDelegate();
-    }
 
     // initial funding of system.
     DigitalAccount adminDCA = DigitalAccount.findDefault(x, admin, "CAD");
