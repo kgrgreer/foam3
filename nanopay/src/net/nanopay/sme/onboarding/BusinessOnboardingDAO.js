@@ -77,12 +77,13 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
-        user.setBirthday( businessOnboarding.getBirthday() );
         user.setAddress(businessOnboarding.getAddress());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
+          user.setBirthday(businessOnboarding.getBirthday());
           // Agreenments (tri-party, dual-party & PEP/HIO)
+
           if ( businessOnboarding.getPEPHIORelated() ) {
             Notification notification = new Notification();
             notification.setEmailIsEnabled(true);
