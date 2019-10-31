@@ -121,7 +121,7 @@ foam.CLASS({
 
           // Business info: transaction details
           SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-          suggestedUserTransactionInfo.setBaseCurrency("CAD");
+          suggestedUserTransactionInfo.setBaseCurrency("USD");
           suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
           suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
           suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());

@@ -16,7 +16,7 @@ foam.CLASS({
       class: 'Double'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'settlementAmount'
     },
     {

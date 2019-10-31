@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Currency',
+      of: 'foam.core.Currency',
       name: 'currency'
     },
     {
