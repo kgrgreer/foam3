@@ -116,8 +116,7 @@ foam.CLASS({
   properties: [
     {
       name: 'accounts',
-      expression: function(cview){
-        console.log(cview);
+      expression: function(selectedRoot){
       }
     },
     {
