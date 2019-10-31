@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
@@ -82,10 +83,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
               txn.getCreated().toString(),
               txn.getType(),
-               Long.toString(txn.findDestinationAccount(x).getOwner()),
-               Long.toString(txn.findSourceAccount(x).getOwner()),
-              currency.format(txn.getAmount()),
-              currency.format(txn.getCost()),
+              Long.toString(txn.findDestinationAccount(x).getOwner()),
+              Long.toString(txn.findSourceAccount(x).getOwner()),
+              StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
+              StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
               txn.getStatus().toString()
             ));
 
