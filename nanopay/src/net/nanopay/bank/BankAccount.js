@@ -18,7 +18,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'net.nanopay.payment.Institution',
     
     'foam.core.X',
@@ -132,7 +132,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
-      permissionRequired: true,
+      writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
         var colour = '#545d87';
@@ -232,7 +232,7 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify 
         ownership of the bank account.`,
       value: 0,
-      permissionRequired: true,
+      writePermissionRequired: true
     },
     {
       class: 'DateTime',
@@ -276,7 +276,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
       class: 'FObjectProperty',
@@ -286,7 +285,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     }
   ],
   methods: [
@@ -400,7 +398,7 @@ foam.CLASS({
                       ).limit(2)
                       .select(new ArraySink())).getArray();
                   if ( currencies.size() == 1 ) {
-                    denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                    denomination = ((Currency) currencies.get(0)).getId();
                   } else if ( currencies.size() > 1 ) {
                     logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
                   }

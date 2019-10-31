@@ -5,14 +5,19 @@ foam.CLASS({
   documentation: `ClearingTimeService supports estimating completion date of a
     transaction based on transaction clearing time and process date.`,
 
+  imports: [
+    'bankHolidayService'
+  ],
+
   javaImports: [
+    'foam.nanos.auth.Address',
     'foam.nanos.logger.Logger',
-    'java.time.DayOfWeek',
-    'java.time.LocalDate',
-    'java.time.ZoneId',
+    'foam.util.SafetyUtil',
     'java.util.Date',
-    'java.util.List',
-    'net.nanopay.tx.alterna.CsvUtil'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankHolidayService',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction'
   ],
 
   properties: [
@@ -87,26 +92,60 @@ foam.CLASS({
 
           totalClearingTime = getDefaultClearingTime();
         }
-        LocalDate completionDate = processDate.toInstant()
-          .atZone(ZoneId.systemDefault())
-          .toLocalDate();
-        // TODO: Use bankHolidayDAO instead of the hard-coded cadHolidays
-        List<Integer> bankHolidays = CsvUtil.cadHolidays;
 
-        int i = 0;
-        while ( true ) {
-          if ( completionDate.getDayOfWeek() != DayOfWeek.SATURDAY
-            && completionDate.getDayOfWeek() != DayOfWeek.SUNDAY
-            && ! bankHolidays.contains(completionDate.getDayOfYear())
-            && ++i >= totalClearingTime
-          ) {
-            break;
-          }
-          completionDate = completionDate.plusDays(1);
+        BankAccount bankAccount = findBankAccount(x, transaction);
+        return ((BankHolidayService) getBankHolidayService()).skipBankHolidays(
+          x, processDate, getAddress(x, bankAccount), totalClearingTime);
+      `
+    },
+    {
+      name: 'findBankAccount',
+      type: 'BankAccount',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'transaction',
+          type: 'net.nanopay.tx.model.Transaction'
         }
-        return Date.from(completionDate.atStartOfDay()
-          .atZone(ZoneId.systemDefault())
-          .toInstant());
+      ],
+      javaCode: `
+        if ( transaction instanceof CITransaction ) {
+          return (BankAccount) transaction.findSourceAccount(x);
+        }
+        if ( transaction instanceof COTransaction ) {
+          return (BankAccount) transaction.findDestinationAccount(x);
+        }
+        return null;
+      `
+    },
+    {
+      name: 'getAddress',
+      type: 'Address',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'bankAccount',
+          type: 'net.nanopay.bank.BankAccount'
+        }
+      ],
+      javaCode: `
+        Address address = new Address.Builder(x).setCountryId("CA").build();
+        if ( bankAccount != null ) {
+          if ( bankAccount.getAddress() != null ) {
+            return bankAccount.getAddress();
+          }
+          if ( bankAccount.getBankAddress() != null ) {
+            return bankAccount.getBankAddress();
+          }
+          address.setCountryId(bankAccount.getCountry());
+        }
+        return address;
       `
     }
   ]

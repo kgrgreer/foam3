@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.recentTransactions',
   name: 'DashboardRecentTransactions',
@@ -34,12 +28,8 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
     'foam.comics.v2.DAOBrowserView',
     'foam.comics.v2.DAOControllerConfig'
-  ],
-  exports: [
-    'controllerMode'
   ],
 
   messages: [
@@ -53,12 +43,6 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'data'
-    },
-    {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
     },
     {
       class: 'FObjectProperty',
@@ -81,15 +65,15 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data) {
           return self.E()
-              .start(self.Rows).addClass(this.myClass('card-container'))
-                .start()
-                  .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
-                .end()
-                .start(foam.comics.v2.DAOBrowserView, {
-                  data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20),
-                  config: self.config
-                }).end()
-              .end();
+            .start(self.Rows).addClass(this.myClass('card-container'))
+              .start()
+                .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
+              .end()
+              .start(foam.comics.v2.DAOBrowserView, {
+                data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20),
+                config: self.config
+              }).end()
+            .end();
         }));
     }
   ]

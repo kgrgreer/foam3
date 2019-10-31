@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
   ],
 
   properties: [

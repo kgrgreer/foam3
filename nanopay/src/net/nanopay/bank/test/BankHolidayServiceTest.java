@@ -16,8 +16,6 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
-import static foam.mlang.MLang.*;
-
 public class BankHolidayServiceTest extends foam.nanos.test.Test {
   private final LocalDate jan1_2020 = LocalDate.of(2020, 1, 1);
 
@@ -39,7 +37,7 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     Test_SkipWeekend(x);
     Test_SkipOffset(x);
     Test_SkipHolidayWeekendAndOffset(x);
-    Test_SkipCountryWideHoliday(x);
+    Test_SkipCountryAndRegionHoliday(x);
     Test_NoSkipBusinessDay(x);
     Test_SkipCustomWeekend(x);
   }
@@ -75,11 +73,11 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     test(expected.equals(result), "Should skip bank holiday, weekend and offset days");
   }
 
-  private void Test_SkipCountryWideHoliday(X x) {
+  private void Test_SkipCountryAndRegionHoliday(X x) {
     Date result = bankHolidayService.skipBankHolidays(x, getDate(jan1_2020), ca_ON, 4);
     Date expected = getDate(jan1_2020.plusDays(2 + 4 + 2)); // 2 holidays, 4 offset days, 2 days for Saturday and Sunday
 
-    test(expected.equals(result), "Should skip bank holiday(country-wide), weekend and offset days");
+    test(expected.equals(result), "Should skip country and regional bank holiday, weekend and offset days");
   }
 
   private void Test_NoSkipBusinessDay(X x) {

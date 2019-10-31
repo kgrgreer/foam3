@@ -106,16 +106,22 @@ p({
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.PARENT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
     fm = new DAOFoldManager.Builder(x)
       .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)    
-      .build();\nfoldingDAO = new FoldManagerDAODecorator.Builder(x)
+      .build();
+    foldingDAO = new FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
       .setFm(fm)
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    deletedAware = new DeletedAwareDAO(x, "transaction", a);
+    deletedAware = new DeletedAwareDAO.Builder(x)
+      .setName("transaction")
+      .setDelegate(a)
+      .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
       .setDelegate(deletedAware)
       .build();

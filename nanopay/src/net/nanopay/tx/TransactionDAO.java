@@ -84,15 +84,49 @@ public class TransactionDAO
    * return true when status change is such that Transfers should be executed (applied)
    */
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
-    return ( ! SafetyUtil.isEmpty(txn.getId()) ||
-      txn instanceof DigitalTransaction ) &&
-      (txn.getNext() == null || txn.getNext().length == 0 ) &&
-      (txn.canTransfer(x, oldTxn));
+    X y = getX().put("transactionDAO", getDelegate());
+
+    if ( ( ! SafetyUtil.isEmpty(txn.getId()) ||
+           txn instanceof DigitalTransaction ) &&
+         (txn.getNext() == null || txn.getNext().length == 0 ) &&
+         (txn.canTransfer(y, oldTxn)) ) {
+      return true;
+    }
+    // legacy support for REVERSE
+    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
+         txn.getStatus() == TransactionStatus.REVERSE &&
+         oldTxn != null &&
+         oldTxn.getStatus() != TransactionStatus.REVERSE ) {
+      return true;
+    }
+    return false;
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
     Transfer[] ts = txn.createTransfers(y, oldTxn);
+
+        // legacy support for REVERSE
+    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
+         txn.getStatus() == TransactionStatus.REVERSE &&
+         oldTxn != null &&
+         oldTxn.getStatus() != TransactionStatus.REVERSE ) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(this.getClass().getSimpleName(), "executeTransaction", txn.getId(), "adding REVERSE transfers");
+      List all = new ArrayList();
+      Collections.addAll(all, ts);
+      all.add(new Transfer.Builder(x)
+              .setDescription("nanopay Alterna Trust Account (CAD) Cash-Out DECLINED")
+              .setAccount(1L)
+              .setAmount(-txn.getTotal())
+              .build());
+      all.add(new Transfer.Builder(x)
+              .setDescription("Cash-Out DECLINED")
+              .setAccount(txn.getSourceAccount())
+              .setAmount(txn.getTotal())
+              .build());
+      ts = (Transfer[]) all.toArray(new Transfer[0]);
+    }
 
     // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
     if ( ts.length != 1 ) {
@@ -110,7 +144,7 @@ public class TransactionDAO
       tr.validate();
       Account account = tr.findAccount(getX());
       if ( account == null ) {
-        logger.error("Unknown account: " + tr.getAccount(), tr);
+        logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found: " + tr.getAccount(), tr);
         throw new RuntimeException("Unknown account: " + tr.getAccount());
       }
       account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
@@ -120,7 +154,10 @@ public class TransactionDAO
 
     for ( Object value : hm.values() ) {
       if ( (long)value != 0 ) {
-        logger.error("Debits and credits don't match.", value);
+        logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "Debits and credits don't match.", value);
+        for ( Transfer tr : ts ) {
+          logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "Transfer", tr);
+        }
         throw new RuntimeException("Debits and credits don't match.");
       }
     }
@@ -183,8 +220,9 @@ public class TransactionDAO
       t.validate();
       Balance balance = finalBalanceArr[i];
       t.execute(balance);
+      finalBalanceArr[i] = (Balance) balance.fclone();
     }
-
+    txn.setBalances(finalBalanceArr);
     return getDelegate().put_(x, txn);
   }
 

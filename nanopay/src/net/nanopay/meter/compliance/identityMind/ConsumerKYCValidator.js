@@ -33,7 +33,7 @@ foam.CLASS({
             // as it is also used by beneficial owner KYC rule (id:1431).
             User user = (User) obj;
             IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-            Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones Person");
+            Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones User");
             IdentityMindResponse response = identityMindService.evaluateConsumer(x, obj, getStage(), memoMap);
             ComplianceValidationStatus status = response.getComplianceValidationStatus();
 

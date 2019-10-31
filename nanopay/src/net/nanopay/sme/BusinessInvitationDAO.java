@@ -63,6 +63,7 @@ public class BusinessInvitationDAO
     }
 
     Invitation invite = (Invitation) obj.fclone();
+    invite.setEmail(invite.getEmail().toLowerCase());
 
     // A legal requirement is that we need to do a compliance check on any
     // user that can make payments, which includes admins and approvers.

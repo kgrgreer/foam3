@@ -84,7 +84,7 @@ foam.CLASS({
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
-                    .setType("Dow Jones (" + response.getSearchType() + ")")
+                    .setType(response.getSearchType())
                     .setUser(response.getUserId())
                     .setEntityId(response.getUserId())
                     .setEntityLabel(label)

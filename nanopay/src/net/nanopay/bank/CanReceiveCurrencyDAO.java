@@ -99,12 +99,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       }
     }
   
-    // if the user is a business then the compliance should be passed
-    boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
-
-    response.setResponse(isCompliant && (contactPayCurrency || contactRecieveCurrency) );
+    response.setResponse((contactPayCurrency || contactRecieveCurrency) );
     if ( count.getValue() == 0 ) response.setMessage("We apologize for, this contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
-    if ( ! isCompliant ) response.setMessage("Please be patient as we perform our due diligence. This business will be active shortly.");
     return response;
   }
   public User checkUser(X x, User user, long id, CanReceiveCurrency request) {

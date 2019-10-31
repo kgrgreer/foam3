@@ -215,7 +215,7 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
+    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
     into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
@@ -257,6 +257,7 @@ task copyImages(type: Copy) {
     from "$rootDir/foam2/src/foam/nanos"
     from "$rootDir/foam2/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
+    from "$rootDir/nanopay/src/net/nanopay/merchant"
     into "${project.targetDir}/classes"
     include "images/**"
 }

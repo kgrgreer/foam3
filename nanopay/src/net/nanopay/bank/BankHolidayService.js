@@ -71,8 +71,14 @@ foam.CLASS({
         bankHolidayDAO
           .where(AND(
             OR(
-              EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-              EQ(BankHoliday.REGION_ID, address.getRegionId())
+              AND(
+                EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+                EQ(BankHoliday.REGION_ID, address.getRegionId())
+              ),
+              AND(
+                EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+                EQ(BankHoliday.REGION_ID, "")
+              )
             ),
             GTE(BankHoliday.DATE, getDate(localDate, ZoneOffset.UTC))))
           .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();

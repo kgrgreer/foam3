@@ -18,10 +18,12 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'java.text.SimpleDateFormat',
     'java.util.*',
+    'net.nanopay.invoice.model.BillingInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.model.Currency',
+    'net.nanopay.model.Business',
+    'foam.core.Currency',
     'static foam.mlang.MLang.*'
   ],
 
@@ -55,6 +57,8 @@ foam.CLASS({
     
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
+
+        String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
     
         InvoiceStatus newInvoiceStatus = invoice.getStatus();
         InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
@@ -137,11 +141,8 @@ foam.CLASS({
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, businessName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
-
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "receivable");
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
               args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
@@ -269,7 +270,15 @@ foam.CLASS({
     
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         args.put("date", date != null ? dateFormat.format(date) : "n/a");
-    
+
+        if ( invoice instanceof BillingInvoice ) {
+          BillingInvoice billingInvoice = (BillingInvoice) invoice;
+          args.put("billingPeriod", String.format("from %s to %s",
+            dateFormat.format(billingInvoice.getBillingStartDate()),
+            dateFormat.format(billingInvoice.getBillingEndDate()))
+          );
+        }
+
         return args;
       `
     },

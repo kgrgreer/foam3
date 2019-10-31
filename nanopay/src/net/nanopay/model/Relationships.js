@@ -138,6 +138,10 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
+  targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     hidden: true
   },
@@ -158,7 +162,7 @@ foam.RELATIONSHIP({
       this.__subSubContext__.userDAO
         .find(value)
         .then((user) => {
-          this.add('[', user.cls_.name, '] ', user.label());
+          this.add(user.label());
         })
         .catch((error) => {
           this.add(value);
@@ -219,7 +223,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.cico.paymentCard.model.PaymentCard',
   forwardName: 'paymentCards',
   inverseName: 'owner',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 /*
@@ -240,7 +248,9 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'transactionLimits',
-      of: 'net.nanopay.tx.model.TransactionLimit'
+      of: 'net.nanopay.tx.model.TransactionLimit',
+      createMode: 'HIDDEN',
+      section: 'administrative'
     }
   ]
 });
@@ -276,7 +286,15 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
   inverseName: 'partnered',
-  junctionDAOKey: 'partnerJunctionDAO'
+  junctionDAOKey: 'partnerJunctionDAO',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  },
+  targetProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  }
 });
 
 foam.CLASS({
@@ -355,7 +373,8 @@ foam.CLASS({
       of: 'net.nanopay.auth.AgentJunctionStatus',
       name: 'status',
       documentation: 'Describes the active state between agent and entity.',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
     }
   ],
@@ -589,6 +608,10 @@ foam.RELATIONSHIP({
   cardinality: '*:*',
   forwardName: 'signingOfficers',
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'business'
+  },
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
@@ -664,22 +687,29 @@ foam.RELATIONSHIP({
   forwardName: 'debits',
   inverseName: 'sourceAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
-  // The following code is the correct way to implement but it breaks dev,
-  // will be dealing with it in another PR
-  /*
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
-  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
     visibility: 'RO',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
-    }
-  }
+      this.add(this.__subSubContext__.accountDAO.find(value)
+        .then((account) => account.name ? account.name : value));
+    },
+    javaToCSVLabel: `
+      outputter.outputValue("Sender User Id");
+      outputter.outputValue("Sender Name");
+      outputter.outputValue("Sender Email");
+    `,
+    javaToCSV: `
+      User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
+      outputter.outputValue(sender.getId());
+      outputter.outputValue(sender.label());
+      outputter.outputValue(sender.getEmail());
+    `
+},
 });
 
 foam.RELATIONSHIP({
@@ -688,13 +718,8 @@ foam.RELATIONSHIP({
   forwardName: 'credits',
   inverseName: 'destinationAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
-  // The following code is the correct way to implement but it breaks dev,
-  // will be dealing with it in another PR
-  /*
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
-  */
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
@@ -702,9 +727,21 @@ foam.RELATIONSHIP({
     visibility: 'RO',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value).then(account => account.name ? account.name : value));
-    }
-  }
+      this.add(this.__subSubContext__.accountDAO.find(value)
+        .then((account) => account.name ? account.name : value));
+    },
+    javaToCSVLabel: `
+      outputter.outputValue("Receiver User Id");
+      outputter.outputValue("Receiver Name");
+      outputter.outputValue("Receiver Email");
+    `,
+    javaToCSV: `
+      User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
+      outputter.outputValue(receiver.getId());
+      outputter.outputValue(receiver.label());
+      outputter.outputValue(receiver.getEmail());
+    `
+  },
 });
 
 foam.RELATIONSHIP({
@@ -740,7 +777,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -752,7 +796,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -764,7 +815,14 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'userDAO',
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -777,4 +835,14 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.exchangeable.AssetClass',
+  targetModel: 'net.nanopay.exchangeable.Security',
+  forwardName: 'members',
+  inverseName: 'assetClass',
+  cardinality: '1:*',
+  sourceDAOKey: 'assetClassDAO',
+  targetDAOKey: 'securitiesDAO',
 });

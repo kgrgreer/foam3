@@ -64,7 +64,6 @@ foam.CLASS({
       name: 'address',
       documentation: `Returns the postal address of the business associated with the 
         public information of a User.  It is drawn from the Address model.`,
-      view: { class: 'foam.nanos.auth.AddressDetailView' },
       visibility: foam.u2.Visibility.RO
     },
     {
