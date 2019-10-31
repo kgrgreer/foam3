@@ -140,32 +140,6 @@ p({"class":"foam.nanos.boot.NSpec", "name":"invoiceDAO",                       "
 p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "serve":true,  "serviceScript":"return new net.nanopay.invoice.service.DefaultInvoicePaymentService(x);","boxClass":"net.nanopay.invoice.service.InvoicePaymentServiceSkeleton","client":"{\"class\":\"net.nanopay.invoice.service.ClientInvoicePaymentService\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));", "client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
 
-// TODO: Add ,\"cache\":true back to currencyDAO
-p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"currencyDAO",                      
-  "serve":true,  
-  "serviceScript":
-  """
-  return new foam.dao.EasyDAO.Builder(x)
-    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-    .setJournalName("currencies")
-    .setPm(true)
-    .setPipelinePm(true)
-    .setOf(net.nanopay.exchangeable.Currency.getOwnClassInfo())
-    .setName("currency")
-    .setIndex(new foam.core.PropertyInfo[] {net.nanopay.exchangeable.Currency.COUNTRY})
-    .build();
-  """, 
-  "client":
-  """
-  {
-    "of":"net.nanopay.exchangeable.Currency",
-    "cache":true
-  }
-  """
-})
-
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"securitiesDAO",

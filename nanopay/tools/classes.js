@@ -110,8 +110,6 @@ var classes = [
   'net.nanopay.bank.BankWeekend',
 
   //Exchangeable
-  'net.nanopay.exchangeable.Denomination',
-  'net.nanopay.exchangeable.Currency',
   'net.nanopay.exchangeable.Security',
   'net.nanopay.exchangeable.AssetClass',
 

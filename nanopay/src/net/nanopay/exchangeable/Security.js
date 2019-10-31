@@ -1,19 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.exchangeable',
   name: 'Security',
-  extends: 'net.nanopay.exchangeable.Denomination',
+  extends: 'foam.core.Unit',
 
   documentation: `The base model for storing, using and managing securities information. (such as
   stocks bonds etc.`,
 
-  ids: [
-    'alphabeticCode'
-  ],
-
-
   tableColumns: [
     'name',
-    'alphabeticCode'
+    'id'
   ],
 
 
@@ -22,10 +17,10 @@ foam.CLASS({
       name: 'toSummary',
       documentation: `When using a reference to the securitiesDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string
-        property. In this case, we are using the alphabeticCode.
+        property. In this case, we are using the id.
       `,
       code: function(x) {
-        return this.alphabeticCode;
+        return this.id;
       }
     },
     {
@@ -50,14 +45,14 @@ foam.CLASS({
         formatted+= amount;
 
         formatted += ' ';
-        formatted += this.alphabeticCode;
+        formatted += this.id;
 
 
         return formatted;
       },
       args: [
         {
-          class: 'foam.core.Currency',
+          class: 'foam.core.UnitValue',
           name: 'amount'
         }
       ],
@@ -69,7 +64,7 @@ foam.CLASS({
         String formatted = isNegative ? "-" : "";
         formatted += amountStr;
         formatted += " ";
-        formatted += this.getAlphabeticCode();
+        formatted += this.getId();
         return formatted;
       `
     }

@@ -26,13 +26,13 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'fromCurrency',
       documentation: 'Originating currency of the payment/request.'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'toCurrency',
       documentation: 'Target currency of the payment/request.'
     },

@@ -160,9 +160,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   // Exchangeable
-  { name: 'net/nanopay/exchangeable/Denomination' },
   { name: 'net/nanopay/exchangeable/Security' },
-  { name: 'net/nanopay/exchangeable/Currency' },
   { name: 'net/nanopay/exchangeable/AssetClass' },
 
   // AddCABankModal

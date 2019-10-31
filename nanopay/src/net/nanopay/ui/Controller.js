@@ -24,7 +24,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.modal.ModalStyling',
@@ -155,7 +155,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'homeDenomination',
       factory: function() {
         /**

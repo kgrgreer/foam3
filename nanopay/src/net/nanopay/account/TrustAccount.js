@@ -6,7 +6,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -113,7 +113,7 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
-            DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
+            DAO accounts = find(x, sourceUser, currency.getId());
             return (TrustAccount) ((ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
       `);
