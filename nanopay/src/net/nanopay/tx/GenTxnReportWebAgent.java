@@ -50,8 +50,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     try {
       OutputStream outputStream = response.getOutputStream();
 
-      StringBuilder titileStrBuilder = new StringBuilder();
-      titileStrBuilder.append(this.buildCSVLine(
+      StringBuilder titleStrBuilder = new StringBuilder();
+      titleStrBuilder.append(this.buildCSVLine(
         10,
         "Transaction ID",
         "Parent Transaction",
@@ -64,7 +64,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "Status"
       ));
 
-      outputStream.write(titileStrBuilder.toString().getBytes());
+      outputStream.write(titleStrBuilder.toString().getBytes());
 
       List<Transaction> transactionList = ((ArraySink) txnDAO.select(new ArraySink())).getArray();
       for ( Transaction txn : transactionList ) {
@@ -73,7 +73,6 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
           if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
-            String fee = currency.format(txn.getCost());
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(this.buildCSVLine(
@@ -82,10 +81,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               txn.getParent(),
               txn.getCreated().toString(),
               txn.getType(),
-              Long.toString(txn.getPayeeId()),
-              Long.toString(txn.getPayerId()),
-              Long.toString(txn.getAmount()),
-              fee,
+               Long.toString(txn.findDestinationAccount(x).getOwner()),
+               Long.toString(txn.findSourceAccount(x).getOwner()),
+              currency.format(txn.getAmount()),
+              currency.format(txn.getCost()),
               txn.getStatus().toString()
             ));
 

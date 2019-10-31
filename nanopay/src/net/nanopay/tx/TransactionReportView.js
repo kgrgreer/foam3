@@ -17,6 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'currencyDAO',
     'transactionDAO'
   ],
@@ -92,7 +93,8 @@ foam.CLASS({
           if ( statusHistoryArr[0].timeStamp > this.endDate ) return arr;
           if ( statusHistoryArr[statusHistoryArr.length-1].timeStamp < this.startDate ) return arr;
           for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
-            if ( statusHistoryArr[i].timeStamp <= this.endDate && statusHistoryArr[i].timeStamp >= this.startDate ) {
+            if ( statusHistoryArr[i].timeStamp <= this.endDate
+              && statusHistoryArr[i].timeStamp >= this.startDate ) {
               transaction.status = statusHistoryArr[i].status;
               transaction.lastModified = statusHistoryArr[i].timeStamp;
               arr.push(transaction);
@@ -118,13 +120,16 @@ foam.CLASS({
             var formattedFee = currency.format(txn.getCost());
             var formattedAmount = currency.format(txn.amount);
 
+            var payerAccount = await this.accountDAO.find(txn.sourceAccount);
+            var payeeAccount = await this.accountDAO.find(txn.destinationAccount);
+
             var report = this.TransactionReport.create({
               id: txn.id,
               parent: txn.parent ? txn.parent : 'N/A',
               created: txn.created,
               type: txn.type,
-              payeeId: txn.payeeId,
-              payerId: txn.payerId,
+              payeeId: payeeAccount.owner,
+              payerId: payerAccount.owner,
               amount: formattedAmount,
               fee: formattedFee,
               status: txn.status,
