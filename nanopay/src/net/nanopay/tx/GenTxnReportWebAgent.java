@@ -54,15 +54,17 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       StringBuilder titleStrBuilder = new StringBuilder();
       titleStrBuilder.append(this.buildCSVLine(
-        10,
+        11,
         "Transaction ID",
         "Parent Transaction",
         "Created Time",
         "Type",
-        "Payee Id",
-        "Payer Id",
-        "Amount",
+        "Payee ID",
+        "Payer iD",
+        "Payment Amount",
+        "Payment Currency",
         "Fee",
+        "Fee Currency",
         "Status"
       ));
 
@@ -78,7 +80,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(this.buildCSVLine(
-              10,
+              11,
               txn.getId(),
               SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
               txn.getCreated().toString(),
@@ -86,7 +88,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
               StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
+              currency.getAlphabeticCode(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
+              currency.getAlphabeticCode(),
               txn.getStatus().toString()
             ));
 
