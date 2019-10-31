@@ -37,7 +37,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.InvoiceLineItem'
   ],
@@ -229,7 +229,7 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'chequeAmount',
       documentation: `The amount paid for an invoice using an external transaction system.`
     },
@@ -240,7 +240,7 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
@@ -253,6 +253,21 @@ foam.CLASS({
         'destinationAmount'
       ],
       required: true,
+      tableCellFormatter: function(value, invoice) {
+        // Needed to show amount value for old invoices that don't have destination currency set
+        if ( ! invoice.destinationCurrency ) {
+          this.add(value);
+        }
+        this.__subContext__.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            var formatted = currency.format(value);
+            this.tooltip = formatted;
+            this.start()
+              .add(formatted)
+            .end();
+          });
+      },
       tableWidth: 120,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -270,7 +285,7 @@ foam.CLASS({
       `
     },
     { // How is this used? - display only?,
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'sourceAmount',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
       `,
@@ -282,7 +297,7 @@ foam.CLASS({
       documentation: `The bank account into which funds are to be deposited.`
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'exchangeRate',
       documentation: 'The exchange rate captured at the time of payment.'
     },
@@ -579,9 +594,8 @@ foam.CLASS({
             throw new IllegalStateException("Destination currency is not valid.");
           }
         }
-
-        if ( this.getAmount() <= 0 ) {
-          throw new IllegalStateException("Amount must be a number and greater than zero.");
+        if ( this.getAmount() < 0 ) {
+          throw new IllegalStateException("Amount must be a number and no less than zero.");
         }
 
         boolean isInvoiceToContact = this.getContactId() != 0;

@@ -6,7 +6,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -77,11 +77,12 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account, String institutionNumber) {
+            Logger logger   = (Logger) x.get("logger");
+            logger.info("TrustAccount.find", "account", account, "institution", institutionNumber);
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }
 
-            Logger logger   = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
             List accountList = ((ArraySink)accounts.select(new ArraySink())).getArray();
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());
@@ -112,7 +113,7 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
-            DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
+            DAO accounts = find(x, sourceUser, currency.getId());
             return (TrustAccount) ((ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
       `);

@@ -17,6 +17,7 @@ my %rule = (
     1200=>"Dow Jones Person KYC - User onboarding",
     1201=>"Dow Jones Entity KYC - Business onboarding",
     1202=>"Dow Jones Beneficial Owner KYC - Beneficial Owner onboarding",
+    1203=>"DJ Approval Request",
     1300=>"User Final Compliance Rule",
     1301=>"Business Final Compliance Rule",
     1310=>"Transaction Final Compliance Rule",
@@ -94,7 +95,7 @@ my %rule = (
     # https://github.com/nanoPayinc/NANOPAY/pull/7965/files
     3150=>"Transaction Final Compliance Rule",
     3151=>"Compliance transaction approval",
-    3152=>"Estimate Transaction completionDate"
+    3152=>"Estimate Transaction completionDate",
     3153=>"Clear transaction approval requests",
     3154=>"IdentityMind transfer transaction",
     3155=>"Reset transaction lastModified/By properties"
@@ -123,8 +124,10 @@ my @newlines;
 foreach $line ( @lines ) {
     if ( $line =~ /id\":(\d+)/ ) {
         $key = $1;
-        $value = $rule{$key};
-        $line =~ s/id\":$key/id\":\"$value\"/;
+        if ( exists($rule{$key}) ) {
+            $value = $rule{$key};
+            $line =~ s/id\":$key/id\":\"$value\"/;
+        }
     }
     push(@newlines, $line);
 }
@@ -147,8 +150,10 @@ close(FILE);
 foreach $line ( @lines ) {
     if ( $line =~ /ruleId\":(\d+)/ ) {
         $key = $1;
-        $value = $rule{$key};
-        $line =~ s/ruleId\":$key/ruleId\":\"$value\"/;
+        if ( exists($rule{$key}) ) {
+            $value = $rule{$key};
+            $line =~ s/ruleId\":$key/ruleId\":\"$value\"/;
+        }
     }
     push(@newlines, $line);
 }

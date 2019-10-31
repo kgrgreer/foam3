@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction',
     'java.text.NumberFormat',
     'java.util.HashMap',
@@ -32,23 +32,34 @@ foam.CLASS({
          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-
-              Transaction tx = (Transaction) obj;
+              // SETUP
+              DAO currencyDAO = (DAO) x.get("currencyDAO");
               DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
-              Transaction t = tx;
-              while ( !(t instanceof net.nanopay.tx.AbliiTransaction) ){
-                tx = (Transaction) tx.findParent(x);
-              }
               Logger logger  = (Logger) x.get("logger");
-              User sender = t.findSourceAccount(x).findOwner(x);
-              User receiver = t.findDestinationAccount(x).findOwner(x);
+
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
 
-              // Traverse the chain to find the invoiceId if there is one.
-              DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
-              long invoiceId = t.getInvoiceId();
+              Transaction t = (Transaction) obj; // used through loop
+              Transaction tx = (Transaction) obj; //keep original object
+              while ( t != null && !(t instanceof net.nanopay.tx.AbliiTransaction) ){
+                t = (Transaction) t.findParent(x);
+              }
 
+              // CHECK IF ABLII-TRANSACTION FOUND
+              long invoiceId = 0;
+              User sender = null;
+              User receiver = null;
+              if ( t == null || !(t instanceof net.nanopay.tx.AbliiTransaction) ) {
+                sender = tx.findSourceAccount(x).findOwner(x);
+                receiver = tx.findDestinationAccount(x).findOwner(x);
+              } else {
+                invoiceId = t.getInvoiceId();
+                sender = t.findSourceAccount(x).findOwner(x);
+                receiver = t.findDestinationAccount(x).findOwner(x);
+              }
+
+              // DEPENDING ON ABOVE - send either 'pay-from-bank-account-reject' or 'cashin-reject' email
               if ( invoiceId != 0 ) {
                 notification.setBody("Transaction for invoice #" + invoiceId + " was rejected. Receiver's balance was reverted, invoice was not paid.");
                 notification.setUserId(sender.getId());
@@ -60,19 +71,18 @@ foam.CLASS({
 
                 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
                 Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
-                DAO currencyDAO = (DAO) x.get("currencyDAO");
                 Currency currency = (Currency) currencyDAO.find(invoice.getDestinationCurrency());
 
                 if ( ! Invoice.INVOICE_NUMBER.isDefaultValue(invoice) ) {
                   args.put("invoiceNumber", invoice.getInvoiceNumber());
                 }
 
-                args.put("amount", currency.format(tx.getAmount()));
+                args.put("amount", currency.format(t.getAmount()));
                 args.put("toName", sender.label());
                 args.put("name", receiver.label());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());
-                args.put("account", ((BankAccount) tx.findSourceAccount(x)).getAccountNumber());
+                args.put("account", ((BankAccount) t.findSourceAccount(x)).getAccountNumber());
                 args.put("payerName", sender.getFirstName());
                 args.put("payeeName", receiver.getFirstName());
                 args.put("link", config.getUrl());
@@ -84,7 +94,6 @@ foam.CLASS({
                 notification.setUserId(receiver.getId());
                 notification.setNotificationType("Reject Cash in transaction");
                 notification.setEmailName("cashin-reject");
-                NumberFormat formatter = NumberFormat.getCurrencyInstance();
                 HashMap<String, Object> args = new HashMap<>();
                 AppConfig config;
                 String group = receiver.getGroup();
@@ -93,9 +102,9 @@ foam.CLASS({
                 } else {
                   config = (AppConfig) (receiver.findGroup(x)).getAppConfig(x);
                 }
-
+                Currency currency = (Currency) currencyDAO.find(tx.getSourceCurrency());
                 String bankAccountNumber = ((BankAccount) tx.findSourceAccount(x)).getAccountNumber();
-                args.put("amount", formatter.format(tx.getAmount() / 100.00));
+                args.put("amount", currency.format(tx.getAmount()));
                 args.put("name", receiver.getFirstName());
                 args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
                 args.put("link",    config.getUrl());

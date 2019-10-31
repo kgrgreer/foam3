@@ -69,7 +69,7 @@ public class RealexTransactionDAO
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
       User user = (User) x.get("user");
       DAO currencyDAO = (DAO) x.get("currencyDAO");
-      net.nanopay.exchangeable.Currency currency = (net.nanopay.exchangeable.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
+      foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");
       long cardId = paymentAccountInfo.getPaymentCardId();
       RealexPaymentCard paymentCard = (RealexPaymentCard) paymentCardDAO.find_(x, cardId);

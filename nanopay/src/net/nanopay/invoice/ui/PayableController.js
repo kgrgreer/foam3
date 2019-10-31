@@ -62,6 +62,7 @@ foam.CLASS({
                   invoice.payee.businessName :
                   invoice.payee.label();
                 this.add(additiveSubField);
+                this.tooltip = additiveSubField;
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
