@@ -464,6 +464,7 @@ foam.CLASS({
           this.addClass(this.myClass())
           .start()
             .tag(this.topNavigation_)
+            .show(this.slot((loginSuccess) => loginSuccess))
           .end()
           .start()
             .addClass('stack-wrapper')
