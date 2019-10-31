@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
+import foam.util.SafetyUtil;
 import net.nanopay.exchangeable.Currency;
 import net.nanopay.meter.reports.AbstractReport;
 import net.nanopay.tx.model.Transaction;
@@ -78,7 +79,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
             stringBuilder.append(this.buildCSVLine(
               10,
               txn.getId(),
-              txn.getParent(),
+              SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
               txn.getCreated().toString(),
               txn.getType(),
                Long.toString(txn.findDestinationAccount(x).getOwner()),
