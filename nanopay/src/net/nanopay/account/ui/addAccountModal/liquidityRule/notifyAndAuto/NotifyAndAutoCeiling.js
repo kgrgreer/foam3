@@ -34,7 +34,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'accountBalanceCeiling',
       label: 'If the balance of this account reaches',
       documentation: `
@@ -50,7 +50,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'resetAccountBalanceCeiling',
       label: 'Reset account balance to',
       documentation: `

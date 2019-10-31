@@ -13,7 +13,7 @@ foam.CLASS({
       name: 'token'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'fee'
     },
     {
@@ -35,7 +35,7 @@ foam.CLASS({
       class: 'Reference',
       // targetDAOKey: 'currencyDAO',
       name: 'currencyId',
-      of: 'net.nanopay.exchangeable.Currency'
+      of: 'foam.core.Currency'
     }
   ]
 });

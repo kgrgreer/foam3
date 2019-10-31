@@ -78,7 +78,7 @@ foam.CLASS({
 
                   // Account Type
                   if ( type == 'Digital' ) type = 'Virtual';
-                  this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom.alphabeticCode + ')'}));
+                  this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom.id + ')'}));
 
                   var balanceColour = type == 'Aggregate' ? 'gray' : 'black';
                   var balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';

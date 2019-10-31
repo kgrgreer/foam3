@@ -18,7 +18,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.payment.Institution',
     
     'foam.core.X',
@@ -398,7 +398,7 @@ foam.CLASS({
                       ).limit(2)
                       .select(new ArraySink())).getArray();
                   if ( currencies.size() == 1 ) {
-                    denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                    denomination = ((Currency) currencies.get(0)).getId();
                   } else if ( currencies.size() > 1 ) {
                     logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
                   }

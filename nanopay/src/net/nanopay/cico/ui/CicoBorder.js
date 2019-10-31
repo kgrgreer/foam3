@@ -141,7 +141,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount'
     },
     {
