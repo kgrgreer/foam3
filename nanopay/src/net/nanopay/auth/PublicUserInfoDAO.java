@@ -64,18 +64,30 @@ public class PublicUserInfoDAO
       String userProperty,
       DAO delegate
   ) {
+    this(x, true, idProperty, userProperty, delegate);
+  }
+
+  public PublicUserInfoDAO(      
+    X x,
+    boolean integrityCheck,
+    String idProperty,
+    String userProperty,
+    DAO delegate
+  ) {
     super(x, delegate);
     idProperty_ = idProperty;
     userProperty_ = userProperty;
     userDAO_ = (DAO) x.get("bareUserDAO");
 
-    // Check if the given properties exist on the model.
-    foam.core.ClassInfo classInfo = delegate.getOf();
+    if ( integrityCheck ) {
+      // Check if the given properties exist on the model.
+      foam.core.ClassInfo classInfo = delegate.getOf();
 
-    if ( classInfo.getAxiomByName(idProperty) == null ) {
-      throw new IllegalArgumentException("Property '" + idProperty + "' does not exist on model '" + classInfo.getId() + "'.");
-    } else if ( classInfo.getAxiomByName(userProperty) == null ) {
-      throw new IllegalArgumentException("Property '" + userProperty + "' does not exist on model '" + classInfo.getId() + "'.");
+      if ( classInfo.getAxiomByName(idProperty) == null ) {
+        throw new IllegalArgumentException("Property '" + idProperty + "' does not exist on model '" + classInfo.getId() + "'.");
+      } else if ( classInfo.getAxiomByName(userProperty) == null ) {
+        throw new IllegalArgumentException("Property '" + userProperty + "' does not exist on model '" + classInfo.getId() + "'.");
+      } 
     }
   }
 
