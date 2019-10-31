@@ -986,6 +986,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
       .setDecorator(setBusinessNameDAO)
+      .setRuler(false)
       .build();
     return new foam.dao.ValidatingDAO(x, ed);
   """,
