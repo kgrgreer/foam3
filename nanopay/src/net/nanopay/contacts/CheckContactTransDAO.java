@@ -21,8 +21,9 @@ public class CheckContactTransDAO extends ProxyDAO {
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    Contact contact = (Contact) obj;
-
+    if(true) {
+      throw new RuntimeException("Cannot put null!");
+    }
     return super.remove_(x, obj);
   }
 }

@@ -17,7 +17,9 @@ p({
   "serve": true,
   "serviceScript": """
     return new net.nanopay.meter.BusinessStatusContactDAO.Builder(x)
-      .setDelegate(new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localContactDAO\"), new foam.nanos.auth.AuthorizableAuthorizer(\"contact\")))
+      .setDelegate(
+        new net.nanopay.contacts,CheckContactTransDAO(x, new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localContactDAO\"), new foam.nanos.auth.AuthorizableAuthorizer(\"contact\")) );
+        )
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
