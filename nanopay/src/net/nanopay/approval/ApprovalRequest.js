@@ -63,7 +63,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Object',
+      javaType: 'Object',
       name: 'objId',
       visibility: 'RO',
       documentation: 'id of the object that needs approval.',
