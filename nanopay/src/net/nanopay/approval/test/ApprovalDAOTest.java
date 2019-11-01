@@ -63,7 +63,7 @@ extends Test {
 
     test(numberOfRequests == 5, "Expected: 5 requests were created, one for each user in the group. Actual: " + numberOfRequests);
     test(userToTest.getFirstName().equals("Pending"), "Expected: Tested user's first name is 'Pending' at the start of the test. Actual: " + userToTest.getFirstName());
-DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTest.getId()).toString(), initialRequest.getClassification()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
+DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getId(), initialRequest.getClassification()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
     unapprovedRequestDAO.limit(2).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
@@ -127,7 +127,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate);
     RuleAction action = (x, obj, oldObj, ruler, agency) -> {
-      initialRequest.setObjId(((Long)((User)obj).getId()).toString());
+      initialRequest.setObjId(((User) obj).getId());
       initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
     };
     rule.setAction(action);
@@ -143,7 +143,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     rule.setPredicate(predicate2);
     RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, agency) -> {
       User user = (User) obj;
-      long points = ApprovalRequestUtil.getApprovedPoints(ctx, ((Long)userToTest.getId()).toString(), initialRequest.getClassification());
+      long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassification());
 
       if ( points >= initialRequest.getRequiredPoints() ) {
         user.setFirstName("Approved");

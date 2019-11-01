@@ -32,7 +32,7 @@ foam.CLASS({
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexBusinessDAO")
-                .setObjId(String.valueOf(afexBusiness.getId()))
+                .setObjId(afexBusiness.getId())
                 .setGroup("payment-ops")
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
