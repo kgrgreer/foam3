@@ -426,7 +426,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
+                      this.invoice.destinationCurrency = this.currencyType.id;
                     })
                   .end()
                 .endContext()
@@ -552,8 +552,8 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.alphabeticCode;
-      this.checkUser(this.currencyType.alphabeticCode);
+      this.selectedCurrency = this.currencyType.id;
+      this.checkUser(this.currencyType.id);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';

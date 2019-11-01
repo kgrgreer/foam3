@@ -56,20 +56,20 @@ foam.CLASS({
         },
         {
           class: 'Reference',
-          of: 'net.nanopay.exchangeable.Currency',
+          of: 'foam.core.Currency',
           name: 'sourceCurrency'
         },
         {
           class: 'Reference',
-          of: 'net.nanopay.exchangeable.Currency',
+          of: 'foam.core.Currency',
           name: 'targetCurrency'
         },
         {
-            class: 'Currency',
+            class: 'UnitValue',
             name: 'sourceAmount'
         },
         {
-            class: 'Currency',
+            class: 'UnitValue',
             name: 'targetAmount'
         },
         {
@@ -85,7 +85,7 @@ foam.CLASS({
           name: 'hasSourceAmount'
         },
         {
-          class: 'Currency',
+          class: 'UnitValue',
           name: 'fee'
         },
         {

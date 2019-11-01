@@ -12,7 +12,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
-import net.nanopay.exchangeable.Currency;
+import foam.core.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
@@ -320,7 +320,7 @@ public class BmoEftFileGenerator {
       throw new RuntimeException("Wrong currency type");
     }
 
-    Currency currency = (Currency) this.currencyDAO.inX(x).find(MLang.EQ(Currency.ALPHABETIC_CODE, "CAD"));
+    Currency currency = (Currency) this.currencyDAO.inX(x).find(MLang.EQ(Currency.ID, "CAD"));
     if ( currency.getPrecision() != 2 ) {
       throw new RuntimeException("Currently only support 2 decimals");
     }

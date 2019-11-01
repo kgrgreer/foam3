@@ -26,7 +26,7 @@ import foam.mlang.sink.Sum;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.exchangeable.Currency;
+import foam.core.Currency;
 
 import java.util.*;
 

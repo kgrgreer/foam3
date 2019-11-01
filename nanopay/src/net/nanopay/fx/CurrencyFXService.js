@@ -20,13 +20,13 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'sourceCurrency',
       value: 'CA'
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'destCurrency',
       value: 'CA'
     },
