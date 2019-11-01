@@ -68,9 +68,6 @@ foam.CLASS({
           throw new AuthenticationException("User group disabled");
         }
 
-        // validate the password
-        super.validatePassword(x, user, newPassword);
-
         // old password does not match
         if ( ! Password.verify(oldPassword, user.getPassword()) ) {
           throw new RuntimeException("Old password is incorrect");
