@@ -211,7 +211,8 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
+      unitPropName: 'denomination',
       name: 'balance',
       label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
@@ -228,7 +229,7 @@ foam.CLASS({
       tableWidth: 145
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -237,7 +238,6 @@ foam.CLASS({
       `,
       storageTransient: true,
       visibility: 'RO',
-
       tableWidth: 145
     },
     {
@@ -270,21 +270,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      this.BALANCE.currency$ = this.slot(function(denomination) {
-        return denomination;
-      });
-
-      this.HOME_BALANCE.currency$ = this.slot(function(denomination) {
-        return denomination;
-      })
-
-      this.HOME_BALANCE.homeCurrency$ = this.slot(function(homeDenomination) {
-        return homeDenomination;
-      })
-    },
     {
       name: 'toSummary',
       documentation: `
