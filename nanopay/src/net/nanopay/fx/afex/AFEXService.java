@@ -749,7 +749,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
               String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
                 + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
               logger.error(errorMsg2);
-              logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade2 non 200 " + "Response : " + response);
+              logger.debug("{ apiKey: " + request.getClientAPIKey() + ", name: createTrade2 non 200 " + "Response : " + response2);
               throw new RuntimeException(errorMsg2);
             }
             httpResponse = httpResponse2;
@@ -939,7 +939,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       response = client.newCall(request).execute();
       byte[] bytes = response.body().bytes();
 
-      logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response : " + new String(bytes));
+      logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response recieved" );
       return bytes;
 
     } catch ( Throwable t ) {

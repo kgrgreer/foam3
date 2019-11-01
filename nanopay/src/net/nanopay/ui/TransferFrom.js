@@ -384,7 +384,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'transferAmount',
       postSet: function(oldValue, newValue) {
         this.viewData.fromAmount = newValue;

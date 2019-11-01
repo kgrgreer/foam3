@@ -4,14 +4,27 @@ p({
   "lazy": false,
   "serve": true,
   "authenticate": false,
-  "serviceScript": """
-    newUserCreateBusinessDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get(\"localUserDAO\"));
-    userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", newUserCreateBusinessDAO);
-    userPasswordHashingDAO = new foam.nanos.auth.UserPasswordHashingDAO(x, userRegistrationDAO);
-    userRegistrationSanitationDAO = new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(userPasswordHashingDAO).build();
-    piplinePMDAO = new foam.dao.PipelinePMDAO(x, userRegistrationSanitationDAO);
-    pmDAO = new foam.dao.PMDAO(x, piplinePMDAO);
-    return new foam.dao.ValidatingDAO(x, pmDAO, new net.nanopay.onboarding.UserRegistrationValidator());
+  "serviceScript": 
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .setDecorator(
+        new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
+        new foam.nanos.auth.UserPasswordHashingDAO(x, 
+        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", 
+        new foam.nanos.ruler.RulerDAO(x,
+        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null), "smeBusinessRegistrationDAO")))).build())
+      .setValidated(true)
+      .setLastModifiedAware(false)
+      .setLastModifiedByAware(false)
+      .setCreatedAware(false)
+      .setCreatedByAware(false)
+      .setInnerDAO(x.get("localUserDAO"))
+      .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .build();
   """,
   "client": """
     {
@@ -23,6 +36,33 @@ p({
       ]
     }
   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "businessRegistrationDAO",
+  "lazy": false,
+  "serve": true,
+  "authenticate": true,
+  "serviceScript": """
+    of = net.nanopay.onboarding.BusinessRegistration.getOwnClassInfo();
+    nullDAO = new foam.dao.NullDAO.Builder(x)
+      .setOf(of)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(nullDAO)
+      .setOf(of)
+      .setDecorator(new net.nanopay.onboarding.BusinessRegistrationAdapterDAO(x))
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.onboarding.BusinessRegistration"
+    }
+  """,
+  "documentation": "An authenticated business registration DAO to register user/business under a certain service provider. It uses smeBusinessRegistration under the hood and would not actually save the business registration data therefore querying data back from the DAO is not supported.",
+  "authNotes": "The serve:true for accessing the DAO from dig and authenticate:true because it is intended to be used by the users with spid.create.<user.spid> permission."
 })
 
 p({

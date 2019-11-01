@@ -5,7 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
 
     'foam.core.FObject',
     'foam.core.X',
@@ -64,7 +64,7 @@ foam.CLASS({
           }
 
           static public LossesAccount find(X x, User sourceUser, Currency currency) {
-            return find(x, sourceUser, currency.getAlphabeticCode());
+            return find(x, sourceUser, currency.getId());
           }
       `);
       }

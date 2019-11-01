@@ -23,10 +23,10 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
@@ -41,6 +41,7 @@ foam.CLASS({
     'group',
     'invoiceDAO',
     'notificationDAO',
+    'onboardingUtil',
     'pushMenu',
     'stack',
     'quickbooksService',
@@ -262,6 +263,7 @@ foam.CLASS({
     },
 
     function initE() {
+      this.onboardingUtil.initOnboardingView();
       this.ctrl.bannerizeCompliance();
       this.SUPER();
       this.getUserAccounts().then(() => {
