@@ -157,6 +157,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
+    quote = (FXQuote) quote.fclone();
 
     // Check FXDeal has not expired
     validateDealExpiryDate(quote.getExpiryTime());
