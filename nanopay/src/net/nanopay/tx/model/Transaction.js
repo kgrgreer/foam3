@@ -227,7 +227,6 @@ foam.CLASS({
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
       tableWidth: 150,
-      includeInSignature: true,
       includeInDigest: true
     },
     {
@@ -242,7 +241,6 @@ foam.CLASS({
         return statusHistory[0].timeStamp;
       },
       tableWidth: 172,
-      includeInSignature: true,
       includeInDigest: true
     },
     {
@@ -310,6 +308,7 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
+      includeInDigest: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -348,7 +347,8 @@ foam.CLASS({
       class: 'String',
       name: 'referenceNumber',
       visibility: 'RO',
-      label: 'Reference'
+      label: 'Reference',
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -429,7 +429,8 @@ foam.CLASS({
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue("Source Amount");
         outputter.outputValue("Source Currency");
-      `
+      `,
+      includeInDigest: true
     },
     {
       class: 'String',
@@ -552,7 +553,8 @@ foam.CLASS({
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
-      value: 'CAD'
+      value: 'CAD',
+      includeInDigest: true
     },
     {
       documentation: `referenceData holds entities such as the pacs008 message.`,
