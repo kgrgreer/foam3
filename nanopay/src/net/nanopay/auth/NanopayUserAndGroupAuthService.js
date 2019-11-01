@@ -68,9 +68,6 @@ foam.CLASS({
           throw new AuthenticationException("User group disabled");
         }
 
-        // validate the password
-        super.validatePassword(x, user, newPassword);
-
         // old password does not match
         if ( ! Password.verify(oldPassword, user.getPassword()) ) {
           throw new RuntimeException("Old password is incorrect");
@@ -88,18 +85,6 @@ foam.CLASS({
         user.setPasswordExpiry(null);
         user = (User) ((DAO) getLocalUserDAO()).put(user);
         return user;
-      `
-    },
-    {
-      name: 'validatePassword',
-      javaCode: `
-        PasswordEntropy passwordEntropy = (PasswordEntropy) getPasswordEntropyService();
-        if ( SafetyUtil.isEmpty(potentialPassword) ) {
-          throw new RuntimeException("Password is required");
-        }
-        if ( passwordEntropy.getPasswordStrength(potentialPassword) < 3 ) {
-          throw new RuntimeException("Password is not strong enough.");
-        }
       `
     },
     {
