@@ -44,8 +44,8 @@ public class AFEXPaymentStatusCron implements ContextAgent {
         if ( transaction.getCompletionDate() != null ) {
           txnCompletionDate.setTime(transaction.getCompletionDate());
           if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
-            Transaction txn = afexServiceProvider.updatePaymentStatus(transaction);
             transaction = (Transaction) transaction.fclone();
+            Transaction txn = afexServiceProvider.updatePaymentStatus(transaction);
             transaction.setStatus(txn.getStatus());
             transactionDAO.put(transaction);
           }
