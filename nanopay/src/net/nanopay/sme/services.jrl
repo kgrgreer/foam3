@@ -17,6 +17,10 @@ p({
         new foam.nanos.ruler.RulerDAO(x,
         new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null), "smeBusinessRegistrationDAO")))).build())
       .setValidated(true)
+      .setLastModifiedAware(false)
+      .setLastModifiedByAware(false)
+      .setCreatedAware(false)
+      .setCreatedByAware(false)
       .setInnerDAO(x.get("localUserDAO"))
       .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
