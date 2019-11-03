@@ -115,10 +115,10 @@ p({
       .setFm(fm)
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
-//    HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
+    HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
     deletedAware = new DeletedAwareDAO.Builder(x)
       .setName("transaction")
-      .setDelegate(aa)
+      .setDelegate(a)
       .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
       .setDelegate(deletedAware)
