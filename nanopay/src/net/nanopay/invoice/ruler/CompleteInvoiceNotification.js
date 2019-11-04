@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'static foam.mlang.MLang.*',
   ],
 

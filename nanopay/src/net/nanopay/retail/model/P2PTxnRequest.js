@@ -53,7 +53,7 @@ foam.CLASS({
       label: 'Last Updated',
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       label: 'Amount',
       visibility: foam.u2.Visibility.RO,

@@ -17,7 +17,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'currencyId',
-      documentation: `currencyId is the alphabeticCode of Currency`,
+      documentation: `currencyId is the id of Currency`,
       required: true
     },
     {
