@@ -12,6 +12,7 @@ p({
         new net.nanopay.fx.afex.AFEXContactDAO(x, 
         new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), null, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
       .setAuthorize(false)
+      .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localUserDAO"))
       .build();
   """,
@@ -27,6 +28,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).build())
+      .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))
       .build();
   """,
