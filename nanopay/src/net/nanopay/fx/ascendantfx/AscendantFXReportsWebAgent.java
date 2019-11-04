@@ -337,7 +337,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
             internationalTransactions = "Yes";
           }
 
-          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId())).select(new ArraySink());
+          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
+            EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId()))
+            ).select(new ArraySink());
           java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
           for(UserAcceptanceDocument doc: documents) {
 
@@ -347,7 +349,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
             list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
               accDoc.getTitle(),
               user.label(),
-              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId(),
+              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId()),
               business.getAddress().getCountryId(),
               doc.getLastModified())));
           }
