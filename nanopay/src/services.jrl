@@ -151,7 +151,26 @@ p({
   "client":"{\"of\":\"net.nanopay.model.BusinessSector\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"businessTypeDAO",                  "serve":true,  "authenticate":false, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.nanos.auth.AuthorizationDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.model.BusinessType.getOwnClassInfo(), \"businessTypes\")), new foam.nanos.auth.GlobalReadAuthorizer(\"businessType\"))));","client":"{\"of\":\"net.nanopay.model.BusinessType\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"businessTypeDAO",                  
+  "serve":true,  
+  "authenticate":false, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("businessType"))
+      .setSeqNo(true)
+      .setJournalName("businessTypes")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(net.nanopay.model.BusinessType.getOwnClassInfo());
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.model.BusinessType\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"bankAccountVerification",          "serve":true,  "boxClass":"net.nanopay.cico.service.BankAccountVerifierSkeleton", "serviceClass":"net.nanopay.cico.service.BankAccountVerifierService","client":"{ \"class\":\"net.nanopay.cico.service.ClientBankAccountVerifierService\", \"delegate\": { \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/bankAccountVerification\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/bankAccountVerification\"} } }"})
 
 p({
