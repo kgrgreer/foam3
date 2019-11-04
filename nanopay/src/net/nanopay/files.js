@@ -1210,4 +1210,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GsTxCsvRow'},
   { name: 'net/nanopay/tx/gs/GsRowToTx'},
   { name: 'net/nanopay/script/CsvUploadScript'},
+
+  // RBC
+  { name: 'net/nanopay/tx/rbc/RbcCITransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcCOTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcVerificationTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcTransactionPlanDAO' },
 ]);

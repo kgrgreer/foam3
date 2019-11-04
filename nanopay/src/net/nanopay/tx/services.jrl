@@ -33,9 +33,13 @@ p({
       .setEnabled(true)
       .setDelegate(atpd)
       .build(); 
+    rbcpd = new net.nanopay.tx.rbc.RbcTransactionPlanDAO.Builder(x)
+      .setEnabled(false)
+      .setDelegate(bmopd)
+      .build(); 
     afextpd = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
       .setEnabled(true)
-      .setDelegate(bmopd)
+      .setDelegate(rbcpd)
       .build(); 
     afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
       .setEnabled(true)

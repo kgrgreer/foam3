@@ -1,3 +1,5 @@
 p({"class":"net.nanopay.payment.PaymentProvider","id":1,"name":"AscendantFX"})
 p({"class":"net.nanopay.payment.PaymentProvider","id":2,"name":"BMO"})
 p({"class":"net.nanopay.payment.PaymentProvider","id":3,"name":"Alterna"})
+p({"class":"net.nanopay.payment.PaymentProvider","id":4,"name":"RBC"})
+
