@@ -24,7 +24,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.modal.ModalStyling',
@@ -155,7 +155,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Currency',
+      of: 'foam.core.Currency',
       name: 'homeDenomination',
       factory: function() {
         /**
@@ -214,8 +214,8 @@ foam.CLASS({
           this.findBalance();
           this
             .addClass(this.myClass())
-            .start('div', null, this.topNavigation_$)
-              .tag(this.TopNavigation)
+            .start()
+              .tag(this.topNavigation_)
             .end()
             .start()
               .addClass('stack-wrapper')
@@ -228,8 +228,8 @@ foam.CLASS({
                 showActions: false
               })
             .end()
-            .start('div', null, this.footerView_$)
-              .tag(this.FooterView)
+            .start()
+              .tag(this.footerView_)
             .end();
         });
       });
@@ -285,7 +285,7 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' )
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+          self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView.' });
           self.loginSuccess$.sub(resolve);
         });
 

@@ -36,7 +36,7 @@ global.FOAM_ROOT = oldRoot;
 /**
     {
       name,
-      alphabeticCode,
+      id,
       numericCode,
       country
     }

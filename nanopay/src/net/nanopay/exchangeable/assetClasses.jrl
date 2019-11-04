@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.exchangeable.AssetClass", "name":"Government", "haircut":90})
+p({"class":"net.nanopay.exchangeable.AssetClass", "name":"Corporate Bonds", "haircut":75})
+p({"class":"net.nanopay.exchangeable.AssetClass", "name":"Equities", "haircut":50})

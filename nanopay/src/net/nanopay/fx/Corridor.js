@@ -40,7 +40,7 @@ foam.CLASS({
 // NOTE: Commented out until relationships are supported on DIG
 // foam.RELATIONSHIP({
 //   sourceModel: 'net.nanopay.fx.interac.model.Corridor',
-//   targetModel: 'net.nanopay.exchangeable.Currency',
+//   targetModel: 'foam.core.Currency',
 //   forwardName: 'currencies',
 //   inverseName: 'corridors',
 //   cardinality: '1:*',

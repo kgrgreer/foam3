@@ -410,7 +410,7 @@ foam.CLASS({
       visibility: 'HIDDEN',
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
       section: 'paymentInfo',
@@ -418,7 +418,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
-        net.nanopay.exchangeable.Currency currency = (net.nanopay.exchangeable.Currency) currencyDAO.find(srcCurrency);
+        foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
         
         // Outputting two columns: "amount", "Currency"
           // Hacky way of making get_(obj) into String below
@@ -474,7 +474,7 @@ foam.CLASS({
     },
     {
       // REVIEW: why do we have total and amount?
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'total',
       visibility: 'RO',
       label: 'Total Amount',
@@ -495,7 +495,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',
@@ -515,7 +515,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Transaction)obj).getDestinationCurrency();
-        net.nanopay.exchangeable.Currency currency = (net.nanopay.exchangeable.Currency) currencyDAO.find(dstCurrency);
+        foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
         
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue(currency.format(get_(obj)));

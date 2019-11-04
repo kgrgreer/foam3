@@ -30,7 +30,7 @@ foam.CLASS({
             DAO dao = ((DAO) x.get("approvalRequestDAO"))
               .where(AND(
                 EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
-                EQ(ApprovalRequest.OBJ_ID, Long.toString(user.getId()))
+                EQ(ApprovalRequest.OBJ_ID, user.getId())
               ));
 
             ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
