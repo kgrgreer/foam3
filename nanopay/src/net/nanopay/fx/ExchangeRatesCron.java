@@ -17,7 +17,7 @@ import foam.nanos.logger.Logger;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FixerIOExchangeRate;
 import net.nanopay.fx.FXProvider;
-import net.nanopay.model.Currency;
+import foam.core.Currency;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -77,7 +77,7 @@ public class ExchangeRatesCron
     Count count = (Count) exchangeRateDAO_
       .where(
              AND(
-                 EQ(ExchangeRate.FROM_CURRENCY, currency.getAlphabeticCode()),
+                 EQ(ExchangeRate.FROM_CURRENCY, currency.getId()),
                  GT(ExchangeRate.EXPIRATION_DATE, calendar.getTime())
                  )
              )
@@ -88,7 +88,7 @@ public class ExchangeRatesCron
       BufferedReader reader = null;
 
       try {
-        URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getAlphabeticCode());
+        URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getId());
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(5 * 1000);

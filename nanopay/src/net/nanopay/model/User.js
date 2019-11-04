@@ -36,6 +36,29 @@ foam.CLASS({
       value: 70
     }
   ],
+  
+  tableColumns: [
+    'id',
+    'type',
+    'group',
+    'legalName',
+    'organization',
+    'email',
+    'PEPHIORelated'
+  ],
+
+  searchColumns: [
+    'id',
+    'type',
+    'spid',
+    'group',
+    'enabled',
+    'firstName',
+    'lastName',
+    'organization',
+    'email',
+    'PEPHIORelated'
+  ],
 
   properties: [
     {

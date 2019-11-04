@@ -110,9 +110,7 @@ p({
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
       .build();
-
-   // return new foam.dao.PMDAO(x, 
-     // new foam.dao.AuthenticatedDAO(\"debtAccountDAO\", true, x.get(\"localDebtAccountDAO\")));
   """,
   "client":"{\"of\":\"net.nanopay.account.DebtAccount\"}"
 })
+

@@ -49,7 +49,7 @@ foam.CLASS({
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, "afexBusinessDAO"),
-            EQ(ApprovalRequest.OBJ_ID, Long.toString(afexBusiness.getId()))
+            EQ(ApprovalRequest.OBJ_ID, afexBusiness.getId())
           ));
 
           ApprovalStatus approval = ApprovalRequestUtil.getState(dao);

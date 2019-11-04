@@ -15,7 +15,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.View',
-    'net.nanopay.model.Currency'
+    'foam.core.Currency'
   ],
 
   exports: [
@@ -155,7 +155,7 @@ foam.CLASS({
     'optionsBtn_',
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Currency',
+      of: 'foam.core.Currency',
       name: 'chosenCurrency',
       postSet: function() {
         this.data = this.chosenCurrency;
@@ -178,7 +178,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('container'))
           .start('img').attr('src', this.chosenCurrency$.dot('flagImage')).end()
-          .add(this.chosenCurrency$.dot('alphabeticCode'))
+          .add(this.chosenCurrency$.dot('id'))
           .on('click', this.onClick)
           .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
           .start('div')
@@ -213,7 +213,7 @@ foam.CLASS({
                       .attrs({ src: currency.flagImage })
                       .addClass('flag')
                   .end()
-                  .add(currency.alphabeticCode)
+                  .add(currency.id)
                   .on('click', function() {
                       self.chosenCurrency = currency;
                       self.optionPopup_.remove();

@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'currency',
       expression: function(data) {
         return data.destinationCurrency ?
-            data.destinationCurrency.alphabeticCode + ' ' :
+            data.destinationCurrency.id + ' ' :
             '$';
       }
     }
@@ -170,14 +170,14 @@ foam.CLASS({
             .end()
             .start('h4')
               .add(
-                this.data.destinationCurrency.alphabeticCode +
+                this.data.destinationCurrency.id +
                     ' $' + this.addCommas((this.data.amount/100).toFixed(2))
               )
               .end()
             .start('h3')
               .addClass('source-amount')
               .add(
-                this.data.sourceCurrency.alphabeticCode +
+                this.data.sourceCurrency.id +
                     ' $' + this.addCommas((this.data.sourceAmount/100).toFixed(2))
               )
             .end()

@@ -25,7 +25,7 @@ foam.CLASS({
       factory: function() { return this.invoiceDAO; }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'formattedMentionsAmount',
       expression: function(disputedAmount, pendingAmount) {
         var a = disputedAmount + pendingAmount;
@@ -38,7 +38,7 @@ foam.CLASS({
       value: ''
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'formattedDisputedAmount',
       expression: function(disputedAmount) { return this.formatCurrency(disputedAmount); }
     },
@@ -48,7 +48,7 @@ foam.CLASS({
       value: ''
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'formattedPendingAmount',
       expression: function(pendingAmount) { return this.formatCurrency(pendingAmount); }
     },

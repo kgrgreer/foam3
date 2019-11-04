@@ -47,6 +47,14 @@ foam.CLASS({
             this.BankAccount.FLAG_IMAGE.clone().copyFrom({ tableWidth: 90 }),
             this.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({ tableWidth: 120 }),
             this.BankAccount.STATUS.clone().copyFrom({ tableWidth: 110 }),
+            foam.core.String.create({
+              name: 'ownerType',
+              tableCellFormatter: function(_, obj) {
+                obj.owner$find.then((user) => {
+                  this.add(user.cls_.name);
+                });
+              }
+            })
           ]
         };
       }

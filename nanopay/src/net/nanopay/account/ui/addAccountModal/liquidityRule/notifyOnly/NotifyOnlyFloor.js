@@ -8,7 +8,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'accountBalanceFloor',
       label: 'If the balance of this account falls below',
       documentation: `
