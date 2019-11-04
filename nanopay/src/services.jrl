@@ -996,6 +996,13 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "genTxnReport",
+  "serviceClass": "net.nanopay.tx.GenTxnReportWebAgent"
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"assetClassDAO",
