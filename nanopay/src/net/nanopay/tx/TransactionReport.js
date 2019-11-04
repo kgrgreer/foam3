@@ -22,8 +22,12 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
-    net.nanopay.tx.model.Transaction.PAYEE_ID.clone(),
-    net.nanopay.tx.model.Transaction.PAYER_ID.clone(),
+    net.nanopay.tx.model.Transaction.PAYEE_ID.clone().copyFrom({
+      label: 'Payee ID'
+    }),
+    net.nanopay.tx.model.Transaction.PAYER_ID.clone().copyFrom({
+      label: 'Payer ID'
+    }),
     net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.clone(),
     {
       class: 'String',
