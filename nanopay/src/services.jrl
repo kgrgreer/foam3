@@ -1000,7 +1000,6 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "genTxnReport",
-  "authenticate": false,
   "serviceClass": "net.nanopay.tx.GenTxnReportWebAgent"
 })
 

@@ -51,9 +51,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
     try {
       OutputStream outputStream = response.getOutputStream();
-
-      StringBuilder titleStrBuilder = new StringBuilder();
-      titleStrBuilder.append(this.buildCSVLine(
+      String titleString = this.buildCSVLine(
         11,
         "Transaction ID",
         "Parent Transaction",
@@ -66,9 +64,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "Fee",
         "Fee Currency",
         "Status"
-      ));
+      );
 
-      outputStream.write(titleStrBuilder.toString().getBytes());
+      outputStream.write(titleString.getBytes());
 
       List<Transaction> transactionList = ((ArraySink) txnDAO.select(new ArraySink())).getArray();
       for ( Transaction txn : transactionList ) {
@@ -78,8 +76,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
 
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(this.buildCSVLine(
+            String bodyString = this.buildCSVLine(
               11,
               txn.getId(),
               SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
@@ -88,13 +85,13 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
               StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
-              currency.getSymbol(),
+              currency.getPrimaryKey().toString(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
-              currency.getSymbol(),
+              currency.getPrimaryKey().toString(),
               txn.getStatus().toString()
-            ));
+            );
 
-            outputStream.write(stringBuilder.toString().getBytes());
+            outputStream.write(bodyString.getBytes());
             break;
           }
         }
