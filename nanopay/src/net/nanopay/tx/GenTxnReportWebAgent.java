@@ -1,11 +1,11 @@
 package net.nanopay.tx;
 
+import foam.core.Currency;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
-import net.nanopay.exchangeable.Currency;
 import net.nanopay.meter.reports.AbstractReport;
 import net.nanopay.tx.model.Transaction;
 
@@ -88,9 +88,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
               StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
-              currency.getAlphabeticCode(),
+              currency.getSymbol(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
-              currency.getAlphabeticCode(),
+              currency.getSymbol(),
               txn.getStatus().toString()
             ));
 
