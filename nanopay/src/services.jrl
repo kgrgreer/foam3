@@ -179,18 +179,15 @@ p({
   "serve":true,
   "serviceScript":
   """
-    dao = new foam.dao.MDAO(net.nanopay.fx.ExchangeRate.getOwnClassInfo());
-    dao.addIndex(new foam.core.PropertyInfo[] {
-        net.nanopay.fx.ExchangeRate.FROM_CURRENCY,
-        net.nanopay.fx.ExchangeRate.TO_CURRENCY
-    });
-
-
-    dao = new foam.dao.java.JDAO(x, dao, "exchangeRates");
-    dao = new foam.dao.SequenceNumberDAO(dao);
-    dao = new foam.dao.PipelinePMDAO(x, dao);
-    dao = new foam.dao.PMDAO(x, dao);
-    return dao;
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("exchangeRates")
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.fx.ExchangeRate.FROM_CURRENCY, net.nanopay.fx.ExchangeRate.TO_CURRENCY})
+      .setOf(net.nanopay.fx.ExchangeRate.getOwnClassInfo())
+      .build();
   """,
   "client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true}"
 })
