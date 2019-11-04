@@ -951,3 +951,82 @@ p({
   "output": "",
   "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Setup RBC PGP Key",
+  "status": 2,
+  "code": """
+    import foam.dao.DAO;
+    import foam.mlang.MLang;
+    import foam.nanos.auth.User;
+    import foam.nanos.NanoService;
+    import foam.nanos.notification.Notification;
+    import java.io.FileInputStream;
+    import javax.crypto.SecretKey;
+    import net.nanopay.security.KeyPairEntry;
+    import net.nanopay.security.PGPKeyUtil;
+    import net.nanopay.security.PgpPrivateKeyWrapper;
+    import net.nanopay.security.PGPPublicKeyDAO;
+    import net.nanopay.security.PublicKeyEntry;
+    import net.nanopay.security.PgpPublicKeyWrapper;
+    import net.nanopay.security.PrivateKeyDAO;
+
+    String NANOPAY_RBC_ALIAS = "nanopay-rbc-pgpkey";
+    String RBC_ALIAS = "rbc-pgpkey";
+    String publicKeyFile = "/tmp/pubkey.asc";
+    String privateKeyFile = "/tmp/privatekeys.asc";
+    String rbcPublicKeyFile = "/tmp/rbc_pub_0x5439C0FD.asc.txt";
+    String paraphrase = "nanopay";
+
+    DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+    PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
+    KeyPairEntry keyPair = (KeyPairEntry) keyPairDAO.find(foam.mlang.MLang.EQ(KeyPairEntry.ALIAS, NANOPAY_RBC_ALIAS));
+    if ( keyPair == null ) {
+      try{
+        FileInputStream pubKeyIs = new FileInputStream(publicKeyFile);
+        PgpPublicKeyWrapper publicKey = new PgpPublicKeyWrapper(PGPKeyUtil.readPublicKey(pubKeyIs));
+
+        FileInputStream privateKeyIs = new FileInputStream(privateKeyFile);
+        PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(
+        PgpPrivateKeyWrapper.findSecretKey(privateKeyIs, paraphrase.toCharArray())); 
+        
+        if ( privateKey == null ) print("privateKey is null");
+
+        SecretKey key = privateKeyDAO.getSecretKey();
+        if ( key == null ) print("Enc key is null");
+
+        KeyPairEntry keyPairEntry = new KeyPairEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
+          .setAlias(NANOPAY_RBC_ALIAS).setPrivateKey(privateKey).setPublicKey(publicKey).build();
+        ((DAO) x.get("keyPairDAO")).put(keyPairEntry);
+      } catch (Throwable t) {
+        print("Unable to load nanopay key pair " + t.getMessage());
+      }
+    } else{
+      print("Nanopaky RBC PGP Key Pair is already loaded in DAO.");
+    }
+
+
+    // Load RBC Public Key
+    PublicKeyEntry pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(foam.mlang.MLang.EQ(PublicKeyEntry.ALIAS, RBC_ALIAS));
+    if ( pubKey == null ) {
+      try {
+        FileInputStream rbcPubKeyIs = new FileInputStream(rbcPublicKeyFile);
+        PgpPublicKeyWrapper rbcPubKey = new PgpPublicKeyWrapper(PGPKeyUtil.readPublicKey(rbcPubKeyIs));
+        PublicKeyEntry rbcPublicKeyEntry = new PublicKeyEntry.Builder(x).setAlgorithm(rbcPubKey.getAlgorithm())
+          .setAlias(RBC_ALIAS).setPublicKey(rbcPubKey).build();
+        ((DAO) x.get("publicKeyDAO")).put(rbcPublicKeyEntry);
+
+      } catch (Throwable t) {
+        print("Unable to load rbc public key " + t.getMessage());
+      }
+    } else{
+      print("RBC PGP Keys already loaded in DAO.");
+    }
+
+
+    print("DONE");
+  
+  """,
+  "output": ""
+})
