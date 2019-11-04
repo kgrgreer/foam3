@@ -116,7 +116,17 @@ foam.CLASS({
   properties: [
     {
       name: 'accounts',
-      expression: function(selectedRoot){
+      documentation: 'array for ChoiceView choices',
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'highlightedAccount',
+      documentation: 'account id that has been selected through ChoiceView',
+      postSet: function(o, n) {
+        if ( ! n ) return;
+        this.scrollToAccount(n);
       }
     },
     {
@@ -193,12 +203,20 @@ foam.CLASS({
     function initE(){
       var self = this;
 
+      // sub to selected root
+      this.onDetach(this.selectedRoot$.sub(this.rootChanged));
+
       this.addClass(this.myClass());
       this
         .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
           .startContext({data: this})
             .start().addClass(this.myClass('selector'))
-              .add(this.ACCOUNTS)
+              .start({
+                class: 'foam.u2.view.ChoiceView',
+                choices$: this.accounts$,
+                data$: this.highlightedAccount$,
+                placeholder: '--'
+              }).end()
             .end()
             .start().addClass(this.myClass('selector'))
               .add(this.SELECTED_ROOT)
@@ -233,7 +251,7 @@ foam.CLASS({
             var v = this.AccountTreeGraph.create({
               data: a,
             });
-            
+
             this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
@@ -360,4 +378,47 @@ foam.CLASS({
       }
     }
   ],
+
+  listeners: [
+    {
+      name: 'rootChanged',
+      code: async function() {
+        // return if no root selected
+        if ( ! this.selectedRoot ) return;
+
+        // get actual root
+        var rootAccount = await this.accountDAO.find(this.selectedRoot);
+
+        // return if no account found for id
+        if ( ! rootAccount ) return;
+
+        // temp array
+        var accounts = [];
+
+        // recursive function that takes an account and context (for getChildren)
+        async function getChildData(account, context) {
+          // at node, push id and name in format for choice view
+          accounts.push([account.id, account.name]);
+
+          // at node, get its children
+          var children = await account.getChildren(context).select();
+
+          // return if no children
+          if ( ! children.array ) return;
+
+          // for each child, recursively call this function.
+          // putting this logic in forEach gives a weird side effect when using
+          // await
+          for ( var i = 0 ; i < children.array.length ; i++ ) {
+            await getChildData(children.array[i], context);
+          }
+        };
+
+        // get all child data before proceeding
+        await getChildData(rootAccount, this.__subContext__);
+
+        this.accounts = accounts;
+      }
+    }
+  ]
 });
