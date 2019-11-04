@@ -230,6 +230,7 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
+      unitPropName: 'denomination',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -270,6 +271,23 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      var self = this;
+
+      Promise.all([
+        this.denomination == this.homeDenomination ?
+          Promise.resolve(1) :
+          this.fxService.getFXRate(this.denomination, this.homeDenomination,
+            0, 1, 'BUY', null, this.user.id, 'nanopay').then(r => r.rate),
+        this.findBalance(this.__subContext__),
+        this.__subContext__.currencyDAO.find(this.homeDenomination)
+      ]).then(arr => {
+        let [r, b, c] = arr;
+        self.homeBalance = Math.floor((b || 0) * r);
+      });
+    },
     {
       name: 'toSummary',
       documentation: `
