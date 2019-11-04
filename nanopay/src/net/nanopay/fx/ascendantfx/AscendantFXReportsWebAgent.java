@@ -334,7 +334,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Compliance related timespans:"));
         for(Object onboarding: onboardings) {
 
-          if (internationalTransactions.equals("No") && (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding)) {
+          if (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding) {
             internationalTransactions = "Yes";
           }
 
