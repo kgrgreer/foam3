@@ -140,7 +140,7 @@ foam.CLASS({
       name: 'homeAddressSection',
       title: 'Enter your home address',
       help: 'Awesome! Next, I’ll need to know your current home address…',
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'signingOfficerEmailSection',
@@ -153,40 +153,40 @@ foam.CLASS({
       name: 'businessAddressSection',
       title: 'Enter your business address',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'businessDetailsSection',
       title: 'Enter your business details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
       help: `Thanks! Now let’s get some details on your company's transactions.`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'personalOwnershipSection',
       title: 'Please select your percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
-      isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
-        return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
+      isAvailable: function(amountOfOwners, userOwnsPercent) {
+        return amountOfOwners > 0 && userOwnsPercent;
       }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 1,
-      isAvailable: function(signingOfficer, userOwnsPercent, amountOfOwners) {
-        return signingOfficer && amountOfOwners >= 1 && ! userOwnsPercent;
+      isAvailable: function(userOwnsPercent, amountOfOwners) {
+        return amountOfOwners >= 1 && ! userOwnsPercent;
       }
     },
     {
@@ -213,9 +213,9 @@ foam.CLASS({
       name: 'twoFactorSection',
       title: 'Protect your account against fraud with two-factor authentication',
       help: 'Alright, it looks like that is all of the information we need! Last thing I’ll ask is that you enable two factor authentication. We want to make sure your account is safe!',
-      isAvailable: function(signingOfficer) {
-        return signingOfficer;
-      }
+//      isAvailable: function(signingOfficer) {
+//        return signingOfficer;
+//      }
     }
   ],
 
@@ -477,10 +477,9 @@ foam.CLASS({
       validationPredicates: [
         {
           // Temporarily only allow businesses in Canada to sign up.
-          args: ['signingOfficer', 'address', 'address$countryId', 'address$errors_'],
+          args: ['address', 'address$countryId', 'address$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
               e.EQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
@@ -488,20 +487,18 @@ foam.CLASS({
           errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
-          args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
+          args: ['address', 'address$regionId', 'address$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.NEQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
             );
           },
           errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
         },
         {
-          args: ['signingOfficer', 'address', 'address$errors_'],
+          args: ['address', 'address$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADDRESS
               }), true)
@@ -560,10 +557,9 @@ foam.CLASS({
       validationPredicates: [
         {
           // Temporarily only allow businesses in Canada to sign up.
-          args: ['signingOfficer', 'businessAddress', 'businessAddress$countryId', 'businessAddress$errors_'],
+          args: ['businessAddress', 'businessAddress$countryId', 'businessAddress$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
               e.EQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
@@ -571,20 +567,18 @@ foam.CLASS({
           errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
-          args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
+          args: ['businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.NEQ(e.DOT(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
             );
           },
           errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
         },
         {
-          args: ['signingOfficer', 'businessAddress', 'businessAddress$errors_'],
+          args: ['businessAddress', 'businessAddress$errors_'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_ADDRESS
               }), true)
@@ -610,10 +604,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'businessTypeId'],
+          args: ['businessTypeId'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_TYPE_ID, 0)
             );
           },
@@ -631,10 +624,9 @@ foam.CLASS({
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'businessSectorId'],
+          args: ['businessSectorId'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_SECTOR_ID, 0)
             );
           },
@@ -668,10 +660,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'sourceOfFunds'],
+          args: ['sourceOfFunds'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SOURCE_OF_FUNDS
@@ -707,10 +698,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'operatingUnderDifferentName', 'operatingBusinessName'],
+          args: ['operatingUnderDifferentName', 'operatingBusinessName'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.OPERATING_UNDER_DIFFERENT_NAME, false),
               e.GT(
                 foam.mlang.StringLength.create({
@@ -729,10 +719,9 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['signingOfficer','businessFormationDate'],
+          args: ['businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
                 timeMs: 24 * 60 * 60 * 1000
@@ -765,10 +754,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'countryOfBusinessFormation'],
+          args: ['countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
             );
@@ -793,10 +781,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'taxIdentificationNumber'],
+          args: ['taxIdentificationNumber'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.TAX_IDENTIFICATION_NUMBER,/^[0-9]{9}$/),
             );
           },
@@ -821,10 +808,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'annualRevenue'],
+          args: ['annualRevenue'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ANNUAL_REVENUE
@@ -852,10 +838,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'annualDomesticVolume'],
+          args: ['annualDomesticVolume'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ANNUAL_DOMESTIC_VOLUME
@@ -883,10 +868,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'annualTransactionFrequency'],
+          args: ['annualTransactionFrequency'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ANNUAL_TRANSACTION_FREQUENCY
@@ -921,10 +905,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'transactionPurpose'],
+          args: ['transactionPurpose'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.TRANSACTION_PURPOSE
@@ -945,10 +928,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'targetCustomers'],
+          args: ['targetCustomers'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.TARGET_CUSTOMERS
@@ -974,10 +956,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'amountOfOwners'],
+          args: ['amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.AND(
                 e.GTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 4)
@@ -1053,7 +1034,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'amountOfOwners', 'ownershipPercent', 'userOwnsPercent'],
+          args: [ 'amountOfOwners', 'ownershipPercent', 'userOwnsPercent'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),

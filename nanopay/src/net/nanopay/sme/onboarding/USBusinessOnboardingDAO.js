@@ -48,12 +48,12 @@ foam.CLASS({
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
-        
+
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
         if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
-  
+
         // ACCEPTANCE DOCUMENTS
         Long oldDualPartyAgreement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
@@ -85,15 +85,15 @@ foam.CLASS({
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
+        user.setAddress(businessOnboarding.getAddress());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
-          user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
-          
+
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
@@ -108,7 +108,7 @@ foam.CLASS({
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
           business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
-          business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
+          business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
