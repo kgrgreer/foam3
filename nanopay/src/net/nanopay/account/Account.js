@@ -231,7 +231,7 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
-      unitPropName: 'denomination',
+      unitPropName: 'homeDenomination',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
