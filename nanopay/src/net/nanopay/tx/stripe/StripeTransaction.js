@@ -48,7 +48,7 @@ foam.CLASS({
     {
       class: 'Reference',
       name: 'currencyId',
-      of: 'net.nanopay.exchangeable.Currency'
+      of: 'foam.core.Currency'
     }
   ]
 });

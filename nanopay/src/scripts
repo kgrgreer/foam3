@@ -960,7 +960,84 @@ p({
   print("Created " + successCount + " transaction(s)");
   print("Failed " + failedCount + " transaction(s)");  
   """
+}),
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set up Transaction WebHook for Grain Discover",
+  "code": """
+    import foam.core.X;
+    import foam.dao.DAO;
+    import foam.nanos.dig.DUGRule;
+    import foam.nanos.http.Format;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.tx.cico.CITransaction;
+    import net.nanopay.tx.cico.COTransaction;
+    import net.nanopay.tx.model.Transaction;
+    import foam.nanos.ruler.predicate.PropertyChangePredicate;
+    import static foam.mlang.MLang.*;
+
+    url = "http://localhost:8080/service/ping";
+
+    ruleDAO = x.get("ruleDAO");
+    rule = new DUGRule.Builder(x)
+      .setId("Grain Discovery WebHook")
+      .setUrl(url)
+      .setFormat(Format.JSON)
+      .setDaoKey("localTransactionDAO")
+      .build();
+
+    pred = AND ( new Predicate[] {
+      new PropertyChangePredicate("status"),
+      OR ( new Predicate[] {
+        EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
+        EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
+      })
+    });
+
+    rule.setPredicate(pred);
+    ruleDAO.put(rule);
+    print("done");
+  """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Change Predicate for DUG",
+  "code": """
+      import foam.core.X;
+      import foam.dao.DAO;
+      import foam.nanos.dig.DUGRule;
+      import foam.mlang.predicate.Predicate;
+      import net.nanopay.tx.cico.CITransaction;
+      import net.nanopay.tx.cico.COTransaction;
+      import net.nanopay.tx.model.Transaction;
+      import net.nanopay.tx.ruler.PropertyChangePredicate;
+      import static foam.mlang.MLang.*;
+
+      /***********************************
+      ***            SETUP           *****
+      ***********************************/
+      
+      ruleId = "";
+
+      pred = AND ( new Predicate[] {
+        new PropertyChangePredicate("status"),
+        OR ( new Predicate[] {
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
+        })
+      });
+
+
+      ruleDAO = x.get("ruleDAO");
+      rule = ruleDAO.find(ruleId);
+      rule.setPredicate(pred);
+      ruleDAO.put(rule);
+      print("done");
+  """
+})
+p({"class":"foam.nanos.script.Script","id":"Set-base-currency-on-suggested-transaction-info","description":"Set base currency on suggested transaction info for US Businesses","code":"BusinessDAO = x.get(\"businessDAO\");\nBusinesses= BusinessDAO.select().getArray();\n\nfor ( int i = 0 ; i < Businesses.size() ; i++ ) {\nbusiness = Businesses.get(i);\n if ( business.getAddress() != null) {\n  if ( business.getAddress().getCountryId().equals(\"US\") ) {\n    if ( business.getSuggestedUserTransactionInfo() != null) {\n     sug = business.getSuggestedUserTransactionInfo();\n     sug.setBaseCurrency(\"USD\");\n     business.setSuggestedUserTransactionInfo(sug);\n     BusinessDAO.put(business);\n   }\n  }\n }\n}\n\nprint(\"done\");"})
 
 p({
   "class": "foam.nanos.script.Script",
@@ -969,6 +1046,10 @@ p({
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
+    import foam.nanos.auth.ServiceProvider;
+    import foam.nanos.menu.DAOMenu;
+    import foam.nanos.menu.Menu;
+    import foam.nanos.menu.SubMenu;
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
@@ -1019,11 +1100,9 @@ p({
     permissionArray.add("currency.read.*");
     permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
     permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
-    permissionArray.add("menu.read.doc");
     permissionArray.add("menu.read.gd-operation");
     permissionArray.add("menu.read.gd-operation.accounts");
     permissionArray.add("menu.read.gd-operation.businesses");
-    permissionArray.add("menu.read.gd-operation.sessions");
     permissionArray.add("menu.read.gd-operation.transactions");
     permissionArray.add("menu.read.gd-operation.users");
     permissionArray.add("menu.read.notifications");
@@ -1048,6 +1127,9 @@ p({
     permissionArray.add("session.read.*");
     permissionArray.add("transaction.read.*");
     permissionArray.add("user.read.*");
+    permissionArray.add("service.businessRegistrationDAO");
+    permissionArray.add("service.run.authenticationToken");
+    permissionArray.add("spid.create.gd");
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
 
@@ -1077,6 +1159,15 @@ p({
       } else {
         groupPermissionJunctionDAO.remove(junction);
       }
+    }
+
+    GroupPermissionJunction smeBusinessJunction = new GroupPermissionJunction();
+    smeBusinessJunction.setSourceId("smeBusinessAdmin");
+    smeBusinessJunction.setTargetId("menu.read.sme.*");
+    if ( DRY_RUN ) {
+      print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
+    } else {
+      groupPermissionJunctionDAO.remove(smeBusinessJunction);
     }
 
     // Add new menu permission (switch-business) for API users
@@ -1114,6 +1205,97 @@ p({
       print("GD Theme is created.");
     } else {
       themeDAO.put(gdTheme);
+    }
+
+    // Create GD SPID
+    spidDAO = x.get("serviceProviderDAO");
+    ServiceProvider spid = new ServiceProvider.Builder(x)
+      .setEnabled(true)
+      .setId("gd")
+      .setDescription("Grain Discovery")
+      .build();
+    if ( DRY_RUN ) {
+      print("Grain Discovery SPID created");
+    } else {
+      spidDAO.put(spid);
+    }
+
+    // Create the Grain Discovery menu
+    menuDAO = x.get("menuDAO");
+
+    // create parent menu
+    menu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setDescription("Grain Discovery")
+      .setHandler(new SubMenu())
+      .setLabel("Operations")
+      .setId("gd-operation")
+      .build();
+
+    // create account submenu
+    accountDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("accountDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    accountMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(accountDaoMenu)
+      .setLabel("Accounts")
+      .setId("gd-operation.accounts")
+      .build();
+
+    // create Businesses submenu
+    businessDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("businessDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    businessMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(businessDaoMenu)
+      .setLabel("Businesses")
+      .setId("gd-operation.businesses")
+      .build();
+
+    // create Transactions submenu
+    txnDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("transactionDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    txnMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(txnDaoMenu)
+      .setLabel("Transactions")
+      .setId("gd-operation.transactions")
+      .build();
+
+    // create user submenu
+    userDaoMenu = new DAOMenu.Builder(x)
+      .setDaoKey("userDAO")
+      .setCreateEnabled(false)
+      .setEditEnabled(false)
+      .build();
+    userMenu = new Menu.Builder(x)
+      .setEnabled(true)
+      .setParent("gd-operation")
+      .setHandler(userDaoMenu)
+      .setLabel("Users")
+      .setId("gd-operation.users")
+      .build();
+
+    if ( DRY_RUN ) {
+      print("GD Menu's Created: Operations, Accounts, Businesses, Transactions, User");
+    } else {
+      menuDAO.put(menu);
+      menuDAO.put(accountMenu);
+      menuDAO.put(businessMenu);
+      menuDAO.put(txnMenu);
+      menuDAO.put(userMenu);
     }
 
     print("Done");

@@ -183,7 +183,7 @@ foam.CLASS({
         
         this.invoice.paymentDate = paymentDate;
         this.invoice.chequeAmount = X.data.chequeAmount;
-        this.invoice.chequeCurrency = X.data.currencyType.alphabeticCode;
+        this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);

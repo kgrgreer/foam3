@@ -27,7 +27,7 @@ foam.CLASS({
       name: 'property',
       documentation: `
         The property that should be checked. The property's value should be the
-        alphabeticCode of a Currency object.
+        id of a Currency object.
       `
     }
   ],

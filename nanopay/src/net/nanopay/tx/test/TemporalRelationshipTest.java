@@ -4,7 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
-import net.nanopay.exchangeable.Currency;
+import foam.core.Currency;
 
 public class TemporalRelationshipTest extends foam.nanos.test.Test{
 

@@ -263,7 +263,6 @@ foam.CLASS({
     },
 
     function initE() {
-      this.onboardingUtil.initOnboardingView();
       this.ctrl.bannerizeCompliance();
       this.SUPER();
       this.getUserAccounts().then(() => {
@@ -303,6 +302,7 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
+              .hide(this.payablesCount$.map((value) => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.payables');
               })
@@ -371,6 +371,7 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
+              .hide(this.receivablesCount$.map((value) => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.receivables');
               })
