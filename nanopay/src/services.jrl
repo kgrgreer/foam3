@@ -198,11 +198,16 @@ p({
   "serve":true,  
   "serviceScript":
   """
-    return new foam.dao.PMDAO(x, 
-      new foam.dao.PipelinePMDAO(x, 
-        new foam.dao.SequenceNumberDAO(
-          new foam.dao.java.JDAO(x, net.nanopay.model.Identification.getOwnClassInfo(), \"identifications\"))));
-  """, "client":"{\"of\":\"net.nanopay.model.Identification\"}"
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("identifications")
+      .setOf(net.nanopay.model.Identification.getOwnClassInfo())
+      .build();
+  """, 
+  "client":"{\"of\":\"net.nanopay.model.Identification\"}"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"deviceDAO",                        "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.retail.model.Device.getOwnClassInfo(), \"devices\"); return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.retail.PreventDuplicateDeviceDAO(x, hashingJDAO))));","client":"{\"of\":\"net.nanopay.retail.model.Device\"}"})
