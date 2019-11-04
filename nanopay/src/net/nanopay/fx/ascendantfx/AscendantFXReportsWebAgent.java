@@ -329,30 +329,38 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       domesticSubList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
 
+      long userId = -1l;
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
         for(Object onboarding: onboardings) {
 
-          if(internationalTransactions.equals("No") && (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding)) {
+          if (internationalTransactions.equals("No") && (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding)) {
             internationalTransactions = "Yes";
           }
 
-          ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
-            EQ(UserAcceptanceDocument.USER, onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getUserId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding)onboarding).getUserId() : ((BusinessOnboarding)onboarding).getUserId()))
-            ).select(new ArraySink());
-          java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
-          for(UserAcceptanceDocument doc: documents) {
+          long newUserId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getUserId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getUserId() : ((BusinessOnboarding) onboarding).getUserId());
+          long businessId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getBusinessId() : ((BusinessOnboarding) onboarding).getBusinessId());
 
-            User user = doc.findUser(x);
-            AcceptanceDocument accDoc = doc.findAcceptedDocument(x);
+          if(newUserId != userId) {
+            ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
+              EQ(UserAcceptanceDocument.LAST_MODIFIED_BY, newUserId)).select(new ArraySink());
+            java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
 
-            list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
-              accDoc.getTitle(),
-              user.label(),
-              onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding)onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding)onboarding).getBusinessId() : ((BusinessOnboarding)onboarding).getBusinessId()),
-              business.getAddress().getCountryId(),
-              doc.getLastModified())));
+
+            for (UserAcceptanceDocument doc : documents) {
+
+              User user = doc.findUser(x);
+              AcceptanceDocument accDoc = doc.findAcceptedDocument(x);
+
+              list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
+                accDoc.getTitle(),
+                user.label(),
+                businessId,
+                business.getAddress().getCountryId(),
+                doc.getLastModified())));
+            }
           }
+          userId = newUserId;
         }
       }
 
