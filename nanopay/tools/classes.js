@@ -522,6 +522,7 @@ var classes = [
   'net.nanopay.security.PayerAssentTransactionDAO',
   'net.nanopay.security.UserRegistrationSanitationDAO',
   'net.nanopay.security.PGPPublicKeyDAO',
+  'net.nanopay.security.PGPPrivateKeyDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
