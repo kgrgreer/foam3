@@ -2,6 +2,7 @@ package net.nanopay.bank;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
@@ -11,15 +12,13 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
 import static foam.mlang.MLang.EQ;
 
+import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.model.Branch;
+import net.nanopay.model.PadCapture;
 import net.nanopay.payment.Institution;
-import foam.dao.ArraySink;
-import java.util.List;
-import foam.dao.Sink;
+import net.nanopay.plaid.model.PlaidItem;
 
 
 // Sends an email when a Bank Account is Verified
@@ -50,6 +49,16 @@ public class AccountVerifiedEmailDAO
     AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
+    DAO plaidItemDAO = (DAO) getX().get("plaidItemDAO");
+    DAO flinksAccountsDetailResponseDAO = (DAO) getX().get("flinksAccountsDetailResponseDAO");
+    ArraySink plaidItems = (ArraySink)plaidItemDAO.where(EQ(PlaidItem.USER_ID, owner.getId())).select(new ArraySink());
+    ArraySink flinksAccountDetails = (ArraySink)plaidItemDAO.where(EQ(FlinksAccountsDetailResponse.USER_ID, owner.getId())).select(new ArraySink());
+
+
+    //Doesn't send email if the user uses Flinks/Plaid because they are auto verified.
+    if(plaidItems.getArray().size() != 0 || flinksAccountDetails.getArray().size() != 0)
+      return getDelegate().put_(x, obj);
+      
     // Doesn't send email if the account hasn't been made prior
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
