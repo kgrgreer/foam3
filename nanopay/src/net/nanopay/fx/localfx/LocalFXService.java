@@ -76,6 +76,7 @@ public class LocalFXService  implements FXService {
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null != quote ) {
+      quote = (FXQuote) quote.fclone();
       quote.setStatus(ExchangeRateStatus.ACCEPTED.getName());
       fxQuoteDAO_.put_(this.x, quote);
       return true;

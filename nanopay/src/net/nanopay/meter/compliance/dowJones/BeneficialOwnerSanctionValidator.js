@@ -53,7 +53,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
-                    .setObjId(Long.toString(beneficialOwner.getId()))
+                    .setObjId(beneficialOwner.getId())
                     .setDaoKey("beneficialOwnerDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")

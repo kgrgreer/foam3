@@ -52,7 +52,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
-                    .setObjId(Long.toString(business.getId()))
+                    .setObjId(business.getId())
                     .setDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
@@ -87,7 +87,7 @@ foam.CLASS({
                   public void execute(X x) {
                     requestApproval(x,
                       new DowJonesApprovalRequest.Builder(x)
-                        .setObjId(Long.toString(business.getId()))
+                        .setObjId(business.getId())
                         .setDaoKey("localUserDAO")
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
