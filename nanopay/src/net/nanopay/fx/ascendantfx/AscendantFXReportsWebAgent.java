@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -329,7 +330,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       domesticSubList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
 
-      long userId = -1l;
+      java.util.List<Long> userIds = new ArrayList<Long>();
       if( onboardings.size() != 0) {
         list.add(new ListItem("Compliance related timespans:"));
         for(Object onboarding: onboardings) {
@@ -341,10 +342,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           long newUserId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getUserId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getUserId() : ((BusinessOnboarding) onboarding).getUserId());
           long businessId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getBusinessId() : ((BusinessOnboarding) onboarding).getBusinessId());
 
-          if(newUserId != userId) {
+          if(!userIds.contains(newUserId)) {
             ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
-                EQ(UserAcceptanceDocument.LAST_MODIFIED_BY, newUserId)
-              ).select(new ArraySink());
+              EQ(UserAcceptanceDocument.LAST_MODIFIED_BY, newUserId)
+            ).select(new ArraySink());
             java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
 
 
@@ -360,8 +361,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
                 business.getAddress().getCountryId(),
                 doc.getLastModified())));
             }
+            userIds.add(newUserId);
           }
-          userId = newUserId;
         }
       }
 
