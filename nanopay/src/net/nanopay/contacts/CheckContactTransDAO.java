@@ -36,7 +36,7 @@ public class CheckContactTransDAO extends ProxyDAO {
       EQ(Invoice.PAYER_ID, contact.getId())
     )).select(new ArraySink())).getArray();
 
-    if ( contact.getBusinessStatus().equals(AccountStatus.ACTIVE) ) {
+    if ( !contact.getSignUpStatus().equals(ContactStatus.NOT_INVITED) ) {
       throw new RuntimeException("Cannot delete this contact becasue this contact is associated");
     }
 
