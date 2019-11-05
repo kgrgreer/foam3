@@ -456,6 +456,7 @@ var classes = [
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
+  'net.nanopay.tx.TransactionReport',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',
