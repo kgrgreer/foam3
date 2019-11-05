@@ -42,6 +42,7 @@ foam.CLASS({
       // initiate a Quote request.
 
       TransactionQuote quote = (TransactionQuote) obj;
+      Logger logger = (Logger) x.get("logger");
 
       //when a planner forces to pick certain plan we do not calculate cost.
       if ( quote.getPlan() != null ) {
@@ -65,6 +66,13 @@ foam.CLASS({
 
       //if there was only one plan added we do not need to calculate the cost.
       if ( quote.getPlans().length == 1 ) {
+        try {
+          quote.getPlans()[0].validate(x);
+        } catch (Exception e ) {
+            logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
+          throw(e);
+        }
+        // only add plan 
         quote.setPlan(quote.getPlans()[0]);
         quote.getPlan().validate(x);
         return quote;
@@ -81,8 +89,13 @@ foam.CLASS({
       }
       Collections.sort(transactionPlans, planComparators);
       Transaction plan = transactionPlans.get(0);
+      try {
+        plan.validate(x);
+      } catch (Exception e) {
+          logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
+        throw(e);
+      }
       quote.setPlan(plan);
-      quote.getPlan().validate(x);
       // TransactionQuotes - return all plans.
       return quote;`
     },
