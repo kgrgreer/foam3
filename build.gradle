@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
   compile "net.schmizz:sshj:0.3.1"
+  compile 'commons-net:commons-net:3.6'
   compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
 	compile "org.apache.commons:commons-collections4:4.3"
 	compile "xerces:xercesImpl:2.12.0"
