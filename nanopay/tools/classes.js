@@ -81,6 +81,7 @@ var classes = [
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
   'net.nanopay.account.NoChildrenRule',
+  'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
@@ -455,6 +456,7 @@ var classes = [
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
+  'net.nanopay.tx.TransactionReport',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',

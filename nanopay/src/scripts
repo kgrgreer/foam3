@@ -1106,6 +1106,7 @@ p({
     permissionArray.add("menu.read.gd-operation.transactions");
     permissionArray.add("menu.read.gd-operation.users");
     permissionArray.add("menu.read.notifications");
+    permissionArray.add("menu.read.txnReport");
     permissionArray.add("service.accountDAO");
     permissionArray.add("service.balanceDAO");
     permissionArray.add("service.branchDAO");
@@ -1127,6 +1128,9 @@ p({
     permissionArray.add("session.read.*");
     permissionArray.add("transaction.read.*");
     permissionArray.add("user.read.*");
+    permissionArray.add("service.businessRegistrationDAO");
+    permissionArray.add("service.run.authenticationToken");
+    permissionArray.add("spid.create.gd");
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
 
@@ -1156,6 +1160,15 @@ p({
       } else {
         groupPermissionJunctionDAO.remove(junction);
       }
+    }
+
+    GroupPermissionJunction smeBusinessJunction = new GroupPermissionJunction();
+    smeBusinessJunction.setSourceId("smeBusinessAdmin");
+    smeBusinessJunction.setTargetId("menu.read.sme.*");
+    if ( DRY_RUN ) {
+      print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
+    } else {
+      groupPermissionJunctionDAO.remove(smeBusinessJunction);
     }
 
     // Add new menu permission (switch-business) for API users
