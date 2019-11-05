@@ -66,6 +66,7 @@ foam.CLASS({
       //if there was only one plan added we do not need to calculate the cost.
       if ( quote.getPlans().length == 1 ) {
         quote.setPlan(quote.getPlans()[0]);
+        quote.getPlan().validate(x);
         return quote;
       }
       // Select the best plan.
@@ -81,6 +82,7 @@ foam.CLASS({
       Collections.sort(transactionPlans, planComparators);
       Transaction plan = transactionPlans.get(0);
       quote.setPlan(plan);
+      quote.getPlan().validate(x);
       // TransactionQuotes - return all plans.
       return quote;`
     },
