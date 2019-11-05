@@ -1106,6 +1106,7 @@ p({
     permissionArray.add("menu.read.gd-operation.transactions");
     permissionArray.add("menu.read.gd-operation.users");
     permissionArray.add("menu.read.notifications");
+    permissionArray.add("menu.read.txnReport");
     permissionArray.add("service.accountDAO");
     permissionArray.add("service.balanceDAO");
     permissionArray.add("service.branchDAO");

@@ -242,6 +242,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'amount',
+      unitPropName: 'destinationCurrency',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
         deposited into the destination account. If fees or exchange apply, the source amount 
@@ -253,21 +254,6 @@ foam.CLASS({
         'destinationAmount'
       ],
       required: true,
-      tableCellFormatter: function(value, invoice) {
-        // Needed to show amount value for old invoices that don't have destination currency set
-        if ( ! invoice.destinationCurrency ) {
-          this.add(value);
-        }
-        this.__subContext__.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            var formatted = currency.format(value);
-            this.tooltip = formatted;
-            this.start()
-              .add(formatted)
-            .end();
-          });
-      },
       tableWidth: 120,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -287,16 +273,9 @@ foam.CLASS({
     { // How is this used? - display only?,
       class: 'UnitValue',
       name: 'sourceAmount',
+      unitPropName: 'sourceCurrency',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
-      `,
-      tableCellFormatter: function(value, invoice) {
-        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
-          .then(function(currency) {
-            this.start()
-              .add(currency.format(value))
-            .end();
-        }.bind(this));
-      }
+      `
     },
     {
       class: 'Reference',
