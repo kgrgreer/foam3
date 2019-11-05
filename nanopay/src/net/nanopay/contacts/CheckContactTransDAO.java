@@ -37,7 +37,7 @@ public class CheckContactTransDAO extends ProxyDAO {
     )).select(new ArraySink())).getArray();
 
     if ( contact.getBusinessStatus().equals(AccountStatus.ACTIVE) ) {
-      throw new RuntimeException("You can't delete this contact");
+      throw new RuntimeException("Cannot delete this contact becasue this contact is associated");
     }
 
     List<Account> accounts = ((ArraySink) accountDAO.where(EQ(Account.OWNER, contact.getId())).select(new ArraySink())).getArray();
@@ -47,7 +47,7 @@ public class CheckContactTransDAO extends ProxyDAO {
         OR(EQ(Transaction.DESTINATION_ACCOUNT, account.getId()),
            EQ(Transaction.SOURCE_ACCOUNT, account.getId()))
         );
-      if ( txn != null ) throw new RuntimeException("Cannot delete this contact!");
+      if ( txn != null ) throw new RuntimeException("Cannot delete this contact becasue a transcation is associated with this contact");
     }
 
     for ( Invoice invoice : iv ) {
