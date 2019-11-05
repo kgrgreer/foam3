@@ -107,6 +107,7 @@ public class TransactionLimitTest extends Test {
 
   public void testUpdatedRule(X x) {
     BusinessLimit r = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(rule);
+    r = (BusinessLimit) r.fclone();
     r.setLimit(20000L);
     r = (BusinessLimit) ((DAO) x.get("ruleDAO")).put(r);
     DAO txDAO = (DAO) x.get("localTransactionDAO");
