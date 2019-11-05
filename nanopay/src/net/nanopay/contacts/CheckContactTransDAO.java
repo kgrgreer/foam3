@@ -54,7 +54,8 @@ public class CheckContactTransDAO extends ProxyDAO {
       Invoice v = (Invoice) invoiceDAO.find(
         OR(
           EQ( InvoiceStatus.UNPAID, invoice.getStatus()),
-          EQ( InvoiceStatus.DRAFT, invoice.getStatus())
+          EQ( InvoiceStatus.DRAFT, invoice.getStatus()),
+          EQ( InvoiceStatus.OVERDUE, invoice.getStatus())
         )
       );
       if ( v != null )invoiceDAO.remove(v);
