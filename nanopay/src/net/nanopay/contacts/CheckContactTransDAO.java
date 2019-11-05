@@ -57,7 +57,7 @@ public class CheckContactTransDAO extends ProxyDAO {
           EQ( InvoiceStatus.DRAFT, invoice.getStatus())
         )
       );
-      invoiceDAO.remove(v);
+      if ( v != null )invoiceDAO.remove(v);
     };
     return super.remove_(x, obj);
   }
