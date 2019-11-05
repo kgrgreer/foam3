@@ -115,8 +115,8 @@ public class TransactionDAOTest
 
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "You must verify email to send money.",
-      AuthorizationException.class
+      "Unable to find a plan for requested transaction.",
+      RuntimeException.class
       ),
       "Exception: email must be verified");
   }
@@ -161,7 +161,7 @@ public class TransactionDAOTest
     txn.setPayeeId(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Amount cannot be negative",
+      "Unable to find a plan for requested transaction.",
       RuntimeException.class), "Exception: Txn amount cannot be negative");
 
 

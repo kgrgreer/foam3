@@ -69,8 +69,8 @@ foam.CLASS({
         try {
           quote.getPlans()[0].validate(x);
         } catch (Exception e ) {
-            logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
-          throw(e);
+          logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
         }
         // only add plan 
         quote.setPlan(quote.getPlans()[0]);
@@ -92,8 +92,8 @@ foam.CLASS({
       try {
         plan.validate(x);
       } catch (Exception e) {
-          logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
-        throw(e);
+        logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
       }
       quote.setPlan(plan);
       // TransactionQuotes - return all plans.
