@@ -118,7 +118,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             .setGroup(business.getBusinessPermissionId() + "." + group)
             .build();
 
-            agentJunctionDAO_.inX(sysContext).put(junction);
+          agentJunctionDAO_.inX(sysContext).put(junction);
 
           // Get a context with the Business in it so we can update the invitation.
           X businessContext = Auth.sudo(sysContext, business);
@@ -132,7 +132,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
                 EQ(Invitation.EMAIL, user.getEmail())
               )
             ).fclone();
-            
           invitation.setStatus(InvitationStatus.COMPLETED);
           invitationDAO_.inX(businessContext).put(invitation);
 
