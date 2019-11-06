@@ -36,7 +36,7 @@ public class CheckContactExistingTransaction extends ProxyDAO {
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
 
     if ( ! contact.getSignUpStatus().equals(ContactStatus.NOT_INVITED) ) {
-      throw new RuntimeException("Cannot delete this contact because this contact is associated");
+      throw new RuntimeException("Cannot delete the contact because it is associated to a business.");
     }
 
     List<Account> accounts = ((ArraySink) accountDAO.where(EQ(Account.OWNER, contact.getId())).select(new ArraySink())).getArray();
