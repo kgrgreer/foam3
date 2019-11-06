@@ -48,7 +48,7 @@ public class CheckContactExistingTransaction extends ProxyDAO {
           EQ(Transaction.SOURCE_ACCOUNT, account.getId())
         )
       );
-      if ( txn != null ) throw new RuntimeException("Cannot delete this contact because a transcation is associated with this contact");
+      if ( txn != null ) throw new RuntimeException("Cannot delete this contact because it's associated to transactions.");
     }
 
     List<Invoice> iv = ((ArraySink) invoiceDAO.where(OR(
