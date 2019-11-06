@@ -98,23 +98,18 @@ foam.CLASS({
       planComparators.add(etaComparator);
       List<Transaction> transactionPlans = new ArrayList<Transaction>();
       for ( Object aTransaction : quote.getPlans() ) {
-        transactionPlans.add((Transaction) aTransaction);
-      }
-      Collections.sort(transactionPlans, planComparators);
-      Transaction plan = null;
-      for ( int i = 0; i < transactionPlans.size(); i++ ) {
         try {
-          plan = transactionPlans.get(i);
-          validateTransactionChain(x, plan);          
-          break;
+          validateTransactionChain(x, (Transaction) aTransaction);          
+          transactionPlans.add((Transaction) aTransaction);
         } catch (Exception e) {
           logger.warning("Transaction plan failed to validate",e,quote.getPlans());
-          if ( i >= transactionPlans.size() ) { 
-            throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
-          }
         }
       }
-      quote.setPlan(plan);
+      if ( transactionPlans.size() == 0 ) { 
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+      }
+      Collections.sort(transactionPlans, planComparators);
+      quote.setPlan(transactionPlans.get(0));
       // TransactionQuotes - return all plans.
       return quote;`
     },
