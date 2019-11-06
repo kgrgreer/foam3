@@ -823,10 +823,6 @@ foam.CLASS({
         throw new RuntimeException("Payer user is disabled.");
       }
 
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
-        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
-      }
-
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
