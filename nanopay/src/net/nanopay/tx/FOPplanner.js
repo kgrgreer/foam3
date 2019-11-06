@@ -28,35 +28,34 @@ foam.CLASS({
         obj.addPlan(plan);
       `
     },
-     methods: [
+    {
+      name: 'createTransfers_',
+      args: [
         {
-          name: 'createTransfers_',
-          args: [
-            {
-              name: 'x',
-              type: 'Context'
-            },
-            {
-              name: 'newPlan'
-              type: 'net.nanopay.tx.SecurityTransaction'
-            },
-          ],
-          type: 'net.nanopay.tx.Transfer[]',
-          javaCode: `
-            List all = new ArrayList();
-            TransactionLineItem[] lineItems = getLineItems();
-            for ( int i = 0; i < lineItems.length; i++ ) {
-              TransactionLineItem lineItem = lineItems[i];
-              Transfer[] transfers = lineItem.createTransfers(x, null, newPlan, false);
-              for ( int j = 0; j < transfers.length; j++ ) {
-                all.add(transfers[j]);
-              }
-            }
-
-            all.add(new Transfer.Builder(x).setAccount(newPlan.getSourceAccount()).setAmount(-newPlan.getTotal).build());
-            all.add(new Transfer.Builder(x).setAccount(newPlan.getDestinationAccount()).setAmount(newPlan.getTotal).build());
-            return (Transfer[]) all.toArray(new Transfer[0]);
-          `
+          name: 'x',
+          type: 'Context'
         },
-  ]
+        {
+          name: 'newPlan'
+          type: 'net.nanopay.tx.SecurityTransaction'
+        },
+      ],
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+        List all = new ArrayList();
+        TransactionLineItem[] lineItems = getLineItems();
+        for ( int i = 0; i < lineItems.length; i++ ) {
+          TransactionLineItem lineItem = lineItems[i];
+          Transfer[] transfers = lineItem.createTransfers(x, null, newPlan, false);
+          for ( int j = 0; j < transfers.length; j++ ) {
+            all.add(transfers[j]);
+          }
+        }
+
+        all.add(new Transfer.Builder(x).setAccount(newPlan.getSourceAccount()).setAmount(-newPlan.getTotal).build());
+        all.add(new Transfer.Builder(x).setAccount(newPlan.getDestinationAccount()).setAmount(newPlan.getTotal).build());
+        return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    },
+
 });
