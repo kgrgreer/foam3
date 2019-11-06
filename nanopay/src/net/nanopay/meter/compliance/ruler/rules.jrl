@@ -242,6 +242,10 @@ p({
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction",
+        "strict": true
       }
     ]
   },
