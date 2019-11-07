@@ -53,6 +53,7 @@ public class PGPKeyUtilTest
     x = SecurityTestUtil.CreateSecurityTestContext(x);
     this.x = x;
     setUpTest();
+    cleanupFiles();
   }
 
   private void setUpTest() {
@@ -108,6 +109,17 @@ public class PGPKeyUtilTest
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
+  }
+
+  protected void cleanupFiles(){
+    try{
+      Files.deleteIfExists(file);
+      Files.deleteIfExists(Paths.get(outputFile));
+      Files.deleteIfExists(Paths.get(outputFile));
+      Files.deleteIfExists(Paths.get(cipherTextFile));
+    } catch (Throwable t) {
+      test(false, "File cleanup fails");
+    }    
   }
 
 }
