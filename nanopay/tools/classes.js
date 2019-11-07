@@ -381,7 +381,6 @@ var classes = [
   'net.nanopay.tx.ruler.ChangePropertyAction',
   'net.nanopay.tx.ruler.SendNotification',
   'net.nanopay.tx.ruler.PropertyEQValue',
-  'net.nanopay.tx.ruler.PropertyEQProperty',
   'net.nanopay.tx.ruler.PropertyNEQValue',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',

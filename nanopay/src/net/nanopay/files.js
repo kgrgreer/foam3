@@ -347,7 +347,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
   { name: 'net/nanopay/tx/ruler/SendNotification' },
   { name: 'net/nanopay/tx/ruler/PropertyEQValue' },
-  { name: 'net/nanopay/tx/ruler/PropertyEQProperty' },
   { name: 'net/nanopay/tx/ruler/PropertyNEQValue' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
