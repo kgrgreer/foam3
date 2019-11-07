@@ -54,7 +54,6 @@ foam.CLASS({
     },
 
     async function initOnboardingView() {
-      if ( ! window.localStorage.getItem('setOnboardingWizardPush') ) return;
       var businessOnboardingInfor = await this.getBusinessOnboarding();
       if ( businessOnboardingInfor && businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED ) {
         this.stack.push({
@@ -62,7 +61,7 @@ foam.CLASS({
           data: businessOnboardingInfor
         });
       }
-      window.localStorage.removeItem('setOnboardingWizardPush');
+      return;
     }
   ]
 

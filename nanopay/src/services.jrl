@@ -154,7 +154,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec", 
   "name":"businessTypeDAO",                  
-  "serve":true,  
+  "serve":true,
   "authenticate":true, 
   "serviceScript":
   """
@@ -165,7 +165,7 @@ p({
       .setSeqNo(true)
       .setJournalName("businessTypes")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setOf(net.nanopay.model.BusinessType.getOwnClassInfo());
+      .setOf(net.nanopay.model.BusinessType.getOwnClassInfo())
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.model.BusinessType\"}"
