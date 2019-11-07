@@ -23,6 +23,7 @@ foam.CLASS({
     'businessDAO',
     'ctrl',
     'notify',
+    'onboardingUtil',
     'pushMenu',
     'stack',
     'user',
@@ -193,6 +194,7 @@ foam.CLASS({
           await this.ctrl.fetchGroup();
           this.user = business;
           this.agent = result;
+          this.onboardingUtil.initOnboardingView();
           this.pushMenu('sme.main.dashboard');
           return;
         }
