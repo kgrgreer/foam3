@@ -16,10 +16,10 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.util.SafetyUtil',
     'net.nanopay.fx.ExchangeRate',
-    'net.nanopay.fx.FXQuote',
-    'net.nanopay.fx.FXService',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FXProvider'
+    'net.nanopay.fx.FXQuote',
+    'net.nanopay.fx.FXProvider',
+    'net.nanopay.fx.FXService',
   ],
 
   properties: [
