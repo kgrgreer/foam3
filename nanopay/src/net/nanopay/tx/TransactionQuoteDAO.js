@@ -102,7 +102,7 @@ foam.CLASS({
           validateTransactionChain(x, (Transaction) aTransaction);          
           transactionPlans.add((Transaction) aTransaction);
         } catch (Exception e) {
-          logger.warning("Transaction plan failed to validate",e,quote.getPlans());
+          logger.warning("Transaction plan failed to validate",e,aTransaction;
         }
       }
       if ( transactionPlans.size() == 0 ) { 
