@@ -27,25 +27,23 @@ txn.setPayerId(payer.getId());
 txn.setPayeeId(payee.getId());
 txn.setAmount(100);
 quote = new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(txn).build();
-quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
-txn = quote.getPlan();
 
 // Test 1 - Sender needs to pass business compliance
 threw = false;
 message = "";
 try {
-  txn.validate(x);
+  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
 } catch (RuntimeException e) {
   message = e.getMessage();
   threw = true;
 }
-test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.");
+test( threw && message.equals("Unable to find a plan for requested transaction."), "Unable to put if sender business user hasn't passed compliance.");
 
 // Test 2 - Sender passes compliance
 payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);
 payer = localUserDAO.put_(x, payer).fclone();
 try {
-  txn.validate(x);
+  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
   test(true, "Able to put if sender business user has passed compliance.");
 } catch (RuntimeException e) {
   test(false, e.getMessage());
@@ -57,11 +55,11 @@ payee = localUserDAO.put_(x, payee).fclone();
 threw = false;
 message = "";
 try {
-  txn.validate(x);
+  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
 } catch (RuntimeException e) {
   message = e.getMessage();
   threw = true;
 }
-test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
+test( threw && message.equals("Unable to find a plan for requested transaction."), "Unable to put if receiver user failed compliance.");
   """
 })
