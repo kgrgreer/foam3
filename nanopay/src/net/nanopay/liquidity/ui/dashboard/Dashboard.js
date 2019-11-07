@@ -72,7 +72,7 @@ foam.CLASS({
         return accountDAO.where(
           this.AND(
             this.INSTANCE_OF(net.nanopay.account.TrustAccount),
-            this.EQ(net.nanopay.account.Account.DENOMINATION,"MVR")
+            this.EQ(net.nanopay.account.Account.DENOMINATION, 'MVR')
           )
         )
       }
@@ -80,7 +80,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'currencyExposureDAO',
-      expression: function(lastUpdated,filteredAccountDAO) {
+      expression: function(lastUpdated, filteredAccountDAO) {
         return this.CurrencyExposureDAO.create();
       },
     },
@@ -141,10 +141,7 @@ foam.CLASS({
                 .tag(this.DashboardCicoShadow)
               .end()
               .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
-                .tag(this.DashboardRecentTransactions, 
-                  {
-                    data: this.recentTransactionsDAO 
-                  }
+                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO }
                 )
               .end()
           }))

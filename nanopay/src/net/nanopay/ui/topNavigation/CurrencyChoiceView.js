@@ -165,14 +165,7 @@ foam.CLASS({
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
           .select(self.currencyDAO.where(
-              self.OR(
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'USD'),
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'CAD'),
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'EUR'),
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'GBP'),
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'JYP'),
-                self.EQ(net.nanopay.model.Currency.ALPHABETIC_CODE, 'AUD'),
-              )
+              self.IN(net.nanopay.model.Currency.ALPHABETIC_CODE, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
             ), function(c) {
                 if ( c.flagImage != null ) {
                   return self.E()

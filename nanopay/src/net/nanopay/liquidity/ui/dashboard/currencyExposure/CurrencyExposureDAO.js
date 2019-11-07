@@ -25,7 +25,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
       expression: function(homeDenomination, fxService, user, filteredAccountDAO, accountDAO) {
-        var daoToUse = filteredAccountDAO ? filteredAccountDAO : accountDAO;
+        var daoToUse = filteredAccountDAO || accountDAO;
         var accountDenominationGroupBy = daoToUse
           .select(
             this.GROUP_BY(

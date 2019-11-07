@@ -104,7 +104,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
-      value: 'HOURLY'
+      value: 'WEEKLY'
     },
     {
       class: 'Date',
