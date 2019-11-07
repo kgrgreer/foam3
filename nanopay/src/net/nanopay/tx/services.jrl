@@ -217,7 +217,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"purposeGroupDAO",                "se
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"securityPlanner",
+  "name":"securityPlannerDAO",
   "lazy":false,
   "serviceScript":
   """

@@ -154,7 +154,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec", 
   "name":"businessTypeDAO",                  
-  "serve":true,  
+  "serve":true,
   "authenticate":true, 
   "serviceScript":
   """
@@ -165,7 +165,7 @@ p({
       .setSeqNo(true)
       .setJournalName("businessTypes")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setOf(net.nanopay.model.BusinessType.getOwnClassInfo());
+      .setOf(net.nanopay.model.BusinessType.getOwnClassInfo())
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.model.BusinessType\"}"
@@ -364,8 +364,7 @@ p({
     afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
     usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
     cb = new net.nanopay.onboarding.CreateBusinessDAO(x, usus);
-    rae = new net.nanopay.onboarding.email.RegistrationApprovedEmailDAO(x, cb);
-    rse = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, rae);
+    rse = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, cb);
     ev = new net.nanopay.auth.email.EmailVerificationDAO(x, rse);
     gmg = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, ev);
     asu = new net.nanopay.admin.AccountStatusUserDAO(x, gmg);

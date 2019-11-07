@@ -149,6 +149,7 @@ public class UserRegistrationDAO
             Logger logger = (Logger) x.get("logger");
             logger.warning("Business invitation is not in SENT status but is trying to get processed.");
           }
+          invitation = (Invitation) invitation.fclone();
           invitation.setStatus(InvitationStatus.ACCEPTED);
           invitationDAO_.put(invitation);
         }
