@@ -69,7 +69,6 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
@@ -79,6 +78,8 @@ foam.CLASS({
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setAddress(businessOnboarding.getAddress());
+        user.setFirstName(businessOnboarding.getAdminFirstName());
+        user.setLastName(businessOnboarding.getAdminLastName());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {

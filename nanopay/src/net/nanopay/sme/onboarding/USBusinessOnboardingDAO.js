@@ -87,6 +87,8 @@ foam.CLASS({
         user.setPhone(businessOnboarding.getPhone());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
         user.setAddress(businessOnboarding.getAddress());
+        user.setFirstName(businessOnboarding.getAdminFirstName());
+        user.setLastName(businessOnboarding.getAdminLastName());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {

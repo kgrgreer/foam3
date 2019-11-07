@@ -132,22 +132,22 @@ foam.CLASS({
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at your company…'
     },
     {
+      name: 'signingOfficerEmailSection',
+      title: 'Enter your signing officer\'s email',
+      help: `For security, we require the approval of a signing officer before you can continue.
+          I can email your signing officer directly for the approval.`,
+      isAvailable: function (signingOfficer) { return !signingOfficer }
+    },
+    {
       name: 'personalInformationSection',
       title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
       name: 'homeAddressSection',
-      title: 'Enter your home address',
-      help: 'Awesome! Next, I’ll need to know your current home address…',
+      title: 'Enter your signing officer\'s home address',
+      help: 'Awesome! Next, I’ll need to know your signing officer\'s home address…',
       //isAvailable: function (signingOfficer) { return signingOfficer }
-    },
-    {
-      name: 'signingOfficerEmailSection',
-      title: 'Enter your signing officer\'s email',
-      help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officer directly for the approval.`,
-      isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
       name: 'businessAddressSection',
@@ -462,6 +462,94 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
+    {
+      class: 'String',
+      name: 'adminFirstName',
+      section: 'homeAddressSection',
+      label: 'First Name',
+      width: 100,
+      gridColumns: 6,
+      validationPredicates: [
+        {
+          args: ['adminFirstName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
+                }), 0)
+            );
+          },
+          errorString: 'First Name Required.'
+        },
+        {
+          args: ['adminFirstName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
+                }), 70)
+            );
+          },
+          errorString: 'First name cannot exceed 70 characters.'
+        },
+        {
+          args: ['adminFirstName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME, /^[a-zA-Z ]*$/)
+            );
+          },
+          errorString: 'First name cannot contain numbers or special characters.'
+        }
+      ],
+      validationTextVisible: true
+    },
+    {
+      class: 'String',
+      name: 'adminLastName',
+      label: 'Last Name',
+      section: 'homeAddressSection',
+      width: 100,
+      gridColumns: 6,
+      validationPredicates: [
+        {
+          args: ['adminLastName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
+                }), 0)
+            );
+          },
+          errorString: 'Last Name Required.'
+        },
+        {
+          args: ['adminLastName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
+                }), 70)
+            );
+          },
+          errorString: 'Last name cannot exceed 70 characters.'
+        },
+        {
+          args: ['adminLastName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME, /^[a-zA-Z ]*$/)
+            );
+          },
+          errorString: 'Last name cannot contain numbers or special characters.'
+        }
+      ],
+      validationTextVisible: true
+    },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
       section: 'homeAddressSection',
@@ -948,7 +1036,7 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
-        choices: [ 0, 1, 2, 3, 4 ],
+        choices: [ 1, 2, 3, 4 ],
         isHorizontal: true
       },
       postSet: function(_, n) {
