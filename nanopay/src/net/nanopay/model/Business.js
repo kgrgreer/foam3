@@ -54,13 +54,19 @@ foam.CLASS({
       documentation: 'Legal name of business.',
       width: 50
     },
-     {
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'The ID of the proprietary details of the business.',
       section: 'business'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: 'The date and time of when the User was created in the system.',
+      section: 'business',
     },
     {
       class: 'Reference',
