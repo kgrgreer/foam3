@@ -50,7 +50,9 @@ public class QuickbooksWebAgent implements WebAgent {
       QuickbooksConfig         config       = (QuickbooksConfig) configDAO.find(app.getUrl());
       QuickbooksToken   tokenStorage = (QuickbooksToken) store.find(user.getId());
 
-      tokenStorage = (QuickbooksToken) tokenStorage.fclone();
+      if ( tokenStorage != null ) {
+        tokenStorage = (QuickbooksToken) tokenStorage.fclone();
+      }
       // These come from QuickBooks
       String code  = req.getParameter("code");
       String state = req.getParameter("state");
