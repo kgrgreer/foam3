@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Stores the encrypted version of the private key',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.util.SecurityUtil',
 
     'java.io.ByteArrayInputStream',
@@ -17,6 +18,9 @@ foam.CLASS({
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
 
+    'org.bouncycastle.bcpg.BCPGInputStream',
+    'org.bouncycastle.bcpg.BCPGKey',
+    'org.bouncycastle.bcpg.RSASecretBCPGKey',
     'org.bouncycastle.openpgp.PGPPrivateKey',
     'org.bouncycastle.util.encoders.Base64',
   ],
@@ -37,12 +41,13 @@ foam.CLASS({
           KeyStore keyStore = manager.getKeyStore();
 
           // check if key store contains alias
-          if ( ! keyStore.containsAlias(entry.getAlias()) ) {
+          PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
+          if ( ! keyStore.containsAlias(privateKeyDAO.getAlias()) ) {
             throw new RuntimeException("Private key not found");
           }
 
           // load secret key from keystore
-          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(entry.getAlias());
+          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(privateKeyDAO.getAlias());
           SecretKey key = keyStoreEntry.getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.DECRYPT_MODE, key);
@@ -50,8 +55,21 @@ foam.CLASS({
           // decrypt private key
           byte[] encryptedBytes = Base64.decode(entry.getEncryptedPrivateKey());
           byte[] decodedBytes = cipher.doFinal(encryptedBytes);
+
+          // Fetch public key
+          DAO keyPairDAO = (DAO) x.get("keyPairDAO");
+          KeyPairEntry keyPair = (KeyPairEntry) ((DAO) x.get("keyPairDAO")).find(foam.mlang.MLang.EQ(KeyPairEntry.ALIAS, entry.getAlias()));
+          if ( keyPair == null ) return null; 
+          PublicKeyEntry pubKeyEntry = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(keyPair.getPublicKeyId());
+          if ( pubKeyEntry == null || ! (pubKeyEntry.getPublicKey() instanceof PgpPublicKeyWrapper) ) return null; 
+          PgpPublicKeyWrapper publicKey = (PgpPublicKeyWrapper) pubKeyEntry.getPublicKey();
+
           InputStream privateKeyIs = new ByteArrayInputStream(decodedBytes);
-          PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(PgpPrivateKeyWrapper.findSecretKey(privateKeyIs, entry.getParaphrase().toCharArray()));
+          BCPGInputStream bcpgStream = new BCPGInputStream(privateKeyIs);
+          BCPGKey bcpgImp = new RSASecretBCPGKey(bcpgStream);
+          PGPPrivateKey pgpPrivateKey = new PGPPrivateKey(publicKey.getPGPPublicKey().getKeyID(), publicKey.getPGPPublicKey().getPublicKeyPacket(), bcpgImp);
+
+          PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(pgpPrivateKey);
           entry.setPrivateKey(privateKey);
           
           return entry;
@@ -74,12 +92,13 @@ foam.CLASS({
           KeyStore keyStore = manager.getKeyStore();
 
           // check if key store contains alias
-          if ( ! keyStore.containsAlias(entry.getAlias()) ) {
+          PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
+          if ( ! keyStore.containsAlias(privateKeyDAO.getAlias()) ) {
             throw new RuntimeException("Private key not found");
           }
 
-          // load secret key from keystore
-          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(entry.getAlias());
+          // load secret key from keystore          
+          KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(privateKeyDAO.getAlias());
           SecretKey key = keyStoreEntry.getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
           cipher.init(Cipher.ENCRYPT_MODE, key, SecurityUtil.GetSecureRandom());
