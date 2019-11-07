@@ -70,9 +70,9 @@ foam.CLASS({
       name: 'filteredAccountDAO',
       expression: function(accountDAO){
         return accountDAO.where(
-          this.AND(
-            this.INSTANCE_OF(net.nanopay.account.TrustAccount),
-            this.EQ(net.nanopay.account.Account.DENOMINATION, 'MVR')
+          this.OR(
+            this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+            this.INSTANCE_OF(net.nanopay.bank.BankAccount)
           )
         )
       }
