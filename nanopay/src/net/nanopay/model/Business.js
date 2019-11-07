@@ -67,7 +67,8 @@ foam.CLASS({
       name: 'created',
       documentation: `This refines the "created" property in
         foam.nanos.auth.user and changes the section from administrative to
-        business, so that paymentops and other groups can see this property. `,
+        business, so that paymentops and other groups can see this property.
+      `,
       section: 'business',
     },
     {
