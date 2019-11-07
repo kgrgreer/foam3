@@ -4,7 +4,6 @@ import foam.core.Currency;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.mlang.MLang;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
 import net.nanopay.meter.reports.AbstractReport;
@@ -21,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
+
+import static foam.mlang.MLang.*;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
@@ -75,13 +76,19 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       long coAmountCAD = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
-        .where(MLang.OR(MLang.INSTANCE_OF(CITransaction.class), MLang.INSTANCE_OF(COTransaction.class)))
+        .where(
+          OR(
+            INSTANCE_OF(CITransaction.class),
+            INSTANCE_OF(COTransaction.class)
+          )
+        )
         .select(new ArraySink())).getArray();
 
       for ( Transaction txn : transactionList ) {
         HistoricStatus[] statusHistoryArr = txn.getStatusHistory();
         for ( int j = statusHistoryArr.length - 1; j >= 0; j-- ) {
-          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
+          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) 
+            && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
 
@@ -94,15 +101,15 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
               StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
-              currency.getPrimaryKey().toString(),
+              currency.getId(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
-              currency.getPrimaryKey().toString(),
+              currency.getId(),
               txn.getStatus().toString()
             );
 
             writer.write(bodyString);
 
-            if (currency.getPrimaryKey().toString().equals("CAD")) {
+            if (currency.getId().equals("CAD")) {
               if (txn instanceof CITransaction) {
                 ciAmountCAD = ciAmountCAD + txn.getAmount();
               } else if (txn instanceof COTransaction) {
@@ -125,7 +132,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "",
         "",
         StringEscapeUtils.escapeCsv(currencyCAD.format(ciAmountCAD)),
-        currencyCAD.getPrimaryKey().toString(),
+        currencyCAD.getId(),
         "",
         "",
         ""
@@ -140,7 +147,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "",
         "",
         StringEscapeUtils.escapeCsv(currencyCAD.format(coAmountCAD)),
-        currencyCAD.getPrimaryKey().toString(),
+        currencyCAD.getId(),
         "",
         "",
         ""
