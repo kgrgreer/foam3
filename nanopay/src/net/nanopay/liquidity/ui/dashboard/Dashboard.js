@@ -141,8 +141,7 @@ foam.CLASS({
                 .tag(this.DashboardCicoShadow)
               .end()
               .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
-                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO }
-                )
+                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
               .end()
           }))
     }
