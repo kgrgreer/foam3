@@ -15,7 +15,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("partnerJunctions")
       .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo())
-      .build()))));
+      .build();
   """,
   "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
 })

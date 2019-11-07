@@ -81,6 +81,7 @@ var classes = [
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
   'net.nanopay.account.NoChildrenRule',
+  'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
@@ -378,9 +379,6 @@ var classes = [
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.ChangePropertyAction',
-  'net.nanopay.tx.ruler.SendNotification',
-  'net.nanopay.tx.ruler.PropertyEQValue',
-  'net.nanopay.tx.ruler.PropertyNEQValue',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
@@ -451,10 +449,12 @@ var classes = [
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
   'net.nanopay.fx.KotakFXProvider',
+  'net.nanopay.fx.localfx.NanopayFXService',
 
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
+  'net.nanopay.tx.TransactionReport',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',

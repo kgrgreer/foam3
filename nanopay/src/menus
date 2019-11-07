@@ -70,3 +70,5 @@ p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password",
 // removals
 r({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":""})
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
+
+p({"class":"foam.nanos.menu.Menu","id":"txnReport","label":"Transaction Report","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.TransactionReportView"}},"order":503})

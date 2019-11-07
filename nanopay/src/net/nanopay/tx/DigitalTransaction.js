@@ -9,6 +9,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.Business',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.text.NumberFormat',
@@ -85,6 +87,20 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       super.validate(x);
+
+      User sourceOwner = findSourceAccount(x).findOwner(x);
+      if ( sourceOwner instanceof Business
+        && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
+      ) {
+        throw new RuntimeException("Sender needs to pass business compliance.");
+      }
+
+      User destinationOwner = findDestinationAccount(x).findOwner(x);
+      if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
+        // We throw when the destination account owner failed compliance however
+        // we obligate to not expose the fact that the user failed compliance.
+        throw new RuntimeException("Receiver needs to pass compliance.");
+      }
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {

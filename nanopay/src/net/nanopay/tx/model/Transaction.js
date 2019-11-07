@@ -226,7 +226,8 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150
+      tableWidth: 150,
+      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -239,7 +240,8 @@ foam.CLASS({
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
-      tableWidth: 172
+      tableWidth: 172,
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -306,6 +308,7 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
+      includeInDigest: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -344,7 +347,8 @@ foam.CLASS({
       class: 'String',
       name: 'referenceNumber',
       visibility: 'RO',
-      label: 'Reference'
+      label: 'Reference',
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -425,7 +429,8 @@ foam.CLASS({
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue("Source Amount");
         outputter.outputValue("Source Currency");
-      `
+      `,
+      includeInDigest: true
     },
     {
       class: 'String',
@@ -548,7 +553,8 @@ foam.CLASS({
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
-      value: 'CAD'
+      value: 'CAD',
+      includeInDigest: true
     },
     {
       documentation: `referenceData holds entities such as the pacs008 message.`,
@@ -815,10 +821,6 @@ foam.CLASS({
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
-      }
-
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
-        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
