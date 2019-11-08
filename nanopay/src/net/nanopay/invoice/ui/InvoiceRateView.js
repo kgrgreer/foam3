@@ -198,12 +198,6 @@ foam.CLASS({
       expression: function(isEmployee) {
         return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
       }
-    },
-    {
-      name: 'isSameCurrency',
-      expression: function(invoice$destinationCurrency, chosenBankAccount) {
-        return chosenBankAccount && invoice$destinationCurrency == chosenBankAccount.denomination;
-      }
     }
   ],
 
@@ -350,9 +344,8 @@ foam.CLASS({
             .start()
               .hide(this.loadingSpinner.isHidden$)
               .addClass('rate-msg-container')
-              .add(this.slot(function( isSameCurrency ) {
-                console.log(isSameCurrency);
-                return isSameCurrency ? ' ' : this.FETCHING_RATES;
+              .add(this.isFx$.map((bool) => {
+                return bool ? this.FETCHING_RATES : this.LOADING;
               }))
             .end()
           .end()
@@ -485,7 +478,6 @@ foam.CLASS({
         amount: this.invoice.amount,
         destinationAmount: this.invoice.targetAmount,
       });
-      debugger;
       var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
