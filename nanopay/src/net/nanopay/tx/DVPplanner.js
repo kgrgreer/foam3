@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'DVPplanner',
   documentation: 'A planner for planning Delivery vs. Payment (DVP) type transactions',
-,.
+
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
