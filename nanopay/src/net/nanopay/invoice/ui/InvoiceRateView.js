@@ -351,7 +351,6 @@ foam.CLASS({
               .hide(this.loadingSpinner.isHidden$)
               .addClass('rate-msg-container')
               .add(this.slot(function( isSameCurrency ) {
-                console.log(isSameCurrency);
                 return isSameCurrency ? ' ' : this.FETCHING_RATES;
               }))
             .end()
