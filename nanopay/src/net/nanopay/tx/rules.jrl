@@ -91,10 +91,34 @@ p({
   "after": false,
   "priority": 100,
   "predicate": {
-    "class": "foam.mlang.predicate.True"
+    "class": "foam.mlang.predicate.Neq",
+    "arg1": {
+      "class": "foam.mlang.expr.Dot",
+      "arg1": {
+        "class": "foam.mlang.expr.Dot",
+        "arg1": {
+          "class": "foam.mlang.ContextObject",
+          "key": "NEW"
+        },
+        "arg2": {
+          "class": "__Property__",
+          "forClass_": "net.nanopay.tx.TransactionQuote",
+          "name":"requestTransaction"
+        }
+      },
+      "arg2": {
+        "class": "__Property__",
+        "forClass_": "net.nanopay.tx.model.Transaction",
+        "name":"name"
+      }
+    },
+    "arg2": {
+      "class": "foam.mlang.Constant",
+      "value": "AbliiTransaction"
+    }
   },
   "action": {
     "class": "net.nanopay.tx.ruler.ComplianceTransactionPlanner"
   },
-  "enabled": false
+  "enabled": true
 })
