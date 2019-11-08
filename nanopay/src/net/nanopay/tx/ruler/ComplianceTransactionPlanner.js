@@ -13,6 +13,7 @@ foam.CLASS({
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -24,6 +25,7 @@ foam.CLASS({
         for ( Transaction plan : quote.getPlans() ) {
           if ( plan instanceof SummaryTransaction
             || plan instanceof FXSummaryTransaction
+            || plan instanceof VerificationTransaction
             || plan.findSourceAccount(x).getOwner() == plan.findDestinationAccount(x).getOwner()
           ) {
             continue;
