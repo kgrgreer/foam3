@@ -115,7 +115,6 @@ foam.CLASS({
         }
         
         // PGPPrivate keys need to be encrypted and not wrapped, this is handled by PGPPrivateKeyDAo dow the line
-        entry.setAlias(getAlias()); 
         if ( privateKey instanceof PgpPrivateKeyWrapper ) return getDelegate().put_(x, entry);
 
         try {

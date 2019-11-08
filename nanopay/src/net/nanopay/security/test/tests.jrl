@@ -13,3 +13,4 @@ p({"class":"net.nanopay.security.test.ReceiptSerializationTest","id":"ReceiptTes
 p({"class":"net.nanopay.security.test.ReceiptGeneratingDAOTest","id":"ReceiptGeneratingDAO Test","description":"Tests the receipt generating DAO."})
 p({"class":"net.nanopay.security.test.UserKeyPairGenerationDAOTest","id":"UserKPGenerationTest"})
 p({"class":"net.nanopay.security.test.ViewPIIRequestDAOTest","id":"PIIRequestDAOTest"})
+p({"class":"net.nanopay.security.test.PGPKeyUtilTest","id":"PGPKeyUtilTest"})

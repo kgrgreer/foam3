@@ -44,32 +44,4 @@ public class PgpPrivateKeyWrapper implements PrivateKey {
     return pgpKey;
   }
 
-  public static PGPPrivateKey findSecretKey(InputStream keyIn, char[] pass) 
-    throws IOException, PGPException, NoSuchProviderException {
-    
-    PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
-      org.bouncycastle.openpgp.PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
-
-    PGPSecretKey pgpSecKey = null;
-    Iterator<PGPSecretKeyRing> rIt = pgpSec.getKeyRings();
-    while ( pgpSecKey == null && rIt.hasNext() ) {
-      PGPSecretKeyRing kRing = rIt.next();
-      Iterator<PGPSecretKey> kIt = kRing.getSecretKeys();
-      while ( pgpSecKey == null && kIt.hasNext() ) {
-        PGPSecretKey k = kIt.next();
-        if ( k.isMasterKey() ) {
-          pgpSecKey = k;
-        }
-      }
-    }
-
-    if ( pgpSecKey == null ) {
-      return null;
-    }
-
-    PBESecretKeyDecryptor a = new JcePBESecretKeyDecryptorBuilder(
-      new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(pass);
-
-    return pgpSecKey.extractPrivateKey(a);
-  }
 }
