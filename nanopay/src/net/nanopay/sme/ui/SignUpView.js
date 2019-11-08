@@ -16,6 +16,7 @@ foam.CLASS({
     'groupDAO',
     'menuDAO',
     'notify',
+    'pushMenu',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
@@ -440,7 +441,7 @@ foam.CLASS({
             });
           } else {
             this.user.copyFrom(user);
-            if ( user ) {
+            if ( !! user ) {
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
               this.acceptanceDocumentService.
               updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
@@ -452,6 +453,11 @@ foam.CLASS({
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
+            } else {
+              // This is required for signing when redirected from link
+              window.history.replaceState(null, null, window.location.origin);
+              this.pushMenu('sme.main.dashboard');
+              window.location.reload();
             }
           }
         })
