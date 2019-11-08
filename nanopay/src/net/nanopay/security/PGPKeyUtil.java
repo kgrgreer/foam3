@@ -1,11 +1,14 @@
 package net.nanopay.security;
 
+import foam.core.X;
+import foam.dao.DAO;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
@@ -14,30 +17,28 @@ import java.util.Iterator;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
+import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
+import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactoryBuilder;
+import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
+import org.bouncycastle.openpgp.operator.PublicKeyDataDecryptorFactory;
 import org.bouncycastle.openpgp.PGPCompressedData;
 import org.bouncycastle.openpgp.PGPCompressedDataGenerator;
-import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactoryBuilder;
-import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
-import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
 import org.bouncycastle.openpgp.PGPEncryptedData;
-import org.bouncycastle.openpgp.PGPPublicKeyEncryptedData;
 import org.bouncycastle.openpgp.PGPEncryptedDataGenerator;
 import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPObjectFactory;
+import org.bouncycastle.openpgp.PGPOnePassSignatureList;
 import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPPublicKeyEncryptedData;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
-import org.bouncycastle.openpgp.operator.PublicKeyDataDecryptorFactory;
-import org.bouncycastle.openpgp.PGPOnePassSignatureList;
 import org.bouncycastle.openpgp.PGPSignatureGenerator;
 import org.bouncycastle.openpgp.PGPSignatureList;
-import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
 
-import foam.core.X;
-import foam.dao.DAO;
 import static foam.mlang.MLang.EQ;
 
 public class PGPKeyUtil {
@@ -71,10 +72,14 @@ public class PGPKeyUtil {
     if ( pubKey == null ) throw new RuntimeException("Public Key not found with alias: " + keyAlias); 
     pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(pubKey.getId()); 
     if ( ! (pubKey.getPublicKey() instanceof PgpPublicKeyWrapper) ) throw new RuntimeException("Public Key is not a PGP Key: " + keyAlias);
-
     PgpPublicKeyWrapper pgpPubKey = (PgpPublicKeyWrapper) pubKey.getPublicKey();
     PGPPublicKey encKey = pgpPubKey.getPGPPublicKey();
-    Security.addProvider(new BouncyCastleProvider());
+
+    // add provider only if it's not in the JVM
+    if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+      Security.addProvider(new BouncyCastleProvider());
+    }
+    
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
     PGPCompressedDataGenerator comData = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
     org.bouncycastle.openpgp.PGPUtil.writeFileToLiteralData(comData.open(bOut), PGPLiteralData.BINARY, file);
@@ -104,7 +109,11 @@ public class PGPKeyUtil {
     PGPPrivateKey decKey = pgpPrivateKey.getPGPPrivateKey();
     if ( decKey == null ) throw new RuntimeException("PGP Private Key not found: " + keyAlias); 
 
-    Security.addProvider(new BouncyCastleProvider());
+    // add provider only if it's not in the JVM
+    if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+      Security.addProvider(new BouncyCastleProvider());
+    }
+
     in = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(in);
     PGPObjectFactory pgpF = new PGPObjectFactory(in, new JcaKeyFingerprintCalculator());
 		PGPEncryptedDataList enc;
@@ -123,7 +132,7 @@ public class PGPKeyUtil {
     PGPPublicKeyEncryptedData pbe = null;
     while (it.hasNext()) {
 			pbe = it.next();
-      if (pbe != null && pbe.getKeyID() == decKey.getKeyID()) break;
+      if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break;
 		}
 		InputStream clear = pbe.getDataStream(b);
 		PGPObjectFactory plainFact = new PGPObjectFactory(clear, new JcaKeyFingerprintCalculator());
