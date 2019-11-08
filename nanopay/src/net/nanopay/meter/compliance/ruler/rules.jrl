@@ -5,8 +5,8 @@ p({"class":"foam.nanos.ruler.Rule","id":"Request signing officers compliance","p
 p({"class":"foam.nanos.ruler.Rule","id":"Request beneficial owners compliance","priority":50,"ruleGroup":"onboarding","documentation":"Marks beneficial owners of a business as compliance requested.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding"},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance"},"enabled":true,"saveHistory":true})
 
 // Securefact rules
-p({"class":"foam.nanos.ruler.Rule","id":"Securefact SIDni","priority":110,"ruleGroup":"onboarding","documentation":"Check user via Securefact SIDni API","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator"},"enabled":true,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"Securefact LEV","priority":110,"ruleGroup":"onboarding","documentation":"Check business via Securefact LEV API","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.SecurefactLEVValidator"},"enabled":true,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"Securefact SIDni","priority":110,"ruleGroup":"onboarding","documentation":"Check user via Securefact SIDni API","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator"},"enabled":true,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"Securefact LEV","priority":110,"ruleGroup":"onboarding","documentation":"Check business via Securefact LEV API","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.ruler.SecurefactLEVValidator"},"enabled":true,"saveHistory":true})
 
 // Dow Jones rules
 p({
@@ -24,7 +24,7 @@ p({
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+          "class": "foam.nanos.ruler.predicate.NewEqOld"
         }
       },
       {
@@ -63,7 +63,7 @@ p({
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+          "class": "foam.nanos.ruler.predicate.NewEqOld"
         }
       },
       {
@@ -101,7 +101,7 @@ p({
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+          "class": "foam.nanos.ruler.predicate.NewEqOld"
         }
       },
       {
@@ -143,7 +143,7 @@ p({
       {
         "class":"foam.mlang.predicate.Not",
         "arg1":{
-          "class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+          "class":"foam.nanos.ruler.predicate.NewEqOld"
         }
       },
       {
@@ -173,7 +173,7 @@ p({
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+          "class": "foam.nanos.ruler.predicate.NewEqOld"
         }
       },
       {
@@ -219,10 +219,10 @@ p({
 // IdentityMind rules
 p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Consumer KYC - Signup","priority":90,"ruleGroup":"onboarding","documentation":"On user signup, check user via IdentityMind Consumer KYC stage 1.","daoKey":"localUserDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.AbliiSignup"},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":1},"enabled":false,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Entity Login Record","priority":90,"ruleGroup":"compliance","documentation":"Check logged in user via IdentityMind Entity Login Record.","daoKey":"loginAttemptDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.LoginSuccess"},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.EntityLoginValidator"},"enabled":false,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Merchant KYC","priority":90,"ruleGroup":"onboarding","documentation":"Check business via IdentityMind Merchant KYC.","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BusinessComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.MerchantKYCValidator"},"enabled":false,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Consumer KYC - Signing officer","priority":90,"ruleGroup":"onboarding","documentation":"Check user compliance via IdentityMind Consumer KYC stage 2 when compliance is requested.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested","strict":true}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Consumer KYC - Beneficial owner","priority":90,"ruleGroup":"onboarding","documentation":"Check beneficial owner via IdentityMind Consumer KYC stage 2.\n\nNote: ConsumerKYCValidator would need to change to support creating approval request for beneficial owner.","daoKey":"beneficialOwnerDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind transfer transaction","priority":90,"ruleGroup":"compliance","documentation":"Check bank to bank transaction via IdentityMind","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator"},"enabled":false,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Merchant KYC","priority":90,"ruleGroup":"onboarding","documentation":"Check business via IdentityMind Merchant KYC.","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BusinessComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.MerchantKYCValidator"},"enabled":false,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Consumer KYC - Signing officer","priority":90,"ruleGroup":"onboarding","documentation":"Check user compliance via IdentityMind Consumer KYC stage 2 when compliance is requested.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested","strict":true}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind Consumer KYC - Beneficial owner","priority":90,"ruleGroup":"onboarding","documentation":"Check beneficial owner via IdentityMind Consumer KYC stage 2.\n\nNote: ConsumerKYCValidator would need to change to support creating approval request for beneficial owner.","daoKey":"beneficialOwnerDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind transfer transaction","priority":90,"ruleGroup":"compliance","documentation":"Check bank to bank transaction via IdentityMind","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator"},"enabled":false,"saveHistory":true})
 
 // Rollup rules
 p({"class":"foam.nanos.ruler.Rule","id":"Clear user approval requests","priority":80,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a user.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed"},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localUserDAO"},"enabled":true,"saveHistory":true})
@@ -240,7 +240,7 @@ p({
     "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        "class": "foam.nanos.ruler.predicate.NewEqOld"
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested"
@@ -266,7 +266,7 @@ p({
     "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        "class": "foam.nanos.ruler.predicate.NewEqOld"
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
@@ -296,7 +296,7 @@ p({"class":"foam.nanos.ruler.Rule","id":"Remove ComplianceItem - SecureFact(LEV)
 p({"class":"foam.nanos.ruler.Rule","id":"Remove ComplianceItem - SecureFact(SIDni) Removal","priority":50,"ruleGroup":"ComplianceItem","documentation":"Removes the ComplianceItem when the SecureFact(SIDni) response is removed","daoKey":"securefactSIDniDAO","operation":2,"action":{"class":"net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule","operation":2,"responseType":"securefactSIDni"},"after":true,"enabled":true,"saveHistory":true})
 
 // Reput object rules
-p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
+p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.nanos.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
 
 // User Corridor Permission
 p({
