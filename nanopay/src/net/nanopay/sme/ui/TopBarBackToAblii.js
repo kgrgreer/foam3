@@ -47,7 +47,7 @@ foam.CLASS({
             .add(this.GO_BACK)
             .on('click', () => {
               self.auth.logout();
-              self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' })
+              self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create() });
             })
           .end()
         .end()

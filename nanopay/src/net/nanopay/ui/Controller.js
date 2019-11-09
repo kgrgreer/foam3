@@ -22,7 +22,6 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'foam.core.Currency',
     'net.nanopay.ui.banner.BannerData',
@@ -281,6 +280,7 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
+      var searchparam = new URLSearchParams(location.search);
 
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' )
@@ -290,14 +290,28 @@ foam.CLASS({
         });
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' )
+      if ( location.hash != null && location.hash === '#sign-up' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'net.nanopay.auth.ui.SignUpView' });
+          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignUp.create({
+            token_: searchparam.get('token'),
+            email: searchparam.get('email'),
+            disableEmail_: searchparam.has('email'),
+            disableCompanyName_: searchparam.has('companyName'),
+            organization: searchparam.get('companyName'),
+            countryChoices_: searchparam.get('countryChoicce')
+            })
+          });
           self.loginSuccess$.sub(resolve);
         });
+      }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create({
+          signUptoken_: searchparam.get('token'),
+          email: searchparam.get('email'),
+          disableEmail_: searchparam.has('email')
+          })
+        });
         self.loginSuccess$.sub(resolve);
       });
     }

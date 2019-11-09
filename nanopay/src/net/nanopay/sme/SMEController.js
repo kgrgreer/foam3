@@ -20,7 +20,6 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.SignInView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -456,7 +455,6 @@ foam.CLASS({
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
-          this.__subContext__.register(this.SignInView, 'foam.nanos.auth.SignInView');
 
           if ( this.loginSuccess ) {
             this.findBalance();
@@ -486,32 +484,32 @@ foam.CLASS({
     function requestLogin() {
       var self = this;
       var locHash = location.hash;
-      var view = { class: 'net.nanopay.sme.ui.SignInView' };
+      var view = null;
 
       if ( locHash ) {
-        // Don't go to log in screen if going to reset password screen.
+        var searchParams = new URLSearchParams(location.search);
+
         if ( locHash === '#reset' ) {
           view = { class: 'foam.nanos.auth.ChangePasswordView' };
         }
 
-        var searchParams = new URLSearchParams(location.search);
-
-        // Don't go to log in screen if going to sign up password screen.
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
           view = {
-            class: 'net.nanopay.sme.ui.SignUpView',
-            emailField: searchParams.get('email'),
-            disableEmail: !! searchParams.get('email'),
-            signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.has('companyName')
-              ? searchParams.get('companyName')
-              : '',
-            disableCompanyName: searchParams.has('companyName'),
-            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
+            class: 'foam.u2.view.LoginView',
+            model: foam.core.SignUp.create({
+              email: searchParams.get('email'),
+              disableEmail: !! searchParams.get('email'),
+              signUpToken: searchParams.get('token'),
+              companyNameField: searchParams.has('companyName')
+                ? searchParams.get('companyName')
+                : '',
+              disableCompanyName: searchParams.has('companyName'),
+              choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
+            })
           };
         }
 
-        // Process auth token
+        // Process auth token: api redirect for short term login
         if ( locHash === '#auth' && ! self.loginSuccess ) {
           self.client.authenticationTokenService.processToken(null, null,
             searchParams.get('token')).then((result) => {
@@ -523,6 +521,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
+        if ( ! view ) view = { class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create() };
         self.stack.push(view);
         self.loginSuccess$.sub(resolve);
       });

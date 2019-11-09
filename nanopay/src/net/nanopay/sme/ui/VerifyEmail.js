@@ -228,7 +228,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.auth.logout().then(function(result) {
-          self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create() });
         });
       }
     }

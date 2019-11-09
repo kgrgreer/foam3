@@ -64,7 +64,6 @@ p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"c
 p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.BankSyncView"}},"order":503,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":1000,"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.auth.ui.SignUpView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"hidden"})
 
 // removals
