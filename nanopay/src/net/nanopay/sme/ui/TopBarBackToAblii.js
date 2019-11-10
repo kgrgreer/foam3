@@ -47,7 +47,7 @@ foam.CLASS({
             .add(this.GO_BACK)
             .on('click', () => {
               self.auth.logout();
-              self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create() });
+              self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create() });
             })
           .end()
         .end()

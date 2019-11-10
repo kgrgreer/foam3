@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'SignUp',
-  refines: 'foam.core.SignUp',
+  refines: 'foam.nanos.u2.navigation.SignUp',
   documentation: `Model used for registering/creating a nanos user.`,
 
   imports: [

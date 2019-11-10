@@ -496,7 +496,7 @@ foam.CLASS({
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
           view = {
             class: 'foam.u2.view.LoginView',
-            model: foam.core.SignUp.create({
+            model: foam.nanos.u2.navigation.SignUp.create({
               email: searchParams.get('email'),
               disableEmail: !! searchParams.get('email'),
               signUpToken: searchParams.get('token'),
@@ -521,7 +521,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        if ( ! view ) view = { class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create() };
+        if ( ! view ) view = { class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create() };
         self.stack.push(view);
         self.loginSuccess$.sub(resolve);
       });

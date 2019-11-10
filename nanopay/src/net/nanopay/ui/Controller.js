@@ -292,7 +292,7 @@ foam.CLASS({
       // don't go to log in screen if going to sign up password screen
       if ( location.hash != null && location.hash === '#sign-up' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignUp.create({
+          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignUp.create({
             token_: searchparam.get('token'),
             email: searchparam.get('email'),
             disableEmail_: searchparam.has('email'),
@@ -306,7 +306,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.core.SignIn.create({
+        self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create({
           signUptoken_: searchparam.get('token'),
           email: searchparam.get('email'),
           disableEmail_: searchparam.has('email')
