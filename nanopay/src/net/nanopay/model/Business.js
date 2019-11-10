@@ -361,6 +361,7 @@ foam.CLASS({
  ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.Address',
@@ -370,7 +371,11 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.NotificationConfig',
+    'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
+    'java.util.List',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -514,6 +519,30 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
         return "";
+      `
+    },
+    {
+      name: 'notify',
+      javaCode: `
+        DAO agentJunctionDAO      = (DAO) x.get("agentJunctionDAO");
+        DAO notificationConfigDAO = (DAO) x.get("notificationConfigDAO");
+        DAO               userDAO = (DAO) x.get("localUserDAO");
+
+        List<UserUserJunction> junctions = ((ArraySink) agentJunctionDAO
+          .where(EQ(UserUserJunction.TARGET_ID, getId()))
+          .select(new ArraySink())).getArray();
+
+        for ( UserUserJunction junction : junctions ) {
+          NotificationConfig config = (NotificationConfig) notificationConfigDAO
+            .find(junction.getNotificationConfig());
+          if ( config == null ) {
+            throw new RuntimeException("A notification configuration for the business cannot be found.");
+          }
+  
+          for ( NotificationSetting setting : config.getNotificationSettings()) {
+            setting.sendNotification(x, (User) userDAO.find(junction.getSourceId()), notification);
+          }
+        }
       `
     }
   ],
