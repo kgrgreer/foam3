@@ -11,8 +11,8 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -23,7 +23,8 @@ foam.CLASS({
       javaCode: `
         TransactionQuote quote = (TransactionQuote) obj;
         for ( Transaction plan : quote.getPlans() ) {
-          if ( plan instanceof SummaryTransaction
+          if ( plan instanceof ComplianceTransaction
+            || plan instanceof SummaryTransaction
             || plan instanceof FXSummaryTransaction
             || plan instanceof VerificationTransaction
             || plan.findSourceAccount(x).getOwner() == plan.findDestinationAccount(x).getOwner()
@@ -35,7 +36,7 @@ foam.CLASS({
           ct.copyFrom(plan);
           ct.clearLineItems();
           ct.setIsQuoted(true);
-          ct.addNext(plan);
+          ct.setNext(new Transaction[] { plan });
           quote.setPlan(ct);
         }
       `
