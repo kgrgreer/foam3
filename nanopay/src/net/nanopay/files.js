@@ -1208,5 +1208,14 @@ FOAM_FILES([
 
   // grain discovery
   { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' }
+  { name: 'net/nanopay/tx/TransactionReportView' },
+
+  // tickets
+  { name: 'net/nanopay/ticket/SudoTicket' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestAction' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
+  { name: 'net/nanopay/ticket/test/SudoTicketTest' },
+
 ]);

@@ -14,7 +14,20 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP Histo
 p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","customDAOController":"net.nanopay.ui.ApprovalRequestController","title":"Approval Requests","createEnabled":false,"editEnabled":false},"order":1900,"parent":"operation"})
 
 // Payment Operations Functionality
-p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
+//p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.tickets",
+  "label":"Tickets",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"ticketDAO",
+    "title":"Tickets",
+    "detailView":"foam.nanos.ticket.TicketDetailView"
+  },
+  "order":2000,
+  "parent":"operation"
+})
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "operation.bus_limits",

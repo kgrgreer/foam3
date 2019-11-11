@@ -1,0 +1,30 @@
+p({
+  "class":"net.nanopay.ticket.SudoTicketApprovalRequestRule",
+  "id":"SudoTicketApprovalRequestRule",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Generate an Approval Request for priveledge access.",
+  "daoKey":"localTicketDAO",
+  "operation":0,
+  "after":true,
+  "enabled":true,
+  "saveHistory":false,
+  "action":{
+    "class":"net.nanopay.ticket.SudoTicketApprovalRequestAction"
+  }
+})
+p({
+  "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
+  "id":"SudoTicketApprovalResponseRule",
+  "priority":101,
+  "ruleGroup":"Ticket",
+  "documentation":"Act on an Approval Request for priveledge access.",
+  "daoKey":"localTicketDAO",
+  "operation":1,
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "asyncAction":{
+    "class":"net.nanopay.ticket.SudoTicketApprovalResponseAction"
+  }
+})
