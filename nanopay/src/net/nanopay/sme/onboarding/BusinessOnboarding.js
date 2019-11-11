@@ -917,7 +917,8 @@ foam.CLASS({
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = false;
+        this.publiclyTraded = true;
+        this.userOwnsPercent = true;
       },
       validationPredicates: [
         {
@@ -957,7 +958,14 @@ foam.CLASS({
         this.clearProperty('ownershipPercent');
       },
       visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        if ( amountOfOwners > 0 ) {
+          this.userOwnsPercent$ = true;
+          return foam.u2.Visibility.RO;
+        } else {
+          this.userOwnsPercent$ = false;
+          return foam.u2.Visibility.RO;
+        }
+
       }
     },
     {
@@ -970,7 +978,14 @@ foam.CLASS({
         if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+
+        if ( amountOfOwners == 0 ) {
+          this.publiclyTraded$ = true;
+          return foam.u2.Visibility.RO;
+        } else {
+          this.publiclyTraded$ = false;
+          return foam.u2.Visibility.RO;
+        }
       }
     },
     {
