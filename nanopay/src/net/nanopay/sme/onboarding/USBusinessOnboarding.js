@@ -147,32 +147,27 @@ foam.CLASS({
       name: 'homeAddressSection',
       title: 'Enter your signing officer\'s home address',
       help: 'Awesome! Next, I’ll need to know your signing officer\'s home address…',
-      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'businessAddressSection',
       title: 'Enter your business address',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
-      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'businessDetailsSection',
       title: 'Enter your business details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
-      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
       help: `Thanks! Now let’s get some details on your company's transactions.`,
-      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
-      //isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'personalOwnershipSection',
@@ -213,9 +208,6 @@ foam.CLASS({
       name: 'twoFactorSection',
       title: 'Protect your account against fraud with two-factor authentication',
       help: 'Alright, it looks like that is all of the information we need! Last thing I’ll ask is that you enable two factor authentication. We want to make sure your account is safe!',
-//      isAvailable: function(signingOfficer) {
-//        return signingOfficer;
-//      }
     }
   ],
 
