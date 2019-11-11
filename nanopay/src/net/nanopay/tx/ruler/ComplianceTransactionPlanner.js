@@ -35,8 +35,9 @@ foam.CLASS({
           ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
           ct.copyFrom(plan);
           ct.clearLineItems();
+          ct.clearNext();
+          ct.addNext(plan);
           ct.setIsQuoted(true);
-          ct.setNext(new Transaction[] { plan });
           quote.setPlan(ct);
         }
       `
