@@ -978,6 +978,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/AccountingIntegrationUtil', flags: ['web'] },
 
   // meter
+  { name: 'net/nanopay/meter/AdminAccessConfig' },
   { name: 'net/nanopay/meter/Blacklist' },
   { name: 'net/nanopay/meter/BlacklistEntityType' },
   { name: 'net/nanopay/meter/IpHistory' },
