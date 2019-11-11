@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'FOPplanner',
   documentation: 'A planner for planning Free of Payment (FOP) type transactions',
-//predicate: "predicate":{"class":"net.nanopay.tx.ruler.PropertyEQProperty","prop1":"sourceUnit","prop2":"destinationUnit"}
+  
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
