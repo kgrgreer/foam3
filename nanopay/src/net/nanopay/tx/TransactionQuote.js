@@ -40,6 +40,13 @@ foam.CLASS({
       name: 'destinationAccount',
       networkTransient: true,
       documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.TransactionQuote',
+      name: 'parent',
+      networkTransient: true,
+      documentation: 'helper property used during planning to keep track of parent quote when a planner spawns child quotes'
     }
   ],
 
