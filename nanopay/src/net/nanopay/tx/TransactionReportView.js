@@ -86,23 +86,30 @@ foam.CLASS({
 
     async function getFilteredTransactions() {
       if ( ! this.startDate || ! this.endDate ) return [];
-      return this.transactionDAO.select().then((transactions) => {
-        return transactions.array.reduce((arr, transaction) => {
-          var statusHistoryArr = transaction.statusHistory;
-          if ( statusHistoryArr.length < 1 ) return arr;
-          if ( statusHistoryArr[0].timeStamp > this.endDate ) return arr;
-          if ( statusHistoryArr[statusHistoryArr.length-1].timeStamp < this.startDate ) return arr;
-          for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
-            if ( statusHistoryArr[i].timeStamp <= this.endDate
-              && statusHistoryArr[i].timeStamp >= this.startDate ) {
-              transaction.status = statusHistoryArr[i].status;
-              transaction.lastModified = statusHistoryArr[i].timeStamp;
-              arr.push(transaction);
-              return arr;
+
+      return this.transactionDAO
+        .where(this.OR(
+          this.INSTANCE_OF(net.nanopay.tx.cico.CITransaction),
+          this.INSTANCE_OF(net.nanopay.tx.cico.COTransaction)
+        ))
+        .select()
+        .then((transactions) => {
+          return transactions.array.reduce((arr, transaction) => {
+            var statusHistoryArr = transaction.statusHistory;
+            if ( statusHistoryArr.length < 1 ) return arr;
+            if ( statusHistoryArr[0].timeStamp > this.endDate ) return arr;
+            if ( statusHistoryArr[statusHistoryArr.length-1].timeStamp < this.startDate ) return arr;
+            for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
+              if ( statusHistoryArr[i].timeStamp <= this.endDate
+                && statusHistoryArr[i].timeStamp >= this.startDate ) {
+                transaction.status = statusHistoryArr[i].status;
+                transaction.lastModified = statusHistoryArr[i].timeStamp;
+                arr.push(transaction);
+                return arr;
+              }
             }
-          }
-        }, []);
-      });
+          }, []);
+        });
     }
   ],
 

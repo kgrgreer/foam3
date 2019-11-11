@@ -119,10 +119,7 @@ foam.CLASS({
         'issueDate',
         'issue',
         'issued'
-      ],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      ]
     },
     {
       class: 'Date',
@@ -130,9 +127,6 @@ foam.CLASS({
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
       aliases: ['dueDate', 'due', 'd', 'issued'],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      },
       tableWidth: 95
     },
     {
@@ -140,12 +134,7 @@ foam.CLASS({
       name: 'paymentDate',
       documentation: `The date and time of when the invoice was paid.`,
       label: 'Received',
-      aliases: ['scheduled', 'paid'],
-      tableCellFormatter: function(date) {
-        if ( date ) {
-          this.add(date.toISOString().substring(0, 10));
-        }
-      }
+      aliases: ['scheduled', 'paid']
     },
     {
       class: 'DateTime',
