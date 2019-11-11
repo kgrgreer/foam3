@@ -16,6 +16,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketStatus',
     'net.nanopay.approval.ApprovalRequest',
@@ -45,7 +47,7 @@ foam.CLASS({
     // test user2 had group1
 
     // repeat with declined.
-
+    Logger logger = new PrefixLogger(new Object[] {"SudoTicketTest"}, (Logger) x.get("logger"));
     DAO groupDAO = (DAO) x.get("localGroupDAO");
     Group group1 = (Group) groupDAO.put(new Group.Builder(x).setId("group1").build());
     Group group2 = (Group) groupDAO.put(new Group.Builder(x).setId("group2").build());
@@ -89,6 +91,7 @@ foam.CLASS({
    test(status == ApprovalStatus.APPROVED, "ApprovalRequest APPROVED");
    // yield to allow aysnc ops to run.
    try {
+     logger.debug("sleeping");
      Thread.currentThread().sleep(1000);
    } catch (InterruptedException e) {
      //nop
@@ -97,19 +100,23 @@ foam.CLASS({
    user2 = (User) userDAO.find(user2.getId());
    test( user2.getGroup() == group3.getId(), "User2 group changed to group3 ("+user2.getGroup()+")");
 
+   ticket = (SudoTicket) ticketDAO.find_(y, ticket.getId()).fclone();
    ticket.setStatus(TicketStatus.CLOSED);
    ticket = (SudoTicket) ticketDAO.put_(y, ticket);
    test( ticket.getStatus() == TicketStatus.CLOSED, "Ticket closed");
 
    // yield to allow aysnc ops to run.
    try {
-     Thread.currentThread().sleep(2000);
+     logger.debug("sleeping");
+     Thread.currentThread().sleep(1000);
    } catch (InterruptedException e) {
      //nop
    }
 
    user2 = (User) userDAO.find(user2.getId());
    test( user2.getGroup() == group2.getId(), "User2 group changed to group2 ("+user2.getGroup()+")");
+
+   // TODO: 1) REQUESTED -> DECLINED, 2) APPROVED -> DECLINED
      ` 
     }
   ]

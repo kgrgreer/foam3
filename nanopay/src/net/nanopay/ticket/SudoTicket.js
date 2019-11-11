@@ -11,8 +11,10 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.approval.ApprovalStatus',
+    'java.util.Calendar',
+    'java.util.Date'
   ],
-  
+
   properties: [
     {
       name: 'sudoAsUser',
@@ -38,6 +40,12 @@ foam.CLASS({
         dt.setHours( dt.getHours() + 4 );
         return dt;
       },
+      javaFactory: `
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 4);
+        return cal.getTime();
+      `,
       section: 'basicInfo'
     },
     {

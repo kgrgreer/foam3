@@ -26,5 +26,5 @@ p({
   "saveHistory":false,
   "asyncAction":{
     "class":"net.nanopay.ticket.SudoTicketApprovalResponseAction"
-  }
+  },
 })
