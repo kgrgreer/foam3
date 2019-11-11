@@ -22,6 +22,19 @@ foam.CLASS({
       class: 'Boolean',
       name: 'afexEnabled',
       documentation: `Enable AFEX Service.`
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.meter.AdminAccessConfig',
+      name: 'adminAccessConfig',
+      documentation: `AdminAccessConfig object that stores user Ids for users that can keep admin access.`,
+      view: {
+        class: 'foam.u2.view.FObjectPropertyView',
+        writeView: { class: 'foam.u2.detail.SectionedDetailView' }
+      },
+      factory: function() {
+        return net.nanopay.meter.AdminAccessConfig.create();
+      }
     }
   ]
 });
