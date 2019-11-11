@@ -165,7 +165,7 @@ foam.CLASS({
                 .add(this.BACK_TO).addClass('sme').addClass('link')
                 .on('click', function() {
                   window.location.href = '#';
-                  self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create() });
+                  self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
                 })
               .end()
             .end()

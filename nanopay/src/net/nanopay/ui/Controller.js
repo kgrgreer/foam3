@@ -131,6 +131,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'loginVariables',
+      expression: function(client$userDAO) {
+        return {
+          dao_: client$userDAO || null,
+          imgPath: '',
+          group: 'basicUser'
+        };
+      }
+    },
     'privacyUrl',
     'termsUrl',
     {
@@ -292,26 +302,34 @@ foam.CLASS({
       // don't go to log in screen if going to sign up password screen
       if ( location.hash != null && location.hash === '#sign-up' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignUp.create({
+          self.stack.push({ class: 'foam.u2.view.LoginView',
+          mode_: 'SignUp',
+          topBarShow_: false,
+          param: {
             token_: searchparam.get('token'),
             email: searchparam.get('email'),
             disableEmail_: searchparam.has('email'),
             disableCompanyName_: searchparam.has('companyName'),
             organization: searchparam.get('companyName'),
-            countryChoices_: searchparam.get('countryChoicce')
-            })
-          });
+            countryChoices_: searchparam.get('countryChoicce'),
+            group_: 'basicUser'
+            }
+          }, self);
           self.loginSuccess$.sub(resolve);
         });
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create({
-          signUptoken_: searchparam.get('token'),
-          email: searchparam.get('email'),
-          disableEmail_: searchparam.has('email')
-          })
-        });
+        self.stack.push({ class: 'foam.u2.view.LoginView',
+          topBarShow_: false,
+          mode_: 'SignIn',
+          param: {
+            token_: searchparam.get('token'),
+            email: searchparam.get('email'),
+            disableEmail_: searchparam.has('email'),
+            group_: 'basicUser'
+            }
+          }, self);
         self.loginSuccess$.sub(resolve);
       });
     }

@@ -16,6 +16,7 @@ foam.CLASS({
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.model.SignUp',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
@@ -29,7 +30,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
-    'foam.u2.Element',
+    'foam.u2.Element'
   ],
 
   exports: [
@@ -202,6 +203,16 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'loginVariables',
+      expression: function(client$smeBusinessRegistrationDAO) {
+        return {
+          dao_: client$smeBusinessRegistrationDAO || null,
+          imgPath: 'images/sign_in_illustration.png',
+          group_: 'sme'
+        };
+      }
+    },
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
@@ -455,6 +466,7 @@ foam.CLASS({
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
+          this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
 
           if ( this.loginSuccess ) {
             this.findBalance();
@@ -496,16 +508,17 @@ foam.CLASS({
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
           view = {
             class: 'foam.u2.view.LoginView',
-            model: foam.nanos.u2.navigation.SignUp.create({
+            mode_: 'SignUp',
+            param: {
               email: searchParams.get('email'),
-              disableEmail: !! searchParams.get('email'),
-              signUpToken: searchParams.get('token'),
-              companyNameField: searchParams.has('companyName')
+              disableEmail_: !! searchParams.get('email'),
+              token_: searchParams.get('token'),
+              corganization: searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '',
-              disableCompanyName: searchParams.has('companyName'),
+                disableCompanyName_: searchParams.has('companyName'),
               choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
-            })
+            }
           };
         }
 
@@ -521,8 +534,13 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        if ( ! view ) view = { class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create() };
-        self.stack.push(view);
+        if ( ! view ) {
+          view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
+
+          // Moved this from SignInView to here, since it is Ablii specific
+          window.localStorage.setItem('setOnboardingWizardPush', true);
+        }
+        self.stack.push(view, self);
         self.loginSuccess$.sub(resolve);
       });
     },

@@ -228,7 +228,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         this.auth.logout().then(function(result) {
-          self.stack.push({ class: 'foam.u2.view.LoginView', model: foam.nanos.u2.navigation.SignIn.create() });
+          self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
         });
       }
     }
