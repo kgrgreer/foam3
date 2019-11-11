@@ -1,32 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.meter',
   name: 'UserDetailView',
-  extends: 'foam.u2.DetailView',
+  extends: 'foam.u2.detail.SectionedDetailView',
 
   requires: [
     'foam.nanos.auth.User'
   ],
 
-  css: `
-    ^ {
-      background-color: #fafafa;
-      border: 1px solid #e2e2e3;
-      border-radius: 4px;
-      margin-top: 8px;
-    }
-
-    ^ td {
-      padding: 8px 16px;
-    }
-
-    ^ .foam-u2-PropertyView-label {
-      font-weight: bold;
-    }
-  `,
-
   properties: [
     {
-      name: 'properties',
+      name: 'propertyWhitelist',
       factory: function() {
         return [
           this.User.ID,

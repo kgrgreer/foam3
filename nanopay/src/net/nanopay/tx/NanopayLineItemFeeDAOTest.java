@@ -64,7 +64,6 @@ public class NanopayLineItemFeeDAOTest
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
-      payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
     payee_ = (User) payee_.fclone();
@@ -149,7 +148,6 @@ public class NanopayLineItemFeeDAOTest
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
-      feeUser_.setBusinessAddress(businessAddress);
       feeUser_.setAddress(businessAddress);
     }
     feeUser_ = (User) feeUser_.fclone();

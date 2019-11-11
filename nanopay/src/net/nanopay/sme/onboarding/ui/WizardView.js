@@ -118,6 +118,9 @@ foam.CLASS({
       type: 'Boolean'
     }
   ],
+  messages: [
+    { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully.' }
+  ],
   reactions: [
     ['data', 'propertyChange', 'saveDraft']
   ],
@@ -160,7 +163,10 @@ foam.CLASS({
                 })
               .end()
               .start()
-                .tag(this.NEXT, { size: 'LARGE' })
+                .tag(this.NEXT, {
+                  size: 'LARGE',
+                  label$: self.currentIndex$.map((ci) => ci === 0 ? 'Get Started' : 'Continue')
+                })
                 .tag(this.SUBMIT, { size: 'LARGE' })
               .end()
             .end()
@@ -198,7 +204,7 @@ foam.CLASS({
             if ( user ) x.user.onboarded = user.onboarded;
             // Invalidate auth cache to register new permissions on group.
             this.auth.cache = {};
-            x.ctrl.notify('Business profile complete.');
+            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.stack.back();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);

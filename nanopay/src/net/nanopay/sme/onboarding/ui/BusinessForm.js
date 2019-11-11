@@ -197,7 +197,7 @@ foam.CLASS({
     //   postSet: function(o, n) {
     //     this.viewData.user.residenceOperated = n == 'Yes';
     //     if ( n ) {
-    //       this.viewData.user.address = this.viewData.user.businessAddress;
+    //       this.viewData.user.address = this.viewData.user.address;
     //     }
     //   }
     // },
@@ -348,15 +348,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        var rtn = this.viewData.user.businessAddress
-          ? this.viewData.user.businessAddress
+        var rtn = this.viewData.user.address
+          ? this.viewData.user.address
           : this.Address.create({});
         this.onDetach(rtn.regionId$.sub(this.checkQuebec));
         return rtn;
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
-        this.viewData.user.businessAddress = n;
+        this.viewData.user.address = n;
       }
     },
     {
@@ -364,10 +364,10 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Business phone number field.',
       factory: function() {
-        if ( this.viewData.user.businessPhone ) return this.viewData.user.businessPhone.number;
+        if ( this.viewData.user.phone ) return this.viewData.user.phone.number;
       },
       postSet: function(o, n) {
-        this.viewData.user.businessPhone.number = n;
+        this.viewData.user.phone.number = n;
       }
     },
     {

@@ -115,7 +115,7 @@ foam.CLASS({
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.businessName$).end()
             .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.businessPhone.number$).end()
+            .start('p').add(this.data.phone.number$).end()
             .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.website$).end()
             .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
@@ -130,15 +130,15 @@ foam.CLASS({
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
-              (this.data.businessAddress.suite
-                  ? this.data.businessAddress.suite + '-'
+              (this.data.address.suite
+                  ? this.data.address.suite + '-'
                   : '')
-              + this.data.businessAddress.streetNumber + ' '
-              + this.data.businessAddress.streetName + ', '
-              + this.data.businessAddress.city + ', '
-              + this.data.businessAddress.regionId + ', '
-              + this.data.businessAddress.countryId + ', '
-              + this.data.businessAddress.postalCode
+              + this.data.address.streetNumber + ' '
+              + this.data.address.streetName + ', '
+              + this.data.address.city + ', '
+              + this.data.address.regionId + ', '
+              + this.data.address.countryId + ', '
+              + this.data.address.postalCode
             ).addClass('addressDiv').end()
             .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
             .tag({

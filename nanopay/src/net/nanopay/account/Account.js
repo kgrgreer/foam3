@@ -28,7 +28,7 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.model.Currency'
+    'foam.core.Currency'
   ],
 
   searchColumns: [
@@ -126,7 +126,7 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
-      permissionRequired: true,
+      writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
     },
@@ -166,8 +166,9 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Currency',
+      of: 'foam.core.Unit',
       name: 'denomination',
+      targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
@@ -211,21 +212,13 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
+      unitPropName: 'denomination',
       name: 'balance',
       label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(_ => {
-          return obj.findBalance(this.__subSubContext__)
-            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
-            .then(curr => curr.format(balance != null ? balance : 0)))
-        }))
-      },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -237,7 +230,8 @@ foam.CLASS({
       tableWidth: 145
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
+      unitPropName: 'homeDenomination',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -246,25 +240,6 @@ foam.CLASS({
       `,
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        var self = this;
-
-        this.add(
-          obj.slot(homeDenomination => {
-            return Promise.all([
-              obj.denomination == homeDenomination ?
-                Promise.resolve(1) :
-                obj.fxService.getFXRate(obj.denomination, homeDenomination,
-                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
-              obj.findBalance(self.__subSubContext__),
-              self.__subSubContext__.currencyDAO.find(homeDenomination)
-            ]).then(arr => {
-              let [r, b, c] = arr;
-              return c.format(Math.floor((b || 0) * r))
-            })
-          })
-        );
-      },
       tableWidth: 145
     },
     {
@@ -297,6 +272,23 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      var self = this;
+
+      Promise.all([
+        this.denomination == this.homeDenomination ?
+          Promise.resolve(1) :
+          this.fxService.getFXRate(this.denomination, this.homeDenomination,
+            0, 1, 'BUY', null, this.user.id, 'nanopay').then(r => r.rate),
+        this.findBalance(this.__subContext__),
+        this.__subContext__.currencyDAO.find(this.homeDenomination)
+      ]).then(arr => {
+        let [r, b, c] = arr;
+        self.homeBalance = Math.floor((b || 0) * r);
+      });
+    },
     {
       name: 'toSummary',
       documentation: `
@@ -304,8 +296,7 @@ foam.CLASS({
         a chosen property rather than the first alphabetical string property. In this
         case, we are using the account name.
       `,
-      code: function(x) {
-        var self = this;
+      code: function() {
         return this.name;
       },
     },

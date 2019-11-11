@@ -48,12 +48,7 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'nextInvoiceDate',
-      tableCellFormatter: function(date) {
-        if ( date ) {
-          this.add(date.toISOString().substring(0,10));
-        }
-      }
+      name: 'nextInvoiceDate'
     },
     {
       class: 'Double',

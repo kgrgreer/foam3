@@ -2,13 +2,16 @@ p({"class":"foam.nanos.boot.NSpec", "name":"localBalanceDAO",                   
 p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localAccountDAO",
   "lazy":false,
   "serviceScript":
   """
     import net.nanopay.account.Account;
     foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER}); 
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
@@ -26,6 +29,7 @@ p({
       .build();
     afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, afexba);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
+    rdba.setUseBMO(true);
     eodbapc = new net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO.Builder(x)
       .setDelegate(rdba)
       .build();
@@ -68,6 +72,14 @@ p({
       .setInnerDAO(AAD)
       .setAuthorize(false)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
+
+      // These decorators are present on localAccountDAO.
+      .setDeletedAware(false)
+      .setCreatedAware(false)
+      .setCreatedByAware(false)
+      .setLastModifiedAware(false)
+      .setLastModifiedByAware(false)
+
       .build();
   """,
   "client":
@@ -98,9 +110,7 @@ p({
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
       .build();
-
-   // return new foam.dao.PMDAO(x, 
-     // new foam.dao.AuthenticatedDAO(\"debtAccountDAO\", true, x.get(\"localDebtAccountDAO\")));
   """,
   "client":"{\"of\":\"net.nanopay.account.DebtAccount\"}"
 })
+

@@ -85,16 +85,17 @@ foam.CLASS({
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
         quote.addPlan(t);
-      } else if ( destinationAccount instanceof CABankAccount &&
-        sourceAccount instanceof DigitalAccount ) {
-        
+      } else if ( sourceAccount instanceof DigitalAccount &&
+                  destinationAccount instanceof CABankAccount &&
+                  sourceAccount.getOwner() == destinationAccount.getOwner() ) {
+      
         if ( ! useAlternaAsPaymentProvider(x, (BankAccount) destinationAccount) ) return getDelegate().put_(x, obj);
-        
+
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
         }
-        AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
+        Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);

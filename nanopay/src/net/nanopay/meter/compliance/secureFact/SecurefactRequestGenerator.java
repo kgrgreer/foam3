@@ -31,7 +31,7 @@ public class SecurefactRequestGenerator {
     request.setSearchType("name");
     request.setEntityName(business.getOrganization());
 
-    Address address = business.getBusinessAddress();
+    Address address = business.getAddress();
     if ( address == null
       || ! address.getCountryId().equals("CA")
     ) {

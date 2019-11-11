@@ -108,7 +108,7 @@ public class ContactAuthorizationTest
    */
   private void resetTestData(X x) {
     DAO contactDAO = (DAO) x.get("contactDAO");
-    contactDAO.removeAll_(x, 0, Long.MAX_VALUE, null, null);
+    contactDAO.removeAll();
   }
 
   private void Put_Create(X x) {

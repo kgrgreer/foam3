@@ -78,8 +78,8 @@ foam.CLASS({
           ));
 
         // Clone object and append current dateTime to its DownloadedAt array prop
-        FObject clonedRequest = request.fclone();
-        ArrayList cloneDownloadedAt =  request.getDownloadedAt();
+        ViewPIIRequest clonedRequest = (ViewPIIRequest) request.fclone();
+        ArrayList cloneDownloadedAt =  clonedRequest.getDownloadedAt();
         cloneDownloadedAt.add(new Date());
 
         // Update the clonedRequest and put to DAO

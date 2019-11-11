@@ -32,7 +32,6 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
 
     ArraySink sink = (ArraySink) afexBeneficiaryDAO.where(EQ(AFEXBeneficiary.STATUS, "Pending")).select(new ArraySink());
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
-    System.out.println("Pending beneficiaries size is: " + pendingBeneficiaries.size());
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
       AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
       if ( afexBusiness != null ) {
@@ -40,7 +39,7 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
         if ( beneficiaryResponse != null ) {
           if ( beneficiaryResponse.getStatus().equals("Approved") ) {
             AFEXBeneficiary obj = (AFEXBeneficiary) beneficiary.fclone();
-            obj.setStatus("Active");
+            obj.setStatus(beneficiaryResponse.getStatus());
             afexBeneficiaryDAO.put(obj);
 
             // find all pending AFEX compliance transactions and complete them

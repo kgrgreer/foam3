@@ -64,7 +64,6 @@ public class NanopayTransactionFeeDAOTest
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
-      payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
     payee_ = (User) payee_.fclone();

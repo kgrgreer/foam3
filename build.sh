@@ -508,12 +508,30 @@ function usage {
 }
 
 # Print Nanopay text (very important, otherwise nothing will work)
-echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
-echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
-echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
-echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
-echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
-echo ""
+if [ $(date +%m) -eq 10 ] && [ $(date +%d) -gt 25 ]; then
+  ostart="\033[38;5;214m"
+  echo -e " $ostart                                 #'\""
+  echo -e "  _ __   __ _ _ __   ___  _ __ @ @ @ @_   _ "
+  echo -e " | '_ \\ / _\` | '_ \\ / _ \\| '_@ /\\   /\\ @ | |"
+  echo -e " | | | | (_| | | | | (_) | |@     ^     @| |"
+  echo -e " |_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
+  echo -e " (c) nanopay Corporation |_| @ @ @ @ @ @__/\033[0m"
+  echo ""
+elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 11 ]; then
+  echo -e "\033[34;1m  _ __   __ _ _ __   \033[31;1m.-.\033[0m  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\\\\033[31;1m.\\   /.\033[0m '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | |\033[31;1m:\033[0m  (O)  \033[31;1m:\033[0m|_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_\033[31;1m'/   \\'\033[0m .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[0m|_|          |___/  \033[0m"
+  echo ""
+else
+  echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
+  echo ""
+fi
 
 ############################
 
@@ -582,7 +600,21 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
            ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
-           echo "💧 Initializing Liquid Environment 💧"
+
+           echo ""                             
+           echo -e "\033[34;1m   (                       (     \033[0m"    
+           echo -e "\033[34;1m   )\ (     (     (   (    )\ )  \033[0m"
+           echo -e "\033[34;1m  ((_))\  ( )\   ))\  )\  (()/(  \033[0m"
+           echo -e "\033[34;1m   \033[96;1m_\033[0m\033[34;1m ((_) )(( ) /((_)((_)  ((\033[96;1m_\033[0m\033[34;1m)) \033[0m\033[0m"
+           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m" 
+           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m" 
+           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m" 
+           echo -e "\033[96;1m            |_|                  \033[0m"
+           echo ""
+           echo "" 
+           echo -e "💧 Initializing Liquid Environment 💧"
+           echo -e "\033[41;1m IMPORTANT: BE SURE TO SET ENABLED TO TRUE FOR BOTH: \033[0m"
+           echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;

@@ -173,7 +173,7 @@ foam.CLASS({
           .tag({
             class: 'foam.nanos.auth.ProfilePictureView',
             ProfilePictureImage$: this.transactionUser.profilePicture$,
-            placeholderImage: 'images/merchant/ic-placeholder.png',
+            placeholderImage: 'images/ic-placeholder.png',
             uploadHidden: true,
             boxHidden: true
           })

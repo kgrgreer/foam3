@@ -94,7 +94,7 @@ public class IdentityMindRequestGenerator {
       request.setAln(prepareString(user.getLastName()));
     }
 
-    Address address = business.getBusinessAddress();
+    Address address = business.getAddress();
     if ( address != null ) {
       request.setAsn(prepareString(address.getStreetNumber(), address.getStreetName(), address.getSuite()));
       request.setAc(prepareString(address.getCity()));
@@ -102,7 +102,7 @@ public class IdentityMindRequestGenerator {
       request.setAs(prepareString(address.getRegionId()));
       request.setAz(prepareString(address.getPostalCode()));
     }
-    Phone phone = business.getBusinessPhone();
+    Phone phone = business.getPhone();
     if ( phone != null ) {
       request.setPhn(prepareString(phone.getNumber()));
     }
@@ -152,7 +152,7 @@ public class IdentityMindRequestGenerator {
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
     request.setBfn(prepareString(sender.getFirstName()));
     request.setBln(prepareString(sender.getLastName()));
-    Address senderAddress = sender.getBusinessAddress();
+    Address senderAddress = sender.getAddress();
     if ( senderAddress != null ) {
       request.setBsn(prepareString(senderAddress.getStreetNumber(), senderAddress.getStreetName(), senderAddress.getSuite()));
       request.setBc(prepareString(senderAddress.getCity()));
@@ -175,7 +175,7 @@ public class IdentityMindRequestGenerator {
       request.setDemail(receiver.getEmail());
       request.setSfn(prepareString(receiver.getFirstName()));
       request.setSln(prepareString(receiver.getLastName()));
-      Address receiverAddress = receiver.getBusinessAddress();
+      Address receiverAddress = receiver.getAddress();
       if (receiverAddress != null) {
         request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
         request.setSc(prepareString(receiverAddress.getCity()));

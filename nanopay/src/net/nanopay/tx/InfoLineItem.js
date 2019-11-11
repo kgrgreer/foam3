@@ -37,6 +37,10 @@ foam.CLASS({
       javaCode: `
         return new Transfer[0];
       `
-    }
+    },
+    
+    function toSummary() {
+      return this.name+ " : "+this.note;
+    },
   ]
 });

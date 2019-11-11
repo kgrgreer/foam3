@@ -62,7 +62,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PROVINCE_LABEL', message: 'Province/State' },
-    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' }
+    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
+    { name: 'PLACE_HOLDER', message: 'Please select...' }
   ],
 
   methods: [
@@ -74,15 +75,7 @@ foam.CLASS({
       var choices = this.data$.dot('countryId').map(function(countryId) {
         if ( countryId == 'US' ) {
           return self.regionDAO.where(
-            self.AND(
-              self.EQ(self.Region.COUNTRY_ID, countryId || ''),
-              self.NOT(
-                self.IN(self.Region.NAME, ['Alaska', 'Hawaii', 'Utah', 'South Dakota', 'Iowa',
-                  'Arkansas', 'Louisiana', 'Mississippi', 'South Carolina',
-                  'West Virginia', 'Ohio', 'Michigan', 'Rhode Island', 'Vermont']
-                )
-              )
-            )
+            self.EQ(self.Region.COUNTRY_ID, countryId || '')
           );
         } else {
           return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
@@ -100,7 +93,7 @@ foam.CLASS({
                 prop: this.Address.COUNTRY_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Select...',
+                  placeholder: this.PLACE_HOLDER,
                   dao: this.customCountryDAO,
                   objToChoice: function(a) {
                     return [a.id, a.name];
@@ -116,7 +109,7 @@ foam.CLASS({
                 prop: this.Address.REGION_ID.clone().copyFrom({
                   view: {
                     class: 'foam.u2.view.ChoiceView',
-                    placeholder: 'Select...',
+                    placeholder: this.PLACE_HOLDER,
                     objToChoice: function(region) {
                       return [region.id, region.name];
                     },

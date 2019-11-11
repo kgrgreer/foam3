@@ -274,6 +274,9 @@ foam.CLASS({
   methods: [
     function init() {
       this.isLoading = false;
+      this.loadingSpin.onDetach(() => {
+        this.loadingSpin = this.LoadingSpinner.create({ isHidden: true });
+      });
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {

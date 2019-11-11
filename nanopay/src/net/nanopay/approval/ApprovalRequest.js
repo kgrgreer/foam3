@@ -63,7 +63,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Object',
+      javaType: 'Object',
       name: 'objId',
       visibility: 'RO',
       documentation: 'id of the object that needs approval.',
@@ -186,9 +187,12 @@ foam.CLASS({
       class: 'String',
       name: 'refObj',
       transient: true,
-      expression: function(daoKey, objId){
+      expression: function(daoKey, objId) {
         return daoKey + ':' + objId;
       },
+      javaGetter: `
+        return getDaoKey() + ": " + getObjId();
+      `,
       hidden: true
     }
   ],

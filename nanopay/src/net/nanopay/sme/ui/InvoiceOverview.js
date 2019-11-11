@@ -467,6 +467,8 @@ foam.CLASS({
 
     function initE() {
       var self = this;
+      var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
+
       this
         .addClass(this.myClass())
         .start()
@@ -568,8 +570,8 @@ foam.CLASS({
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
                     .add(this.exchangeRateInfo$)
                   .end()
-                  // Only show fee when it is a payable
-                  .start().addClass('invoice-text').show(this.isPayable)
+                  // Only show fee when it is a payable and not a billing invoice
+                  .start().addClass('invoice-text').show(this.isPayable && ! isBillingInvoice)
                     .start().addClass('table-content').add(this.PAYMENT_FEE).end()
                     .add(this.fee$)
                   .end()
@@ -661,16 +663,10 @@ foam.CLASS({
     },
 
     function saveAsVoid() {
-      if ( ! this.isVoidable ) return;
-      this.invoice.paymentMethod = this.PaymentStatus.VOID;
-      this.invoiceDAO.put(this.invoice).then(
-        (_) => {
-          this.isVoidable = false;
-          this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_SUCCESS}`);
-        }
-      ).catch( (_) => {
-        this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_ERROR}`);
-      });
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+        invoice: this.invoice
+      }));
     },
 
     function markAsComplete() {

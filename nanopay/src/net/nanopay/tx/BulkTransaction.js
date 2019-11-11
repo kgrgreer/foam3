@@ -21,7 +21,7 @@ foam.CLASS({
         When true, planners will add a Cash-Out Transaction,
         rather than leave Cash-Out to be dealt with via Liquidity.
       `,
-      value: true
+      value: false
     }
   ]
 });

@@ -27,7 +27,7 @@ foam.CLASS({
         if ( ! (obj instanceof COTransaction ) )
           return;
         Transaction oldTxn = (Transaction) oldObj;
-        Transaction txn = (Transaction) obj;
+        COTransaction txn = (COTransaction) obj;
         if( ( txn.getStatus() == TransactionStatus.DECLINED && oldTxn != null &&
         ( oldTxn.getStatus() == TransactionStatus.SENT || oldTxn.getStatus() == TransactionStatus.COMPLETED) ) ||
         ( txn.getStatus() == TransactionStatus.CANCELLED && oldTxn != null &&
@@ -38,7 +38,7 @@ foam.CLASS({
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
                 .setDestinationAccount(txn.getSourceAccount())
-                .setSourceAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
+                .setSourceAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
                 .setIsQuoted(true)

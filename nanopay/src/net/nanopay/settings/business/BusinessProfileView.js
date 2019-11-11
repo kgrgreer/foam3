@@ -195,7 +195,7 @@ foam.CLASS({
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Business Phone').addClass('labelTitle').end()
-                .start().add(this.user.businessPhone.number).addClass('labelContent').end()
+                .start().add(this.user.phone.number).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
                 .start().add('Business Registration Number').addClass('labelTitle').end()
@@ -226,22 +226,22 @@ foam.CLASS({
               .start().addClass('labelDiv')
                 .start().add('Business Address').addClass('labelTitle').end()
                 .startContext()
-                  .start().hide(this.user.businessAddress.structured$)
-                    .start().add(this.user.businessAddress.address1).addClass('labelContent').end()
-                    .start().add(this.user.businessAddress.address2).addClass('labelContent').end()
+                  .start().hide(this.user.address.structured$)
+                    .start().add(this.user.address.address1).addClass('labelContent').end()
+                    .start().add(this.user.address.address2).addClass('labelContent').end()
                   .end()
-                  .start().show(this.user.businessAddress.structured$)
-                    .start().add(this.user.businessAddress.streetNumber +" "+this.user.businessAddress.streetName).addClass('labelContent').end()
-                    .start().add(this.user.businessAddress.suite).addClass('labelContent').end()
+                  .start().show(this.user.address.structured$)
+                    .start().add(this.user.address.streetNumber + ' ' +this.user.address.streetName).addClass('labelContent').end()
+                    .start().add(this.user.address.suite).addClass('labelContent').end()
                   .end()
                 .endContext()
-                .start().add(this.user.businessAddress.city + ", "+this.user.businessAddress.regionId).addClass('labelContent').end()
-                .start().add(this.user.businessAddress.countryId).addClass('labelContent').end()
-                .start().add(this.user.businessAddress.postalCode).addClass('labelContent').end()
+                .start().add(this.user.address.city + ', ' +this.user.address.regionId).addClass('labelContent').end()
+                .start().add(this.user.address.countryId).addClass('labelContent').end()
+                .start().add(this.user.address.postalCode).addClass('labelContent').end()
               .end()
             .end()
           .end()
-        .end()
+        .end();
         this
         .addClass(this.myClass())
         .callIf( this.user.type !== 'Merchant', function() {
@@ -252,7 +252,7 @@ foam.CLASS({
         .callIf( this.user.type === 'Merchant', function() {
           this.tag({ class: 'net.nanopay.settings.business.BusinessHoursView' });
         })
-      .end()
+      .end();
     }
   ],
 

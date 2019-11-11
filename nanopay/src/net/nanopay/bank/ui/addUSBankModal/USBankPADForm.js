@@ -8,7 +8,8 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.PadCapture',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.bank.BankAccountStatus'
   ],
 
   exports: [
@@ -99,12 +100,13 @@ foam.CLASS({
     { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
     { name: 'ERROR_FNUMBER', message: 'First name cannot contain numbers.' },
     { name: 'ERROR_LNUMBER', message: 'Last name cannot contain numbers.' },
-    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
+    { name: 'SUCCESS_CHECK', message: 'We’re reviewing your bank account, which can take 1-2 business days. You will be notified by email once verified.' }
   ],
 
   methods: [
     function init() {
-      this.SUPER();
+      this.SUPER(); 
       if ( this.plaidResponseItem != null ) {
         this.viewData.bankAccounts = [this.plaidResponseItem.account];
       } else {
@@ -223,12 +225,11 @@ foam.CLASS({
         if ( this.plaidResponseItem != null ) {
           try {
             let response = await this.plaidService.saveAccount(null, this.plaidResponseItem);
-            if ( response.plaidError !== null ) {
-              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
-              this.closeDialog();
-            } else {
+            if ( response.plaidError ) {
               let message = error.display_message !== '' ? error.display_message : error.error_code;
               this.ctrl.add(this.NotificationMessage.create({ message: message, type: 'error' }));
+              this.closeDialog();
+              return;
             }
           } catch (e) {
             this.ctrl.add(this.NotificationMessage.create({ message: e.message, type: 'error' }));
@@ -245,7 +246,9 @@ foam.CLASS({
         this.isConnecting = false;
       }
 
-      this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+      const successMessage = this.bank.status === this.BankAccountStatus.UNVERIFIED ? this.SUCCESS_CHECK : this.SUCCESS;
+      this.ctrl.add(this.NotificationMessage.create({ message: successMessage}));
+
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
     }

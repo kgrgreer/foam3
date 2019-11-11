@@ -21,7 +21,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'foam.u2.PopupView',
   ],
 
@@ -115,7 +115,7 @@ foam.CLASS({
     'optionsBtn_',
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Currency',
+      of: 'foam.core.Currency',
       name: 'lastCurrency'
     }
   ],
@@ -164,21 +164,22 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.currencyDAO.where(
-            this.TRUE), function(c) {
-              if ( c.flagImage != null ) {
-                return self.E()
-                  .start('div').start('img')
-                    .attrs({ src: c.flagImage })
-                    .addClass('flag').end().add(c.id)
-                    .on('click', function() {
-                      self.lastCurrency = c;
-                      self.homeDenomination = c.id;
+          .select(self.currencyDAO.where(
+              self.IN(net.nanopay.model.Currency.ALPHABETIC_CODE, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
+            ), function(c) {
+                if ( c.flagImage != null ) {
+                  return self.E()
+                    .start('div').start('img')
+                      .attrs({ src: c.flagImage })
+                      .addClass('flag').end().add(c.id)
+                      .on('click', function() {
+                        self.lastCurrency = c;
+                        self.homeDenomination = c.id;
 
-                      // TODO: Figure out a better way to store user preferences
-                      localStorage.setItem('homeDenomination', c.id);
-                    });
-              }
+                        // TODO: Figure out a better way to store user preferences
+                        localStorage.setItem('homeDenomination', c.id);
+                      });
+                }
             })
           .end();
         self.optionsBtn_.add(self.optionPopup_);

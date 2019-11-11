@@ -26,14 +26,22 @@ foam.CLASS({
         BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Person");
+          Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Beneficial Owner");
+          String filterRegion = "";
+
+          if ( beneficialOwner.getAddress().getCountryId().equals("CA") ) {
+            filterRegion = "Canada,CANA,CA,CAN";
+          } else if ( beneficialOwner.getAddress().getCountryId().equals("US") ) {
+            filterRegion = "United States,USA,US";
+          }
+
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(beneficialOwner.getId())
             .setFirstName(beneficialOwner.getFirstName())
             .setSurName(beneficialOwner.getLastName())
             .setFilterLRDFrom(filterLRDFrom)
             .setDateOfBirth(beneficialOwner.getBirthday())
-            .setFilterRegion(beneficialOwner.getAddress().getCountryId())
+            .setFilterRegion(filterRegion)
             .build();
 
           DowJonesResponse response = dowJonesService.beneficialOwnerNameSearch(x, searchData);
@@ -45,7 +53,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
-                    .setObjId(Long.toString(beneficialOwner.getId()))
+                    .setObjId(beneficialOwner.getId())
                     .setDaoKey("beneficialOwnerDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")

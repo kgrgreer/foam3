@@ -9,6 +9,7 @@ import foam.mlang.MLang;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.model.Business;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.DigitalTransaction;
@@ -24,8 +25,8 @@ import java.util.HashMap;
 // Cash-In, Digital, Cash-Out
 // By Account per User
 // Calculate for 'last' month by default
-public class ReportTransaction { 
-  
+public class ReportTransaction {
+
   // Create the transaction summary report
   public String[] createReport(X x, Date startDate, Date endDate) {
 
@@ -61,13 +62,13 @@ public class ReportTransaction {
     DAO accountDAO = (DAO) x.get("accountDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
-    // per user, get all 
+    // per user, get all
     DAO userDAO = (DAO) x.get("userDAO");
     List users = ((ArraySink) userDAO.where(
       MLang.AND(new Predicate[] {
         MLang.INSTANCE_OF(User.class),
         MLang.NOT(MLang.INSTANCE_OF(Contact.class)),
-        MLang.EQ(User.ONBOARDED, true)
+        MLang.EQ(Business.ONBOARDED, true)
       })
     ).select(new ArraySink())).getArray();
 
@@ -178,7 +179,7 @@ public class ReportTransaction {
           .append(user.getEmail()).append(COMMA_SEPARATOR)
           .append(user.getId()).append(COMMA_SEPARATOR)
           .append(totalTransactions);
-          
+
         // Go through all statuses
         for (TransactionStatus status : TransactionStatus.values())
         {

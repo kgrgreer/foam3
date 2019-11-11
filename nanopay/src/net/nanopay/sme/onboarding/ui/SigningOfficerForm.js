@@ -375,7 +375,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isCanadian',
       expression: function(viewData) {
-        return foam.util.equals(viewData.user.businessAddress.countryId, 'CA');
+        return foam.util.equals(viewData.user.address.countryId, 'CA');
       }
     },
     {
