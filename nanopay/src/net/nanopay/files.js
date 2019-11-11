@@ -376,6 +376,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/HistoricStatus' },
   { name: 'net/nanopay/tx/DVPTransaction' },
   { name: 'net/nanopay/tx/DVPplanner' },
+  { name: 'net/nanopay/tx/FOPplanner' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
