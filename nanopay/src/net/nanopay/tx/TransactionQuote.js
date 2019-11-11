@@ -40,7 +40,19 @@ foam.CLASS({
       name: 'destinationAccount',
       networkTransient: true,
       documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
-    }
+    },
+    {
+      class: 'String',
+      name: 'sourceUnit',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
+    {
+      class: 'String',
+      name: 'destinationUnit',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
   ],
 
   methods: [
