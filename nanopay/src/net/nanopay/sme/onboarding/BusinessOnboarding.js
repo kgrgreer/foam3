@@ -921,6 +921,7 @@ foam.CLASS({
           this.publiclyTraded = false;
         } else if ( this.amountOfOwners === 0 ) {
           this.publiclyTraded = true;
+          this.userOwnsPercent = false;
         };
       },
       validationPredicates: [
