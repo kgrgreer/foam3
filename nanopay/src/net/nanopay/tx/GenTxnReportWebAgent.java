@@ -7,17 +7,21 @@ import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
 import net.nanopay.meter.reports.AbstractReport;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
+
+import static foam.mlang.MLang.*;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
@@ -30,9 +34,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
 
-    String downloadName = "txnReport.csv";
+    String fileName = "txnReport.csv";
     response.setContentType("text/csv");
-    response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
+    response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
 
     SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
 
@@ -50,7 +54,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     }
 
     try {
-      OutputStream outputStream = response.getOutputStream();
+      PrintWriter writer = response.getWriter();
       String titleString = this.buildCSVLine(
         11,
         "Transaction ID",
@@ -59,20 +63,32 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "Type",
         "Payee ID",
         "Payer iD",
-        "Payment Amount",
-        "Payment Currency",
+        "Amount",
+        "Currency",
         "Fee",
         "Fee Currency",
         "Status"
       );
 
-      outputStream.write(titleString.getBytes());
+      writer.write(titleString);
 
-      List<Transaction> transactionList = ((ArraySink) txnDAO.select(new ArraySink())).getArray();
+      long ciAmountCAD = 0;
+      long coAmountCAD = 0;
+
+      List<Transaction> transactionList = ((ArraySink) txnDAO
+        .where(
+          OR(
+            INSTANCE_OF(CITransaction.class),
+            INSTANCE_OF(COTransaction.class)
+          )
+        )
+        .select(new ArraySink())).getArray();
+
       for ( Transaction txn : transactionList ) {
         HistoricStatus[] statusHistoryArr = txn.getStatusHistory();
         for ( int j = statusHistoryArr.length - 1; j >= 0; j-- ) {
-          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
+          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) 
+            && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
 
@@ -85,19 +101,62 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
               StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
-              currency.getPrimaryKey().toString(),
+              currency.getId(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
-              currency.getPrimaryKey().toString(),
+              currency.getId(),
               txn.getStatus().toString()
             );
 
-            outputStream.write(bodyString.getBytes());
+            writer.write(bodyString);
+
+            if (currency.getId().equals("CAD")) {
+              if (txn instanceof CITransaction) {
+                ciAmountCAD = ciAmountCAD + txn.getAmount();
+              } else if (txn instanceof COTransaction) {
+                coAmountCAD = coAmountCAD + txn.getAmount();
+              }
+            }
             break;
           }
         }
       }
-      outputStream.flush();
-      outputStream.close();
+
+      Currency currencyCAD = (Currency) currencyDAO.find("CAD");
+
+      String sumCIString = this.buildCSVLine(
+        11,
+        "",
+        "",
+        "",
+        "Total CI Amount",
+        "",
+        "",
+        StringEscapeUtils.escapeCsv(currencyCAD.format(ciAmountCAD)),
+        currencyCAD.getId(),
+        "",
+        "",
+        ""
+      );
+
+      String sumCOString = this.buildCSVLine(
+        11,
+        "",
+        "",
+        "",
+        "Total CO Amount",
+        "",
+        "",
+        StringEscapeUtils.escapeCsv(currencyCAD.format(coAmountCAD)),
+        currencyCAD.getId(),
+        "",
+        "",
+        ""
+      );
+
+      writer.write(sumCIString);
+      writer.write(sumCOString);
+      writer.flush();
+      writer.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
