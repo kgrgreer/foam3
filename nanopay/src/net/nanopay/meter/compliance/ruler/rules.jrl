@@ -229,7 +229,7 @@ p({
   "ruleGroup": "compliance",
   "documentation": "Check compliance transaction via IdentityMind",
   "daoKey": "localTransactionDAO",
-  "operation": 0,
+  "operation": 3,
   "after": true,
   "predicate": {
     "class": "foam.mlang.predicate.And",
@@ -241,11 +241,16 @@ p({
         }
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.tx.ComplianceTransaction"
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction",
-        "strict": true
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal": 0
+        }
       }
     ]
   },
@@ -301,10 +306,16 @@ p({
         "class": "foam.nanos.ruler.predicate.NewEqOld"
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.tx.ComplianceTransaction"
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal": 0
+        }
       }
     ]
   },
