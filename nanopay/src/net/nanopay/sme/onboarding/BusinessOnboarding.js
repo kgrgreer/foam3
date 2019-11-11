@@ -917,8 +917,13 @@ foam.CLASS({
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = true;
-        this.userOwnsPercent = true;
+        if ( this.amountOfOwners > 0 ) {
+          this.publiclyTraded = false;
+          this.userOwnsPercent = true;
+        } else if ( this.amountOfOwners === 0 ) {
+          this.publiclyTraded = true;
+          this.userOwnsPercent = false;
+        };
       },
       validationPredicates: [
         {
@@ -958,14 +963,7 @@ foam.CLASS({
         this.clearProperty('ownershipPercent');
       },
       visibilityExpression: function(amountOfOwners) {
-        if ( amountOfOwners > 0 ) {
-          this.userOwnsPercent$ = true;
-          return foam.u2.Visibility.RO;
-        } else {
-          this.userOwnsPercent$ = false;
-          return foam.u2.Visibility.RO;
-        }
-
+        return amountOfOwners > 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -978,14 +976,7 @@ foam.CLASS({
         if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
-
-        if ( amountOfOwners == 0 ) {
-          this.publiclyTraded$ = true;
-          return foam.u2.Visibility.RO;
-        } else {
-          this.publiclyTraded$ = false;
-          return foam.u2.Visibility.RO;
-        }
+        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
