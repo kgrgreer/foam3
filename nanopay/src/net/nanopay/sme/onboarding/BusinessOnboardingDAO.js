@@ -69,6 +69,7 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());

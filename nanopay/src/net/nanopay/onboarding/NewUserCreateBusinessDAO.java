@@ -2,6 +2,7 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Address;
@@ -15,6 +16,9 @@ import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -34,6 +38,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
   public DAO agentJunctionDAO_;
   public DAO tokenDAO_;
   public DAO invitationDAO_;
+  public DAO businessOnboardingDAO_;
+  public DAO uSBusinessOnboardingDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -41,6 +47,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
     tokenDAO_ = (DAO) x.get("localTokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
+    businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");
+    uSBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
   }
 
   @Override
@@ -134,6 +142,44 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             ).fclone();
           invitation.setStatus(InvitationStatus.COMPLETED);
           invitationDAO_.inX(businessContext).put(invitation);
+
+          // get onboarding object
+          ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO_.where(
+            AND(
+              EQ(BusinessOnboarding.BUSINESS_ID, businessId),
+              EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+            )).select(new ArraySink());
+          uSBusinessOnboardingDAO_.where(
+            AND(
+              EQ(USBusinessOnboarding.BUSINESS_ID, businessId),
+              EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+            )).select(businessOnBoardingSink);
+
+          java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
+
+          if ( onboardings.size() > 0 ) {
+            Object onboarding =  onboardings.get(0);
+
+            if ( onboarding instanceof BusinessOnboarding ) {
+              BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
+
+              businessOnboardingClone.setSigningOfficer(true);
+              businessOnboardingClone.setSigningOfficerEmail("");
+              businessOnboardingClone.setUserId(user.getId());
+              businessOnboardingClone.setBusinessId(businessId);
+
+              businessOnboardingDAO_.put_(sysContext, businessOnboardingClone);
+            } else if ( onboarding instanceof USBusinessOnboarding ) {
+              USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
+
+              uSBusinessOnboardingClone.setSigningOfficer(true);
+              uSBusinessOnboardingClone.setSigningOfficerEmail("");
+              uSBusinessOnboardingClone.setUserId(user.getId());
+              uSBusinessOnboardingClone.setBusinessId(businessId);
+
+              uSBusinessOnboardingDAO_.put_(sysContext, uSBusinessOnboardingClone);
+            }
+          }
 
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create(external)/update(internal) the user and

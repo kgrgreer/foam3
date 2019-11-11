@@ -1,6 +1,7 @@
 package net.nanopay.business;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
@@ -11,6 +12,9 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
@@ -26,6 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
 
 /**
  * When an existing user is invited to join another business, they can click a
@@ -35,6 +40,8 @@ import static foam.mlang.MLang.EQ;
 public class JoinBusinessWebAgent implements WebAgent {
 
   public EnvironmentConfiguration config_;
+  public DAO businessOnboardingDAO_;
+  public DAO uSBusinessOnboardingDAO_;
 
   @Override
   public void execute(X x) {
@@ -46,6 +53,9 @@ public class JoinBusinessWebAgent implements WebAgent {
     String tokenUUID = request.getParameter("token");
     String redirect = request.getParameter("redirect");
     User user = null;
+
+    businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");;
+    uSBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
 
     try {
       // Look up the token.
@@ -77,6 +87,47 @@ public class JoinBusinessWebAgent implements WebAgent {
 
       // Process the token.
       tokenService.processToken(x, user, tokenUUID);
+
+
+      // get onboarding object
+      ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO_.where(
+        AND(
+          EQ( BusinessOnboarding.BUSINESS_ID, businessId),
+          EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+          EQ(BusinessOnboarding.SIGNING_OFFICER, false)
+        )).select(new ArraySink());
+      uSBusinessOnboardingDAO_.where(
+        AND(
+          EQ(USBusinessOnboarding.BUSINESS_ID, businessId),
+          EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+          EQ(USBusinessOnboarding.SIGNING_OFFICER, false)
+        )).select(businessOnBoardingSink);
+
+      java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
+
+      if ( onboardings.size() > 0 ) {
+        Object onboarding = onboardings.get(0);
+
+        if ( onboarding instanceof BusinessOnboarding ) {
+          BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
+
+          businessOnboardingClone.setSigningOfficer(true);
+          businessOnboardingClone.setSigningOfficerEmail("");
+          businessOnboardingClone.setUserId(token.getUserId());
+          businessOnboardingClone.setBusinessId(businessId);
+
+          businessOnboardingDAO_.put_(x, businessOnboardingClone);
+        } else if ( onboarding instanceof USBusinessOnboarding ) {
+          USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
+
+          uSBusinessOnboardingClone.setSigningOfficer(true);
+          uSBusinessOnboardingClone.setSigningOfficerEmail("");
+          uSBusinessOnboardingClone.setUserId(token.getUserId());
+          uSBusinessOnboardingClone.setBusinessId(businessId);
+
+          uSBusinessOnboardingDAO_.put_(x, uSBusinessOnboardingClone);
+        }
+      }
     } catch (Throwable t) {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
