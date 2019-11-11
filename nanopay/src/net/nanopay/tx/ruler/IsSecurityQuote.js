@@ -23,9 +23,10 @@ foam.CLASS({
         TransactionQuote tq = (TransactionQuote) nu;
 
         if ( tq.getSourceAccount() instanceof SecurityAccount &&
-          tq.getDestinationAccount() instanceof SecurityAccount ) return false;
+          tq.getDestinationAccount() instanceof SecurityAccount ) 
+          return true;
 
-        return true;
+        return false;
 
       `
     }
