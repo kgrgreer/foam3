@@ -29,7 +29,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'org.apache.commons.io.FileUtils',
     'org.apache.commons.io.IOUtils',
     'static foam.mlang.MLang.*',

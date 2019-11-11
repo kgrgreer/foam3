@@ -42,6 +42,10 @@ public class SignatureVerificationBenchmark
   }
 
   @Override
+  public void teardown(X x, java.util.Map stats) {
+  }
+
+  @Override
   public void execute(X x) {
     try {
       // verify signatures using public key and signature generated in setup

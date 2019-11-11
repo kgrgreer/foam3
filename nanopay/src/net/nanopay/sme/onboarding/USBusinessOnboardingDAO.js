@@ -80,6 +80,7 @@ foam.CLASS({
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+        user = (User) user.fclone();
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
@@ -101,6 +102,7 @@ foam.CLASS({
           // Update the business because the put to signingOfficerJunctionDAO
           // will have updated the email property of the business.
           business = (Business) localBusinessDAO.find(business.getId());
+          business = (Business) business.fclone();
 
           // * Step 6: Business info
           // Business info: business address
@@ -121,7 +123,7 @@ foam.CLASS({
 
           // Business info: transaction details
           SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-          suggestedUserTransactionInfo.setBaseCurrency("CAD");
+          suggestedUserTransactionInfo.setBaseCurrency("USD");
           suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
           suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
           suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());

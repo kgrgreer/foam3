@@ -37,7 +37,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.InvoiceLineItem'
   ],
@@ -119,10 +119,7 @@ foam.CLASS({
         'issueDate',
         'issue',
         'issued'
-      ],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      ]
     },
     {
       class: 'Date',
@@ -130,9 +127,6 @@ foam.CLASS({
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
       aliases: ['dueDate', 'due', 'd', 'issued'],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      },
       tableWidth: 95
     },
     {
@@ -140,12 +134,7 @@ foam.CLASS({
       name: 'paymentDate',
       documentation: `The date and time of when the invoice was paid.`,
       label: 'Received',
-      aliases: ['scheduled', 'paid'],
-      tableCellFormatter: function(date) {
-        if ( date ) {
-          this.add(date.toISOString().substring(0, 10));
-        }
-      }
+      aliases: ['scheduled', 'paid']
     },
     {
       class: 'DateTime',
@@ -229,7 +218,7 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'chequeAmount',
       documentation: `The amount paid for an invoice using an external transaction system.`
     },
@@ -240,8 +229,9 @@ foam.CLASS({
       value: 'CAD'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
+      unitPropName: 'destinationCurrency',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
         deposited into the destination account. If fees or exchange apply, the source amount 
@@ -253,19 +243,6 @@ foam.CLASS({
         'destinationAmount'
       ],
       required: true,
-      tableCellFormatter: function(value, invoice) {
-        // Needed to show amount value for old invoices that don't have destination currency set
-        if ( ! invoice.destinationCurrency ) {
-          this.add(value);
-        }
-        this.__subContext__.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            this.start()
-              .add(currency.format(value))
-            .end();
-          });
-      },
       tableWidth: 120,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -283,18 +260,11 @@ foam.CLASS({
       `
     },
     { // How is this used? - display only?,
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'sourceAmount',
+      unitPropName: 'sourceCurrency',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
-      `,
-      tableCellFormatter: function(value, invoice) {
-        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
-          .then(function(currency) {
-            this.start()
-              .add(currency.format(value))
-            .end();
-        }.bind(this));
-      }
+      `
     },
     {
       class: 'Reference',
@@ -303,7 +273,7 @@ foam.CLASS({
       documentation: `The bank account into which funds are to be deposited.`
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'exchangeRate',
       documentation: 'The exchange rate captured at the time of payment.'
     },
@@ -589,9 +559,8 @@ foam.CLASS({
             throw new IllegalStateException("Destination currency is not valid.");
           }
         }
-
-        if ( this.getAmount() <= 0 ) {
-          throw new IllegalStateException("Amount must be a number and greater than zero.");
+        if ( this.getAmount() < 0 ) {
+          throw new IllegalStateException("Amount must be a number and no less than zero.");
         }
 
         boolean isInvoiceToContact = this.getContactId() != 0;

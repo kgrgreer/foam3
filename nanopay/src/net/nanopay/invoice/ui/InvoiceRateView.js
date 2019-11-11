@@ -151,7 +151,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Currency',
+      of: 'foam.core.Currency',
       name: 'sourceCurrency',
       documentation: 'Stores the source currency for the exchange.'
     },
@@ -197,6 +197,12 @@ foam.CLASS({
       name: 'exchangeRateNotice',
       expression: function(isEmployee) {
         return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
+      }
+    },
+    {
+      name: 'isSameCurrency',
+      expression: function(invoice$destinationCurrency, chosenBankAccount) {
+        return chosenBankAccount && invoice$destinationCurrency == chosenBankAccount.denomination;
       }
     }
   ],
@@ -344,8 +350,8 @@ foam.CLASS({
             .start()
               .hide(this.loadingSpinner.isHidden$)
               .addClass('rate-msg-container')
-              .add(this.isFx$.map((bool) => {
-                return bool ? this.FETCHING_RATES : this.LOADING;
+              .add(this.slot(function( isSameCurrency ) {
+                return isSameCurrency ? ' ' : this.FETCHING_RATES;
               }))
             .end()
           .end()
@@ -362,7 +368,7 @@ foam.CLASS({
                 if ( sourceCurrency == null ) {
                   return false;
                 }
-                return showExchangeRateSection && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+                return showExchangeRateSection && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') );
               }))
                 .start().addClass('exchange-amount-container')
                   .start()
@@ -459,7 +465,7 @@ foam.CLASS({
           if ( sourceCurrency == null ) {
             return false;
           }
-          return isFx && (! (sourceCurrency.alphabeticCode === 'USD' && invoice$destinationCurrency === 'USD') );
+          return isFx && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') );
         }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();

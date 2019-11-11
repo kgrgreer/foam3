@@ -226,7 +226,8 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150
+      tableWidth: 150,
+      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -239,7 +240,8 @@ foam.CLASS({
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
-      tableWidth: 172
+      tableWidth: 172,
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -306,7 +308,7 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      readPermissionRequired: true,
+      includeInDigest: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -345,7 +347,8 @@ foam.CLASS({
       class: 'String',
       name: 'referenceNumber',
       visibility: 'RO',
-      label: 'Reference'
+      label: 'Reference',
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -407,7 +410,7 @@ foam.CLASS({
       visibility: 'HIDDEN',
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
       section: 'paymentInfo',
@@ -415,7 +418,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
-        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(srcCurrency);
+        foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
         
         // Outputting two columns: "amount", "Currency"
           // Hacky way of making get_(obj) into String below
@@ -426,7 +429,8 @@ foam.CLASS({
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue("Source Amount");
         outputter.outputValue("Source Currency");
-      `
+      `,
+      includeInDigest: true
     },
     {
       class: 'String',
@@ -470,7 +474,7 @@ foam.CLASS({
     },
     {
       // REVIEW: why do we have total and amount?
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'total',
       visibility: 'RO',
       label: 'Total Amount',
@@ -491,7 +495,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',
@@ -511,7 +515,7 @@ foam.CLASS({
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Transaction)obj).getDestinationCurrency();
-        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(dstCurrency);
+        foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
         
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue(currency.format(get_(obj)));
@@ -550,7 +554,8 @@ foam.CLASS({
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
-      value: 'CAD'
+      value: 'CAD',
+      includeInDigest: true
     },
     {
       documentation: `referenceData holds entities such as the pacs008 message.`,
@@ -740,9 +745,9 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
-   return true;
- }
- return false;
+        return true;
+      }
+      return false;
       `
     },
     {
@@ -822,10 +827,6 @@ foam.CLASS({
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
-      }
-
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
-        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());

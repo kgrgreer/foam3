@@ -134,14 +134,12 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
-      getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
-       oldTxn.getStatus() == TransactionStatus.PAUSED || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) ) {
+      if ( getStatus() == TransactionStatus.COMPLETED &&
+           oldTxn == null ) {
         return true;
       }
       return false;
       `
-    }
+   }
  ]
 });

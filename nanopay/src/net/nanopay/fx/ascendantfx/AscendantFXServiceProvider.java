@@ -44,7 +44,7 @@ import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
 import net.nanopay.model.Branch;
-import net.nanopay.model.Currency;
+import foam.core.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
@@ -157,6 +157,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
+    quote = (FXQuote) quote.fclone();
 
     // Check FXDeal has not expired
     validateDealExpiryDate(quote.getExpiryTime());

@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.auth.User',
     'foam.nanos.session.Session',
     'foam.util.Password',
@@ -84,19 +85,6 @@ foam.CLASS({
         user.setPasswordExpiry(null);
         user = (User) ((DAO) getLocalUserDAO()).put(user);
         return user;
-      `
-    },
-    {
-      name: 'validatePassword',
-      javaCode: `
-        PasswordEntropy passwordEntropy = (PasswordEntropy) getPasswordEntropyService();
-
-        if ( SafetyUtil.isEmpty(potentialPassword) ) {
-          throw new RuntimeException("Password is required");
-        }
-        if ( passwordEntropy.getPasswordStrength(potentialPassword) < 3 ) {
-          throw new RuntimeException("Password is not strong enough.");
-        }
       `
     },
     {

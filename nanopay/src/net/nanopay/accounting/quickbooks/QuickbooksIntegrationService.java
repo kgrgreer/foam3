@@ -35,7 +35,7 @@ import net.nanopay.accounting.quickbooks.model.QuickbooksInvoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
-import net.nanopay.model.Currency;
+import foam.core.Currency;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -142,6 +142,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceSync(X x) {
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+    if ( token != null ) {
+      token = (QuickbooksToken) token.fclone();
+    }
     List<InvoiceResponseItem> successResult = new ArrayList<>();
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
 
@@ -251,8 +254,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     List<BankAccount> bankAccountList = sink.getArray();
 
     for ( BankAccount account: bankAccountList ) {
+      account = (BankAccount) account.fclone();
       account.setIntegrationId("");
-      accountDAO.put(account.fclone());
+      accountDAO.put(account);
     }
 
     return new ResultResponse.Builder(x).setResult(false).setReason("User has been signed out of Quick Books").build();

@@ -425,7 +425,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
       addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus());
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error updating AFEX beneficiary.", t);
     }
 
   }
@@ -472,7 +472,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       payeeInfo = this.afexClient.findBeneficiary(request);
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error getting AFEX beneficiary.", t);
     }
     return payeeInfo;
   }
@@ -625,7 +625,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
 
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error updating AFEX transaction status.", t);
     }
 
     return transaction;
@@ -717,7 +717,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           addPayee(beneficiaryId, bankAccount.getId(), ownerId);
           afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
         } catch(Throwable t) {
-          ((Logger) x.get("logger")).error("Error creating AFEX Beneficiary.", t);
+          ((Logger) x.get("logger")).error("Error getting/creating AFEX Beneficiary.", t);
         }
       }
     }
