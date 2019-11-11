@@ -209,12 +209,12 @@ foam.CLASS({
       javaCode: `Logger logger = (Logger) x.get("logger");
 DAO dao = (DAO) x.get(getDaoKey());
 if ( dao == null ) {
-  logger.error("Invalid dao key for the approval request object.");
+  logger.error(this.getClass().getSimpleName(), "DaoKey not found", getDaoKey());
   throw new RuntimeException("Invalid dao key for the approval request object.");
 }
 FObject obj = dao.inX(x).find(getObjId());
 if ( obj == null ) {
-  logger.error("Invalid object id.");
+  logger.error(this.getClass().getSimpleName(), "ObjId not found", getObjId());
   throw new RuntimeException("Invalid object id.");
 }
       `
