@@ -46,7 +46,8 @@ foam.CLASS({
         cal.add(Calendar.HOUR_OF_DAY, 4);
         return cal.getTime();
       `,
-      section: 'basicInfo'
+      section: 'basicInfo',
+      writePermissionRequired: true
     },
     {
       name: 'approvalStatus',
