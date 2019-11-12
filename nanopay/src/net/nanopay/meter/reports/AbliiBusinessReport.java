@@ -28,10 +28,14 @@
 
 package net.nanopay.meter.reports;
 
+import foam.core.Detachable;
 import foam.core.X;
+import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.mlang.MLang;
+import foam.mlang.sink.Count;
+import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
@@ -73,58 +77,64 @@ public class AbliiBusinessReport extends AbstractReport {
     ));
 
     // Retrieve the DAO
-    DAO businessDAO    = (DAO) x.get("businessDAO");
+    DAO businessDAO    = (DAO) x.get("localBusinessDAO");
     DAO accountDAO     = (DAO) x.get("localAccountDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO ipHistoryDAO   = (DAO) x.get("ipHistoryDAO");
-    List busLst = ((ArraySink) businessDAO.select(new ArraySink())).getArray();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    for ( Object busObj : busLst ) {
-      Business business = (Business) busObj;
+    businessDAO.select(new AbstractSink() {
+      public void put(Object obj, Detachable sub) {
+        Business business = (Business) obj;
 
-      // format the sign up date
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      String signUpDate = dateFormat.format(business.getCreated());
+        // format the sign up date
+        String signUpDate = dateFormat.format(business.getCreated());
 
-      // check whether a bankAccount has been added to the business
-      String bankAdded = business.getAccounts(x) != null ? "Yes" : "No";
+        // find the person who created the business account
+        User createdBy = business.findCreatedBy(x);
+        String owner = createdBy == null ? "" : createdBy.getLegalName();
 
-      // check whether the business is onboarded
-      String busVerification = business.getOnboarded() ? "Yes" : "No";
+        // check whether the business is onboarded
+        String busVerification = business.getOnboarded() ? "Yes" : "No";
 
-      // check whether the business has ever created a transaction
-      List<Account> accountList = ((ArraySink) accountDAO.where(
-        MLang.EQ(Account.OWNER, business.getId())).select(new ArraySink())).getArray();
-      String hasTxn = transactionDAO.find(
-        MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
-      ) != null ? "Yes" : "No";
+        // check whether a bankAccount has been added to the business
+        Count count = (Count) business.getAccounts(x).select(new Count());
+        String bankAdded = count.getValue() != 0 ? "Yes" : "No";
 
-      // get the ip history of the business
-      IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(MLang.EQ(IpHistory.BUSINESS, business.getId()));
-      String ip = ipHistory == null ? "" : ipHistory.getIpAddress();
+        // check whether the business has ever created a transaction
+        List<Account> accountList = ((ArraySink) accountDAO.where(
+          MLang.EQ(Account.OWNER, business.getId())).select(new ArraySink())).getArray();
+        String hasTxn = transactionDAO.find(
+          MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
+        ) != null ? "Yes" : "No";
 
-      // build the CSV line, the "" field need to be filled manually
-      sb.append(this.buildCSVLine(
-        NUM_ELEMENTS,
-        signUpDate,
-        Long.toString(business.getId()),
-        business.getBusinessName(),
-        Arrays.toString(business.getPrincipalOwners()),
-        business.getCountryOfBusinessRegistration(),
-        busVerification,
-        bankAdded,
-        "",
-        "",
-        "",
-        business.getStatus().toString(),
-        "",
-        "",
-        hasTxn,
-        "",
-        ip,
-        business.getEmail()
-      ));
-    }
+        // get the ip history of the business
+        IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(MLang.EQ(IpHistory.BUSINESS, business.getId()));
+        String ip = ipHistory == null ? "" : ipHistory.getIpAddress();
+
+        // build the CSV line, the "" field need to be filled manually
+        sb.append(AbliiBusinessReport.this.buildCSVLine(
+          NUM_ELEMENTS,
+          signUpDate,
+          Long.toString(business.getId()),
+          business.getBusinessName(),
+          owner,
+          business.getCountryOfBusinessRegistration(),
+          busVerification,
+          bankAdded,
+          "",
+          "",
+          "",
+          business.getCompliance().toString(),
+          "",
+          "",
+          hasTxn,
+          "",
+          ip,
+          business.getEmail()
+        ));
+      }
+    });
 
     return sb.toString();
   }
