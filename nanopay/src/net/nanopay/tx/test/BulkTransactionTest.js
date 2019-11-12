@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.BulkTransaction',
+    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.cico.CITransaction',
@@ -66,8 +67,13 @@ foam.CLASS({
         test( txn.getNext().length > 0, "CI-D root.next[0].next[0] has next");
         if ( txn.getNext().length > 0 ) {
           txn = txn.getNext()[0];
-          test( txn instanceof DigitalTransaction, "CI-D root.next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
-          test( txn.getNext().length == 0, "CI-D root.next[0].next[0].next[0] NOT has next, found: "+txn.getNext().length);
+          test( txn instanceof ComplianceTransaction, "CI-D root.next[0].next[0].next[0] instanceof ComplianceTransaction, found: "+txn.getClass().getSimpleName());
+          test( txn.getNext().length > 0, "CI-D root.next[0].next[0].next[0] has next, found: "+txn.getNext().length);
+          if ( txn.getNext().length > 0 ) {
+            txn = txn.getNext()[0];
+            test( txn instanceof DigitalTransaction, "CI-D root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+            test( txn.getNext().length == 0, "CI-D root.next[0].next[0].next[0].next[0] NOT has next, found: "+txn.getNext().length);
+          }
         }
       }
     }
@@ -93,11 +99,16 @@ foam.CLASS({
         test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0] has next, found: "+txn.getNext().length);
         if ( txn.getNext().length > 0 ) {
           txn = txn.getNext()[0];
-          test( txn instanceof DigitalTransaction, "CI-D-CO root.next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+          test( txn instanceof ComplianceTransaction, "CI-D-CO root.next[0].next[0].next[0] instanceof ComplianceTransaction, found: "+txn.getClass().getSimpleName());
           test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0] has next, found: "+txn.getNext().length);
           if ( txn.getNext().length > 0 ) {
             txn = txn.getNext()[0];
-            test( txn instanceof COTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof COTransaction, found: "+txn.getClass().getSimpleName());
+            test( txn instanceof DigitalTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+            test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0].next[0] has next, found: "+txn.getNext().length);
+            if ( txn.getNext().length > 0 ) {
+              txn = txn.getNext()[0];
+              test( txn instanceof COTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0].next[0] instanceof COTransaction, found: "+txn.getClass().getSimpleName());
+            }
           }
         }
       }
