@@ -15,7 +15,6 @@ foam.CLASS({
     'net.nanopay.tx.Amount',
     'java.util.List',
     'java.util.ArrayList',
-
   ],
 
 
