@@ -36,7 +36,9 @@ import foam.dao.ArraySink;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
 import net.nanopay.account.Account;
+import net.nanopay.auth.LoginAttempt;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
 import net.nanopay.meter.IpHistory;
@@ -77,10 +79,11 @@ public class AbliiBusinessReport extends AbstractReport {
     ));
 
     // Retrieve the DAO
-    DAO businessDAO    = (DAO) x.get("localBusinessDAO");
-    DAO accountDAO     = (DAO) x.get("localAccountDAO");
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    DAO ipHistoryDAO   = (DAO) x.get("ipHistoryDAO");
+    DAO businessDAO      = (DAO) x.get("localBusinessDAO");
+    DAO accountDAO       = (DAO) x.get("localAccountDAO");
+    DAO transactionDAO   = (DAO) x.get("localTransactionDAO");
+    DAO loginAttemptDAO  = (DAO) x.get("loginAttemptDAO");
+    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     businessDAO.select(new AbstractSink() {
@@ -108,9 +111,13 @@ public class AbliiBusinessReport extends AbstractReport {
           MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
         ) != null ? "Yes" : "No";
 
-        // get the ip history of the business
-        IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(MLang.EQ(IpHistory.BUSINESS, business.getId()));
-        String ip = ipHistory == null ? "" : ipHistory.getIpAddress();
+        // get the IP address of the last time any user of the business logged in
+        List<UserUserJunction> agentJunctionList = ((ArraySink) agentJunctionDAO.where(
+          MLang.EQ(UserUserJunction.TARGET_ID, business.getId())).select(new ArraySink())).getArray();
+        LoginAttempt loginAttempt = (LoginAttempt) loginAttemptDAO.find(
+            MLang.IN(LoginAttempt.LOGIN_ATTEMPTED_FOR,
+              agentJunctionList.stream().map(UserUserJunction::getSourceId).collect(Collectors.toList())));
+        String ip = loginAttempt == null ? "" : loginAttempt.getIpAddress();
 
         // build the CSV line, the "" field need to be filled manually
         sb.append(AbliiBusinessReport.this.buildCSVLine(
