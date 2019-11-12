@@ -12,7 +12,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'long',
+      class: 'Long',
       name: 'quantity',
       documentation: `
         The quantity of the Unit

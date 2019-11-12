@@ -7,10 +7,15 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.dao.DAO',
     'net.nanopay.tx.SecurityTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.BucketTransaction',
+    'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.Amount',
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+
   ],
 
 
@@ -23,12 +28,12 @@ foam.CLASS({
         CompositeTransaction comp = new CompositeTransaction.Builder(x).build();
         DAO quoter = (DAO) x.get("localTransactionQuoteDAO");
 
-        for (amnt:tx.getSubTransactions()) {
-          Transaction tSub = new Transaction().Builder(x).build();
+        for (Amount amnt:tx.getSubTransactions()) {
+          Transaction tSub = new Transaction.Builder(x).build();
           tSub.copyFrom(tx);
-          tSub.setSourceCurrency(amount.getUnit());
-          tSub.setDestinationCurrency(amount.getUnit());
-          tSub.setAmount(amount.getQuantity());
+          tSub.setSourceCurrency(amnt.getUnit());
+          tSub.setDestinationCurrency(amnt.getUnit());
+          tSub.setAmount(amnt.getQuantity());
           TransactionQuote tq = new TransactionQuote();
           tq.setRequestTransaction(tSub);
           tq = (TransactionQuote) quoter.put(tq);
