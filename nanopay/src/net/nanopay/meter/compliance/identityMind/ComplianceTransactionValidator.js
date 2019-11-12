@@ -31,26 +31,17 @@ foam.CLASS({
               .setClassification("Validate Transaction Using IdentityMind")
               .build();
 
-          // NOTE: Only run transaction evaluation through IdentityMind
-          // when it is a bank to bank transaction.
-          if ( transaction.findSourceAccount(x) instanceof BankAccount
-            && transaction.findDestinationAccount(x) instanceof BankAccount
-          ) {
-            IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-            IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-            status = response.getComplianceValidationStatus();
-            approvalRequest.setCauseId(response.getId());
-            approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-            // Save status in ruleHistory.result
-            ruler.putResult(status);
-          } else {
-            approvalRequest.setMemo("IdentityMind transaction check is skipped because it's not a bank-to-bank transaction.");
-          }
+          IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+          IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+          status = response.getComplianceValidationStatus();
 
           // Create approval request
+          approvalRequest.setCauseId(response.getId());
+          approvalRequest.setCauseDaoKey("identityMindResponseDAO");
           approvalRequest.setStatus(getApprovalStatus(status));
           approvalRequest.setApprover(getApprover(status));
           requestApproval(x, approvalRequest);
+          ruler.putResult(status);
         }
       }, "Compliance Transaction Validator");
       `
