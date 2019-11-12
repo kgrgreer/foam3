@@ -365,7 +365,7 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+    export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
@@ -393,7 +393,10 @@ function setenv {
         mkdir -p "${JOURNAL_HOME}"
     fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
-        mkdir -p "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
+    elif [ ! -L "${DOCUMENT_HOME}" ]; then
+        rm -rf "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -423,7 +426,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
