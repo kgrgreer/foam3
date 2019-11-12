@@ -39,6 +39,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import net.nanopay.account.Account;
 import net.nanopay.auth.LoginAttempt;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
 import net.nanopay.meter.IpHistory;
@@ -101,14 +102,15 @@ public class AbliiBusinessReport extends AbstractReport {
         String busVerification = business.getOnboarded() ? "Yes" : "No";
 
         // check whether a bankAccount has been added to the business
-        Count count = (Count) business.getAccounts(x).select(new Count());
-        String bankAdded = count.getValue() != 0 ? "Yes" : "No";
+        List<BankAccount> bankAccountList = ((ArraySink) business.getAccounts(x)
+          .where(MLang.INSTANCE_OF(BankAccount.class))
+          .select(new ArraySink())).getArray();
+        String bankAdded = bankAccountList.size() != 0 ? "Yes" : "No";
 
         // check whether the business has ever created a transaction
-        List<Account> accountList = ((ArraySink) accountDAO.where(
-          MLang.EQ(Account.OWNER, business.getId())).select(new ArraySink())).getArray();
         String hasTxn = transactionDAO.find(
-          MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
+          MLang.IN(Transaction.SOURCE_ACCOUNT,
+            bankAccountList.stream().map(BankAccount::getId).collect(Collectors.toList()))
         ) != null ? "Yes" : "No";
 
         // get the IP address of the last time any user of the business logged in
