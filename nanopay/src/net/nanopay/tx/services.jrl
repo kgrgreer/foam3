@@ -221,10 +221,13 @@ p({
   "lazy":false,
   "serviceScript":
   """
-    nd = new foam.dao.NullDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .build();
-    ruler = new RulerDAO(x, nd, "securityPlannerDAO");
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, ruler));
+      .setRuler(true)
+      .setRulerDaoKey("securityPlannerDAO")
+      .setPm(true)
+      .setPipelinePm(true)
+      .build()
   """
 })
