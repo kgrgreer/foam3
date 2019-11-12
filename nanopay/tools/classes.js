@@ -809,7 +809,8 @@ var classes = [
   'net.nanopay.tx.rbc.RbcCITransaction',
   'net.nanopay.tx.rbc.RbcCOTransaction',
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
-  'net.nanopay.tx.rbc.RbcTransactionPlanDAO'
+  'net.nanopay.tx.rbc.RbcTransactionPlanDAO',
+  'net.nanopay.tx.rbc.ftps.RbcFTPSCredential'
 ];
 
 var abstractClasses = [
