@@ -102,7 +102,6 @@ public class BmoFormatUtil {
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(body);
-    DAO email = (DAO) x.get("emailMessageDAO");
-    email.put(message);
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 }

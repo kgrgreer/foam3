@@ -34,7 +34,7 @@ foam.CLASS({
         }
       },
       {
-        class: 'String',
+        class: 'foam.u2.ViewSpec',
         name: 'detailView'
       }
     ],
@@ -55,7 +55,7 @@ foam.CLASS({
                 style({background: 'rgba(0,0,0,0)'}).
                 show(this.mode$.map(function(m) { return m == foam.u2.DisplayMode.RW; })).
               end().
-              tag({class: this.detailView}, {data$: this.data$.dot('data'), fromCreateButton: true }).
+              tag(this.detailView, {data$: this.data$.dot('data'), fromCreateButton: true }).
               start().
                   style({'padding-bottom': '4px'}).
                   add(this.data.cls_.getAxiomsByClass(foam.core.Action)).
