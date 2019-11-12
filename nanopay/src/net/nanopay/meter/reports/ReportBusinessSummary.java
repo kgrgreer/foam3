@@ -32,6 +32,7 @@ import net.nanopay.meter.reports.DateColumnOfReports;
 import net.nanopay.meter.reports.RowOfBusSumReports;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ReportBusinessSummary extends AbstractReport {
@@ -208,13 +209,12 @@ public class ReportBusinessSummary extends AbstractReport {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     for (Object obj : busLst) {
       Business business = (Business) obj;
-      DAO filteredAccountDAO = accountDAO.where(
-        MLang.EQ(net.nanopay.account.Account.OWNER, business.getId())
-      );
+      List<Account> accountList = ((ArraySink) accountDAO.where(
+        MLang.EQ(Account.OWNER, business.getId())).select(new ArraySink())).getArray();
       boolean active = (transactionDAO.find(
         MLang.AND(
           MLang.GTE(Transaction.CREATED, lastMonthDate),
-          MLang.IN(Transaction.SOURCE_ACCOUNT, ((ArraySink) filteredAccountDAO.select(new ArraySink())).getArray())
+          MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
         )
       ) != null);
       if (active) {
