@@ -197,8 +197,8 @@ public class TransactionTest
       .setPayerId(sender_.getId())
       .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
         .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
-        .setInvoiceId(inv.getId())
-        .setAmount(123)
+      .setInvoiceId(inv.getId())
+      .setAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();
