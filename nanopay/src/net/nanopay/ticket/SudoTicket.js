@@ -18,6 +18,7 @@ foam.CLASS({
   properties: [
     {
       name: 'sudoAsUser',
+      documentation: `The user one wishes to view/manage.`,
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       required: true,
