@@ -83,7 +83,7 @@ public class AbliiBusinessReport extends AbstractReport {
       Business business = (Business) busObj;
 
       // format the sign up date
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       String signUpDate = dateFormat.format(business.getCreated());
 
       // check whether a bankAccount has been added to the business
