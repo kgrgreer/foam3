@@ -73,7 +73,6 @@ foam.CLASS({
                 ApprovalRequest request = (ApprovalRequest) approval.fclone();
                 request.setApprover(approverId);
                 request = (ApprovalRequest) approvalDAO.put_(x, request);
-                logger.debug("created approval request", request);
              }
            }
          }

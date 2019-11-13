@@ -83,13 +83,16 @@ foam.CLASS({
                        ( ticket.getStatus() == TicketStatus.CLOSED &&
                          oldTicket.getStatus() != TicketStatus.CLOSED ) ) {
               // reverse group assignment.
-             user.setGroup(ticket.getSavedGroup());
-             user = (User) ((DAO) x.get("localUserDAO")).put(user);
-
+              if ( ! foam.util.SafetyUtil.isEmpty(ticket.getSavedGroup()) ) {
+                user.setGroup(ticket.getSavedGroup());
+                user = (User) ((DAO) x.get("localUserDAO")).put(user);
+              }
               if ( status == ApprovalStatus.REJECTED &&
                    oldTicket.getApprovalStatus() == ApprovalStatus.APPROVED ) { 
                 ticket.setApprovalStatus(status);
               }
+              // clean up requsets
+              ApprovalRequestUtil.getAllApprovalRequests(x, ticket.getId(), getClassification()).removeAll();
             }
           }
         }, "Sudo Ticket Approval Response");

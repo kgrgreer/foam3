@@ -66,8 +66,7 @@ foam.CLASS({
     },
     {
       name: 'title',
-      required: false,
-      hidden: true
+      value: 'Privileged Access Request',
     },
     {
       name: 'summary',
