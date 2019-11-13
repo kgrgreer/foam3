@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'SecurityBucketPlanner',
-  documentation: 'A planner for planning securities bucket type transactions. Each specified security is added as ',
+  documentation: `A planner for planning securities bucket type transactions. Each specified security is added as a
+   a composite child transaction to the bucket transaction`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
