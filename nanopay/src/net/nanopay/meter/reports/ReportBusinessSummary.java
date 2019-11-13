@@ -23,13 +23,12 @@ import foam.dao.ArraySink;
 import foam.dao.MDAO;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
+import foam.mlang.sink.Map;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
-import net.nanopay.meter.reports.DateColumnOfReports;
-import net.nanopay.meter.reports.RowOfBusSumReports;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -209,12 +208,17 @@ public class ReportBusinessSummary extends AbstractReport {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     for (Object obj : busLst) {
       Business business = (Business) obj;
-      List<Account> accountList = ((ArraySink) accountDAO.where(
-        MLang.EQ(Account.OWNER, business.getId())).select(new ArraySink())).getArray();
+
+      Map map = new Map.Builder(x)
+        .setArg1(Account.ID)
+        .setDelegate(new ArraySink())
+        .build();
+      accountDAO.where(MLang.EQ(Account.OWNER, business.getId())).select(map);
+      List accounts = ((ArraySink) map.getDelegate()).getArray();
       boolean active = (transactionDAO.find(
         MLang.AND(
           MLang.GTE(Transaction.CREATED, lastMonthDate),
-          MLang.IN(Transaction.SOURCE_ACCOUNT, accountList.stream().map(Account::getId).collect(Collectors.toList()))
+          MLang.IN(Transaction.SOURCE_ACCOUNT, accounts)
         )
       ) != null);
       if (active) {
