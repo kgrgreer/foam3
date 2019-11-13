@@ -66,6 +66,35 @@ public class PGPKeyUtil {
     return key;
   }
 
+  public static PGPPrivateKey findSecretKey(InputStream keyIn, char[] pass) 
+    throws IOException, PGPException, NoSuchProviderException {
+    
+    PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
+      org.bouncycastle.openpgp.PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
+
+    PGPSecretKey pgpSecKey = null;
+    Iterator<PGPSecretKeyRing> rIt = pgpSec.getKeyRings();
+    while ( pgpSecKey == null && rIt.hasNext() ) {
+      PGPSecretKeyRing kRing = rIt.next();
+      Iterator<PGPSecretKey> kIt = kRing.getSecretKeys();
+      while ( pgpSecKey == null && kIt.hasNext() ) {
+        PGPSecretKey k = kIt.next();
+        if ( k.isMasterKey() ) {
+          pgpSecKey = k;
+        }
+      }
+    }
+
+    if ( pgpSecKey == null ) {
+      return null;
+    }
+
+    PBESecretKeyDecryptor a = new JcePBESecretKeyDecryptorBuilder(
+      new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(pass);
+
+    return pgpSecKey.extractPrivateKey(a);
+  }  
+
   public static void encryptFile(X x, File file, String keyAlias, OutputStream out) throws IOException, 
     NoSuchProviderException, PGPException {
     PublicKeyEntry pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(EQ(PublicKeyEntry.ALIAS, keyAlias)); 
