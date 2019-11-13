@@ -40,6 +40,8 @@ import foam.nanos.auth.UserUserJunction;
 import net.nanopay.account.Account;
 import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
 
@@ -78,11 +80,12 @@ public class AbliiBusinessReport extends AbstractReport {
     ));
 
     // Retrieve the DAO
-    DAO businessDAO      = (DAO) x.get("localBusinessDAO");
-    DAO accountDAO       = (DAO) x.get("localAccountDAO");
-    DAO transactionDAO   = (DAO) x.get("localTransactionDAO");
-    DAO loginAttemptDAO  = (DAO) x.get("loginAttemptDAO");
-    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    DAO businessDAO             = (DAO) x.get("localBusinessDAO");
+    DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
+    DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
+    DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
+    DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     businessDAO.select(new AbstractSink() {
@@ -96,6 +99,9 @@ public class AbliiBusinessReport extends AbstractReport {
         User createdBy = business.findCreatedBy(x);
         String owner = createdBy == null ? "" : createdBy.getLegalName();
 
+        // get the country of the business
+        String country = business.getCountryOfBusinessRegistration();
+
         // check whether the business is onboarded
         String busVerification = business.getOnboarded() ? "Yes" : "No";
 
@@ -107,6 +113,19 @@ public class AbliiBusinessReport extends AbstractReport {
         business.getAccounts(x).where(MLang.INSTANCE_OF(BankAccount.class)).select(map);
         List accountIds = ((ArraySink) map.getDelegate()).getArray();
         String bankAdded = accountIds.size() != 0 ? "Yes" : "No";
+
+        // get the onboarding submitted date
+        String onboardSubmitDate = "";
+        if ( country.equals("CA") ) {
+          BusinessOnboarding bo = (BusinessOnboarding) businessOnboardingDAO.find(
+            MLang.EQ(BusinessOnboarding.BUSINESS_ID, business.getId()));
+          if ( bo != null ) onboardSubmitDate = dateFormat.format(bo.getLastModified());
+        }
+        else if ( country.equals("US") ) {
+          USBusinessOnboarding ubo = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(
+            MLang.EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()));
+          if ( ubo != null ) onboardSubmitDate = dateFormat.format(ubo.getLastModified());
+        }
 
         // check whether the business has ever created a transaction
         String hasTxn = transactionDAO.find(
@@ -131,10 +150,10 @@ public class AbliiBusinessReport extends AbstractReport {
           Long.toString(business.getId()),
           business.getBusinessName(),
           owner,
-          business.getCountryOfBusinessRegistration(),
+          country,
           busVerification,
           bankAdded,
-          "",
+          onboardSubmitDate,
           "",
           "",
           business.getCompliance().toString(),
