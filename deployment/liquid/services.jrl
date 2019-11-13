@@ -188,8 +188,11 @@ p({
   "lazy":false,
   "serviceScript":
   """
+    nd = new foam.dao.NullDAO.Builder(x)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .build();
     stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
-      .setDelegate(null)
+      .setDelegate(nd)
       .build();
     kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
       .setDelegate(stpd)
@@ -251,17 +254,9 @@ p({
     ptd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
       .setDelegate(drpd)
       .build();
-    ppmdao = new net.nanopay.tx.PayerTransactionDAO.Builder(x)
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.tx.PayerTransactionDAO.Builder(x)
       .setDelegate(ptd)
-      .build(); 
-
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setPm(true)
-      .setPipelinePm(true)
-      .setNullify(true)
-      .setDecorator(ppmdao)
-      .build();
+      .build()));
   """
 })
 p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
