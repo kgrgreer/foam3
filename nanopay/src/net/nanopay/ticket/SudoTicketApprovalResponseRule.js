@@ -16,6 +16,7 @@ foam.CLASS({
   ],
 
   properties: [
+    // REVIEW: not working
     // {
     //   name: 'predicate',
     //   javaFactory: `
