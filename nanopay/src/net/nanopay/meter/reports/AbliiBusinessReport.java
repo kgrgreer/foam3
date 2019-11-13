@@ -34,7 +34,7 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.mlang.MLang;
-import foam.mlang.sink.Count;
+import foam.mlang.sink.Map;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import net.nanopay.account.Account;
@@ -42,12 +42,10 @@ import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
-import net.nanopay.meter.IpHistory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AbliiBusinessReport extends AbstractReport {
   private final static int NUM_ELEMENTS = 17;
@@ -102,23 +100,28 @@ public class AbliiBusinessReport extends AbstractReport {
         String busVerification = business.getOnboarded() ? "Yes" : "No";
 
         // check whether a bankAccount has been added to the business
-        List<BankAccount> bankAccountList = ((ArraySink) business.getAccounts(x)
-          .where(MLang.INSTANCE_OF(BankAccount.class))
-          .select(new ArraySink())).getArray();
-        String bankAdded = bankAccountList.size() != 0 ? "Yes" : "No";
+        Map map = new Map.Builder(x)
+          .setArg1(Account.ID)
+          .setDelegate(new ArraySink())
+          .build();
+        business.getAccounts(x).where(MLang.INSTANCE_OF(BankAccount.class)).select(map);
+        List accountIds = ((ArraySink) map.getDelegate()).getArray();
+        String bankAdded = accountIds.size() != 0 ? "Yes" : "No";
 
         // check whether the business has ever created a transaction
         String hasTxn = transactionDAO.find(
-          MLang.IN(Transaction.SOURCE_ACCOUNT,
-            bankAccountList.stream().map(BankAccount::getId).collect(Collectors.toList()))
+          MLang.IN(Transaction.SOURCE_ACCOUNT, accountIds)
         ) != null ? "Yes" : "No";
 
         // get the IP address of the last time any user of the business logged in
-        List<UserUserJunction> agentJunctionList = ((ArraySink) agentJunctionDAO.where(
-          MLang.EQ(UserUserJunction.TARGET_ID, business.getId())).select(new ArraySink())).getArray();
+        map = new Map.Builder(x)
+          .setArg1(UserUserJunction.SOURCE_ID)
+          .setDelegate(new ArraySink())
+          .build();
+        agentJunctionDAO.where(MLang.EQ(UserUserJunction.TARGET_ID, business.getId())).select(map);
+        List userIds = ((ArraySink) map.getDelegate()).getArray();
         LoginAttempt loginAttempt = (LoginAttempt) loginAttemptDAO.find(
-            MLang.IN(LoginAttempt.LOGIN_ATTEMPTED_FOR,
-              agentJunctionList.stream().map(UserUserJunction::getSourceId).collect(Collectors.toList())));
+            MLang.IN(LoginAttempt.LOGIN_ATTEMPTED_FOR, userIds));
         String ip = loginAttempt == null ? "" : loginAttempt.getIpAddress();
 
         // build the CSV line, the "" field need to be filled manually
