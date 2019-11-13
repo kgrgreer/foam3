@@ -101,9 +101,9 @@ foam.CLASS({
    test( user2.getGroup() == group3.getId(), "User2 group changed to group3 ("+user2.getGroup()+")");
 
    ticket = (SudoTicket) ticketDAO.find_(y, ticket.getId()).fclone();
-   ticket.setStatus(TicketStatus.CLOSED);
+   ticket.setStatus("CLOSED");
    ticket = (SudoTicket) ticketDAO.put_(y, ticket);
-   test( ticket.getStatus() == TicketStatus.CLOSED, "Ticket closed");
+   test( "CLOSED".equals(ticket.getStatus()), "Ticket closed");
 
    // yield to allow aysnc ops to run.
    try {

@@ -34,6 +34,12 @@ foam.CLASS({
       ]
     },
     {
+      name: 'update',
+      documentation: 'Request write/change access.',
+      class: 'Boolean',
+      value: false
+    },
+    {
       name: 'expiry',
       class: 'DateTime',
       factory: function() {

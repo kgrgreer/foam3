@@ -61,7 +61,7 @@ foam.CLASS({
             ApprovalStatus status = ApprovalRequestUtil.getState(approvalDAO);
             if ( status == ApprovalStatus.APPROVED &&
                  oldTicket.getApprovalStatus() != ApprovalStatus.APPROVED &&
-                 ticket.getStatus() != TicketStatus.CLOSED ) {
+                 ! "CLOSED".equals(ticket.getStatus()) ) {
               ticket.setSavedGroup(user.getGroup());
               ticket.setApprovalStatus(status);
 
@@ -80,8 +80,8 @@ foam.CLASS({
               ticket.setApprovalStatus(status);
            } else if ( ( status == ApprovalStatus.REJECTED &&
                          oldTicket.getApprovalStatus() == ApprovalStatus.APPROVED ) ||
-                       ( ticket.getStatus() == TicketStatus.CLOSED &&
-                         oldTicket.getStatus() != TicketStatus.CLOSED ) ) {
+                       ( "CLOSED".equals(ticket.getStatus()) &&
+                         ! "CLOSED".equals(oldTicket.getStatus()) ) ) {
               // reverse group assignment.
               if ( ! foam.util.SafetyUtil.isEmpty(ticket.getSavedGroup()) ) {
                 user.setGroup(ticket.getSavedGroup());
