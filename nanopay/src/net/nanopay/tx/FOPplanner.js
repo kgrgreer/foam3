@@ -21,6 +21,7 @@ foam.CLASS({
         TransactionQuote txq = (TransactionQuote) obj;
         Transaction tx = txq.getRequestTransaction();
         SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+
         plan.setSourceCurrency(txq.getSourceUnit());
         plan.setDestinationCurrency(txq.getDestinationUnit());
 
