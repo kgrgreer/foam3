@@ -18,7 +18,7 @@ import foam.mlang.MLang.EQ;
 import foam.nanos.ticket.Ticket;
 import foam.nanos.ticket.TicketStatus;
 
-now = new System.currentTimeMillis();
+now = System.currentTimeMillis();
 d = x.get("localTicketDAO");
 a = d.where(EQ(Ticket.STATUS, TicketStatus.OPEN)).select().array;
 for ( t : a ) {
