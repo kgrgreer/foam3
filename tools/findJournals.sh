@@ -44,7 +44,7 @@ fi
 
 sed 's/#.*//;s/^[[:space:]]*//;s/[[:space:]]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
     if [ ! -z $file ]; then
-        if [ "$FILE_POSTFIX"="jrl" ]; then
+        if [ "$FILE_POSTFIX" == "jrl" ]; then
             find ${sources[@]} -type f \( -name "${file}" -o -name "${file}.${FILE_POSTFIX}" \) >> "${OUT_FILE:-/dev/stdout}"
         else
             find ${sources[@]} -type f \( -name "${file}.${FILE_POSTFIX}" \) >> "${OUT_FILE:-/dev/stdout}"

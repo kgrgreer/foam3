@@ -107,6 +107,7 @@ function deploy_journals {
 
     # JOURNALS=tools/journals
     JOURNALS=`instance_journals $INSTANCE_TYPE`
+
     if [[ ! -f  $JOURNALS ]]; then
         echo "ERROR :: Missing ${JOURNALS} file."
         quit 1
@@ -126,6 +127,8 @@ function deploy_journals {
     else
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras -P$journalPostfix < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
+        # echo ${JOURNAL_OUT}
+        # exit
     fi
 
     if [[ $? -eq 1 ]]; then
