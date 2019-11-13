@@ -100,10 +100,13 @@ function setup_jce {
 function deploy_journals {
     echo "INFO :: Deploying Journals"
 
+    journalPostfix=`instanceType_postfix $INSTANCE_TYPE`
+
     # prepare journals
     cd "$PROJECT_HOME"
 
-    JOURNALS=tools/journals
+    # JOURNALS=tools/journals
+    JOURNALS=`instance_journals $INSTANCE_TYPE`
     if [[ ! -f  $JOURNALS ]]; then
         echo "ERROR :: Missing ${JOURNALS} file."
         quit 1
@@ -119,9 +122,9 @@ function deploy_journals {
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras -P$journalPostfix < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras -P$journalPostfix < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
@@ -328,6 +331,23 @@ function beginswith {
       *)
         false
         ;;
+    esac
+}
+
+function instanceType_postfix {
+    case $1 in
+        "mm") echo "mm" ;;
+        "mn") echo "mn" ;;
+        "standalone") echo "jrl" ;;
+        *) echo "" ;;
+    esac
+}
+
+function instance_journals {
+    case $1 in
+        "mm") echo "tools/mm_journals" ;;
+        "mn") echo "tools/mn_journals" ;;
+        *) echo "tools/journals" ;;
     esac
 }
 
@@ -567,8 +587,9 @@ VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
+INSTANCE_TYPE=standalone
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -637,6 +658,8 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         x) VULNERABILITY_CHECK=1 ;;
+        A) INSTANCE_TYPE=$OPTARG
+            echo "INSTANCE_TYPE=${OPTARG}" ;;
         ?) usage ; quit 1 ;;
     esac
 done
