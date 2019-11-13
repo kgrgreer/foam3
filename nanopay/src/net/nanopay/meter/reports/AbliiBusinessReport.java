@@ -41,6 +41,7 @@ import net.nanopay.account.Account;
 import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
 import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
@@ -114,16 +115,24 @@ public class AbliiBusinessReport extends AbstractReport {
         List accountIds = ((ArraySink) map.getDelegate()).getArray();
         String bankAdded = accountIds.size() != 0 ? "Yes" : "No";
 
-        // get the onboarding submitted date
+        // get the onboarding submitted date(last modified date if the businessOnboarding is submitted)
         String onboardSubmitDate = "";
         if ( country.equals("CA") ) {
           BusinessOnboarding bo = (BusinessOnboarding) businessOnboardingDAO.find(
-            MLang.EQ(BusinessOnboarding.BUSINESS_ID, business.getId()));
+            MLang.AND(
+              MLang.EQ(BusinessOnboarding.BUSINESS_ID, business.getId()),
+              MLang.EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+            )
+          );
           if ( bo != null ) onboardSubmitDate = dateFormat.format(bo.getLastModified());
         }
         else if ( country.equals("US") ) {
           USBusinessOnboarding ubo = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(
-            MLang.EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()));
+            MLang.AND(
+              MLang.EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
+              MLang.EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+            )
+          );
           if ( ubo != null ) onboardSubmitDate = dateFormat.format(ubo.getLastModified());
         }
 
