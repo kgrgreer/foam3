@@ -511,13 +511,13 @@ foam.CLASS({
             mode_: 'SignUp',
             param: {
               email: searchParams.get('email'),
-              disableEmail_: !! searchParams.get('email'),
+              disableEmail_: searchParams.has('email'),
               token_: searchParams.get('token'),
-              corganization: searchParams.has('companyName')
+              organization: searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '',
-                disableCompanyName_: searchParams.has('companyName'),
-              choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
+              disableCompanyName_: searchParams.has('companyName'),
+              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US']
             }
           };
         }
@@ -536,9 +536,6 @@ foam.CLASS({
       return new Promise(function(resolve, reject) {
         if ( ! view ) {
           view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
-
-          // Moved this from SignInView to here, since it is Ablii specific
-          window.localStorage.setItem('setOnboardingWizardPush', true);
         }
         self.stack.push(view, self);
         self.loginSuccess$.sub(resolve);

@@ -240,6 +240,12 @@ foam.CLASS({
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
+      javaFactory: `
+        if ( getStatusHistory().length > 0 ) {
+          return getStatusHistory()[0].getTimeStamp();
+        }
+        return new java.util.Date();
+      `,
       tableWidth: 172,
       includeInDigest: true
     },
@@ -419,7 +425,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
-        
+
         // Outputting two columns: "amount", "Currency"
           // Hacky way of making get_(obj) into String below
         outputter.outputValue(currency.format(get_(obj)));
@@ -516,7 +522,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Transaction)obj).getDestinationCurrency();
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
-        
+
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue(currency.format(get_(obj)));
         outputter.outputValue(dstCurrency);
@@ -821,10 +827,6 @@ foam.CLASS({
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
-      }
-
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
-        throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());

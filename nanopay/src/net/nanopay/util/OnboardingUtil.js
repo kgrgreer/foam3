@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
-    'net.nanopay.sme.onboarding.OnboardingStatus'
+    'net.nanopay.sme.onboarding.OnboardingStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
@@ -54,15 +55,15 @@ foam.CLASS({
     },
 
     async function initOnboardingView() {
-      if ( ! window.localStorage.getItem('setOnboardingWizardPush') ) return;
       var businessOnboardingInfor = await this.getBusinessOnboarding();
-      if ( businessOnboardingInfor && businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED ) {
+      var onboardingStatusCheck = businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED && this.user.compliance === this.ComplianceStatus.NOTREQUESTED;
+      if ( businessOnboardingInfor && onboardingStatusCheck ) {
         this.stack.push({
           class: 'net.nanopay.sme.onboarding.ui.WizardView',
           data: businessOnboardingInfor
         });
       }
-      window.localStorage.removeItem('setOnboardingWizardPush');
+      return;
     }
   ]
 

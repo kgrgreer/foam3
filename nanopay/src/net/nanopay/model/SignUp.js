@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: `Model used for registering/creating an ABLII user.`,
 
+  imports: [
+    'acceptanceDocumentService'
+  ],
+
   messages: [
     { name: 'DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
   ],
@@ -64,8 +68,6 @@ foam.CLASS({
         var arrayOfProperties = this.cls_.getAxiomsByClass(foam.core.Property);
         arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());
-
-        this.countryChoices_ = ['US', 'CA'];
       }
     },
     {
