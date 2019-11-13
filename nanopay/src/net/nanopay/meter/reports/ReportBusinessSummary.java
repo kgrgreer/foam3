@@ -31,7 +31,6 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.model.Business;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class ReportBusinessSummary extends AbstractReport {
