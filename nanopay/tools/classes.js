@@ -406,7 +406,14 @@ var classes = [
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.tx.GenericCIPlanner',
+  'net.nanopay.tx.DVPplanner',
+  'net.nanopay.tx.DVPTransaction',
   'net.nanopay.tx.ParentCompleteToPendingRule',
+  'net.nanopay.tx.FOPplanner',
+  'net.nanopay.tx.BucketTransaction',
+  'net.nanopay.tx.SecurityBucketPlanner',
+  'net.nanopay.tx.Amount',
+  'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -591,6 +598,7 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.AdminAccessConfig',
   'net.nanopay.meter.Blacklist',
   'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',

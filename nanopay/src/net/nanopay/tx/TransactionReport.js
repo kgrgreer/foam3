@@ -13,11 +13,11 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.PARENT.clone().copyFrom({
       label: 'Parent Txn'
     }),
-    net.nanopay.tx.model.Transaction.CREATED.clone().copyFrom({
-      label: 'Created Time',
-      expression: undefined
-
-    }),
+    {
+      class: 'DateTime',
+      name: 'created',
+      label: 'Created Time'
+    },
     {
       class: 'String',
       name: 'type'

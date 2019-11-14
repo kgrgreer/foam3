@@ -54,13 +54,22 @@ foam.CLASS({
       documentation: 'Legal name of business.',
       width: 50
     },
-     {
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'The ID of the proprietary details of the business.',
       section: 'business'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: `This refines the "created" property in
+        foam.nanos.auth.user and changes the section from administrative to
+        business, so that paymentops and other groups can see this property.
+      `,
+      section: 'business',
     },
     {
       class: 'Reference',
