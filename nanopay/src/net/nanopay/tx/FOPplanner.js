@@ -32,8 +32,8 @@ foam.CLASS({
         plan.setIsQuoted(true);
         plan.setTransfers(
           createTransfers_(getX(), plan,
-          ((SecuritiesAccount) txq.getSourceAccount()).getSubAccount(x,txq.getSourceUnit()),
-          ((SecuritiesAccount) txq.getDestinationAccount()).getSubAccount(x,txq.getDestinationUnit())
+          ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
+          ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
         ));
 
         txq.addPlan(plan);

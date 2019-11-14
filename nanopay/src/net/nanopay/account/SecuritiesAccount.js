@@ -98,8 +98,8 @@ foam.CLASS({
 
     },*/
     {
-      name: 'getSubAccount',
-      type: 'Long',
+      name: 'getSecurityAccount',
+      type: 'net.nanopay.account.SecurityAccount',
       args: [
         {
           name: 'x',
@@ -117,14 +117,14 @@ foam.CLASS({
           SecurityAccount.SECURITIES_ACCOUNT, getId())).find(EQ(
           SecurityAccount.DENOMINATION,unit));
         if (sa == null || sa.getId() == 0)
-          return createSubAccount_(x,unit);
-        return sa.getId();
+          return createSecurityAccount_(x,unit);
+        return sa;
       `
     },
     {
-      name: 'createSubAccount_',
+      name: 'createSecurityAccount_',
       documentation: 'creates a subaccount that is denominated with the specified unit',
-      type: 'Long',
+      type: 'net.nanopay.account.SecurityAccount',
       args: [
         {
           name: 'x',
@@ -143,7 +143,7 @@ foam.CLASS({
         sa.setSecuritiesAccount(this.getId());
         DAO accountDAO = (DAO) x.get("accountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
-        return sa.getId();
+        return sa;
       `
     },
   ]
