@@ -278,6 +278,11 @@ public class BillingInvoicesCronTest extends Test {
   }
 
   private void createTransaction(X x, LocalDate created, Account payeeAccount, long feeAmount) {
+    net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
+    h[0] = new net.nanopay.tx.HistoricStatus();
+    h[0].setStatus(TransactionStatus.COMPLETED);
+    h[0].setTimeStamp(getDate(created));
+
     localTransactionDAO.put_(x,
       new Transaction.Builder(x)
         .setSourceAccount(payerAccount.getId())
@@ -285,7 +290,7 @@ public class BillingInvoicesCronTest extends Test {
         .setDestinationAccount(payeeAccount.getId())
         .setDestinationCurrency(payeeAccount.getDenomination())
         .setAmount(1000L)
-        .setCreated(getDate(created))
+        .setStatusHistory(h)
         .setLineItems(new TransactionLineItem[] {
           new InvoicedFeeLineItem.Builder(x)
             .setAmount(feeAmount)
