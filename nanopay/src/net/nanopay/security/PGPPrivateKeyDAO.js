@@ -14,6 +14,7 @@ foam.CLASS({
     'java.io.IOException',
     'java.security.KeyStore',
     'java.security.PrivateKey',
+    'java.security.Security',
     'javax.crypto.Cipher',
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
@@ -97,7 +98,8 @@ foam.CLASS({
             throw new RuntimeException("Private key not found");
           }
 
-          // load secret key from keystore          
+          // load secret key from keystore  
+          Security.addProvider(keyStore.getProvider());        
           KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(privateKeyDAO.getAlias());
           SecretKey key = keyStoreEntry.getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
