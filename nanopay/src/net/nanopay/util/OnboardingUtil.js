@@ -54,13 +54,25 @@ foam.CLASS({
       return onboarding.signingOfficer;
     },
 
+    async function createOnboarding() {
+      return this.user.address.countryId == 'CAD' ?
+          this.BusinessOnboarding.create({
+            userId: this.agent.id,
+            businessId: this.user.id
+          }) :
+          this.USBusinessOnboarding.create({
+            userId: this.agent.id,
+            businessId: this.user.id
+          });
+    },
+
     async function initOnboardingView() {
-      var businessOnboardingInfor = await this.getBusinessOnboarding();
-      var onboardingStatusCheck = businessOnboardingInfor.status !== this.OnboardingStatus.SUBMITTED && this.user.compliance === this.ComplianceStatus.NOTREQUESTED;
-      if ( businessOnboardingInfor && onboardingStatusCheck ) {
+      var businessOnboarding = await this.getBusinessOnboarding();
+      var onboardingStatusCheck = businessOnboarding && businessOnboarding.status !== this.OnboardingStatus.SUBMITTED && this.user.compliance === this.ComplianceStatus.NOTREQUESTED;
+      if ( ! businessOnboarding || onboardingStatusCheck ) {
         this.stack.push({
           class: 'net.nanopay.sme.onboarding.ui.WizardView',
-          data: businessOnboardingInfor
+          data: businessOnboarding ? businessOnboarding : await this.createOnboarding()
         });
       }
       return;
