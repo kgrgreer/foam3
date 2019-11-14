@@ -22,7 +22,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       required: true,
-      section: 'basicInfo',
+      section: 'infoSection',
       validationPredicates: [
         {
           args: ['sudoAsUser'],
@@ -47,7 +47,7 @@ foam.CLASS({
         cal.add(Calendar.HOUR_OF_DAY, 4);
         return cal.getTime();
       `,
-      section: 'basicInfo',
+      section: 'infoSection',
       writePermissionRequired: true
     },
     {
@@ -56,7 +56,7 @@ foam.CLASS({
       of: 'net.nanopay.approval.ApprovalStatus',
       value: 'REQUESTED',
       visibility: 'RO',
-      section: 'basicInfo'
+      section: 'infoSection'
     },
     {
       name: 'savedGroup',
