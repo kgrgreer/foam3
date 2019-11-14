@@ -1341,7 +1341,7 @@ p({
 
         FileInputStream privateKeyIs = new FileInputStream(privateKeyFile);
         PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(
-        PgpPrivateKeyWrapper.findSecretKey(privateKeyIs, paraphrase.toCharArray())); 
+        PGPKeyUtil.findSecretKey(privateKeyIs, paraphrase.toCharArray())); 
         
         if ( privateKey == null ) print("privateKey is null");
 

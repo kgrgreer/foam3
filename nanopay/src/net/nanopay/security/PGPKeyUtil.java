@@ -18,10 +18,13 @@ import java.util.Iterator;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
+import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyDataDecryptorFactoryBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
 import org.bouncycastle.openpgp.operator.PublicKeyDataDecryptorFactory;
+import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.PGPCompressedData;
 import org.bouncycastle.openpgp.PGPCompressedDataGenerator;
 import org.bouncycastle.openpgp.PGPEncryptedData;
@@ -32,6 +35,10 @@ import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPObjectFactory;
 import org.bouncycastle.openpgp.PGPOnePassSignatureList;
 import org.bouncycastle.openpgp.PGPPrivateKey;
+import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
+import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
+import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyEncryptedData;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
@@ -65,6 +72,35 @@ public class PGPKeyUtil {
 
     return key;
   }
+
+  public static PGPPrivateKey findSecretKey(InputStream keyIn, char[] pass) 
+    throws IOException, PGPException, NoSuchProviderException {
+    
+    PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
+      org.bouncycastle.openpgp.PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
+
+    PGPSecretKey pgpSecKey = null;
+    Iterator<PGPSecretKeyRing> rIt = pgpSec.getKeyRings();
+    while ( pgpSecKey == null && rIt.hasNext() ) {
+      PGPSecretKeyRing kRing = rIt.next();
+      Iterator<PGPSecretKey> kIt = kRing.getSecretKeys();
+      while ( pgpSecKey == null && kIt.hasNext() ) {
+        PGPSecretKey k = kIt.next();
+        if ( k.isMasterKey() ) {
+          pgpSecKey = k;
+        }
+      }
+    }
+
+    if ( pgpSecKey == null ) {
+      return null;
+    }
+
+    PBESecretKeyDecryptor a = new JcePBESecretKeyDecryptorBuilder(
+      new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(pass);
+
+    return pgpSecKey.extractPrivateKey(a);
+  }  
 
   public static void encryptFile(X x, File file, String keyAlias, OutputStream out) throws IOException, 
     NoSuchProviderException, PGPException {
