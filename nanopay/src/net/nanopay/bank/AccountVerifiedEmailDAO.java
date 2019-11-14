@@ -57,7 +57,7 @@ public class AccountVerifiedEmailDAO
     ArraySink  flinksAccountsDetailResponses = (ArraySink) flinksAccountsDetailResponseDAO.where(EQ(FlinksAccountsDetailResponse.USER_ID, owner.getId())).select(new ArraySink());
 
     //Doesn't send email if the user uses Flinks/Plaid because they are auto verified.
-    if(plaidItems.getArray().size() != 0 || flinksAccountsDetailResponses.getArray().size() == 0)
+    if(plaidItems.getArray().size() != 0 || flinksAccountsDetailResponses.getArray().size() != 0)
       return getDelegate().put_(x, obj);
       
     // Doesn't send email if the account hasn't been made prior
@@ -75,7 +75,6 @@ public class AccountVerifiedEmailDAO
     // Doesn't send email if group or group.appConfig was null
     if ( config == null )
       return getDelegate().put_(x, obj);
-    
     account = (BankAccount) super.put_(x, obj);
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
