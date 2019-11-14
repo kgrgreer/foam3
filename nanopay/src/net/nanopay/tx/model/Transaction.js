@@ -619,7 +619,7 @@ foam.CLASS({
       visibility: 'RO',
       storageTransient: true,
       expression: function (statusHistory) {
-        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
+        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].getTimeStamp() : null;
       }
     },
     {
