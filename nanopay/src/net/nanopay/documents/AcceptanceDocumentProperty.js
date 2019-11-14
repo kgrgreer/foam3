@@ -4,7 +4,7 @@ foam.CLASS({
   name: 'AcceptanceDocumentProperty',
   extends: 'foam.core.Reference',
 
-  documentation: 'Means for handling the AcceptanceDocument.',
+  documentation: 'Means for handling the AcceptanceDocument. Ex. of usage in SignUp.js(July 2019)',
 
   properties: [
     {

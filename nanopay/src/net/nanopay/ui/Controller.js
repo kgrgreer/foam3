@@ -300,7 +300,7 @@ foam.CLASS({
         });
 
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
+      if ( location.hash != null && location.hash === '#sign-up' )
         return new Promise(function(resolve, reject) {
           self.stack.push({ class: 'foam.u2.view.LoginView',
           mode_: 'SignUp',
@@ -317,19 +317,9 @@ foam.CLASS({
           }, self);
           self.loginSuccess$.sub(resolve);
         });
-      }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'foam.u2.view.LoginView',
-          topBarShow_: false,
-          mode_: 'SignIn',
-          param: {
-            token_: searchparam.get('token'),
-            email: searchparam.get('email'),
-            disableEmail_: searchparam.has('email'),
-            group_: 'basicUser'
-            }
-          }, self);
+        self.stack.push({ class: 'foam.u2.view.LoginView', topBarShow_: false, mode_: 'SignIn' }, self);
         self.loginSuccess$.sub(resolve);
       });
     }

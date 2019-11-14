@@ -496,7 +496,7 @@ foam.CLASS({
     function requestLogin() {
       var self = this;
       var locHash = location.hash;
-      var view = null;
+      var view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
 
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
@@ -522,7 +522,7 @@ foam.CLASS({
           };
         }
 
-        // Process auth token: api redirect for short term login
+        // Process auth token
         if ( locHash === '#auth' && ! self.loginSuccess ) {
           self.client.authenticationTokenService.processToken(null, null,
             searchParams.get('token')).then((result) => {
@@ -534,9 +534,6 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        if ( ! view ) {
-          view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
-        }
         self.stack.push(view, self);
         self.loginSuccess$.sub(resolve);
       });
