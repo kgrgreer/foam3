@@ -238,7 +238,7 @@ foam.CLASS({
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
-        if ( Array.isArray(statusHistory) && !statusHistory.length < 1 )
+        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
           return statusHistory[0].getTimeStamp();
         else
           return null;
