@@ -5,6 +5,7 @@ import foam.dao.DAO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -72,6 +73,14 @@ public class PGPKeyUtil {
 
     return key;
   }
+
+  public static PGPPublicKey publicKeyParse(byte[] publicKeyBytes) throws IOException {
+    InputStream pgpIn = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(new ByteArrayInputStream(publicKeyBytes));
+    PGPObjectFactory pgpFact = new PGPObjectFactory(pgpIn, new JcaKeyFingerprintCalculator());
+    PGPPublicKey publicKey = (PGPPublicKey) pgpFact.nextObject();
+    //PGPPublicKey publicKey = pgpSecRing.getPublicKey();
+    return publicKey;
+}  
 
   public static PGPPrivateKey findSecretKey(InputStream keyIn, char[] pass) 
     throws IOException, PGPException, NoSuchProviderException {
