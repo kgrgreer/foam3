@@ -47,7 +47,7 @@ foam.CLASS({
           
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
           if ( null != business ) {
-            Address businessAddress = business.getBusinessAddress();
+            Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               sendUserNotification(x, business);
             }
@@ -78,8 +78,8 @@ foam.CLASS({
       String               url            = appConfig.getUrl().replaceAll("/$", "");
 
       message.setTo(new String[]{business.getEmail()});
-      String toCountry = business.getBusinessAddress().getCountryId().equals("CA") ? "USA" : "Canada";
-      String toCurrency = business.getBusinessAddress().getCountryId().equals("CA") ? "USD" : "CAD";
+      String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
+      String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
       args.put("business", business.getBusinessName());
       args.put("toCurrency", toCurrency);
       args.put("toCountry", toCountry); 

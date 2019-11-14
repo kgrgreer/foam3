@@ -325,7 +325,7 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: dueDate,
           purchaseOrder: this.data.purchaseOrder,
-          destinationCurrency: this.currencyType.alphabeticCode,
+          destinationCurrency: this.currencyType.id,
           note: this.data.note,
           invoiceFile: this.data.invoiceFile,
           invoiceNumber: this.data.invoiceNumber

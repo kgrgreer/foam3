@@ -63,6 +63,7 @@ public class BusinessInvitationDAO
     }
 
     Invitation invite = (Invitation) obj.fclone();
+    invite.setEmail(invite.getEmail().toLowerCase());
 
     // A legal requirement is that we need to do a compliance check on any
     // user that can make payments, which includes admins and approvers.
@@ -181,10 +182,8 @@ public class BusinessInvitationDAO
       throw new RuntimeException(e);
     }
 
-    String country = business.isPropertySet("businessAddress") ?
-      ((foam.nanos.auth.Address)business.getBusinessAddress()).getCountryId() : (business.isPropertySet("address") ?
-      ((foam.nanos.auth.Address)business.getAddress()).getCountryId() : null);
-    
+    String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
+
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
     url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";

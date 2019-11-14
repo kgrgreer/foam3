@@ -79,16 +79,6 @@ foam.CLASS({
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
-      },
-      validateObj: function(institutionNumber, institution) {
-        if ( institution ) {
-          return;
-        }
-        if ( institutionNumber === '' ) {
-          return 'Institution number required';
-        } else if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) {
-          return 'Invalid institution number.';
-        }
       }
     },
     {

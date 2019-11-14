@@ -6,7 +6,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -77,18 +77,25 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account, String institutionNumber) {
+            Logger logger   = (Logger) x.get("logger");
+            logger.info("TrustAccount.find", "account", account, "institution", institutionNumber);
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }
 
-            Logger logger   = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
             List accountList = ((ArraySink)accounts.select(new ArraySink())).getArray();
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());
 
             for ( int i =0 ; i<accountList.size(); i++ ) {
-              reserveAccs.put( ( (TrustAccount) accountList.get(i) ).findReserveAccount(x) );
+              Account reserveAccount = ((TrustAccount) accountList.get(i)).findReserveAccount(x);
+              if ( reserveAccount != null ) {
+                reserveAccs.put( reserveAccount );
+              } else {
+                logger.warning("ReserveAccount not found for account", accountList.get(i));
+              }
             }
+
             Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.INSTITUTION_NUMBER,institutionNumber));
             List reserveAccsList = ( (ArraySink) reserveAccs.where(
               AND(
@@ -112,7 +119,7 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
-            DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
+            DAO accounts = find(x, sourceUser, currency.getId());
             return (TrustAccount) ((ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
       `);

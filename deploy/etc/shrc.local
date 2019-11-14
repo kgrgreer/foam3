@@ -40,9 +40,6 @@ fi
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xss"`" ]; then
   JAVA_OPTS="${JAVA_OPTS} -Xss1m"
 fi
-if [ -z "`echo "${JAVA_OPTS}" | grep "Xoss"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xoss1m"
-fi
 
 if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*NewSize"`" ]; then
   JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"

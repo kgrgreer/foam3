@@ -26,14 +26,20 @@ foam.CLASS({
         User user = (User) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones Person");
+          String filterRegion = "";
+          Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
+          if ( user.getAddress().getCountryId().equals("CA") ) {
+            filterRegion = "Canada,CANA,CA,CAN";
+          } else if ( user.getAddress().getCountryId().equals("US") ) {
+            filterRegion = "United States,USA,US";
+          }
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(user.getId())
             .setFirstName(user.getFirstName())
             .setSurName(user.getLastName())
             .setFilterLRDFrom(filterLRDFrom)
             .setDateOfBirth(user.getBirthday())
-            .setFilterRegion(user.getAddress().getCountryId())
+            .setFilterRegion(filterRegion)
             .build();
 
           DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
@@ -45,7 +51,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
-                    .setObjId(Long.toString(user.getId()))
+                    .setObjId(user.getId())
                     .setDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")

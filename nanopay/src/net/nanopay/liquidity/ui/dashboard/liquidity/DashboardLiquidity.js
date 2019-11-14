@@ -33,10 +33,7 @@ foam.CLASS({
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
   ],
-
-  exports: [
-    'digitalAccountDAO'
-  ],
+  
 
   css: `
     ^ {
@@ -85,10 +82,10 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'digitalAccountDAO',
+      targetDAOKey: 'filteredAccountDAO',
       name: 'account',
       factory: function() {
-        this.digitalAccountDAO.limit(1).select().then(a => {
+        this.filteredAccountDAO.limit(1).select().then(a => {
           if ( a.array.length ) this.account = a.array[0].id;
         });
         return net.nanopay.account.Account.ID.value;
@@ -96,7 +93,7 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'digitalAccountDAO',
+      name: 'filteredAccountDAO',
       factory: function() {
         return this.accountDAO.where(this.IsClassOf.create({
           targetClass: this.DigitalAccount
@@ -148,7 +145,6 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
-        var self = this;
         return {
           type: 'line',
           options: {
@@ -253,6 +249,7 @@ foam.CLASS({
                 return;
               }
 
+
               var liquiditySetting = await account.liquiditySetting$find;
 
               // Only put liquidity history that spans the range of the balance history.
@@ -273,22 +270,24 @@ foam.CLASS({
                 var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
                   .where(this.EQ(this.Candlestick.KEY, key));
 
-                var first = (await liquidityHistoryDAO
+                var first = await liquidityHistoryDAO
                   .where(this.LTE(this.Candlestick.CLOSE_TIME, minTime))
                   .orderBy(this.DESC(this.Candlestick.CLOSE_TIME))
                   .limit(1)
-                  .select()).array[0];
+                  .select()
+                first = first.array[0];
                 if ( first ) {
                   first = first.clone();
                   first.closeTime = minTime;
                   await dao.put(first);
                 }
 
-                var last = (await liquidityHistoryDAO
+                var last = await liquidityHistoryDAO
                   .where(this.GTE(this.Candlestick.CLOSE_TIME, maxTime))
                   .orderBy(this.Candlestick.CLOSE_TIME)
                   .limit(1)
-                  .select()).array[0];
+                  .select();
+                last = last.array[0]
                 if ( last ) {
                   last = last.clone();
                   last.closeTime = maxTime;

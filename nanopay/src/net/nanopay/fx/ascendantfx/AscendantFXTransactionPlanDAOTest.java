@@ -63,7 +63,6 @@ public class AscendantFXTransactionPlanDAOTest
       Address businessAddress = new Address();
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
-      payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
       payee_.setEmailVerified(true);
     }

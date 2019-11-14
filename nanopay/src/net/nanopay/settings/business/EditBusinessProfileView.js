@@ -389,7 +389,7 @@ foam.CLASS({
       name: 'displayedPhoneNumber',
       value: '+1',
       factory: function() {
-        return this.user.businessPhone ? '+1 ' + this.user.businessPhone.number : '';
+        return this.user.phone ? '+1 ' + this.user.phone.number : '';
       }
     },
     {
@@ -402,7 +402,7 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.user.businessPhone ? this.user.businessPhone.number : '';
+        return this.user.phone ? this.user.phone.number : '';
       },
       postSet: function(oldValue, newValue){
         this.displayPhoneNumber = newValue;
@@ -484,7 +484,7 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.user.businessAddress.countryId ) return this.user.businessAddress.countryId;
+        if ( this.user.address.countryId ) return this.user.address.countryId;
         return 'CA';
       }
     },
@@ -492,21 +492,21 @@ foam.CLASS({
       class: 'String',
       name: 'streetNumberField',
       factory: function() {
-        if ( this.user.businessAddress.streetNumber ) return this.user.businessAddress.streetNumber;
+        if ( this.user.address.streetNumber ) return this.user.address.streetNumber;
       }
     },
     {
       class: 'String',
       name: 'streetNameField',
       factory: function() {
-        if ( this.user.businessAddress.streetName ) return this.user.businessAddress.streetName;
+        if ( this.user.address.streetName ) return this.user.address.streetName;
       }
     },
     {
       class: 'String',
       name: 'suiteField',
       factory: function() {
-        if ( this.user.businessAddress.suite ) return this.user.businessAddress.suite;
+        if ( this.user.address.suite ) return this.user.address.suite;
       }
     },
     {
@@ -523,21 +523,21 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.user.businessAddress.regionId ) return this.user.businessAddress.regionId;
+        if ( this.user.address.regionId ) return this.user.address.regionId;
       }
     },
     {
       class: 'String',
       name: 'cityField',
       factory: function() {
-        if ( this.user.businessAddress.city ) return this.user.businessAddress.city;
+        if ( this.user.address.city ) return this.user.address.city;
       }
     },
     {
       class: 'String',
       name: 'postalCodeField',
       factory: function() {
-        if ( this.user.businessAddress.postalCode ) return this.user.businessAddress.postalCode;
+        if ( this.user.address.postalCode ) return this.user.address.postalCode;
       }
     },
     {
@@ -736,19 +736,19 @@ foam.CLASS({
           return;
         }
         this.user.businessName = this.businessNameField;
-        this.user.businessPhone.number = this.phoneNumberField;
+        this.user.phone.number = this.phoneNumberField;
         this.user.website = this.websiteField;
         this.user.businessTypeId = this.businessTypeField;
         this.user.businessRegistrationNumber = this.businessRegistrationNumberField;
         this.user.businessRegistrationAuthority = this.registrationAuthorityField;
         this.user.businessRegistrationDate = this.registrationDateField;
-        this.user.businessAddress.countryId = this.countryField;
-        this.user.businessAddress.streetNumber = this.streetNumberField;
-        this.user.businessAddress.streetName = this.streetNameField;
-        this.user.businessAddress.suite = this.suiteField;
-        this.user.businessAddress.regionId = this.provinceField;
-        this.user.businessAddress.city = this.cityField;
-        this.user.businessAddress.postalCode = this.postalCodeField;
+        this.user.address.countryId = this.countryField;
+        this.user.address.streetNumber = this.streetNumberField;
+        this.user.address.streetName = this.streetNameField;
+        this.user.address.suite = this.suiteField;
+        this.user.address.regionId = this.provinceField;
+        this.user.address.city = this.cityField;
+        this.user.address.postalCode = this.postalCodeField;
         this.user.businessProfilePicture = this.businessProfilePicture;
         this.userDAO.put(this.user).then(function(a){
           if(!a){

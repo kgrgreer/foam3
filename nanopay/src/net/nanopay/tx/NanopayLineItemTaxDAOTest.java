@@ -60,7 +60,6 @@ public class NanopayLineItemTaxDAOTest
       businessAddress.setCity("Toronto");
       businessAddress.setCountryId("CA");
       businessAddress.setRegionId("AB");
-      payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
     payee_ = (User) payee_.fclone();

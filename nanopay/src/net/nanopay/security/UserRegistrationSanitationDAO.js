@@ -40,8 +40,8 @@ foam.CLASS({
           .setDesiredPassword(user.getDesiredPassword())
           .setOrganization(user.getOrganization())
           .setSignUpToken(user.getSignUpToken())
-          .setBusinessAddress(user.getBusinessAddress())
           .setAddress(user.getAddress())
+          .setPhone(user.getPhone())
           .setBirthday(user.getBirthday())
 
           // TODO: Remove the need for this property.

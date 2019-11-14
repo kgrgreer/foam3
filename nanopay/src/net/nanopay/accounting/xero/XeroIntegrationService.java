@@ -26,7 +26,7 @@ import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
-import net.nanopay.model.Currency;
+import foam.core.Currency;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -133,8 +133,8 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         .setPostalCode(xeroAddress.getPostalCode() != null ? xeroAddress.getPostalCode() : "")
         .setCountryId(country != null ? country.getCode() : null)
         .setRegionId(region != null ? region.getCode() : null)
-        .setType(xeroAddress.getAddressType().value())
-        .setVerified(true)
+        // .setType(xeroAddress.getAddressType().value())
+        // .setVerified(true)
         .build();
 
       newContact.setBusinessAddress(nanoAddress);

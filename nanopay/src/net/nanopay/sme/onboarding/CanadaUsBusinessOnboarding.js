@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboarding',
 
-  ids: ['userId'],
+  ids: ['userId', 'businessId'],
 
   implements: [
     'foam.core.Validatable',
@@ -31,6 +31,7 @@ foam.CLASS({
 
   tableColumns: [
     'userId',
+    'businessId',
     'status',
     'created',
     'lastModified'
@@ -51,11 +52,11 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      isAvailable: function(signingOfficer) { return signingOfficer; }
     },
   ],
 
-  properties: [ 
+  properties: [
     {
       name: 'welcome',
       section: 'gettingStartedSection',
@@ -79,16 +80,22 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        this.userId$find.then((user) => {
-          if ( this.userId != n ) return;
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
+        try {
+          this.userId$find.then((user) => {
+            if ( this.userId != n ) return;
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+          });
+        } catch (_) {
+          // ignore error, this is here to catch the fact that userId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        }
       },
       tableCellFormatter: function(id, o) {
         var e = this.start('span').add(id).end();
-        o.userId$find.then(function(b) {
-          e.add(' - ', b.businessName || b.organization);
+        o.userId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -99,12 +106,25 @@ foam.CLASS({
       label: 'Business Name',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        var m = foam.mlang.Expressions.create();
-        this.businessId$find.then((business) => {
-          business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
-          .then((o) => {
-            this.signingOfficer = o && o.id != 0 ;
+        try {
+          var m = foam.mlang.Expressions.create();
+          this.businessId$find.then((business) => {
+            if ( ! business ) return;
+            business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
+            .then((o) => {
+              this.signingOfficer = o && o.id != 0;
+            });
           });
+        } catch (_) {
+          // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        }
+      },
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.businessId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -134,7 +154,7 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['signingOfficer','businessFormationDate'],
+          args: ['signingOfficer', 'businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
@@ -144,7 +164,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Must be at least one day in the past.'
         }
       ]
     },
@@ -155,7 +175,6 @@ foam.CLASS({
       name: 'countryOfBusinessFormation',
       documentation: 'Country or Jurisdiction of Formation or Incorporation.',
       view: function(args, X) {
-        var self = this;
         var m = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.ChoiceView',

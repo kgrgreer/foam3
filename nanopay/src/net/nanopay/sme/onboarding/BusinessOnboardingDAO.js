@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -48,12 +49,12 @@ foam.CLASS({
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
-        
+
         BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
         if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
-        
+
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
@@ -66,25 +67,36 @@ foam.CLASS({
         }
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+        user = (User) user.fclone();
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+        user.setAddress(businessOnboarding.getAddress());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday( businessOnboarding.getBirthday() );
-          user.setAddress(businessOnboarding.getAddress());
-
+          user.setBirthday(businessOnboarding.getBirthday());
           // Agreenments (tri-party, dual-party & PEP/HIO)
+
+          if ( businessOnboarding.getPEPHIORelated() ) {
+            Notification notification = new Notification();
+            notification.setEmailIsEnabled(true);
+            notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
+                                  business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
+            notification.setNotificationType("A PEP/HIO related user has been Onboarded");
+            notification.setGroupId("fraud-ops");
+            localNotificationDAO.put(notification);
+          }
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          
+
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
@@ -92,13 +104,12 @@ foam.CLASS({
           // Update the business because the put to signingOfficerJunctionDAO
           // will have updated the email property of the business.
           business = (Business) localBusinessDAO.find(business.getId());
+          business = (Business) business.fclone();
 
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
-          business.setBusinessPhone(businessOnboarding.getPhone());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());

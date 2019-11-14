@@ -44,7 +44,7 @@ import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
 import net.nanopay.model.Branch;
-import net.nanopay.model.Currency;
+import foam.core.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
@@ -157,6 +157,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
+    quote = (FXQuote) quote.fclone();
 
     // Check FXDeal has not expired
     validateDealExpiryDate(quote.getExpiryTime());
@@ -479,14 +480,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
 
-      if ( null != user.getBusinessAddress() ) {
-        payee.setPayeeAddress1(user.getBusinessAddress().getAddress());
-        payee.setPayeeCity(user.getBusinessAddress().getCity());
-        Region region = user.getBusinessAddress().findRegionId(x);
+      if ( null != user.getAddress() ) {
+        payee.setPayeeAddress1(user.getAddress().getAddress());
+        payee.setPayeeCity(user.getAddress().getCity());
+        Region region = user.getAddress().findRegionId(x);
         if ( region != null ) payee.setPayeeProvince(region.getCode());
-        Country country = user.getBusinessAddress().findCountryId(x);
+        Country country = user.getAddress().findCountryId(x);
         if ( country != null ) payee.setPayeeCountryID(country.getCode());
-        payee.setPayeePostalCode(user.getBusinessAddress().getPostalCode());
+        payee.setPayeePostalCode(user.getAddress().getPostalCode());
       }
 
       if ( null != bankAccount.getBankAddress() ) {

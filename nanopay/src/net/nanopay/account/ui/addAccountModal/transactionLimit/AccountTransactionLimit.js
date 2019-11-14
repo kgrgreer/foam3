@@ -8,7 +8,7 @@ foam.CLASS({
 
     properties: [
       {
-        class: 'Currency',
+        class: 'UnitValue',
         name: 'maxTransactionSize',
         label: 'The maximum transaction size allowed from this account is...',
         documentation: `

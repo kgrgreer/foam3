@@ -3,12 +3,10 @@ package net.nanopay.tx.test;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
-import foam.nanos.ruler.Operations;
-import foam.nanos.ruler.RulerDAO;
-import foam.nanos.ruler.RulerProbe;
-import foam.nanos.ruler.TestedRule;
+import foam.nanos.ruler.*;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
@@ -34,7 +32,7 @@ public class TransactionLimitTest extends Test {
   public void runTest(X x) {
     createAccounts(x);
     populateSenderAccount(x);
-    DAO ruleDAO = new SequenceNumberDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
+    DAO ruleDAO = new GUIDDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
     x = x.put("ruleDAO", ruleDAO);
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO = new RulerDAO(x, txnDAO, "transactionDAO");
@@ -96,7 +94,7 @@ public class TransactionLimitTest extends Test {
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txDAO.put_(x, tx2),
-      "This transaction exceeds your daily transaction limit. Your current available limit is 0.1 dollars. If you require further assistance, please contact us. ",
+      "This transaction exceeds your daily transaction limit. Your current available limit is $0.10. If you require further assistance, please contact us. ",
       RuntimeException.class), "next transaction for 100L throws exception");
 
     DigitalTransaction tx3 = new DigitalTransaction();
@@ -109,6 +107,7 @@ public class TransactionLimitTest extends Test {
 
   public void testUpdatedRule(X x) {
     BusinessLimit r = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(rule);
+    r = (BusinessLimit) r.fclone();
     r.setLimit(20000L);
     r = (BusinessLimit) ((DAO) x.get("ruleDAO")).put(r);
     DAO txDAO = (DAO) x.get("localTransactionDAO");
@@ -158,6 +157,11 @@ public class TransactionLimitTest extends Test {
     BusinessLimit limitRule = new BusinessLimit();
     limitRule.setLimit(10000L);
     limitRule.setDaoKey("transactionDAO");
+    RuleGroup rg = new RuleGroup();
+    rg.setId("limits");
+    DAO rgDAO = ((DAO) (x.get("ruleGroupDAO")));
+    rgDAO.put(rg);
+    limitRule.setRuleGroup("limits");
     limitRule.setBusiness(sender_.getOwner());
     rule = (BusinessLimit) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
   }

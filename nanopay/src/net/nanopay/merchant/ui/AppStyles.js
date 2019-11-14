@@ -22,6 +22,7 @@ foam.CLASS({
       -ms-user-select: none;
       -khtml-user-select: none;
       -webkit-user-select: none;
+      user-select: none;
       -webkit-touch-callout: none;
     }
     button {

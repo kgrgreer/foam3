@@ -170,11 +170,11 @@ foam.CLASS({
         self.businessTypeName = a.name;
       });
 
-      this.regionDAO.find(this.viewData.user.businessAddress.regionId).then(function(a) {
+      this.regionDAO.find(this.viewData.user.address.regionId).then(function(a) {
         self.businessRegion = a.name;
       });
 
-      this.countryDAO.find(this.viewData.user.businessAddress.countryId).then(function(a) {
+      this.countryDAO.find(this.viewData.user.address.countryId).then(function(a) {
         self.businessCountry = a.name;
       });
 
@@ -191,7 +191,7 @@ foam.CLASS({
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessName).end()
           .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-          .start('p').add(this.viewData.user.businessPhone.number).end()
+          .start('p').add(this.viewData.user.phone.number).end()
           .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.website).end()
           .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
@@ -211,7 +211,7 @@ foam.CLASS({
                 + a.regionId + ', '
                 + a.countryId + ', '
                 + a.postalCode;
-          })(this.viewData.user.businessAddress))
+          })(this.viewData.user.address))
           .addClass('addressDiv').end()
           .start('p').add(this.BusiLogoLabel).addClass('wizardBoldLabel').end()
           .tag({

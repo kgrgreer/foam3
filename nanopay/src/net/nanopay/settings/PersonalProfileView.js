@@ -177,43 +177,6 @@
     ^ .disabled {
       color: lightgray;
     }
-    ^ .originalPass-Text{
-      width: 118px;
-      height: 16px;
-      margin-bottom: 8px;
-      margin-right: 205px;
-    }
-    ^ .newPass-Text{
-      width: 118px;
-      height: 16px;
-      margin-right: 205px;
-    }
-    ^ .confirmPass-Text{
-      width: 119px;
-      height: 16px;
-    }
-    ^ .originalPass-Input{
-      width: 303px;
-      height: 40px;
-      margin-right: 20px;
-      float: left;
-    }
-    ^ .newPass-Input{
-      width: 303px;
-      height: 40px;
-      margin-right: 20px;
-      float: left;
-    }
-    ^ .confirmPass-Input{
-      width: 303px;
-      height: 40px;
-      float: left;
-    }
-    ^ .changePass-Text{
-      width: 164px;
-      height: 20px;
-      margin-right: 621px;
-    }
     ^ .emailPref-Text{
       width: 185px;
       height: 20px;
@@ -371,21 +334,6 @@
     },
     {
       class: 'String',
-      name: 'originalPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
-    },
-    {
-      class: 'String',
-      name: 'newPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
-    },
-    {
-      class: 'String',
-      name: 'confirmPassword',
-      view: { class: 'foam.u2.view.PasswordView' }
-    },
-    {
-      class: 'String',
       name: 'twoFactorQrCode'
     },
     {
@@ -402,11 +350,6 @@
     { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
     { name: 'JobTitleLengthError', message: 'Job title is too long' },
     { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'emptyOriginal', message: 'Please enter your original password'},
-    { name: 'emptyPassword', message: 'Please enter your new password' },
-    { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'passwordMismatch', message: 'Passwords do not match' },
-    { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
@@ -468,17 +411,7 @@
       this
       .addClass(this.myClass())
       .start(changePasswordProfile)
-        .start('div')
-          .start('h2').add("Original Password").addClass('originalPass-Text').end()
-          .start('h2').add("New Password").addClass('newPass-Text').end()
-          .start('h2').add("Confirm Password").addClass('confirmPass-Text').end()
-        .end()
-        .start('div')
-          .start(this.ORIGINAL_PASSWORD).addClass('originalPass-Input').end()
-          .start(this.NEW_PASSWORD).addClass('newPass-Input').end()
-          .start(this.CONFIRM_PASSWORD).addClass('confirmPass-Input').end()
-        .end()
-        .start(this.UPDATE_PASSWORD).addClass('update-BTN').end()
+        .start().tag( { class: foam.nanos.auth.ChangePasswordView, horizontal: true, topBarShow: false } ).end()
       .end();
 
       this
@@ -662,53 +595,9 @@
         this.user.email = this.email;
         this.user.phone.number = this.phoneCode + " " + this.phone;
         this.userDAO.put(this.user).then(function (result) {
-          // copy new user, clear password fields, show success
+          // copy new user, show success
           self.user.copyFrom(result);
           self.add(self.NotificationMessage.create({ message: self.informationUpdated }));
-        })
-        .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
-      }
-    },
-    {
-      name: 'updatePassword',
-      label: 'Update',
-      code: function (X) {
-        var self = this;
-
-        // check if original password entered
-        if ( ! this.originalPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
-          return;
-        }
-
-        // check if new password entered
-        if ( ! this.newPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
-          return;
-        }
-
-        // check if confirmation entered
-        if ( ! this.confirmPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
-          return;
-        }
-
-        // check if passwords match
-        if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
-          return;
-        }
-
-        // update password
-        this.auth.updatePassword(null, this.originalPassword, this.newPassword).then(function (result) {
-          // copy new user, clear password fields, show success
-          self.user.copyFrom(result);
-          self.originalPassword = null;
-          self.newPassword = null;
-          self.confirmPassword = null;
-          self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
         })
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));

@@ -12,7 +12,7 @@ foam.CLASS({
     net.nanopay.model.Business.ID,
     net.nanopay.model.Business.BUSINESS_NAME,
     net.nanopay.model.Business.ORGANIZATION,
-    net.nanopay.model.Business.BUSINESS_ADDRESS,
+    net.nanopay.model.Business.ADDRESS,
     net.nanopay.model.Business.EMAIL
   ].map((p) => p.clone().copyFrom({ visibility: foam.u2.Visibility.RO })),
 
@@ -27,9 +27,9 @@ foam.CLASS({
             setId(business.getId());
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
-            setBusinessAddress(business.getBusinessAddress());
-// Emails are not to be public.  CPF-1523
-//            setEmail(business.getEmail());
+            setAddress(business.getAddress());
+            // Emails are not to be public.  CPF-1523
+            // setEmail(business.getEmail());
           }
         `);
       },

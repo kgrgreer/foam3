@@ -148,44 +148,60 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
-      getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
-       oldTxn.getStatus() == TransactionStatus.PAUSED || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) ) {
+      if ( getStatus() == TransactionStatus.COMPLETED &&
+           oldTxn == null ) {
         return true;
       }
-      return false;
-      `
-    },
-    {
-      documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
+
+      if ( getStatus() != TransactionStatus.PENDING ) {
+        return false;
+      }
+
+      if ( oldTxn == null ) {
+        if ( SafetyUtil.isEmpty(getParent()) ) {
+          return true;
+        } else {
+          Transaction parent = (Transaction) ((DAO) x.get("transactionDAO")).find(getParent());
+          return parent.getStatus() == TransactionStatus.COMPLETED;
         }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-        getStatus() == TransactionStatus.DECLINED &&
-        ( oldTxn != null &&
-           ( oldTxn.getStatus() == TransactionStatus.SENT ||
-             oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-             oldTxn.getStatus() == TransactionStatus.PENDING )
-        ) ||
-        getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
-        getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
+      } else if ( oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
+                  oldTxn.getStatus() == TransactionStatus.PAUSED ||
+                  oldTxn.getStatus() == TransactionStatus.SCHEDULED ) {
         return true;
       }
+
       return false;
       `
     },
+    // {
+    //   documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
+    //   name: 'canReverseTransfer',
+    //   args: [
+    //     {
+    //       name: 'x',
+    //       type: 'Context'
+    //     },
+    //     {
+    //       name: 'oldTxn',
+    //       type: 'net.nanopay.tx.model.Transaction'
+    //     }
+    //   ],
+    //   type: 'Boolean',
+    //   javaCode: `
+    //   if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
+    //     getStatus() == TransactionStatus.DECLINED &&
+    //     ( oldTxn != null &&
+    //        ( oldTxn.getStatus() == TransactionStatus.SENT ||
+    //          oldTxn.getStatus() == TransactionStatus.COMPLETED ||
+    //          oldTxn.getStatus() == TransactionStatus.PENDING )
+    //     ) ||
+    //     getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
+    //     getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
+    //     return true;
+    //   }
+    //   return false;
+    //   `
+    // },
     {
       name: 'createTransfers',
       args: [
@@ -211,9 +227,20 @@ foam.CLASS({
               all.add(transfers[j]);
             }
           }
+
+          BankAccount bankAccount = (BankAccount) findDestinationAccount(x);
+          if ( bankAccount == null ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (findDestinationAccount).", this);
+            bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(getDestinationAccount());
+            if ( bankAccount == null ) {
+              logger.error(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (localAccountDAO)", this);
+            }
+          }
+          TrustAccount trustAccount = TrustAccount.find(x, bankAccount, getInstitutionNumber());
           all.add(new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-Out")
-            .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
+            .setDescription(trustAccount.getName()+" Cash-Out")
+            .setAccount(trustAccount.getId())
             .setAmount(getTotal())
             .build());
           all.add(new Transfer.Builder(x)

@@ -9,13 +9,17 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
+  imports: [
+    'branchDAO',
+    'institutionDAO'
+  ],
+
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'net.nanopay.payment.Institution',
-    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -47,6 +51,17 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      value: 'CAD',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
+    },
+    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
@@ -61,8 +76,10 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
@@ -75,11 +92,57 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((institution, institutionDAO) => {
+            return institutionDAO.find(institution).then((result) => {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                  .end()
+                  .start('span').add(`${result.name} |`).end();
+              }
+            });
+          }))
+        .end()
+        .start()
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
+              }
+            });
+          }))
+        .end()
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
+        .end();
+      }
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
-      permissionRequired: true,
+      writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
         var colour = '#545d87';
@@ -130,25 +193,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'denomination',
-      documentation: `The unit of measure of the payment type . The payment system 
-        can handle denominations of any type, from mobile minutes to stocks.  In this case, 
-        the type of currency associated with the bank account.`,
-      label: 'Currency',
-      aliases: ['currencyCode', 'currency'],
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          placeholder: '--',
-          objToChoice: function(currency) {
-            return [currency.id, currency.name];
-          }
-        });
-      },
-    },
-    {
-      class: 'String',
       name: 'institutionNumber',
       documentation: `In relation to the institute number of the Bank Account, 
         this provides backward compatibility for mobile call flow. The 
@@ -179,7 +223,7 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify 
         ownership of the bank account.`,
       value: 0,
-      permissionRequired: true,
+      writePermissionRequired: true
     },
     {
       class: 'DateTime',
@@ -223,7 +267,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
       class: 'FObjectProperty',
@@ -233,7 +276,6 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
     }
   ],
   methods: [
@@ -347,7 +389,7 @@ foam.CLASS({
                       ).limit(2)
                       .select(new ArraySink())).getArray();
                   if ( currencies.size() == 1 ) {
-                    denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                    denomination = ((Currency) currencies.get(0)).getId();
                   } else if ( currencies.size() > 1 ) {
                     logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
                   }

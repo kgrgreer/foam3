@@ -9,7 +9,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.DigitalAccountService',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
 
     'foam.core.FObject',
     'foam.core.X',
@@ -43,10 +43,17 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      targetDAOKey: 'currencyDAO',
       name: 'denomination',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
-    }
+    },
   ],
 
   actions: [
@@ -91,7 +98,7 @@ foam.CLASS({
                 .where(EQ(Currency.COUNTRY, country)).limit(2)
                 .select(new ArraySink())).getArray();
               if ( currencies.size() == 1 ) {
-                denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                denomination = ((Currency) currencies.get(0)).getId();
               } else if ( currencies.size() > 1 ) {
                 logger.warning(DigitalAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
               }

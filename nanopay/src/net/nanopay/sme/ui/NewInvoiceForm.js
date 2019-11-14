@@ -69,7 +69,6 @@ foam.CLASS({
       height: 40px;
       border-radius: 0 4px 4px 0;
       outline: none;
-      padding-left: 5px;
       padding-right: 5px;
     }
     ^ .invoice-amount-input {
@@ -111,6 +110,9 @@ foam.CLASS({
     ^ .foam-u2-ActionView-CurrencyChoice > span {
       font-size: 10px !important;
     }
+    ^ .foam-u2-CurrencyView {
+      width: 100%;
+    }
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       position: relative;
       right: 0;
@@ -122,6 +124,7 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-action {
       height: 36px;
       padding: 8px 13px;
+      background-color: #ffffff;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       background-color: #ffffff;
@@ -423,7 +426,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
+                      this.invoice.destinationCurrency = this.currencyType.id;
                     })
                   .end()
                 .endContext()
@@ -511,7 +514,10 @@ foam.CLASS({
                 'image/png': 'PNG',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
                 'application/msword': 'DOC',
-                'application/pdf': 'PDF'
+                'application/pdf': 'PDF',
+                'application/csv': 'CSV',
+                'application/vnd.ms-excel': 'XLS',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX'
               }
             }).end()
             .start().addClass('input-wrapper')
@@ -549,8 +555,8 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.alphabeticCode;
-      this.checkUser(this.currencyType.alphabeticCode);
+      this.selectedCurrency = this.currencyType.id;
+      this.checkUser(this.currencyType.id);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';

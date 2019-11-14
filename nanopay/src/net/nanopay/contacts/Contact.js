@@ -15,7 +15,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
@@ -165,9 +164,14 @@ foam.CLASS({
         if created while registering the Contact.`
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      factory: function() {
+        return this.Address.create();
+      }
     },
     {
       class: 'foam.core.Enum',
@@ -183,6 +187,16 @@ foam.CLASS({
         If the email address is not verified the transaction validation logic will 
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'businessPhone',
+      documentation: 'The phone number of the business.',
+      factory: function() {
+        return this.Phone.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
     }
   ],
 
@@ -369,6 +383,28 @@ foam.CLASS({
         ) {
           throw new AuthorizationException();
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
+        if ( this.lastName ) return this.lastName;
+        if ( this.firstName ) return this.firstName;
+        return '';
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) ) return this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName();
+        return "";
       `
     }
   ]

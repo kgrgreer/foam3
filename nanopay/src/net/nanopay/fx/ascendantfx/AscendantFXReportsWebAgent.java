@@ -2,7 +2,9 @@ package net.nanopay.fx.ascendantfx;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Image;
 import foam.blob.Blob;
+import foam.blob.FileBlob;
 import foam.blob.BlobService;
 import foam.blob.IdentifiedBlob;
 import foam.blob.ProxyBlobService;
@@ -21,9 +23,15 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
+import net.nanopay.documents.AcceptanceDocument;
+import net.nanopay.documents.UserAcceptanceDocument;
 import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.plaid.PlaidResultReport;
 import org.apache.commons.io.FileUtils;
@@ -34,8 +42,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -121,7 +131,30 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateCompanyInfo(X x, Business business) {
     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
+    DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
+    DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+    DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
+
+    ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO.where(
+      AND(
+        EQ( BusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(BusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(new ArraySink());
+    canadaUsBusinessOnboardingDAO.where(
+      AND(
+        EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(businessOnBoardingSink);
+    uSBusinessOnboardingDAO.where(
+      AND(
+        EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
+        EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
+        EQ(USBusinessOnboarding.SIGNING_OFFICER, true)
+      )).select(businessOnBoardingSink);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -129,21 +162,21 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     boolean isTypeSet, isBusinessSet, isBusinessAddressSet;
     isTypeSet = type != null;
     isBusinessSet = business != null;
-    isBusinessAddressSet = isBusinessSet && business.getBusinessAddress() != null;
+    isBusinessAddressSet = isBusinessSet && business.getAddress() != null;
     String businessType  = isTypeSet ? type.getName() : "-";
     String businessName  = isBusinessSet ? business.getBusinessName() : "-";;
     String operatingName = isBusinessSet ? business.getOperatingBusinessName() : "-";;
-    String streetAddress = isBusinessAddressSet ? business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName() : "-";;
-    String city = isBusinessAddressSet ? business.getBusinessAddress().getCity() : "-";;
-    String province = isBusinessAddressSet ? business.getBusinessAddress().getRegionId() : "-";;
-    String country = isBusinessAddressSet ? business.getBusinessAddress().getCountryId() : "-";;
-    String postalCode = isBusinessAddressSet ? business.getBusinessAddress().getPostalCode() : "-";;
+    String streetAddress = isBusinessAddressSet ? business.getAddress().getStreetNumber() + " " + business.getAddress().getStreetName() : "-";
+    String city = isBusinessAddressSet ? business.getAddress().getCity() : "-";
+    String province = isBusinessAddressSet ? business.getAddress().getRegionId() : "-";
+    String country = isBusinessAddressSet ? business.getAddress().getCountryId() : "-";
+    String postalCode = isBusinessAddressSet ? business.getAddress().getPostalCode() : "-";
     String businessReg = business.getBusinessRegistrationDate() != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").format(business.getBusinessRegistrationDate()) : "-";
 
     String businessPhoneNumber;
-    if ( isBusinessSet && business.getBusinessPhone() != null ) {
-      if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
-        businessPhoneNumber = business.getBusinessPhone().getNumber();
+    if ( isBusinessSet && business.getPhone() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getPhone().getNumber()) ) {
+        businessPhoneNumber = business.getPhone().getNumber();
       } else {
         businessPhoneNumber = "N/A";
       }
@@ -185,20 +218,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       sourceOfFunds = "N/A";
     }
 
-    String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
     String baseCurrency;
-    String internationalTransactions;
+    String internationalTransactions = "No";
     String purposeOfTransactions;
     String annualDomesticTransactionAmount;
     String annualDomesticVolume;
     String annualRevenue;
     String firstTradeDateDomestic;
-    
+
+    java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
 
     if ( isBusinessSet && business.getSuggestedUserTransactionInfo() != null ) {
-      internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
-
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
@@ -257,7 +288,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO this is hardcoded for Currency choice AFEX wants confirmation of. Future this should be dynamically set.
-      list.add(new ListItem("Business Registration: " + businessReg));
+      if ( !country.equals("US") ) list.add(new ListItem("Business Registration Time: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {
@@ -278,7 +309,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
-      list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
         String otherPurposeOfTransactions;
@@ -294,13 +324,50 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
-      list.add(new ListItem("Domestic transfers: "));
+      list.add(new ListItem("Transfers: "));
       List domesticSubList = new List(true, false, 20);
       domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
-      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + annualDomesticTransactionAmount));
-      domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
-      domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
+      domesticSubList.add(new ListItem("Annual Number of Transactions: " + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
+      domesticSubList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
+
+      java.util.List<Long> userIds = new ArrayList<Long>();
+      if( onboardings.size() != 0) {
+        list.add(new ListItem("Compliance related timespans:"));
+        for(Object onboarding: onboardings) {
+
+          if (onboarding instanceof CanadaUsBusinessOnboarding || onboarding instanceof USBusinessOnboarding) {
+            internationalTransactions = "Yes";
+          }
+
+          long newUserId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getUserId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getUserId() : ((BusinessOnboarding) onboarding).getUserId());
+          long businessId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getBusinessId() : ((BusinessOnboarding) onboarding).getBusinessId());
+
+          if(!userIds.contains(newUserId)) {
+            ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
+              EQ(UserAcceptanceDocument.USER, newUserId)
+            ).select(new ArraySink());
+            java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
+
+
+            for (UserAcceptanceDocument doc : documents) {
+
+              User user = doc.findUser(x);
+              AcceptanceDocument accDoc = doc.findAcceptedDocument(x);
+
+              list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
+                accDoc.getTitle(),
+                user.label(),
+                businessId,
+                business.getAddress().getCountryId(),
+                doc.getLastModified())));
+            }
+            userIds.add(newUserId);
+          }
+        }
+      }
+
       document.add(Chunk.NEWLINE);
       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
       document.add(Chunk.NEWLINE);
@@ -406,6 +473,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       phoneNumber = signingOfficer.getPhone().getNumber();
     }
     String email = signingOfficer.getEmail();
+    String suiteNumber = signingOfficer.getAddress().getSuite();
     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
     String city = signingOfficer.getAddress().getCity();
     String province = signingOfficer.getAddress().getRegionId();
@@ -420,7 +488,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
-    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]SigningOfficer" + Long.toString(number) + ".pdf";
+    String path = "/tmp/ComplianceReport/[" + (business.getBusinessName()).replace("/", "") + "]SigningOfficer" + Long.toString(number) + ".pdf";
 
     try {
       Document document = new Document();
@@ -437,6 +505,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
+      list.add(new ListItem("Suite No.: " + suiteNumber));
       list.add(new ListItem("Residential street address: " + streetAddress));
       list.add(new ListItem("City: " + city));
       list.add(new ListItem("State/Province: " + province));
@@ -497,7 +566,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateBeneficialOwners(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path = "/tmp/ComplianceReport/[" + businessName + "]BeneficialOwners.pdf";
 
     try {
@@ -526,6 +595,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
+          String suiteNumber = beneficialOwner.getAddress().getSuite();
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
           String province = beneficialOwner.getAddress().getRegionId();
@@ -541,6 +611,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
+          list.add(new ListItem("Suite No: " + suiteNumber));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
@@ -570,7 +641,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File generateCompanyDirectorsList(X x, Business business) {
     if ( null == business ) return null;
     Logger logger = (Logger) x.get("logger");
-    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]Directors.pdf";
+    String path = "/tmp/ComplianceReport/[" + (business.getBusinessName()).replace("/", "") + "]Directors.pdf";
     try {
       Document document = new Document();
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
@@ -579,8 +650,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.add(Chunk.NEWLINE);
       List list = new List(List.UNORDERED);
-      for ( String directorName : business.getBusinessDirectors()) {
-        list.add(new ListItem(directorName));
+      for ( int i = 0; i < business.getBusinessDirectors().length; i++ ) {
+        BusinessDirector businessDirector = (BusinessDirector) business.getBusinessDirectors()[i];
+        list.add(new ListItem(businessDirector.getFirstName() + " " + businessDirector.getLastName()));
       }
       document.add(list);
       document.add(Chunk.NEWLINE);
@@ -600,13 +672,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
+    Image img = null;
 
     Logger logger = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
 
     BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
       .find(AND(
@@ -701,6 +774,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        try {
+          foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+          IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
+          Blob blob = getDelegate().find_(getX(), voidCheck.getId());
+          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+        } catch (Exception e) {
+          logger.error(e);
+        }
         Date createDate = usBankAccount.getCreated();
         String bankAddedDate = sdf.format(createDate);
         list.add(new ListItem("PAD agreement date: " + bankAddedDate));
@@ -708,6 +789,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
+      if ( img != null ) {
+        document.add(new ListItem("Bank void check:"));
+        document.add(img);
+      }
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
@@ -742,7 +827,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File getBusinessDoc(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
     try {
@@ -788,7 +873,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
   private File getSigningOfficerID(X x, Business business, User so, int number) {
     Logger logger  = (Logger) x.get("logger");
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
 
@@ -822,7 +907,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File getBeneficialOwnersDoc(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
 
     String path;
     Blob blob;
@@ -873,12 +958,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       return null;
     }
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String path;
     Blob blob;
     try {
       if ( bankAccount instanceof USBankAccount) {
-
 
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
         foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
@@ -910,7 +994,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setContentType("multipart/form-data");
 
-    String businessName = business.getBusinessName();
+    String businessName = (business.getBusinessName()).replace("/", "");
     String downloadName = "[" + businessName + "]ComplianceDocs.zip";
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");

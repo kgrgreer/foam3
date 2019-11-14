@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
@@ -50,6 +51,7 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
+        business = (Business) business.fclone();
         business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
         business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
@@ -67,6 +69,20 @@ foam.CLASS({
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
             businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
         }
+
+        // Generate the notification sent to Fraud-ops & Payment-ops group only
+        DAO localNotificationDAO = (DAO) x.get("localNotificationDAO");
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("A Canadian business with name: " + business.getOrganization() + " and id: "
+          + business.getId() + " has completed the cross-border onboarding.");
+        notification.setNotificationType("A cross-border business has been onboarded");
+
+        notification.setGroupId("fraud-ops");
+        localNotificationDAO.put(notification);
+        notification.setGroupId("payment-ops");
+        localNotificationDAO.put(notification);
+
         return getDelegate().put_(x, businessOnboarding);
       `
     }
