@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'SecurityAccount',
+  name: 'SecuritiesAccount',
   extends: 'net.nanopay.account.Account',
 
-  documentation: 'The base model for storing all individual securities.',
+  documentation: 'The base model for creating and managing all Security accounts.',
 
   javaImports: [
     'foam.dao.ArraySink',
@@ -11,8 +11,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'java.util.List',
     'net.nanopay.account.Balance',
-    'net.nanopay.account.DigitalAccount',
-    'foam.core.Currency'
+    'net.nanopay.account.SecurityAccount',
+    'static foam.mlang.MLang.EQ'
   ],
 
   searchColumns: [
@@ -29,6 +29,7 @@ foam.CLASS({
 
   properties: [
     {
+      //not required, except maybe for view.
       class: 'Reference',
       of: 'net.nanopay.exchangeable.Security',
       targetDAOKey: 'securitiesDAO',
@@ -39,6 +40,7 @@ foam.CLASS({
       order: 3
     },
     {
+    // balance of all sub accounts I suppose
       class: 'Long',
       name: 'balance',
       label: 'Balance (local)',
@@ -62,33 +64,13 @@ foam.CLASS({
       },
       tableWidth: 145
     },
-    {
-      class: 'Long',
-      name: 'marketValue',
-      documentation: 'the current market value of this security account',
-      storageTransient: true,
-      visibility: 'RO',
-      tableWidth: 145
-      //TODO: display the market value.. balance * unit value in some home currency.
-    },
-    {
-      class: 'Long',
-      name: 'homeBalance',
-      label: 'Balance (home)',
-      documentation: `
-        replace the table cell formatter to return just regular balance. since we dont use this for securities.
-      `,
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return this.balance;
-      },
-      tableWidth: 145
-    },
+
   ],
 
   methods: [
+  /*
     {
+     WIP. Get balance of all subaccounts, but not their subaccounts.
       name: 'findBalance',
       type: 'Any',
       async: true,
@@ -112,6 +94,57 @@ foam.CLASS({
         }
         return 0L;
       `
-    }
+
+
+    },*/
+    {
+      name: 'getSubAccount',
+      type: 'Long',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'unit',
+          type: 'String'
+        }
+      ],
+
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("accountDAO");
+        SecurityAccount sa = (SecurityAccount) accountDAO.where(EQ(
+          SecurityAccount.SECURITIES_ACCOUNT, getId())).find(EQ(
+          SecurityAccount.DENOMINATION,unit));
+        if (sa == null || sa.getId() == 0)
+          return createSubAccount_(x,unit);
+        return sa.getId();
+      `
+    },
+    {
+      name: 'createSubAccount_',
+      documentation: 'creates a subaccount that is denominated with the specified unit',
+      type: 'Long',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'unit',
+          type: 'String'
+        }
+      ],
+
+      javaCode: `
+        SecurityAccount sa = new SecurityAccount();
+        sa.setDenomination(unit);
+        sa.copyFrom(this);
+        sa.setSecuritiesAccount(this.getId());
+        DAO accountDAO = (DAO) x.get("accountDAO");
+        sa = (SecurityAccount) accountDAO.put(sa);
+        return sa.getId();
+      `
+    },
   ]
 });
