@@ -74,8 +74,8 @@ foam.CLASS({
     border-width: 0 4px 5px 4px;
     border-color: transparent transparent white transparent;
     position: relative;
-    left: 17px;
-    bottom: -10px;
+    left: 0.7vw;
+    bottom: -0.7vh;
     z-index: 0;
     pointer-events:none;
   }
