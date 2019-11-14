@@ -1216,4 +1216,5 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/RbcCOTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcVerificationTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' }
 ]);
