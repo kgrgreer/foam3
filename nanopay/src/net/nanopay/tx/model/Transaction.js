@@ -238,10 +238,7 @@ foam.CLASS({
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
-        if ( Array.isArray(statusHistory) && !statusHistory.length < 1 )
-          return statusHistory[0].getTimeStamp();
-        else
-          return null;
+        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
       },
       javaFactory: `
         if ( getStatusHistory().length > 0 ) {
@@ -622,10 +619,7 @@ foam.CLASS({
       visibility: 'RO',
       storageTransient: true,
       expression: function (statusHistory) {
-        if ( Array.isArray(statusHistory) && !statusHistory.length < 1 )
-          return statusHistory[statusHistory.length-1].getTimeStamp();
-        else  
-          return null;
+        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
       }
     },
     {
