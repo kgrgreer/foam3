@@ -228,6 +228,7 @@ p({
       .setRulerDaoKey("securityPlannerDAO")
       .setPm(true)
       .setPipelinePm(true)
-      .build()
+      .build();
   """
 })
+
