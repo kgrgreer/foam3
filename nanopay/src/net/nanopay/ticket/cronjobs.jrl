@@ -20,11 +20,11 @@ import foam.nanos.ticket.TicketStatus;
 
 now = System.currentTimeMillis();
 d = x.get("localTicketDAO");
-a = d.where(EQ(Ticket.STATUS, TicketStatus.OPEN)).select().array;
+a = d.where(EQ(Ticket.STATUS, "OPEN")).select().array;
 for ( t : a ) {
   if ( t.getExpiry().getTime() < now ) {
     t = t.fclone();
-    t.setStatus(TicketStatus.CLOSED);
+    t.setStatus("CLOSED");
     t = d.put(t);
     print("Closed expired ticket: "+t.getId());
   }
