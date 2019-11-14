@@ -240,6 +240,7 @@ foam.CLASS({
       expression: function(statusHistory) {
         return statusHistory[0].timeStamp;
       },
+      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
       javaFactory: `
         if ( getStatusHistory().length > 0 ) {
           return getStatusHistory()[0].getTimeStamp();
