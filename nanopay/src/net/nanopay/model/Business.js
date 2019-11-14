@@ -369,10 +369,10 @@ foam.CLASS({
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.auth.UserUserJunctionNotificationSettingJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
-    'foam.nanos.notification.NotificationConfig',
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
     'java.util.List',
@@ -524,25 +524,31 @@ foam.CLASS({
     {
       name: 'notify',
       javaCode: `
-        DAO agentJunctionDAO      = (DAO) x.get("agentJunctionDAO");
-        DAO notificationConfigDAO = (DAO) x.get("notificationConfigDAO");
-        DAO               userDAO = (DAO) x.get("localUserDAO");
-
-        List<UserUserJunction> junctions = ((ArraySink) agentJunctionDAO
-          .where(EQ(UserUserJunction.TARGET_ID, getId()))
-          .select(new ArraySink())).getArray();
-
-        for ( UserUserJunction junction : junctions ) {
-          NotificationConfig config = (NotificationConfig) notificationConfigDAO
-            .find(junction.getNotificationConfig());
-          if ( config == null ) {
-            throw new RuntimeException("A notification configuration for the business cannot be found.");
+      DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+      DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+      DAO               userDAO  = (DAO) x.get("localUserDAO");
+      
+      // gets all the business users
+      List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
+         .where(EQ(UserUserJunction.TARGET_ID, getId()))
+         .select(new ArraySink())).getArray();
+      for( UserUserJunction businessUserJunction : businessUserJunctions ) {
+        User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
+        if ( businessUser == null ) {
+          throw new RuntimeException("A business user junction exists, but the user for the junction cannot be found.");
+        }
+  
+        // gets the notification settings for this business-user pair
+        List<UserUserJunctionNotificationSettingJunction> settingJunctions = ((ArraySink) businessUserJunction.getNotificationSettingsForBusinessUsers(x).getJunctionDAO().select(new ArraySink())).getArray();
+        for( UserUserJunctionNotificationSettingJunction settingJunction : settingJunctions ) {
+          NotificationSetting setting = (NotificationSetting) notificationSettingDAO.find(settingJunction.getTargetId());
+          if ( setting == null ) {
+            throw new RuntimeException("A notification setting for the business user cannot be found.");
           }
   
-          for ( NotificationSetting setting : config.getNotificationSettings()) {
-            setting.sendNotification(x, (User) userDAO.find(junction.getSourceId()), notification);
-          }
+          setting.sendNotification(x, businessUser, notification);
         }
+      }
       `
     }
   ],
