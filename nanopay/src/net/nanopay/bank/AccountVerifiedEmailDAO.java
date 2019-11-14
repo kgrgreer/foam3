@@ -54,17 +54,10 @@ public class AccountVerifiedEmailDAO
     DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
     DAO flinksAccountsDetailResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
     ArraySink plaidItems = (ArraySink)plaidItemDAO.where(EQ(PlaidItem.USER_ID, owner.getId())).select(new ArraySink());
-    ArraySink  flinksAccountsDetailResponses = (ArraySink) flinksAccountsDetailResponseDAO.select(new ArraySink());
-    boolean isFlink = false;
+    ArraySink  flinksAccountsDetailResponses = (ArraySink) flinksAccountsDetailResponseDAO.where(EQ(FlinksAccountsDetailResponse.USER_ID, owner.getId())).select(new ArraySink());
 
-    for(Object response: flinksAccountsDetailResponses.getArray()) {
-      if(((FlinksAccountsDetailResponse)response).getUserId() == owner.getId()) {
-        isFlink = true;
-        break;
-      }
-    }
     //Doesn't send email if the user uses Flinks/Plaid because they are auto verified.
-    if(plaidItems.getArray().size() != 0 || isFlink)
+    if(plaidItems.getArray().size() != 0 || flinksAccountsDetailResponses.getArray().size() == 0)
       return getDelegate().put_(x, obj);
       
     // Doesn't send email if the account hasn't been made prior
