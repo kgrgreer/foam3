@@ -34,7 +34,7 @@ foam.CLASS({
         try {
           byte[] decodedBytes = Base64.decode(entry.getEncodedPublicKey());
           InputStream pubKeyIs = new ByteArrayInputStream(decodedBytes);
-          PGPPublicKey PGPPublicKey = PGPKeyUtil.readPublicKey(pubKeyIs);
+          PGPPublicKey PGPPublicKey = PGPKeyUtil.publicKeyParse(decodedBytes);
           PgpPublicKeyWrapper publicKey = new PgpPublicKeyWrapper(PGPPublicKey);
           entry.setPublicKey(publicKey);
           return entry;
