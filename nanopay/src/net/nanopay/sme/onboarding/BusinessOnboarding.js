@@ -911,7 +911,7 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
-      value: null,
+      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 0, 1, 2, 3, 4 ],
