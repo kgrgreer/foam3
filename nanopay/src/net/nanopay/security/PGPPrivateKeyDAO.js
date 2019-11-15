@@ -48,6 +48,7 @@ foam.CLASS({
           }
 
           // load secret key from keystore
+          Security.addProvider(keyStore.getProvider());
           KeyStore.SecretKeyEntry keyStoreEntry = (KeyStore.SecretKeyEntry) manager.loadKey(privateKeyDAO.getAlias());
           SecretKey key = keyStoreEntry.getSecretKey();
           Cipher cipher = Cipher.getInstance(key.getAlgorithm());
