@@ -1053,8 +1053,8 @@ p({
     import foam.nanos.menu.SubMenu;
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
-    DRY_RUN = false;
-    fixSME = true;
+    DRY_RUN = true;
+    fixSME = false;
 
     if ( DRY_RUN ) {
       print("--------------------");
