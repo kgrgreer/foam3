@@ -153,7 +153,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public DirectDebitUnenrollmentRequest directDebitUnenrollment(DirectDebitUnenrollmentResponse directDebitRequest) {
+  public DirectDebitUnenrollmentResponse directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitRequest) {
     return null;
   }
 }

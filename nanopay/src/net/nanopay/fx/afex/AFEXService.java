@@ -1009,7 +1009,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public DirectDebitUnenrollmentRequest directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitUnenrollmentRequest) {
+  public DirectDebitUnenrollmentResponse directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitUnenrollmentRequest) {
     try {
       HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/DirectDebitUnequicnroll");
 
@@ -1047,7 +1047,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         logger.debug("{ apiKey: " + apiKey + ", name: directDebitUnenrollmentRequest " + "response : " + response);
-        return (DirectDebitUnenrollmentRequest) jsonParser.parseString(response, DirectDebitEnrollmentResponse.class);
+        return (DirectDebitUnenrollmentResponse) jsonParser.parseString(response, DirectDebitEnrollmentResponse.class);
       } finally {
         httpResponse.close();
       }
