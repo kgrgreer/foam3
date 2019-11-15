@@ -249,14 +249,23 @@ foam.CLASS({
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 2,
+      isAvailable: function(userOwnsPercent, amountOfOwners) {
+        return amountOfOwners >= 1 && ! userOwnsPercent;
+      }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 3,
+      isAvailable: function(userOwnsPercent, amountOfOwners) {
+        return amountOfOwners >= 1 && ! userOwnsPercent;
+      }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 4,
+      isAvailable: function(userOwnsPercent, amountOfOwners) {
+        return amountOfOwners >= 1 && ! userOwnsPercent;
+      }
     },
     {
       name: 'reviewOwnersSection',
@@ -922,7 +931,6 @@ foam.CLASS({
         if ( this.amountOfOwners > 0 ) {
           this.publiclyTraded = false;
         } else if ( this.amountOfOwners === 0 ) {
-          this.publiclyTraded = true;
           this.userOwnsPercent = false;
         };
       },
