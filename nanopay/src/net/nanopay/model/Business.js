@@ -536,7 +536,7 @@ foam.CLASS({
         DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
         DAO               userDAO  = (DAO) x.get("localUserDAO");
 
-        // gets all the business user pairs
+        // gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
           .where(EQ(UserUserJunction.TARGET_ID, getId()))
           .select(new ArraySink())).getArray();
