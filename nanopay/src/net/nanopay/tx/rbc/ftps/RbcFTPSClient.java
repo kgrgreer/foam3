@@ -20,8 +20,8 @@ public class RbcFTPSClient {
   FTPSClient ftpsClient;
   RbcFTPSCredential credential;
 
-  public static final String SEND_FOLDER = "./";
-  public static final String OUTBOUND_FOLDER = "/home/sftpuser/outbound/";
+  public static final String PGP_FOLDER = "outbound/3EPK/";
+  public static final String PAIN_FOLDER = "outbound/XG02/";
 
   public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/";
 
@@ -37,7 +37,7 @@ public class RbcFTPSClient {
     this.login();
 
     this.logger.info("Start sending file: " + file.getName());
-    this.put(file.getAbsolutePath(), SEND_FOLDER + file.getName());
+    this.put(file.getAbsolutePath(), file.getName());
     this.logger.info("Finish sending file: " + file.getName());
 
     this.logout();
@@ -46,7 +46,7 @@ public class RbcFTPSClient {
   /**
    * Download the file from RBC outbound folder
    */
-  public List<File> download() throws IOException {
+  public List<File> download(String folder) throws IOException {
     if ( ! this.credential.getEnable() ) {
       return new ArrayList<>();
     }
@@ -55,16 +55,16 @@ public class RbcFTPSClient {
     this.login();
 
     this.logger.info("Start downloading. Listing all the files.");
-    FTPFile[] ftpFiles = this.ls(OUTBOUND_FOLDER);
+    FTPFile[] ftpFiles = this.ls(folder);
 
     for (FTPFile ftpFile : ftpFiles) {
-      if ( ftpFile.getName().contains("downloaded") || ftpFile.getName().contains(".cp")  ) {
+      if ( ftpFile.getName().contains("downloaded%FTPS") || ftpFile.getName().contains(".cp")  ) {
         continue;
       }
 
       this.logger.info("Start downloading file: " + ftpFile.getName());
       downloadFile.add(
-        this.get(OUTBOUND_FOLDER + ftpFile.getName(), DOWNLOAD_FOLDER + ftpFile.getName())
+        this.get(folder + ftpFile.getName(), DOWNLOAD_FOLDER + ftpFile.getName())
       );
       this.logger.info("Finish downloading file: " + ftpFile.getName());
     }
@@ -92,17 +92,26 @@ public class RbcFTPSClient {
   public boolean login() throws IOException {
 
     this.ftpsClient.connect(credential.getHost());
-    this.logger.info("FTPs Reply String: " + this.ftpsClient.getReplyString());
+    this.logger.info("Connect : " + this.ftpsClient.getReplyString());
 
     boolean result = this.ftpsClient.login(credential.getUsername(), credential.getPassword());
-    this.logger.info("FTPs Reply String: " + this.ftpsClient.getReplyString());
+    this.logger.info("Login : " + this.ftpsClient.getReplyString());
+
+    ftpsClient.enterLocalPassiveMode();
+
+    ftpsClient.execPBSZ(0);
+    this.logger.info("PBSZ : " + this.ftpsClient.getReplyString());
+
+    ftpsClient.execPROT("P");
+    this.logger.info("PROT : " + this.ftpsClient.getReplyString());
+
+    ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);
+    this.logger.info("File type : " + this.ftpsClient.getReplyString());
 
     return result;
   }
 
   public void put(String local, String remote) throws IOException {
-    ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);
-
     ftpsClient.storeFile(remote, new FileInputStream(new File(local)));
     this.logger.info(this.ftpsClient.getReplyString());
   }
@@ -113,16 +122,15 @@ public class RbcFTPSClient {
 
     FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
 
-    ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);
     ftpsClient.retrieveFile(remote, fileOutputStream);
-    this.logger.info("FTPs Reply String: " + this.ftpsClient.getReplyString());
+    this.logger.info("Retrieve File : " + this.ftpsClient.getReplyString());
 
     return tmpFile;
   }
 
   public FTPFile[] ls(String path) throws IOException {
     FTPFile[] ftpFiles = this.ftpsClient.listFiles(path);
-    this.logger.info("FTPs Reply String: " + this.ftpsClient.getReplyString());
+    this.logger.info("List Files : " + this.ftpsClient.getReplyString());
 
     return ftpFiles;
   }
