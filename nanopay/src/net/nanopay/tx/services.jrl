@@ -224,7 +224,8 @@ p({
     nd = new foam.dao.NullDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .build();
-    ruler = new RulerDAO(x, nd, "securityPlannerDAO");
+    ruler = new foam.nanos.ruler.RulerDAO(x, nd, "securityPlannerDAO");
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, ruler));
   """
 })
+
