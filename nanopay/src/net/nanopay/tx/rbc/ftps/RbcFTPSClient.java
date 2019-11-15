@@ -23,7 +23,7 @@ public class RbcFTPSClient {
   public static final String PGP_FOLDER = "outbound/3EPK/";
   public static final String PAIN_FOLDER = "outbound/XG02/";
 
-  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/";
+  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/download/";
 
 
   /**
@@ -43,10 +43,20 @@ public class RbcFTPSClient {
     this.logout();
   }
 
+  public File download(String remotePath) throws IOException {
+    String filename = remotePath.substring(remotePath.lastIndexOf("/") + 1);
+
+    this.login();
+    File file = this.get(remotePath, DOWNLOAD_FOLDER + filename);
+    this.logout();
+
+    return file;
+  }
+
   /**
-   * Download the file from RBC outbound folder
+   * Download the non-downloaded files from RBC outbound folder
    */
-  public List<File> download(String folder) throws IOException {
+  public List<File> batchDownload(String folder) throws IOException {
     if ( ! this.credential.getEnable() ) {
       return new ArrayList<>();
     }
