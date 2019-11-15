@@ -1,7 +1,7 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "localApprovalRequestDAO",
-  "serve": false,
+  "name": "approvalRequestDAO",
+  "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.approval.ApprovalRequest.getOwnClassInfo())
@@ -12,6 +12,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("approvalRequests")
       .setValidated(true)
+      .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
          new net.nanopay.approval.SendGroupRequestApprovalDAO(x,
            new net.nanopay.approval.AuthenticatedApprovalDAO(x,
@@ -19,18 +20,6 @@ p({
                new net.nanopay.approval.ApprovalDAO(x, null)))))
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
-  """
-})
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "approvalRequestDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.approval.ApprovalRequest.getOwnClassInfo())
-      .setEnableInterfaceDecorators(false)
-      .setInnerDAO((foam.dao.DAO) x.get("localApprovalRequestDAO"))
-      .build();
   """,
   "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
 })
