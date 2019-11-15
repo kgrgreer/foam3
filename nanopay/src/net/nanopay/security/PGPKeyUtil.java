@@ -77,9 +77,23 @@ public class PGPKeyUtil {
   public static PGPPublicKey publicKeyParse(byte[] publicKeyBytes) throws IOException {
     InputStream pgpIn = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(new ByteArrayInputStream(publicKeyBytes));
     PGPObjectFactory pgpFact = new PGPObjectFactory(pgpIn, new JcaKeyFingerprintCalculator());
-    PGPPublicKey publicKey = (PGPPublicKey) pgpFact.nextObject();
-    //PGPPublicKey publicKey = pgpSecRing.getPublicKey();
-    return publicKey;
+    Iterator<Object> pgpFactIt = pgpFact.iterator();
+    while ( pgpFactIt.hasNext() ) {
+      Object o = pgpFactIt.next();
+      if ( o instanceof PGPPublicKey ) return (PGPPublicKey) o;
+
+      if ( o instanceof PGPPublicKeyRing ) {
+        PGPPublicKeyRing kRing = (PGPPublicKeyRing) o;
+        Iterator<PGPPublicKey> kIt = kRing.getPublicKeys();
+        while (kIt.hasNext()) {
+          PGPPublicKey k = kIt.next();
+          if (k.isEncryptionKey()) {
+            return k;
+          }
+        }
+      }
+    }
+    return null;
 }  
 
   public static PGPPrivateKey findSecretKey(InputStream keyIn, char[] pass) 
@@ -161,16 +175,17 @@ public class PGPKeyUtil {
 
     in = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(in);
     PGPObjectFactory pgpF = new PGPObjectFactory(in, new JcaKeyFingerprintCalculator());
-		PGPEncryptedDataList enc;
-		Object o = pgpF.nextObject();
+		PGPEncryptedDataList enc = null;
+    Iterator<Object> oIt = pgpF.iterator();
+    while ( enc == null && oIt.hasNext() ) {
+      Object o = oIt.next();
+      if (o instanceof  PGPEncryptedDataList) {
+        enc = (PGPEncryptedDataList) o;
+      } 
+    }
 		//
 		// the first object might be a PGP marker packet.
 		//
-		if (o instanceof  PGPEncryptedDataList) {
-			enc = (PGPEncryptedDataList) o;
-		} else {
-			enc = (PGPEncryptedDataList) pgpF.nextObject();
-    }
     
     PublicKeyDataDecryptorFactory b = new JcePublicKeyDataDecryptorFactoryBuilder().setProvider("BC").setContentProvider("BC").build(decKey);
     Iterator<PGPPublicKeyEncryptedData> it = enc.getEncryptedDataObjects();
