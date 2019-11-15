@@ -279,6 +279,11 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXPaymentStatus' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequest' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequestRule' },
+  { name: 'net/nanopay/fx/afex/DirectDebitEnrollmentRequest' },
+  { name: 'net/nanopay/fx/afex/DirectDebitEnrollmentResponse' },
+  { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentRequest' },
+  { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentResponse' },
+
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

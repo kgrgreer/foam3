@@ -209,6 +209,30 @@ foam.INTERFACE({
           name: 'confirmationPDFRequest'
         }
       ]
+    },
+    {
+      name: 'directDebitEnrollment',
+      documentation: 'enable enrollment of an account for Direct Debit settlement.',
+      async: true,
+      type: 'net.nanopay.fx.afex.DirectDebitEnrollmentResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
+          name: 'directDebitRequest'
+        }
+      ]
+    },
+    {
+      name: 'directDebitUnenrollment',
+      documentation: 'enable enrollment of an account for Direct Debit settlement.',
+      async: true,
+      type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
+          name: 'directDebitUnenrollmentRequest'
+        }
+      ]
     }
   ]
 });

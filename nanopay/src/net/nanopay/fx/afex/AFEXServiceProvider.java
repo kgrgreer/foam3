@@ -26,6 +26,7 @@ import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
+import net.nanopay.model.PadCapture;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -166,6 +167,28 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
               afexBusinessDAO.put(afexBusiness);
+
+              // Upload Bank Information to AFEX
+              DAO padDAO = (DAO) x.get("padCaptureDAO");
+              PadCapture pad = (PadCapture) padDAO.find(bankAccount.getAccountNumber());
+              FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
+              DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
+                .setAccountNumber(bankAccount.getAccountNumber())
+                .setAccountOwnerFirstName(pad.getFirstName())
+                .setAccountOwnerLastName(pad.getLastName())
+                .setAPIKey(afexBusiness.getApiKey())
+                .setBankDetailsVerified(true)
+                .setBankName(bankResponse.getInstitutionName())
+                .build();
+              if ( bankAccount instanceof CABankAccount ) {
+                directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+              } else if ( bankAccount instanceof USBankAccount ) {
+                directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
+              }
+
+              DirectDebitEnrollmentResponse directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
+
+
               return true;
             }
           }
@@ -439,6 +462,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Calendar afexBeneficiaryLastModifiedDate = Calendar.getInstance();
     afexBeneficiaryLastModifiedDate.setTime(afexBeneficiary.getLastModified());
     return (accountLastModifiedDate.after(afexBeneficiaryLastModifiedDate));
+  }
+
+  public boolean directDebitUnenrollment(Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    DirectDebitUnenrollmentRequest unenrollmentRequest = new DirectDebitUnenrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setApiKey(afexBusiness.getApiKey())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+
+    DirectDebitUnenrollmentResponse response = afexClient.directDebitUnenrollment(unenrollmentRequest);
+
+    return false;
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {

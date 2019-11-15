@@ -187,6 +187,10 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentResponse',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
