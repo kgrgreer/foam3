@@ -1054,6 +1054,7 @@ p({
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
+    // Set to true to undo the permission and theme changes made to the "SME" group by this script
     fixSME = false;
 
     if ( DRY_RUN ) {
