@@ -361,8 +361,7 @@ p({
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
     aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(ldu).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
-    afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
-    usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
+    usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, uccpfe);
     cb = new net.nanopay.onboarding.CreateBusinessDAO(x, usus);
     rse = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, cb);
     ev = new net.nanopay.auth.email.EmailVerificationDAO(x, rse);
