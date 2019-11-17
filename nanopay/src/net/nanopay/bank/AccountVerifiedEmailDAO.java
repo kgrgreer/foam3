@@ -10,8 +10,10 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.Group;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
+import java.util.Arrays;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
+import java.util.List;
 import static foam.mlang.MLang.EQ;
 
 import net.nanopay.account.Account;
@@ -55,11 +57,25 @@ public class AccountVerifiedEmailDAO
     DAO flinksAccountsDetailResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
     ArraySink plaidItems = (ArraySink)plaidItemDAO.where(EQ(PlaidItem.USER_ID, owner.getId())).select(new ArraySink());
     ArraySink  flinksAccountsDetailResponses = (ArraySink) flinksAccountsDetailResponseDAO.where(EQ(FlinksAccountsDetailResponse.USER_ID, owner.getId())).select(new ArraySink());
+    
+    Boolean isFlinks = false;
+    List<FlinksAccountsDetailResponse> flinksResponses = flinksAccountsDetailResponses.getArray();
+    flinksresponseloop:
+    for (FlinksAccountsDetailResponse flinksResponse: flinksResponses) {
+      AccountWithDetailModel[] accounts = flinksResponse.getAccounts();
+      for (AccountWithDetailModel acc: accounts) {
+        if(acc.getAccountNumber().equals(account.getAccountNumber()));
+        {
+          isFlinks = true;
+          break flinksresponseloop;
+        }
+      }
+    }
 
     //Doesn't send email if the user uses Flinks/Plaid because they are auto verified.
-    if(plaidItems.getArray().size() != 0 || flinksAccountsDetailResponses.getArray().size() != 0)
+    if(plaidItems.getArray().size() != 0 || isFlinks)
       return getDelegate().put_(x, obj);
-      
+
     // Doesn't send email if the account hasn't been made prior
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
