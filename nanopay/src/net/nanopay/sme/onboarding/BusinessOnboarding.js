@@ -913,6 +913,7 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
+      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 0, 1, 2, 3, 4 ],
@@ -922,7 +923,6 @@ foam.CLASS({
         if ( this.amountOfOwners > 0 ) {
           this.publiclyTraded = false;
         } else if ( this.amountOfOwners === 0 ) {
-          this.publiclyTraded = true;
           this.userOwnsPercent = false;
         };
       },
