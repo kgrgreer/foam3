@@ -261,7 +261,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
 
     AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payeeUserId);
-    if ( ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+    if ( userPayeeJunction != null && ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
       PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
       ascendantRequest.setMethodID("AFXEWSPOD");
       ascendantRequest.setOrgID(orgId);
