@@ -841,7 +841,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Business Formation Date must be a date in the past.'
+          errorString: 'Must be at least one day in the past.'
         }
       ]
     },

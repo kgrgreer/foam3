@@ -3,11 +3,14 @@ foam.CLASS({
   name: 'CompliancePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Adds a compliance transaction right after SummaryTransaction Plan.',
+  documentation: `Adds a compliance transaction right after SummaryTransaction
+    and FXSummaryTransaction.`,
 
   javaImports: [
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   methods: [
@@ -15,10 +18,10 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
-        Transaction [] plans = quote.getPlans();
-        for ( Transaction plan : plans ) {
-        // should this be instanceof AbliiTransaction? Does SummaryTransaction necessarily have COTxn in it?
-          if ( plan instanceof SummaryTransaction || plan instanceof FXSummaryTransaction) {
+        for ( Transaction plan : quote.getPlans() ) {
+          if ( plan instanceof SummaryTransaction
+            || plan instanceof FXSummaryTransaction
+          ) {
             ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
             ct.copyFrom(plan);
             ct.clearLineItems();
@@ -26,6 +29,7 @@ foam.CLASS({
             plan.setNext(new Transaction[] { ct });
           }
         }
+
         return quote;
       `
     }

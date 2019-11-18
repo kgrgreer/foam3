@@ -18,8 +18,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
-    'net.nanopay.fx.ascendantfx.AscendantFXUser',
     'net.nanopay.fx.client.ClientFXService',
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXService',
@@ -51,10 +49,6 @@ foam.CLASS({
     'wizard',
     'updateInvoiceDetails',
     'forceUpdate'
-  ],
-
-  javaImports: [
-    'net.nanopay.fx.ascendantfx.AscendantFXServiceProvider'
   ],
 
   exports: [
@@ -197,6 +191,12 @@ foam.CLASS({
       name: 'exchangeRateNotice',
       expression: function(isEmployee) {
         return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
+      }
+    },
+    {
+      name: 'isSameCurrency',
+      expression: function(invoice$destinationCurrency, chosenBankAccount) {
+        return chosenBankAccount && invoice$destinationCurrency == chosenBankAccount.denomination;
       }
     }
   ],
@@ -344,8 +344,8 @@ foam.CLASS({
             .start()
               .hide(this.loadingSpinner.isHidden$)
               .addClass('rate-msg-container')
-              .add(this.isFx$.map((bool) => {
-                return bool ? this.FETCHING_RATES : this.LOADING;
+              .add(this.slot(function( isSameCurrency ) {
+                return isSameCurrency ? ' ' : this.FETCHING_RATES;
               }))
             .end()
           .end()
@@ -503,30 +503,7 @@ foam.CLASS({
         })
       );
       return quote.plan;
-    },
-
-    function createFxTransaction(fxQuote) {
-      var fees = this.FeesFields.create({
-        totalFees: fxQuote.fee,
-        totalFeesCurrency: fxQuote.feeCurrency
-      });
-      return this.AscendantFXTransaction.create({
-        payerId: this.user.id,
-        payeeId: this.invoice.payeeId,
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        amount: fxQuote.sourceAmount,
-        destinationAmount: fxQuote.targetAmount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        fxExpiry: fxQuote.expiryTime,
-        fxQuoteId: fxQuote.id,
-        fxRate: fxQuote.rate,
-        fxFees: fees,
-        isQuoted: true,
-        paymentMethod: fxQuote.paymentMethod
-      });
-    },
+    }
   ],
 
   listeners: [

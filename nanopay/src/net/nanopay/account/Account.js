@@ -286,6 +286,7 @@ foam.CLASS({
         this.__subContext__.currencyDAO.find(this.homeDenomination)
       ]).then(arr => {
         let [r, b, c] = arr;
+        self.balance = b;
         self.homeBalance = Math.floor((b || 0) * r);
       });
     },
