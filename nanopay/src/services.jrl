@@ -607,7 +607,29 @@ p({
   "serviceClass": "net.nanopay.retail.QrCodeWebAgent"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"liquiditySettingsDAO",             "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, \n    new foam.dao.ValidatingDAO(x,\n        new foam.dao.SequenceNumberDAO(\n            new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)\n                .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)\n                  .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))\n                  .setPeriodLengthMs(60 * 60 * 1000)\n                  .build())\n                .setDelegate(new foam.dao.java.JDAO(x, net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo(), \"liquiditySettings\"))\n                .build()),\n        new net.nanopay.liquidity.LiquiditySettingValidator())));", "client":"{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"liquiditySettingsDAO",
+  "serve":true,  
+  "serviceScript":"""
+    return 
+      new foam.dao.PMDAO(x, 
+      new foam.dao.PipelinePMDAO(x,
+      new foam.dao.ValidatingDAO(x,
+      new foam.dao.SequenceNumberDAO(
+        new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
+          .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)                  
+            .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))
+            .setPeriodLengthMs(60 * 60 * 1000)
+            .build())
+          .setDelegate(
+            new foam.dao.java.JDAO(x, net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo(), \"liquiditySettings\"))
+        .build()),
+      new net.nanopay.liquidity.LiquiditySettingValidator())));
+    """, 
+    "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"invoiceHistoryDAO",                "serve":true,  "serviceScript":"foam.dao.DAO hashingDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"invoiceHistory\");\n  return new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingDAO).setSeqNo(true).setSeqPropertyName(\"seqNo\").setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();","client":"{\"of\":\"foam.dao.history.HistoryRecord\"}"})
 
 p({
@@ -1057,6 +1079,7 @@ p({
     ed = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
+      .setContextualize(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")

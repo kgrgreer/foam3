@@ -32,3 +32,42 @@ p({"class":"foam.nanos.ruler.Rule","id":"Clear transaction approval requests","e
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":false})
+
+// Business rules
+p({
+  "class":"net.nanopay.liquidity.tx.BusinessRule",
+  "id":"GS10 Account Tx Notification Rule",
+  "description":"Sample Goldman Business Rule",
+  "sourcePredicate":{
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.PropertyExpr",
+      "of":"net.nanopay.account.Account",
+      "property":{
+        "class":"__Property__",
+        "forClass_":"net.nanopay.account.Account",
+        "name":"name"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":"GS10 Shadow Account"
+    }
+  },
+  "destinationPredicate":{
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.PropertyExpr",
+      "of":"foam.nanos.auth.User",
+      "property":{
+        "class":"__Property__",
+        "forClass_":"foam.nanos.auth.User",
+        "name":"email"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":"liquiddev@nanopay.net"
+    }
+  },
+  "businessRuleAction":2})
