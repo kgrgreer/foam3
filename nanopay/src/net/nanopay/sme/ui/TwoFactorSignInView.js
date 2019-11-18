@@ -101,6 +101,55 @@ foam.CLASS({
       margin: 50px auto 0 auto;
       line-height: 1.5;
     }
+    ^ .tfa-container {
+      border-radius: 2px;
+      margin-top: 20px;
+      width: 450px;
+    }
+    ^ .tf-container {
+      width: 450px;
+      margin: auto;
+    }
+    ^ .foam-u2-ActionView-verify {
+      padding-top: 4px;
+    }
+    ^ .caption {
+      margin: 15px 0px;
+    }
+    ^ input {
+      width: 100%;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+    ^verify-button {
+      width: 80%;
+      height: 48px;
+    }
+    ^ net.nanopay.sme.ui.AbliiEmptyTopNavView {
+      width: auto;
+      border: 0;
+    }
+    ^sme-subtitle {
+      text-align: initial;
+      margin: 24px 10.5px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      color: #093400;
+      font-weight: 300;
+      line-height: 24px;
+    }
+    ^TwoFactAuthNote {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    ^TwoFactAuthNote {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
   `,
 
   properties: [
@@ -183,32 +232,27 @@ foam.CLASS({
     {
       class: 'String',
       name: 'phone'
+    },
+    {
+      class: 'String',
+      name: 'twoFactorToken',
+      view: {
+        class: 'foam.u2.TextField',
+        focused: true
+      }
     }
+
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Create a free account' },
-    { name: 'SUBTITLE', message: 'Already have an account?' },
-    { name: 'F_NAME', message: 'First Name' },
-    { name: 'L_NAME', message: 'Last Name' },
-    { name: 'C_NAME', message: 'Company Name' },
-    { name: 'PHONE_LABEL', message: 'Phone Number' },
-    { name: 'COUNTRY_LABEL', message: 'Country of operation' },
-    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
-    { name: 'EMAIL', message: 'Email Address' },
-    { name: 'PASSWORD', message: 'Password' },
-    { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
-    { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
-    { name: 'PRIVACY_DOCUMENT_NAME', message: 'privacyPolicy' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
+    { name: 'TWO_FACTOR_EXPLANATION', message: `Open your Google Authenticator app on your mobile device to view the 6-digit code and verify your identity` },
+    { name: 'TWO_FACTOR_NOTES_1', message: `Need another way to authenticate?` },
+    { name: 'TWO_FACTOR_NOTES_2', message: `Contact us` },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
-    { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
-    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
-    { name: 'AND', message: `and` },
-    { name: 'PRIVACY_LABEL', message: `Privacy Policy` },
-    { name: 'QUEBEC_DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
-
   ],
 
   methods: [
@@ -219,10 +263,6 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
       var self = this;
-      var emailDisplayMode = this.disableEmail ?
-          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-      var companyNameDisplayMode = this.disableCompanyName ?
-          foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       var split = net.nanopay.sme.ui.SplitBorder.create();
       var searchParams = new URLSearchParams(location.search);
       this.signUpToken = searchParams.get('token');
@@ -238,9 +278,37 @@ foam.CLASS({
         .end();
 
       var right = this.Element.create()
-        .addClass('content-form')
-          .start().addClass('sme-registration-container')
-          .end();
+      .addClass(this.myClass())
+      .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
+      .start().addClass('tf-container')
+        .start('h3').add(this.TWO_FACTOR_TITLE).end()
+        .start().addClass(this.myClass('TwoFactAuthNote'))
+          .start('img').attr('src', 'images/phone-iphone-24-px.png').end()
+          .start().addClass(myClass(''))
+          .add(this.TWO_FACTOR_EXPLANATION).end()
+        .end()
+        .start('form')
+          .addClass('tfa-container')
+          .start('label')
+            .add(this.TWO_FACTOR_LABEL)
+          .end()
+          .start('p')
+            .tag(this.TWO_FACTOR_TOKEN)
+          .end()
+          .start(this.VERIFY)
+          .addClass(this.myClass('verify-button'))
+          .end()
+        .end()
+      .end()
+      .start().addClass(this.myClass('sme-subtitle'))
+        .start('strong').add(this.TWO_FACTOR_NOTES_1).end()
+        .start('span').addClass('app-link')
+          .add(this.TWO_FACTOR_NOTES_2)
+          .on('click', function() {
+            console.log('got you');
+          })
+        .end()
+      .end();
 
       split.leftPanel.add(left);
       split.rightPanel.add(right);
@@ -267,6 +335,26 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'verify',
+      code: function(X) {
+        var self = this;
 
+        if ( ! this.twoFactorToken ) {
+          this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
+          return;
+        }
+
+        this.twofactor.verifyToken(null, this.twoFactorToken)
+        .then(function(result) {
+          if ( result ) {
+            self.loginSuccess = true;
+          } else {
+            self.loginSuccess = false;
+            self.notify(self.TWO_FACTOR_ERROR, 'error');
+          }
+        });
+      }
+    }
   ],
 });
