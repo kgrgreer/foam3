@@ -191,38 +191,6 @@ foam.CLASS({
           localBusinessDAO.put(business);
 
         }
-//        else {
-//          // If the user needs to invite the signing officer
-//          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail().toLowerCase();
-//
-//          Invitation invitation = new Invitation();
-//          /**
-//           * Summary: the group set in the invitation obj is not the final(real) group
-//           * that the signing office will get after signing up with the invitation email.
-//           * It is a string saved in the token that will passed into the NewUserCreateBusinessDAO class.
-//           * The group of the new signing officer will generate in the NewUserCreateBusinessDAO class.
-//           *
-//           * Details: After we set the group in the invitation obj, we put the invitation
-//           * into the businessInvitationDAO service.
-//           *
-//           * In the BusinessOnboardingDAO service, it has a decorator called businessInvitationDAO.
-//           * In the put_ method of businessInvitationDAO.java,
-//           * it basically set up a token which contains the group information which is the temp string: 'admin'
-//           *
-//           * When the user signs up with the signing officer invitation email,
-//           * the app will call the smeBusinessRegistrationDAO service.
-//           * In the smeBusinessRegistrationDAO service, it has a decorator called NewUserCreateBusinessDAO.
-//           *
-//           * In NewUserCreateBusinessDAO.java, it generates the business specific group
-//           * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
-//           */
-//          invitation.setGroup("admin");
-//          invitation.setCreatedBy(business.getId());
-//          invitation.setEmail(signingOfficerEmail);
-//
-//          // Send invitation to email to the signing officer
-//          businessInvitationDAO.put(invitation);
-//        }
 
         return getDelegate().put_(x, businessOnboarding);
       `
