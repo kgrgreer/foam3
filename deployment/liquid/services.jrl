@@ -93,7 +93,7 @@ p({
       .setJournalName("accounts")
       .setLastModifiedByAware(true)
       .setDeletedAware(true)
-      .setOf(Account.getOwnClassInfo())
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
       .addIndex(new foam.core.PropertyInfo[] {Account.OWNER, Account.NAME, Account.ID, Account.ENABLED, Account.IS_DEFAULT, Account.DENOMINATION})
       .setAuthorize(false)
       .build();
