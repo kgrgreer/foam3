@@ -50,10 +50,7 @@ foam.CLASS({
     {
       name: 'isAvailable',
       factory: function() {
-        var i = this.index;
-        return function(signingOfficer, amountOfOwners) {
-          return signingOfficer && amountOfOwners >= i;
-        };
+        return amountOfOwners >= this.index;
       },
     }
   ]
@@ -249,23 +246,14 @@ foam.CLASS({
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 2,
-      isAvailable: function(userOwnsPercent, amountOfOwners) {
-        return amountOfOwners >= 1 && ! userOwnsPercent;
-      }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 3,
-      isAvailable: function(userOwnsPercent, amountOfOwners) {
-        return amountOfOwners >= 1 && ! userOwnsPercent;
-      }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 4,
-      isAvailable: function(userOwnsPercent, amountOfOwners) {
-        return amountOfOwners >= 1 && ! userOwnsPercent;
-      }
     },
     {
       name: 'reviewOwnersSection',
