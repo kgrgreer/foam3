@@ -156,12 +156,12 @@ p({
       .setDelegate(deletedAware)
       .build();
     // TODO: Will make our own liquid rules journal and then re-enable the rule engine
-    // ruler = new RulerDAO(x, ctx, "localTransactionDAO");
+    ruler = new RulerDAO(x, ctx, "localTransactionDAO");
     foam.dao.ProxyDAO aware = new foam.nanos.auth.CreatedAwareDAO.Builder(x)
       .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
         .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
           .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
-            .setDelegate(new foam.dao.GUIDDAO(ctx))
+            .setDelegate(new foam.dao.GUIDDAO(ruler))
             .build())
           .build())
         .build())
