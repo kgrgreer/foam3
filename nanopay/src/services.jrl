@@ -1103,3 +1103,24 @@ p({
   }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "abliiBusinessReportDAO",
+  "serve": true,
+  "serviceScript": """
+    abrDAO =  new net.nanopay.meter.report.AbliiBusinessReportDAO.Builder(x)
+      .setDelegate(null)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.meter.report.model.AbliiBusinessReport.getOwnClassInfo())
+      .setDecorator(abrDAO)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.meter.report.model.AbliiBusinessReport",
+      "cache": true
+    }
+  """
+})

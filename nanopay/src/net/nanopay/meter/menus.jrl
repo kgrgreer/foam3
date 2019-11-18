@@ -76,3 +76,24 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc","label":"Ac
 
 // ComplianceItem
 p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})
+
+
+
+// Reports
+p({"class":"foam.nanos.menu.Menu","id":"report","label":"Reports","handler":{"class":"foam.nanos.menu.SubMenu"},"order":200})
+
+// BusinessReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.abliiBusinessReport",
+  "label":    "Business Report for Ablii",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu",
+    "daoKey": "abliiBusinessReportDAO",
+    "title": "Ablii Business Report",
+    "createEnabled": false,
+    "editEnabled":   true
+  },
+  "order":10,
+  "parent":"report"
+})

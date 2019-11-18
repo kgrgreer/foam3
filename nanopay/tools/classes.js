@@ -608,6 +608,10 @@ var classes = [
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
 
+  // report
+  'net.nanopay.meter.report.model.AbliiBusinessReport',
+  'net.nanopay.meter.report.AbliiBusinessReportDAO',
+
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
   'net.nanopay.meter.clearing.ClearingTimesTrait',
