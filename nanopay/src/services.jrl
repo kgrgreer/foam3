@@ -248,7 +248,6 @@ p({
     import net.nanopay.invoice.AutoDepositPendingAcceptance; 
     import net.nanopay.invoice.PreventRemoveInvoiceDAO; 
 
-    //dao = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.invoice.model.Invoice.getOwnClassInfo(), \"invoices\"); 
     dao = new net.nanopay.invoice.PreventRemoveInvoiceDAO(x, null); 
     dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build(); 
     dao = new AutoDepositPendingAcceptance(x, dao); 
@@ -263,7 +262,6 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
-      //.setInnerDAO(dao)
       .setDecorator(dao)
       .setValidated(true)
       .setSeqNo(true)
@@ -276,7 +274,24 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "serve":true,  "serviceScript":"return new net.nanopay.invoice.service.DefaultInvoicePaymentService(x);","boxClass":"net.nanopay.invoice.service.InvoicePaymentServiceSkeleton","client":"{\"class\":\"net.nanopay.invoice.service.ClientInvoicePaymentService\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));", "client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"txnProcessorDAO",                  
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.TxnProcessor.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("txnProcessors")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -303,10 +318,38 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"localCorridorDAO",                 "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.Corridor.getOwnClassInfo(), \"corridors\")));"})
-p({"class":"foam.nanos.boot.NSpec", "name":"corridorDAO",                      "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"corridor\", x.get(\"localCorridorDAO\"))));","client":"{\"of\":\"net.nanopay.fx.Corridor\"}"})
-// p({"class":"foam.nanos.boot.NSpec", "name":"localPayoutOptionsDAO",         "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.fx.interac.ValidatePayoutOptionsDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.fx.interac.model.PayoutOptions.getOwnClassInfo(), \"payoutOptions\")))));"})
-// p({"class":"foam.nanos.boot.NSpec", "name":"payoutOptionsDAO",              "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"payoutOptions\", x.get(\"localPayoutOptionsDAO\"))));","client":"{\"of\":\"net.nanopay.fx.interac.model.PayoutOptions\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"localCorridorDAO",                 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"corridorDAO",                      
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"corridor\", x.get(\"localCorridorDAO\"))));
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setInnerDAO(x.get("localCorridorDAO"))
+      .setAuthorize(false)
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.fx.Corridor\"}"
+})
 
 p({
   "class":"foam.nanos.boot.NSpec", 
