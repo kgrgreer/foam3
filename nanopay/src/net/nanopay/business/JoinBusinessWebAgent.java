@@ -107,7 +107,7 @@ public class JoinBusinessWebAgent implements WebAgent {
           BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
 
           businessOnboardingClone.setSigningOfficer(false);
-          businessOnboardingClone.setSigningOfficerEmail("");
+          businessOnboardingClone.setSigningOfficerEmail(null);
           businessOnboardingClone.setUserId(token.getUserId());
           businessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
@@ -116,7 +116,7 @@ public class JoinBusinessWebAgent implements WebAgent {
           USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
 
           uSBusinessOnboardingClone.setSigningOfficer(false);
-          uSBusinessOnboardingClone.setSigningOfficerEmail("");
+          uSBusinessOnboardingClone.setSigningOfficerEmail(null);
           uSBusinessOnboardingClone.setUserId(token.getUserId());
           uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 

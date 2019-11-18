@@ -162,7 +162,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
               BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
 
               businessOnboardingClone.setSigningOfficer(false);
-              businessOnboardingClone.setSigningOfficerEmail("");
+              businessOnboardingClone.setSigningOfficerEmail(null);
               businessOnboardingClone.setUserId(user.getId());
               businessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
@@ -171,7 +171,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
               USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
 
               uSBusinessOnboardingClone.setSigningOfficer(false);
-              uSBusinessOnboardingClone.setSigningOfficerEmail("");
+              uSBusinessOnboardingClone.setSigningOfficerEmail(null);
               uSBusinessOnboardingClone.setUserId(user.getId());
               uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
