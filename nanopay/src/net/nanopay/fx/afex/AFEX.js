@@ -214,7 +214,7 @@ foam.INTERFACE({
       name: 'directDebitEnrollment',
       documentation: 'enable enrollment of an account for Direct Debit settlement.',
       async: true,
-      type: 'net.nanopay.fx.afex.DirectDebitEnrollmentResponse',
+      type: 'String',
       args: [
         {
           type: 'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
@@ -226,7 +226,7 @@ foam.INTERFACE({
       name: 'directDebitUnenrollment',
       documentation: 'enable enrollment of an account for Direct Debit settlement.',
       async: true,
-      type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentResponse',
+      type: 'String',
       args: [
         {
           type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',

@@ -10,6 +10,8 @@ import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 
 import static foam.mlang.MLang.*;
@@ -167,30 +169,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
               afexBusinessDAO.put(afexBusiness);
-
-              // Upload Bank Information to AFEX
-              DAO padDAO = (DAO) x.get("padCaptureDAO");
-              PadCapture pad = (PadCapture) padDAO.find(bankAccount.getAccountNumber());
-              FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
-              DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
-                .setAccountNumber(bankAccount.getAccountNumber())
-                .setAccountOwnerFirstName(pad.getFirstName())
-                .setAccountOwnerLastName(pad.getLastName())
-                .setAPIKey(afexBusiness.getApiKey())
-                .setBankDetailsVerified(true)
-                .setBankName(bankResponse.getInstitutionName())
-                .build();
-              if ( bankAccount instanceof CABankAccount ) {
-                directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
-              } else if ( bankAccount instanceof USBankAccount ) {
-                directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
-              }
-
-              DirectDebitEnrollmentResponse directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
-
-
-              return true;
             }
+            if ( ! directDebitEnrollment(business, bankAccount) ) {
+              // send email to payment ops to notify them that they need to upload files to the box
+              EmailMessage message = new EmailMessage();
+              String body = "Failed to upload bank account for AFEX User" + business.getBusinessName();
+              message.setTo(new String[]{"paymentops@nanopay.net"});
+              message.setSubject("Failed AFEX Bank Account Upload");
+              message.setBody(body);
+              EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
+            };
+            return true;
           }
         }
       }
@@ -201,6 +190,42 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    DAO padDAO = (DAO) x.get("padCaptureDAO");
+    ArraySink sink = new ArraySink();
+    PadCapture pad = null;
+    padDAO.where(EQ(PadCapture.ACCOUNT_NUMBER, bankAccount.getAccountNumber())).select(sink);
+    if ( sink.getArray().size() > 0 ) {
+      pad = (PadCapture) sink.getArray().get(0);
+    } else {
+      return false;
+    }
+    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
+    DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setAccountOwnerFirstName(pad.getFirstName())
+      .setAccountOwnerLastName(pad.getLastName())
+      .setAPIKey(afexBusiness.getApiKey())
+      .setBankDetailsVerified(bankAccount.getStatus() == BankAccountStatus.VERIFIED)
+      .setBankName(bankResponse.getInstitutionName())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+    if ( bankAccount instanceof CABankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+    } else if ( bankAccount instanceof USBankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
+    }
+
+    String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
+
+    if ( ! directDebitEnrollmentResponse.equals("\"This account is submitted to enroll in Direct Debit.\"") ) {
+      logger_.error("Error creating direct debit account for business " + business.getId(), directDebitEnrollmentRequest, directDebitEnrollmentResponse);
+      return false;
+    }
+    return true;
   }
 
   public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
@@ -472,7 +497,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .setCurrency(bankAccount.getDenomination())
       .build();
 
-    DirectDebitUnenrollmentResponse response = afexClient.directDebitUnenrollment(unenrollmentRequest);
+    String response = afexClient.directDebitUnenrollment(unenrollmentRequest);
 
     return false;
   }
