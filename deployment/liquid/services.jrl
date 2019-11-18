@@ -86,15 +86,10 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
-      .setLastModifiedByAware(true)
-      .setDeletedAware(true)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
-      .addIndex(new foam.core.PropertyInfo[] {Account.OWNER, Account.NAME, Account.ID, Account.ENABLED, Account.IS_DEFAULT, Account.DENOMINATION})
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.account.Account.OWNER, net.nanopay.account.Account.NAME, net.nanopay.account.Account.ID, net.nanopay.account.Account.ENABLED, net.nanopay.account.Account.IS_DEFAULT, net.nanopay.account.Account.DENOMINATION})
       .setAuthorize(false)
       .build();
   """
