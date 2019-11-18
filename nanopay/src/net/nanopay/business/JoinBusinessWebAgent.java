@@ -88,19 +88,14 @@ public class JoinBusinessWebAgent implements WebAgent {
       // Process the token.
       tokenService.processToken(x, user, tokenUUID);
 
-
-      // get onboarding object
+      //get onboarding object
       ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO_.where(
         AND(
-          EQ( BusinessOnboarding.BUSINESS_ID, businessId),
-          EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
-          EQ(BusinessOnboarding.SIGNING_OFFICER, false)
+          EQ(BusinessOnboarding.BUSINESS_ID, businessId)
         )).select(new ArraySink());
       uSBusinessOnboardingDAO_.where(
         AND(
-          EQ(USBusinessOnboarding.BUSINESS_ID, businessId),
-          EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
-          EQ(USBusinessOnboarding.SIGNING_OFFICER, false)
+          EQ(USBusinessOnboarding.BUSINESS_ID, businessId)
         )).select(businessOnBoardingSink);
 
       java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
@@ -111,19 +106,19 @@ public class JoinBusinessWebAgent implements WebAgent {
         if ( onboarding instanceof BusinessOnboarding ) {
           BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
 
-          businessOnboardingClone.setSigningOfficer(true);
+          businessOnboardingClone.setSigningOfficer(false);
           businessOnboardingClone.setSigningOfficerEmail("");
           businessOnboardingClone.setUserId(token.getUserId());
-          businessOnboardingClone.setBusinessId(businessId);
+          businessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
           businessOnboardingDAO_.put_(x, businessOnboardingClone);
         } else if ( onboarding instanceof USBusinessOnboarding ) {
           USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
 
-          uSBusinessOnboardingClone.setSigningOfficer(true);
+          uSBusinessOnboardingClone.setSigningOfficer(false);
           uSBusinessOnboardingClone.setSigningOfficerEmail("");
           uSBusinessOnboardingClone.setUserId(token.getUserId());
-          uSBusinessOnboardingClone.setBusinessId(businessId);
+          uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
           uSBusinessOnboardingDAO_.put_(x, uSBusinessOnboardingClone);
         }

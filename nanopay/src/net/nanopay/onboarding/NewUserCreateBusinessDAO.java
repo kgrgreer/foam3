@@ -146,13 +146,11 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
           // get onboarding object
           ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO_.where(
             AND(
-              EQ(BusinessOnboarding.BUSINESS_ID, businessId),
-              EQ(BusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+              EQ(BusinessOnboarding.BUSINESS_ID, businessId)
             )).select(new ArraySink());
           uSBusinessOnboardingDAO_.where(
             AND(
-              EQ(USBusinessOnboarding.BUSINESS_ID, businessId),
-              EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
+              EQ(USBusinessOnboarding.BUSINESS_ID, businessId)
             )).select(businessOnBoardingSink);
 
           java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
@@ -163,19 +161,19 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             if ( onboarding instanceof BusinessOnboarding ) {
               BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
 
-              businessOnboardingClone.setSigningOfficer(true);
+              businessOnboardingClone.setSigningOfficer(false);
               businessOnboardingClone.setSigningOfficerEmail("");
               businessOnboardingClone.setUserId(user.getId());
-              businessOnboardingClone.setBusinessId(businessId);
+              businessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
               businessOnboardingDAO_.put_(sysContext, businessOnboardingClone);
             } else if ( onboarding instanceof USBusinessOnboarding ) {
               USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
 
-              uSBusinessOnboardingClone.setSigningOfficer(true);
+              uSBusinessOnboardingClone.setSigningOfficer(false);
               uSBusinessOnboardingClone.setSigningOfficerEmail("");
               uSBusinessOnboardingClone.setUserId(user.getId());
-              uSBusinessOnboardingClone.setBusinessId(businessId);
+              uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
               uSBusinessOnboardingDAO_.put_(sysContext, uSBusinessOnboardingClone);
             }
