@@ -95,7 +95,6 @@ p({
       .setDeletedAware(true)
       .setOf(Account.getOwnClassInfo())
       .addIndex(new foam.core.PropertyInfo[] {Account.OWNER, Account.NAME, Account.ID, Account.ENABLED, Account.IS_DEFAULT, Account.DENOMINATION})
-      .setInnerDAO(x.get("localAccountDAO"))
       .setAuthorize(false)
       .build();
   """
