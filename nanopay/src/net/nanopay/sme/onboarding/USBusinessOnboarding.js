@@ -515,53 +515,44 @@ foam.CLASS({
       width: 100,
       gridColumns: 6,
       validationPredicates: [
-        {
-          args: ['adminLastName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
-                e.GT(
-                  foam.mlang.StringLength.create({
-                    arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
-                  }), 0)
-            ),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'Last Name Required.'
-        },
-        {
-          args: ['adminLastName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
-                e.LT(
-                  foam.mlang.StringLength.create({
-                    arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
-                  }), 70)
-            ),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'Last name cannot exceed 70 characters.'
-        },
-        {
-          args: ['adminLastName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
-                e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME, /^[a-zA-Z ]*$/)
-              ),
+      {
+        args: ['adminLastName', 'signingOfficer'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
+              }), 0),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'Last name cannot contain numbers or special characters.'
-        }
-      ],
-      validationTextVisible: true
+          );
+        },
+        errorString: 'Last Name Required.'
+      },
+      {
+        args: ['adminLastName', 'signingOfficer'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.LT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
+              }), 70),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+          );
+        },
+        errorString: 'Last name cannot exceed 70 characters.'
+      },
+      {
+        args: ['adminLastName', 'signingOfficer'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME, /^[a-zA-Z ]*$/),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+          );
+        },
+        errorString: 'Last name cannot contain numbers or special characters.'
+      }
+    ],
+    validationTextVisible: true
     },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
