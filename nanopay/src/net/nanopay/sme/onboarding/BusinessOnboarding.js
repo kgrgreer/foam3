@@ -50,7 +50,10 @@ foam.CLASS({
     {
       name: 'isAvailable',
       factory: function() {
-        return amountOfOwners >= this.index;
+        var i = this.index;
+        return function(signingOfficer, amountOfOwners) {
+          return amountOfOwners >= i;
+        };
       },
     }
   ]
