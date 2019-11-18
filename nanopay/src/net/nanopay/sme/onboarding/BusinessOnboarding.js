@@ -209,15 +209,6 @@ foam.CLASS({
       help: 'Awesome! Next, I’ll need to know your signing officer\'s home address…',
     },
     {
-      name: 'signingOfficerEmailSection',
-      title: 'Enter your signing officer\'s email',
-      help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officer directly for the approval.`,
-      isAvailable: function(signingOfficer) {
-        return ! signingOfficer;
-      }
-    },
-    {
       name: 'businessAddressSection',
       title: 'Enter your business address',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
