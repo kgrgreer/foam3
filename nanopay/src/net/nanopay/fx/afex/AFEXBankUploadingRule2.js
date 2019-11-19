@@ -30,7 +30,7 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( (! (obj instanceof BankAccount)) && ((BankAccount) oldObj).getStatus() == BankAccountStatus.UNVERIFIED ) {
+            if ( ! (obj instanceof BankAccount && (oldObj == null || ((BankAccount)oldObj).getStatus() == BankAccountStatus.UNVERIFIED)) ) {
               return;
             }
             BankAccount account = (BankAccount) obj;
