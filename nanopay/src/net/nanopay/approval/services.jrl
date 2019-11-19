@@ -18,6 +18,7 @@ p({
            new net.nanopay.approval.AuthenticatedApprovalDAO(x,
              new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
                new net.nanopay.approval.ApprovalDAO(x, null)))))
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.approval.ApprovalRequest.CREATED})
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
   """,
