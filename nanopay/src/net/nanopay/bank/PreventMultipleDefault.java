@@ -34,7 +34,7 @@ public class PreventMultipleDefault
     BankAccount oldAcc = (BankAccount) getDelegate().find(account.getId());
 
     // Can't set non active accounts as default.
-    if ( oldAcc != null & ! oldAcc.getIsDefault() && account.getIsDefault() ) {
+    if ( oldAcc != null && ! oldAcc.getIsDefault() && account.getIsDefault() ) {
       if ( ! account.getStatus().equals(BankAccountStatus.VERIFIED) ) {
         throw new RuntimeException("Unable to set non verified bank accounts as default.");
       }
@@ -43,7 +43,7 @@ public class PreventMultipleDefault
 
       // Sets old default as non default bank account
       if ( oldDefault != null ) {
-        oldDefault.fclone();
+        oldDefault = (BankAccount) oldDefault.fclone();
         oldDefault.setIsDefault(false);
         getDelegate().put(oldDefault);
       }
