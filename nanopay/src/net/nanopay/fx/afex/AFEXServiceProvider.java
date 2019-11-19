@@ -10,8 +10,6 @@ import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.nanos.notification.email.EmailMessage;
-import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 
 import static foam.mlang.MLang.*;
@@ -29,6 +27,7 @@ import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
 import net.nanopay.model.PadCapture;
+import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -170,15 +169,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
               afexBusinessDAO.put(afexBusiness);
             }
-            if ( ! directDebitEnrollment(business, bankAccount) ) {
-              // send email to payment ops to notify them that they need to upload files to the box
-              EmailMessage message = new EmailMessage();
-              String body = "Failed to upload bank account for AFEX User" + business.getBusinessName();
-              message.setTo(new String[]{"paymentops@nanopay.net"});
-              message.setSubject("Failed AFEX Bank Account Upload");
-              message.setBody(body);
-              EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
-            };
             return true;
           }
         }
@@ -725,7 +715,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
     if ( bankAccount instanceof CABankAccount ) {
-      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+      String institutionNumber;
+      if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+        DAO institutionDAO = (DAO) x.get("institutionDAO");
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        institutionNumber = institution.getInstitutionNumber();
+      } else {
+        institutionNumber = bankAccount.getInstitutionNumber();
+      }
+      String branchId = SafetyUtil.isEmpty(bankAccount.getBranchId()) ? bankAccount.getRoutingCode(x) : bankAccount.getBranchId();
+      findBankByNationalIDRequest.setNationalID("0" + institutionNumber + branchId);
     } else if ( bankAccount instanceof USBankAccount ) {
       findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
     } else {

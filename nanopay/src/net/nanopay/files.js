@@ -284,6 +284,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentRequest' },
   { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentResponse' },
   { name: 'net/nanopay/fx/afex/AFEXBankOnboardingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
   
   // kotak
