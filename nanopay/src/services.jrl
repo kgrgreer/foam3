@@ -341,6 +341,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
       .setPm(true)
+      .setEnableInterfaceDecorators(false)
       .setPipelinePm(true)
       .setInnerDAO(x.get("localCorridorDAO"))
       .setAuthorize(true)
