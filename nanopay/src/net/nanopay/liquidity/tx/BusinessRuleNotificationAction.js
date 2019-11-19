@@ -52,7 +52,7 @@ foam.CLASS({
               // notification
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
-              notification.setGroupId("liquidDev");
+              notification.setGroupId("liquidBasic");
               notification.setBody(notificationMsg);
               notification.setNotificationType("Business Rule Transaction Alert");
               try {

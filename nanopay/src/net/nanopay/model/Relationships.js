@@ -840,6 +840,186 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'transactionMakerJunctionDAO',
+  forwardName: 'transactionMakers',
+  inverseName: 'accountsInWhichThisUserIsATransactionMaker',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Transaction Maker',
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'transactionApproverJunctionDAO',
+  forwardName: 'transactionApprovers',
+  inverseName: 'accountsInWhichThisUserIsATransactionApprover',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Transaction Approver'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'transactionViewerJunctionDAO',
+  forwardName: 'transactionViewers',
+  inverseName: 'accountsInWhichThisUserIsATransactionViewer',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Transaction Viewer'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'accountMakerJunctionDAO',
+  forwardName: 'accountMakers',
+  inverseName: 'accountsInWhichThisUserIsAnAccountMaker',
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'accountApproverJunctionDAO',
+  forwardName: 'accountApprovers',
+  inverseName: 'accountsInWhichThisUserIsAnAccountApprover',
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'accountViewerJunctionDAO',
+  forwardName: 'accountViewer',
+  inverseName: 'accountsInWhichThisUserIsAnAccountViewer',
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'ruleMakerJunctionDAO',
+  forwardName: 'ruleMakers',
+  inverseName: 'accountsInWhichThisUserIsARuleMaker',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Rule MAker'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'ruleApproverJunctionDAO',
+  forwardName: 'ruleApprovers',
+  inverseName: 'accountsInWhichThisUserIsAnRuleApprover',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Rule Approver'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'ruleViewerJunctionDAO',
+  forwardName: 'ruleViewer',
+  inverseName: 'accountsInWhichThisUserIsARuleViewer',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Rule Viewer'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'userMakerJunctionDAO',
+  forwardName: 'userMakers',
+  inverseName: 'accountsInWhichThisUserIsAUserMaker',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A User Maker'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'userApproverJunctionDAO',
+  forwardName: 'userApprovers',
+  inverseName: 'accountsInWhichThisUserIsAUserApprover',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A User Approver'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'userViewerJunctionDAO',
+  forwardName: 'userViewer',
+  inverseName: 'accountsInWhichThisUserIsAUserViewer',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A User Viewer'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'roleMakerJunctionDAO',
+  forwardName: 'roleMakers',
+  inverseName: 'accountsInWhichThisUserIsARoleMaker',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Role Maker'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'roleApproverJunctionDAO',
+  forwardName: 'roleApprovers',
+  inverseName: 'accountsInWhichThisUserIsARoleApprover',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Role Approver'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.auth.User',
+  junctionDAOKey: 'roleViewerJunctionDAO',
+  forwardName: 'roleViewer',
+  inverseName: 'accountsInWhichThisUserIsARoleViewer',
+  targetProperty: {
+    label: 'Accounts In Which This User Is A Role Viewer'
+  },
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'foam.nanos.menu.Menu',
+  junctionDAOKey: 'accountMenuJunctionDAO',
+  forwardName: 'menuAccounts',
+  inverseName: 'accountsWhichHaveMenus',
+  cardinality: '*:*',
+})
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.exchangeable.AssetClass',
   targetModel: 'net.nanopay.exchangeable.Security',
   forwardName: 'members',

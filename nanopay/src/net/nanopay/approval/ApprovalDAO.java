@@ -5,6 +5,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
+import foam.nanos.ruler.Operations;
+import net.nanopay.liquidity.LiquidApprovalRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -36,6 +38,13 @@ public class ApprovalDAO
       getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
+
+        LiquidApprovalRequest newRequest = (LiquidApprovalRequest) requestDAO.find(obj);
+
+        // basically if it is a liquid approval request or not
+        if ( newRequest.getOperation() != null ){
+          return request;
+        }
 
         //puts object to its original dao
         rePutObject(x, request);

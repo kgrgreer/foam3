@@ -1,4 +1,4 @@
-// disable transaction rules
+// disable localTransactionDAO rules
 p({"class":"foam.nanos.ruler.Rule","id":"Pending FX Rate Transactions","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Getting FX Rate for Transactions","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule1","enabled":false})
@@ -32,6 +32,52 @@ p({"class":"foam.nanos.ruler.Rule","id":"Clear transaction approval requests","e
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":false})
+
+// Add approval request rules
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Account Create Approvals",
+  "priority": 100,
+  "ruleGroup": "liquid",
+  "documentation": "To create approval requests on puts to the accountDAO",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"__Property__",
+      "forClass_":"net.nanopay.account.Account",
+      "name":"enabled"
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":false
+    }
+  },
+  "action": {
+    "class": "net.nanopay.liquidity.rules.account.AccountCreateApproval"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Fulfilled Account Approvals",
+  "priority": 200,
+  "ruleGroup": "liquid",
+  "documentation": "To handle Approved Approval Requests",
+  "daoKey": "approvalRequestDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {"class":"net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovalsPredicate"},
+  "action": {
+    "class": "net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovals"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
 
 // Business rules
 p({

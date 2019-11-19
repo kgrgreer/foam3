@@ -1,15 +1,29 @@
 p({"class":"foam.nanos.menu.Menu","id":"liquid.root","label":"Liquid","handler":{"class":"foam.nanos.menu.SubMenu"}})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}},"parent":"liquid.root","order":100})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","defaultColumns":["name","balance","homeBalance"]}},"parent":"liquid.root","order":200})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}},"parent":"liquid.root","order":300})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"userDAO","browseTitle":"Users"}},"parent":"liquid.root","order":400})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.roles","label":"Roles","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleDAO","browseTitle":"Roles"}},"parent":"liquid.root","order":500})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"parent":"liquid.root","order":600})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"approvalRequestDAO","browseTitle":"Approval Requests","of":"net.nanopay.liquidity.LiquidApprovalRequest"}},"parent":"liquid.root","order":700})
 
-// Initial setup
-p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.DetailView","of":"net.nanopay.liquidity.ui.Dashboard"}},"order":5000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":5500,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO"},"order":6000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"liquiditySettingsDAO"},"order":7000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.businessrules","label":"Business Rules","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ruleDAO"},"order":8000,"parent":"liquid.root"})
-
-// DAO 2.0 configuration
-p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","predicate":{"class": "foam.mlang.predicate.Not","arg1": {"class": "foam.mlang.predicate.IsInstanceOf","targetClass": "net.nanopay.bank.BankAccount"}},"defaultColumns":["name","balance","homeBalance"]}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.businessrules","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"ruleDAO","predicate":{"class": "foam.mlang.predicate.IsInstanceOf","targetClass": "net.nanopay.liquidity.tx.BusinessRule"},"defaultColumns":["id","enabled","businessRuleAction"],"of":"net.nanopay.liquidity.tx.BusinessRule"}}})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.businessrules",
+  "label":"Business Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.BusinessRule"
+      },
+      "defaultColumns":["id","enabled","businessRuleAction"],
+      "of":"net.nanopay.liquidity.tx.BusinessRule"
+    }
+  },
+  "parent":"liquid.root",
+  "order":800
+})

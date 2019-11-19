@@ -1,3 +1,4 @@
+
 var npRoot = __dirname + '/../';
 
 global.FOAM_FLAGS = {
@@ -47,96 +48,54 @@ var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
 // what number the account IDs should start up
 var startAccountIds = 1000;
 
-var lit = false;
+var lit = true;
+
+var banks = lit ? [
+  {
+    type: 'Bank',
+    denomination: 'CAD',
+    name: 'GLOBAL'
+  }
+] : null;
 
 // below tree is just for testing purposes
 var accountTree = lit ? [
   {
     type: 'Aggregate',
-    name: 'Goldman God',
-    denomination: 'USD',
+    name: 'GLOBAL',
+    denomination: 'CAD',
     children: [
       {
         type: 'Aggregate',
-        name: 'Goldman DemiGod A',
-        denomination: 'USD',
+        name: 'EU',
+        denomination: 'CAD',
         children: [
           {
             type: 'Virtual',
-            name: 'Goldman Peon AA',
+            name: 'EUWest',
             denomination: 'CAD',
           },
           {
             type: 'Virtual',
-            name: 'Goldman Peon AB',
-            denomination: 'USD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AC',
+            name: 'EUEast',
             denomination: 'CAD',
           },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AD',
-            denomination: 'USD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AE',
-            denomination: 'CAD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AF',
-            denomination: 'USD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AG',
-            denomination: 'CAD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AH',
-            denomination: 'USD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AI',
-            denomination: 'CAD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AJ',
-            denomination: 'USD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AK',
-            denomination: 'CAD',
-          },
-          {
-            type: 'Virtual',
-            name: 'Goldman Peon AL',
-            denomination: 'USD',
-          }
         ]
       },
       {
         type: 'Aggregate',
-        name: 'Goldman DemiGod B',
-        denomination: 'USD',
+        name: 'ASIA',
+        denomination: 'CAD',
         children: [
           {
             type: 'Virtual',
-            name: 'Goldman Peon BA',
+            name: 'ASIAWest',
             denomination: 'CAD',
           },
           {
             type: 'Virtual',
-            name: 'Goldman Peon BB',
-            denomination: 'USD',
+            name: 'ASIAEast',
+            denomination: 'CAD',
           }
         ]
       }
@@ -2086,7 +2045,7 @@ function seedIdIterator(start) {
 const refIdGenerator = referenceIdMaker();
 
 function createCurrency(X, cObj) {
-  var currency = net.nanopay.model.Currency.create({
+  var currency = foam.core.Currency.create({
     delimiter: ',',
     decimalCharacter: '.',
     symbol: '¤',
@@ -2262,6 +2221,109 @@ function jdao(journal) {
   };
 }
 
+function transfer(X, source, dest, amount) {
+  if ( source.id == dest.id ) {
+    throw new Error("Transfer from same account " + source.id);
+  }
+
+  X.balances[source.id] -= amount;
+  X.balances[dest.id] += amount
+
+  var tx = net.nanopay.tx.DigitalTransaction.create({
+    name: 'Digital Transfer',
+    isQuoted: true,
+    id: foam.next$UID(),
+    amount: amount,
+    completionDate: X.currentDate,
+    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+    initialStatus: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+    sourceCurrency: source.denomination,
+    destinationCurrency: dest.denomination,
+    destinationAccount: dest.id,
+    sourceAccount: source.id,
+    lastModified: X.currentDate,
+    lastModifiedBy: X.userId,
+    created: X.currentDate,
+    createdBy: X.userId,
+    lineItems: [
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
+    ],
+  }, X);
+
+  X.transactionDAO.put(tx);
+}
+
+function createLiquiditySettings(X) {
+  liquiditySettings.forEach(s => {
+    switch (s.type) {
+      case 'email':
+        return createEmailLiquiditySetting(X, s);
+      case 'rebalance':
+        return createRebalanceLiquiditySetting(X, s);
+      case 'emailRebalance':
+        return createEmailRebalanceLiquiditySetting(X, s);
+    }
+  })
+}
+
+function addLiquiditySettingsToAccounts(X) {
+  Object.keys(accountNamesToLiquidity).forEach(accountName => {
+    var account = accountNamesToAccount[accountName];
+
+    var liquiditySettingName = accountNamesToLiquidity[accountName];
+
+    account.liquiditySetting = liquidityNamesToId[liquiditySettingName];
+
+    X.accountDAO.put(account);
+  })
+}
+
+function randomDigitalTransfer(X) {
+  var root = randomItem(accountTree);
+  var accounts = virtualAccounts(root);
+
+  if ( accounts.length < 2 ) {
+    throw new Error("Cannot created transfer in account tree " + root.name + " as there is only one virtual account.");
+  }
+
+  var source = randomItem(accounts);
+  var dest;
+  do {
+    dest = randomItem(accounts);
+  } while ( dest === source );
+
+  var amount = Math.floor(
+    X.balances[source.id] * 0.05 +
+    X.balances[source.id] * Math.random() * 0.02);
+
+  transfer(X, source, dest, amount);
+}
+
+function randomCICOTransfer(X) {
+  var root = randomItem(accountTree);
+
+  var bank = accountNamesToAccount[`${root.name} Bank Account`];
+  var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+
+  if (Math.random() < 0.5) {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashIn(X, bank, shadow, amount);
+
+  } else {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashOut(X, shadow, bank, amount);
+  }
+}
+
+
 function cashIn(X, bank, dest, amount) {
   var tx = net.nanopay.tx.cico.CITransaction.create({
     id: foam.next$UID().toString(),
@@ -2357,6 +2419,23 @@ function cashOut(X, source, bank, amount) {
   X.balances[source.id] -= amount;
 }
 
+function virtualAccounts(root) {
+  var ret = [];
+
+  function collect(node) {
+    if ( ! net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
+      net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
+      ret.push(node.obj);
+    }
+
+    if ( node.children ) node.children.forEach(collect);
+  }
+
+  collect(root);
+
+  return ret;
+}
+
 function main() {
   seedIdIterator(startAccountIds);
 
@@ -2366,14 +2445,13 @@ function main() {
   var X = foam.createSubContext({
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
-    currencyDAO: jdao("target/journals/currencies.0"),
+    currencyDAO: foam.dao.NullDAO.create(),
     currentDate: currentDate,
     balances: {},
     homeDenomination: 'USD',
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
-    userId: 8005,
-    fxService: foam.dao.NullDAO.create(),
+    userId: 8007,
     addCommas: function (a) { return a; }
   });
 
@@ -2381,6 +2459,7 @@ function main() {
     user: foam.nanos.auth.User.create({ id: 8005 }, X),
     accountDAO: jdao("target/journals/accounts.0"),
     debtAccountDAO: foam.dao.NullDAO.create(),
+    fxService: net.nanopay.fx.mock.MockFXService.create()
   })
 
   newCurrencies.forEach(c => {
@@ -2404,26 +2483,30 @@ function main() {
     if (a.children) a.children.forEach(foo);
   });
 
-  // accountTree.forEach(function (root) {
-  //   if ( ! root.isDefault ){
-  //     var balance = 10000000;
+  // 1. cash in the banks
+  // 2. send transactions to eachother
 
-  //     cashIn(X, root.bank, root.shadow, balance);
+  banks.forEach(function (bankObj) {
+    var balance = 10000000;
 
-  //     var virtuals = virtualAccounts(root);
+    var actualBank = bank(X, bankObj);
 
-  //     var amount = Math.floor(balance / virtuals.length);
+    var root = accountTree[0];
 
-  //     virtuals.forEach(function (v) {
-  //       transfer(X, root.shadow, v, amount);
-  //     });
-  //   }
-  // });
+    cashIn(X, actualBank.bank, actualBank.shadow, balance);
+
+    var virtuals = virtualAccounts(root);
+
+    var amount = Math.floor(balance / virtuals.length);
+
+    virtuals.forEach(function (v) {
+      transfer(X, actualBank.shadow, v, amount);
+    });
+  });
 
   X.accountDAO.close();
   X.transactionDAO.close();
   X.liquiditySettingsDAO.close();
-  X.currencyDAO.close();
 }
 
-// main();
+if ( lit ) main();
