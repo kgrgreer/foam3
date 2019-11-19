@@ -380,6 +380,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
@@ -530,11 +531,12 @@ foam.CLASS({
       `
     },
     {
-      name: 'notify',
+      name: 'doNotify',
       javaCode: `
         DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
         DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
         DAO               userDAO  = (DAO) x.get("localUserDAO");
+        Logger              logger = (Logger) x.get("logger");
 
         // gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
@@ -543,7 +545,8 @@ foam.CLASS({
         for( UserUserJunction businessUserJunction : businessUserJunctions ) {
           User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
           if ( businessUser == null ) {
-            throw new RuntimeException("A business user junction exists, but the user for the junction cannot be found.");
+            logger.warning("A business user junction for business ", businessUserJunction.getTargetId(), "  and user ", businessUserJunction.getSourceId(), " exists, but the user cannot be found.");
+            continue;
           }
 
           // gets the notification settings for this business-user pair
