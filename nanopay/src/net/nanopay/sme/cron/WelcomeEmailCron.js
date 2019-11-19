@@ -35,13 +35,13 @@ foam.CLASS({
         EmailMessage         message        = null;
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
-        Date                 now            = new Date();
-        Date                 nowMinusTime   = new Date(now.getTime() - (1000 * 60 * 30)); // every 30 min
+        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
+        Date                 endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20));
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(
-            GTE(Business.CREATED, nowMinusTime),
-            LT(Business.CREATED, now))
+            GTE(Business.CREATED, endInterval),
+            LT(Business.CREATED, startInterval))
           ).select(new ArraySink())).getArray();
 
         for(Business business : businessOnboardedInLastXmin) {
