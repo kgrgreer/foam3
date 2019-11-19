@@ -1,5 +1,101 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
+  name: 'AuthView',
+  extends: 'foam.u2.View',
+
+  css: `
+  ^ {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  ^ input {
+    border-width: 1px;
+    border-radius: 5px;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    margin: 8px 14px 8px 0;
+    font-size: 22px;
+  }
+  ^ .wrong-code {
+    border-color: #f91c1c;
+    background-color: #fff6f6;
+  }
+  `,
+  properties: [
+    {
+      class: 'Long',
+      name: 'squares'
+    },
+    {
+      class: 'Boolean',
+      name: 'incorrctCode',
+    },
+    {
+      class: 'Int',
+      name: 'index',
+      value: 1
+    },
+    {
+      class: 'Int',
+      name: 'size',
+      value: 6
+    },
+    {
+      class: 'Array',
+      name: 'token',
+      factory: function(size) {
+        var arr = [];
+        for ( var i = 1; i <= this.size; i++ ) {
+          arr.push[''];
+        }
+        return arr;
+      }
+    }
+  ],
+  methods: [
+    function initE() {
+      this.addClass(this.myClass())
+      .call( () => {
+        for ( var i = 1; i <= this.size; i++ ) {
+        this.start('input')
+          .enableClass('wrong-code', this.incorrctCode$ )
+          .attrs({ type: 'text', maxlength: '1', autofocus: true, name: i })
+          .on( 'keypress', this.blabla )
+          .on( 'keyup', this.bla )
+        .end();
+        }
+      })
+      .end();
+    }
+  ],
+  listeners: [
+    function blabla(e) {
+      if ( ! Number(e.key) ) {
+        e.preventDefault();
+      } else {
+        e.target.value = e.key;
+        this.token[Number(e.target.name) - 1] = e.target.value;
+        if ( e.target.name != this.size ) document.getElementsByName(Number(e.target.name) + 1)[0].focus();
+        this.data = this.token.join('');
+      }
+    },
+    function bla(e) {
+      if ( e.key != 'Backspace' ) {
+        e.preventDefault();
+      } else {
+        if ( e.target.name != 1 ) document.getElementsByName(Number(e.target.name) - 1)[0].focus();
+      }
+    }
+  ],
+});
+
+
+foam.CLASS({
+  package: 'net.nanopay.sme.ui',
   name: 'TwoFactorSignInView',
   extends: 'foam.u2.Controller',
 
@@ -15,9 +111,13 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
+    'foam.u2.ViewSpec'
   ],
 
   css: `
+    ^ {
+      margin-top: 20vh;
+    }
     ^ .content-form {
       margin: auto;
       width: 375px;
@@ -116,9 +216,6 @@ foam.CLASS({
     ^ .caption {
       margin: 15px 0px;
     }
-    ^ input {
-      width: 100%;
-    }
     ^button-container {
       display: flex;
       justify-content: flex-end;
@@ -126,10 +223,16 @@ foam.CLASS({
     ^verify-button {
       width: 80%;
       height: 48px;
+      margin-top: 20px;
     }
-    ^ net.nanopay.sme.ui.AbliiEmptyTopNavView {
-      width: auto;
+    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView {
       border: 0;
+      height: 36px
+    }
+    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView img{
+      width: auto;
+      height: 20px;
+      padding-left: 5px;
     }
     ^sme-subtitle {
       text-align: initial;
@@ -144,104 +247,41 @@ foam.CLASS({
       display: flex;
       flex-direction: row;
       align-items: flex-start;
+      width: 80%;
     }
-    ^TwoFactAuthNote {
+    ^TwoFactAuthIntro {
+      padding: 0 16px;
+      font-size: 14px;
+      font-family: Lato-Regular;
+      line-height: 1.6;
+      height: 63px;
+    }
+    ^ .error-msg {
       display: flex;
-      flex-direction: row;
-      align-items: flex-start;
+      color: #f91c1c;
     }
   `,
 
   properties: [
     {
-      name: 'passwordStrength',
-      value: 0
+      class: 'Boolean',
+      name: 'incorrctCode'
     },
     {
-      class: 'String',
-      name: 'firstNameField'
-    },
-    {
-      class: 'String',
-      name: 'lastNameField'
-    },
-    {
-      class: 'String',
-      name: 'companyNameField'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      documentation: 'Reference to affiliated country.',
-      name: 'country'
-    },
-    {
-      class: 'String',
-      name: 'emailField'
-    },
-    {
-      class: 'Password',
-      name: 'passwordField',
-      view: {
-        class: 'net.nanopay.ui.NewPasswordView',
-        passwordIcon: true
+      class: 'foam.u2.ViewSpec',
+      name: 'Auth',
+      factory: function() {
+        return {
+          class: 'net.nanopay.sme.ui.AuthView',
+          incorrctCode$: this.incorrctCode$,
+          data$: this.twoFactorToken$
+        };
       }
-    },
-    {
-      class: 'String',
-      name: 'signUpToken'
-    },
-    {
-      class: 'Boolean',
-      name: 'disableEmail',
-      documentation: `Set this to true to disable the email input field.`
-    },
-    {
-      class: 'Boolean',
-      name: 'disableCompanyName',
-      documentation: `Set this to true to disable the Company Name input field.`
-    },
-    'termsAndConditions',
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.documents.AcceptanceDocument',
-      name: 'termsAgreementDocument'
-    },
-    {
-      class: 'Boolean',
-      name: 'isLoading',
-      documentation: `
-        True after the button has been clicked and before it either succeeds or
-        fails. Used to prevent the user from clicking multiple times on the
-        button which will create duplicate users.
-      `
-    },
-    {
-      name: 'predicate',
-      expression: function(choice) {
-        if ( choice instanceof Array ) {
-          return this.IN(this.Country.ID, choice);
-        }
-        return this.EQ(this.Country.ID, choice);
-      }
-    },
-    {
-      name: 'choice',
-      value: ['CA', 'US']
-    },
-    {
-      class: 'String',
-      name: 'phone'
     },
     {
       class: 'String',
       name: 'twoFactorToken',
-      view: {
-        class: 'foam.u2.TextField',
-        focused: true
-      }
-    }
-
+    },
   ],
 
   messages: [
@@ -262,10 +302,7 @@ foam.CLASS({
 
     async function initE() {
       this.SUPER();
-      var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
-      var searchParams = new URLSearchParams(location.search);
-      this.signUpToken = searchParams.get('token');
 
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
@@ -281,19 +318,34 @@ foam.CLASS({
       .addClass(this.myClass())
       .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
       .start().addClass('tf-container')
-        .start('h3').add(this.TWO_FACTOR_TITLE).end()
+        .start('h2').add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
           .start('img').attr('src', 'images/phone-iphone-24-px.png').end()
-          .start().addClass(myClass(''))
+          .start().addClass(this.myClass('TwoFactAuthIntro'))
           .add(this.TWO_FACTOR_EXPLANATION).end()
         .end()
         .start('form')
           .addClass('tfa-container')
           .start('label')
             .add(this.TWO_FACTOR_LABEL)
+            .style({ 'font-family': 'Lato-Regular', 'font-size': 12 })
           .end()
-          .start('p')
-            .tag(this.TWO_FACTOR_TOKEN)
+          .start()
+            .tag(this.Auth)
+            .start().addClass('error-msg').show( this.incorrctCode$ )
+              .start({
+                class: 'foam.u2.tag.Image',
+                data: 'images/inline-error-icon.svg',
+                displayHeight: 16,
+                displayWidth: 16
+              })
+                .style({
+                  'justify-content': 'flex-start',
+                  'margin': '0 8px 0 0'
+                })
+              .end()
+              .start('span').add(this.TWO_FACTOR_ERROR).end()
+            .end()
           .end()
           .start(this.VERIFY)
           .addClass(this.myClass('verify-button'))
@@ -339,7 +391,6 @@ foam.CLASS({
       name: 'verify',
       code: function(X) {
         var self = this;
-
         if ( ! this.twoFactorToken ) {
           this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
           return;
@@ -351,6 +402,7 @@ foam.CLASS({
             self.loginSuccess = true;
           } else {
             self.loginSuccess = false;
+            this.incorrctCode = true;
             self.notify(self.TWO_FACTOR_ERROR, 'error');
           }
         });
