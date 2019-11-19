@@ -6,6 +6,7 @@ import foam.dao.MDAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
@@ -43,6 +44,13 @@ public class TransactionBenchmark
 
   public void setQuoteTransactions(Boolean quote) {
     quote_ = quote;
+  }
+
+  @Override
+  public void teardown(X x, java.util.Map stats) {
+    DAO dao = (DAO) x.get("localTransactionDAO");
+    Count count = (Count) dao.select(new Count());
+    stats.put("Transactions (M)", (count.getValue() / 1000.0));
   }
 
   @Override

@@ -47,6 +47,8 @@ public class QuickbooksClientFactory {
       tokenStorage.setCsrf(" ");
       tokenStorage.setRealmId(" ");
       tokenStorage.setAppRedirect(" ");
+    } else {
+      tokenStorage = (QuickbooksToken) tokenStorage.fclone();
     }
 
     if ( config == null ) {

@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
-    A decorator in the localTransactionQuotePlanDAO that supports 
+    A decorator in the localTransactionQuotePlanDAO that supports
      the one to many transactions and one to one transactions.
   `,
 
@@ -70,7 +70,7 @@ foam.CLASS({
           long sum = 0;
           Transaction[] childTransactions = bulkTxn.getNext();
           CompositeTransaction ct = new CompositeTransaction();
-          // Set the composite transaction as a quoted transaction so that 
+          // Set the composite transaction as a quoted transaction so that
           // it won't be quoted in the DigitalTransactionPlanDAO decorator.
           // In order to set the composite transaction as a quoted one, it requires
           // to have both source account and destination account setup.
@@ -83,6 +83,7 @@ foam.CLASS({
             sum += childTransaction.getAmount();
 
             TransactionQuote childQuote = new TransactionQuote();
+            childQuote.setParent(parentQuote);
 
             // Set the source of each child transaction to its parent destination digital account
             childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());

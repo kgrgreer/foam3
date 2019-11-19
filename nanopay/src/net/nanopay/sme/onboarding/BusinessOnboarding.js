@@ -206,7 +206,9 @@ foam.CLASS({
       title: 'Enter your signing officer\'s email',
       help: `For security, we require the approval of a signing officer before you can continue.
           I can email your signing officer directly for the approval.`,
-      isAvailable: function (signingOfficer) { return !signingOfficer }
+      isAvailable: function(signingOfficer) {
+        return ! signingOfficer;
+      }
     },
     {
       name: 'businessAddressSection',
@@ -231,7 +233,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Please select your principal type and percentage of ownership',
+      title: 'Please select your percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function(amountOfOwners, userOwnsPercent) {
         return amountOfOwners > 0 && userOwnsPercent;
@@ -911,13 +913,18 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
+      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 0, 1, 2, 3, 4 ],
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = false;
+        if ( this.amountOfOwners > 0 ) {
+          this.publiclyTraded = false;
+        } else if ( this.amountOfOwners === 0 ) {
+          this.userOwnsPercent = false;
+        };
       },
       validationPredicates: [
         {
@@ -970,7 +977,7 @@ foam.CLASS({
         if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {

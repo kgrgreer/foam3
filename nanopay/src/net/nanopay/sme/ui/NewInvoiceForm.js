@@ -514,7 +514,10 @@ foam.CLASS({
                 'image/png': 'PNG',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
                 'application/msword': 'DOC',
-                'application/pdf': 'PDF'
+                'application/pdf': 'PDF',
+                'application/csv': 'CSV',
+                'application/vnd.ms-excel': 'XLS',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX'
               }
             }).end()
             .start().addClass('input-wrapper')
