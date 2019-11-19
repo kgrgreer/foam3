@@ -181,6 +181,7 @@ foam.CLASS({
       name: 'isDefault',
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
+      tooltip: 'Funds will be automatically deposited to this account.',
       value: false,
       tableHeaderFormatter: function(axiom) {
         this.add('Default');

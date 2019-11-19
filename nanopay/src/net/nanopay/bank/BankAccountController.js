@@ -22,6 +22,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'notify',
     'stack',
     'user'
   ],
@@ -34,7 +35,9 @@ foam.CLASS({
     { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' },
     { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts.' },
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
-    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' }
+    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' },
+    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to this account' },
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set bank account as default.' }
   ],
 
   properties: [
@@ -90,12 +93,24 @@ foam.CLASS({
               name: 'delete',
               code: function(X) {
                 if ( this.isDefault ) {
-                  this.ctrl.notify(this.DELETE_DEFAULT, 'error');
+                  self.notify(this.DELETE_DEFAULT, 'error');
+                  return;
                 }
-                this.user.accounts.remove(this).then(() =>{
-                  this.ctrl.notify(this.SUCCESSFULLY_DELETED);
+                self.user.accounts.remove(this).then(() =>{
+                  self.notify(self.SUCCESSFULLY_DELETED);
                 }).catch((err) => {
-                  self.ctrl.notify(self.UNABLE_TO_DELETE, 'error');
+                  self.notify(self.UNABLE_TO_DELETE, 'error');
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'Set as Default',
+              code: function(X) {
+                this.isDefault = true;
+                self.user.accounts.put(this).then(() =>{
+                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`);
+                }).catch((err) => {
+                  self.notify(self.UNABLE_TO_DEFAULT, 'error');
                 });
               }
             })
