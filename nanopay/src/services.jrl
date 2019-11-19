@@ -213,9 +213,9 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"deviceDAO",                        
-  "serve":true,  
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "deviceDAO",                        
+  "serve": true,  
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -229,13 +229,13 @@ p({
       .setDecorator(new net.nanopay.retail.PreventDuplicateDeviceDAO(x, null))
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.retail.model.Device\"}"
+  "client": "{\"of\":\"net.nanopay.retail.model.Device\"}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"invoiceDAO",                       
-  "serve":true,  
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "invoiceDAO",                       
+  "serve": true,  
   "serviceScript":
   """
     import net.nanopay.contacts.InvoiceToContactDAO; 
@@ -255,10 +255,8 @@ p({
     dao = new PublicUserInfoDAO(x, false, "payerId", "payer", dao); 
     dao = new PublicUserInfoDAO(x, false, "payeeId", "payee", dao); 
     dao = new InvoiceToContactDAO(x, dao); 
-    dao = new HistoryDAO(x, \"invoiceHistoryDAO\", dao); 
+    dao = new HistoryDAO(x, "invoiceHistoryDAO", dao); 
     dao = new AuthenticatedInvoiceDAO(x, dao); 
-    //return dao;
-
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
@@ -270,15 +268,15 @@ p({
       .setAuthorize(false)
       .build();
   """, 
-  "client":"{\"of\":\"net.nanopay.invoice.model.Invoice\",\"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}",
+  "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\",\"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}",
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "serve":true,  "serviceScript":"return new net.nanopay.invoice.service.DefaultInvoicePaymentService(x);","boxClass":"net.nanopay.invoice.service.InvoicePaymentServiceSkeleton","client":"{\"class\":\"net.nanopay.invoice.service.ClientInvoicePaymentService\"}"})
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"txnProcessorDAO",                  
-  "serve":true,  
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "txnProcessorDAO",                  
+  "serve": true,  
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -290,7 +288,7 @@ p({
       .setAuthorize(false)
       .build();
   """, 
-  "client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"
+  "client": "{\"of\":\"net.nanopay.tx.TxnProcessor\"}"
 })
 
 p({
@@ -319,8 +317,8 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"localCorridorDAO",                 
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "localCorridorDAO",                 
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -333,9 +331,9 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"corridorDAO",                      
-  "serve":true,  
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "corridorDAO",                      
+  "serve": true,  
   "serviceScript":
   """
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"corridor\", x.get(\"localCorridorDAO\"))));
@@ -348,7 +346,7 @@ p({
       .setAuthorize(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.fx.Corridor\"}"
+  "client": "{\"of\":\"net.nanopay.fx.Corridor\"}"
 })
 
 p({
@@ -850,10 +848,11 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"testReportDAO",                    
-  "description":"DAO to store all of the meta-data related to tests.",
-  "serve":true,"pm":false,
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "testReportDAO",                    
+  "description": "DAO to store all of the meta-data related to tests.",
+  "serve": true,
+  "pm": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
