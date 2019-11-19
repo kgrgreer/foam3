@@ -183,11 +183,11 @@ var classes = [
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
   'net.nanopay.fx.afex.AFEXPaymentStatus',
-  'net.nanopay.fx.afex.AFEXBankOnboardingDAO',
-  'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
-
+  'net.nanopay.fx.afex.AFEXBankOnboardingRule',
+  'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -668,9 +668,13 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed',
   'net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified',
+  'net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessCreated',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
