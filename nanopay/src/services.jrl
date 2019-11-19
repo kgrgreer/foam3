@@ -275,7 +275,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "
 
 p({
   "class": "foam.nanos.boot.NSpec", 
-  "name":" txnProcessorDAO",                  
+  "name": "txnProcessorDAO",                  
   "serve": true,  
   "serviceScript":
   """
