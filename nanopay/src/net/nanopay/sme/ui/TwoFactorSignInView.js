@@ -57,10 +57,10 @@ foam.CLASS({
       this.addClass(this.myClass())
       .call( () => {
         for ( var i = 1; i <= this.size; i++ ) {
-        var firstElement = i == 1 ? true : false;
+        var isFirstElement = i == 1 ? true : false;
         this.start('input')
           .enableClass('wrong-code', this.incorrctCode$ )
-          .attrs({ type: 'text', maxlength: '1', autofocus: firstElement, name: i })
+          .attrs({ type: 'text', maxlength: '1', autofocus: isFirstElement, name: i })
           .on( 'keypress', this.keyPress )
           .on( 'keyup', this.keyup )
         .end();
