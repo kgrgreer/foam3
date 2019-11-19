@@ -184,6 +184,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
     AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    if ( afexBusiness ==  null ) {
+      return false;
+    }
     DAO padDAO = (DAO) x.get("padCaptureDAO");
     ArraySink sink = new ArraySink();
     PadCapture pad = null;
