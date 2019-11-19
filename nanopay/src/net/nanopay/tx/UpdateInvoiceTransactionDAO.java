@@ -59,13 +59,22 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
           invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
         }
         invoiceDAO.put(invoice);
-
-        // The invoice is not saved until after the transaction quoting
-        // has succeeded. This decorator is predicated on invoiceId
-        // for fast-fail.  Update all children with invoiceId.
-        updateInvoice(x, transaction);
       }
       return transaction;
+    }
+
+    // Since SaveChainedTransactionDAO will save all children transactions, we
+    // can copy the invoiceId from the root transaction without having to
+    // updateInvoice after the fact.
+    if ( SafetyUtil.isEmpty(transaction.getId())
+      && transaction.getInvoiceId() == 0
+      && ( transaction instanceof CITransaction ||
+           transaction instanceof COTransaction ||
+           transaction instanceof FXTransaction ||
+           transaction instanceof ComplianceTransaction )
+    ) {
+      transaction.setInvoiceId(getRoot(x, transaction).getInvoiceId());
+      return getDelegate().put_(x, transaction);
     }
 
     if ( SafetyUtil.isEmpty(transaction.getId()) ||
@@ -154,19 +163,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     // NOTE: Alterna specific
     // CI + CO
     return CsvUtil.generateCompletionDate(x, CsvUtil.generateCompletionDate(x, new Date()));
-  }
-
-  public void updateInvoice(X x, Transaction transaction) {
-    DAO dao = (DAO) x.get("localTransactionDAO");
-    List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, transaction.getId())).select(new ArraySink())).getArray();
-    // REVIEW: the following is very slow going through authenticated transactionDAO rather than unauthenticated localTransactionDAO
-    //      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
-    for ( Object obj : children ) {
-      Transaction child = (Transaction) ((Transaction) obj).fclone();
-      child.setInvoiceId(transaction.getInvoiceId());
-      child = (Transaction) dao.put_(x, child);
-      updateInvoice(x, child);
-    }
   }
 
   public Transaction getRoot(X x, Transaction transaction) {

@@ -20,7 +20,6 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'foam.core.Currency',
     'net.nanopay.payment.Institution',
-    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -51,6 +50,17 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      value: 'CAD',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
+    },
     {
       class: 'String',
       name: 'accountNumber',
@@ -180,25 +190,6 @@ foam.CLASS({
           .end()
         .end();
       }
-    },
-    {
-      class: 'String',
-      name: 'denomination',
-      documentation: `The unit of measure of the payment type . The payment system 
-        can handle denominations of any type, from mobile minutes to stocks.  In this case, 
-        the type of currency associated with the bank account.`,
-      label: 'Currency',
-      aliases: ['currencyCode', 'currency'],
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          placeholder: '--',
-          objToChoice: function(currency) {
-            return [currency.id, currency.name];
-          }
-        });
-      },
     },
     {
       class: 'String',

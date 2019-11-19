@@ -29,6 +29,8 @@ foam.CLASS({
 
   tableColumns: [
     'id',
+    'description',
+    'classification',
     'objId',
     'referenceObj',
     'approver',
@@ -63,16 +65,19 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Object',
+      javaType: 'Object',
       name: 'objId',
       visibility: 'RO',
       documentation: 'id of the object that needs approval.',
-      tableWidth: 220,
+      tableWidth: 150,
       tableCellFormatter: function(objId) {
         let self = this;
         this.__subSubContext__.userDAO.find(parseInt(objId)).then(function(a) {
           if ( a != undefined ) {
-            if ( net.nanopay.model.Business.isInstance(a) ) {
+            if ( a.summary ) {
+              self.add(a.summary);
+            } else if ( net.nanopay.model.Business.isInstance(a) ) {
               self.add(objId + ' ' + a.organization);
             } else {
               self.add(objId + ' ' + a.firstName + ' ' + a.lastName);
@@ -96,6 +101,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'classification',
+      tableWidth: 150,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
       For example "IdentityMind Business approval".
       When retrieving approval requests from a dao, do not use daoKey, use classification instead:
@@ -152,8 +158,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      documentation: `Approval request description.`
-    },
+      documentation: `Approval request description.`,
+      tableWidth: 200,
+   },
     {
       class: 'String',
       name: 'token',
@@ -229,6 +236,7 @@ if ( obj == null ) {
         this.approvalRequestDAO.put(this);
         this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
       },
+      tableWidth: 100
     },
     {
       name: 'reject',
@@ -237,7 +245,8 @@ if ( obj == null ) {
         this.status = this.ApprovalStatus.REJECTED;
         this.approvalRequestDAO.put(this);
         this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-      }
+      },
+      tableWidth: 100
     },
     {
       name: 'referenceObj',
@@ -257,7 +266,8 @@ if ( obj == null ) {
           key: approvalRequest.data.objId,
           dao: service
         }, this);
-      }
+      },
+      tableWidth: 100
     }
   ]
 });

@@ -125,6 +125,7 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.userManagement", "de
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactionFees","description":"Permission to read Transaction Fees."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions","description":"Permission to see transactions view"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transfer"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.txnReport"})
 p({"class":"foam.nanos.auth.Permission","id":"p2pTxnRequest.read.*","description":"Permission to read all P2PTxnRequests."})
 p({"class":"foam.nanos.auth.Permission","id":"paymentCard.*"})
 p({"class":"foam.nanos.auth.Permission","id":"paymentCard.create.*"})
@@ -531,3 +532,4 @@ p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceResponses","desc
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceHistories","description":"Permission to read to the compliance histories table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.approvalRequests","description":"Permission to read to the compliance approval requests table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.paymentCards","description":"Permission to read the payment cards table in users"})
+p({"class":"foam.nanos.auth.Permission","id":"service.businessTypeDAO","description":"Permission to access businessTypeDAO"})

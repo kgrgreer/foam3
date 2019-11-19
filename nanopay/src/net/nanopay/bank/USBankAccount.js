@@ -90,7 +90,12 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
-      documentation: 'void check image for this bank account'
+      documentation: 'void check image for this bank account',
+      view: {
+        class: 'foam.nanos.dig.DigFileUploadView',
+        data: this.voidCheckImage$,
+        acceptFormat: 'image/png'
+      },
     },
     {
       //REVIEW: Set by Plaid, not read
