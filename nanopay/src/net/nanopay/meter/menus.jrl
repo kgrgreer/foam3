@@ -92,7 +92,7 @@ p({
     "daoKey": "abliiBusinessReportDAO",
     "title": "Ablii Business Report",
     "createEnabled": false,
-    "editEnabled":   true
+    "editEnabled":   false
   },
   "order":10,
   "parent":"report"

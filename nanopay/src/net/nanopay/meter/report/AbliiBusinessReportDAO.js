@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
-    'foam.dao.MDAO',
     'foam.dao.ArraySink',
     'foam.dao.Sink',
     'foam.mlang.MLang',
