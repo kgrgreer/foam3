@@ -23,7 +23,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'stack',
-    'user',
+    'user'
   ],
 
   exports: [
@@ -31,8 +31,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' },
-    { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' }
+    { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' },
+    { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts.' },
+    { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
+    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' }
   ],
 
   properties: [
@@ -64,7 +66,8 @@ foam.CLASS({
             'flagImage',
             'denomination',
             'summary',
-            'status'
+            'status',
+            'isDefault'
           ],
           contextMenuActions: [
             foam.core.Action.create({
@@ -86,8 +89,14 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                // Disable ability to delete a bank account
-                self.ctrl.notify(self.DELETE_BANK_MESSAGE, 'error');
+                if ( this.isDefault ) {
+                  this.ctrl.notify(this.DELETE_DEFAULT, 'error');
+                }
+                this.user.accounts.remove(this).then(() =>{
+                  this.ctrl.notify(this.SUCCESSFULLY_DELETED);
+                }).catch((err) => {
+                  self.ctrl.notify(self.UNABLE_TO_DELETE, 'error');
+                });
               }
             })
           ]
@@ -102,16 +111,12 @@ foam.CLASS({
           name: 'addBank',
           label: 'Add bank account',
           code: async function(X) {
-            await self.checkAvailability();
-            if ( ! self.availableCAD || ! self.availableUSD ) {
-              self.ctrl.notify(self.SINGULAR_BANK, 'warning');
-            } else {
-              X.controllerView.stack.push({
-                class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-                usdAvailable: self.availableUSD,
-                cadAvailable: self.availableCAD
-              }, self);
-            }
+            var USEnabled = self.user.address.countryId != 'CA';
+            X.controllerView.stack.push({
+              class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+              usdAvailable: USEnabled,
+              cadAvailable: ! USEnabled
+            }, self);
           }
         });
       }
@@ -130,54 +135,12 @@ foam.CLASS({
       name: 'available',
       value: false,
       documentation: `used for disabling the button for adding a Bank Account when User has one of each currency (CAD && USD)`
-    },
-    {
-      class: 'Boolean',
-      name: 'availableCAD',
-      value: true,
-      documentation: `used for a check on CAD Bank Accounts, when User has one CAD BankAccount availableCAD`
-    },
-    {
-      class: 'Boolean',
-      name: 'availableUSD',
-      value: true,
-      documentation: `used for a check on USD Bank Accounts, when User has one USD BankAccount availableUSD`
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.checkAvailability();
-    },
-    {
-      name: 'checkAvailability',
-      code: async function() {
-        this.available = true;
-        this.availableCAD = true;
-        this.availableUSD = true;
-        var accountListCAD = await ctrl.user.accounts.where(
-            foam.mlang.predicate.Eq.create({
-              arg1: net.nanopay.account.Account.TYPE,
-              arg2: net.nanopay.bank.CABankAccount.name
-            })
-        ).select();
-        var accountListUSD = await ctrl.user.accounts.where(
-          foam.mlang.predicate.Eq.create({
-            arg1: net.nanopay.account.Account.TYPE,
-            arg2: net.nanopay.bank.USBankAccount.name
-          })
-        ).select();
-
-        if ( accountListCAD && accountListCAD.array.length > 0
-          || accountListUSD && accountListUSD.array.length > 0 ) {
-          this.availableCAD = false;
-          this.availableUSD = false;
-        }
-        if ( ! this.availableCAD && ! this.availableUSD ) {
-          this.available = false;
-        } else this.available = true;
-      }
     }
   ],
 
