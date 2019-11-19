@@ -34,6 +34,15 @@ foam.CLASS({
       name:  'phone'
     },
     {
+      class: 'String',
+      name:  'phoneNumber'
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneNumberVerified',
+      writePermissionRequired: true
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name:  'address'
