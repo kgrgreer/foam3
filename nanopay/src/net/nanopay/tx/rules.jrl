@@ -166,5 +166,9 @@ p({
   "action":{
     "class":"net.nanopay.tx.ruler.BulkTransactionRule"
   },
+  "predicate": {
+    "class": "net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate",
+    "of": "net.nanopay.tx.BulkTransaction"
+  }
   "enabled":true
 })
