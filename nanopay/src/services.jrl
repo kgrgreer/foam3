@@ -724,15 +724,13 @@ p({
   "description":"A DAO served to the client that lists all Users in the system. However, it only returns the public user info instead of the entire User object.",
   "serviceScript":
   """
-  return new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO"));
-    /* REVIEW: the following cause stack overflow on EasyDAO creation. - Joel
       return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
       .setInnerDAO(new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO")))
       .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
-      .build()*/
+      .build()
   """,
   "client":
   """
