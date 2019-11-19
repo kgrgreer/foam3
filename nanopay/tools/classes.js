@@ -212,6 +212,7 @@ var classes = [
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
 
   // sme onboarding
+  'net.nanopay.sme.cron.WelcomeEmailCron',
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
   'net.nanopay.sme.onboarding.OnboardingStatus',

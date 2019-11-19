@@ -120,3 +120,12 @@ p({
     print(usdBillingAgent.getResult());
   """
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled":false,
+  "scheduledTime": "2019-11-19T00:00:00.000Z",
+  "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":30,"hour":0,"dayOfMonth":0,"month":0,"dayOfWeek":0,"second":0},
+  "id":"Send Welcome Email to Ablii Business 30min after SignUp",
+  "description":"Send Welcome Email to Ablii Business",
+  "code":"import net.nanopay.sme.cron.WelcomeEmailCron;\ncron = new WelcomeEmailCron();\ncron.execute(x);\nprint(\"done\");"
+  })
