@@ -25,8 +25,10 @@ import static foam.mlang.MLang.*;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
+  private final static long minMonthlyPayment = 250000;
 
   @Override
+  @SuppressWarnings("unchecked")
   public void execute(X x) {
     DAO  txnDAO  = (DAO) x.get("localTransactionDAO");
     DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -74,6 +76,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       long ciAmountCAD = 0;
       long coAmountCAD = 0;
+      long coFee = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
         .where(
@@ -87,7 +90,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       for ( Transaction txn : transactionList ) {
         HistoricStatus[] statusHistoryArr = txn.getStatusHistory();
         for ( int j = statusHistoryArr.length - 1; j >= 0; j-- ) {
-          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) 
+          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate)
             && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
@@ -114,6 +117,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD = ciAmountCAD + txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD = coAmountCAD + txn.getAmount();
+                coFee = coFee + txn.getCost();
               }
             }
             break;
@@ -153,8 +157,32 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         ""
       );
 
+      String sumFee;
+      if (coFee <= minMonthlyPayment ) {
+        sumFee = currencyCAD.format(coFee) 
+          + "(Minimum Payment " + currencyCAD.format(minMonthlyPayment) + ")";
+      } else {
+        sumFee = currencyCAD.format(coFee);
+      }
+
+      String sumFeeString = this.buildCSVLine(
+        11,
+        "",
+        "",
+        "",
+        "CO Fee",
+        "",
+        "",
+        StringEscapeUtils.escapeCsv(sumFee),
+        currencyCAD.getId(),
+        "",
+        "",
+        ""
+      );
+
       writer.write(sumCIString);
       writer.write(sumCOString);
+      writer.write(sumFeeString);
       writer.flush();
       writer.close();
     } catch (IOException e) {
