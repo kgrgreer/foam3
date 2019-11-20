@@ -33,7 +33,6 @@ p({
     bab = new net.nanopay.bank.BankAccountBranchDAO(x, eodbapc);
     bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);
     eoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
-    pmd = new net.nanopay.bank.PreventMultipleDefault(x, eoddapc);
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -44,7 +43,7 @@ p({
       .setLastModifiedByAware(true)
       .setDeletedAware(true)
       .setOf(Account.getOwnClassInfo())
-      .setInnerDAO(pmd)
+      .setInnerDAO(eoddapc)
       .setAuthorize(false)
       .build();
   """
