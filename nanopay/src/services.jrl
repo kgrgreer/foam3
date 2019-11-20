@@ -669,7 +669,8 @@ p({
   "serve": true,
   "lazy": false,
   "authNotes": "Protected by service-level access control. This service requires the 'service.userHistoryDAO' permission to access.",
-  "serviceScript": """
+  "serviceScript": 
+  """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setSeqNo(true)
@@ -680,7 +681,8 @@ p({
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP));
   """,
-  "client": """
+  "client": 
+  """
     { "of": "foam.dao.history.HistoryRecord" }
   """
 })
@@ -693,17 +695,38 @@ p({
   "serve": true,
   "authenticate": false,
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
-  "serviceScript": """
+  "serviceScript": 
+  """
     return new net.nanopay.auth.DeviceAuthService(x, x.get("auth"));
   """,
-  "client": """
+  "client": 
+  """
     {
       "class": "foam.nanos.auth.ClientLoginAuthService"
     }
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"institutionDAO",                   "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.payment.Institution.getOwnClassInfo(), \"institutions\"))));","client":"{\"of\":\"net.nanopay.payment.Institution\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "institutionDAO",                   
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setRuler(false)
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setJournalName("institutions")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(net.nanopay.payment.Institution.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.payment.Institution\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"institutionPurposeCodeDAO",        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.payment.InstitutionPurposeCode.getOwnClassInfo(), \"institutionPurposeCodes\")));","client":"{\"of\":\"net.nanopay.payment.InstitutionPurposeCode\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));","client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksAuth",                       "serve":true,  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", "serviceClass":"net.nanopay.flinks.FlinksAuthService","client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"})
