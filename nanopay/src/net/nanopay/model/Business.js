@@ -209,7 +209,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'phoneVerified',
+      name: 'phoneNumberVerified',
       writePermissionRequired: true
     },
     {

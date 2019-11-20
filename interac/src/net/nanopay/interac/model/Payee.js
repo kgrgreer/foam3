@@ -34,7 +34,7 @@ foam.CLASS({
       name:  'phone'
     },
     {
-      class: 'String',
+      class: 'PhoneNumber',
       name:  'phoneNumber'
     },
     {

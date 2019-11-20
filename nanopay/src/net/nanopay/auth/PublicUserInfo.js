@@ -76,7 +76,7 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'String',
+      class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: `Returns the phone number of the business associated with the
         public information of a User. It is drawn from the Phone model.`,
@@ -84,7 +84,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'phoneNumberVerified'
+      name: 'phoneNumberVerified',
+      writePermissionRequired: true
     },
     {
       class: 'foam.nanos.fs.FileProperty',
