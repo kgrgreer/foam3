@@ -3,7 +3,26 @@ foam.CLASS({
   name: 'AbliiBusinessReportDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `A generic report for all the businesses.`,
+  documentation: `
+    A report for all the businesses with the following columns:
+    * Signup Date
+    * Business ID
+    * Business Name
+    * Owner Name
+    * Country of Origin
+    * Business Verification
+    * Bank Added
+    * Date Submitted
+    * Ops Review
+    * Compliance Review
+    * Compliance Status
+    * Reason if Declined
+    * Reason for No Longer Interested
+    * Transaction
+    * Decision Date
+    * IP Address
+    * Email Address
+  `,
 
   javaImports: [
     'foam.core.Detachable',
@@ -20,11 +39,13 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.auth.LoginAttempt',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.meter.report.model.AbliiBusinessReport',
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.meter.report.AbliiBusinessReport',
     'net.nanopay.model.Business',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
     
     'java.text.DateFormat',
@@ -99,7 +120,13 @@ foam.CLASS({
     
             // check whether the business has ever created a transaction
             Count count = (Count) transactionDAO.where(
-              MLang.IN(Transaction.SOURCE_ACCOUNT, accountIds)
+              MLang.AND(
+                MLang.IN(Transaction.SOURCE_ACCOUNT, accountIds),
+                MLang.OR(
+                  MLang.INSTANCE_OF(AbliiTransaction.class),
+                  MLang.INSTANCE_OF(FXSummaryTransaction.class)
+                )
+              )
             ).select(new Count());
             long numOfTransaction = count.getValue();
 
@@ -117,7 +144,7 @@ foam.CLASS({
     
             AbliiBusinessReport abr = new AbliiBusinessReport.Builder(x)
               .setSignUpDate(signUpDate)
-              .setBusId(business.getId())
+              .setId(business.getId())
               .setName(business.getBusinessName())
               .setOwner(owner)
               .setCountry(country)

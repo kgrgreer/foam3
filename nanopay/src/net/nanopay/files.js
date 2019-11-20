@@ -1001,7 +1001,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
   // report
-  { name: 'net/nanopay/meter/report/model/AbliiBusinessReport' },
+  { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
 
 

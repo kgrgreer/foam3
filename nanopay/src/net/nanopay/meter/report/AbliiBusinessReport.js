@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.report.model',
+  package: 'net.nanopay.meter.report',
   name: 'AbliiBusinessReport',
-  ids: ['busId'],
+  // ids: ['busId'],
 
   documentation: `
     A business report with the following columns:
@@ -32,7 +32,7 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'busId',
+      name: 'id',
       label: 'Business ID',
       visibility: 'RO',
     },

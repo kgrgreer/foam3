@@ -609,7 +609,7 @@ var classes = [
   'net.nanopay.meter.BusinessStatusContactDAO',
 
   // report
-  'net.nanopay.meter.report.model.AbliiBusinessReport',
+  'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
 
   // clearing

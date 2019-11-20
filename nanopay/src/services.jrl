@@ -1113,13 +1113,13 @@ p({
       .setDelegate(null)
       .build();
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.meter.report.model.AbliiBusinessReport.getOwnClassInfo())
+      .setOf(net.nanopay.meter.report.AbliiBusinessReport.getOwnClassInfo())
       .setDecorator(abrDAO)
       .build();
   """,
   "client": """
     {
-      "of": "net.nanopay.meter.report.model.AbliiBusinessReport",
+      "of": "net.nanopay.meter.report.AbliiBusinessReport",
       "cache": true
     }
   """
