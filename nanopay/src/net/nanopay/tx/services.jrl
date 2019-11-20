@@ -231,4 +231,5 @@ p({
       .build();
   """
 })
+p({"class":"foam.nanos.boot.NSpec","name":"transactionHistoryDAO",                 "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.tx.TransactionHistory.getOwnClassInfo()).setSeqNo(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"transactionHistory\").build();","client":"{\"of\":\"net.nanopay.tx.TransactionHistory\"}" })
 

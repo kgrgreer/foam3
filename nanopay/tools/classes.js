@@ -187,7 +187,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
   'net.nanopay.fx.afex.AFEXBankOnboardingRule',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
-  
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -349,6 +349,8 @@ var classes = [
   'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
+  'net.nanopay.tx.TransactionHistory',
+  'net.nanopay.tx.TransactionHistoryItem',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.GreenfenceTransaction',
   'net.nanopay.tx.InvoiceTransaction',

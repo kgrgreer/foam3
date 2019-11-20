@@ -10,6 +10,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
+import net.nanopay.tx.TransactionHistory;
 import net.nanopay.tx.bmo.*;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
@@ -124,7 +125,7 @@ public class BmoSendFileCron implements ContextAgent {
 
       // 2. creat the file on the disk
       readyToSend = fileGenerator.createEftFile(eftFile);
-      passedTransaction.forEach(transaction -> ((BmoTransaction)transaction).addHistory("Ready to send."));
+      passedTransaction.forEach(transaction -> TransactionHistory.addHistory(x, transaction, "Ready to send."));
 
       // 3. send file through sftp
       if ( ! sftpCredential.getSkipSendFile() ) {
@@ -134,26 +135,26 @@ public class BmoSendFileCron implements ContextAgent {
 
         new BmoSFTPClient(x, sftpCredential).upload(readyToSend);
         passedTransaction.forEach(transaction -> {
-          ((BmoTransaction)transaction).addHistory("Sending...");
+          TransactionHistory.addHistory(x, transaction, "Sending...");
         });
 
         /* Fetch and process the receipt file, any exception happened during this process, set the transaction status to Failed */
         try {
           File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();
           passedTransaction.forEach(transaction -> {
-            ((BmoTransaction)transaction).addHistory("Downloading receipt...");
+            TransactionHistory.addHistory(x, transaction, "Downloading receipt...");
           });
 
           if ( new BmoReportProcessor(x).processReceipt(receipt, eftFile.getHeaderRecord().getFileCreationNumber()) ) {
             passedTransaction.forEach(transaction -> {
-              ((BmoTransaction)transaction).addHistory("Verify receipt...");
+              TransactionHistory.addHistory(x, transaction, "Verify receipt...");
             });
           } else {
             throw new BmoSFTPException("Failed when verify receipt.");
           }
         } catch ( Exception e ) {
           passedTransaction.forEach(transaction -> {
-            ((BmoTransaction)transaction).addHistory("Failed when verify receipt.");
+            TransactionHistory.addHistory(x, transaction, "Failed when verify receipt.");
             transaction.setStatus(TransactionStatus.FAILED);
           });
           throw e;
@@ -164,7 +165,7 @@ public class BmoSendFileCron implements ContextAgent {
 
       // 4. update the transaction status
       passedTransaction.forEach(transaction -> {
-        ((BmoTransaction)transaction).addHistory("Sent to BMO.");
+        TransactionHistory.addHistory(x, transaction, "Sent to BMO.");
         ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());
         transaction.setProcessDate(new Date());
         transaction.setStatus(TransactionStatus.SENT);
@@ -174,7 +175,7 @@ public class BmoSendFileCron implements ContextAgent {
     } catch ( Exception e ) {
       logger.error("BMO EFT : " + e.getMessage(), e);
       BmoFormatUtil.sendEmail(x, "BMO EFT Error during sending EFT file", e);
-      passedTransaction.forEach(transaction -> ((BmoTransaction)transaction).addHistory("Error: " + e.getMessage()));
+      passedTransaction.forEach(transaction -> TransactionHistory.addHistory(x, transaction, "Error: " + e.getMessage()));
 
       if ( readyToSend != null ) {
         try {
