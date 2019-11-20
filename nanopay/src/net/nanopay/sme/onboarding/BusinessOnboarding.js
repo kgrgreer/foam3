@@ -51,8 +51,8 @@ foam.CLASS({
       name: 'isAvailable',
       factory: function() {
         var i = this.index;
-        return function(signingOfficer, amountOfOwners) {
-          return signingOfficer && amountOfOwners >= i;
+        return function(amountOfOwners) {
+          return amountOfOwners >= i;
         };
       },
     }
@@ -977,7 +977,7 @@ foam.CLASS({
         if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+        return amountOfOwners === 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
