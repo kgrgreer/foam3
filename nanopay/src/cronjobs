@@ -122,7 +122,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled":false,
+  "enabled":true,
   "scheduledTime": "2019-11-19T00:00:00.000Z",
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":20,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},
   "id":"Send Welcome Email to Ablii Business 30min after SignUp",
