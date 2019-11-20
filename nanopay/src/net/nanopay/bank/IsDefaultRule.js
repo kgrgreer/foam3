@@ -33,7 +33,7 @@ foam.CLASS({
 
             BankAccount currentDefault = (BankAccount) BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
             
-            if ( currentDefault == null ) {
+            if ( currentDefault != null ) {
               currentDefault = (BankAccount) currentDefault.fclone();
               currentDefault.setIsDefault(false);
               accountDAO.put(currentDefault);
