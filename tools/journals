@@ -1,7 +1,6 @@
 acceptanceDocuments
 accountApproverJunctions
 accountMakerJunctions
-accountMenuJunctions
 accountViewerJunctions
 accounts
 alarmConfig
@@ -56,15 +55,11 @@ quickbooksToken
 regions
 reports
 roles
-roleApproverJunctions
+roleAssignmentApproverJunctions
 roleAssignmentTemplates
-roleMakerJunctions
+roleAssignmentMakerJunctions
+roleAssignmentTrunctions
 roleRoleJunctions
-roleUserAccountTrunctions
-roleViewerJunctions
-ruleApproverJunctions
-ruleMakerJunctions
-ruleViewerJunctions
 ruleGroups
 rules
 scripts
@@ -83,9 +78,6 @@ transactionPurposes
 transactionViewerJunctions
 transactions
 txnProcessors
-userMakerJunctions
-userApproverJunctions
-userViewerJunctions
 userCapabilityJunctions
 users
 xeroConfig

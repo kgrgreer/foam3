@@ -79,17 +79,11 @@ extends ProxyDAO {
         case "Account":
           approverDAO = outgoingAccount.getAccountApprovers(getX()).getDAO();
           break;
-        case "Role":
-          approverDAO = outgoingAccount.getRoleApprovers(getX()).getDAO();
-          break;
-        case "Rule":
-          approverDAO = outgoingAccount.getRuleApprovers(getX()).getDAO();
+        case "RoleAssignment":
+          approverDAO = outgoingAccount.getRoleAssignmentApprovers(getX()).getDAO();
           break;
         case "Transaction":
           approverDAO = outgoingAccount.getTransactionApprovers(getX()).getDAO();
-          break;
-        case "User":
-          approverDAO = outgoingAccount.getUserApprovers(getX()).getDAO();
           break;
         default:
           approverDAO = null;
