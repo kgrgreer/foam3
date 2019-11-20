@@ -82,7 +82,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         .where(
           OR(
             INSTANCE_OF(CITransaction.class),
-            INSTANCE_OF(COTransaction.class)
+            INSTANCE_OF(COTransaction.class),
+            INSTANCE_OF(DigitalTransaction.class),
+            INSTANCE_OF(BulkTransaction.class)
           )
         )
         .select(new ArraySink())).getArray();
