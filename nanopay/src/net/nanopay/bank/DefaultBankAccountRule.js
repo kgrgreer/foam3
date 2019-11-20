@@ -24,12 +24,12 @@ foam.CLASS({
           public void execute(X x) {
             BankAccount bankAccount = (BankAccount) obj;
 
-            BankAccount default = (BankAccount) BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
-            if ( default == null ) {
+            BankAccount currentDefault = BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
+            if ( currentDefault == null ) {
               bankAccount.setIsDefault(true);
             } 
-         }
-        },"Default newly verfied bank account.");
+          }
+        }, "Default newly verfied bank account.");
       `
     }
   ]

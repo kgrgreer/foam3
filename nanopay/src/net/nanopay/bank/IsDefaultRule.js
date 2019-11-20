@@ -24,14 +24,14 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            BankAccount bankAccount = (Bank Account) obj;
+            BankAccount bankAccount = (BankAccount) obj;
             DAO accountDAO = (DAO) x.get("accountDAO");
 
             if ( bankAccount.getStatus().equals(BankAccountStatus.VERIFIED) ) {
-              throw new RuntimeException("Unable to set unverified bank accounts as default);
+              throw new RuntimeException("Unable to set unverified bank accounts as default");
             }
 
-            BankAccount currentDefault = (BankAccount) BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
+            BankAccount currentDefault = BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
             
             if ( currentDefault != null ) {
               currentDefault = (BankAccount) currentDefault.fclone();
@@ -39,7 +39,7 @@ foam.CLASS({
               accountDAO.put(currentDefault);
             }
          }
-        },"Sets old account isDefault to false.");
+        }, "Sets old account isDefault to false.");
       `
     }
   ]
