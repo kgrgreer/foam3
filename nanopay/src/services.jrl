@@ -503,8 +503,9 @@ p({
   "client":
   """
   {
-    "of":"foam.nanos.auth.User",
-    "cache":false,"decorators": [
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
       },
@@ -608,13 +609,20 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"publicBusinessDAO",
-  "serve":true,
-  "description":"A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.",
+  "class": "foam.nanos.boot.NSpec",
+  "name": "publicBusinessDAO",
+  "serve": true,
+  "description": "A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.",
   "serviceScript":
   """
-  return new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(x.get("localBusinessDAO")).build();
+  return new foam.dao.EasyDAO.Builder(x)
+    .setAuthorize(false)
+    .setRuler(false)
+    .setInnerDAO(x.get("localBusinessDAO"))
+    .setEnableInterfaceDecorators(false)
+    .setDecorator(new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(null).build())
+    .setOf(net.nanopay.model.Business.getOwnClassInfo())
+    .build();
   """,
   "client":
   """
