@@ -5,7 +5,7 @@
  */
 foam.CLASS({
   package: 'net.nanopay.liquidity.roles',
-  name: 'RoleUserAccountTrunction',
+  name: 'RoleAssignmentTrunction',
 
   properties: [  
     {

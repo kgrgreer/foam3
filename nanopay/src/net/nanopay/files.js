@@ -823,7 +823,7 @@ FOAM_FILES([
    // liquidity roles
    { name: 'net/nanopay/liquidity/roles/Role' },
    { name: 'net/nanopay/liquidity/roles/RoleAssignmentTemplate' },
-   { name: 'net/nanopay/liquidity/roles/RoleUserAccountTrunction' },
+   { name: 'net/nanopay/liquidity/roles/RoleAssignmentTrunction' },
 
    // liquidity rules
    { name: 'net/nanopay/liquidity/rules/account/AccountCreateApproval' },

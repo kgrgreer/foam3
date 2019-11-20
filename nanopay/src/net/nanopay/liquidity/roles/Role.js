@@ -15,10 +15,6 @@ foam.CLASS({
     {
       name: 'name',
       class: 'String'
-    },
-    {
-      name: 'isCascading',
-      class: 'Boolean'
     }
   ],
 });
