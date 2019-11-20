@@ -486,24 +486,19 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "userDAO",
-  "serve":true,  
-  "description":"Client authenticated userDAO", 
+  "serve": true,  
+  "description": "Client authenticated userDAO", 
   "authenticate": false,
   "serviceScript":
   """
-    userGroupAndSpidValidator =
-      new foam.nanos.auth.validators.UserGroupAndSpidValidator();
-
-    validatingDAO = new foam.dao.ValidatingDAO(x, x.get("localUserDAO"), 
-      new foam.nanos.auth.validators.UserGroupAndSpidValidator());
-
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
+        .setValidated(true)
+        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
-        .setInnerDAO(validatingDAO)
+        .setInnerDAO(x.get("localUserDAO"))
         .build();
-    // Note: AuthorizationDAO may need to be set as decorator
   """,
   "client":
   """
