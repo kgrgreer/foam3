@@ -1,12 +1,10 @@
-p({"class":"foam.nanos.menu.Menu","id":"liquid.root","label":"Liquid","handler":{"class":"foam.nanos.menu.SubMenu"}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}},"parent":"liquid.root","order":100})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","defaultColumns":["name","balance","homeBalance"]}},"parent":"liquid.root","order":200})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}},"parent":"liquid.root","order":300})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"userDAO","browseTitle":"Users"}},"parent":"liquid.root","order":400})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.roles","label":"Roles","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleDAO","browseTitle":"Roles"}},"parent":"liquid.root","order":500})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"parent":"liquid.root","order":600})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"approvalRequestDAO","browseTitle":"Approval Requests","of":"net.nanopay.liquidity.LiquidApprovalRequest"}},"parent":"liquid.root","order":700})
-
+p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}},"order":100})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","defaultColumns":["name","balance","homeBalance"]}},"order":200})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}},"order":300})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"userDAO","browseTitle":"Users"}},"order":400})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.roles","label":"Roles","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleDAO","browseTitle":"Roles"}},"order":500})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.roletemplates","label":"Role Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleAssignmentTemplateDAO","browseTitle":"Role Templates"}},"order":500})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"order":600})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.businessrules",
@@ -24,6 +22,6 @@ p({
       "of":"net.nanopay.liquidity.tx.BusinessRule"
     }
   },
-  "parent":"liquid.root",
-  "order":800
+  "order":700
 })
+p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"approvalRequestDAO","browseTitle":"Approval Requests","of":"net.nanopay.liquidity.LiquidApprovalRequest"}},"order":800})
