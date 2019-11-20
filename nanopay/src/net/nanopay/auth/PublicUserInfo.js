@@ -85,7 +85,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'phoneNumberVerified',
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      visibility: foam.u2.Visibility.RO
     },
     {
       class: 'foam.nanos.fs.FileProperty',

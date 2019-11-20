@@ -210,7 +210,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'phoneNumberVerified',
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      section: 'business'
     },
     {
       class: 'FObjectProperty',
