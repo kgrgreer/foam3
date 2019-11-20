@@ -31,9 +31,17 @@ foam.CLASS({
       name: 'incorrctCode',
     },
     {
-      class: 'Int',
+      class: 'Array',
       name: 'index',
+    },
+    {
+      class: 'Int',
+      name: 'currentIndex',
       value: 1
+    },
+    {
+      class: 'Int',
+      name: 'nextIndex',
     },
     {
       class: 'Int',
@@ -55,15 +63,17 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-      .call( () => {
+      .call( (e) => {
         for ( var i = 1; i <= this.size; i++ ) {
         var isFirstElement = i == 1 ? true : false;
         this.start('input')
           .enableClass('wrong-code', this.incorrctCode$ )
-          .attrs({ type: 'text', maxlength: '1', autofocus: isFirstElement, name: i })
+          .attrs({ type: 'text', maxlength: '1', autofocus: isFirstElement })
           .on( 'keypress', this.keyPress )
-          .on( 'keyup', this.keyup )
+          .on( 'keyup', this.keyUp )
+          .on( 'focus', this.onFocus)
         .end();
+        this.index.push(this.children[i - 1].id);
         }
       })
       .end();
@@ -75,26 +85,29 @@ foam.CLASS({
         e.preventDefault();
       } else {
         e.target.value = e.key;
-        this.token[Number(e.target.name) - 1] = e.target.value;
-        if ( e.target.name != this.size ) document.getElementsByName(Number(e.target.name) + 1)[0].focus();
+        this.nextIndex = this.currentIndex === this.size ? this.currentIndex : this.currentIndex + 1;
+        this.getElementById(this.index[this.nextIndex]).focus();
         this.data = this.token.join('');
       }
     },
-    function keyup(e) {
+    function keyUp(e) {
       switch ( e.key ) {
         case 'Backspace':
-          if ( e.target.name != 1 ) document.getElementsByName(Number(e.target.name) - 1)[0].focus();
+          if ( ! this.currentIndex < 1 ) this.getElementById(this.index[this.currentIndex - 1]).focus();
           break;
         case 'ArrowLeft':
-          if ( e.target.name != 1 ) document.getElementsByName(Number(e.target.name) - 1)[0].focus();
+          if ( ! this.currentIndex < 1 ) this.getElementById(this.index[this.currentIndex - 1]).focus();
           break;
         case 'ArrowRight':
-          if ( e.target.name != this.size ) document.getElementsByName(Number(e.target.name) + 1)[0].focus();
+          if ( this.currentIndex != this.size ) this.getElementById(this.index[this.currentIndex + 1]).focus();
           break;
         default:
           e.preventDefault();
           break;
       }
+    },
+    function onFocus(e) {
+      this.currentIndex = this.currentIndex = this.index.indexOf(e.target.id);
     }
   ],
 });
