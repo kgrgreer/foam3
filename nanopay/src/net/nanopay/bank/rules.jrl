@@ -4,11 +4,11 @@ p({
     "priority":100,
     "ruleGroup":"bankOperations",
     "documentation":"Set newly verified bank account to default if owner has no default bank accounts in the verified bank accounts denomination.",
-    "daoKey":"accountDAO",
+    "daoKey":"localAccountDAO",
     "operation":3,
-    predicate: {
+    "predicate": {
       "class":"net.nanopay.bank.VerifiedBankAccountPredicate"
-    }
+    },
     "action":{
       "class":"net.nanopay.bank.DefaultBankAccountRule"
     },
@@ -22,11 +22,11 @@ p({
     "priority":100,
     "ruleGroup":"bankOperations",
     "documentation":"Rule prevents users from setting default on non verified bank accounts as well as setting old default account to false if isDefault is being set to true on obj.",
-    "daoKey":"accountDAO",
+    "daoKey":"localAccountDAO",
     "operation":3,
-    predicate: {
+    "predicate": {
       "class":"net.nanopay.bank.IsDefaultPredicate"
-    }
+    },
     "action":{
       "class":"net.nanopay.bank.IsDefaultRule"
     },

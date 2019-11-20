@@ -21,15 +21,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+        BankAccount bankAccount = (BankAccount) obj;
+        if ( ! bankAccount.getStatus().equals(BankAccountStatus.VERIFIED) ) {
+          throw new RuntimeException("Unable to set unverified bank accounts as default");
+        }
+
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            BankAccount bankAccount = (BankAccount) obj;
             DAO accountDAO = (DAO) x.get("accountDAO");
-
-            if ( bankAccount.getStatus().equals(BankAccountStatus.VERIFIED) ) {
-              throw new RuntimeException("Unable to set unverified bank accounts as default");
-            }
 
             BankAccount currentDefault = BankAccount.findDefault(x, bankAccount.findOwner(x), bankAccount.getDenomination());
             
