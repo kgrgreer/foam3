@@ -449,31 +449,41 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"localUserDAO",                     
-  "lazy":false, 
-  "description":"Server side userDAO wrapped in decorators.", 
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "localUserDAO",                     
+  "lazy": false, 
+  "description": "Server side userDAO wrapped in decorators.", 
   "serviceScript":
   """
-    bu = x.get("bareUserDAO");
+    dao = x.get("bareUserDAO");
+    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
 
-    aect = new net.nanopay.contacts.AddExternalContactToken(x, bu);
-    uph = new foam.nanos.auth.UserPasswordHashingDAO(x, aect);
-    r = new foam.nanos.ruler.RulerDAO(x, uph, "localUserDAO");
-    dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
-    ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
-    aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(ldu).build();
-    uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
-    usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, uccpfe);
-    cb = new net.nanopay.onboarding.CreateBusinessDAO(x, usus);
-    rse = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, cb);
-    ev = new net.nanopay.auth.email.EmailVerificationDAO(x, rse);
-    gmg = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, ev);
-    asu = new net.nanopay.admin.AccountStatusUserDAO(x, gmg);
-    pdce = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, asu);
-    pde = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, pdce);
-    cew = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, pde);
-    return new foam.dao.ValidatingDAO(x, cew);
+    dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
+
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localUserDAO");
+    dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, dao);
+    dao = new net.nanopay.onboarding.CreateBusinessDAO(x, dao);
+    dao = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
+    dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
+    dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
+    dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
+    dao =  new foam.dao.ValidatingDAO(x, dao);
+    return dao;
+
+    return new foam.dao.EasyDao.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .setInnerDAO(dao)
+      //.setDecorator(dao)
+      .build();
   """
 })
 
