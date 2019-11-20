@@ -455,12 +455,8 @@ p({
   "description": "Server side userDAO wrapped in decorators.", 
   "serviceScript":
   """
-    dao = x.get("bareUserDAO");
-    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
-
+    dao = new net.nanopay.contacts.AddExternalContactToken(x, null);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
-
-    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localUserDAO");
     dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
@@ -474,15 +470,15 @@ p({
     dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
-    dao =  new foam.dao.ValidatingDAO(x, dao);
-    return dao;
 
-    return new foam.dao.EasyDao.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
-      .setRuler(false)
-      .setInnerDAO(dao)
-      //.setDecorator(dao)
+      .setRuler(true)
+      .setAuthorize(false)
+      .setValidated(true)
+      .setInnerDAO(x.get("bareUserDAO"))
+      .setDecorator(dao)
       .build();
   """
 })
