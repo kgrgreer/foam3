@@ -3,26 +3,7 @@ foam.CLASS({
   name: 'AbliiBusinessReportDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `
-    A report for all the businesses with the following columns:
-    * Signup Date
-    * Business ID
-    * Business Name
-    * Owner Name
-    * Country of Origin
-    * Business Verification
-    * Bank Added
-    * Date Submitted
-    * Ops Review
-    * Compliance Review
-    * Compliance Status
-    * Reason if Declined
-    * Reason for No Longer Interested
-    * Transaction
-    * Decision Date
-    * IP Address
-    * Email Address
-  `,
+  documentation: 'A DAO decorator to generate the AbliiBusinessReport',
 
   javaImports: [
     'foam.core.Detachable',
@@ -145,7 +126,7 @@ foam.CLASS({
             AbliiBusinessReport abr = new AbliiBusinessReport.Builder(x)
               .setSignUpDate(signUpDate)
               .setId(business.getId())
-              .setName(business.getBusinessName())
+              .setName(business.getOrganization())
               .setOwner(owner)
               .setCountry(country)
               .setOnboarded(busVerification)
