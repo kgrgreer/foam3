@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.FeeLineItem',
@@ -24,8 +25,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'fee',
-      value: 150
+      name: 'fee'
     }
   ],
 
@@ -36,18 +36,20 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          Transaction transaction = (Transaction) obj;
-          DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-  
-          if (transaction instanceof COTransaction) {
-            // Set fee lineitem for cashout transaction
-            transaction.addLineItems(new TransactionLineItem[] {
-              new FeeLineItem.Builder(getX())
-                .setName("Transaction Fee")
-                .setAmount(getFee())
-                .build()
-            },null);
-            transactionDAO.put(transaction);
+          TransactionQuote transactionQuote = (TransactionQuote) obj;
+
+          // Iterate through the transaction array
+          // (In current situation, the array only has one item)
+          for ( Transaction transaction : transactionQuote.getPlans()) {
+            if (transaction instanceof COTransaction) {
+              // Set fee lineitem for cashout transaction
+              transaction.addLineItems(new TransactionLineItem[] {
+                new FeeLineItem.Builder(getX())
+                  .setName("Transaction Fee")
+                  .setAmount(getFee())
+                  .build()
+              }, null);
+            }
           }
         }
       }, "Add fee completed notification");
