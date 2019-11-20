@@ -92,11 +92,11 @@ foam.CLASS({
             childTransaction.setDestinationAccount(DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency()).getId());
 
             Boolean explicitCO = bulkTxn.getExplicitCO();
-            DigitalAccount digitalAcc = (DigitalAccount) childTransaction.findDestinationAccount(x);
+            DigitalAccount digitalAccount = (DigitalAccount) childTransaction.findDestinationAccount(x);
 
-            LiquiditySettings digitalAccLiquid = digitalAcc.findLiquiditySetting(x);
+            LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
 
-            // Check liquidity settings of the digital transaction associated to the digital transaction
+            // Check liquidity settings of the digital account associated to the digital transaction
             if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
               // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
               explicitCO = false;
