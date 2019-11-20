@@ -724,11 +724,51 @@ p({
       .setOf(net.nanopay.payment.Institution.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.payment.Institution\"}"
+  "client": "{\"of\":\"net.nanopay.payment.Institution\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"institutionPurposeCodeDAO",        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.payment.InstitutionPurposeCode.getOwnClassInfo(), \"institutionPurposeCodes\")));","client":"{\"of\":\"net.nanopay.payment.InstitutionPurposeCode\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));","client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "institutionPurposeCodeDAO",        
+  "serve": true,  
+  "serviceScript":
+  """
+    //return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.payment.InstitutionPurposeCode.getOwnClassInfo(), \"institutionPurposeCodes\")));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setRuler(false)
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setJournalName("institutionPurposeCodes")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(net.nanopay.payment.InstitutionPurposeCode.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.payment.InstitutionPurposeCode\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "txnProcessorDAO",                  
+  "serve": true,  
+  "serviceScript":
+  """
+    // return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setRuler(false)
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setJournalName("txnProcessors")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(net.nanopay.tx.TxnProcessor.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.TxnProcessor\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksAuth",                       "serve":true,  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", "serviceClass":"net.nanopay.flinks.FlinksAuthService","client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksCredentials",                "lazy":false, "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                        "description":"","lazy":false,"parameters":false,"pm":true,"service":{"class":"foam.nanos.app.AppConfig","privacy":"Privacy Policy","privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf","copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.","urlLabel":"Powered by nanopay","termsAndCondLabel":"Terms and Conditions","termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf","mode":0,"appLink":"","playLink":"https://play.google.com/store?hl=en","enableInternationalPayment":true}})
