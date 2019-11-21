@@ -1008,6 +1008,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
+  // report
+  { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
+  { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
+
+
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
   { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
