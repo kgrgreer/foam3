@@ -565,8 +565,6 @@ foam.CLASS({
       if ( partyId && destinationCurrency && this.invoice.contactId ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
-          isRecievable: ! isPayable,
-          payerId: this.invoice.contactId,
           currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
