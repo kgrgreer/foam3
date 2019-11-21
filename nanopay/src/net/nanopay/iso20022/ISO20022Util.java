@@ -27,14 +27,10 @@ public class ISO20022Util {
     xmlOutputter.setOutputShortNames(this.useShortName);
 
     xmlOutputter.output("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-    xmlOutputter.output("<Document ");
-    xmlOutputter.output("xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.002.001.03\"");
-    xmlOutputter.output("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
     xmlOutputter.output(obj);
-    xmlOutputter.output("</Document>");
     String xml = xmlOutputter.toString();
-    xml = xml.replaceFirst("<" + obj.getClass().getSimpleName() + ">","");
-    xml = replaceLast(xml, "", "</" + obj.getClass().getSimpleName() + ">");
+    xml = xml.replaceFirst(obj.getClass().getSimpleName(), "Document");
+    xml = replaceLast(xml, "Document", obj.getClass().getSimpleName());
     return xml;
   }
   
