@@ -23,7 +23,8 @@ foam.CLASS({
     'institution',
     'isConnecting',
     'notify',
-    'user'
+    'user',
+    'agent'
   ],
 
   css: `
@@ -107,7 +108,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, newValue);
+            updateUserAcceptanceDocument(this.__context__, this.user.id, this.agent.id, this.termsAgreementDocument.id, newValue);
         }
       }
     },

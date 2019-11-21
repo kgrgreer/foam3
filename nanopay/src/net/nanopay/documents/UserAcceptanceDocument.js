@@ -7,7 +7,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'net.nanopay.model.Business'
   ],
 
   implements: [
@@ -16,7 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.Authorizable'
-  ],
+    ],
 
   tableColumns: [
       'id', 'user', 'acceptedDocument', 'createdBy'
@@ -53,9 +54,9 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.model.Business',
       name: 'createdBy',
-      documentation: 'User who created the entry'
+      documentation: 'Business who created the entry'
     },
     {
       class: 'DateTime',

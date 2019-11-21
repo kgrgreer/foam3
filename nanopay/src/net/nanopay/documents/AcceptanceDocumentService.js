@@ -87,6 +87,10 @@ foam.INTERFACE({
                   name: 'user',
                 },
                 {
+                    type: 'Long',
+                    name: 'business',
+                  },
+                {
                   type: 'Long',
                   name: 'acceptanceDocument',
                 },

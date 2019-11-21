@@ -11,6 +11,7 @@ foam.CLASS({
   ],
   imports: [
     'acceptanceDocumentService',
+    'agent',
     'bankInstitutions',
     'fail',
     'flinksAuth',
@@ -160,8 +161,9 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.viewData.check = newValue;
         if ( this.termsAgreementDocument ) {
+          debugger;
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, newValue); 
+            updateUserAcceptanceDocument(this.__context__, this.user.id, this.agent.id, this.termsAgreementDocument.id, newValue); 
         }
       },
     },

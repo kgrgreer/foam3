@@ -96,7 +96,7 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     return acceptanceDocument;
   }
 
-  public void updateUserAcceptanceDocument(X x, long user, long acceptanceDocument, boolean accepted) {
+  public void updateUserAcceptanceDocument(X x, long user, long business, long acceptanceDocument, boolean accepted) {
     userAcceptanceDocumentDAO_.inX(x);
     HttpServletRequest request = x.get(HttpServletRequest.class);
     String ipAddress = request.getRemoteAddr();
@@ -108,7 +108,10 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
       );
 
     if ( null == acceptedDocument ) {
-      acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setAcceptedDocument(acceptanceDocument).build();
+      if(business != -1)
+        acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setCreatedBy(business).setAcceptedDocument(acceptanceDocument).build();
+      else
+        acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setAcceptedDocument(acceptanceDocument).build();
     }
 
     acceptedDocument = (UserAcceptanceDocument) acceptedDocument.fclone();

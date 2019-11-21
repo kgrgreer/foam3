@@ -59,11 +59,11 @@ foam.CLASS({
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
         }
 
         Session session = x.get(Session.class);

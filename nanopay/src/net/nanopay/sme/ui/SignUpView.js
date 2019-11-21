@@ -443,11 +443,11 @@ foam.CLASS({
             this.user.copyFrom(user);
             if ( !! user ) {
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
-              this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
+              this.acceptanceDocumentService.//-1 because there is no businessId at this point
+              updateUserAcceptanceDocument(this.__context__, this.user.id, -1, this.termsAgreementDocument.id, this.termsAndConditions);
 
-              this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, this.user.id, this.privacyDocument.id, this.termsAndConditions);
+              this.acceptanceDocumentService.//-1 because there is no businessId at this point
+              updateUserAcceptanceDocument(this.__context__, this.user.id, -1, this.privacyDocument.id, this.termsAndConditions);
             }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
