@@ -36,7 +36,13 @@ foam.CLASS({
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
         Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
-        Date                 endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20));
+        Date                 endInterval    = null;
+        Long                 disruptionDiff = 0;
+        Date                 disruption     = x.get("cronDAO").find("Send Welcome Email to Ablii Business 30min after SignUp").getLastRun();
+
+        // Check if there was no survice disruption - if so, add/sub diff from endInterval
+        disruptionDiff = disruption.getTime() - startInterval.getTime();
+        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(
@@ -51,10 +57,13 @@ foam.CLASS({
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", business.label());  
           try {
+            System.out.println("Business Sent Email: " + business.label());
             EmailsUtility.sendEmailFromTemplate(x, business, message, "helpsignup", args);
           } catch (Throwable t) {
-            String msg = String.format("Email meant for business SignUp Error: Business (id = %1$s)", business.getId());
-            ((Logger) x.get("logger")).error(msg, t);
+            StringBuilder sb = new StringBuilder();
+            sb.append("Email meant for business SignUp Error: Business ");
+            sb.append(business.getId())
+            ((Logger) x.get("logger")).error(sb.toString(), t);
           }
         }
         `
