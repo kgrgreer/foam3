@@ -56,7 +56,6 @@ var classes = [
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
-  'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
