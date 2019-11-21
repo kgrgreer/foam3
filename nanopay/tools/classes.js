@@ -813,6 +813,8 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+  'net.nanopay.alarming.OMName',
+  'net.nanopay.alarming.AlarmingUniqueNameDAO',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
