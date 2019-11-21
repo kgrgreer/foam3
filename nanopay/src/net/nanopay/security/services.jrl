@@ -4,8 +4,8 @@ p({
   "serviceScript": """
     import net.nanopay.security.PKCS12KeyStoreManager;
     return new PKCS12KeyStoreManager.Builder(x)
-      .setKeyStorePath(System.getenv(\"NANOPAY_HOME\") + \"/keys/keystore.p12\")
-      .setPassphrasePath(System.getenv(\"NANOPAY_HOME\") + \"/keys/passphrase\")
+      .setKeyStorePath(System.getenv("NANOPAY_HOME\") +"/keys/keystore.p12")
+      .setPassphrasePath(System.getenv("NANOPAY_HOME") + "/keys/passphrase")
       .build();
   """
 })
