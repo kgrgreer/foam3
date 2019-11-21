@@ -197,6 +197,7 @@ foam.CLASS({
         .setBranch( branch.getId() )
         .setOwner(user.getId())
         .setName(user.getLegalName())
+        .setIsDefault(true)
         .setStatus(BankAccountStatus.VERIFIED)
         .build();
 

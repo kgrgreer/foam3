@@ -16,8 +16,7 @@ foam.CLASS({
       javaCode: `
       return AND(
         EQ(DOT(NEW_OBJ, INSTANCE_OF(BankAccount.class)), true),
-        EQ(DOT(NEW_OBJ, BankAccount.IS_DEFAULT), true),
-        EQ(DOT(OLD_OBJ, BankAccount.IS_DEFAULT), false)
+        EQ(DOT(NEW_OBJ, BankAccount.IS_DEFAULT), true)
       ).f(obj);
       `
     }

@@ -262,6 +262,9 @@ public class TransactionDAOTest
     } else {
       senderBankAccount_ = (CABankAccount)senderBankAccount_.fclone();
     }
+    if ( status != BankAccountStatus.VERIFIED ) {
+      senderBankAccount_.setIsDefault(false);
+    }
     senderBankAccount_.setStatus(status);
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
   }
