@@ -185,7 +185,13 @@ var classes = [
   'net.nanopay.fx.afex.AFEXPaymentStatus',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentResponse',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentResponse',
   'net.nanopay.fx.afex.AFEXBankOnboardingRule',
+  'net.nanopay.fx.afex.AFEXBankUploadingRule',
+  'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
   
   // Partners
@@ -212,6 +218,7 @@ var classes = [
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
 
   // sme onboarding
+  'net.nanopay.sme.cron.WelcomeEmailCron',
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
   'net.nanopay.sme.onboarding.OnboardingStatus',
@@ -807,6 +814,8 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+  'net.nanopay.alarming.OMName',
+  'net.nanopay.alarming.AlarmingUniqueNameDAO',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
