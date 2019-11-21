@@ -960,7 +960,7 @@ p({
   print("Created " + successCount + " transaction(s)");
   print("Failed " + failedCount + " transaction(s)");  
   """
-}),
+})
 
 p({
   "class": "foam.nanos.script.Script",
@@ -1043,6 +1043,7 @@ p({
   "class": "foam.nanos.script.Script",
   "id": "Set up groups and permissions for API (GD)",
   "code": """
+
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
@@ -1053,6 +1054,8 @@ p({
 
     // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
+    // Set to true to undo the permission and theme changes made to the "SME" group by this script
+    fixSME = false;
 
     if ( DRY_RUN ) {
       print("--------------------");
@@ -1157,6 +1160,8 @@ p({
       junction.setTargetId(smeRemovePermissionArray.get(i));
       if ( DRY_RUN ) {
         print("'menu.read.sme.accountProfile.*', 'menu.read.sme.main.*' and 'menu.read.sme.quickAction.*' are removed from sme group.");
+      } else if ( fixSME) {
+        groupPermissionJunctionDAO.put(junction);
       } else {
         groupPermissionJunctionDAO.remove(junction);
       }
@@ -1167,6 +1172,8 @@ p({
     smeBusinessJunction.setTargetId("menu.read.sme.*");
     if ( DRY_RUN ) {
       print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
+    }  else if ( fixSME) {
+      groupPermissionJunctionDAO.put(smeBusinessJunction);
     } else {
       groupPermissionJunctionDAO.remove(smeBusinessJunction);
     }
@@ -1204,6 +1211,10 @@ p({
     gdTheme.setLogo("images/nanopay_logo_blue.png");
     if ( DRY_RUN ) {
       print("GD Theme is created.");
+    } else if ( fixSME ) {
+      gdTheme.setPriority(2);
+      gdTheme.setLogo("images/ablii-logo.svg");
+      themeDAO.put(gdTheme);
     } else {
       themeDAO.put(gdTheme);
     }

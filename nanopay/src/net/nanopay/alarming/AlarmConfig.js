@@ -9,7 +9,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'om1minDAO'
+    'omNameDAO'
   ],
 
   properties: [
@@ -32,12 +32,12 @@ foam.CLASS({
       class: 'String',
       name: 'preRequest',
       documentation: 'Name of the OM before a request is sent',
-      view: function(om1minDAO, X) {
+      view: function(omNameDAO, X) {
         return foam.u2.view.ChoiceView.create({
-          objToChoice: function(candlestick) {
-            return [candlestick.key, candlestick.key];
+          objToChoice: function(omName) {
+            return [omName.name, omName.name];
           },
-          dao$: X.om1minDAO$,
+          dao$: X.omNameDAO$,
           placeholder: '--'
         });
       }
@@ -46,12 +46,12 @@ foam.CLASS({
       class: 'String',
       name: 'postRequest',
       documentation: 'Name of the OM after a request is received',
-      view: function(om1minDAO, X) {
+      view: function(omNameDAO, X) {
         return foam.u2.view.ChoiceView.create({
-          objToChoice: function(candlestick) {
-            return [candlestick.key, candlestick.key];
+          objToChoice: function(omName) {
+            return [omName.name, omName.name];
           },
-          dao$: X.om1minDAO$,
+          dao$: X.omNameDAO$,
           placeholder: '--'
         });
       }
@@ -60,12 +60,12 @@ foam.CLASS({
       class: 'String',
       name: 'timeOutRequest',
       documentation: 'Name of the OM after a request has timed out',
-      view: function(om1minDAO, X) {
+      view: function(omNameDAO, X) {
         return foam.u2.view.ChoiceView.create({
-          objToChoice: function(candlestick) {
-            return [candlestick.key, candlestick.key];
+          objToChoice: function(omName) {
+            return [omName.name, omName.name];
           },
-          dao$: X.om1minDAO$,
+          dao$: X.omNameDAO$,
           placeholder: '--'
         });
       }
