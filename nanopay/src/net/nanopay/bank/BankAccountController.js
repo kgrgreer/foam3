@@ -35,7 +35,7 @@ foam.CLASS({
     { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' },
-    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to this account.' },
+    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' }
   ],
 
