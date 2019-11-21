@@ -36,6 +36,7 @@ foam.CLASS({
 
   imports: [
     'appConfig',
+    'auth',
     'ctrl',
     'currencyDAO',
     'fxService',
@@ -223,7 +224,9 @@ foam.CLASS({
     { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
     { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
     { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' },
-    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' }
+    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' },
+    { name: 'UNABLE_TO_PAY_TITLE', message: '*NOTICE: CANNOT PAY TO THIS CURRENCY.' },
+    { name: 'CANNOT_PAY_TO_CURRENCY', message: 'Sorry, you cannot pay to this currency. You require enabling FX on our platform to complete the payment.' }
   ],
 
   methods: [
@@ -455,7 +458,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency ) {
+        .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency) {
           if ( sourceCurrency == null ) {
             return false;
           }
@@ -486,7 +489,6 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
-
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
@@ -519,6 +521,13 @@ foam.CLASS({
 
       try {
         this.viewData.isDomestic = ! this.isFx;
+        var currencyCheck = `currency.read.${this.invoice.destinationCurrency}`;
+        if ( ! await this.auth.check(null, currencyCheck) ) {
+          this.notify(this.CANNOT_PAY_TO_CURRENCY, 'error');
+          this.showExchangeRateSection = false;
+          this.loadingSpinner.hide();
+          return;
+        }
         this.quote = this.isFx ? await this.getFXQuote() : await this.getDomesticQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
