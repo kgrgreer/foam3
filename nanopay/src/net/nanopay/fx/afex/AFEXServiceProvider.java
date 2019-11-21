@@ -26,6 +26,8 @@ import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
+import net.nanopay.model.PadCapture;
+import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -76,7 +78,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-        if ( afexBusiness != null ) return false;
+        if ( afexBusiness != null ) return true;
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
@@ -166,8 +168,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
               afexBusinessDAO.put(afexBusiness);
-              return true;
             }
+            return true;
           }
         }
       }
@@ -178,6 +180,45 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    if ( afexBusiness ==  null ) {
+      return false;
+    }
+    DAO padDAO = (DAO) x.get("padCaptureDAO");
+    ArraySink sink = new ArraySink();
+    PadCapture pad = null;
+    padDAO.where(EQ(PadCapture.ACCOUNT_NUMBER, bankAccount.getAccountNumber())).select(sink);
+    if ( sink.getArray().size() > 0 ) {
+      pad = (PadCapture) sink.getArray().get(0);
+    } else {
+      return false;
+    }
+    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
+    DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setAccountOwnerFirstName(pad.getFirstName())
+      .setAccountOwnerLastName(pad.getLastName())
+      .setAPIKey(afexBusiness.getApiKey())
+      .setBankDetailsVerified(bankAccount.getStatus() == BankAccountStatus.VERIFIED)
+      .setBankName(bankResponse.getInstitutionName())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+    if ( bankAccount instanceof CABankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+    } else if ( bankAccount instanceof USBankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
+    }
+
+    String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
+
+    if ( ! directDebitEnrollmentResponse.equals("\"This account is submitted to enroll in Direct Debit.\"") ) {
+      logger_.error("Error creating direct debit account for business " + business.getId(), directDebitEnrollmentRequest, directDebitEnrollmentResponse);
+      return false;
+    }
+    return true;
   }
 
   public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
@@ -425,7 +466,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
       addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus());
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error updating AFEX beneficiary.", t);
     }
 
   }
@@ -439,6 +480,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Calendar afexBeneficiaryLastModifiedDate = Calendar.getInstance();
     afexBeneficiaryLastModifiedDate.setTime(afexBeneficiary.getLastModified());
     return (accountLastModifiedDate.after(afexBeneficiaryLastModifiedDate));
+  }
+
+  public boolean directDebitUnenrollment(Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    DirectDebitUnenrollmentRequest unenrollmentRequest = new DirectDebitUnenrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setApiKey(afexBusiness.getApiKey())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+
+    String response = afexClient.directDebitUnenrollment(unenrollmentRequest);
+
+    return false;
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
@@ -472,7 +526,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       payeeInfo = this.afexClient.findBeneficiary(request);
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error getting AFEX beneficiary.", t);
     }
     return payeeInfo;
   }
@@ -625,7 +679,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
 
     } catch(Throwable t) {
-      logger_.error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error updating AFEX transaction status.", t);
     }
 
     return transaction;
@@ -664,7 +718,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
     if ( bankAccount instanceof CABankAccount ) {
-      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+      String institutionNumber;
+      if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+        DAO institutionDAO = (DAO) x.get("institutionDAO");
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        institutionNumber = institution.getInstitutionNumber();
+      } else {
+        institutionNumber = bankAccount.getInstitutionNumber();
+      }
+      String branchId = SafetyUtil.isEmpty(bankAccount.getBranchId()) ? bankAccount.getRoutingCode(x) : bankAccount.getBranchId();
+      findBankByNationalIDRequest.setNationalID("0" + institutionNumber + branchId);
     } else if ( bankAccount instanceof USBankAccount ) {
       findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
     } else {
@@ -717,7 +780,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           addPayee(beneficiaryId, bankAccount.getId(), ownerId);
           afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
         } catch(Throwable t) {
-          ((Logger) x.get("logger")).error("Error creating AFEX Beneficiary.", t);
+          ((Logger) x.get("logger")).error("Error getting/creating AFEX Beneficiary.", t);
         }
       }
     }

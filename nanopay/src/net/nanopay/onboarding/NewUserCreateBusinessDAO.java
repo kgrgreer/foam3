@@ -4,8 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.sink.Count;
-import foam.nanos.auth.AuthorizationException;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
@@ -13,12 +13,10 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
-import foam.nanos.auth.Address;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
 
 import static foam.mlang.MLang.AND;
@@ -61,8 +59,18 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
 
+    // We want to use current user spid and context only when the user have
+    // spid.create.<user.spid> permission. Otherwise, set spid="nanopay" and use
+    // system user context for creating user and business.
+    User currentUser = (User) x.get("user");
+    boolean hasSpidCreatePermission = false;
+    if ( currentUser != null ) {
+      AuthService auth = (AuthService) x.get("auth");
+      hasSpidCreatePermission = auth.check(x, "spid.create." + currentUser.getSpid());
+    }
+
     // If we want use the system user, then we need to copy the http request/appconfig to system context
-    X sysContext = getX()
+    X sysContext = hasSpidCreatePermission ? x : getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
@@ -149,7 +157,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setBusinessName(user.getOrganization())
       .setOrganization(user.getOrganization())
       .setAddress(businessAddress)
-      .setSpid("nanopay")
+      .setSpid(hasSpidCreatePermission ? currentUser.getSpid() : "nanopay")
       // We need to be able to send emails to businesses, but until now we were
       // avoiding giving businesses an email address. However, in Ablii users
       // are always acting as a business, meaning the payer and payee of every

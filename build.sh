@@ -365,7 +365,7 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+    export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
@@ -393,7 +393,10 @@ function setenv {
         mkdir -p "${JOURNAL_HOME}"
     fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
-        mkdir -p "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
+    elif [ ! -L "${DOCUMENT_HOME}" ]; then
+        rm -rf "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -423,7 +426,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
@@ -508,12 +511,30 @@ function usage {
 }
 
 # Print Nanopay text (very important, otherwise nothing will work)
-echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
-echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
-echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
-echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
-echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
-echo ""
+if [ $(date +%m) -eq 10 ] && [ $(date +%d) -gt 25 ]; then
+  ostart="\033[38;5;214m"
+  echo -e " $ostart                                 #'\""
+  echo -e "  _ __   __ _ _ __   ___  _ __ @ @ @ @_   _ "
+  echo -e " | '_ \\ / _\` | '_ \\ / _ \\| '_@ /\\   /\\ @ | |"
+  echo -e " | | | | (_| | | | | (_) | |@     ^     @| |"
+  echo -e " |_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
+  echo -e " (c) nanopay Corporation |_| @ @ @ @ @ @__/\033[0m"
+  echo ""
+elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 11 ]; then
+  echo -e "\033[34;1m  _ __   __ _ _ __   \033[31;1m.-.\033[0m  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\\\\033[31;1m.\\   /.\033[0m '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | |\033[31;1m:\033[0m  (O)  \033[31;1m:\033[0m|_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_\033[31;1m'/   \\'\033[0m .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[0m|_|          |___/  \033[0m"
+  echo ""
+else
+  echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
+  echo ""
+fi
 
 ############################
 

@@ -16,7 +16,25 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.uml-doc","label":"Full UML Documenta
 p({"class":"foam.nanos.menu.Menu","id":"doc.dig","label":"DIG","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"digDAO"},"order":20,"parent":"doc"})
 
 // DUG
-p({"class":"foam.nanos.menu.Menu","id":"doc.dug","label":"DUG","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"dugDAO"},"order":21,"parent":"doc"})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "doc.dug",
+  "label": "DUGs",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "foam.nanos.dig.DUGRule"
+      },
+      "of": "foam.nanos.dig.DUGRule"
+    }
+  },
+  "order": 21,
+  "parent": "doc"
+})
 
 // SUGAR
 p({"class":"foam.nanos.menu.Menu","id":"doc.sugar","label":"SUGAR","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"sugarDAO"},"order":22,"parent":"doc"})

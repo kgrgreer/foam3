@@ -23,7 +23,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'static foam.mlang.MLang.*'
   ],
 

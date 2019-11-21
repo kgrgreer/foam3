@@ -18,11 +18,12 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
+    'java.util.HashMap',
+    'java.util.Map',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Business',
-    'java.util.HashMap',
-    'java.util.Map'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -66,6 +67,11 @@ foam.CLASS({
 
       // finish processing the account through the dao
       account = (BankAccount) getDelegate().put_(x, obj);
+
+      // Do not send email to contact owned accounts.
+      if ( owner instanceof Contact ) {
+        return account;
+      }
 
       // Send email only after passing above checks
       EmailMessage message = new EmailMessage.Builder(x).build();

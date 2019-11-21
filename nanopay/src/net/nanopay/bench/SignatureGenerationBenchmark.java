@@ -28,6 +28,10 @@ public class SignatureGenerationBenchmark
   }
 
   @Override
+  public void teardown(X x, java.util.Map stats) {
+  }
+
+  @Override
   public void execute(X x) {
     try {
       // sign using algorithm and private key

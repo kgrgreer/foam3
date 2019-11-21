@@ -6,10 +6,7 @@ import foam.dao.DAO;
 import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
-import foam.nanos.ruler.Operations;
-import foam.nanos.ruler.RulerDAO;
-import foam.nanos.ruler.RulerProbe;
-import foam.nanos.ruler.TestedRule;
+import foam.nanos.ruler.*;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
@@ -110,6 +107,7 @@ public class TransactionLimitTest extends Test {
 
   public void testUpdatedRule(X x) {
     BusinessLimit r = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(rule);
+    r = (BusinessLimit) r.fclone();
     r.setLimit(20000L);
     r = (BusinessLimit) ((DAO) x.get("ruleDAO")).put(r);
     DAO txDAO = (DAO) x.get("localTransactionDAO");
@@ -159,6 +157,11 @@ public class TransactionLimitTest extends Test {
     BusinessLimit limitRule = new BusinessLimit();
     limitRule.setLimit(10000L);
     limitRule.setDaoKey("transactionDAO");
+    RuleGroup rg = new RuleGroup();
+    rg.setId("limits");
+    DAO rgDAO = ((DAO) (x.get("ruleGroupDAO")));
+    rgDAO.put(rg);
+    limitRule.setRuleGroup("limits");
     limitRule.setBusiness(sender_.getOwner());
     rule = (BusinessLimit) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
   }

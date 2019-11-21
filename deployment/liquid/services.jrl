@@ -83,28 +83,13 @@ p({
   "lazy":false,
   "serviceScript":
   """
-    import net.nanopay.account.Account;
-    foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
-    foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
-    
-    r = new foam.nanos.ruler.RulerDAO(x, hashingJDAO, "localAccountDAO");
-    
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
-      .setLastModifiedByAware(true)
-      .setDeletedAware(true)
-      .setOf(Account.getOwnClassInfo())
-      .setInnerDAO(r)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("accounts")
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.account.Account.OWNER, net.nanopay.account.Account.NAME, net.nanopay.account.Account.ID, net.nanopay.account.Account.ENABLED, net.nanopay.account.Account.IS_DEFAULT, net.nanopay.account.Account.DENOMINATION})
       .setAuthorize(false)
       .build();
   """
@@ -148,7 +133,10 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    deletedAware = new DeletedAwareDAO(x, "transaction", a);
+    deletedAware = new DeletedAwareDAO.Builder(x)
+      .setName("transaction")
+      .setDelegate(a)
+      .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
       .setDelegate(deletedAware)
       .build();
@@ -185,75 +173,80 @@ p({
   "lazy":false,
   "serviceScript":
   """
-    nd = new foam.dao.NullDAO.Builder(x)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+    dao = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
+      .setDelegate(null)
       .build();
-    stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
-      .setDelegate(nd)
-      .build();
-    kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
-      .setDelegate(stpd)
+    dao = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build(); 
-    kstp = new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x)
-      .setDelegate(kftp)
+    dao = new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    ktpd = new net.nanopay.tx.KotakTransactionPlanDAO.Builder(x)
-      .setDelegate(kstp)
+    dao = new net.nanopay.tx.KotakTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
-      .setDelegate(ktpd)
+    dao = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(nlifd)
+    dao = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
-      .setDelegate(nlitd)
+    dao = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
-      .setEnabled(false).setDelegate(atpd)
+    dao = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
+      .setEnabled(false).setDelegate(dao)
       .build();
-    afextpd = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
+    dao = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
       .setEnabled(false)
-      .setDelegate(bmopd)
+      .setDelegate(dao)
       .build();
-    afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
+    dao = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
       .setEnabled(true)
-      .setDelegate(afextpd)
+      .setDelegate(dao)
       .build();
-    nfxtpd = new net.nanopay.tx.NanopayFXTransactionPlanDAO.Builder(x)
-      .setDelegate(afxtpd)
+    dao = new net.nanopay.tx.NanopayFXTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    cpd = new net.nanopay.tx.CompliancePlanDAO.Builder(x)
-      .setDelegate(nfxtpd)
+    dao = new net.nanopay.tx.CompliancePlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    tqd = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
-      .setDelegate(cpd)
+    dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    gcipd = new net.nanopay.tx.GenericCIPlanner.Builder(x)
-          .setDelegate(tqd)
+    dao = new net.nanopay.tx.GenericCIPlanner.Builder(x)
+          .setDelegate(dao)
           .build();
-    fxtpdw = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
-      .setDelegate(gcipd)
+    dao = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    dtpd = new net.nanopay.tx.DigitalTransactionPlanDAO(x, fxtpdw);
-    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, dtpd);
-    atd = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
-      .setDelegate(rtpd)
+    dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
+    dao = new net.nanopay.tx.RetailTransactionPlanDAO(x, dao);
+    dao = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    dpd = new net.nanopay.tx.DebtablePlanDAO.Builder(x)
-      .setDelegate(atd)
+    dao = new net.nanopay.tx.DebtablePlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    vd = new foam.dao.ValidatingDAO(x, dpd, new net.nanopay.tx.RequestTransactionValidator());
-    ltpd = new net.nanopay.tx.LoanTransactionPlanDAO(x,vd);
-    drpd = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x)
-      .setDelegate(ltpd)
+    dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
+    dao = new net.nanopay.tx.LoanTransactionPlanDAO(x,dao);
+    dao = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    ptd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
-      .setDelegate(drpd)
+    dao = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
+      .setDelegate(dao)
       .build();
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.tx.PayerTransactionDAO.Builder(x)
-      .setDelegate(ptd)
-      .build()));
+    dao = new net.nanopay.tx.PayerTransactionDAO.Builder(x)
+      .setDelegate(dao)
+      .build(); 
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setNullify(true)
+      .setDecorator(dao)
+      .build();
   """
 })
 p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
