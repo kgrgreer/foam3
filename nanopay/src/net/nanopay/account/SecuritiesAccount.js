@@ -37,7 +37,8 @@ foam.CLASS({
       documentation: 'The security that this account stores.',
       tableWidth: 127,
       section: 'accountDetails',
-      order: 3
+      order: 3,
+      required: false
     },
     {
     // balance of all sub accounts I suppose
@@ -139,7 +140,7 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.copyFrom(this);
+        sa.setName(unit+ " subAccount for "+this.getId());
         sa.setSecuritiesAccount(this.getId());
         DAO accountDAO = (DAO) x.get("accountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
