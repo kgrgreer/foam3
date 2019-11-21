@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'Transaction Business Rule.',
 
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
+
   javaImports: [
     'net.nanopay.liquidity.tx.*',
     'foam.mlang.*',
@@ -21,14 +28,29 @@ foam.CLASS({
     'net.nanopay.account.Account'
   ],
 
+  searchColumns: [
+    'id',
+    'enabled',
+    'businessRuleAction',
+    'createdBy',
+    'description'
+  ],
+
   properties: [
     {
       name: 'id',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      label: 'Rule Name',
+      tableWidth: 750
     },
     {
       name: 'enabled',
-      value: true
+      label: 'Current status',
+      value: true,
+      tableWidth: 125,
+      tableCellFormatter: function(value, obj) {
+        this.add( value ? "Enabled" : "Disabled" );
+      }
     },
     {
       class: 'String',
@@ -96,7 +118,8 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.tx.BusinessRuleAction',
       name: 'businessRuleAction',
       section: 'basicInfo',
-      label: 'Action'
+      label: 'Action Type',
+      tableWidth: 125
     },
     {
       class: 'Enum',
@@ -171,6 +194,42 @@ foam.CLASS({
     {
       name: 'validity',
       hidden: true
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: 'The date and time of when the account was created in the system.',
+      visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: 'The ID of the User who created the account.',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.__subContext__.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.label() ) {
+              this.add(user.label());
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'The date and time of when the account was last changed in the system.',
+      visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who last modified this account.`,
+      visibility: 'RO',
     }
   ]
 });

@@ -18,7 +18,7 @@ p({
         "class": "foam.mlang.predicate.IsInstanceOf",
         "targetClass": "net.nanopay.liquidity.tx.BusinessRule"
       },
-      "defaultColumns":["id","enabled","businessRuleAction"],
+      "defaultColumns":["id","enabled","businessRuleAction","createdBy"],
       "of":"net.nanopay.liquidity.tx.BusinessRule"
     }
   },
