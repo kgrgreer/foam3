@@ -1201,3 +1201,21 @@ p({
   }
   """
 })
+
+// We need to override om1minDAO to add the AlarmingUniqueNameDAO decorator
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "om1minDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("OMMinutely")
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setDecorator(new net.nanopay.alarming.AlarmingUniqueNameDAO(x))
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
