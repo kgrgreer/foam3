@@ -811,6 +811,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
+  { name: 'net/nanopay/ui/TopSideNavigation', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },

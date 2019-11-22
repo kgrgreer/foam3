@@ -36,7 +36,8 @@ p({
   "black":"#1e1f21",
   "inputHeight":"32px",
   "inputVerticalPadding":"6px",
-  "inputHorizontalPadding":"8px"
+  "inputHorizontalPadding":"8px",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation"
 })
 
 p({
