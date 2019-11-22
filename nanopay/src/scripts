@@ -963,11 +963,11 @@ p({
 }),
 
 p({
-  "class":"foam.nanos.script.Script",
-  "id":"migratePhoneNumbers",
-  "description":"Migrate phone numbers to new phone properties for all users (users, businesses, contacts).",
-  "server":true,
-  "scheduled":false,
+  "class": "foam.nanos.script.Script",
+  "id": "migratePhoneNumbers",
+  "description": "Migrate phone numbers to new phone properties for all users (users, businesses, contacts).",
+  "server": true,
+  "scheduled": false,
   "code":
   """
     import foam.core.X;
