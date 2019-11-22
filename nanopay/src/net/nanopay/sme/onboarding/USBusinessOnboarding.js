@@ -964,13 +964,18 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
+      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 0, 1, 2, 3, 4 ],
         isHorizontal: true
       },
       postSet: function(_, n) {
-        this.publiclyTraded = false;
+        if ( this.amountOfOwners > 0 ) {
+          this.publiclyTraded = false;
+        } else if ( this.amountOfOwners === 0 ) {
+          this.userOwnsPercent = false;
+        };
       },
       validationPredicates: [
         {

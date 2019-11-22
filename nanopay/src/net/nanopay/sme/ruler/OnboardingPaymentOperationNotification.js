@@ -31,7 +31,7 @@ foam.CLASS({
               User user = (User) obj; 
 
               DAO businessDAO = (DAO) x.get("businessDAO");
-              Business bs = (Business) businessDAO.find(EQ(Business.EMAIL, user.getEmail()));
+              Business bs = (Business) businessDAO.find(user.getId());
               if (user == null && user.getId() <= 0) return;
               EmailMessage message = new EmailMessage();
               Map<String, Object>  args = new HashMap<>();
@@ -39,7 +39,6 @@ foam.CLASS({
               args.put("userEmail", user.getEmail());
               args.put("businessId", bs.getId());
               args.put("businessName", bs.getBusinessName());
-              args.put("businessEmail", bs.getEmail());
 
               OnboardingPaymentOpsNotification notification = new OnboardingPaymentOpsNotification.Builder(x)
               .setEmailArgs(args)

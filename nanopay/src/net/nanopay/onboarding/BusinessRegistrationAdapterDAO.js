@@ -50,7 +50,6 @@ foam.CLASS({
         return new User.Builder(x)
           .setFirstName(businessRegistration.getFirstName())
           .setLastName(businessRegistration.getLastName())
-          .setEmail(businessRegistration.getEmail())
           .setDesiredPassword(businessRegistration.getDesiredPassword())
           .setOrganization(businessRegistration.getOrganization())
           .setAddress(businessRegistration.getAddress())

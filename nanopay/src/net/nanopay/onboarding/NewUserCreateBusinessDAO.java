@@ -172,7 +172,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       // I'm going with option 1 right now, but I don't know if it's a perfect
       // solution or if there might be unforeseen consequences for letting
       // businesses have email addresses.
-      .setEmail(user.getEmail())
+      // .setEmail(user.getEmail())
       .setEmailVerified(true)
       .build();
 

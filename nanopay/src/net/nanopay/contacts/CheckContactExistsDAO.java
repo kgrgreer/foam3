@@ -26,29 +26,29 @@ public class CheckContactExistsDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Contact contact = (Contact) obj;
+    // Contact contact = (Contact) obj;
 
-    if ( contact == null ) {
-      throw new RuntimeException("Cannot put null!");
-    }
+    // if ( contact == null ) {
+    //   throw new RuntimeException("Cannot put null!");
+    // }
 
-    // We only want to do this check for newly created Contacts.
-    if ( super.find_(x, obj) != null || contact.getBusinessId() != 0 || obj instanceof QuickbooksContact || obj instanceof XeroContact) {
-      return super.put_(x, obj);
-    }
+    // // We only want to do this check for newly created Contacts.
+    // if ( super.find_(x, obj) != null || contact.getBusinessId() != 0 || obj instanceof QuickbooksContact || obj instanceof XeroContact) {
+    //   return super.put_(x, obj);
+    // }
 
-    // The user is adding a contact by choosing an existing business instead of
-    // putting in an email address. There's no need to check anything in this
-    // case.
-    if ( SafetyUtil.isEmpty(contact.getEmail()) ) {
-      return super.put_(x, obj);
-    }
+    // // The user is adding a contact by choosing an existing business instead of
+    // // putting in an email address. There's no need to check anything in this
+    // // case.
+    // if ( SafetyUtil.isEmpty(contact.getEmail()) ) {
+    //   return super.put_(x, obj);
+    // }
 
-    User existingUser = (User) localUserUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
+    // User existingUser = (User) localUserUserDAO_.find(EQ(User.EMAIL, contact.getEmail()));
 
-    if ( existingUser != null ) {
-      throw new RuntimeException("A user with that email address is already using Ablii. To add their business as a contact, select it from the list of businesses.");
-    }
+    // if ( existingUser != null ) {
+    //   throw new RuntimeException("A user with that email address is already using Ablii. To add their business as a contact, select it from the list of businesses.");
+    // }
 
     return super.put_(x, obj);
   }

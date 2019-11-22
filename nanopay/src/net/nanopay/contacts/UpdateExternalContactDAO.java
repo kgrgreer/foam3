@@ -22,16 +22,16 @@ public class UpdateExternalContactDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Business business = (Business) super.put_(x, obj);
 
-    DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
-    ExternalContactToken externalToken = (ExternalContactToken) tokenDAO
-      .find(EQ(ExternalContactToken.BUSINESS_EMAIL, business.getEmail()));
+    // DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
+    // ExternalContactToken externalToken = (ExternalContactToken) tokenDAO
+    //   .find(EQ(ExternalContactToken.BUSINESS_EMAIL, business.getEmail()));
 
-    if ( externalToken != null ) {
-      ExternalContactToken temp = (ExternalContactToken) externalToken.fclone();
-      temp.setBusinessId(business.getId());
+    // if ( externalToken != null ) {
+    //   ExternalContactToken temp = (ExternalContactToken) externalToken.fclone();
+    //   temp.setBusinessId(business.getId());
 
-      tokenDAO.put(temp);
-    }
+    //   tokenDAO.put(temp);
+    // }
 
     return business;
   }
