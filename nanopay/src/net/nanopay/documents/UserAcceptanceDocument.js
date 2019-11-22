@@ -56,7 +56,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: 'Business who created the entry'
+      documentation: 'User who created the entry'
     },
     {
       class: 'Reference',

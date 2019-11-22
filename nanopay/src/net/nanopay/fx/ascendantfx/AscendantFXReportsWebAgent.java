@@ -345,15 +345,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           long businessId = onboarding instanceof CanadaUsBusinessOnboarding ? ((CanadaUsBusinessOnboarding) onboarding).getBusinessId() : (onboarding instanceof USBusinessOnboarding ? ((USBusinessOnboarding) onboarding).getBusinessId() : ((BusinessOnboarding) onboarding).getBusinessId());
 
           if(!userIds.contains(newUserId)) {
-
-            ArraySink uad = (ArraySink) userAcceptanceDocumentDAO.select(new ArraySink());
-
             ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
               AND(
                 EQ(UserAcceptanceDocument.USER, newUserId),
-                EQ(UserAcceptanceDocument.CREATED_BY, business.getId())
+                EQ(UserAcceptanceDocument.BUSINESS_ID, business.getId())
               )
-
             ).select(new ArraySink());
             java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
 
