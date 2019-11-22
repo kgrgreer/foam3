@@ -2,7 +2,6 @@ package net.nanopay.bank;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
@@ -10,19 +9,11 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.Group;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import java.util.Arrays;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
-import java.util.List;
-import static foam.mlang.MLang.EQ;
 
-import net.nanopay.account.Account;
-import net.nanopay.flinks.model.AccountWithDetailModel;
-import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.model.Branch;
-import net.nanopay.model.PadCapture;
 import net.nanopay.payment.Institution;
-import net.nanopay.plaid.model.PlaidItem;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
