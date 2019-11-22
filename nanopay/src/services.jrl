@@ -467,7 +467,6 @@ p({
     dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
     dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
     dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
-    dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
 
