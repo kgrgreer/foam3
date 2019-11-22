@@ -165,7 +165,7 @@ foam.CLASS({
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
           .select(self.currencyDAO.where(
-              self.IN(net.nanopay.model.Currency.ALPHABETIC_CODE, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
+              self.IN(foam.core.Currency.ID, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
             ), function(c) {
                 if ( c.flagImage != null ) {
                   return self.E()

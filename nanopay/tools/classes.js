@@ -81,6 +81,7 @@ var classes = [
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
   'net.nanopay.account.NoChildrenRule',
+  'net.nanopay.account.SecuritiesAccount',
   'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
@@ -222,6 +223,7 @@ var classes = [
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
 
   // sme onboarding
+  'net.nanopay.sme.cron.WelcomeEmailCron',
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
   'net.nanopay.sme.onboarding.OnboardingStatus',
@@ -619,6 +621,10 @@ var classes = [
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
 
+  // report
+  'net.nanopay.meter.report.AbliiBusinessReport',
+  'net.nanopay.meter.report.AbliiBusinessReportDAO',
+
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
   'net.nanopay.meter.clearing.ClearingTimesTrait',
@@ -817,6 +823,8 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+  'net.nanopay.alarming.OMName',
+  'net.nanopay.alarming.AlarmingUniqueNameDAO',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
