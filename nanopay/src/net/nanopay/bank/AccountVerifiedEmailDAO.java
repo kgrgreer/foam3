@@ -53,30 +53,9 @@ public class AccountVerifiedEmailDAO
     AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-    DAO plaidItemDAO = (DAO) x.get("plaidItemDAO");
-    DAO flinksAccountsDetailResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
-    ArraySink plaidItems = (ArraySink)plaidItemDAO.where(EQ(PlaidItem.USER_ID, owner.getId())).select(new ArraySink());
-    ArraySink  flinksAccountsDetailResponses = (ArraySink) flinksAccountsDetailResponseDAO.where(EQ(FlinksAccountsDetailResponse.USER_ID, owner.getId())).select(new ArraySink());
-    
-    Boolean isFlinks = false;
-    List<FlinksAccountsDetailResponse> flinksResponses = flinksAccountsDetailResponses.getArray();
-    flinksresponseloop:
-    for (FlinksAccountsDetailResponse flinksResponse: flinksResponses) {
-      AccountWithDetailModel[] accounts = flinksResponse.getAccounts();
-      for (AccountWithDetailModel acc: accounts) {
-        if(acc.getAccountNumber().equals(account.getAccountNumber()));
-        {
-          isFlinks = true;
-          break flinksresponseloop;
-        }
-      }
-    }
-
-    //Doesn't send email if the user uses Flinks/Plaid because they are auto verified.
-    if(plaidItems.getArray().size() != 0 || isFlinks)
-      return getDelegate().put_(x, obj);
 
     // Doesn't send email if the account hasn't been made prior
+    // Doesn't send email if the account is flinks/plaid
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
 
@@ -91,6 +70,11 @@ public class AccountVerifiedEmailDAO
     // Doesn't send email if group or group.appConfig was null
     if ( config == null )
       return getDelegate().put_(x, obj);
+
+    // Doesn't send email for contact bank account
+    if ( account.getCreatedBy() != owner.getId())
+      return getDelegate().put_(x, obj);
+
     account = (BankAccount) super.put_(x, obj);
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
