@@ -56,8 +56,7 @@ public class AuthenticationTokenWebAgent implements WebAgent {
       outputException(x, null, "JSON", null, error);
     } catch (Exception e) {
       DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(FAILURE)
-        .setDeveloperMessage(e.toString())
+        .setMessage(e.toString())
         .build();
       outputException(x, null, "JSON", null, error);
     }
