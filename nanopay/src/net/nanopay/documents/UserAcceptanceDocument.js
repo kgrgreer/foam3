@@ -54,8 +54,14 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Business',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      documentation: 'Business who created the entry'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'businessId',
       documentation: 'Business who created the entry'
     },
     {
