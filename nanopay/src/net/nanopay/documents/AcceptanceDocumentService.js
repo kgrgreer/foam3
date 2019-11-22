@@ -89,7 +89,7 @@ foam.INTERFACE({
                 {
                     type: 'Long',
                     name: 'business',
-                  },
+                },
                 {
                   type: 'Long',
                   name: 'acceptanceDocument',
