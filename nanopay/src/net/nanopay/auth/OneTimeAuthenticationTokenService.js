@@ -55,7 +55,7 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service.run.authenticationToken") ) {
-          throw new AuthorizationException();
+          throw new AuthorizationException("You don't have permission to run authenticationToken service.");
         }
 
         DAO localUserDAO = (DAO) x.get("localUserDAO");
@@ -64,9 +64,9 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
-        // Check spid.create.<spid> permission to create an authentication token
-        if ( ! auth.check(x, "spid.create." + user.getSpid()) ) {
-          throw new AuthorizationException();
+        // Check session.create.<spid> permission to create the authentication token
+        if ( ! auth.check(x, "session.create." + user.getSpid()) ) {
+          throw new AuthorizationException("You don't have permission to create a session for that user.");
         }
 
         DAO tokenDAO = (DAO) getTokenDAO();
@@ -108,7 +108,7 @@ foam.CLASS({
           throw new RuntimeException("Token has expired");
         }
 
-        // find user from token
+        // Find user from token
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         User userResult = (User) localUserDAO.find(tokenResult.getUserId());
 
