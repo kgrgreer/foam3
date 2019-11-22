@@ -78,6 +78,7 @@ nanopay/src/net/nanopay/kotak/model/
 nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/Document.js
 !nanopay/src/net/nanopay/iso20022/refinements.js
+!nanopay/src/net/nanopay/iso20022/ISO20022Util.java
 !nanopay/src/net/nanopay/iso20022/ISODateTest.js
 !nanopay/src/net/nanopay/iso20022/ISODateTimeTest.js
 !nanopay/src/net/nanopay/iso20022/ISOTimeTest.js
