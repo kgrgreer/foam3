@@ -130,7 +130,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rule.setAfter(true);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate);
-    RuleAction action = (x, obj, oldObj, ruler, agency) -> {
+    RuleAction action = (x, obj, oldObj, ruler, r, agency) -> {
       initialRequest.setObjId(((User) obj).getId());
       initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
     };
@@ -148,7 +148,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rule2.setAfter(false);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate2);
-    RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, agency) -> {
+    RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, r2, agency) -> {
       User user = (User) obj;
       long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassification());
 
