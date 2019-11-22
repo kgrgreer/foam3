@@ -99,3 +99,55 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Upload Business bank accounts to AFEX",
+  "documentation":"Rule to upload business bank account information to AFEX",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBankUploadingRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Upload bank accounts to AFEX for existing AFEX business",
+  "documentation":"Rule to upload new bank account for existing AFEX business",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBankUploadingRule2"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

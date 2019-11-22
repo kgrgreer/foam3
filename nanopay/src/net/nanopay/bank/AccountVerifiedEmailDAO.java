@@ -11,8 +11,10 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
+
+import net.nanopay.contacts.Contact;
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
@@ -43,6 +45,7 @@ public class AccountVerifiedEmailDAO
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
     // Doesn't send email if the account hasn't been made prior
+    // Doesn't send email if the account is flinks/plaid
     if ( oldAccount == null )
       return getDelegate().put_(x, obj);
 
@@ -58,14 +61,28 @@ public class AccountVerifiedEmailDAO
     if ( config == null )
       return getDelegate().put_(x, obj);
 
+    // Doesn't send email for contact bank account
+    if ( owner instanceof Contact && account.getCreatedBy() != owner.getId())
+      return getDelegate().put_(x, obj);
+
     account = (BankAccount) super.put_(x, obj);
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
 
+    Branch currBranch = (Branch) account.findBranch(x);
+    String institutionStr;
+    if(currBranch != null) {
+      Institution currInstitution = (Institution) currBranch.findInstitution(x);
+      institutionStr = currInstitution == null ? " - " : ((currInstitution.getAbbreviation() == null  || currInstitution.getAbbreviation().isEmpty()) ? currInstitution.getName() : currInstitution.getAbbreviation());
+    } else {
+      institutionStr = " - ";
+    }
+    
     message.setTo(new String[]{owner.getEmail()});
     args.put("link",    config.getUrl());
-    args.put("name",    owner.getFirstName());
-    args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+    args.put("name",    owner.label());
+    args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+    args.put("institution", institutionStr);
 
     try {
       EmailsUtility.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
