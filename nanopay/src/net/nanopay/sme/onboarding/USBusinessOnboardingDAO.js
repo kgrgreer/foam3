@@ -44,11 +44,6 @@ foam.CLASS({
       ],
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
-
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
-        }
-        
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
@@ -64,6 +59,10 @@ foam.CLASS({
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);
