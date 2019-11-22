@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
@@ -37,8 +38,8 @@ foam.CLASS({
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
         Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
         Date                 endInterval    = null;
-        Long                 disruptionDiff = 0;
-        Date                 disruption     = x.get("cronDAO").find("Send Welcome Email to Ablii Business 30min after SignUp").getLastRun();
+        Long                 disruptionDiff = 0L;
+        Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
 
         // Check if there was no survice disruption - if so, add/sub diff from endInterval
         disruptionDiff = disruption.getTime() - startInterval.getTime();
@@ -62,7 +63,7 @@ foam.CLASS({
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
             sb.append("Email meant for business SignUp Error: Business ");
-            sb.append(business.getId())
+            sb.append(business.getId());
             ((Logger) x.get("logger")).error(sb.toString(), t);
           }
         }
