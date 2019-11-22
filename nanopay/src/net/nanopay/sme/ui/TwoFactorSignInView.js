@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'AuthView',
   extends: 'foam.u2.View',
+  requires: ['foam.u2.TextField'],
 
   css: `
   ^ {
@@ -28,86 +29,58 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'incorrctCode',
-    },
-    {
-      class: 'Array',
-      name: 'index',
+      name: 'incorrectCode',
     },
     {
       class: 'Int',
       name: 'currentIndex',
-      value: 1
+      value: -1,
+      preSet: function(old, nu) {
+        if ( this.numOfParts === 0 ) return nu;
+        if ( nu < 0 || this.numOfParts === 0 ) return 0;
+        if ( nu >= this.numOfParts ) return this.numOfParts - 1;
+        return nu;
+      }
     },
     {
       class: 'Int',
-      name: 'nextIndex',
-    },
-    {
-      class: 'Int',
-      name: 'size',
+      name: 'numOfParts',
       value: 6
     },
     {
       class: 'Array',
-      name: 'token',
-      factory: function(size) {
-        var arr = [];
-        for ( var i = 1; i <= this.size; i++ ) {
-          arr.push[''];
-        }
-        return arr;
-      }
-    }
+      name: 'tokenId',
+    },
   ],
   methods: [
     function initE() {
-      this.addClass(this.myClass())
-      .call( (e) => {
-        for ( var i = 1; i <= this.size; i++ ) {
-        var isFirstElement = i == 1 ? true : false;
-        this.start('input')
-          .enableClass('wrong-code', this.incorrctCode$ )
-          .attrs({ type: 'text', maxlength: '1', autofocus: isFirstElement })
-          .on( 'keypress', this.keyPress )
-          .on( 'keyup', this.keyUp )
-          .on( 'focus', this.onFocus)
-        .end();
-        this.index.push(this.children[i - 1].id);
-        }
-      })
-      .end();
+      this.SUPER();
+      var self = this;
+      for ( var i = 0; i < this.numOfParts; i++ ) {
+      var isFirstElement = i == 0 ? true : false;
+      let v = this.TextField.create({ onKey: true });
+      v.setAttribute('maxlength', 1);
+      v.setAttribute('autofocus', isFirstElement);
+      v.addClass('input').enableClass('wrong-code', this.incorrectCode$ );
+      v.on('focus', function() {
+        self.currentIndex = self.findIndexOfInput(this.id);
+      });
+        this.tokenId.push(v.id);
+        this.tag(v).addClass(this.myClass());
+        v.data$.sub(this.onDataUpdate);
+        v.data$.relateFrom(this.data$, (_) => this.data.substring(0, this.currentIndex) + v.data.substring(0) + this.data.substring(this.currentIndex+1), (_) => v.data);
+      }
+    },
+    function findIndexOfInput(id) {
+      return this.tokenId.indexOf(id);
     }
   ],
   listeners: [
-    function keyPress(e) {
-      if ( ! Number(e.key) ) {
-        e.preventDefault();
-      } else {
-        e.target.value = e.key;
-        this.nextIndex = this.currentIndex === this.size ? this.currentIndex : this.currentIndex + 1;
-        this.getElementById(this.index[this.nextIndex]).focus();
-        this.data = this.token.join('');
+    {
+      name: 'onDataUpdate',
+      code: function() {
+        this.getElementById(this.tokenId[this.currentIndex + 1]).focus();
       }
-    },
-    function keyUp(e) {
-      switch ( e.key ) {
-        case 'Backspace':
-          if ( ! this.currentIndex < 1 ) this.getElementById(this.index[this.currentIndex - 1]).focus();
-          break;
-        case 'ArrowLeft':
-          if ( ! this.currentIndex < 1 ) this.getElementById(this.index[this.currentIndex - 1]).focus();
-          break;
-        case 'ArrowRight':
-          if ( this.currentIndex != this.size ) this.getElementById(this.index[this.currentIndex + 1]).focus();
-          break;
-        default:
-          e.preventDefault();
-          break;
-      }
-    },
-    function onFocus(e) {
-      this.currentIndex = this.currentIndex = this.index.indexOf(e.target.id);
     }
   ],
 });
@@ -211,7 +184,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'incorrctCode'
+      name: 'incorrectCode'
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -219,7 +192,7 @@ foam.CLASS({
       factory: function() {
         return {
           class: 'net.nanopay.sme.ui.AuthView',
-          incorrctCode$: this.incorrctCode$,
+          incorrectCode$: this.incorrectCode$,
           data$: this.twoFactorToken$
         };
       }
@@ -274,7 +247,7 @@ foam.CLASS({
           .end()
           .start()
             .tag(this.Auth)
-            .start().addClass('error-msg').show( this.incorrctCode$ )
+            .start().addClass('error-msg').show( this.incorrectCode$ )
               .start({
                 class: 'foam.u2.tag.Image',
                 data: 'images/inline-error-icon.svg',
