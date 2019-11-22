@@ -24,7 +24,6 @@ import net.nanopay.model.PadCapture;
 import net.nanopay.payment.Institution;
 import net.nanopay.plaid.model.PlaidItem;
 
-
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
   extends ProxyDAO
@@ -53,7 +52,6 @@ public class AccountVerifiedEmailDAO
     AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-
     // Doesn't send email if the account hasn't been made prior
     // Doesn't send email if the account is flinks/plaid
     if ( oldAccount == null )
@@ -80,7 +78,6 @@ public class AccountVerifiedEmailDAO
     HashMap<String, Object> args    = new HashMap<>();
 
     Branch currBranch = (Branch) account.findBranch(x);
-
     String institutionStr;
     if(currBranch != null) {
       Institution currInstitution = (Institution) currBranch.findInstitution(x);
