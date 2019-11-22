@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
+  label: 'Canadian Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -31,14 +32,63 @@ foam.CLASS({
   ],
 
   properties: [
+     {
+      name: 'country',
+      value: 'CA'
+    },
     {
+      name: 'flagImage',
+      value: 'images/flags/cad.png'
+    },
+    {
+      name: 'denomination',
+      value: 'CAD',
+    },
+    {
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/Canada-Check@2x.png',
+      section: 'accountDetails',
+      visibility: 'RO',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image'
+        };
+      },
+      readPermissionRequired: true
+    },
+    {
+      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
+      class: 'String',
+      name: 'institutionNumber',
+      visibility: 'FINAL',
+      label: 'Inst. No.',
+      section: 'accountDetails',
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '123',
+        maxLength: 3,
+        onKey: true
+      },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        var reg = /^\d+$/;
+        return reg.test(n) ? n : o;
+      }
+    },
+    {
+      // Relationship
       name: 'branch',
       label: 'Transit No.'
     },
     {
       name: 'branchId',
+      type: 'String',
       label: 'Transit No.',
       visibility: 'FINAL',
+      section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
@@ -63,25 +113,6 @@ foam.CLASS({
       }
     },
     {
-      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
-      class: 'String',
-      name: 'institutionNumber',
-      label: 'Inst. No.',
-      storageTransient: true,
-      hidden: true,
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123',
-        maxLength: 3,
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      }
-    },
-    {
       name: 'accountNumber',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{5,12}$/;
@@ -91,18 +122,74 @@ foam.CLASS({
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 5 and 12 digits long.';
         }
+      },
+      visibility: 'FINAL',
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((institution, institutionDAO) => {
+            return institutionDAO.find(institution).then((result) => {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                  .end()
+                  .start('span').add(`${result.name} |`).end();
+              }
+            });
+          }))
+        .end()
+        .start()
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
+              }
+            });
+          }))
+        .end()
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
+        .end();
       }
     },
-    {
-      name: 'country',
-      value: 'CA'
-    },
-    {
-      name: 'flagImage',
-      value: 'images/flags/cad.png'
-    }
   ],
   methods: [
+    {
+      name: 'getBankCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Institution institution = findInstitution(x);
+        if ( institution != null ) {
+          code.append(institution.getInstitutionNumber());
+        }
+        return code.toString();
+      `
+    },
     {
       name: 'validate',
       args: [

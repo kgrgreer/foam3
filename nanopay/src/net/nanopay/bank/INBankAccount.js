@@ -1,11 +1,22 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'INBankAccount',
+  label: 'Indian Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern'
+  ],
+
+  documentation: 'Indian Bank account information.',
+
+  constants: [
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+    }
   ],
 
   properties: [
@@ -20,16 +31,39 @@ foam.CLASS({
     {
       name: 'denomination',
       value: 'INR'
-    }
-  ],
-
-  documentation: 'Indian Bank account information.',
-
-  constants: [
+    },
+    { // REVIEW: remove
+      name: 'institutionNumber',
+      hidden: true
+    },
+    { // REVIEW: remove
+      name: 'branchId',
+      hidden: true
+    },
     {
-      name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+      name: 'accountRelationship',
+      class: 'Reference',
+      of: 'net.nanopay.tx.AccountRelationship',
+      value: 'Employer/Employee',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Please select',
+          choices: [
+            'Employer/Employee',
+            'Contractor',
+            'Vendor/Client',
+            'Other'
+          ]
+        },
+        otherKey: 'Other'
+      },
+      section: 'accountDetails'
+    },
+    {
+      name: 'accountNumber',
+      label: 'International Bank Account No.',
     }
   ],
 
