@@ -108,9 +108,7 @@ var classes = [
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.BankWeekend',
-  'net.nanopay.bank.VerifiedBankAccountPredicate',
   'net.nanopay.bank.DefaultBankAccountRule',
-  'net.nanopay.bank.IsDefaultPredicate',
   'net.nanopay.bank.IsDefaultRule',
 
   //Exchangeable
