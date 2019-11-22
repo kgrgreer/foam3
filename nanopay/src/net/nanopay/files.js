@@ -78,6 +78,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/NoChildrenRule' },
   { name: 'net/nanopay/account/CreateDefaultDigitalAccountOnUserCreateRule' },
   { name: 'net/nanopay/account/Relationships' },
+  { name: 'net/nanopay/account/SecuritiesAccount' },
   { name: 'net/nanopay/account/SecurityAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
@@ -116,6 +117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/bank/BankHolidayService' },
   { name: 'net/nanopay/bank/BankWeekend' },
+  { name: 'net/nanopay/bank/DefaultBankAccountRule' },
+  { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -1008,6 +1011,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
+  // report
+  { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
+  { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
+
+
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
   { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
@@ -1220,6 +1228,8 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
+  { name: 'net/nanopay/alarming/OMName' },
+  { name: 'net/nanopay/alarming/AlarmingUniqueNameDAO' },
 
   // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
