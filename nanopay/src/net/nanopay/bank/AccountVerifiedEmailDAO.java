@@ -61,7 +61,7 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     // Doesn't send email for contact bank account
-    if ( account.getCreatedBy() != owner.getId())
+    if ( owner instanceof Contact && account.getCreatedBy() != owner.getId())
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x, obj);
