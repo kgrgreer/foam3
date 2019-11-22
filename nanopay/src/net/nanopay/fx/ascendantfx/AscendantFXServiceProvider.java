@@ -45,6 +45,7 @@ import net.nanopay.fx.FXService;
 import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
+import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Branch;
 import foam.core.Currency;
 import net.nanopay.payment.Institution;
@@ -387,7 +388,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
         txn.setReferenceNumber(submittedDealResult.getDealID());
         txn.setStatus(TransactionStatus.SENT);
-        txn.setCompletionDate(generateCompletionDate());
+        ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+        txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
         ((DAO) x.get("localTransactionDAO")).put_(x, txn);
 
       }
@@ -397,22 +399,6 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       transaction.setStatus(TransactionStatus.DECLINED);
       ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
     }
-  }
-
-  private Date generateCompletionDate() {
-    List<Integer> cadHolidays = CsvUtil.cadHolidays; // REVIEW: When BankHolidays is tested
-    Calendar curDate = Calendar.getInstance();
-    int businessDays = 2; // next 2 business days
-    int i = 0;
-    while ( i < businessDays ) {
-      curDate.add(Calendar.DAY_OF_YEAR, 1);
-      if ( curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-        && curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-        && ! cadHolidays.contains(curDate.get(Calendar.DAY_OF_YEAR)) ) {
-        i = i + 1;
-      }
-    }
-    return curDate.getTime();
   }
 
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException{
