@@ -12,6 +12,7 @@ import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 
+import net.nanopay.contacts.Contact;
 import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
 
