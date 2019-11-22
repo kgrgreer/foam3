@@ -984,8 +984,6 @@ p({
       .setOf(net.nanopay.meter.Blacklist.getOwnClassInfo())
       .setJournalName("blacklists")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(true)
-      .setValidated(false)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("blacklist"))
       .build();
   """,
