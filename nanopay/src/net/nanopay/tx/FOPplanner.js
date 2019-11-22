@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.SecurityTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.SecuritiesAccount',
     'java.util.List',
     'java.util.ArrayList'
   ],
@@ -19,8 +20,9 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         TransactionQuote txq = (TransactionQuote) obj;
-        Transaction tx = txq.getRequestTransaction();
+        // --> Probably not needed.   Transaction tx = txq.getRequestTransaction();
         SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+
         plan.setSourceCurrency(txq.getSourceUnit());
         plan.setDestinationCurrency(txq.getDestinationUnit());
 
@@ -28,7 +30,12 @@ foam.CLASS({
         plan.setDestinationAccount(txq.getDestinationAccount().getId());
 
         plan.setIsQuoted(true);
-        plan.setTransfers(createTransfers_(getX(), plan));
+        plan.setTransfers(
+          createTransfers_(getX(), plan,
+          ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
+          ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
+        ));
+
         txq.addPlan(plan);
       `
     },
@@ -43,6 +50,14 @@ foam.CLASS({
           name: 'newPlan',
           type: 'net.nanopay.tx.SecurityTransaction'
         },
+        {
+          name: 'transferFrom',
+          type: 'Long'
+        },
+        {
+          name: 'transferTo',
+          type: 'Long'
+        },
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
@@ -55,9 +70,8 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-
-        all.add(new Transfer.Builder(x).setAccount(newPlan.getSourceAccount()).setAmount(-newPlan.getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(newPlan.getDestinationAccount()).setAmount(newPlan.getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(transferFrom).setAmount(-newPlan.getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(transferTo).setAmount(newPlan.getTotal()).build());
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
