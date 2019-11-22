@@ -194,6 +194,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     if ( sourceAccount == null ) {
       sourceAccount = new CABankAccount();
       sourceAccount.setOwner(sender.getId());
+      sourceAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
       sourceAccount.setAccountNumber("87654321");
       sourceAccount.setStatus(BankAccountStatus.VERIFIED);
       sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount);
@@ -208,6 +209,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
         EQ(BankAccount.DENOMINATION, "INR")));
     if ( destinationAccount == null ) {
       destinationAccount = new INBankAccount();
+      destinationAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
       destinationAccount.setOwner(receiver.getId());
       destinationAccount.setAccountNumber("9876543210");
       destinationAccount.setStatus(BankAccountStatus.VERIFIED);
