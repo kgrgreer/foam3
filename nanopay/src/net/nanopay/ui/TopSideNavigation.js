@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TopSideNavigation',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'Navigation bars',
 
@@ -233,7 +233,23 @@ foam.CLASS({
       value: '' // The root menu
     },
     'menu',
-    'parent'
+    'parent',
+    {
+      name: 'menuSearch',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Menus',
+              dao: X.menuDAO
+            },
+          ],
+          search: true,
+          searchPlaceholder: 'Search...'
+        };
+      }
+    }
   ],
 
   methods: [
@@ -241,9 +257,13 @@ foam.CLASS({
         var self = this;
         var dao_ = this.menuDAO.orderBy(this.Menu.ORDER);
         if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
+        this.menuSearch = this.currentMenu;
+        this.menuSearch$.sub(this.updateView);
 
         this.start().addClass(this.myClass())
+          .show(this.loginSuccess$)
           .start().addClass('side-nav-view')
+            .tag(this.MENU_SEARCH)
             .select(this.menuDAO.orderBy(this.Menu.ORDER).where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
@@ -312,5 +332,11 @@ foam.CLASS({
           .end()
         .end();
       }
+  ],
+
+  listeners: [
+    function updateView() {
+      this.pushMenu(this.menuSearch);
+    }
   ]
 });
