@@ -315,7 +315,6 @@ public class TransactionTest
       .find(AND(EQ(CABankAccount.OWNER, user.getId()),INSTANCE_OF(CABankAccount.class)) );
     if ( bank == null ) {
       bank = new CABankAccount();
-      bank.setIsDefault(true);
       bank.setStatus(BankAccountStatus.VERIFIED);
       bank.setAccountNumber("12345678");
       bank.setOwner(user.getId());

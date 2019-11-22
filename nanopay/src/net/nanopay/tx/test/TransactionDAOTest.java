@@ -262,7 +262,7 @@ public class TransactionDAOTest
     } else {
       senderBankAccount_ = (CABankAccount)senderBankAccount_.fclone();
     }
-    if ( status != BankAccountStatus.VERIFIED ) {
+    if ( status.equals(BankAccountStatus.UNVERIFIED) ) {
       senderBankAccount_.setIsDefault(false);
     }
     senderBankAccount_.setStatus(status);
