@@ -90,6 +90,7 @@ foam.CLASS({
       font-size: 26px;
       overflow-y: scroll;
       overflow-x: hidden;
+      padding-top: 75px;
     }
     ^ .selected-sub {
       color: #604aff;
@@ -225,6 +226,19 @@ foam.CLASS({
       width: 100vw;
       height: 100vh;
     }
+    ^ .foam-u2-view-RichChoiceView {
+      margin-bottom: 20px;
+    }
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      width: 240px;
+      height: 40px;
+      padding-left: 20px;
+    }
+    ^ .foam-u2-tag-Input {
+      height: 40px;
+      color: /*%GREY2%*/;
+      padding-left: 10px;
+    }
   `,
 
   properties: [
@@ -246,7 +260,9 @@ foam.CLASS({
             },
           ],
           search: true,
-          searchPlaceholder: 'Search...'
+          searchPlaceholder: 'Search...',
+          selectionView: { class: 'net.nanopay.ui.MenuChoiceSelection' },
+          rowView: { class: 'net.nanopay.ui.MenuRowView' }
         };
       }
     }
