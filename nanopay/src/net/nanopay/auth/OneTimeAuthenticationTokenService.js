@@ -41,6 +41,19 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  constants: [
+    {
+      name: 'LACKS_SERVICE_PERMISSION',
+      value: "You don't have permission to run authenticationToken service.",
+      type: 'String'
+    },
+    {
+      name: 'LACKS_SESSION_CREATE_PERMISSION',
+      value: "You don't have permission to create a session for that user.",
+      type: 'String'
+    }
+  ],
+
   properties: [
     {
       class: 'Int',
@@ -55,7 +68,7 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service.run.authenticationToken") ) {
-          throw new AuthorizationException("You don't have permission to run authenticationToken service.");
+          throw new AuthorizationException(LACKS_SERVICE_PERMISSION);
         }
 
         DAO localUserDAO = (DAO) x.get("localUserDAO");
@@ -66,7 +79,7 @@ foam.CLASS({
 
         // Check session.create.<spid> permission to create the authentication token
         if ( ! auth.check(x, "session.create." + user.getSpid()) ) {
-          throw new AuthorizationException("You don't have permission to create a session for that user.");
+          throw new AuthorizationException(LACKS_SESSION_CREATE_PERMISSION);
         }
 
         DAO tokenDAO = (DAO) getTokenDAO();
