@@ -37,51 +37,9 @@ foam.CLASS({
       height: 60px;
       font-family: Roboto, Helvetica, sans-serif;
     }
-    .sidenav-item-wrapper {
-      vertical-align: middle;
-      cursor: pointer;
-      max-height: 170px;
-      width: 100%;
-    }
-    .menu-label:hover { 
-      width: 100%;
-      border-left: 4px solid #406dea !important;
-      background: rgba(64, 109, 234, 0.1);
-      color: black;
-    }
-    ^ .user-view {
-      margin: 0 !important;
-      display: flex;
-    }
-    .net-nanopay-ui-MenuNavigationView {
-      background-color: #202341;
-    }
-    .foam-comics-DAOControllerView {
-      width: -webkit-max-content;
-      margin: 24px auto 0 auto;
-    }
-    ^ .radio-as-arrow-margins {
-      float: right;
-      margin-top: -12px;
-    }
-    ^ .account-button {
-      border-radius: 3px;
-      margin: 10px 0 16px 20px;
-      padding: 8px 6px 8px 4px;
-    }
-    ^ .account-button:hover {
-      cursor: pointer;
-      background: #f2f2f2;
-    }
-    ^ .account-button-info-block {
-      display: inline-block;
-      vertical-align: middle;
-      width: 100px;
-      margin-left: 4px;
-    }
     ^ .side-nav-view {
-      color: rgba(30, 31, 33, 0.5);
-      border-right: 1px solid #e2e2e3;
+      color: /*%BLACK%*/;
+      border-right: 1px solid /*%GREY4%*/;
       height: 90vh;
       display: inline-block;
       width: 240px;
@@ -93,10 +51,13 @@ foam.CLASS({
       padding-top: 75px;
     }
     ^ .selected-sub {
-      color: #604aff;
+      color: /*%PRIMARY3%*/;
       font-weight: 600;
     }
     ^ .submenu-item-wrapper {
+      cursor: pointer;
+      max-height: 170px;
+      width: 100%;
       margin-left: 20px;
       display: inline-block;
       vertical-align: middle;
@@ -109,6 +70,7 @@ foam.CLASS({
       max-height: 120px;
       font-size: 14px;
       overflow-y: scroll;
+      overflow-x: hidden;
     }
     ^ .icon {
       width: 16px;
@@ -118,7 +80,7 @@ foam.CLASS({
     }
     ^ .up-arrow {
       margin-bottom: 6px;
-      border: 1px solid #406dea;
+      border: 1px solid /*%PRIMARY3%*/;
       display: inline-block;
       padding: 3px;
       float: right;
@@ -142,24 +104,21 @@ foam.CLASS({
     ^ .menu-label span {
       display: inline-block;
     }
-    ^ .menu-label:hover {
+    ^ .selected-root {
+      width: 100%;
+      border-left: 4px solid /*%PRIMARY3%*/ !important;
+      background: /*%PRIMARY5%*/;
+      color: /*%BLACK%*/;
+    }
+    .menu-label:hover { 
+      width: 100%;
+      border-left: 4px solid /*%PRIMARY3%*/ !important;
+      background: /*%PRIMARY5%*/;
       color: black;
     }
     ^ .sub-menu-item { 
       width: 100%;
       padding: 5px 0px 5px 50px;
-    }
-    ^ .selected-root {
-      width: 100%;
-      border-left: 4px solid #406dea !important;
-      background: rgba(64, 109, 234, 0.1);
-      color: black;
-    }
-    ^ .dot > span {
-      color: white;
-    }
-    ^ .dot > span:active {
-      background: none;
     }
     ^ .navigation-components {
       margin-right: 40px;
@@ -204,10 +163,10 @@ foam.CLASS({
       line-height: 25px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {
-      background-color: #f6f9f9;
+      background-color: /*%GREY2%*/;
       box-shadow: 0 -1px 0 0 #e9e9e9;
       font-size: 14px;
-      color: #c82e2e;
+      color: /*%BLACK%*/;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
       background-color: /*%GREY5%*/ #406dea;
@@ -319,7 +278,7 @@ foam.CLASS({
                     .show(slot)
                       .select(dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
                         hasChildren.set(true);
-                        return this.E()
+                        self.subMenu = this.E()
                           .start('li').addClass('sub-menu-item')
                             .on('click', function() {
                               if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
@@ -331,6 +290,7 @@ foam.CLASS({
                               return currentMenu != null && currentMenu.id === subMenu.id;
                             }))
                           .end();
+                        return self.subMenu;
                       })
                     .end()
                 .end();
@@ -352,6 +312,7 @@ foam.CLASS({
 
   listeners: [
     function updateView() {
+      document.getElementById(this.subMenu.id).scrollIntoView(true);
       this.pushMenu(this.menuSearch);
     }
   ]
