@@ -36,13 +36,15 @@ foam.CLASS({
         EmailMessage         message        = null;
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
+
+        // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
         Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
         Date                 endInterval    = null;
         Long                 disruptionDiff = 0L;
         Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
 
-        // Check if there was no survice disruption - if so, add/sub diff from endInterval
-        disruptionDiff = disruption.getTime() - startInterval.getTime();
+        // Check if there was no service disruption - if so, add/sub diff from endInterval
+        disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
         endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
@@ -58,7 +60,6 @@ foam.CLASS({
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", business.label());  
           try {
-            System.out.println("Business Sent Email: " + business.label());
             EmailsUtility.sendEmailFromTemplate(x, business, message, "helpsignup", args);
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
