@@ -53,6 +53,11 @@ foam.CLASS({
     {
       name: 'startJob',
       javaCode: `
+      `
+    },
+    {
+      name: 'executeJob',
+      javaCode: `
         Transaction t;
         if (getIsInternal())
           t = parseInternal(getX(),getRow1(),getRow2());
@@ -62,15 +67,8 @@ foam.CLASS({
       `
     },
     {
-      name: 'executeJob',
-      javaCode: `
-
-      `
-    },
-    {
       name: 'endJob',
       javaCode: `
-
       `
     },
     {
