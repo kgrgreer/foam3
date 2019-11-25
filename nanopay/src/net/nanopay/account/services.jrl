@@ -27,10 +27,7 @@ p({
     afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, be);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
     rdba.setUseBMO(true);
-    eodbapc = new net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO.Builder(x)
-      .setDelegate(rdba)
-      .build();
-    pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, eodbapc);
+    pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, rdba);
     bab = new net.nanopay.bank.BankAccountBranchDAO(x, pdba);
     bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);
     eoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
