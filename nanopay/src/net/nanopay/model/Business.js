@@ -370,6 +370,7 @@ foam.CLASS({
  ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.Address',
@@ -379,7 +380,11 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
+    'java.util.List',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -523,6 +528,33 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
         return "";
+      `
+    },
+    {
+      name: 'doNotify',
+      javaCode: `
+        DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+        DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+        DAO               userDAO  = (DAO) x.get("localUserDAO");
+        Logger              logger = (Logger) x.get("logger");
+
+        // gets all the business-user pairs
+        List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
+          .where(EQ(UserUserJunction.TARGET_ID, getId()))
+          .select(new ArraySink())).getArray();
+        for( UserUserJunction businessUserJunction : businessUserJunctions ) {
+          User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
+          if ( businessUser == null ) {
+            logger.warning("A business user junction for business ", businessUserJunction.getTargetId(), "  and user ", businessUserJunction.getSourceId(), " exists, but the user cannot be found.");
+            continue;
+          }
+
+          // gets the notification settings for this business-user pair
+          List<NotificationSetting> settings = ((ArraySink) businessUserJunction.getNotificationSettingsForBusinessUsers(x).select(new ArraySink())).getArray();
+          for( NotificationSetting setting : settings ) {
+            setting.sendNotification(x, businessUser, notification);
+          }
+        }
       `
     }
   ],

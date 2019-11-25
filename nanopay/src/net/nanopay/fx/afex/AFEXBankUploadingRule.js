@@ -34,6 +34,9 @@ foam.CLASS({
             }
             Business business = (Business) obj;
             AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+            DAO afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+            AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+            if ( afexBusiness != null ) return;
             DAO accountDAO = (DAO) x.get("accountDAO");
             ArraySink accountSink = new ArraySink();
             accountDAO.where(AND(
