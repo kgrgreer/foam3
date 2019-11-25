@@ -46,6 +46,25 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isInternal',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'concurrentPuts',
+      value: false,
+      documentation: `
+        If true, records will not be added to the DAO in sequential order.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'transaction',
+      documentation: `
+        Intermediate property used internally. Do not set this.
+      `
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'outputDAO'
     }
   ],
 
@@ -63,12 +82,18 @@ foam.CLASS({
           t = parseInternal(getX(),getRow1(),getRow2());
         else
           t = parseExternal(getX(),getRow1());
-        ((DAO) getX().get("localTransactionDAO")).put(t);
+        
+        if ( getConcurrentPuts() )
+          getOutputDAO().put(getTransaction());
+        else
+          setTransaction(t);
       `
     },
     {
       name: 'endJob',
       javaCode: `
+        if ( ! getConcurrentPuts() )
+          getOutputDAO().put(getTransaction());
       `
     },
     {
