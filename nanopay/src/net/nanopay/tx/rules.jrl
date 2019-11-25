@@ -165,7 +165,7 @@ p({
   "priority":100,
   "documentation":"A customized rule to add cash-out transaction fee for Grain Discovery.",
   "action":{
-    "class":"net.nanopay.tx.ruler.BulkTransactionRule",
+    "class":"net.nanopay.tx.ruler.AddGDTxnFeeLineItem",
     "fee":150
   },
   "enabled":false

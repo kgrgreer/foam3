@@ -365,7 +365,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.BulkTransactionPlanDAO',
-  'net.nanopay.tx.ruler.BulkTransactionRule',
+  'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',

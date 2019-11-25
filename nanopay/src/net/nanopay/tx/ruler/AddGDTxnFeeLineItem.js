@@ -1,6 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'BulkTransactionRule',
+  name: 'AddGDTxnFeeLineItem',
+
+  documentation: `
+    This action of rule is for adding the fee line item of the trasaction
+    for Grain Discovery.
+  `,
 
   implements: [
     'foam.nanos.ruler.RuleAction'
