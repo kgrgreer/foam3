@@ -1125,7 +1125,6 @@ p({
     permissionArray.add("service.nSpecDAO");
     permissionArray.add("service.notificationDAO");
     permissionArray.add("service.run.dig");
-    permissionArray.add("service.sessionDAO");
     permissionArray.add("service.transactionDAO");
     permissionArray.add("service.twofactor");
     permissionArray.add("session.read.*");

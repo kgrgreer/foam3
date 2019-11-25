@@ -35,16 +35,10 @@ public class ApprovalDAO
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getClassification());
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
-      getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+           getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
-
-        LiquidApprovalRequest newRequest = (LiquidApprovalRequest) requestDAO.find(obj);
-
-        // basically if it is a liquid approval request or not
-        if ( newRequest.getOperation() != null ){
-          return request;
-        }
 
         //puts object to its original dao
         rePutObject(x, request);

@@ -111,6 +111,18 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.SecuritiesAccount',
+  targetModel: 'net.nanopay.account.SecurityAccount',
+  inverseName: 'SecuritiesAccount',
+  forwardName: 'subAccounts',
+  targetDAOKey: 'accountDAO',
+  sourceDAOKey: 'accountDAO',
+  cardinality: '1:*',
+  documentation: `A securities account is one account that all the security transactions go to and from.
+   The subaccounts hold the actual securities, and there is one per Security`,
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.liquidity.LiquiditySettings',
   targetModel: 'net.nanopay.account.DigitalAccount',
   inverseName: 'liquiditySetting',
@@ -259,7 +271,13 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  sourceProperty: {
+    visibility: 'FINAL',
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+  }
 });
 
 foam.RELATIONSHIP({
@@ -268,8 +286,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+  sourceProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } 
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -692,7 +716,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
-    visibility: 'RO',
+    visibility: 'FINAL',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
@@ -725,7 +749,7 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
-    visibility: 'RO',
+    visibility: 'FINAL',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
