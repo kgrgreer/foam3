@@ -25,9 +25,9 @@ public class AuthenticationTokenWebAgent implements WebAgent {
   public void execute(X x) {
     TokenService tokenService = (TokenService) x.get("authenticationTokenService");
     HttpServletRequest request = x.get(HttpServletRequest.class);
-    String callbackUrl = request.getParameter("callbackUrl");
     String userId = request.getParameter("userId");
     String businessId = request.getParameter("businessId");
+    String callbackUrl = request.getParameter("callbackUrl");
 
     DAO localUserDAO = (DAO) x.get("localUserDAO");
     User user = (User) localUserDAO.find(Long.valueOf(userId));
@@ -38,21 +38,19 @@ public class AuthenticationTokenWebAgent implements WebAgent {
       }
 
       Map<String, Object> parameters = new HashMap<>();
-      parameters.put("callbackUrl", callbackUrl);
-      if ( ! SafetyUtil.isEmpty(businessId) ) {
-        parameters.put("businessId", Long.valueOf(businessId));
-      }
+      if ( ! SafetyUtil.isEmpty(businessId) ) parameters.put("businessId", Long.valueOf(businessId));
+      if ( ! SafetyUtil.isEmpty(callbackUrl) ) parameters.put("callbackUrl", callbackUrl);
 
       boolean success = tokenService.generateTokenWithParameters(x, user, parameters);
       DigErrorMessage error = success
         ? new DigSuccessMessage.Builder(x).setMessage(SUCCESS).build()
         : new DAOPutException.Builder(x).setMessage(FAILURE).build();
-      DigUtil.outputException(x, null, Format.JSON, null, error);
+      DigUtil.outputException(x, error, Format.JSON);
     } catch (Exception e) {
       DigErrorMessage error = new GeneralException.Builder(x)
         .setMessage(e.toString())
         .build();
-      DigUtil.outputException(x, null, Format.JSON, null, error);
+      DigUtil.outputException(x, error, Format.JSON);
     }
   }
 }
