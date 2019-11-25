@@ -19,14 +19,44 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.transactions"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.businessrules"})
 
-// TESTING REMOVE LATER
+//======================================================================================================================
+// TODO: GRANTING GLOBAL PERMISSIONS JUST FOR TESTING WILL REMOVE LATER AFTER ROPE & GROUPS ARE IMPLEMENTED
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.delete.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"transaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"transaction.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"transaction.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.delete.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.delete.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"role.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"role.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"role.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"role.delete.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"role.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"roleassignmenttemplate.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"roleassignmenttemplate.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"roleassignmenttemplate.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"roleassignmenttemplate.delete.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"roleassignmenttemplate.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"businessrule.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"businessrule.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"businessrule.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"businessrule.delete.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"businessrule.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.approvals"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.dashboard"})
+//======================================================================================================================
 
 // Allowed predicates for Business Rules
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.1af7d5c6-5236-4165-8444-6d378574bc15"}) // Eq
