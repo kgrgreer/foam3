@@ -25,7 +25,7 @@ import static foam.mlang.MLang.*;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
-  private final static long minMonthlyPayment = 250000;
+  private final static long MIN_MONTHLY_PAYMENT = 250000;
 
   @Override
   public void execute(X x) {
@@ -159,9 +159,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       );
 
       String sumFee = currencyCAD.format(coFee);
-      if (coFee <= minMonthlyPayment ) {
+      if (coFee <= MIN_MONTHLY_PAYMENT ) {
         sumFee = sumFee
-          + "(Minimum Payment: " + currencyCAD.format(minMonthlyPayment) + ")";
+          + "(Minimum Payment: " + currencyCAD.format(MIN_MONTHLY_PAYMENT) + ")";
       }
 
       String sumFeeString = this.buildCSVLine(
