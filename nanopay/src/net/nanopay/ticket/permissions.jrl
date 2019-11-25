@@ -1,0 +1,2 @@
+p({"class":"foam.nanos.auth.Permission","id":"sudoticket.read.*","description":"Permission to access sudo tickets"})
+p({"class":"foam.nanos.auth.Permission","id":"sudoticket.update.*","description":"Permission to update sudo tickets"})

@@ -80,11 +80,9 @@ foam.CLASS({
 
         String callbackUrl = (String) parameters.get("callbackUrl");
         if ( ! SafetyUtil.isEmpty(callbackUrl) ) {
-          try {
-            tokenDAO.where(
-              EQ(Token.ID, token.getId())
-            ).select(new HTTPSink(callbackUrl, foam.nanos.http.Format.JSON));
-          } catch (IOException e) { }
+          tokenDAO.where(
+            EQ(Token.ID, token.getId())
+          ).select(new HTTPSink(callbackUrl, foam.nanos.http.Format.JSON));
         }
         return true;
       `

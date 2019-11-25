@@ -117,6 +117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/bank/BankHolidayService' },
   { name: 'net/nanopay/bank/BankWeekend' },
+  { name: 'net/nanopay/bank/DefaultBankAccountRule' },
+  { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -1237,5 +1239,14 @@ FOAM_FILES([
 
   // grain discovery
   { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' }
+  { name: 'net/nanopay/tx/TransactionReportView' },
+
+  // tickets
+  { name: 'net/nanopay/ticket/SudoTicket' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestAction' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
+  { name: 'net/nanopay/ticket/test/SudoTicketTest' },
+
 ]);

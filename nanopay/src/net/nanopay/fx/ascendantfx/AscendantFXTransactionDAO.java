@@ -48,10 +48,8 @@ public class AscendantFXTransactionDAO
     AscendantFX ascendantFX = (AscendantFX) x.get("ascendantFX");
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x, ascendantFX);
     try {
-      Transaction txn = ascendantPaymentService.submitPayment(transaction);
+      ascendantPaymentService.submitPayment(transaction);
       transaction.setStatus(TransactionStatus.SENT);
-      transaction.setCompletionDate(generateCompletionDate());
-      transaction.setReferenceNumber(txn.getReferenceNumber());
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);

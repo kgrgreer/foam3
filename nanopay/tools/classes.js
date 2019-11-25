@@ -56,7 +56,6 @@ var classes = [
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
-  'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
@@ -110,6 +109,8 @@ var classes = [
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.BankWeekend',
+  'net.nanopay.bank.DefaultBankAccountRule',
+  'net.nanopay.bank.IsDefaultRule',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -826,7 +827,15 @@ var classes = [
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
   'net.nanopay.script.CsvUploadScript',
-  'net.nanopay.tx.gs.GsTxAssembly'
+  'net.nanopay.tx.gs.GsTxAssembly',
+
+  // Ticket
+  'net.nanopay.ticket.SudoTicket',
+  'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+  'net.nanopay.ticket.SudoTicketApprovalRequestAction',
+  'net.nanopay.ticket.SudoTicketApprovalResponseRule',
+  'net.nanopay.ticket.SudoTicketApprovalResponseAction',
+  'net.nanopay.ticket.test.SudoTicketTest',
 ];
 
 var abstractClasses = [
