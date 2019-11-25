@@ -111,16 +111,10 @@ p({
   """
     import net.nanopay.account.Account;
     import foam.dao.DAO;
-    foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
-    hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
-    aaiDAO = new net.nanopay.liquidity.rules.account.AccountApprovalsInterceptorDAO.Builder(x)
-      .setDelegate(hashingJDAO)
+    DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+    dao = new net.nanopay.liquidity.rules.account.AccountApprovalsInterceptorDAO.Builder(x)
+      .setDelegate(dao)
       .build();
     
     return new foam.dao.EasyDAO.Builder(x)
@@ -131,8 +125,17 @@ p({
       .setLastModifiedAware(true)
       .setLastModifiedByAware(true)
       .setDeletedAware(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("accounts")
       .setOf(Account.getOwnClassInfo())
-      .setInnerDAO(aaiDAO)
+      .setIndex(new foam.core.PropertyInfo[] {
+        net.nanopay.account.Account.OWNER, 
+        net.nanopay.account.Account.NAME, 
+        net.nanopay.account.Account.ID, 
+        net.nanopay.account.Account.ENABLED, 
+        net.nanopay.account.Account.IS_DEFAULT, 
+        net.nanopay.account.Account.DENOMINATION})
+      .setInnerDAO(dao)
       .setAuthorize(false)
       .build();
   """

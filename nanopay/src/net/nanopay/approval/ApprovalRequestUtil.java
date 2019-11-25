@@ -18,6 +18,10 @@ public class ApprovalRequestUtil {
     ));
   }
 
+  public static DAO getAllApprovalRequests(X x, Object objId, String classification) {
+    return getAllRequests(x, objId, classification).where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED));
+  }
+
   public static DAO getAllApprovedRequests(X x, Object objId, String classification) {
     return getAllRequests(x, objId, classification).where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
   }
