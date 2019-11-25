@@ -1,8 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
-  name: 'GsRowToTx',
+  name: 'GsTxAssembly',
+  extends: 'foam.util.concurrent.AbstractAssembly',
+
+  implements: [
+    'foam.core.ContextAware'
+  ],
 
   javaImports: [
+    'foam.core.X',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
@@ -23,101 +29,50 @@ foam.CLASS({
     'net.nanopay.fx.ExchangeRate'
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.GsTxCsvRow',
+      name: 'row1',
+      documentation: 'The first row',
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.GsTxCsvRow',
+      name: 'row2',
+      documentation: 'The second row',
+    },
+    {
+      class: 'Boolean',
+      name: 'isInternal',
+      value: false
+    }
+  ],
+
   methods: [
     {
-      documentation: 'Process a file blob and make some transactions',
-      name: 'process',
-      args: [
-        { name: 'x', type: 'foam.core.X'},
-        { name: 'blob', type: 'foam.blob.Blob'}
-      ],
+      name: 'startJob',
       javaCode: `
-        System.out.println("Reading File.. ");
-      // ---- parse file into GsTxCsvRow Objects..
-        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-        DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
-
-        java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
-        blob.read(os, 0, blob.getSize());
-        foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());
-        System.out.println("blob read");
-        foam.lib.parse.ParserContextImpl px = new foam.lib.parse.ParserContextImpl();
-        px.set("X", x);
-
-        DAO gsTxCsvRowDAO = new foam.dao.SequenceNumberDAO.Builder(x)
-        .setDelegate(new foam.dao.MDAO(GsTxCsvRow.getOwnClassInfo()))
-        .build();
-        ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate()).addIndex(new foam.core.PropertyInfo[] {
-            net.nanopay.tx.gs.GsTxCsvRow.CASH_USD
-        });
-
-        CSVParser csvParser = new CSVParser(
-          net.nanopay.tx.gs.GsTxCsvRow.getOwnClassInfo(),
-          new foam.dao.DAOSink.Builder(x)
-            .setDao(gsTxCsvRowDAO)
-            .build());
-        csvParser.parse(ps, px);
-        // -----
-                System.out.println("Getting Counts and timings.. ");
-        // ----- Get counts, and timings.
-        long ci = 0;
-        long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
-        System.out.println("Lines read: "+am);
-        long startTime = System.currentTimeMillis();
-        Object [] rows2 = ( (ArraySink) gsTxCsvRowDAO
-            .limit(1)
-           .select(new ArraySink())).getArray().toArray();
-        GsTxCsvRow r = (GsTxCsvRow) rows2[0];
-        Long begining = cleanTimeStamp(r.getTimeStamp());
-        Long offset = startTime - begining-14400000;
-        //-----
-        //----- Begin transaction Creation.
-        while (true){
-
-
-          Transaction t = null;
-          long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
-          if ( count == 0 )
-            break;
-
-          if ( count % 10000 == 0 )
-           System.out.println(count);
-
-
-          Object [] rows = ( (ArraySink) gsTxCsvRowDAO
-              .limit(1)
-             .select(new ArraySink())).getArray().toArray();
-          GsTxCsvRow row1 = (GsTxCsvRow) rows[0];
-
-          gsTxCsvRowDAO.remove(row1);
-
-          if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-            t = parseExternal(x,row1);
-
-          } else {
-          Object [] arr = ( (ArraySink) gsTxCsvRowDAO
-              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
-              .limit(1)
-              .select(new ArraySink())).getArray().toArray();
-
-          if ( arr.length == 0 ) {
-              System.out.println("error unmatched internal transaction, no tx made");
-              continue;
-          }
-         // GsTxAssembly txJob = new GsTxAssembly(row1,(GsTxCsvRow)arr[0]);
-          t = parseInternal(x,row1,(GsTxCsvRow)arr[0]);
-          gsTxCsvRowDAO.remove((GsTxCsvRow)arr[0]);
-
-          }
-          checkTrusty(x,t);
-          if (! verifyBalance(x,t))
-            ci++;
-          transactionDAO.put(t);
-        }
-        System.out.println("Made: " + ci + " Cash in transactions" );
+        Transaction t;
+        if (getIsInternal())
+          t = parseInternal(getX(),getRow1(),getRow2());
+        else
+          t = parseExternal(getX(),getRow1());
+        ((DAO) getX().get("localTransactionDAO")).put(t);
       `
     },
+    {
+      name: 'executeJob',
+      javaCode: `
 
+      `
+    },
+    {
+      name: 'endJob',
+      javaCode: `
+
+      `
+    },
     {
       documentation: 'Makes a transaction out of two GS rows.',
       name: 'parseInternal',
@@ -443,7 +398,7 @@ foam.CLASS({
           time = time/1000;
           String time2 = time+"";
           return dateFormat.parse(time2).getTime();
-        } catch (Exception E) { 
+        } catch (Exception E) {
           System.out.println("cant parse: "+ts);
         }
         return 0;

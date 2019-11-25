@@ -119,7 +119,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   cardinality: '1:*',
   documentation: `A securities account is one account that all the security transactions go to and from.
-   The subaccounts hold the actual securities, and there is one per Security`,
+   The subaccounts hold the actual securities, and there is one per Security`
 });
 
 foam.RELATIONSHIP({

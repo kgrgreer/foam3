@@ -825,7 +825,8 @@ var classes = [
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
-  'net.nanopay.script.CsvUploadScript'
+  'net.nanopay.script.CsvUploadScript',
+  'net.nanopay.tx.gs.GsTxAssembly'
 ];
 
 var abstractClasses = [
