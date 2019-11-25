@@ -82,12 +82,17 @@ foam.CLASS({
           throw new AuthorizationException(LACKS_SESSION_CREATE_PERMISSION);
         }
 
+        String tokenUUID = (String) parameters.remove("data");
+        if ( tokenUUID == null ) {
+          tokenUUID = UUID.randomUUID().toString();
+        }
+
         DAO tokenDAO = (DAO) getTokenDAO();
         Token token = (Token) tokenDAO.put(
           new Token.Builder(x)
             .setUserId(user.getId())
             .setExpiry(generateExpiryDate())
-            .setData(UUID.randomUUID().toString())
+            .setData(tokenUUID)
             .setParameters(parameters)
             .build()
         );

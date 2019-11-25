@@ -3,11 +3,11 @@ package net.nanopay.auth;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.Token;
 import foam.nanos.auth.token.TokenService;
 import foam.nanos.dig.DigUtil;
 import foam.nanos.dig.exception.DAOPutException;
 import foam.nanos.dig.exception.DigErrorMessage;
-import foam.nanos.dig.exception.DigSuccessMessage;
 import foam.nanos.dig.exception.GeneralException;
 import foam.nanos.http.Format;
 import foam.nanos.http.WebAgent;
@@ -16,6 +16,9 @@ import foam.util.SafetyUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import static foam.mlang.MLang.EQ;
 
 public class AuthenticationTokenWebAgent implements WebAgent {
   protected static final String SUCCESS = "Success";
@@ -40,11 +43,21 @@ public class AuthenticationTokenWebAgent implements WebAgent {
       Map<String, Object> parameters = new HashMap<>();
       if ( ! SafetyUtil.isEmpty(businessId) ) parameters.put("businessId", Long.valueOf(businessId));
       if ( ! SafetyUtil.isEmpty(callbackUrl) ) parameters.put("callbackUrl", callbackUrl);
+      String tokenUUID = UUID.randomUUID().toString();
+      parameters.put("data", tokenUUID);
 
       boolean success = tokenService.generateTokenWithParameters(x, user, parameters);
-      DigErrorMessage error = success
-        ? new DigSuccessMessage.Builder(x).setMessage(SUCCESS).build()
-        : new DAOPutException.Builder(x).setMessage(FAILURE).build();
+      if ( success ) {
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
+        Token token = (Token) tokenDAO.find(EQ(Token.DATA, tokenUUID));
+        DigUtil.outputFObject(x, token, Format.JSON);
+
+        return;
+      }
+
+      DigErrorMessage error = new DAOPutException.Builder(x)
+        .setMessage(FAILURE)
+        .build();
       DigUtil.outputException(x, error, Format.JSON);
     } catch (Exception e) {
       DigErrorMessage error = new GeneralException.Builder(x)
