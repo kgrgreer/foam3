@@ -1150,7 +1150,19 @@ foam.CLASS({
         return totalOwnership > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       },
       autoValidate: true,
-      max: 100
+      max: 100,
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'totalOwnership'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100)
+            );
+          },
+          errorString: 'The total Ownership should less than 100%'
+        }
+      ]
     },
     {
       class: 'Boolean',
@@ -1165,7 +1177,6 @@ foam.CLASS({
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
-              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100)
             );
           },
           errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
