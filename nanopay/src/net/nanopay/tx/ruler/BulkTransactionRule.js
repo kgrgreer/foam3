@@ -52,7 +52,7 @@ foam.CLASS({
             }
           }
         }
-      }, "Add fee completed notification");
+      }, "GD Fee");
       `
     }
   ]

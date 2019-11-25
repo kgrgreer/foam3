@@ -168,5 +168,5 @@ p({
     "class":"net.nanopay.tx.ruler.BulkTransactionRule",
     "fee":150
   },
-  "enabled":true
+  "enabled":false
 })

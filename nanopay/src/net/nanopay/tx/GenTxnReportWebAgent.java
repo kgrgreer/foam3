@@ -28,7 +28,6 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
   private final static long minMonthlyPayment = 250000;
 
   @Override
-  @SuppressWarnings("unchecked")
   public void execute(X x) {
     DAO  txnDAO  = (DAO) x.get("localTransactionDAO");
     DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -159,12 +158,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         ""
       );
 
-      String sumFee;
+      String sumFee = currencyCAD.format(coFee);
       if (coFee <= minMonthlyPayment ) {
-        sumFee = currencyCAD.format(coFee) 
-          + "(Minimum Payment " + currencyCAD.format(minMonthlyPayment) + ")";
-      } else {
-        sumFee = currencyCAD.format(coFee);
+        sumFee = sumFee
+          + "(Minimum Payment: " + currencyCAD.format(minMonthlyPayment) + ")";
       }
 
       String sumFeeString = this.buildCSVLine(

@@ -89,12 +89,11 @@ foam.CLASS({
             childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            childTransaction.setDestinationAccount(DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency()).getId());
-
-            Boolean explicitCO = bulkTxn.getExplicitCO();
-            DigitalAccount digitalAccount = (DigitalAccount) childTransaction.findDestinationAccount(x);
+            // Get the default digital account
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
 
             LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
+            Boolean explicitCO = bulkTxn.getExplicitCO();
 
             // Check liquidity settings of the digital account associated to the digital transaction
             if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
