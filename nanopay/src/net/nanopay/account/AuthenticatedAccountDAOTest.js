@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.util.Auth',
     'java.lang.Object',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -147,7 +148,7 @@ foam.CLASS({
         test(false, "Tests for 'find' failed due to an unexpected exception.");
         t.printStackTrace();
       } finally {
-        accountDAO.removeAll();
+        accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
       }
       `
     },

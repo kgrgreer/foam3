@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'SecurityAccount',
   extends: 'net.nanopay.account.Account',
 
-  documentation: 'The base model for creating and managing all Security accounts.',
+  documentation: 'The base model for storing all individual securities.',
 
   javaImports: [
     'foam.dao.ArraySink',
