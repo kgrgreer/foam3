@@ -238,7 +238,8 @@ foam.CLASS({
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
-        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
       javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
       javaFactory: `
@@ -293,7 +294,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
-      visibility: 'RO',
+      visibility: 'FINAL',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
@@ -619,8 +620,9 @@ foam.CLASS({
       documentation: 'The date that a transaction changed to its current status',
       visibility: 'RO',
       storageTransient: true,
-      expression: function (statusHistory) {
-        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].getTimeStamp() : null;
+      expression: function(statusHistory) {
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
       }
     },
     {

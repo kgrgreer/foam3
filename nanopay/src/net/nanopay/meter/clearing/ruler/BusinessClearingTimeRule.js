@@ -42,7 +42,7 @@ foam.CLASS({
     {
       name: 'action',
       javaGetter: `
-        return (x, obj, oldObj, ruler, agency) -> {
+        return (x, obj, oldObj, ruler, rule, agency) -> {
           if ( ! (obj instanceof ClearingTimesTrait) ) {
             return;
           }

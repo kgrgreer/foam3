@@ -400,6 +400,7 @@ foam.CLASS({
                 .find(
                   AND(
                     EQ(Account.ENABLED, true),
+                    EQ(Account.DELETED, false),
                     EQ(BankAccount.OWNER, user.getId()),
                     INSTANCE_OF(BankAccount.class),
                     EQ(Account.DENOMINATION, denomination),
