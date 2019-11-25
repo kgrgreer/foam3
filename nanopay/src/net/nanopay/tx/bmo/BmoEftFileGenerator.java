@@ -213,13 +213,13 @@ public class BmoEftFileGenerator {
 
           sum = sum + transaction.getAmount();
           detailRecords.add(detailRecord);
-          TransactionRecord.addRecord(x, transaction, "Transaction added to EFT file");
+          transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
           tempSuccessHolder.             add(transaction);
 
         } catch ( Exception e ) {
           this.logger.error("Error when add transaction to BMO EFT file", e);
-          TransactionRecord. addRecord(x, transaction, e.getMessage());
+          transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord(e.getMessage()).build());
           transaction.setStatus(TransactionStatus.FAILED);
         }
 
@@ -311,7 +311,7 @@ public class BmoEftFileGenerator {
   }
 
   public boolean isValidTransaction(Transaction transaction) {
-    TransactionRecord.addRecord(x, transaction, "Transaction picked by BmoEftFileGenerator");
+    transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction picked by BmoEftFileGenerator").build());
 
     if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction || transaction instanceof BmoVerificationTransaction) ) {
       throw new RuntimeException("Wrong transaction type");

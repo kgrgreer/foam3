@@ -9,6 +9,10 @@ foam.CLASS({
     'java.util.Date'
   ],
 
+  implements: [
+    'foam.nanos.auth.CreatedAware'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -16,35 +20,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'transactionId'
-    },
-    {
-      class: 'String',
       name: 'record'
     },
     {
-      class: 'Date',
-      name: 'time'
+      class: 'DateTime',
+      name: 'created'
     }
-  ],
-
-  axioms: [
-    {
-      name: 'javaExtras',
-      buildJavaClass: function (cls) {
-        cls.extras.push(`
-  public static void addRecord(X x, Transaction transaction, String record) {
-    DAO dao = (DAO) x.get("transactionRecordDAO");
-
-    TransactionRecord transactionRecord = new TransactionRecord.Builder(x)
-      .setTransactionId(transaction.getId())
-      .setTime(new Date())
-      .setRecord(record)
-      .build();
-
-    dao.inX(x).put(transactionRecord);
-  }
-        `);
-      }
-    }]
+  ]
   });
