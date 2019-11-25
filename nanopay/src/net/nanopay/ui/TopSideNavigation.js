@@ -38,7 +38,7 @@ foam.CLASS({
       font-family: Roboto, Helvetica, sans-serif;
     }
     ^ .side-nav-view {
-      color: /*%BLACK%*/;
+      color: /*%GREY2%*/;
       border-right: 1px solid /*%GREY4%*/;
       height: 90vh;
       display: inline-block;
@@ -49,28 +49,21 @@ foam.CLASS({
       overflow-y: scroll;
       overflow-x: hidden;
       padding-top: 75px;
+      background: /*%GREY5%*/;
     }
     ^ .selected-sub {
       color: /*%PRIMARY3%*/;
-      font-weight: 600;
-    }
-    ^ .submenu-item-wrapper {
-      cursor: pointer;
-      max-height: 170px;
-      width: 100%;
-      margin-left: 20px;
-      display: inline-block;
-      vertical-align: middle;
-      font-family: Roboto, Helvetica, sans-serif;
-    }
-    ^ .submenu-item-wrapper:hover {
-      font-weight: bold;
+      font-weight: 800;
     }
     ^ .submenu {
       max-height: 120px;
       font-size: 14px;
       overflow-y: scroll;
       overflow-x: hidden;
+      border-bottom: 1px solid /*%GREY4%*/;
+    }
+    ^ .sub-menu-item:hover {
+      cursor: pointer;
     }
     ^ .icon {
       width: 16px;
@@ -205,8 +198,7 @@ foam.CLASS({
       name: 'menuName',
       value: '' // The root menu
     },
-    'menu',
-    'parent',
+    'subMenu',
     {
       name: 'menuSearch',
       view: function(_, X) {
@@ -223,6 +215,9 @@ foam.CLASS({
           selectionView: { class: 'net.nanopay.ui.MenuChoiceSelection' },
           rowView: { class: 'net.nanopay.ui.MenuRowView' }
         };
+      },
+      factory: function() {
+        return this.currentMenu;
       }
     }
   ],
@@ -232,8 +227,9 @@ foam.CLASS({
         var self = this;
         var dao_ = this.menuDAO.orderBy(this.Menu.ORDER);
         if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
-        this.menuSearch = this.currentMenu;
         this.menuSearch$.sub(this.updateView);
+        this.menuSearch = self.currentMenu;
+        self.currentMenu$.sub(this.updateView);
 
         this.start().addClass(this.myClass())
           .show(this.loginSuccess$)
@@ -254,45 +250,46 @@ foam.CLASS({
                     slot.set(! slot.get());
                   })
                   .addClass('sidenav-item-wrapper')
-                      .start().addClass('menu-label')
-                      .enableClass('selected-root', slot)
-                      .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
-                        var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
-                          currentMenu != null &&
-                          currentMenu.id == menu.id ||
-                          currentMenu.parent == menu.id;
-                        slot.set(selectedRoot);
-                        return selectedRoot;
-                      }))
-                      .start('img').addClass('icon')
-                        .attr('src', menu.icon)
-                      .end()
-                      .start('span')
-                        .add(menu.label)
-                      .end()
-                      .start().enableClass('up-arrow', slot.map((slot) => {
-                        return slot && hasChildren;
-                      })).end()
+                    .start().addClass('menu-label')
+                    .enableClass('selected-root', slot)
+                    .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
+                      var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
+                        currentMenu != null &&
+                        currentMenu.id == menu.id ||
+                        currentMenu.parent == menu.id;
+                      slot.set(selectedRoot);
+                      return selectedRoot;
+                    }))
+                    .start('img').addClass('icon')
+                      .attr('src', menu.icon)
                     .end()
-                    .start().addClass('submenu')
-                    .show(slot)
-                      .select(dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
-                        hasChildren.set(true);
-                        self.subMenu = this.E()
-                          .start('li').addClass('sub-menu-item')
-                            .on('click', function() {
-                              if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
-                                self.pushMenu(subMenu.id);
-                              }
-                            })
-                            .add(subMenu.label)
-                            .enableClass('selected-sub', self.currentMenu$.map((currentMenu) => {
-                              return currentMenu != null && currentMenu.id === subMenu.id;
-                            }))
-                          .end();
-                        return self.subMenu;
-                      })
+                    .start('span')
+                      .add(menu.label)
                     .end()
+                    .start().enableClass('up-arrow', slot.map((slot) => {
+                      return slot && hasChildren;
+                    })).end()
+                  .end()
+
+                  .start().addClass('submenu')
+                  .show(slot)
+                    .select(dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
+                      hasChildren.set(true);
+                      return this.E()
+                        .start('li').addClass('sub-menu-item')
+                          .attrs({ name: subMenu.id })
+                          .on('click', function() {
+                            if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
+                              self.pushMenu(subMenu.id);
+                            }
+                          })
+                          .add(subMenu.label)
+                          .enableClass('selected-sub', self.currentMenu$.map((currentMenu) => {
+                            return currentMenu != null && currentMenu.id === subMenu.id;
+                          }))
+                        .end();
+                    })
+                  .end()
                 .end();
             })
           .end()
@@ -306,13 +303,17 @@ foam.CLASS({
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })
             .end()
           .end()
+          .start().hide(this.loginSuccess$)
+            .addClass('top-nav-no-login')
+            .start('span').add('Welcome').end()
+          .end()
         .end();
       }
   ],
 
   listeners: [
     function updateView() {
-      document.getElementById(this.subMenu.id).scrollIntoView(true);
+      document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'center', behaviour: 'smooth' });
       this.pushMenu(this.menuSearch);
     }
   ]
