@@ -78,3 +78,4 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessEmpl
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.businessTypeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.strategizer"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"strategyreference.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"currency.read.INR"})

@@ -28,7 +28,8 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/india.png'
+      value: 'images/flags/india.png',
+      createMode: 'HIDDEN'
     },
     {
       name: 'desc',
@@ -51,6 +52,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
       value: 'Employer/Employee',
+      label: 'Relation to the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
@@ -70,6 +72,10 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'International Bank Account No.',
+    },
+    {
+      name: 'isDefault',
+      visibility: 'Hidden'
     }
   ],
 

@@ -34,7 +34,8 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/us.png'
+      value: 'images/flags/us.png',
+      createMode: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -64,8 +65,24 @@ foam.CLASS({
     //   readPermissionRequired: true
     // },
     {
+      // REVIEW - remove - currently called by
+      // AscendentFXReportsWebAgent
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/USA-Check.png',
+      section: 'accountDetails',
+      visibility: 'RO',
+      transient: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image'
+        };
+      }
+    },
+    {
       name: 'branchId',
-      label: 'Routing No.',
+      label: 'ACH Routing Number',
       section: 'accountDetails',
       visibility: 'FINAL',
       view: {
@@ -74,6 +91,7 @@ foam.CLASS({
         maxLength: 9,
         onKey: true
       },
+      gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
@@ -91,6 +109,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
+      label: 'ACH Account Number',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
@@ -99,7 +118,8 @@ foam.CLASS({
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 6 and 17 digits long.';
         }
-      }
+      },
+      gridColumns: 6
     },
     // {
     //   name: 'branch',
@@ -115,19 +135,6 @@ foam.CLASS({
     //   visibility: 'HIDDEN',
     //   value: 'US0000000'
     // },
-    {
-      // REVIEW - remove - currently called by
-      // AscendentFXReportsWebAgent
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'voidCheckImage',
-      documentation: 'void check image for this bank account',
-      view: {
-        class: 'foam.nanos.dig.DigFileUploadView',
-        data: this.voidCheckImage$,
-        acceptFormat: 'image/png'
-      },
-      hidden: true
-    },
     {
       //REVIEW: Set by Plaid, not read
       class: 'String',
@@ -169,6 +176,10 @@ foam.CLASS({
         .end();
       }
     },
+    {
+      name: 'isDefault',
+      visibility: 'Hidden'
+    }
   ],
   
   methods: [

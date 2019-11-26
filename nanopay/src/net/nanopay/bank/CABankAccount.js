@@ -40,7 +40,8 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/cad.png'
+      value: 'images/flags/cad.png',
+      createMode: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -181,6 +182,10 @@ foam.CLASS({
         .end();
       }
     },
+    {
+      name: 'isDefault',
+      visibility: 'Hidden'
+    }
   ],
   methods: [
     {

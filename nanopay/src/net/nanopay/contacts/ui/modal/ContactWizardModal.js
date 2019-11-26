@@ -87,6 +87,10 @@ foam.CLASS({
       display: grid;
       grid-gap: 16px;
       grid-template-columns: 1fr 1fr;
+    },
+    ^ .property-label {
+      font-size: 16px;
+      font-weight: bold;
     }
 `,
 

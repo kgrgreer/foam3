@@ -173,6 +173,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      label: 'Account name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {

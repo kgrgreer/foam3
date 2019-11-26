@@ -109,9 +109,6 @@ foam.CLASS({
     }
     ^ .existing-account .property-objectClass {
       pointer-events: none;
-    },
-    ^ .title {
-
     }
   `,
 
@@ -169,7 +166,10 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start('h2')
           .add(this.BANKING_TITLE)
-          .addClass('title')
+        .end()
+        .start()
+          .add('Country')
+          .addClass('property-label')
         .end()
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start(this.BANK_ACCOUNT).end()

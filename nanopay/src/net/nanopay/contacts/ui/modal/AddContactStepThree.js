@@ -96,9 +96,13 @@ foam.CLASS({
                 var q = hasPermission
                   ? this.OR(
                       this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US')
+                      this.EQ(this.Country.ID, 'US'),
+                      this.EQ(this.Country.ID, 'IN')
                     )
-                  : this.EQ(this.Country.ID, 'CA');
+                  : this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'IN')
+                  );
                 return this.countryDAO.where(q);
               })
             })
