@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.Authorizable'
-    ],
+  ],
 
   tableColumns: [
       'id', 'user', 'acceptedDocument', 'createdBy'

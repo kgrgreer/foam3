@@ -108,7 +108,7 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
       );
 
     if ( null == acceptedDocument ) {
-      if(business != -1)
+      if(business > 0)
         acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setAcceptedDocument(acceptanceDocument).setBusinessId(business).build();
       else
         acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setAcceptedDocument(acceptanceDocument).build();

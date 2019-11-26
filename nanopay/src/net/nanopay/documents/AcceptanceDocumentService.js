@@ -84,11 +84,11 @@ foam.INTERFACE({
                 },
                 {
                   type: 'Long',
-                  name: 'user',
+                  name: 'userId',
                 },
                 {
                     type: 'Long',
-                    name: 'business',
+                    name: 'businessId',
                 },
                 {
                   type: 'Long',
