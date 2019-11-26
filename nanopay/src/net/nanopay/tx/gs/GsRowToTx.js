@@ -62,6 +62,7 @@ foam.CLASS({
         for ( GsTxCsvRow row1 : rows ) {
 
           GsTxAssembly job = new GsTxAssembly();
+          job.setOutputDAO( (DAO) x.get("localTransactionDAO") );
           job.setRow1(row1);
 
           /*long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
@@ -69,10 +70,10 @@ foam.CLASS({
             break; */
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-            job.setIsInternal(true);
             transactionProcessor.enqueue(job);
             continue;
           }
+          job.setIsInternal(true);
 
           //-- Cash txns.
           if ( isCash(row1) ) {
