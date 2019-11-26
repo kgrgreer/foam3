@@ -45,7 +45,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isInternal',
-      value: false
+      value: false,
     },
     {
       class: 'Boolean',
@@ -54,6 +54,11 @@ foam.CLASS({
       documentation: `
         If true, records will not be added to the DAO in sequential order.
       `
+    },
+    {
+      class: 'String',
+      name: 'settleType',
+      documentation: 'one of either: DVP, FOP, Cash'
     },
     {
       class: 'FObjectProperty',
@@ -96,6 +101,11 @@ foam.CLASS({
           getOutputDAO().put(getTransaction());
       `
     },
+    /* TODO: need to verify trust account has enough $, and account have enough $
+              checkTrusty(x,t);
+              if (! verifyBalance(x,t))
+                ci++;
+              transactionDAO.put(t);*/
     {
       documentation: 'Makes a transaction out of two GS rows.',
       name: 'parseInternal',
