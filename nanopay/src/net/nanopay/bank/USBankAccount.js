@@ -28,15 +28,21 @@ foam.CLASS({
   properties: [
     {
       name: 'country',
-      value: 'US'
+      value: 'US',
+      createMode: 'HIDDEN'
     },
     {
       name: 'flagImage',
+      label: '',
       value: 'images/flags/us.png'
     },
     {
       name: 'denomination',
       value: 'USD'
+    },
+    {
+      name: 'desc',
+      createMode: 'HIDDEN'
     },
     { // REVIEW: remove
       class: 'String',
@@ -128,7 +134,7 @@ foam.CLASS({
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
       section: 'accountDetails',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',

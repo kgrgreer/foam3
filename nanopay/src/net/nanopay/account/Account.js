@@ -99,6 +99,7 @@ foam.CLASS({
     },
     {
       name: 'accountDetails',
+      title: '',
       order: 2
     },
     {

@@ -34,10 +34,12 @@ foam.CLASS({
   properties: [
      {
       name: 'country',
-      value: 'CA'
+      value: 'CA',
+      createMode: 'HIDDEN'
     },
     {
       name: 'flagImage',
+      label: '',
       value: 'images/flags/cad.png'
     },
     {
@@ -59,6 +61,10 @@ foam.CLASS({
       },
     },
     {
+      name: 'desc',
+      createMode: 'HIDDEN'
+    },
+    {
       // Relationship
       name: 'branch',
       label: 'Transit No.'
@@ -75,7 +81,7 @@ foam.CLASS({
         maxLength: 5,
         onKey: true
       },
-      gridColumns: 3,
+      gridColumns: 4,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
@@ -85,7 +91,7 @@ foam.CLASS({
           return;
         }
         if ( branchId === '' ) {
-          return 'Transit number required';
+          return 'Transit number required.';
         } else if ( ! /^\d+$/.test(branchId) ) {
           return 'Transit number must contain only digits.';
         } else if ( branchId.length !== 5 ) {
@@ -125,7 +131,7 @@ foam.CLASS({
           return 'Account number must be between 5 and 12 digits long.';
         }
       },
-      gridColumns: 7,
+      gridColumns: 6,
       visibility: 'FINAL',
       section: 'accountDetails'
     },
@@ -173,8 +179,7 @@ foam.CLASS({
               }
           }))
         .end();
-      },
-      createMode: 'HIDDEN'
+      }
     },
   ],
   methods: [

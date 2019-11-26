@@ -16,7 +16,3 @@ p({
   "desiredModelId":"net.nanopay.bank.BankAccount",
   "strategy":"net.nanopay.bank.USBankAccount"
 })
-
-//to do fix permission problem 
-//service.strategizer
-//strategizer.read.*

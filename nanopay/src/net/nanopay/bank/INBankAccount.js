@@ -22,11 +22,17 @@ foam.CLASS({
   properties: [
      {
       name: 'country',
-      value: 'IN'
+      value: 'IN',
+      createMode: 'HIDDEN'
     },
     {
       name: 'flagImage',
+      label: '',
       value: 'images/flags/india.png'
+    },
+    {
+      name: 'desc',
+      createMode: 'HIDDEN'
     },
     {
       name: 'denomination',
