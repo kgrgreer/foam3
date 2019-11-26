@@ -55,7 +55,7 @@ public class XeroWebAgent
       token.setTokenTimestamp("0");
       token.setPortalRedirect(" ");
     }
-    return token;
+    return (XeroToken) token.fclone();
   }
 
   public void execute(X x) {
