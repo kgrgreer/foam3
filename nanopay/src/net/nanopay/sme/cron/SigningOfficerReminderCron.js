@@ -8,9 +8,13 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
+    'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
+    'java.util.Arrays',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -39,14 +43,19 @@ foam.CLASS({
         Map<String, Object>         args    = null;
         Date                       today    = new Date();
         Long              comparisonTime    = 0l;
+        Logger                    logger    = (Logger) x.get("logger");
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
         DAO              emailMessageDAO    = (DAO) x.get("emailMessageDAO");
         DAO        businessInvitationDAO    = (DAO) x.get("businessInvitationDAO");
-
+        int[]              intervalArray    = distinguishTimeIntervals(x);
+        if ( intervalArray == null ) logger.error("@SigningOfficerReminderCron and no appConfig found :S ");
+        
+        // SELECT ALL BUSINESSES
         List<Business> businessList = ((ArraySink) businessDAO
           .where(EQ(Business.DELETED, false))
           .select(new ArraySink())).getArray();
-
+        
+          // FOR EACH BUSINESS
         for ( Business business : businessList ) {
           // LOCATE an invitation that was unsent
           Invitation invitation = (Invitation) businessInvitationDAO
@@ -68,27 +77,28 @@ foam.CLASS({
                 EQ(EmailMessage.TO, invitation.getEmail())
               )
             ).select(new ArraySink())).getArray();
-
-            // TODO CONVERT TIMES AFTER TESTING:
+          
+          // DETERMINE if one of the time conditions are satified
           try {
             if ( ems.size() == 0 ) {
               // FIRST EMAIL - ONE DAY AFTER
               comparisonTime = invitation.getTimestamp().getTime();
-              if ( (today.getTime() - comparisonTime) < (1000*60*60*24) ) continue;
+              if ( (today.getTime() - comparisonTime) < intervalArray[0] ) continue;
             } else if ( ems.size() == 1 ) {
               // SECOND EMAIL - SEVEN DAYS AFTER
               comparisonTime = ems.get(0).getCreated().getTime();
-              if ( (today.getTime() - comparisonTime) < (1000*60*60*24*7) ) continue;
+              if ( (today.getTime() - comparisonTime) < intervalArray[1] ) continue;
             } else if ( ems.size() == 2 ) {
               // THIRD EMAIL - FOURTEEN DAYS AFTER
               comparisonTime = ems.get(0).getCreated().getTime() > ems.get(1).getCreated().getTime() ? 
                 ems.get(0).getCreated().getTime() : ems.get(1).getCreated().getTime();
-              if ( (today.getTime() - comparisonTime) < (1000*60*60*24*7) ) continue;
+              if ( (today.getTime() - comparisonTime) < intervalArray[1] ) continue;
             } else { continue; }
           } catch (Exception e) {
-            ((Logger) x.get("logger")).error("@SigningOfficerReminderCron: while checking time references on businsess " + business.getId(), e);
+            logger.error("@SigningOfficerReminderCron: while checking time references on businsess " + business.getId(), e);
           }
-
+          
+          // SEND EMAIL
           message             = new EmailMessage();
           args                = new HashMap<>();
           Group group         = business.findGroup(x);
@@ -96,17 +106,39 @@ foam.CLASS({
           String url          = appConfig.getUrl().replaceAll("/$", "");
 
           message.setTo(new String[]{ invitation.getEmail() });
-          args.put("link", url));
+          args.put("link", url);
           args.put("sendTo", invitation.getEmail());
           args.put("companyname", business.label());  
           try {
             EmailsUtility.sendEmailFromTemplate(x, business, message, "signingOfficerReminder", args);
           } catch (Throwable t) {
-            ((Logger) x.get("logger")).error("@SigningOfficerReminderCron: while sending email for businsess" + business.getId(), t);
+            logger.error("@SigningOfficerReminderCron: while sending email for businsess" + business.getId(), t);
           }
         }
         
         `
+    },
+    {
+      name: 'distinguishTimeIntervals',
+      javaType: 'int[]',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        if ( appConfig == null ) return null;
+        int[] intervalArray = new int[2];
+        if ( appConfig.getMode() == Mode.STAGING ) {
+          intervalArray[0] = (1000*24);
+          intervalArray[1] = (1000*60);
+        }
+        intervalArray[0] = (1000*60*60*24);
+        intervalArray[1] = (1000*60*60*24*7);
+        return intervalArray;
+      `
     }
   ]
 });
