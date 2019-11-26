@@ -106,6 +106,12 @@ foam.CLASS({
               if (! verifyBalance(x,t))
                 ci++;
               transactionDAO.put(t);*/
+
+     /* TODO: timing..
+             long startTime = System.currentTimeMillis();
+             Long begining = cleanTimeStamp(r.getTimeStamp());
+             Long offset = startTime - begining-14400000;
+             */
     {
       documentation: 'Makes a transaction out of two GS rows.',
       name: 'parseInternal',

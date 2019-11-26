@@ -3,14 +3,7 @@ foam.CLASS({
   name: 'GsRowToTx',
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
-    'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'foam.dao.MDAO',
     'foam.dao.DAO',
     'foam.dao.EasyDAO',
@@ -19,9 +12,8 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'foam.dao.ArraySink',
-    'net.nanopay.tx.InfoLineItem',
-    'net.nanopay.fx.ExchangeRate',
-    'foam.util.concurrent.AsyncAssemblyLine'
+    'foam.util.concurrent.AsyncAssemblyLine',
+    'java.util.List',
   ],
 
   methods: [
@@ -35,8 +27,6 @@ foam.CLASS({
       javaCode: `
         System.out.println("Reading File.. ");
       // ---- parse file into GsTxCsvRow Objects..
-        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-        DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
 
         java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
         blob.read(os, 0, blob.getSize());
@@ -58,28 +48,19 @@ foam.CLASS({
             .setDao(gsTxCsvRowDAO)
             .build());
         csvParser.parse(ps, px);
-        // -----
-                System.out.println("Getting Counts and timings.. ");
-        // ----- Get counts, and timings, prepare array to itterate over.
-        long ci = 0;
+
         long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
 
-        new AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine();
+        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
 
-        Object [] rows = ( (ArraySink) gsTxCsvRowDAO
-           .select(new ArraySink())).getArray().toArray();
+        List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
+           .select(new ArraySink())).getArray();
 
         System.out.println("Lines read: "+am);
 
-        long startTime = System.currentTimeMillis();
-
-        Long begining = cleanTimeStamp(r.getTimeStamp());
-
-        Long offset = startTime - begining-14400000;
         // -- begin Job creation and execution
         for ( GsTxCsvRow row1 : rows ) {
 
-          Transaction t = null;
           GsTxAssembly job = new GsTxAssembly();
           job.setRow1(row1);
 
@@ -88,7 +69,6 @@ foam.CLASS({
             break; */
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-            t = parseExternal(x,row1);
             job.setIsInternal(true);
             transactionProcessor.enqueue(job);
             continue;
@@ -128,8 +108,6 @@ foam.CLASS({
         }
       `
     },
-
-
     {
       name: 'isCash',
       args: [
@@ -141,8 +119,6 @@ foam.CLASS({
           return true;
         return false;
       `
-    },
-
-
+    }
   ]
 });
