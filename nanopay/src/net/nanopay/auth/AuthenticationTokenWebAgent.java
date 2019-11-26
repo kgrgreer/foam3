@@ -21,7 +21,6 @@ import java.util.UUID;
 import static foam.mlang.MLang.EQ;
 
 public class AuthenticationTokenWebAgent implements WebAgent {
-  protected static final String SUCCESS = "Success";
   protected static final String FAILURE = "Failed to create authentication token";
 
   @Override
