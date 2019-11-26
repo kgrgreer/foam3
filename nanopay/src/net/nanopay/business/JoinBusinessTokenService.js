@@ -33,6 +33,7 @@ foam.CLASS({
       javaCode: `
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
+          User agent = (User) x.get("agent");
           AppConfig appConfig = (AppConfig) x.get("appConfig");
           String url = appConfig.getUrl().replaceAll("/$", "");
 
@@ -57,7 +58,10 @@ foam.CLASS({
           }
 
           HashMap<String, Object> args = new HashMap<>();
-          args.put("inviterName", user.getFirstName());
+          args.put("name", user.getFirstName());
+          args.put("sendTo", user.getEmail());
+          //Need to get correct inviter name
+          args.put("inviterName", agent.getFirstName());
           args.put("business", business.label());
           args.put("link", url + "/service/joinBusiness?token=" + token.getData() + "&redirect=/" );
           EmailsUtility.sendEmailFromTemplate(x, user, message, "join-business-internal", args);
@@ -81,7 +85,7 @@ foam.CLASS({
           MLang.GT(Token.EXPIRY, calendar.getTime()),
           MLang.EQ(Token.DATA, token)
         ));
-        
+
         if ( result == null ) throw new RuntimeException("Token not found.");
 
         // Set token processed to true.
@@ -126,4 +130,3 @@ foam.CLASS({
     }
   ]
 });
-
