@@ -406,3 +406,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.approvalRequestDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"approval.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"approval.update.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.auth.checkUser"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.agentAuth"})
