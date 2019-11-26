@@ -48,35 +48,15 @@ foam.CLASS({
       name: 'voidChequeImage',
       class: 'String',
       label: '',
-      value: 'images/Canada-Check@2x.png',
+      value: 'images/Canada-Check.png',
       section: 'accountDetails',
       visibility: 'RO',
+      transient: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.tag.Image'
         };
       },
-      readPermissionRequired: true
-    },
-    {
-      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
-      class: 'String',
-      name: 'institutionNumber',
-      visibility: 'FINAL',
-      label: 'Inst. No.',
-      section: 'accountDetails',
-      storageTransient: true,
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123',
-        maxLength: 3,
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      }
     },
     {
       // Relationship
@@ -95,6 +75,7 @@ foam.CLASS({
         maxLength: 5,
         onKey: true
       },
+      gridColumns: 3,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
@@ -113,6 +94,27 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
+      class: 'String',
+      name: 'institutionNumber',
+      visibility: 'FINAL',
+      label: 'Inst. No.',
+      section: 'accountDetails',
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '123',
+        maxLength: 3,
+        onKey: true
+      },
+      gridColumns: 2,
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        var reg = /^\d+$/;
+        return reg.test(n) ? n : o;
+      }
+    },
+    {
       name: 'accountNumber',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{5,12}$/;
@@ -123,7 +125,9 @@ foam.CLASS({
           return 'Account number must be between 5 and 12 digits long.';
         }
       },
+      gridColumns: 7,
       visibility: 'FINAL',
+      section: 'accountDetails'
     },
     {
       class: 'String',
@@ -169,7 +173,8 @@ foam.CLASS({
               }
           }))
         .end();
-      }
+      },
+      createMode: 'HIDDEN'
     },
   ],
   methods: [

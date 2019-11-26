@@ -93,6 +93,7 @@ foam.CLASS({
   sections: [
     {
       name: 'accountType',
+      permissionRequired: true,
       isAvailable: function(id) { return !! id; },
       order: 1
     },
@@ -103,10 +104,12 @@ foam.CLASS({
     {
       // liquid
       name: 'parentSection',
+      permissionRequired: true,
       order: 3
     },
     {
       name: 'balanceDetails',
+      permissionRequired: true,
       order: 4
     },
     {
