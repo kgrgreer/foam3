@@ -19,11 +19,14 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.LiquiditySettings',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
     'static foam.mlang.MLang.*'
   ],
 
@@ -46,14 +49,24 @@ foam.CLASS({
           // Iterate through the transaction array
           // (In current situation, the array only has one item)
           for ( Transaction transaction : transactionQuote.getPlans()) {
-            if (transaction instanceof COTransaction) {
-              // Set fee lineitem for cashout transaction
-              transaction.addLineItems(new TransactionLineItem[] {
-                new FeeLineItem.Builder(getX())
-                  .setName("Transaction Fee")
-                  .setAmount(getFee())
-                  .build()
-              }, null);
+            if (transaction instanceof DigitalTransaction && transaction.getCost() == 0 ) {
+
+              DAO userDAO = (DAO) x.get("localUserDAO");
+              User payee = (User) userDAO.find_(x, transaction.getPayeeId());
+
+              DigitalAccount defaultDigitalAccount = DigitalAccount.findDefault(x, payee, transaction.getDestinationCurrency());
+              LiquiditySettings digitalAccLiquid = defaultDigitalAccount.findLiquiditySetting(x);
+
+              // Check if the default digital account of the payee has the liqudity setting or not
+              if ( digitalAccLiquid == null || ! digitalAccLiquid.getHighLiquidity().getEnabled()) {
+                // Set fee lineitem for digital transaction to farmers
+                transaction.addLineItems(new TransactionLineItem[] {
+                  new FeeLineItem.Builder(getX())
+                    .setName("Transaction Fee")
+                    .setAmount(getFee())
+                    .build()
+                }, null);
+              }
             }
           }
         }
