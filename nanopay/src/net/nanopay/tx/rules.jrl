@@ -155,3 +155,18 @@ p({
   },
   "enabled": true
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"GD Fee",
+  "daoKey":"localTransactionQuotePlanDAO",
+  "ruleGroup":"GD",
+  "operation":0,
+  "priority":100,
+  "documentation":"A customized rule to add cash-out transaction fee for Grain Discovery.",
+  "action":{
+    "class":"net.nanopay.tx.ruler.AddGDTxnFeeLineItem",
+    "fee":150
+  },
+  "enabled":false
+})
