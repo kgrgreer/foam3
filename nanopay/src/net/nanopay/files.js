@@ -78,6 +78,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/NoChildrenRule' },
   { name: 'net/nanopay/account/CreateDefaultDigitalAccountOnUserCreateRule' },
   { name: 'net/nanopay/account/Relationships' },
+  { name: 'net/nanopay/account/SecuritiesAccount' },
   { name: 'net/nanopay/account/SecurityAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
@@ -116,6 +117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/bank/BankHolidayService' },
   { name: 'net/nanopay/bank/BankWeekend' },
+  { name: 'net/nanopay/bank/DefaultBankAccountRule' },
+  { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
@@ -277,7 +280,15 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXPaymentStatus' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequest' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessApprovalRequestRule' },
-
+  { name: 'net/nanopay/fx/afex/DirectDebitEnrollmentRequest' },
+  { name: 'net/nanopay/fx/afex/DirectDebitEnrollmentResponse' },
+  { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentRequest' },
+  { name: 'net/nanopay/fx/afex/DirectDebitUnenrollmentResponse' },
+  { name: 'net/nanopay/fx/afex/AFEXBankOnboardingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
+  
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
@@ -996,6 +1007,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
+  // report
+  { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
+  { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
+
+
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
   { name: 'net/nanopay/meter/clearing/ClearingTimesTrait' },
@@ -1032,8 +1048,12 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/AbliiSignup' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BankAccountOwnerIsBusiness' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BankAccountVerified' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BeneficialOwnerComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessCompliancePassed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
@@ -1204,6 +1224,8 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
+  { name: 'net/nanopay/alarming/OMName' },
+  { name: 'net/nanopay/alarming/AlarmingUniqueNameDAO' },
 
   // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
@@ -1212,5 +1234,14 @@ FOAM_FILES([
 
   // grain discovery
   { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' }
+  { name: 'net/nanopay/tx/TransactionReportView' },
+
+  // tickets
+  { name: 'net/nanopay/ticket/SudoTicket' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalRequestAction' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
+  { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
+  { name: 'net/nanopay/ticket/test/SudoTicketTest' },
+
 ]);

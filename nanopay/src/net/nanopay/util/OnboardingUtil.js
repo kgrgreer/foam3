@@ -43,8 +43,8 @@ foam.CLASS({
         ) :
         await this.uSBusinessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
-            this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
+            this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         );
     },
@@ -55,15 +55,14 @@ foam.CLASS({
     },
 
     async function createOnboarding() {
-      return this.user.address.countryId == 'CAD' ?
-          this.BusinessOnboarding.create({
-            userId: this.agent.id,
-            businessId: this.user.id
-          }) :
-          this.USBusinessOnboarding.create({
-            userId: this.agent.id,
-            businessId: this.user.id
-          });
+      var data = {
+        userId: this.agent.id,
+        businessId: this.user.id,
+        businessAddress: this.user.address
+      };
+      return this.user.address.countryId == 'CA'
+        ? this.BusinessOnboarding.create(data)
+        : this.USBusinessOnboarding.create(data);
     },
 
     async function initOnboardingView() {

@@ -24,20 +24,13 @@ p({
     ave = new net.nanopay.bank.AccountVerifiedEmailDAO(x, nbaae);
     ade = new net.nanopay.bank.AccountDeletedEmailDAO(x, ave);
     be = new net.nanopay.bank.BankEmailDAO(x, ade);
-    afexba = new net.nanopay.fx.afex.AFEXBankOnboardingDAO.Builder(x)
-      .setDelegate(be)
-      .build();
-    afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, afexba);
+    afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, be);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
     rdba.setUseBMO(true);
-    eodbapc = new net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO.Builder(x)
-      .setDelegate(rdba)
-      .build();
-    pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, eodbapc);
+    pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, rdba);
     bab = new net.nanopay.bank.BankAccountBranchDAO(x, pdba);
     bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);
     eoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
-    lnoba = new net.nanopay.account.LimitNumberOfBankAccountsDAO(x, eoddapc);
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -48,7 +41,7 @@ p({
       .setLastModifiedByAware(true)
       .setDeletedAware(true)
       .setOf(Account.getOwnClassInfo())
-      .setInnerDAO(lnoba)
+      .setInnerDAO(eoddapc)
       .setAuthorize(false)
       .build();
   """

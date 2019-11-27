@@ -146,4 +146,14 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
     return null;
   }
+
+  @Override
+  public String directDebitEnrollment(DirectDebitEnrollmentRequest directDebitRequest) {
+    return null;
+  }
+
+  @Override
+  public String directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitRequest) {
+    return null;
+  }
 }

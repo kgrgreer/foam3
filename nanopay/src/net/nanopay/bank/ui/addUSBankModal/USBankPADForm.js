@@ -106,7 +106,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.SUPER(); 
+      this.SUPER();
       if ( this.plaidResponseItem != null ) {
         this.viewData.bankAccounts = [this.plaidResponseItem.account];
       } else {
