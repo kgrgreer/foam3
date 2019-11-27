@@ -935,7 +935,37 @@ p({"class":"foam.nanos.boot.NSpec", "name":"nanopayDocumentDAO",               "
 p({"class":"foam.nanos.boot.NSpec", "name":"receiptDAO",                       "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.security.receipt.Receipt.getOwnClassInfo()).setGuid(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"receipts\").setOf(net.nanopay.security.receipt.Receipt.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.security.receipt.Receipt\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"passwordEntropyService",           "serve":true,  "authenticate": false, "boxClass":"net.nanopay.auth.passwordutil.PasswordEntropySkeleton","client":"{ \"class\":\"net.nanopay.auth.passwordutil.ClientPasswordEntropy\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/passwordEntropyService\" } }","serviceClass":"net.nanopay.auth.passwordutil.PasswordStrengthCalculator"});
 p({"class":"foam.nanos.boot.NSpec", "name":"identificationTypeDAO",            "serve":true,  "serviceScript":"return new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"identificationTypes\").setSeqNo(true).setOf(net.nanopay.model.IdentificationType.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.model.IdentificationType\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"agentJunctionDAO",                 "lazy":false, "serve":true, "description":"DAO responsible for storing agent authentication permission information.","serviceScript": "ed = new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"agentJunctions\").setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo()).build(); eobad = new net.nanopay.business.EnforceOneBusinessAdminDAO.Builder(x).setDelegate(ed).build(); pid = new net.nanopay.partners.PartnerInfoDAO(x, eobad); puid1 = new net.nanopay.auth.PublicUserInfoDAO(x, \"partnerId\", \"partnerInfo\", pid); puid2 = new net.nanopay.auth.PublicUserInfoDAO(x, \"yourId\", \"yourInfo\", puid1); ppd = new foam.nanos.auth.PermissionedPropertyDAO.Builder(x).setDelegate(puid2).build(); ad = new foam.nanos.auth.AuthorizationDAO(x, ppd, new foam.nanos.auth.AuthorizableAuthorizer(\"agentJunction\")); return new net.nanopay.meter.SkipNullReferencedPropertyDAO.Builder(x).setProperty(foam.nanos.auth.UserUserJunction.TARGET_ID).setDelegate(ad).build();","client":"{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "agentJunctionDAO",
+  "lazy": false,
+  "serve": true,
+  "description": "DAO responsible for storing agent authentication permission information.",
+  "serviceScript": """
+    ed = new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"agentJunctions\")
+      .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo())
+      .build();
+    eobad = new net.nanopay.business.EnforceOneBusinessAdminDAO.Builder(x)
+      .setDelegate(ed)
+      .build();
+    pid = new net.nanopay.partners.PartnerInfoDAO(x, eobad);
+    puid1 = new net.nanopay.auth.PublicUserInfoDAO(x, \"partnerId\", \"partnerInfo\", pid);
+    puid2 = new net.nanopay.auth.PublicUserInfoDAO(x, \"yourId\", \"yourInfo\", puid1);
+    ppd = new foam.nanos.auth.PermissionedPropertyDAO.Builder(x)
+      .setDelegate(puid2)
+      .build();
+    ad = new foam.nanos.auth.AuthorizationDAO(x, ppd, new foam.nanos.auth.AuthorizableAuthorizer(\"agentJunction\"));
+    return new net.nanopay.meter.SkipNullReferencedPropertyDAO.Builder(x)
+      .setProperty(foam.nanos.auth.UserUserJunction.TARGET_ID)
+      .setDelegate(ad)
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
