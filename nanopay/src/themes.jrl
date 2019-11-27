@@ -41,7 +41,7 @@ p({
   "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "customCSS":
   """
-    .stack-wrapper {
+    .login-wrapper {
       margin-left: 250px;
     }
   """

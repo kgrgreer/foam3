@@ -220,6 +220,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
+              .enableClass('login-wrapper', this.loginSuccess$)
               .tag({
                 class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
