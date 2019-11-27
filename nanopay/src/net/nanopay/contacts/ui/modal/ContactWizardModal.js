@@ -19,6 +19,7 @@ foam.CLASS({
 
   exports: [
     'addContact',
+    'bankAdded',
     'isConnecting',
     'isEdit',
     'sendInvite',
@@ -155,6 +156,11 @@ foam.CLASS({
         var account = this.BankAccount.create();
         return account;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'bankAdded',
+      value: false
     }
   ],
 

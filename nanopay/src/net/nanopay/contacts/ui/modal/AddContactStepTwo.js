@@ -12,6 +12,7 @@ foam.CLASS({
     'auth',
     'accountDAO as bankAccountDAO',
     'addContact',
+    'bankAdded',
     'branchDAO',
     'closeDialog',
     'ctrl',
@@ -172,7 +173,24 @@ foam.CLASS({
           .addClass('property-label')
         .end()
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
-          .start(this.BANK_ACCOUNT).end()
+          .start()
+            .add(this.slot(function(bankAdded) {
+              console.log(bankAdded);
+              if ( bankAdded || this.viewData.isBankingProvided ) {
+                return this.E().tag({
+                  class: 'foam.u2.detail.SectionedDetailView',
+                  of: 'net.nanopay.bank.BankAccount',
+                  data$: self.bankAccount$ // Bind value to the property
+                });
+              }
+
+              return this.E().tag({
+                class: 'foam.u2.view.FObjectView',
+                of: 'net.nanopay.bank.BankAccount',
+                data$: self.bankAccount$ // Bind value to the property
+              });
+            }))
+          .end()
         .end()
         .startContext({ data: this.wizard })
           .start()
@@ -243,6 +261,7 @@ foam.CLASS({
         if ( ! this.validateBank(this.bankAccount) ) return;
         this.bankAccount.isDefault = true;
         this.wizard.bankAccount = this.bankAccount;
+        this.bankAdded = true;
         X.pushToId('AddContactStepThree');
       }
     }
