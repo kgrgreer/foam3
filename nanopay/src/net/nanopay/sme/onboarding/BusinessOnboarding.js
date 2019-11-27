@@ -262,9 +262,6 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function(signingOfficer) {
-        return signingOfficer;
-      }
     },
     {
       name: 'twoFactorSection',
@@ -1100,12 +1097,9 @@ foam.CLASS({
       max: 100,
       validationPredicates: [
         {
-          args: ['signingOfficer', 'totalOwnership'],
+          args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100)
-            );
+            return e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100);
           },
           errorString: 'The total Ownership should less than 100%'
         }
