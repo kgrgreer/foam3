@@ -92,7 +92,7 @@ foam.CLASS({
         verifyBalance(getX(),t);
         
         if ( getConcurrentPuts() )
-          getOutputDAO().put(getTransaction());
+          getOutputDAO().put(t);
         else
           setTransaction(t);
       `
