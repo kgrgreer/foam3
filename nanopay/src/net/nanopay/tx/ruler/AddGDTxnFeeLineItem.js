@@ -24,7 +24,7 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquiditySettings',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'static foam.mlang.MLang.*'
@@ -61,7 +61,7 @@ foam.CLASS({
               if ( digitalAccLiquid == null || ! digitalAccLiquid.getHighLiquidity().getEnabled()) {
                 // Set fee lineitem for digital transaction to farmers
                 transaction.addLineItems(new TransactionLineItem[] {
-                  new FeeLineItem.Builder(getX())
+                  new InvoicedFeeLineItem.Builder(getX())
                     .setName("Transaction Fee")
                     .setAmount(getFee())
                     .build()
