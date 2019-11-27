@@ -217,6 +217,7 @@ foam.CLASS({
                           .on('click', function() {
                             if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
                               self.pushMenu(subMenu.id);
+                              self.menuSearch = subMenu.id;
                             }
                           })
                           .add(subMenu.label)

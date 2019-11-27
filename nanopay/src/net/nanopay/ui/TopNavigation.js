@@ -17,7 +17,7 @@ foam.CLASS({
       display: flex;
       z-index: 10001;
       position: fixed;
-      background-color: /*%PRIMARY2%*/ #202341;
+      background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       font-family: Roboto, Helvetica, sans-serif;
     }
@@ -93,7 +93,7 @@ foam.CLASS({
       width: 100%;
       z-index: 10001;
       position: fixed;
-      background-color: /*%PRIMARY2%*/ #202341;
+      background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       justify-content: center;
       font-family: Roboto, Helvetica, sans-serif;
