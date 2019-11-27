@@ -17,7 +17,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.rules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.roles"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.transactions"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.businessrules"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.rules"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.genericrules"})
 
 //======================================================================================================================
 // TODO: GRANTING GLOBAL PERMISSIONS JUST FOR TESTING WILL REMOVE LATER AFTER ROPE & GROUPS ARE IMPLEMENTED
