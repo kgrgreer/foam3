@@ -61,9 +61,10 @@ foam.CLASS({
         // -- begin Job creation and execution
         for ( GsTxCsvRow row1 : rows ) {
 
-          GsTxAssembly job = new GsTxAssembly();
-          job.setOutputDAO( (DAO) x.get("localTransactionDAO") );
-          job.setRow1(row1);
+          GsTxAssembly job = new GsTxAssembly.Builder(x)
+            .setOutputDAO( (DAO) x.get("localTransactionDAO") )
+            .setRow1(row1)
+            .build();
 
           /*long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           if ( count == 0 )

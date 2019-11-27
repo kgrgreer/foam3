@@ -87,6 +87,9 @@ foam.CLASS({
           t = parseInternal(getX(),getRow1(),getRow2());
         else
           t = parseExternal(getX(),getRow1());
+
+        checkTrusty(getX(),t);
+        verifyBalance(getX(),t);
         
         if ( getConcurrentPuts() )
           getOutputDAO().put(getTransaction());
