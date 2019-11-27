@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
@@ -35,8 +36,16 @@ foam.CLASS({
         EmailMessage         message        = null;
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
+
+        // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
         Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
-        Date                 endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20));
+        Date                 endInterval    = null;
+        Long                 disruptionDiff = 0L;
+        Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
+
+        // Check if there was no service disruption - if so, add/sub diff from endInterval
+        disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
+        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(
@@ -53,8 +62,10 @@ foam.CLASS({
           try {
             EmailsUtility.sendEmailFromTemplate(x, business, message, "helpsignup", args);
           } catch (Throwable t) {
-            String msg = String.format("Email meant for business SignUp Error: Business (id = %1$s)", business.getId());
-            ((Logger) x.get("logger")).error(msg, t);
+            StringBuilder sb = new StringBuilder();
+            sb.append("Email meant for business SignUp Error: Business ");
+            sb.append(business.getId());
+            ((Logger) x.get("logger")).error(sb.toString(), t);
           }
         }
         `
