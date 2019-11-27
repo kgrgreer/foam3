@@ -13,7 +13,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^:hover {
-      background: /*%PRIMARY5%*/;
+      background: /*%PRIMARY5%*/ #e5f1fc;
     }
   `,
 

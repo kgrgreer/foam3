@@ -4,13 +4,14 @@ foam.CLASS({
   name: 'MenuChoiceSelection',
   extends: 'foam.u2.View',
 
+  documentation: `Selection view for menu RichChoiceViews`,
+
   properties: [
     {
       name: 'data',
       documentation: 'The selected object.'
     },
     'fullObject',
-    'viewData'
   ],
 
   methods: [

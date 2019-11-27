@@ -28,29 +28,29 @@ foam.CLASS({
 
   css: `
     ^ .side-nav-view {
-      color: /*%GREY2%*/;
-      border-right: 1px solid /*%GREY4%*/;
-      height: 100vh;
       display: inline-block;
-      width: 240px;
       position: fixed;
+      height: 100vh;
+      width: 240px;
       padding-top: 75px;
-      font-size: 26px;
       overflow-y: scroll;
       overflow-x: hidden;
-      background: /*%GREY5%*/;
       z-index: 100;
+      font-size: 26px;
+      color: /*%GREY2%*/ #9ba1a6;
+      border-right: 1px solid /*%GREY4%*/ #e7eaec;
+      background: /*%GREY5%*/ #f5f7fas;
     }
     ^ .selected-sub {
-      color: /*%PRIMARY3%*/;
+      color: /*%PRIMARY3%*/ #406dea;
       font-weight: 800;
     }
     ^ .submenu {
       max-height: 120px;
-      font-size: 14px;
       overflow-y: scroll;
       overflow-x: hidden;
-      border-bottom: 1px solid /*%GREY4%*/;
+      font-size: 14px;
+      border-bottom: 1px solid /*%GREY4%*/ #e7eaec;
     }
     ^ li:hover {
       cursor: pointer;
@@ -63,7 +63,7 @@ foam.CLASS({
     }
     ^ .up-arrow {
       margin-bottom: 6px;
-      border: 1px solid /*%PRIMARY3%*/;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
       display: inline-block;
       padding: 3px;
       float: right;
@@ -82,22 +82,22 @@ foam.CLASS({
       font-size: 14px;
       vertical-align: top;
       display: inline-block;
-      border-left: 4px solid /*%GREY5%*/;
+      border-left: 4px solid /*%GREY5%*/ #f5f7fa;
     }
     ^ .menu-label span {
       display: inline-block;
     }
     ^ .selected-root {
       width: 100%;
-      border-left: 4px solid /*%PRIMARY3%*/ !important;
-      background: /*%PRIMARY5%*/;
-      color: /*%BLACK%*/;
+      border-left: 4px solid /*%PRIMARY3%*/ #406dea !important;
+      background: /*%PRIMARY5%*/ #e5f1fc;
+      color: /*%BLACK%*/ black;
     }
     ^ .menu-label:hover {
       width: 100%;
-      border-left: 4px solid /*%PRIMARY3%*/ !important;
-      background: /*%PRIMARY5%*/;
-      color: black;
+      border-left: 4px solid /*%PRIMARY3%*/ #406dea !important;
+      background: /*%PRIMARY5%*/ #e5f1fc;
+      color: /*%BLACK%*/ black;
     }
     ^ li {
       width: 100%;

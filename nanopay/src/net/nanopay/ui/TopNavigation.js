@@ -17,7 +17,7 @@ foam.CLASS({
       display: flex;
       z-index: 10001;
       position: fixed;
-      background-color: #202341;
+      background-color: /*%PRIMARY2%*/ #202341;
       height: 60px;
       font-family: Roboto, Helvetica, sans-serif;
     }
@@ -64,9 +64,9 @@ foam.CLASS({
       line-height: 25px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {
-      background-color: /*%GREY4%*/;
+      background-color: /*%GREY4%*/ #e7eaec;
       font-size: 14px;
-      color: /*%BLACK%*/;
+      color: /*%BLACK%*/ black;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
       background-color: /*%GREY5%*/ #406dea;
@@ -93,7 +93,7 @@ foam.CLASS({
       width: 100%;
       z-index: 10001;
       position: fixed;
-      background-color: #202341;
+      background-color: /*%PRIMARY2%*/ #202341;
       height: 60px;
       justify-content: center;
       font-family: Roboto, Helvetica, sans-serif;
