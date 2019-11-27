@@ -64,7 +64,7 @@ foam.CLASS({
       name: 'init',
       code: function() {
         // arrayOfProperties is to arrange the properties in the view.
-        // extending foam SignUp set thes acceptanceDocuments at the top
+        // extending foam SignUp sets the acceptanceDocuments at the top, thus rearranging here
         var arrayOfProperties = this.cls_.getAxiomsByClass(foam.core.Property);
         arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());

@@ -209,7 +209,8 @@ foam.CLASS({
         return {
           dao_: client$smeBusinessRegistrationDAO || null,
           imgPath: 'images/sign_in_illustration.png',
-          group_: 'sme'
+          group_: 'sme',
+          countryChoices_: ['CA', 'US']
         };
       }
     },
