@@ -62,12 +62,10 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="AmountType3Choice">
-        <xs:sequence>
             <xs:choice>
                 <xs:element name="InstdAmt" type="ActiveOrHistoricCurrencyAndAmount"/>
                 <xs:element name="EqvtAmt" type="EquivalentAmount2"/>
             </xs:choice>
-        </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="AnyBICIdentifier">
         <xs:restriction base="xs:string">
@@ -578,12 +576,10 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="Party6Choice">
-        <xs:sequence>
             <xs:choice>
                 <xs:element name="OrgId" type="OrganisationIdentification4"/>
                 <xs:element name="PrvtId" type="PersonIdentification5"/>
             </xs:choice>
-        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="PartyIdentification32">
         <xs:sequence>
@@ -673,18 +669,14 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ReferredDocumentType1Choice">
-        <xs:sequence>
             <xs:choice>
                 <xs:element name="Cd" type="DocumentType5Code"/>
                 <xs:element name="Prtry" type="Max35Text"/>
             </xs:choice>
-        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ReferredDocumentType2">
-        <xs:sequence>
             <xs:element name="CdOrPrtry" type="ReferredDocumentType1Choice"/>
             <xs:element maxOccurs="1" minOccurs="0" name="Issr" type="Max35Text"/>
-        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="RemittanceAmount1">
         <xs:sequence>
