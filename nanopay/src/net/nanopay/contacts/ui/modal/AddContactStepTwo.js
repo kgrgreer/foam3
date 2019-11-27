@@ -241,6 +241,7 @@ foam.CLASS({
       code: function(X) {
         // Validate the contact bank account fields.
         if ( ! this.validateBank(this.bankAccount) ) return;
+        this.bankAccount.isDefault = true;
         this.wizard.bankAccount = this.bankAccount;
         X.pushToId('AddContactStepThree');
       }

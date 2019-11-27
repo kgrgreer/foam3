@@ -294,6 +294,23 @@ foam.CLASS({
         throw new IllegalStateException("Transit number must be 5 digits long.");
       }
       `
-    }
+    },
+    {
+      name: 'getRoutingCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Branch branch = findBranch(x);
+        if ( branch != null ) {
+          code.append(branch.getBranchId());
+        }
+        return code.toString();
+      `
+    },
   ]
 });

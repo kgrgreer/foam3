@@ -244,12 +244,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        StringBuilder code = new StringBuilder();
-        Branch branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        return getBranchId();
       `
     },
  ]
