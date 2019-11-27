@@ -126,37 +126,28 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         Transaction t = new Transaction();
-          if (row1.getCashUSD() < row2.getCashUSD()) {
-            t.setSourceAccount(findAcc(x,row1));
-            t.setDestinationAccount(findAcc(x,row2));
-            t.setSourceCurrency(row1.getCurrency());
-            t.setDestinationCurrency(row2.getCurrency());
-            if (isCash(row1)) {
-              t.setAmount((long) Math.abs(row1.getCashQty()));
-              t.setDestinationAmount((long) Math.abs(row2.getCashQty()));
-            }
-            else {
-              t.setAmount((long) Math.abs(row1.getMarketValueLocal()));
-              t.setDestinationAmount((long) Math.abs(row2.getMarketValueLocal()));
-            }
-            t = assembleIFLs(t,row1,row2);
-          }
-          else {
-            // row2 -> row1
-            t.setSourceAccount(findAcc(x,row2));
-            t.setDestinationAccount(findAcc(x,row1));
-            t.setSourceCurrency(row2.getCurrency());
-            t.setDestinationCurrency(row1.getCurrency());
-            if(isCash(row1)){
-              t.setAmount((long) Math.abs(row2.getCashQty()));
-              t.setDestinationAmount((long) Math.abs(row1.getCashQty()));
-            }
-            else {
-              t.setAmount((long) Math.abs(row2.getMarketValueLocal()));
-              t.setDestinationAmount((long) Math.abs(row1.getMarketValueLocal()));
-            }
-            t = assembleIFLs(t,row2,row1);
-          }
+
+        GsTxCsvRow sourceRow = row2;
+        GsTxCsvRow destRow = row1;
+        if ( row1.getCashUSD() < row2.getCashUSD() ) {
+          sourceRow = row1;
+          destRow = row2;
+        }
+        
+        t.setSourceAccount(findAcc(x,sourceRow));
+        t.setDestinationAccount(findAcc(x,destRow));
+        t.setSourceCurrency(sourceRow.getCurrency());
+        t.setDestinationCurrency(destRow.getCurrency());
+        if (isCash(sourceRow)) {
+          t.setAmount((long) Math.abs(sourceRow.getCashQty()));
+          t.setDestinationAmount((long) Math.abs(destRow.getCashQty()));
+        }
+        else {
+          t.setAmount((long) Math.abs(sourceRow.getMarketValueLocal()));
+          t.setDestinationAmount((long) Math.abs(destRow.getMarketValueLocal()));
+        }
+        t = assembleIFLs(t,sourceRow,destRow);
+
         t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
         return t;
       `
