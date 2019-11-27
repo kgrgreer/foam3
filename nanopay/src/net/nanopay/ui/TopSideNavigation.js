@@ -165,8 +165,6 @@ foam.CLASS({
         var self = this;
         // Sets currentMenu and listeners on search selections and subMenu scroll on load.
         if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
-        this.menuSearch$.sub(this.menuSearchSelect);
-        this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
 
         this.start().addClass(this.myClass())
           .show(this.loginSuccess$)
@@ -235,14 +233,19 @@ foam.CLASS({
           .end()
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
+
+        this.menuSearch$.sub(this.menuSearchSelect);
+        this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
       }
   ],
 
   listeners: [
-    function menuSearchSelect() {
+    async function menuSearchSelect() {
+      var menu = await this.menuDAO.find(this.menuSearch);
+      this.pushMenu(this.menuSearch);
+      this.menuListener(menu);
       // Scroll to submenu selected from search.
       document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'end' });
-      this.pushMenu(this.menuSearch);
     },
     function scrollToCurrentSub() {
       // When submenu element is loaded, scroll element into parent view TODO: Fix to align to middle of parent div.
