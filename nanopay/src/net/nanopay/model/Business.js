@@ -55,14 +55,6 @@ foam.CLASS({
       width: 50
     },
     {
-      class: 'String',
-      name: 'email',
-      value: null,
-      postSet: function() {
-        return null;
-      }
-    },
-    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',

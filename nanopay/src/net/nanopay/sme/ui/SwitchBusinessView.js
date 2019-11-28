@@ -138,10 +138,10 @@ foam.CLASS({
         The DAO used to populate the enabled businesses in the list.
       `,
       expression: function(user, agent) {
-        var party = agent || user;
+        var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
-            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            // .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
             .then((mapSink) => {
               return party.entities.junctionDAO.where(
@@ -216,7 +216,6 @@ foam.CLASS({
             // If the user is only in one business but that business has
             // disabled them, then don't immediately switch to that business.
             if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-
             this.assignBusinessAndLogIn(junction);
             this.removeAllChildren();
           }

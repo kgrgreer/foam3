@@ -66,6 +66,7 @@ foam.CLASS({
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
                 Group group = (Group) localGroupDAO.find(business.getGroup());
                 while ( group != null ) {
+
                   group = (Group) group.findParent(x);
                   if ( group != null && group.getId().endsWith("employee") ) break;
                 }

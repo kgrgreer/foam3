@@ -11,7 +11,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
-
+import foam.nanos.notification.Notification;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
@@ -77,15 +77,23 @@ public class AccountVerifiedEmailDAO
     } else {
       institutionStr = " - ";
     }
-    
-    message.setTo(new String[]{owner.getEmail()});
+
     args.put("link",    config.getUrl());
     args.put("name",    owner.label());
     args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
     args.put("institution", institutionStr);
 
+    Notification verifiedNotification = new Notification.Builder(x)
+            .setBody(account.getName() + " has been verified!")
+            .setNotificationType("BankNotifications")
+            .setGroupId(group.toString())
+            .setEmailIsEnabled(true)
+            .setUserId(owner.getId())
+            .setEmailName("verifiedBank")
+            .build();
+
     try {
-      EmailsUtility.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
+      owner.doNotify(x, verifiedNotification);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }
