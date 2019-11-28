@@ -25,10 +25,10 @@ p({
       "daoKey":"ruleDAO",
       "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.liquidity.tx.BusinessRule"
+        "targetClass": "net.nanopay.liquidity.tx.GenericBusinessRule"
       },
       "defaultColumns":["id","enabled","businessRuleAction","createdBy"],
-      "of":"net.nanopay.liquidity.tx.BusinessRule"
+      "of":"net.nanopay.liquidity.tx.GenericBusinessRule"
     }
   },
   "order":5000,

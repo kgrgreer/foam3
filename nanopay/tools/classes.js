@@ -311,6 +311,7 @@ var classes = [
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
    'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
    'net.nanopay.liquidity.tx.ExceptionRuleAction',
+   'net.nanopay.liquidity.tx.GenericBusinessRule',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',

@@ -81,7 +81,7 @@ p({
 
 // Business rules
 p({
-  "class":"net.nanopay.liquidity.tx.BusinessRule",
+  "class":"net.nanopay.liquidity.tx.GenericBusinessRule",
   "id":"GS10 Account Tx Notification Rule",
   "description":"Sample Goldman Business Rule",
   "sourcePredicate":{
