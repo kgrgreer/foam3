@@ -337,12 +337,12 @@ foam.CLASS({
     function init() {
       this.SUPER();
 
-      // this.updateBalance();
+      this.updateBalance();
 
-      // var self = this;  
-      // this.homeDenomination$.sub(function() {
-      //   self.updateBalance();
-      // }.bind(this)); 
+      var self = this;  
+      this.homeDenomination$.sub(function() {
+        self.updateBalance();
+      }.bind(this)); 
     },
     {
       name: 'toSummary',
