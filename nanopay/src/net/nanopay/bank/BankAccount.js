@@ -18,9 +18,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
-    'net.nanopay.exchangeable.Currency',
+    'foam.core.Currency',
     'net.nanopay.payment.Institution',
-    
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -51,6 +50,17 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      value: 'CAD',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3,
+    },
     {
       class: 'String',
       name: 'accountNumber',
@@ -132,7 +142,6 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
-      readPermissionRequired: true,
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -184,25 +193,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'denomination',
-      documentation: `The unit of measure of the payment type . The payment system 
-        can handle denominations of any type, from mobile minutes to stocks.  In this case, 
-        the type of currency associated with the bank account.`,
-      label: 'Currency',
-      aliases: ['currencyCode', 'currency'],
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          placeholder: '--',
-          objToChoice: function(currency) {
-            return [currency.id, currency.name];
-          }
-        });
-      },
-    },
-    {
-      class: 'String',
       name: 'institutionNumber',
       documentation: `In relation to the institute number of the Bank Account, 
         this provides backward compatibility for mobile call flow. The 
@@ -233,7 +223,6 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify 
         ownership of the bank account.`,
       value: 0,
-      readPermissionRequired: true,
       writePermissionRequired: true
     },
     {
@@ -400,7 +389,7 @@ foam.CLASS({
                       ).limit(2)
                       .select(new ArraySink())).getArray();
                   if ( currencies.size() == 1 ) {
-                    denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                    denomination = ((Currency) currencies.get(0)).getId();
                   } else if ( currencies.size() > 1 ) {
                     logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
                   }

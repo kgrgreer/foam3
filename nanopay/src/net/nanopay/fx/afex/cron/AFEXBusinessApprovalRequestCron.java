@@ -54,7 +54,7 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
       } else if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.APPROVED ) {
         approvalRequestDAO.where(AND(
           EQ(ApprovalRequest.DAO_KEY, request.getDaoKey()),
-          EQ(ApprovalRequest.OBJ_ID, String.valueOf(request.getObjId())),
+          EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
           EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
         .removeAll();
       }

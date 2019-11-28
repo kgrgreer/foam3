@@ -49,6 +49,7 @@ public class BankAccountVerifierService
       }
 
       BankAccount bankAccount = (BankAccount) bankAccountDAO.find(bankAccountId);
+      bankAccount = (BankAccount) bankAccount.fclone();
 
       int verificationAttempts = bankAccount.getVerificationAttempts();
 

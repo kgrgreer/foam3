@@ -17,6 +17,28 @@ p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nano
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"AFEX Check Business Compliance Status","description":"Check AFEX Business Compliance Status","code":"import net.nanopay.fx.afex.cron.AFEXBusinessComplianceStatusCron;\ncron = new AFEXBusinessComplianceStatusCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek": 1,"second":-1},"id": "AFEX Business ApprovalRequest Cron","description": "Auto-Approve AFEXBusiness ApprovalRequest ","code": "import net.nanopay.fx.afex.cron.AFEXBusinessApprovalRequestCron;\ncron = new AFEXBusinessApprovalRequestCron();\ncron.execute(x);\nprint(\"done\");"})
 p({
+  "class":"foam.nanos.cron.Cron",
+  "enabled":false,
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":0,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":0,
+    "second":0
+  },
+  "scheduledTime":"2019-11-05T12:00:00.000Z",
+  "id":"Admin Access Configuration",
+  "description":"Weekly check that removes admin access from users that don't have permanent access.",
+  "code": """
+    import net.nanopay.meter.cron.AdminAccessConfigCron;
+    cron = new AdminAccessConfigCron();
+    cron.execute(x);
+    print("done");
+  """
+})
+p({
   "class": "foam.nanos.cron.Cron",
   "enabled": true,
   "schedule": {
@@ -98,3 +120,12 @@ p({
     print(usdBillingAgent.getResult());
   """
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled":true,
+  "scheduledTime": "2019-11-19T00:00:00.000Z",
+  "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":20,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},
+  "id":"Send Welcome Email to Ablii Business 30min after SignUp",
+  "description":"Send Welcome Email to Ablii Business",
+  "code":"import net.nanopay.sme.cron.WelcomeEmailCron;\ncron = new WelcomeEmailCron();\ncron.execute(x);\nprint(\"done\");"
+  })

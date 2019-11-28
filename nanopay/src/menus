@@ -1,5 +1,5 @@
 // admin
-p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"detailView":"net.nanopay.account.ui.AccountDetailView","summaryView":{"class":"net.nanopay.account.ui.AccountSummaryView"}, "updateView":{"class":"net.nanopay.tx.ui.TransactionsAccountsView"}} ,"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.account.ui.AccountSummaryView"}, "updateView":{"class":"net.nanopay.tx.ui.TransactionsAccountsView"}} ,"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allUsers","label":"All Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO","summaryView":{"class":"net.nanopay.auth.ui.UserTableView"},"updateView":{"class":"net.nanopay.auth.ui.UserDetailView"}},"order":570,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":true,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":590,"parent":"admin"})
@@ -63,10 +63,12 @@ p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"c
 // hidden
 p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.BankSyncView"}},"order":503,"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.auth.ui.SignUpView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"hidden"})
 
 // removals
 r({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":""})
 r({"class":"foam.nanos.menu.Menu","id":"integration"})
+
+p({"class":"foam.nanos.menu.Menu","id":"txnReport","label":"Transaction Report","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.TransactionReportView"}},"order":503})

@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.exchangeable.Currency;
+import foam.core.Currency;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -144,6 +144,16 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+    return null;
+  }
+
+  @Override
+  public String directDebitEnrollment(DirectDebitEnrollmentRequest directDebitRequest) {
+    return null;
+  }
+
+  @Override
+  public String directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitRequest) {
     return null;
   }
 }

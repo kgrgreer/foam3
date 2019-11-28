@@ -123,7 +123,7 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'currentExposure'
     },
     {
@@ -136,7 +136,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'maxExposure',
     },
     {
@@ -158,7 +158,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'allocatedExposure',
       expression: function(debtAccounts) {
         if ( ! debtAccounts ) return 0;

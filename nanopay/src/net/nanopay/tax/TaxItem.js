@@ -14,7 +14,7 @@ foam.CLASS({
         },
         {
           name: 'amount',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -37,7 +37,7 @@ foam.CLASS({
         },
         {
           name: 'tax',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
