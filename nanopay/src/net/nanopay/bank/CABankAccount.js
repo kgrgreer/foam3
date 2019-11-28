@@ -63,7 +63,6 @@ foam.CLASS({
     },
     {
       name: 'desc',
-      createMode: 'HIDDEN'
     },
     {
       // Relationship
@@ -181,10 +180,6 @@ foam.CLASS({
           }))
         .end();
       }
-    },
-    {
-      name: 'isDefault',
-      visibility: 'Hidden'
     }
   ],
   methods: [

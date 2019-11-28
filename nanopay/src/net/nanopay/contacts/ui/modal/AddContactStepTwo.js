@@ -111,6 +111,10 @@ foam.CLASS({
     ^ .existing-account .property-objectClass {
       pointer-events: none;
     }
+    .Country-label {
+      font-size: 16px;
+      font-weight: bold;
+    }
   `,
 
   messages: [
@@ -169,8 +173,8 @@ foam.CLASS({
           .add(this.BANKING_TITLE)
         .end()
         .start()
+          .addClass('Country-label')
           .add('Country')
-          .addClass('property-label')
         .end()
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()

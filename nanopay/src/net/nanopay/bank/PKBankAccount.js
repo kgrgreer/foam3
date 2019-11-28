@@ -40,7 +40,7 @@ foam.CLASS({
     properties: [
       {
         name: 'country',
-        value: 'IN'
+        value: 'PK'
       },
       {
         name: 'flagImage',

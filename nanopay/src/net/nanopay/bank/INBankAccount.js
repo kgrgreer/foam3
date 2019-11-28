@@ -33,7 +33,6 @@ foam.CLASS({
     },
     {
       name: 'desc',
-      createMode: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -72,10 +71,15 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'International Bank Account No.',
-    },
-    {
-      name: 'isDefault',
-      visibility: 'Hidden'
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{9,18}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an account number.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Account number must be between 8 and 18 digits long.';
+        }
+      },
     }
   ],
 

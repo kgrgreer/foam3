@@ -226,7 +226,7 @@ foam.CLASS({
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
       value: false,
-      section: 'accountDetails',
+      section: 'administration',
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },

@@ -43,27 +43,12 @@ foam.CLASS({
     },
     {
       name: 'desc',
-      createMode: 'HIDDEN'
     },
     { // REVIEW: remove
       class: 'String',
       name: 'institutionNumber',
       hidden: true
     },
-    // {
-    //   name: 'voidChequeImage',
-    //   class: 'String',
-    //   label: '',
-    //   value: 'images/USA-Check@2x.png',
-    //   section: 'accountDetails',
-    //   visibility: 'RO',
-    //   view: function(_, X) {
-    //     return {
-    //       class: 'foam.u2.tag.Image'
-    //     };
-    //   },
-    //   readPermissionRequired: true
-    // },
     {
       name: 'voidChequeImage',
       class: 'String',
@@ -186,10 +171,6 @@ foam.CLASS({
           }))
         .end();
       }
-    },
-    {
-      name: 'isDefault',
-      visibility: 'Hidden'
     }
   ],
   
