@@ -9,18 +9,14 @@ package net.nanopay.iso20022;
 import foam.core.*;
 import foam.lib.xml.Outputter;
 import foam.nanos.logger.Logger;
-import foam.lib.parse.ParserContextImpl;
-import foam.lib.parse.StringPStream;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.bind.DatatypeConverter;
 
 
 public class ISO20022Util {
