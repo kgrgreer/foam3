@@ -44,6 +44,8 @@ foam.CLASS({
             .build();
 
           DowJonesResponse response = dowJonesService.entityNameSearch(x, searchData);
+          ((Logger) x.get("logger")).info("EntitySanctionValidator ran for entity id: " + searchData.getSearchId() + ", entity name: " + searchData.getEntityName());
+
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
