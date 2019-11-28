@@ -138,7 +138,7 @@ foam.CLASS({
         The DAO used to populate the enabled businesses in the list.
       `,
       expression: function(user, agent) {
-        var party = agent || user;
+        var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
             .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
@@ -161,7 +161,7 @@ foam.CLASS({
         The DAO used to populate the disabled businesses in the list.
       `,
       expression: function(user, agent) {
-        var party = agent || user;
+        var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
             .where(this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED))
