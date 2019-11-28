@@ -12,23 +12,28 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
+    'java.util.List',
     'javax.security.auth.AuthPermission',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.model.Business',
-    'static foam.mlang.MLang.AND', 
-    'static foam.mlang.MLang.EQ'    
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
 
   ],
 
@@ -40,11 +45,11 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           Logger logger = (Logger) x.get("logger");
-          
+
           if ( ! (obj instanceof AFEXBusiness) ) {
             return;
           }
-          
+
           AFEXBusiness afexBusiness = (AFEXBusiness) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
@@ -56,8 +61,8 @@ foam.CLASS({
           if ( approval == ApprovalStatus.APPROVED ) {
             DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-            
-            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
+
+            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
             if ( null != business ) {
               Address businessAddress = business.getAddress();
               if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
@@ -71,12 +76,12 @@ foam.CLASS({
                 }
                 if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
                   try {
-                    group.getPermissions(x).add(permission);  
+                    group.getPermissions(x).add(permission);
                     sendUserNotification(x, business);
                   } catch(Throwable t) {
                     logger.error("Error adding " + permissionString + " to business " + business.getId(), t);
                     }
-                  } 
+                  }
                 }
               }
           }
@@ -105,16 +110,41 @@ foam.CLASS({
       Group                group          = (Group) localGroupDAO.find(business.getGroup());
       AppConfig            appConfig      = group.getAppConfig(x);
       String               url            = appConfig.getUrl().replaceAll("/$", "");
+      DAO                  userDAO        = (DAO) x.get("localUserDAO");
 
       message.setTo(new String[]{business.getEmail()});
       String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
       String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
       args.put("business", business.getBusinessName());
       args.put("toCurrency", toCurrency);
-      args.put("toCountry", toCountry); 
-      args.put("link",   url + "#sme.main.dashboard");     
+      args.put("toCountry", toCountry);
+      args.put("link",   url + "#sme.main.dashboard");
+      args.put("sendTo", business.getEmail());
+
       try {
+        //If we want to notify all users in company
+        // Notification notification = new Notification.Builder(x)
+        //   .setEmailName("international-payments-enabled-notification")
+        //   .setEmailArgs(args)
+        //   .build();
+        // business.doNotify(x, notification);
+
+        Sink sink = new ArraySink();
+        sink = userDAO.where(EQ(User.EMAIL, business.getEmail()))
+           .limit(1).select(sink);
+
+        List list = ((ArraySink) sink).getArray();
+        if ( list == null || list.size() == 0 ) {
+          throw new RuntimeException("User not found");
+        }
+
+        User user = (User) list.get(0);
+        if ( user == null ) {
+          throw new RuntimeException("User not found");
+        }
+        args.put("name", user.getFirstName());
         EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
+
       } catch (Throwable t) {
         String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
         ((Logger) x.get("logger")).error(msg, t);
