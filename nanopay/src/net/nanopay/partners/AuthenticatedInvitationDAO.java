@@ -181,7 +181,7 @@ public class AuthenticatedInvitationDAO
     long createdBy = invite.getCreatedBy();
     String email = invite.getEmail();
     String message = invite.getMessage();
-    this.copyReadOnlyFields(new Invitation(), invite);
+    this.copyReadOnlyFields(invite, new Invitation() );
     invite.setCreatedBy(createdBy);
     invite.setEmail(email);
     invite.setInternal(internal);
