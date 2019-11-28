@@ -34,6 +34,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"ClearingTime"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"transactionLimits"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"SecurityPlanner","predicate":{"class":"net.nanopay.tx.ruler.IsSecurityQuote"},"enabled":true})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"bankOperations",
@@ -59,5 +60,3 @@ p({
     }
   }
 })
-
-
