@@ -76,3 +76,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessApprover","targetId":"invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessEmployee","targetId":"invoice.holdingAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.businessTypeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.strategizer"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"strategyreference.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"currency.read.INR"})

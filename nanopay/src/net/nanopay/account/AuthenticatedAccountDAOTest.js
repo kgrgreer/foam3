@@ -172,8 +172,8 @@ foam.CLASS({
         // Update the account to be USD denominated, assert that the account is now USD
         clonedAccount = (DigitalAccount) putAccount.fclone();
         clonedAccount.setDenomination("USD");
-        accountDAO.put_(user1Context, clonedAccount);
-        FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
+        accountDAO.put(clonedAccount);
+        FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
         return updatedPutAccount.getProperty("denomination").equals("USD");
       } catch (Throwable t) {
         t.printStackTrace();
