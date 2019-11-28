@@ -181,8 +181,8 @@ foam.CLASS({
                     if ( ! hasChildren.get() ) {
                       self.menuListener(menu.id);
                       self.pushMenu(menu.id);
-                      self.menuSearch = menu.id;
                     }
+                    self.menuSearch = menu.id;
                     slot.set(! slot.get());
                   })
                   .addClass('sidenav-item-wrapper')
@@ -217,7 +217,7 @@ foam.CLASS({
                           .on('click', function() {
                             if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
                               self.pushMenu(subMenu.id);
-                              self.menuSearch = subMenu.id;
+                              self.menuSearch = menu.id;
                             }
                           })
                           .add(subMenu.label)

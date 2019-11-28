@@ -231,6 +231,7 @@ foam.CLASS({
               })
             .end()
             .start()
+              .enableClass('footer-wrapper', this.loginSuccess$)
               .tag(this.footerView_)
             .end();
         });
