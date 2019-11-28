@@ -11,13 +11,13 @@ public class ISODateParser
 {
   public ISODateParser() {
     super(new Seq(
-      new Literal("\""),
+      new Optional(new Literal("\"")),
       new IntParser(),
       new Literal("-"),
       new IntParser(),
       new Literal("-"),
       new IntParser(),
-      new Literal("\"")));
+      new Optional(new Literal("\""))));
   }
 
   @Override
@@ -33,15 +33,17 @@ public class ISODateParser
     }
 
     Object[] result = (Object[]) ps.value();
+    // To handle the optional literal since xml does not come with the literal
+    int offset = result.length == 7 ? 1 : 0;
 
     // get calendar instance and clear it
     Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     c.clear();
 
     c.set(
-      (Integer) result[1],
-      (Integer) result[3] - 1, // Java calendar uses zero-indexed months
-      (Integer) result[5]);
+      (Integer) result[0 + offset],
+      (Integer) result[2 + offset] - 1, // Java calendar uses zero-indexed months
+      (Integer) result[4 + offset]);
 
     return ps.setValue(c.getTime());
   }
