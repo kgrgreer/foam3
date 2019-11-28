@@ -18,7 +18,9 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.liquidity.LiquiditySettings',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -86,9 +88,21 @@ foam.CLASS({
             // Set the source of each child transaction to its parent destination digital account
             childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
-            // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+            // Get the default digital account
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
+
+            LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
+            Boolean explicitCO = bulkTxn.getExplicitCO();
+
+            // Check liquidity settings of the digital account associated to the digital transaction
+            if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
+              // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
+              explicitCO = false;
+            }
+
+            // Set the destination of each child transaction to payee's default digital account
+            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO).getId());
 
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);

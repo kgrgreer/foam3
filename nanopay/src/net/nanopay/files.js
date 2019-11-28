@@ -1234,8 +1234,10 @@ FOAM_FILES([
   // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
-  { name: 'net/nanopay/script/CsvUploadScript' },
   { name: 'net/nanopay/tx/gs/GsTxAssembly' },
+  { name: 'net/nanopay/tx/gs/ProgressBarData' },
+  { name: 'net/nanopay/tx/gs/GSFileUploadScreen' },
+  { name: 'net/nanopay/script/CsvUploadScript' },
 
   // grain discovery
   { name: 'net/nanopay/tx/TransactionReport' },

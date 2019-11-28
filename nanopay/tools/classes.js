@@ -368,6 +368,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.BulkTransactionPlanDAO',
+  'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',
@@ -694,6 +695,10 @@ var classes = [
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
+
+  'net.nanopay.tx.gs.ProgressBarData',
+  'net.nanopay.tx.gs.GSFileUploadScreen',
+  'net.nanopay.script.CsvUploadScript',
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',

@@ -1345,3 +1345,20 @@ p({
   """,
   "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
 })
+
+// Progress bar service
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ProgressBarDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ProgressBarDAO")
+      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
+})
