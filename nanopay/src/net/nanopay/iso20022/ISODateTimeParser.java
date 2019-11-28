@@ -27,7 +27,6 @@ public class ISODateTimeParser
 
   public ISODateTimeParser() {
     super(new Seq(
-      new Literal("\""),
       new IntParser(),
       new Literal("-"),
       new IntParser(),
@@ -44,8 +43,7 @@ public class ISODateTimeParser
       new Alt(new Literal("+"), new Literal("-")),
       new IntParser(),
       new Literal(":"),
-      new IntParser(),
-      new Literal("\"")
+      new IntParser()
     ));
   }
 
@@ -66,16 +64,16 @@ public class ISODateTimeParser
     c.clear();
 
     c.set(
-      (Integer) result[1],
-      (Integer) result[3] - 1, // Java calendar uses zero-indexed months
-      (Integer) result[5],
-      (Integer) result[7],
-      (Integer) result[9],
-      (Integer) result[11]);
+      (Integer) result[0],
+      (Integer) result[2] - 1, // Java calendar uses zero-indexed months
+      (Integer) result[4],
+      (Integer) result[6],
+      (Integer) result[8],
+      (Integer) result[10]);
 
     boolean zeroPrefixed = true;
     StringBuilder builder = sb.get();
-    Object[] millis = (Object[]) result[13];
+    Object[] millis = (Object[]) result[12];
 
     for ( int i = 0 ; i < millis.length ; i++ ) {
       // do not prefix with zeros
@@ -95,10 +93,10 @@ public class ISODateTimeParser
     // reset builder and build timezone string
     builder.setLength(0);
     builder.append("UTC")
-      .append(result[14])
-      .append(String.format("%02d", (Integer) result[15]))
+      .append(result[13])
+      .append(String.format("%02d", (Integer) result[14]))
       .append(":")
-      .append(String.format("%02d", (Integer) result[17]));
+      .append(String.format("%02d", (Integer) result[16]));
 
     // set timezone correctly
     c.setTimeZone(TimeZone.getTimeZone(builder.toString()));

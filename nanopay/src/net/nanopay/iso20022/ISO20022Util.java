@@ -47,114 +47,9 @@ public class ISO20022Util {
     return xml;
   }
 
-  public Object fromString(String value) {
-    System.out.println("inside fromString: " + value);
-    StringPStream ps = new StringPStream(value);
-    ParserContextImpl x = new ParserContextImpl();
-    ps = (StringPStream) new ISODateParser().parse(ps, x);
-    System.out.println("StringPStream: " + ps.value());
-    return ps == null ? null : ps.value();
-  }
-
-  public Object dateFromXML(X x, XMLStreamReader reader) {
-    try {
-      reader.next();
-      return DatatypeConverter.parseDateTime(reader.getText()).getTime();
-    } catch (XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property");
-    }
-    return null;
-  }
-
-  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) {
-    FObject obj = null;
-
-    if ( defaultClass == null ) return obj;
-
-    try {
-
-      while ( reader.hasNext() ) {
-        switch ( reader.getEventType() ) {
-          case XMLStreamConstants.START_ELEMENT:
-              reader.next();
-              return Enum.valueOf(defaultClass, reader.getText());
-          case XMLStreamConstants.END_ELEMENT:
-            break;
-        }
-        reader.next();
-      }
-    } catch (XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property");
-    }
-    return obj;
-  }
-
-  public Object arrayFromXML(X x, XMLStreamReader reader, Class defaultClass) {
-    List objList = new ArrayList();
-    FObject obj = null;
-    String startTag = reader.getLocalName();
-    System.out.println("startTag: " + startTag);
-    PropertyInfo prop = null;
-
-    try {
-
-      if ( defaultClass == null ) return objList;
-
-      defaultClass = defaultClass.getComponentType();
-      obj = (FObject) x.create(defaultClass);
-      Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
-      while ( reader.hasNext() ) {
-        int eventType;
-        eventType = reader.next();
-        switch ( eventType ) {
-          case XMLStreamConstants.START_ELEMENT:
-            ClassInfo cInfo = obj.getClassInfo();
-
-            prop = (PropertyInfo) cInfo.getAxiomByName(propMap.get(reader.getLocalName()));
-            String val = prop == null ? " null " : " not null ";
-            System.out.println("PropertyINfo is - " + val + " for " + reader.getLocalName());
-            if ( prop != null ) {
-              Class objClass = prop.getValueClass();
-              System.out.println("objClass name: " + objClass.getName());
-
-              if (Enum.class.isAssignableFrom(objClass)) {
-                prop.set(obj, enumFromXML(x, reader, objClass));
-              } else if (Date.class.isAssignableFrom(objClass)) {
-                prop.set(obj, dateFromXML(x, reader));
-              } else if (objClass.isArray()) {
-                prop.set(obj, arrayFromXML(x, reader, objClass));
-                System.out.println("back from : arrayFromXML");
-              } else if ( FObject.class.isAssignableFrom(objClass) ) {
-                prop.set(obj, createObj(x, reader, objClass));
-              } else {
-                prop.set(obj, prop.fromXML(x, reader));
-              }
-              
-              prop = null;
-            }
-            break;
-          case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName() == startTag ) { System.out.println("EndTag: " + startTag); objList.add(obj); return objList.toArray(); }
-        }
-      }
-  }catch (XMLStreamException ex ) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
-    } catch (Throwable t) {
-      Logger logger = (Logger) x.get("logger");
-    }
-
-    objList.add(obj);
-    return objList.toArray();
-  }
-
   public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) {
     FObject obj = null;
-
     if ( defaultClass == null ) return null;
-
     try {
       while ( reader.hasNext() ) {
         int eventType;
@@ -172,46 +67,26 @@ public class ISO20022Util {
       logger.error("Error while reading file");
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
+      logger.error("Error while reading file");
     }
-
     return obj;
-
   }
 
-  public void setAttributeValue(X x, XMLStreamReader reader, FObject obj) {
-    int attributes = reader.getAttributeCount();
-    if (attributes > 0 ) {
-      Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
-      System.out.println("Attributes found " + attributes);
-      for (int i = 0; i < attributes; i++ ) {
-        String attrName = reader.getAttributeLocalName(i);
-        String attrVal = reader.getAttributeValue(i);
-        System.out.println("Attribute name " + attrName + " and value is " + attrVal + " for class " + obj.getClass().getSimpleName());
-        PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(propMap.get(attrName));
-        if ( prop != null ) {
-          System.out.println("Attributes propertin is not null ");
-          prop.set(obj, attrVal);
-        }
-      }
-
-      for ( Map.Entry<String, String> entry : propMap.entrySet() ) {
-        PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(propMap.get(entry.getValue()));
-        if ( prop.getXMLTextNode() ) {
-          try{
-            reader.next();
-            prop.set(obj, reader.getText());
-          } catch(XMLStreamException e) {
-          }
-        }
-      }
-
+  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) {
+    FObject obj = null;
+    try {
+      if ( defaultClass == null ) return null;
+      obj = copyFromXML(x, xmlr, (FObject) x.create(defaultClass));
+    } catch (Throwable t) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Error while reading file");
     }
+    return obj;
   }
 
   public FObject copyFromXML(X x, XMLStreamReader reader, FObject obj) {
     Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
     String startTag = reader.getLocalName();
-    System.out.println("Local Name: " + startTag);
     setAttributeValue(x, reader, obj);
     try {
       while ( reader.hasNext() ) {
@@ -219,33 +94,22 @@ public class ISO20022Util {
         eventType = reader.next();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
-            System.out.println("Local Name: " + reader.getLocalName());
             ClassInfo cInfo = obj.getClassInfo();
-
             PropertyInfo prop = (PropertyInfo) cInfo.getAxiomByName(propMap.get(reader.getLocalName()));
-            String val = prop == null ? " null " : " not null ";
-            System.out.println("PropertyINfo is - " + val + " for " + reader.getLocalName());
             if ( prop != null ) {
               Class objClass = prop.getValueClass();
-              System.out.println("objClass name: " + objClass.getName());
-
               if (Enum.class.isAssignableFrom(objClass)) {
                 prop.set(obj, enumFromXML(x, reader, objClass));
-              } else if (Date.class.isAssignableFrom(objClass)) {
-                prop.set(obj, dateFromXML(x, reader));
               } else if (objClass.isArray()) {
                 prop.set(obj, arrayFromXML(x, reader, objClass));
-                System.out.println("back from : arrayFromXML");
               } else if ( FObject.class.isAssignableFrom(objClass) ) {
                 prop.set(obj, createObj(x, reader, objClass));
               } else {
                 prop.set(obj, prop.fromXML(x, reader));
               }
-              
               prop = null;
             }
             break;
-
           case XMLStreamConstants.END_ELEMENT:
             if ( reader.getLocalName().equals(startTag) ) {
               return obj;
@@ -257,35 +121,74 @@ public class ISO20022Util {
       logger.error("Error while reading file");
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
+      logger.error("Error while reading file");
     }  
     return obj;  
   }
 
-  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) {
-    FObject obj = null;
-    try {
-      if ( defaultClass == null ) return null;
+  public void setAttributeValue(X x, XMLStreamReader reader, FObject obj) {
+    int attributes = reader.getAttributeCount();
+    if (attributes > 0 ) {
+      Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
+      for (int i = 0; i < attributes; i++ ) {
+        PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(
+          propMap.get(reader.getAttributeLocalName(i)));
+        if ( prop != null ) {
+          prop.set(obj, reader.getAttributeValue(i));
+        }
+      }
 
-      obj = (FObject) x.create(defaultClass);
-      System.out.println("obj was created for " + defaultClass.getName());
-      obj = copyFromXML(x, xmlr, obj);
-    } catch (Throwable t) {
-      t.printStackTrace();
+      // dirty hack for objects that are just a textnode. This should be moved elsewhere?
+      for ( Map.Entry<String, String> entry : propMap.entrySet() ) {
+        PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(propMap.get(entry.getValue()));
+        if ( prop.getXMLTextNode() ) {
+          try{
+            reader.next();
+            prop.set(obj, reader.getText());
+          } catch(XMLStreamException e) {
+          }
+        }
+      }
+    }
+  }
+
+  public Object arrayFromXML(X x, XMLStreamReader reader, Class defaultClass) {
+    List objList = new ArrayList();
+    if ( defaultClass == null ) return objList;
+    defaultClass = defaultClass.getComponentType();
+    FObject obj = copyFromXML(x, reader, (FObject) x.create(defaultClass));
+    objList.add(obj);
+    return objList.toArray();
+  }
+
+  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) {
+    FObject obj = null;
+    if ( defaultClass == null ) return obj;
+    try {
+      while ( reader.hasNext() ) {
+        switch ( reader.getEventType() ) {
+          case XMLStreamConstants.START_ELEMENT:
+              reader.next();
+              return Enum.valueOf(defaultClass, reader.getText());
+          case XMLStreamConstants.END_ELEMENT:
+            break;
+        }
+        reader.next();
+      }
+    } catch (XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Premature end of xml file while reading property");
     }
     return obj;
   }
 
   public Map getObjectPropertyInfoMap(X x, FObject obj, Map propMap) {
     if ( propMap == null ) propMap = new HashMap<String, String>();
-     
+    if ( obj == null ) return propMap;
     List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo prop : props ) {
-      // if ( prop.getXMLAttribute() ) continue;
       String name = prop.getName();
       String shortName = prop.getShortName() == null ? name : prop.getShortName();
-      System.out.println("Shortname - " + shortName + " , Name - " + name);
       propMap.put(shortName, name);
     }
     return propMap;
@@ -296,10 +199,8 @@ public class ISO20022Util {
     if (lastIndex == -1) {
         return str;
     }
-    
     String beginString = str.substring(0, lastIndex);
     String endString = str.substring(lastIndex + find.length());
-    
     return beginString + replace + endString;
   }
 }

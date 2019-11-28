@@ -11,13 +11,11 @@ public class ISODateParser
 {
   public ISODateParser() {
     super(new Seq(
-      new Literal("\""),
       new IntParser(),
       new Literal("-"),
       new IntParser(),
       new Literal("-"),
-      new IntParser(),
-      new Literal("\"")));
+      new IntParser()));
   }
 
   @Override
@@ -39,9 +37,9 @@ public class ISODateParser
     c.clear();
 
     c.set(
-      (Integer) result[1],
-      (Integer) result[3] - 1, // Java calendar uses zero-indexed months
-      (Integer) result[5]);
+      (Integer) result[0],
+      (Integer) result[2] - 1, // Java calendar uses zero-indexed months
+      (Integer) result[4]);
 
     return ps.setValue(c.getTime());
   }
