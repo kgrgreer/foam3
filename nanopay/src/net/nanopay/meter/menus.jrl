@@ -88,10 +88,14 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc","label":"Ac
 // ComplianceItem
 p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})
 
-
-
 // Reports
-p({"class":"foam.nanos.menu.Menu","id":"report","label":"Reports","handler":{"class":"foam.nanos.menu.SubMenu"},"order":200})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"report",
+  "label":"Reports",
+  "handler":{"class":"foam.nanos.menu.SubMenu"},
+  "order":200
+})
 
 // BusinessReport
 p({
@@ -106,5 +110,16 @@ p({
     "editEnabled":   false
   },
   "order":10,
+  "parent":"report"
+})
+
+// TransactionReport
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"report.txnReport",
+  "label":"Transaction Settlement Report",
+  "handler":{"class":"foam.nanos.menu.ViewMenu",
+  "view":{"class":"net.nanopay.tx.TransactionReportView"}},
+  "order":20,
   "parent":"report"
 })

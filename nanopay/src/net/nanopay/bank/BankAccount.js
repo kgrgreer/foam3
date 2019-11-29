@@ -10,8 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'branchDAO',
-    'institutionDAO'
+    'institutionDAO',
+    'branchDAO'
   ],
 
   javaImports: [
@@ -19,7 +19,6 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
     'foam.core.Currency',
-    'net.nanopay.payment.Institution',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -35,9 +34,10 @@ foam.CLASS({
 
   tableColumns: [
     'name',
+    'summary',
     'flagImage',
-    'denomination',
-    'institution'
+    'balance',
+    'homeBalance'
   ],
 
   // relationships: branch (Branch)
@@ -49,23 +49,21 @@ foam.CLASS({
     }
   ],
 
-  properties: [
+  sections: [
     {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      targetDAOKey: 'currencyDAO',
-      name: 'denomination',
-      value: 'CAD',
-      documentation: 'The currency that this account stores.',
-      tableWidth: 127,
-      section: 'accountDetails',
-      order: 3,
-    },
+      name: 'pad',
+      permissionRequired: true
+    }
+  ],
+  
+  properties: [
     {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
+      visibility: 'FINAL',
+      section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
@@ -92,40 +90,9 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'summary',
-      transient: true,
-      documentation: `
-        Used to display a lot of information in a visually compact way in table
-        views of BankAccounts.
-      `,
-      tableWidth: 500,
       tableCellFormatter: function(_, obj) {
         this.start()
-          .add(obj.slot((institution, institutionDAO) => {
-            return institutionDAO.find(institution).then((result) => {
-              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
-                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
-                  .end()
-                  .start('span').add(`${result.name} |`).end();
-              }
-            });
-          }))
-        .end()
-        .start()
-          .add(obj.slot((branch, branchDAO) => {
-            return branchDAO.find(branch).then((result) => {
-              if ( result ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
-                  .start('span').add(` ${result.branchId} |`).end();
-              }
-            });
-          }))
-        .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
@@ -142,6 +109,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
+      section: 'administration',
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -191,30 +159,22 @@ foam.CLASS({
         .end();
       }
     },
-    {
+    { // REVIEW: remove
       class: 'String',
       name: 'institutionNumber',
-      documentation: `In relation to the institute number of the Bank Account, 
-        this provides backward compatibility for mobile call flow. The 
-        BankAccountInstitutionDAO will look up the institutionNumber and set the 
-        institution property on the branch.
-      `,
-      label: 'Inst. No.',
-      storageTransient: true,
-      hidden: true,
+      section: 'administration',
     },
-    {
+    { // REVIEW: remove
       class: 'String',
       name: 'branchId',
-      label: 'Branch Id.',
-      aliases: ['transitNumber', 'routingNumber'],
-      storageTransient: true
+      section: 'administration',
     },
     {
       class: 'Long',
       name: 'randomDepositAmount',
       documentation:`A small financial sum deposited into a bank account to test
         onboarding onto our system.`,
+      section: 'administration',
       networkTransient: true
     },
     {
@@ -223,12 +183,14 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify 
         ownership of the bank account.`,
       value: 0,
+      section: 'administration',
       writePermissionRequired: true
     },
     {
       class: 'DateTime',
       name: 'microVerificationTimestamp',
-      documentation: 'The date and time of when ownership of the bank account is verified.'
+      documentation: 'The date and time of when ownership of the bank account is verified.',
+      section: 'administration',
     },
     {
       class: 'Reference',
@@ -237,6 +199,7 @@ foam.CLASS({
       documentation: `The name of the country associated with the bank account. 
         This should be set by the child class.
       `,
+      section: 'accountDetails',
       visibility: 'RO',
       
     },
@@ -247,7 +210,13 @@ foam.CLASS({
       documentation: `A URL link to an image of the country's flag. Used for 
         display purposes. This should be set by the child class.
       `,
+      section: 'accountDetails',
       visibility: 'RO',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image'
+        };
+      },
       tableCellFormatter: function(value, obj, axiom) {
         this.start('img').attr('src', value).end();
       }
@@ -257,12 +226,14 @@ foam.CLASS({
       name: 'integrationId',
       documentation:`A unique identifier for a bank account within the 
         client's accounting software.`,
+      section: 'administration'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
       documentation: `User pad authorization address.`,
+      section: 'pad',
       // Note: To be removed
       factory: function() {
         return this.Address.create();
@@ -273,6 +244,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
       documentation: `Returns the bank account address from the Address model.`,
+      section: 'pad',
       factory: function() {
         return this.Address.create();
       },
@@ -288,12 +260,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        StringBuilder code = new StringBuilder();
-        Institution institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
+        return "";
       `
     },
     {
@@ -305,12 +272,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        StringBuilder code = new StringBuilder();
-        Branch branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        return "";
       `
     },
     {

@@ -16,14 +16,11 @@ foam.CLASS({
     'accountDAO as bankAccountDAO',
     'addContact',
     'auth',
-    'caAccount',
     'closeDialog',
     'countryDAO',
     'ctrl',
-    'isCABank',
     'isConnecting',
     'sendInvite',
-    'usAccount',
     'user'
   ],
 
@@ -99,9 +96,13 @@ foam.CLASS({
                 var q = hasPermission
                   ? this.OR(
                       this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US')
+                      this.EQ(this.Country.ID, 'US'),
+                      this.EQ(this.Country.ID, 'IN')
                     )
-                  : this.EQ(this.Country.ID, 'CA');
+                  : this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'IN')
+                  );
                 return this.countryDAO.where(q);
               })
             })
@@ -118,7 +119,7 @@ foam.CLASS({
     async function addBankAccount() {
       this.isConnecting = true;
       var contact = this.wizard.data;
-      var bankAccount = this.isCABank ? this.caAccount : this.usAccount;
+      var bankAccount = this.wizard.bankAccount;
       bankAccount.owner = this.wizard.data.id;
 
       try {
@@ -151,6 +152,7 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
+        this.isConnecting = false;
         if ( X.subStack.depth > 1 ) {
           X.subStack.back();
         } else {

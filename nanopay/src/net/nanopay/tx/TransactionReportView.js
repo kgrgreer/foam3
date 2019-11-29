@@ -90,7 +90,9 @@ foam.CLASS({
       return this.transactionDAO
         .where(this.OR(
           this.INSTANCE_OF(net.nanopay.tx.cico.CITransaction),
-          this.INSTANCE_OF(net.nanopay.tx.cico.COTransaction)
+          this.INSTANCE_OF(net.nanopay.tx.cico.COTransaction),
+          this.INSTANCE_OF(net.nanopay.tx.DigitalTransaction),
+          this.INSTANCE_OF(net.nanopay.tx.BulkTransaction)
         ))
         .select()
         .then((transactions) => {
