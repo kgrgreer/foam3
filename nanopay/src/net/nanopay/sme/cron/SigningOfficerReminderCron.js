@@ -11,9 +11,12 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
+    'foam.util.SafetyUtil',
+    'java.net.URLEncoder',
     'java.util.Arrays',
     'java.util.Date',
     'java.util.HashMap',
@@ -26,7 +29,15 @@ foam.CLASS({
   ],
 
   documentation: `Send reminder invite to signing officers to join a business or join the system at incremental times.
-  Incremental times are 1 day, 1 week, and 2 weeks of inactivity`,
+  Incremental times are 1 day, 1 week, and 2 weeks of inactivity
+  Does this in steps: (NOT THE CLEANEST OR MOST REUSABLE CODE)
+  // SELECT ALL BUSINESSES
+    // FOR EACH BUSINESS
+      // LOCATE the last time a reminder email was sent.
+      // DETERMINE if one of the time conditions are satified
+      // REGENERATE URL
+      // SEND EMAIL
+  `,
 
   methods: [
     {
@@ -42,13 +53,19 @@ foam.CLASS({
         EmailMessage             message    = null;
         Map<String, Object>         args    = null;
         Date                       today    = new Date();
+        long                     oneWeek    = 1000*60*60*24*7;
+        Date                  expiryDate    = new Date(today.getTime() + oneWeek);
         Long              comparisonTime    = 0l;
         Logger                    logger    = (Logger) x.get("logger");
+        DAO                     tokenDAO    = (DAO) x.get("tokenDAO");
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
         DAO              emailMessageDAO    = (DAO) x.get("emailMessageDAO");
         DAO        businessInvitationDAO    = (DAO) x.get("businessInvitationDAO");
         int[]              intervalArray    = distinguishTimeIntervals(x);
-        if ( intervalArray == null ) logger.error("@SigningOfficerReminderCron and no appConfig found :S ");
+        if ( intervalArray == null ) {
+          logger.error("@SigningOfficerReminderCron and no appConfig found :S ");
+          return;
+        }
         
         // SELECT ALL BUSINESSES
         List<Business> businessList = ((ArraySink) businessDAO
@@ -70,13 +87,12 @@ foam.CLASS({
           if ( invitation == null ) continue;
 
           // LOCATE the last time a reminder email was sent.
-          List<EmailMessage> ems = ((ArraySink) emailMessageDAO
-            .where(
-              AND(
-                EQ(EmailMessage.SUBJECT, "Invitation from your employee to join Ablii"),
-                EQ(EmailMessage.TO, invitation.getEmail())
-              )
-            ).select(new ArraySink())).getArray();
+          List<EmailMessage> ems = ((ArraySink) emailMessageDAO.where(
+            AND(
+              EQ(EmailMessage.SUBJECT, "Invitation from your employee to join Ablii"),
+              EQ(EmailMessage.TO, ((String)invitation.getEmail()))
+            )
+          ).select(new ArraySink())).getArray();
           
           // DETERMINE if one of the time conditions are satified
           try {
@@ -96,14 +112,52 @@ foam.CLASS({
             } else { continue; }
           } catch (Exception e) {
             logger.error("@SigningOfficerReminderCron: while checking time references on businsess " + business.getId(), e);
+            return;
           }
           
-          // SEND EMAIL
-          message             = new EmailMessage();
-          args                = new HashMap<>();
+          // REGENERATE URL
+          List<Token> tokenList = ((ArraySink) tokenDAO.where(
+            AND(
+              EQ(Token.USER_ID, invitation.getInviteeId()),
+              GTE(Token.EXPIRY, expiryDate))
+          ).select(new ArraySink())).getArray();
+          String email = "";
+          Token token = null;
+          for (Token t : tokenList) {
+            email = (String)((Map)t.getParameters()).get("inviteeEmail");
+            if ( email != null && SafetyUtil.equals(email, invitation.getEmail())) {
+              token = t;
+              break;
+            }
+          }
+          if ( token == null ) logger.error("@SigningOfficerReminderCron and no token to build email :| ");
           Group group         = business.findGroup(x);
           AppConfig appConfig = group.getAppConfig(x);
           String url          = appConfig.getUrl().replaceAll("/$", "");
+
+          if ( invitation.getInternal() ) {
+            url += "/service/joinBusiness?token=" + token.getData() + "&redirect=/";
+          } else {
+            // Encoding business name and email to handle special characters.
+            String encodedBusinessName, encodedEmail;
+            try {
+              encodedEmail =  URLEncoder.encode(invitation.getEmail(), "UTF-8");
+              encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
+            } catch(Exception e) {
+              logger.error("@SigningOfficerReminderCron: Error encoding the email or business name.", e);
+              return;
+            }
+
+            String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
+
+            url += "?token=" + token.getData();
+            if ( country != null ) url += "&country=" + country;
+            url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
+          }
+
+          // SEND EMAIL
+          message             = new EmailMessage();
+          args                = new HashMap<>();
 
           message.setTo(new String[]{ invitation.getEmail() });
           args.put("link", url);
@@ -113,6 +167,7 @@ foam.CLASS({
             EmailsUtility.sendEmailFromTemplate(x, business, message, "signingOfficerReminder", args);
           } catch (Throwable t) {
             logger.error("@SigningOfficerReminderCron: while sending email for businsess" + business.getId(), t);
+            return;
           }
         }
         
