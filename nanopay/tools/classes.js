@@ -697,8 +697,6 @@ var classes = [
   'net.nanopay.meter.compliance.canadianSanction.Record',
 
   'net.nanopay.tx.gs.ProgressBarData',
-  'net.nanopay.tx.gs.GSFileUploadScreen',
-  'net.nanopay.script.CsvUploadScript',
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',

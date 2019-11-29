@@ -16,21 +16,16 @@ foam.CLASS({
       value: 100
     },
     {
+      class: 'Long',
+      name: 'state',
+      expression: function(value, maxValue){
+        return Math.floor(( (value / maxValue) * 100))
+      }
+    },
+    {
       class: 'String',
       name: 'status'
     }
-  ],
-  methods: [
-    {
-      name: 'getState',
-      type: 'Long',
-      code: `
-        return (long) math.floor(( (this.value / this.maxValue) * 100)) ;
-      `,
-      javaCode: `
-        return (long) java.lang.Math.floor(( (getValue() / getMaxValue()) * 100)) ;
-      `
-    },
   ]
 
 })

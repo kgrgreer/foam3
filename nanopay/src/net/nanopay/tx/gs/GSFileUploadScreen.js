@@ -77,6 +77,10 @@ foam.CLASS({
       hidden: true
     },
     {
+      class: 'Long',
+      name: 'c'
+    },
+    {
       name: 'scriptToUse',
       class: 'net.nanopay.script.CsvUploadScript'
     },
@@ -94,10 +98,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'progressBarValue',
-      view: { class: 'foam.nanos.pm.TemperatureCView' },
-      expression: function(id_, ProgressBarDAO){
-          ProgressBarDAO.find(id_).then((data) => {
-            this.progressBarValue = data.getState()+'%';
+      //view: { class: 'foam.nanos.pm.TemperatureCView' },
+      expression: function(id_,c){
+          return this.ProgressBarDAO.find(id_).then( function(data) {
+          if ( data != null )
+            return data.state+'%';
+          return '0%';
+
           });
         }
       //value: '50%'
@@ -105,10 +112,12 @@ foam.CLASS({
         {
           class: 'String',
           name: 'progressBarStatus',
-          view: { class: 'foam.nanos.pm.TemperatureCView' },
-          expression: function(id_, ProgressBarDAO){
-              ProgressBarDAO.find(id_).then((data) => {
-                this.progressBarStatus = data.getStatus();
+          //view: { class: 'foam.nanos.pm.TemperatureCView' },
+          expression: function(id_,c){
+              return this.ProgressBarDAO.find(id_).then((data) => {
+              if ( data != null )
+                return data.status;
+              return 'Awaiting File Upload.';
               });
             }
           //value: 'Ingested: 300000 of 600000'
@@ -123,7 +132,15 @@ foam.CLASS({
     })
   },
     function initE(){
+
       var self = this;
+      var timeout = setInterval
+      (() => {this.c++},1000);
+
+      this.onDetach(function() {
+      this.clearInterval(timeout);
+      }.bind(this));
+
       this.SUPER();
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').addClass('button').add('Settlement CSV File Upload').end()
@@ -173,8 +190,7 @@ foam.CLASS({
           this.scriptToUse.progressId = foam.uuid.randomGUID();
           this.id_ = this.scriptToUse.progressId;
           console.log(this.id_+ " :lol look: "+ this.scriptToUse.progressId);
-
-          this.scriptToUse.runScript();
+          this.scriptToUse.run();
         }
       }
     },

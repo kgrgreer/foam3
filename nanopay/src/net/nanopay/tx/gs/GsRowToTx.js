@@ -12,8 +12,9 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'foam.dao.ArraySink',
-    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.List',
+    'net.nanopay.tx.gs.ProgressBarData'
   ],
 
   methods: [
@@ -22,11 +23,18 @@ foam.CLASS({
       name: 'process',
       args: [
         { name: 'x', type: 'foam.core.X'},
-        { name: 'blob', type: 'foam.blob.Blob'}
+        { name: 'blob', type: 'foam.blob.Blob'},
+        { name: 'progId', type: 'String'}
       ],
       javaCode: `
         System.out.println("Reading File.. ");
       // ---- parse file into GsTxCsvRow Objects..
+
+        ProgressBarData pbd = new ProgressBarData ();
+        pbd.setId(progId);
+        pbd.setStatus("Reading CSV...");
+        DAO pbdDAO = (DAO) x.get("ProgressBarDAO");
+        pbdDAO.put(pbd);
 
         java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
         blob.read(os, 0, blob.getSize());
@@ -51,7 +59,11 @@ foam.CLASS({
 
         long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
 
-        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
+        pbd.setMaxValue(am);
+        pbd.setStatus("Parsing Transaction: 0 of " + am);
+        pbdDAO.put(pbd);
+
+        SyncAssemblyLine transactionProcessor = new SyncAssemblyLine();
 
         List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
            .select(new ArraySink())).getArray();
@@ -59,8 +71,14 @@ foam.CLASS({
         System.out.println("Lines read: "+am);
 
         // -- begin Job creation and execution
+        int i = 0;
         for ( GsTxCsvRow row1 : rows ) {
-
+        i++;
+        if ( i % 200 == 0){
+        pbd.setValue(i);
+        pbd.setStatus("Parsing Transaction: "+ pbd.getValue() +" of " + rows);
+        pbdDAO.put(pbd); }
+ i++;
           GsTxAssembly job = new GsTxAssembly.Builder(x)
             .setOutputDAO( (DAO) x.get("localTransactionDAO") )
             .setRow1(row1)
@@ -71,7 +89,7 @@ foam.CLASS({
             break; */
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-            transactionProcessor.enqueue(job);
+            //transactionProcessor.enqueue(job);
             continue;
           }
           job.setIsInternal(true);
@@ -106,7 +124,7 @@ foam.CLASS({
             job.setSettleType(row1.getSettleType());
           }
 
-          transactionProcessor.enqueue(job);
+          //transactionProcessor.enqueue(job);
         }
       `
     },
