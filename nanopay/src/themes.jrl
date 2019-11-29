@@ -42,6 +42,7 @@ p({
   "customCSS":
   """
     .login-wrapper {
+      padding-top: 60px;
       margin-left: 250px;
     }
     .footer-wrapper {
