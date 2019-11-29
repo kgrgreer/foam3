@@ -73,8 +73,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'payeeId',
-    'payerId',
+    'searchName',
     'invoiceId',
     'type',
     'status',
@@ -95,6 +94,14 @@ foam.CLASS({
   ],
 
   sections: [
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    },
     {
       name: 'paymentInfo'
     },
