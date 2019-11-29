@@ -95,14 +95,6 @@ foam.CLASS({
 
   sections: [
     {
-      class: 'String',
-      name: 'searchName',
-      label: 'Payer/Payee Name',
-      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
-      transient: true,
-      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
-    },
-    {
       name: 'paymentInfo'
     },
     {
@@ -668,6 +660,15 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      hidden: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    }
   ],
 
   methods: [
