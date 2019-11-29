@@ -9,8 +9,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxyDAO',
     'foam.nanos.app.AppConfig',
@@ -75,12 +75,10 @@ foam.CLASS({
       Sink sink = new ArraySink();
       sink = businessDAO.where(EQ(Business.EMAIL, user.getEmail()))
          .limit(1).select(sink);
-
       List list = ((ArraySink) sink).getArray();
       if ( list == null || list.size() == 0 ) {
         throw new RuntimeException("User not found");
       }
-
       Business business = (Business) list.get(0);
       if ( business == null ) {
         throw new RuntimeException("User not found");

@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'java.text.SimpleDateFormat',
     'java.util.*',
-    'java.util.List',
     'net.nanopay.invoice.model.BillingInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -158,7 +157,6 @@ foam.CLASS({
                 if ( user == null ) {
                   throw new RuntimeException("User not found");
                 }
-
                 args = populateArgsForEmail(args, invoice, user.getFirstName(), agent.getFirstName(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
                 args.put("paymentTo", payeeUser.label());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);

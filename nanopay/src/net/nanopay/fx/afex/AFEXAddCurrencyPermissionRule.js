@@ -11,8 +11,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
@@ -25,8 +25,8 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
-    'java.util.Map',
     'java.util.List',
+    'java.util.Map',
     'javax.security.auth.AuthPermission',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
@@ -122,12 +122,6 @@ foam.CLASS({
       args.put("sendTo", business.getEmail());
 
       try {
-        //If we want to notify all users in company
-        // Notification notification = new Notification.Builder(x)
-        //   .setEmailName("international-payments-enabled-notification")
-        //   .setEmailArgs(args)
-        //   .build();
-        // business.doNotify(x, notification);
 
         Sink sink = new ArraySink();
         sink = userDAO.where(EQ(User.EMAIL, business.getEmail()))

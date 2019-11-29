@@ -2,8 +2,8 @@ package net.nanopay.invoice;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.app.AppConfig;
