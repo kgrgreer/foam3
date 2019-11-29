@@ -768,7 +768,7 @@ p({
   """
     dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
       .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)
-        .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))
+        .setDao((foam.dao.DAO) x.get("liquidityThresholdCandlestickDAO"))
         .setPeriodLengthMs(60 * 60 * 1000)
       .build())
       .setDelegate(null)
@@ -779,7 +779,7 @@ p({
       .setPipelinePm(true)
       .setRuler(false)
       .setSeqNo(true)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .setValidated(true)
       .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
       .setEnableInterfaceDecorators(false)
@@ -799,8 +799,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
-      .setInnerDAO(hashingDAO)
+      .setAuthorize(true)
       .setSeqNo(true)
       .setJournalName("invoiceHistory")
       .setJournalType(faom.dao.JournalType.SINGLE_JOURNAL)
