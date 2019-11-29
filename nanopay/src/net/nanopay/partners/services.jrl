@@ -26,20 +26,20 @@ p({
   "serve": true, 
   "serviceScript": 
   """
-    return new foam.dao.EasyDAO.Builder(x)
+    return new net.nanopay.partners.AuthenticatedInvitationDAO(x, 
+    new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)
       .setDecorator(
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "createdBy", "inviter",
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "inviteeId", "invitee",  
-        new net.nanopay.partners.AuthenticatedInvitationDAO(x, 
         new net.nanopay.partners.MakeConnectionDAO(x, 
-        new net.nanopay.partners.SendInvitationDAO(x, null))))))
+        new net.nanopay.partners.SendInvitationDAO(x, null)))))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("invitations")
       .setOf(net.nanopay.model.Invitation.getOwnClassInfo())
       .setAuthorize(false)
-      .build();
+      .build());
   """,
   "client": "{\"of\":\"net.nanopay.model.Invitation\"}"
 })

@@ -55,9 +55,6 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      margin-bottom: 0 !important;
-      overflow-x: hidden;
-      padding-top: 80px;
     }
     .stack-wrapper:after {
       content: "";
@@ -220,6 +217,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
+              .enableClass('login-wrapper', this.loginSuccess$)
               .tag({
                 class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
@@ -230,6 +228,7 @@ foam.CLASS({
               })
             .end()
             .start()
+              .enableClass('footer-wrapper', this.loginSuccess$)
               .tag(this.footerView_)
             .end();
         });

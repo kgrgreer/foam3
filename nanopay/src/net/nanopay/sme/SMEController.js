@@ -514,11 +514,7 @@ foam.CLASS({
         // Process auth token
         if ( locHash === '#auth' && ! self.loginSuccess ) {
           self.client.authenticationTokenService.processToken(null, null,
-            searchParams.get('token')).then((result) => {
-              if ( result === true ) {
-                location = '/';
-              }
-            });
+            searchParams.get('token')).then(() => location = '/');
         }
       }
 
@@ -607,7 +603,7 @@ foam.CLASS({
 
         // Pass the customized DOM element into the toast notification
         this.notify(TwoFactorNotificationDOM, 'warning');
-        if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
           return false;

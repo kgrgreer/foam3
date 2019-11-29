@@ -43,15 +43,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      targetDAOKey: 'currencyDAO',
       name: 'denomination',
-      documentation: 'The currency that this account stores.',
-      tableWidth: 127,
-      section: 'accountDetails',
-      order: 3,
-      aliases: ['currencyCode', 'currency'],
       value: 'CAD'
     },
   ],
