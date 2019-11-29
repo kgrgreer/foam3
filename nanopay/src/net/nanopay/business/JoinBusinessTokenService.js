@@ -60,7 +60,6 @@ foam.CLASS({
           HashMap<String, Object> args = new HashMap<>();
           args.put("name", user.getFirstName());
           args.put("sendTo", user.getEmail());
-          //Need to get correct inviter name
           args.put("inviterName", agent.getFirstName());
           args.put("business", business.label());
           args.put("link", url + "/service/joinBusiness?token=" + token.getData() + "&redirect=/" );

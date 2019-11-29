@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -22,6 +24,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'java.text.NumberFormat',
     'java.util.HashMap',
+    'java.util.List',
+    'static foam.mlang.MLang.*'
 
   ],
 
@@ -36,6 +40,7 @@ foam.CLASS({
               DAO currencyDAO = (DAO) x.get("currencyDAO");
               DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
               Logger logger  = (Logger) x.get("logger");
+              DAO userDAO = (DAO) x.get("userDAO");
 
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
@@ -77,8 +82,21 @@ foam.CLASS({
                   args.put("invoiceNumber", invoice.getInvoiceNumber());
                 }
 
+                //find signing officer User object
+                Sink sink = new ArraySink();
+                sink = userDAO.where(EQ(User.EMAIL, sender.getEmail()))
+                   .limit(1).select(sink);
+                List list = ((ArraySink) sink).getArray();
+                if ( list == null || list.size() == 0 ) {
+                  throw new RuntimeException("User not found");
+                }
+                User user = (User) list.get(0);
+                if ( user == null ) {
+                  throw new RuntimeException("User not found");
+                }
+
                 args.put("amount", currency.format(t.getAmount()));
-                args.put("toName", sender.label());
+                args.put("toName", user.getFirstName());
                 args.put("name", receiver.label());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());

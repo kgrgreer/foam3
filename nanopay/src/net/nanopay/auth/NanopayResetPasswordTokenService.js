@@ -92,8 +92,9 @@ EmailMessage message = new EmailMessage();
 message.setTo(new String[] { user.getEmail() });
 
 HashMap<String, Object> args = new HashMap<>();
-args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
+args.put("name", user.getFirstName());
 args.put("link", url +"?token=" + token.getData() + "#reset");
+args.put("sendTo", user.getEmail());
 
 EmailsUtility.sendEmailFromTemplate(x, user, message, "reset-password", args);
 return true;`

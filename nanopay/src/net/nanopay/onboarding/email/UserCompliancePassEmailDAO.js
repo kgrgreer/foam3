@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.dao.Sink',
     'foam.dao.ProxyDAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
@@ -18,9 +20,11 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
+    'java.util.List',
     'java.util.Map',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -60,13 +64,29 @@ foam.CLASS({
       Map<String, Object>     args         = new HashMap<>();
       Group                   group        = (Group) user.findGroup(x);
       AppConfig               appConfig    = group.getAppConfig(x);
+      DAO                     businessDAO  = (DAO) x.get("localBusinessDAO");
 
       String url = appConfig.getUrl().replaceAll("/$", "");
 
       message.setTo(new String[]{user.getEmail()});
-      args.put("business", user.label());
       args.put("link",   url + "#sme.main.dashboard");
       args.put("sendTo", user.getEmail());
+
+      Sink sink = new ArraySink();
+      sink = businessDAO.where(EQ(Business.EMAIL, user.getEmail()))
+         .limit(1).select(sink);
+
+      List list = ((ArraySink) sink).getArray();
+      if ( list == null || list.size() == 0 ) {
+        throw new RuntimeException("User not found");
+      }
+
+      Business business = (Business) list.get(0);
+      if ( business == null ) {
+        throw new RuntimeException("User not found");
+      }
+      args.put("business", business.getBusinessName());
+
 
       try {
         EmailsUtility.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
