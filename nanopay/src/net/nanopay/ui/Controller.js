@@ -217,6 +217,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
+              .enableClass('login-wrapper', this.loginSuccess$)
               .tag({
                 class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
@@ -227,6 +228,7 @@ foam.CLASS({
               })
             .end()
             .start()
+              .enableClass('footer-wrapper', this.loginSuccess$)
               .tag(this.footerView_)
             .end();
         });

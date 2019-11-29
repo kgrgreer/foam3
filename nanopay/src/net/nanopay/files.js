@@ -812,7 +812,11 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
-
+  { name: 'net/nanopay/ui/TopSideNavigation', flags: ['web'] },
+  { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
+  { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
+  { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
+  
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
