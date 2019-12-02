@@ -2,31 +2,38 @@ foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'AuthView',
   extends: 'foam.u2.View',
-  requires: ['foam.u2.TextField'],
+  requires: [
+    'foam.core.ArraySlot',
+    'foam.u2.TextField'
+  ],
 
   css: `
-  ^ {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  ^ input {
-    border-width: 1px;
-    border-radius: 5px;
-    width: 48px;
-    height: 48px;
-    text-align: center;
-    margin: 8px 14px 8px 0;
-    font-size: 22px;
-  }
-  ^ .wrong-code {
-    border-color: #f91c1c;
-    background-color: #fff6f6;
-  }
+    ^ {
+      width: 80%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    ^ input {
+      border-width: 1px;
+      border-radius: 5px;
+      width: 48px;
+      height: 48px;
+      text-align: center;
+      margin: 8px 14px 8px 0;
+      font-size: 22px;
+    }
+    ^ .wrong-code {
+      border-color: #f91c1c;
+      background-color: #fff6f6;
+    }
   `,
   properties: [
+    {
+      class: 'String',
+      name: 'data'
+    },
     {
       class: 'Boolean',
       name: 'incorrectCode',
@@ -34,52 +41,79 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'currentIndex',
-      value: -1,
-      preSet: function(old, nu) {
-        if ( this.numOfParts === 0 ) return nu;
-        if ( nu < 0 || this.numOfParts === 0 ) return 0;
-        if ( nu >= this.numOfParts ) return this.numOfParts - 1;
-        return nu;
-      }
+      value: 0,
     },
     {
       class: 'Int',
       name: 'numOfParts',
-      value: 6
+      value: 6,
+      preSet: function(old, nu) {
+        if ( nu >= this.numOfParts - 1 ) return this.numOfParts - 1;
+        if ( nu <= 0 ) return 0;
+        if ( nu < 0 || this.choices.length === 0 ) return 0;
+        return nu;
+      }
     },
     {
-      class: 'Array',
-      name: 'tokenId',
-    },
+      class: 'FObjectArray',
+      of: 'foam.u2.Element',
+      name: 'elements'
+    }
   ],
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
-      for ( var i = 0; i < this.numOfParts; i++ ) {
-      var isFirstElement = i == 0 ? true : false;
-      let v = this.TextField.create({ onKey: true });
-      v.setAttribute('maxlength', 1);
-      v.setAttribute('autofocus', isFirstElement);
-      v.addClass('input').enableClass('wrong-code', this.incorrectCode$ );
-      v.on('focus', function() {
-        self.currentIndex = self.findIndexOfInput(this.id);
-      });
-        this.tokenId.push(v.id);
+      for ( let i = 0; i < this.numOfParts; i++ ) {
+        var isFirstElement = i === 0;
+        let v = this.TextField.create({ onKey: true });
+        v.setAttribute('maxlength', 1);
+        v.setAttribute('autofocus', isFirstElement);
+        v.addClass('input').enableClass('wrong-code', this.incorrectCode$ );
+        v.on('focus', () => {
+          self.currentIndex = i;
+        });
+        v.on('keydown', function onkeyDown(e) {
+          switch ( e.keyCode ) {
+            case 37:
+                self.currentIndex--;
+                self.elements[self.currentIndex].focus();
+            break;
+            case 39:
+                self.currentIndex++;
+                self.elements[self.currentIndex].focus();
+            break;
+            case 8:
+              if ( self.elements[self.currentIndex].data === ' ' || ! self.elements[self.currentIndex].data ) {
+                if ( self.currentIndex === 0 ) break;
+                self.elements[self.currentIndex - 1].focus();
+              };
+            break;
+          }
+        });
+
         this.tag(v).addClass(this.myClass());
-        v.data$.sub(this.onDataUpdate);
-        v.data$.relateFrom(this.data$, (_) => this.data.substring(0, this.currentIndex) + v.data.substring(0) + this.data.substring(this.currentIndex+1), (_) => v.data);
+        this.onDetach(v.data$.sub(this.onDataUpdate));
+        this.elements.push(v);
       }
-    },
-    function findIndexOfInput(id) {
-      return this.tokenId.indexOf(id);
+
+      this.onDetach(this.data$.follow(this.ArraySlot.create({
+        slots: this.elements.map((elm) => elm.data$)
+      }).map((arr) => arr.reduce((str, c) => str + (c || ' '), ''))));
     }
   ],
   listeners: [
     {
       name: 'onDataUpdate',
-      code: function() {
-        this.getElementById(this.tokenId[this.currentIndex + 1]).focus();
+      code: function(detachable, eventName, propertyName, propertySlot) {
+        console.log(this.data);
+        if ( propertySlot.get() ) {
+          
+          if ( this.currentIndex >= this.numOfParts - 1 ) return;
+          this.elements[this.currentIndex + 1].focus();
+        } else {
+          console.log(eventName)
+        }
       }
     }
   ],
@@ -136,7 +170,7 @@ foam.CLASS({
     }
     ^ .tf-container {
       width: 450px;
-      margin: auto;
+      margin: 0 auto 0 0;
     }
 
     ^verify-button {
@@ -187,19 +221,14 @@ foam.CLASS({
       name: 'incorrectCode'
     },
     {
-      class: 'foam.u2.ViewSpec',
-      name: 'Auth',
-      factory: function() {
-        return {
-          class: 'net.nanopay.sme.ui.AuthView',
-          incorrectCode$: this.incorrectCode$,
-          data$: this.twoFactorToken$
-        };
-      }
-    },
-    {
       class: 'String',
       name: 'twoFactorToken',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AuthView',
+          incorrectCode$: X.data.incorrectCode$
+        };
+      }
     },
   ],
 
@@ -221,7 +250,7 @@ foam.CLASS({
 
     async function initE() {
       this.SUPER();
-      var split = net.nanopay.sme.ui.SplitBorder.create();
+      var split = foam.u2.borders.SplitScreenBorder.create();
 
       var left = this.Element.create().addClass('cover-img-block')
         .start('img')
@@ -246,7 +275,7 @@ foam.CLASS({
             .style({ 'font-family': 'Lato-Regular', 'font-size': 12 })
           .end()
           .start()
-            .tag(this.Auth)
+            .tag(this.TWO_FACTOR_TOKEN)
             .start().addClass('error-msg').show( this.incorrectCode$ )
               .start({
                 class: 'foam.u2.tag.Image',
@@ -306,6 +335,7 @@ foam.CLASS({
       name: 'verify',
       code: function(X) {
         var self = this;
+        console.log(this.twoFactorToken)
         if ( ! this.twoFactorToken ) {
           this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
           return;
@@ -316,8 +346,9 @@ foam.CLASS({
           if ( result ) {
             self.loginSuccess = true;
           } else {
-            self.incorrctCode = true;
+            self.incorrectCode = true;
             self.loginSuccess = false;
+            self.notify(self.TWO_FACTOR_ERROR, 'error');
           }
         });
       }
