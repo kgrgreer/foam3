@@ -10,6 +10,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'foam.util.SafetyUtil'
   ],
   properties: [
     {
@@ -143,8 +144,24 @@ foam.CLASS({
            oldTxn == null ) {
         return true;
       }
-      return false;
-      `
+      if ( getStatus() != TransactionStatus.PENDING ) {
+        return false;
+      }
+      if ( oldTxn == null ) {
+        if ( SafetyUtil.isEmpty(getParent()) ) {
+          return true;
+        } else {
+          Transaction parent = (Transaction) ((DAO) x.get("transactionDAO")).find(getParent());
+          return parent.getStatus() == TransactionStatus.COMPLETED;
+        }
+      }
+      else if ( oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED ||
+                  oldTxn.getStatus() == TransactionStatus.PAUSED ||
+                  oldTxn.getStatus() == TransactionStatus.SCHEDULED ) {
+        return true;
+      }
+    return false;
+    `
    }
  ]
 });
