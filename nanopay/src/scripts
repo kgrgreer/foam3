@@ -136,7 +136,7 @@ i = users.get(users.size() - 1).getId() + 1;
 // emails are in order of {admin1, employee1, admin2, employee2, ...}
 // the emails without corresponding passwords will have it set to passwords[0]
 String[] emails = {"user"+i+"@email.com", "employee"+i+"@email.com", "user"+(i+2)+"@email.com", "employee"+(i+2)+"@email.com"};
-String[] passwords = {"AbliiTestUser"}; 
+String[] passwords = {"AbliiTestUser"};
 
 address = new Address();
 address.setCountryId("CA");
@@ -534,7 +534,7 @@ p({
 
       DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
       AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
-      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();      
+      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
         DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
@@ -552,13 +552,13 @@ p({
           onboarding.setStatus(OnboardingStatus.SUBMITTED);
           canadaUsBusinessOnboardingDAO.put(onboarding);
         }
-        
+
       } else {
           DAO localGroupDAO = (DAO) x.get("localGroupDAO");
           Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
           Group group = (Group) localGroupDAO.find(business.getGroup());
           if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
-            group.getPermissions(x).add(fxProvisionPermission); 
+            group.getPermissions(x).add(fxProvisionPermission);
           }
 
           Boolean validFields = true;
@@ -583,13 +583,13 @@ p({
 
           if ( business.getAddress().getCountryId().equals("US") && SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ) {
             print("- Business Registration number/ EIN not found. Please set Business Registration number/ EIN and run Script again.");
-            validFields = false; 
+            validFields = false;
           }
 
           if ( SafetyUtil.isEmpty(business.getCountryOfBusinessRegistration())) {
             print("- Country of Business Registration is not set. Please set Country of Business Registration and run script again.");
             validFields = false;
-          }  
+          }
 
           if ( business.getBusinessRegistrationDate() == null ) {
             print("- Business Registration Date is not set. Please set Business Registration Date and run script again.");
@@ -619,11 +619,11 @@ p({
             print("Please complete the above mentioned fields and try again");
             return;
           }
-      } 
+      }
     }
-    
+
     print(" DONE ");
-  
+
   """,
   "output": "",
   "notes": "Please replace businessEmail with the desired Business Email before running script."
@@ -667,7 +667,7 @@ p({
 
         String contactCountryId = contactBusinessAddress == null ?  contact.getBusinessAddress() == null ? "" : contact.getBusinessAddress().getCountryId() : contactBusinessAddress.getCountryId();
         String contactOwnerCountryId = business.getAddress() == null ? "" : business.getAddress().getCountryId();
-       
+
         if ( SafetyUtil.isEmpty(contactCountryId) ) {
           print("Unable to migrate " + contact.getOrganization() + " because the address field is invalid. Check country id." );
           continue;
@@ -678,11 +678,11 @@ p({
           continue;
         }
 
-        BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
-          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} ))) 
+        BankAccount contactBankAccount = contact.getBankAccount() < 1 ?
+          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} )))
           : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
 
-        BankAccount contactBusinessBankAccount = contactBusiness == null ? null : 
+        BankAccount contactBusinessBankAccount = contactBusiness == null ? null :
          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
 
         if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
@@ -704,16 +704,16 @@ p({
           })
         );
         if ( afexBeneficiary == null ) {
-          print( contact.getOrganization() + " was not migrated to AFEX " ); 
-        } else { 
-          print( contact.getOrganization() + " was successfully migrated to AFEX "); 
+          print( contact.getOrganization() + " was not migrated to AFEX " );
+        } else {
+          print( contact.getOrganization() + " was successfully migrated to AFEX ");
         }
       }
 
     }
 
     print(" Done ");
-  
+
   """,
   "output": "",
   "notes": "Please replace businessEmail with the desired Business Email before running script."
@@ -753,7 +753,7 @@ p({
         address = new Address();
         address.setCountryId("CA");
     }
-    
+
     if ( ! "CA".equals(address.getCountryId()) && ! "US".equals(address.getCountryId())) {
       count++;
       print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
@@ -768,9 +768,9 @@ p({
       group = (Group) group.findParent(x);
       if ( group != null && group.getId().endsWith("employee") ) break;
     }
-    if ( group != null ) { 
-      group.getPermissions(x).add(domesticCurrencyPermission); 
-      group.getPermissions(x).add(cadPermission); 
+    if ( group != null ) {
+      group.getPermissions(x).add(domesticCurrencyPermission);
+      group.getPermissions(x).add(cadPermission);
       count++;
     }
   }
@@ -781,13 +781,13 @@ p({
     Group smegroup = groupDAO.find("sme");
     if ( null != smegroup && smegroup.implies(x, new AuthPermission(CAD_PERMISSION)) ) {
       Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
-      smegroup.getPermissions(x).remove(cadPermission); 
+      smegroup.getPermissions(x).remove(cadPermission);
     }
     print("currency.read.CAD permission was removed from the sme group.");
   } else { print("currency.read.CAD permission was not removed from the sme group because there were issues with " + (businessCount - count) + " businesses."); }
 
   print("DONE");
-  
+
   """,
   "output": ""
 })
@@ -797,7 +797,7 @@ p({
   "id": "Update declined transaction invoices",
   "status": 1,
   "code": """
- 
+
   import foam.dao.DAO;
   import foam.mlang.MLang;
   import foam.dao.ArraySink;
@@ -881,7 +881,7 @@ p({
     } else {
       transaction.setPayerId(invoice.getPayerId());
     }
-    
+
     long invAmount = invoice.getAmount();
     transaction.setInvoiceId(invoice.getId());
     transaction.setAmount(invAmount);
@@ -927,7 +927,7 @@ p({
         Date invPaymentDate = invoice.getPaymentDate();
 
         //Creates transaction only based on invoices scheduled for today.
-        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) ) 
+        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) )
         {
           print(invoice.getId());
           txn = quoteTransaction(invoice);
@@ -938,7 +938,7 @@ p({
             try {
               transactionDAO.put(txn);
               print("Transaction created for Invoice " + invoice.getId());
-              successCount++;           
+              successCount++;
             }
             catch ( Throwable e) {
               print("Failed to put transaction for invoice " + invoice.getId());
@@ -947,7 +947,7 @@ p({
             logger.error(new Object[] {"Failed to put transaction for invoice", e, txn, invoice});
             }
           }
-        } 
+        }
       } catch ( Throwable e) {
         print("Error quoting transaction for invoice " + invoice.getId() + " " + e.getMessage());
         logger.error(new Object[] {"Error quoting transaction for invoice", e, invoice});
@@ -958,8 +958,65 @@ p({
 
   print("Done");
   print("Created " + successCount + " transaction(s)");
-  print("Failed " + failedCount + " transaction(s)");  
+  print("Failed " + failedCount + " transaction(s)");
   """
+
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "migratePhoneNumbers",
+  "description": "Migrate phone numbers to new phone properties for all users (users, businesses, contacts).",
+  "server": true,
+  "scheduled": false,
+  "code":
+  """
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import net.nanopay.contacts.Contact;
+
+    DAO userDAO = (DAO) x.get("userDAO");
+
+    users = userDAO.select().getArray();
+
+    print( "Phone Number Migration Started!" );
+
+    for( User user : users) {
+      try{
+
+        user = user.fclone();
+        print(" --- Migrating user with id " + user.getId());
+
+        if( user.getPhone() != null ) {
+          user.setPhoneNumber( user.getPhone().getNumber() );
+          user.setPhoneNumberVerified( user.getPhone().getVerified() );
+        }
+
+        if( user.getMobile() != null ) {
+          user.setMobileNumber( user.getMobile().getNumber() );
+          user.setMobileNumberVerified( user.getMobile().getVerified() );
+        }
+
+        if ( user instanceof Contact ) {
+          contact = (Contact) user;
+          if( contact.getBusinessPhone() != null ) {
+            print(contact.getId() + " : Contact");
+            contact.setBusinessPhoneNumber( contact.getBusinessPhone().getNumber() );
+            contact.setBusinessPhoneVerified( contact.getBusinessPhone().getVerified() );
+          }
+        }
+
+        userDAO.put(user);
+      } catch ( Exception e ) {
+        print(" - Migration failed for class : " + user + " having id: " + user.getId() + " Error was : " + e.getMessage());
+      }
+    }
+
+    print("Migration complete.");
+  """
+
 })
 
 p({
