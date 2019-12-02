@@ -126,7 +126,7 @@ foam.CLASS({
       permissionRequired: true,
       order: 3
     },
-    {
+    { 
       name: 'balanceDetails',
       permissionRequired: true,
       order: 4
@@ -372,9 +372,9 @@ foam.CLASS({
       code: function() {
         var output = '(' + this.id + ') ';
         if ( this.name ) {
-          output =+ this.name;
+          output += this.name;
         } else if ( this.desc ) {
-          output =+ this.desc;
+          output += this.desc;
         }
         return output;
       },
