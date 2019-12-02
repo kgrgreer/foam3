@@ -899,7 +899,7 @@ foam.CLASS({
         var txnParent = await this.parent$find;
         if ( txnParent ) {
           // Find the root transaction in the chain
-          while ( txnParent.parent == '' ) {
+          while ( txnParent.parent != '' ) {
             txnParent = await txnParent.parent$find;
           }
         }
@@ -913,8 +913,9 @@ foam.CLASS({
         Transaction txnParent = this.findParent(x);
         if ( txnParent != null ) {
           // Find the root transaction in the chain
-          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) )
-          txnParent = txnParent.findParent(x);
+          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
+            txnParent = txnParent.findParent(x);
+          }
         }
         return txnParent;
       `
