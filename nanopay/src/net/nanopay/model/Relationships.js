@@ -96,7 +96,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
-    section: 'accountDetails',
+    section: 'parentSection',
     order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
@@ -106,7 +106,8 @@ foam.RELATIONSHIP({
         placeholder: 'select Parent',
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
-    }
+    },
+    readPermissionRequired: true
   }
 });
 
