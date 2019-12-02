@@ -38,7 +38,7 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      hidden: true,
+      visibility: 'Hidden'
     },
     {
       name: 'statusChoices',
