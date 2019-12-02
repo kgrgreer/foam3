@@ -113,7 +113,7 @@ foam.CLASS({
         throw new RuntimeException("Bank account needs to be verified for cashout"); 
       }
 
-      Transaction t = new BmoCOTransaction.Builder(x).build();
+      BmoCOTransaction. t = new BmoCOTransaction.Builder(x).build();
       t.copyFrom(request);
       t.setInstitutionNumber(institutionNumber);
       t.setTransfers(createCOTransfers(x, t, institutionNumber));

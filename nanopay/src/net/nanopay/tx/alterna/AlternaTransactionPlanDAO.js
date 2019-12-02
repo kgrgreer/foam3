@@ -102,7 +102,7 @@ foam.CLASS({
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
         }
-        Transaction t = new AlternaCOTransaction.Builder(x).build();
+        AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
         t.setInstitutionNumber(institutionNumber);
         t.setTransfers(createCOTransfers(x, t, institutionNumber));
