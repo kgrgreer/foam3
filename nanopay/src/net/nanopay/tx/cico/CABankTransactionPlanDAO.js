@@ -25,7 +25,7 @@ foam.CLASS({
     {
       name: 'PROVIDER_ID',
       type: 'String',
-      value: 'NONE'
+      value: ''
     }
   ],
 
@@ -41,11 +41,15 @@ foam.CLASS({
           name: 'txn',
           type: 'Transaction'
         },
+        {
+          name: 'institution',
+          type: 'String'
+        }
       ],
       type: 'Transfer[]',
       javaCode: `
       BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
-      TrustAccount trustAccount = sourceAccount.findTrustAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x,sourceAccount,institution);
       List all = new ArrayList();
       all.add(new Transfer.Builder(x)
           .setDescription(trustAccount.getName()+" Cash-In")
@@ -72,11 +76,15 @@ foam.CLASS({
           name: 'txn',
           type: 'Transaction'
         },
+        {
+          name: 'institution',
+          type: 'String'
+        }
       ],
       type: 'Transfer[]',
       javaCode: `
       BankAccount destinationAccount = (BankAccount) txn.findDestinationAccount(x);
-      TrustAccount trustAccount = destinationAccount.findTrustAccount(x);
+      TrustAccount trustAccount = TrustAccount.find(x,destinationAccount,institution);
       List all = new ArrayList();
       all.add(new Transfer.Builder(x)
           .setDescription(trustAccount.getName()+" Cash-Out")

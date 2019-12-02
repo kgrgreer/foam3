@@ -35,7 +35,7 @@ foam.CLASS({
     {
       name: 'PROVIDER_ID',
       type: 'String',
-      value: 'Alterna'
+      value: '842'
     }
   ],
 
@@ -81,7 +81,7 @@ foam.CLASS({
         }
         AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
         t.copyFrom(request);
-        t.setTransfers(createCITransfers(x, t));
+        t.setTransfers(createCITransfers(x, t, PROVIDER_ID));
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
@@ -98,7 +98,7 @@ foam.CLASS({
         }
         Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
-        t.setTransfers(createCOTransfers(x, t));
+        t.setTransfers(createCOTransfers(x, t, PROVIDER_ID));
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t.setIsQuoted(true);
