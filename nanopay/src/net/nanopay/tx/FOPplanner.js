@@ -65,7 +65,7 @@ foam.CLASS({
         TransactionLineItem[] lineItems = newPlan.getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, null, newPlan, false);
+          Transfer[] transfers = lineItem.createTransfers(x, null, newPlan);
           for ( int j = 0; j < transfers.length; j++ ) {
             all.add(transfers[j]);
           }
