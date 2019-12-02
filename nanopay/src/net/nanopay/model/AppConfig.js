@@ -19,11 +19,6 @@ foam.CLASS({
       documentation: `Enables white labeling on ablii sign up.`
     },
     {
-      class: 'Boolean',
-      name: 'afexEnabled',
-      documentation: `Enable AFEX Service.`
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.AdminAccessConfig',
       name: 'adminAccessConfig',
