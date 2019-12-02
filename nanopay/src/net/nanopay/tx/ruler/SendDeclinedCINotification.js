@@ -7,25 +7,22 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.core.ContextAgent',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
+    'net.nanopay.model.Business',
     'net.nanopay.tx.model.Transaction',
     'java.text.NumberFormat',
-    'java.util.HashMap',
-    'java.util.List',
-    'static foam.mlang.MLang.*'
+    'java.util.HashMap'
 
   ],
 
@@ -40,7 +37,6 @@ foam.CLASS({
               DAO currencyDAO = (DAO) x.get("currencyDAO");
               DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
               Logger logger  = (Logger) x.get("logger");
-              DAO userDAO = (DAO) x.get("userDAO");
 
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
@@ -53,15 +49,15 @@ foam.CLASS({
 
               // CHECK IF ABLII-TRANSACTION FOUND
               long invoiceId = 0;
-              User sender = null;
-              User receiver = null;
+              Business sender = null;
+              Business receiver = null;
               if ( t == null || !(t instanceof net.nanopay.tx.AbliiTransaction) ) {
-                sender = tx.findSourceAccount(x).findOwner(x);
-                receiver = tx.findDestinationAccount(x).findOwner(x);
+                sender = (Business) tx.findSourceAccount(x).findOwner(x);
+                receiver = (Business) tx.findDestinationAccount(x).findOwner(x);
               } else {
                 invoiceId = t.getInvoiceId();
-                sender = t.findSourceAccount(x).findOwner(x);
-                receiver = t.findDestinationAccount(x).findOwner(x);
+                sender = (Business) t.findSourceAccount(x).findOwner(x);
+                receiver = (Business) t.findDestinationAccount(x).findOwner(x);
               }
 
               // DEPENDING ON ABOVE - send either 'pay-from-bank-account-reject' or 'cashin-reject' email
@@ -82,21 +78,10 @@ foam.CLASS({
                   args.put("invoiceNumber", invoice.getInvoiceNumber());
                 }
 
-                //find signing officer User object
-                Sink sink = new ArraySink();
-                sink = userDAO.where(EQ(User.EMAIL, sender.getEmail()))
-                   .limit(1).select(sink);
-                List list = ((ArraySink) sink).getArray();
-                if ( list == null || list.size() == 0 ) {
-                  throw new RuntimeException("User not found");
-                }
-                User user = (User) list.get(0);
-                if ( user == null ) {
-                  throw new RuntimeException("User not found");
-                }
+                User signingOfficer = sender.getSigningOfficer(x);
 
                 args.put("amount", currency.format(t.getAmount()));
-                args.put("toName", user.getFirstName());
+                args.put("toName", signingOfficer.getFirstName());
                 args.put("name", receiver.label());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());

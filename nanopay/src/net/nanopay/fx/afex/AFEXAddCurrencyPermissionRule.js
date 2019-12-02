@@ -11,9 +11,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
@@ -21,11 +19,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
-    'java.util.List',
     'java.util.Map',
     'javax.security.auth.AuthPermission',
     'net.nanopay.approval.ApprovalRequest',
@@ -104,45 +100,31 @@ foam.CLASS({
         }
       ],
       javaCode:`
-      EmailMessage         message        = new EmailMessage();
-      Map<String, Object>  args           = new HashMap<>();
-      DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
-      Group                group          = (Group) localGroupDAO.find(business.getGroup());
-      AppConfig            appConfig      = group.getAppConfig(x);
-      String               url            = appConfig.getUrl().replaceAll("/$", "");
-      DAO                  userDAO        = (DAO) x.get("localUserDAO");
+        EmailMessage         message        = new EmailMessage();
+        Map<String, Object>  args           = new HashMap<>();
+        DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
+        Group                group          = (Group) localGroupDAO.find(business.getGroup());
+        AppConfig            appConfig      = group.getAppConfig(x);
+        String               url            = appConfig.getUrl().replaceAll("/$", "");
 
-      message.setTo(new String[]{business.getEmail()});
-      String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
-      String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-      args.put("business", business.getBusinessName());
-      args.put("toCurrency", toCurrency);
-      args.put("toCountry", toCountry);
-      args.put("link",   url + "#sme.main.dashboard");
-      args.put("sendTo", business.getEmail());
+        message.setTo(new String[]{business.getEmail()});
+        String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
+        String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
+        User signingOfficer = business.getSigningOfficer(x);
+        args.put("business", business.getBusinessName());
+        args.put("toCurrency", toCurrency);
+        args.put("toCountry", toCountry);
+        args.put("link",   url + "#sme.main.dashboard");
+        args.put("sendTo", business.getEmail());
+        args.put("name", signingOfficer.getFirstName());
 
-      try {
+        try {
+          EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
 
-        Sink sink = new ArraySink();
-        sink = userDAO.where(EQ(User.EMAIL, business.getEmail()))
-           .limit(1).select(sink);
-
-        List list = ((ArraySink) sink).getArray();
-        if ( list == null || list.size() == 0 ) {
-          throw new RuntimeException("User not found");
+        } catch (Throwable t) {
+          String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
+          ((Logger) x.get("logger")).error(msg, t);
         }
-
-        User user = (User) list.get(0);
-        if ( user == null ) {
-          throw new RuntimeException("User not found");
-        }
-        args.put("name", user.getFirstName());
-        EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
-
-      } catch (Throwable t) {
-        String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
-        ((Logger) x.get("logger")).error(msg, t);
-      }
       `
     }
   ]

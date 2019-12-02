@@ -8,7 +8,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -23,10 +22,6 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.onboarding.BusinessOnboarding',
-    'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding',
-    'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
     'net.nanopay.model.Business',
     'foam.core.Currency',
     'static foam.mlang.MLang.*'
@@ -60,8 +55,8 @@ foam.CLASS({
         invoice = (Invoice) super.put_(x, invoice);
         if ( invoice == null ) return invoice;
 
-        User payerUser = (User) invoice.findPayerId(x);
-        User payeeUser = (User) invoice.findPayeeId(x);
+        Business payerUser = (Business) invoice.findPayerId(x);
+        Business payeeUser = (Business) invoice.findPayeeId(x);
 
         String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
 
@@ -112,7 +107,6 @@ foam.CLASS({
           HashMap<String, Object> args = null;
           boolean invoiceIsToAnExternalUser = invoice.getExternal();
           DAO currencyDAO = (DAO) x.get("currencyDAO");
-          DAO userDAO = (DAO) x.get("userDAO");
           TokenService externalInvoiceToken = (TokenService) x.get("externalInvoiceToken");
 
           // FIELD LIST FOR:
@@ -121,20 +115,21 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              String firstName = getSigningOfficerFirstName(x, payeeUser.getId());
-              args = populateArgsForEmail(args, invoice, firstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              User signingOfficer = payeeUser.getSigningOfficer(x);
+              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               args.put("agentName", agent.getFirstName());
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              String firstName = getSigningOfficerFirstName(x, payerUser.getId());
-              args = populateArgsForEmail(args, invoice, firstName, payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
+              User signingOfficer = payerUser.getSigningOfficer(x);
+              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
               User tempApprover = null;
               User currentUser = (User) x.get("user");
               List<UserUserJunction> approvers = findApproversOftheBusiness(x);
+              DAO userDAO = (DAO) x.get("userDAO");
               for ( UserUserJunction approver : approvers ) {
                 if ( args != null ) args.clear();
                 tempApprover = (User) userDAO.find(approver.getPartnerId());
@@ -145,18 +140,18 @@ foam.CLASS({
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              String firstName = getSigningOfficerFirstName(x, payeeUser.getId());
-              args = populateArgsForEmail(args, invoice, firstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              User signingOfficer = payeeUser.getSigningOfficer(x);
+              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              String firstName = getSigningOfficerFirstName(x, payerUser.getId());
-              args = populateArgsForEmail(args, invoice, firstName, agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              User signingOfficer = payerUser.getSigningOfficer(x);
+              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              String firstName = getSigningOfficerFirstName(x, payerUser.getId());
-              args = populateArgsForEmail(args, invoice, firstName, payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              User signingOfficer = payerUser.getSigningOfficer(x);
+              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
           } catch (Exception e) {
@@ -321,50 +316,6 @@ foam.CLASS({
                 )
               )
             ).select(new ArraySink())).getArray();
-      `
-    },
-    {
-      name: 'getSigningOfficerFirstName',
-      type: 'String',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'id',
-          type: 'Long'
-        }
-      ],
-      javaCode: `
-        DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
-        DAO userDAO = (DAO) x.get("userDAO");
-        Sink sink = new ArraySink();
-        //find signing officer 
-        businessOnboardingDAO.where(
-          AND(
-            EQ(BusinessOnboarding.BUSINESS_ID, id),
-            EQ(BusinessOnboarding.SIGNING_OFFICER, true))
-          ).select(sink);
-        uSBusinessOnboardingDAO.where(
-          AND(
-            EQ(USBusinessOnboarding.BUSINESS_ID, id),
-            EQ(USBusinessOnboarding.SIGNING_OFFICER, true))
-          ).select(sink);
-
-        List list = ((ArraySink) sink).getArray();
-        if ( list == null || list.size() == 0 ) {
-          throw new RuntimeException("User not found");
-        }
-
-        BusinessOnboarding bo = (BusinessOnboarding) list.get(0);
-        User user = (User) userDAO.find(bo.getUserId());
-        if ( user == null ) {
-          throw new RuntimeException("User not found");
-        }
-
-        return user.getFirstName();
       `
     }
   ]

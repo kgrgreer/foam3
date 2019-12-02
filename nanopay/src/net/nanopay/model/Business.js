@@ -373,6 +373,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.dao.Sink',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthenticationException',
@@ -385,7 +386,11 @@ foam.CLASS({
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
     'java.util.List',
-    'static foam.mlang.MLang.EQ'
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
+    'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
+    'static foam.mlang.MLang.*'
   ],
 
   implements: [
@@ -555,6 +560,46 @@ foam.CLASS({
             setting.sendNotification(x, businessUser, notification);
           }
         }
+      `
+    },
+    {
+      name: 'getSigningOfficer',
+      type: 'User',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+        DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
+        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO userDAO = (DAO) x.get("userDAO");
+        Sink sink = new ArraySink();
+        //find signing officer
+        businessOnboardingDAO.where(
+          AND(
+            EQ(BusinessOnboarding.BUSINESS_ID, this.getId()),
+            EQ(BusinessOnboarding.SIGNING_OFFICER, true))
+          ).select(sink);
+        uSBusinessOnboardingDAO.where(
+          AND(
+            EQ(USBusinessOnboarding.BUSINESS_ID, this.getId()),
+            EQ(USBusinessOnboarding.SIGNING_OFFICER, true))
+          ).select(sink);
+
+        List list = ((ArraySink) sink).getArray();
+        if ( list == null || list.size() == 0 ) {
+          throw new RuntimeException("User not found");
+        }
+
+        BusinessOnboarding bo = (BusinessOnboarding) list.get(0);
+        User user = (User) userDAO.find(bo.getUserId());
+        if ( user == null ) {
+          throw new RuntimeException("User not found");
+        }
+
+        return user;
       `
     }
   ],
