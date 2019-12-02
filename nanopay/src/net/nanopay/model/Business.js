@@ -211,6 +211,18 @@ foam.CLASS({
       section: 'business'
     },
     {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'The phone number of the business.',
+      section: 'business'
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneNumberVerified',
+      writePermissionRequired: true,
+      section: 'business'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
