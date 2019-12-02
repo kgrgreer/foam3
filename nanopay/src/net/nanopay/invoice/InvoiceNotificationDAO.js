@@ -117,24 +117,14 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              //find signing officer User object
-              Sink sink = new ArraySink();
-              sink = userDAO.where(EQ(User.EMAIL, payeeUser.getEmail()))
-                 .limit(1).select(sink);
-              List list = ((ArraySink) sink).getArray();
-              if ( list == null || list.size() == 0 ) {
-                throw new RuntimeException("User not found");
-              }
-              User user = (User) list.get(0);
-              if ( user == null ) {
-                throw new RuntimeException("User not found");
-              }
-              args = populateArgsForEmail(args, invoice, user.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              String firstName = getSigningOfficerFirstName(x, payeeUser.getEmail());
+              args = populateArgsForEmail(args, invoice, firstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               args.put("agentName", agent.getFirstName());
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
+              String firstName = getSigningOfficerFirstName(x, payerUser.getEmail());
+              args = populateArgsForEmail(args, invoice, firstName, payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
@@ -143,71 +133,26 @@ foam.CLASS({
               List<UserUserJunction> approvers = findApproversOftheBusiness(x);
               for ( UserUserJunction approver : approvers ) {
                 if ( args != null ) args.clear();
-                tempApprover = (User) userDAO.find(approver.getTargetId());
+                tempApprover = (User) userDAO.find(approver.getPartnerId());
                 if ( tempApprover == null ) continue;
-                //find signing officer User object
-                Sink sink = new ArraySink();
-                sink = userDAO.where(EQ(User.EMAIL, tempApprover.getEmail()))
-                   .limit(1).select(sink);
-                List list = ((ArraySink) sink).getArray();
-                if ( list == null || list.size() == 0 ) {
-                  throw new RuntimeException("User not found");
-                }
-                User user = (User) list.get(0);
-                if ( user == null ) {
-                  throw new RuntimeException("User not found");
-                }
-                args = populateArgsForEmail(args, invoice, user.getFirstName(), agent.getFirstName(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
+                args = populateArgsForEmail(args, invoice, tempApprover.getFirstName(), agent.getFirstName(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
                 args.put("paymentTo", payeeUser.label());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              //find signing officer User object
-              Sink sink = new ArraySink();
-              sink = userDAO.where(EQ(User.EMAIL, payeeUser.getEmail()))
-                 .limit(1).select(sink);
-              List list = ((ArraySink) sink).getArray();
-              if ( list == null || list.size() == 0 ) {
-                throw new RuntimeException("User not found");
-              }
-              User user = (User) list.get(0);
-              if ( user == null ) {
-                throw new RuntimeException("User not found");
-              }
-              args = populateArgsForEmail(args, invoice, user.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              String firstName = getSigningOfficerFirstName(x, payeeUser.getEmail());
+              args = populateArgsForEmail(args, invoice, firstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              //find signing officer User object
-              Sink sink = new ArraySink();
-              sink = userDAO.where(EQ(User.EMAIL, payerUser.getEmail()))
-                 .limit(1).select(sink);
-              List list = ((ArraySink) sink).getArray();
-              if ( list == null || list.size() == 0 ) {
-                throw new RuntimeException("User not found");
-              }
-              User user = (User) list.get(0);
-              if ( user == null ) {
-                throw new RuntimeException("User not found");
-              }
-              args = populateArgsForEmail(args, invoice, user.getFirstName(), agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              String firstName = getSigningOfficerFirstName(x, payerUser.getEmail());
+              args = populateArgsForEmail(args, invoice, firstName, agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              //find signing officer User object
-              Sink sink = new ArraySink();
-              sink = userDAO.where(EQ(User.EMAIL, payerUser.getEmail()))
-                 .limit(1).select(sink);
-              List list = ((ArraySink) sink).getArray();
-              if ( list == null || list.size() == 0 ) {
-                throw new RuntimeException("User not found");
-              }
-              User user = (User) list.get(0);
-              if ( user == null ) {
-                throw new RuntimeException("User not found");
-              }
-              args = populateArgsForEmail(args, invoice, user.getFirstName(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              String firstName = getSigningOfficerFirstName(x, payerUser.getEmail());
+              args = populateArgsForEmail(args, invoice, firstName, payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
           } catch (Exception e) {
@@ -372,6 +317,35 @@ foam.CLASS({
                 )
               )
             ).select(new ArraySink())).getArray();
+      `
+    },
+    {
+      name: 'getSigningOfficerFirstName',
+      type: 'String',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'email',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("userDAO");
+        Sink sink = new ArraySink();
+        sink = userDAO.where(EQ(User.EMAIL, email))
+          .select(sink);
+        List list = ((ArraySink) sink).getArray();
+        if ( list == null || list.size() == 0 ) {
+          throw new RuntimeException("User not found");
+        }
+        User user = (User) list.get(0);
+        if ( user == null ) {
+          throw new RuntimeException("User not found");
+        }
+        return user.getFirstName();
       `
     }
   ]
