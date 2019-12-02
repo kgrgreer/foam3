@@ -73,13 +73,15 @@ foam.CLASS({
 
         // -- begin Job creation and execution
         int i = 0;
+        System.out.println("I have: "+ rows.size() + " rows..");
         for ( GsTxCsvRow row1 : rows ) {
+        System.out.println("on iteration: "+ i);
         i++;
         if ( i % 200 == 0){
-        pbd.setValue(i);
-        pbd.setStatus("Parsing Transaction: "+ pbd.getValue() +" of " + rows);
-        pbdDAO.put(pbd); }
- i++;
+          pbd.setValue(i);
+          pbd.setStatus("Parsing Transaction: "+ pbd.getValue() +" of " + rows);
+          pbdDAO.put(pbd);
+        }
           GsTxAssembly job = new GsTxAssembly.Builder(x)
             .setOutputDAO( (DAO) x.get("localTransactionDAO") )
             .setRow1(row1)
@@ -90,7 +92,7 @@ foam.CLASS({
             break; */
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(),"0") ) {
-            //transactionProcessor.enqueue(job);
+            transactionProcessor.enqueue(job);
             continue;
           }
           job.setIsInternal(true);
@@ -125,7 +127,7 @@ foam.CLASS({
             job.setSettleType(row1.getSettleType());
           }
 
-          //transactionProcessor.enqueue(job);
+          transactionProcessor.enqueue(job);
         }
       `
     },
