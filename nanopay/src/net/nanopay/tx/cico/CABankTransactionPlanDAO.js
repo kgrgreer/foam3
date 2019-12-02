@@ -25,7 +25,7 @@ foam.CLASS({
     {
       name: 'PROVIDER_ID',
       type: 'String',
-      value: ''
+      value: 'NONE'
     }
   ],
 
