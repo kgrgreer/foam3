@@ -82,7 +82,7 @@ foam.CLASS({
         f.setDestinationAccount(txn.getDestinationAccount());
         f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
-        TrustAccount sourceTrust = ((BankAccount)f.findSourceAccount(x)).findTrustAccount(x);
+        TrustAccount sourceTrust = ((BankAccount)f.findSourceAccount(x));
         all.add( new Transfer.Builder(x)
             .setDescription(sourceTrust.getName()+" FX Transfer COMPLETED")
             .setAccount(sourceTrust.getId())
@@ -94,7 +94,7 @@ foam.CLASS({
             .setAmount(-txn.getAmount())
             .build());
 
-        TrustAccount destinationTrust = ((BankAccount)f.findDestinationAccount(x)).findTrustAccount(x);
+        TrustAccount destinationTrust = ((BankAccount)f.findDestinationAccount(x));
         all.add( new Transfer.Builder(x)
             .setDescription(destinationTrust.getName()+" FX Transfer COMPLETED")
             .setAccount(destinationTrust.getId())
