@@ -472,13 +472,14 @@ foam.CLASS({
               }
 
               if ( obj.payer && obj.payee ) {
-                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
+                output += (' | ' + obj.payer.businessName + ' → ' + obj.payee.businessName);
               }
 
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
