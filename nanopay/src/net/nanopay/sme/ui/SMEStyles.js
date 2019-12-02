@@ -42,6 +42,7 @@ foam.CLASS({
       margin: 50px;
       margin-left: 0px;
       margin-top: 0px;
+      width: 38vw;
     }
     .sme-image {
       display: inline-block;
