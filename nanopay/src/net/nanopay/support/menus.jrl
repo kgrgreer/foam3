@@ -1,5 +1,5 @@
 // Main menu
-p({"class":"foam.nanos.menu.Menu","id":"doc","label":"Development Portal","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100})
+p({"class":"foam.nanos.menu.Menu","id":"doc","label":"Development Portal","handler":{"class":"foam.nanos.menu.SubMenu"},"order":10000})
 
 // Overview
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":2,"parent":"doc"})

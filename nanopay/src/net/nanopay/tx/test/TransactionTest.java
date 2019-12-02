@@ -165,6 +165,7 @@ public class TransactionTest
     CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO"))
       .find(AND(EQ(CABankAccount.OWNER, sender_.getId()),INSTANCE_OF(CABankAccount.class)) ).fclone();
     bank.setStatus(BankAccountStatus.UNVERIFIED);
+    bank.setIsDefault(false);
     bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bank).fclone();
 
     BmoVerificationTransaction txn = new BmoVerificationTransaction.Builder(x_)
@@ -197,8 +198,8 @@ public class TransactionTest
       .setPayerId(sender_.getId())
       .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
         .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
-        .setInvoiceId(inv.getId())
-        .setAmount(123)
+      .setInvoiceId(inv.getId())
+      .setAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();

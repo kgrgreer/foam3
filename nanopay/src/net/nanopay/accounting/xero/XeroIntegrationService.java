@@ -41,7 +41,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     this.oldToken = false;
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     Group group = user.findGroup(x);
     AppConfig app = group.getAppConfig(x);
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
@@ -101,7 +101,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
   public XeroContact createXeroContact(X x, com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     XeroContact newContact;
     if ( existingContact != null ) {
       newContact = existingContact;
@@ -279,7 +279,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     HashMap<String, List<ContactResponseItem>> contactErrors = this.initContactErrors();
     List<ContactMismatchPair> result = new ArrayList<>();
     List<ContactResponseItem> contactSuccess = new ArrayList<>();
@@ -443,7 +443,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   public XeroInvoice createXeroInvoice(X x, com.xero.model.Invoice xeroInvoice, Contact contact, XeroInvoice newInvoice) {
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
     DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -541,7 +541,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     List<InvoiceResponseItem> successInvoice = new ArrayList<>();
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
 
     ResultResponse validClient = isValidClient(client, x);
     if ( ! validClient.getResult() ) {
@@ -795,7 +795,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     DAO accountDAO = (DAO) x.get("accountDAO");
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     ArraySink sink = new ArraySink();
     if ( token == null ) {
       return new ResultResponse.Builder(x)
@@ -832,7 +832,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   public ResultResponse bankAccountSync(X x) {
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     List<AccountingBankAccount> banksList = new ArrayList<>();
     DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
     Logger logger = (Logger) x.get("logger");
@@ -884,7 +884,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   public ResultResponse singleInvoiceSync(X x, Invoice nanoInvoice) {
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     XeroClient client = getClient(x);
     Logger logger = (Logger) x.get("logger");
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();

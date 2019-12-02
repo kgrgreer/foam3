@@ -68,26 +68,22 @@ foam.CLASS({
     margin-top: -12px;
   }
   ^ .radio-as-arrow {
-    width: 0;
-    height: 0;
     border-style: solid;
     border-width: 0 4px 5px 4px;
     border-color: transparent transparent white transparent;
     position: relative;
-    left: 17px;
-    bottom: -10px;
+    left: 0.7vw;
+    bottom: -0.6vh;
     z-index: 0;
     pointer-events:none;
   }
   ^ .radio-as-arrow-down {
-    width: 0;
-    height: 0;
     border-style: solid;
     border-width: 5px 4px 0 4px;
     border-color: white transparent transparent transparent;
     position: relative;
-    left: 17px;
-    bottom: -10px;
+    left: 0.7vw;
+    bottom: -0.7vh;
     z-index: 0;
     pointer-events:none;
   }
@@ -113,14 +109,6 @@ foam.CLASS({
   }
   ^ .foam-u2-CheckBox:checked:after {
     content: none;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 4px 0 4px;
-    border-color: transparent transparent white transparent;
-    position: relative;
-    left: 17px;
-    bottom: -10px;
   }
   `,
 

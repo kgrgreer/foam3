@@ -238,8 +238,16 @@ foam.CLASS({
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
-        return statusHistory[0].timeStamp;
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
+      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
+      javaFactory: `
+        if ( getStatusHistory().length > 0 ) {
+          return getStatusHistory()[0].getTimeStamp();
+        }
+        return new java.util.Date();
+      `,
       tableWidth: 172,
       includeInDigest: true
     },
@@ -286,7 +294,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
-      visibility: 'RO',
+      visibility: 'FINAL',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
@@ -419,7 +427,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
-        
+
         // Outputting two columns: "amount", "Currency"
           // Hacky way of making get_(obj) into String below
         outputter.outputValue(currency.format(get_(obj)));
@@ -516,7 +524,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Transaction)obj).getDestinationCurrency();
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
-        
+
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue(currency.format(get_(obj)));
         outputter.outputValue(dstCurrency);
@@ -614,8 +622,9 @@ foam.CLASS({
       documentation: 'The date that a transaction changed to its current status',
       visibility: 'RO',
       storageTransient: true,
-      expression: function (statusHistory) {
-        return statusHistory[statusHistory.length-1].timeStamp;
+      expression: function(statusHistory) {
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
       }
     },
     {
@@ -888,6 +897,33 @@ foam.CLASS({
         }
       }
       return getStatus();
+      `
+    },
+    {
+      name: 'findRoot',
+      code: async function findRoot() {
+        var txnParent = await this.parent$find;
+        if ( txnParent ) {
+          // Find the root transaction in the chain
+          while ( txnParent.parent != '' ) {
+            txnParent = await txnParent.parent$find;
+          }
+        }
+        return txnParent;
+      },
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Transaction',
+      javaCode: `
+        Transaction txnParent = this.findParent(x);
+        if ( txnParent != null ) {
+          // Find the root transaction in the chain
+          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
+            txnParent = txnParent.findParent(x);
+          }
+        }
+        return txnParent;
       `
     },
     {

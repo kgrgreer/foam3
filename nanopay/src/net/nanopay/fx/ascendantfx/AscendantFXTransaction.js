@@ -145,6 +145,7 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
+      setCompletionDate(other.getCompletionDate());
       setLineItems(other.getLineItems());
       `
     },

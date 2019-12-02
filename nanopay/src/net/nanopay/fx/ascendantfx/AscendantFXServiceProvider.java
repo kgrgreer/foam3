@@ -2,6 +2,8 @@ package net.nanopay.fx.ascendantfx;
 
 import foam.core.Detachable;
 import foam.core.X;
+import foam.core.Agency;
+import foam.core.ContextAgent;
 import foam.core.ContextAwareSupport;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
@@ -43,11 +45,14 @@ import net.nanopay.fx.FXService;
 import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
+import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Branch;
 import foam.core.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
+import net.nanopay.tx.alterna.CsvUtil;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.model.Business;
 
 import static foam.mlang.MLang.EQ;
@@ -257,7 +262,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
 
     AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payeeUserId);
-    if ( ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+    if ( userPayeeJunction != null && ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
       PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
       ascendantRequest.setMethodID("AFXEWSPOD");
       ascendantRequest.setOrgID(orgId);
@@ -285,10 +290,25 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
+    if ( (transaction instanceof AscendantFXTransaction) ) {
+      AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction.fclone();
+      ascendantTransaction.setStatus(TransactionStatus.SENT);
+      ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          submitAFXPayment(x, ascendantTransaction);
+        }
+      }, "");
+      return ascendantTransaction;
+    }
+    return transaction;
+  }
+
+  protected void submitAFXPayment(X x, AscendantFXTransaction transaction) {
     Logger logger = (Logger) this.x.get("logger");
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
-        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction.fclone();
         User payee = User.findUser(x, ascendantTransaction.getPayeeId());
         if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
 
@@ -351,21 +371,34 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         ascendantRequest.setPaymentDetail(dealArr);
 
         SubmitDealResult submittedDealResult = this.ascendantFX.submitDeal(ascendantRequest);
-        if ( null == submittedDealResult ) throw new RuntimeException("No response from AscendantFX");
+        if ( null == submittedDealResult ) {
+          logger.error("No response from AscendantFX");
+          return;
+        }
 
-        if ( submittedDealResult.getErrorCode() != 0 )
-          throw new RuntimeException(submittedDealResult.getErrorMessage());
-
+        if ( submittedDealResult.getErrorCode() != 0 ) {
+          if ( null != submittedDealResult.getErrorMessage() && 
+              submittedDealResult.getErrorMessage().contains("Deal already submitted")) {
+                logger.info(submittedDealResult.getErrorMessage());
+          } else {
+            throw new RuntimeException(submittedDealResult.getErrorMessage());
+          }     
+        }
+          
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
         txn.setReferenceNumber(submittedDealResult.getDealID());
-        return txn;
+        txn.setStatus(TransactionStatus.SENT);
+        ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+        txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
+        ((DAO) x.get("localTransactionDAO")).put_(x, txn);
 
       }
     } catch (Exception e) {
       logger.error("Error submitting payment to AscendantFX.", e);
-      throw new RuntimeException(e);
+      transaction = (AscendantFXTransaction) transaction.fclone();
+      transaction.setStatus(TransactionStatus.DECLINED);
+      ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
     }
-    return transaction;
   }
 
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException{

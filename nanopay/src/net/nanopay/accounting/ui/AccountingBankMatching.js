@@ -209,6 +209,11 @@ foam.CLASS({
             return [account.id, account.name + '-' + account.denomination];
           }
         });
+      },
+      postSet: function(old, nu) {
+        if ( nu != '- Please Select -' ) {
+          this.showPickBankAblii = false;
+        }
       }
     },
     {
@@ -218,6 +223,11 @@ foam.CLASS({
           placeholder: '- Please Select -',
           choices$: X.data.accountingList$
         });
+      },
+      postSet: function(old, nu) {
+        if ( nu != '- Please Select -' ) {
+          this.showPickBank = false;
+        }
       }
     },
     {

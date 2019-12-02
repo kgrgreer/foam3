@@ -671,7 +671,11 @@ foam.CLASS({
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {
-            return [t, t.match(/[A-Z][a-z]+|[0-9]+/g).join(" ")];
+            var strArray = t.match(/[A-Z][a-z]+|[0-9]+/g);
+            var accountType = strArray.join(" ");
+            var index = t.indexOf(strArray[0]);
+            if ( index > 0 ) accountType = t.substr(0, index) + " " + accountType;
+            return [t, accountType];
         });
       });
     },
