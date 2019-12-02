@@ -69,15 +69,33 @@ foam.CLASS({
       section: 'accountDetails'
     },
     {
+      class: 'String',
+      name: 'ifscCode',
+      label: 'IFSC Code',
+      validateObj: function(ifscCode) {
+        var accNumberRegex = /^\w{11}$/;
+
+        if ( ifscCode === '' ) {
+          return 'Please enter an IFSC Code.';
+        } else if ( ! accNumberRegex.test(ifscCode) ) {
+          return 'IFSC Code must be 11 digits long.';
+        }
+      },
+      section: 'accountDetails'
+    },
+    {
       name: 'accountNumber',
       label: 'International Bank Account No.',
+      preSet: function(o, n) {
+        return /^\w*$/.test(n) ? n : o;
+      },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{9,18}$/;
+        var accNumberRegex = /^\w{16,30}$/;
 
         if ( accountNumber === '' ) {
-          return 'Please enter an account number.';
+          return 'Please enter an International Bank Account No.';
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Account number must be between 8 and 18 digits long.';
+          return 'International Bank Account No must be between 16 and 30 digits long.';
         }
       },
     }
