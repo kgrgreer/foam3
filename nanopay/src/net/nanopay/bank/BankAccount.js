@@ -329,7 +329,7 @@ foam.CLASS({
           }
         }
       `
-    },
+    }
   ],
 
   axioms: [
