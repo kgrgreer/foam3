@@ -238,6 +238,7 @@ var classes = [
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.BusinessRegistration',
   'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
+  'net.nanopay.onboarding.NotificationSettingsRule',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
