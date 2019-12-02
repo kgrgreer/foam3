@@ -275,7 +275,23 @@ foam.CLASS({
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
-      tableWidth: 145
+      tableWidth: 145,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+
+        // React to homeDenomination because it's used in the currency formatter.
+        this.add(obj.homeDenomination$.map(function(_) {
+          return obj.findBalance(self.__subSubContext__).then(
+            function(balance) {
+              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+                function(curr) {
+                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  self.tooltip = displayBalance;
+                  return displayBalance;
+                })
+            })
+        }));
+      }
     },
     {
       class: 'UnitValue',
@@ -289,7 +305,28 @@ foam.CLASS({
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
-      tableWidth: 145
+      tableWidth: 145,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+
+        this.add(
+          obj.slot(homeDenomination => {
+            return Promise.all([
+              obj.denomination == homeDenomination ?
+                Promise.resolve(1) :
+                obj.fxService.getFXRate(obj.denomination, homeDenomination,
+                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
+              obj.findBalance(self.__subSubContext__),
+              self.__subSubContext__.currencyDAO.find(homeDenomination)
+            ]).then(arr => {
+              let [r, b, c] = arr;
+              var displayBalance = c.format(Math.floor((b || 0) * r));
+              self.tooltip = displayBalance;
+              return displayBalance;
+            })
+          })
+        );
+      }
     },
     {
       class: 'DateTime',
@@ -352,16 +389,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      this.updateBalance();
-
-      var self = this;  
-      this.homeDenomination$.sub(function() {
-        self.updateBalance();
-      }.bind(this)); 
-    },
     {
       name: 'toSummary',
       documentation: `
@@ -377,28 +404,6 @@ foam.CLASS({
           output += this.desc;
         }
         return output;
-      },
-    },
-    {
-      name: 'updateBalance',
-      documentation: `
-        Update the local balance and home balance. Home balance is calculated using the
-        provided exchange rate, based on the provided denomination and home denomination.
-      `,
-      code: function() {
-        var self = this;
-        Promise.all([
-          self.denomination == self.homeDenomination ?
-            Promise.resolve(1) :
-            self.fxService.getFXRate(self.denomination, self.homeDenomination,
-              0, 1, 'BUY', null, self.user.id, 'nanopay').then(r => r.rate),
-          self.findBalance(self.__subContext__),
-          self.__subContext__.currencyDAO.find(self.homeDenomination)
-        ]).then(arr => {
-          let [r, b, c] = arr;
-          self.balance = b;
-          self.homeBalance = Math.floor((b || 0) * r);
-        });
       },
     },
     {
