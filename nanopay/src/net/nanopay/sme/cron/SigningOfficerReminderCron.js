@@ -55,7 +55,7 @@ foam.CLASS({
         Logger                    logger    = (Logger) x.get("logger");
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
         DAO        businessInvitationDAO    = (DAO) x.get("businessInvitationDAO");
-        int[]              intervalArray    = timeIntervalsBasedOnAppMode(x);
+        long[]              intervalArray    = timeIntervalsBasedOnAppMode(x);
         if ( intervalArray == null ) {
           logger.warning("@SigningOfficerReminderCron and no appConfig found :S ");
           return;
@@ -105,7 +105,7 @@ foam.CLASS({
     },
     {
       name: 'timeIntervalsBasedOnAppMode',
-      javaType: 'int[]',
+      javaType: 'long[]',
       args: [
         {
           name: 'x',
@@ -115,14 +115,14 @@ foam.CLASS({
       javaCode: `
         AppConfig appConfig = (AppConfig) x.get("appConfig");
         if ( appConfig == null ) return null;
-        int[] intervalArray = new int[2];
+        long[] intervalArray = new long[2];
         if ( appConfig.getMode() == Mode.STAGING ) {
-          intervalArray[0] = (1000*24);
-          intervalArray[1] = (1000*60);
+          intervalArray[0] = 1000l*24l;
+          intervalArray[1] = 1000l*60l;
           return intervalArray;
         }
-        intervalArray[0] = (1000*60*60*24);
-        intervalArray[1] = (1000*60*60*24*7);
+        intervalArray[0] = 1000l*60l*60l*24l;
+        intervalArray[1] = 1000l*60l*60l*24l*7l;
         return intervalArray;
       `
     },
@@ -140,7 +140,7 @@ foam.CLASS({
         },
         {
           name: 'intervalArray',
-          javaType: 'int[]'
+          javaType: 'long[]'
         },
         {
           name: 'logger',
