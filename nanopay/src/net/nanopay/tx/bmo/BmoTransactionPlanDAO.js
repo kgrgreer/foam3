@@ -40,8 +40,13 @@ foam.CLASS({
     {
       name: 'PROVIDER_ID',
       type: 'String',
+      value: 'BMO'
+    },
+    {
+      name: 'institutionNumber',
+      type: 'String',
       value: '001'
-    }
+    },
   ],
   
   properties: [
@@ -89,7 +94,8 @@ foam.CLASS({
 
       BmoCITransaction t = new BmoCITransaction.Builder(x).build();
       t.copyFrom(request);
-      t.setTransfers(createCITransfers(x, t, PROVIDER_ID));
+      t.setInstitutionNumber(institutionNumber);
+      t.setTransfers(createCITransfers(x, t, institutionNumber));
 
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
@@ -109,7 +115,8 @@ foam.CLASS({
 
       Transaction t = new BmoCOTransaction.Builder(x).build();
       t.copyFrom(request);
-      t.setTransfers(createCOTransfers(x, t, PROVIDER_ID));
+      t.setInstitutionNumber(institutionNumber);
+      t.setTransfers(createCOTransfers(x, t, institutionNumber));
       // TODO: use EFT calculation process - ClearingTimeService
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);

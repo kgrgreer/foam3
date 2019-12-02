@@ -36,6 +36,11 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      name: 'institutionNumber',
+      class: 'String',
+      hidden: true,
+    },
+    {
       name: 'statusChoices',
       hidden: true,
       documentation: 'Returns available statuses for each transaction depending on current status',
