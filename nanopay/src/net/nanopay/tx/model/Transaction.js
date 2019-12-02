@@ -472,7 +472,7 @@ foam.CLASS({
               }
 
               if ( obj.payer && obj.payee ) {
-                output += (' | ' + obj.payer.businessName + ' → ' + obj.payee.businessName);
+                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
               }
 
               return output;
