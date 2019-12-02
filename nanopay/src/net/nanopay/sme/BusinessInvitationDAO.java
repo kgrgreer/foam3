@@ -160,6 +160,9 @@ public class BusinessInvitationDAO
 
     // Create token for user registration
     Token token = new Token();
+    Date today  = new Date();
+    long oneMonth = (1000*60*60*24*30);
+    token.setExpiry(new Date(today.getTime() + oneMonth));
     token.setParameters(tokenParams);
     token.setData(UUID.randomUUID().toString());
     token = (Token) tokenDAO.put(token);

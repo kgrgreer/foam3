@@ -52,18 +52,12 @@ foam.CLASS({
         `
         EmailMessage             message    = null;
         Map<String, Object>         args    = null;
-        Date                       today    = new Date();
-        long                     oneWeek    = 1000*60*60*24*7;
-        Date                  expiryDate    = new Date(today.getTime() + oneWeek);
-        Long              comparisonTime    = 0l;
         Logger                    logger    = (Logger) x.get("logger");
-        DAO                     tokenDAO    = (DAO) x.get("tokenDAO");
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
-        DAO              emailMessageDAO    = (DAO) x.get("emailMessageDAO");
         DAO        businessInvitationDAO    = (DAO) x.get("businessInvitationDAO");
-        int[]              intervalArray    = distinguishTimeIntervals(x);
+        int[]              intervalArray    = timeIntervalsBasedOnAppMode(x);
         if ( intervalArray == null ) {
-          logger.error("@SigningOfficerReminderCron and no appConfig found :S ");
+          logger.warning("@SigningOfficerReminderCron and no appConfig found :S ");
           return;
         }
         
@@ -85,75 +79,11 @@ foam.CLASS({
             );
 
           if ( invitation == null ) continue;
-
-          // LOCATE the last time a reminder email was sent.
-          List<EmailMessage> ems = ((ArraySink) emailMessageDAO.where(
-            AND(
-              EQ(EmailMessage.SUBJECT, "Invitation from your employee to join Ablii"),
-              EQ(EmailMessage.TO, ((String)invitation.getEmail()))
-            )
-          ).select(new ArraySink())).getArray();
           
-          // DETERMINE if one of the time conditions are satified
-          try {
-            if ( ems.size() == 0 ) {
-              // FIRST EMAIL - ONE DAY AFTER
-              comparisonTime = invitation.getTimestamp().getTime();
-              if ( (today.getTime() - comparisonTime) < intervalArray[0] ) continue;
-            } else if ( ems.size() == 1 ) {
-              // SECOND EMAIL - SEVEN DAYS AFTER
-              comparisonTime = ems.get(0).getCreated().getTime();
-              if ( (today.getTime() - comparisonTime) < intervalArray[1] ) continue;
-            } else if ( ems.size() == 2 ) {
-              // THIRD EMAIL - FOURTEEN DAYS AFTER
-              comparisonTime = ems.get(0).getCreated().getTime() > ems.get(1).getCreated().getTime() ? 
-                ems.get(0).getCreated().getTime() : ems.get(1).getCreated().getTime();
-              if ( (today.getTime() - comparisonTime) < intervalArray[1] ) continue;
-            } else { continue; }
-          } catch (Exception e) {
-            logger.error("@SigningOfficerReminderCron: while checking time references on businsess " + business.getId(), e);
-            return;
-          }
+          if (! determineIfTimeConditionSatified(x, invitation, intervalArray, logger) ) continue;
           
-          // REGENERATE URL
-          List<Token> tokenList = ((ArraySink) tokenDAO.where(
-            AND(
-              EQ(Token.USER_ID, invitation.getInviteeId()),
-              GTE(Token.EXPIRY, expiryDate))
-          ).select(new ArraySink())).getArray();
-          String email = "";
-          Token token = null;
-          for (Token t : tokenList) {
-            email = (String)((Map)t.getParameters()).get("inviteeEmail");
-            if ( email != null && SafetyUtil.equals(email, invitation.getEmail())) {
-              token = t;
-              break;
-            }
-          }
-          if ( token == null ) logger.error("@SigningOfficerReminderCron and no token to build email :| ");
-          Group group         = business.findGroup(x);
-          AppConfig appConfig = group.getAppConfig(x);
-          String url          = appConfig.getUrl().replaceAll("/$", "");
-
-          if ( invitation.getInternal() ) {
-            url += "/service/joinBusiness?token=" + token.getData() + "&redirect=/";
-          } else {
-            // Encoding business name and email to handle special characters.
-            String encodedBusinessName, encodedEmail;
-            try {
-              encodedEmail =  URLEncoder.encode(invitation.getEmail(), "UTF-8");
-              encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
-            } catch(Exception e) {
-              logger.error("@SigningOfficerReminderCron: Error encoding the email or business name.", e);
-              return;
-            }
-
-            String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
-
-            url += "?token=" + token.getData();
-            if ( country != null ) url += "&country=" + country;
-            url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
-          }
+          String url          = generateURL(x, invitation, business, logger);
+          if ( SafetyUtil.equals(url, "") ) continue;
 
           // SEND EMAIL
           message             = new EmailMessage();
@@ -167,14 +97,14 @@ foam.CLASS({
             EmailsUtility.sendEmailFromTemplate(x, business, message, "signingOfficerReminder", args);
           } catch (Throwable t) {
             logger.error("@SigningOfficerReminderCron: while sending email for businsess" + business.getId(), t);
-            return;
+            continue;
           }
         }
         
         `
     },
     {
-      name: 'distinguishTimeIntervals',
+      name: 'timeIntervalsBasedOnAppMode',
       javaType: 'int[]',
       args: [
         {
@@ -189,10 +119,141 @@ foam.CLASS({
         if ( appConfig.getMode() == Mode.STAGING ) {
           intervalArray[0] = (1000*24);
           intervalArray[1] = (1000*60);
+          return intervalArray;
         }
         intervalArray[0] = (1000*60*60*24);
         intervalArray[1] = (1000*60*60*24*7);
         return intervalArray;
+      `
+    },
+    {
+      name: 'determineIfTimeConditionSatified',
+      javaType: 'boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'invitation',
+          type: 'Invitation'
+        },
+        {
+          name: 'intervalArray',
+          javaType: 'int[]'
+        },
+        {
+          name: 'logger',
+          type: 'Logger'
+        }
+      ],
+      javaCode: `
+      DAO              emailMessageDAO    = (DAO) x.get("emailMessageDAO");
+      Long              comparisonTime    = 0l;
+      Date                       today    = new Date();
+      String[]                 toEmail    = {invitation.getEmail()};
+
+      // LOCATE the last time a reminder email was sent.
+      List<EmailMessage> ems = ((ArraySink) emailMessageDAO.where(AND(
+          EQ(EmailMessage.SUBJECT, "Invitation from your employee to join Ablii"),
+          IN(invitation.getEmail(), EmailMessage.TO)
+        )
+      ).select(new ArraySink())).getArray();
+
+      try {
+        if ( ems.size() == 0 ) {
+          // FIRST EMAIL - ONE DAY AFTER
+          comparisonTime = invitation.getTimestamp().getTime();
+          if ( (today.getTime() - comparisonTime) < intervalArray[0] ) return false;
+        } else if ( ems.size() == 1 ) {
+          // SECOND EMAIL - SEVEN DAYS AFTER
+          comparisonTime = ems.get(0).getCreated().getTime();
+          if ( (today.getTime() - comparisonTime) < intervalArray[1] ) return false;
+        } else if ( ems.size() == 2 ) {
+          // THIRD EMAIL - FOURTEEN DAYS AFTER
+          comparisonTime = ems.get(0).getCreated().getTime() > ems.get(1).getCreated().getTime() ? 
+            ems.get(0).getCreated().getTime() : ems.get(1).getCreated().getTime();
+          if ( (today.getTime() - comparisonTime) < intervalArray[1] ) return false;
+        } else { return false; }
+      } catch (Exception e) {
+        logger.warning("@SigningOfficerReminderCron: while checking time references on businsess.", e);
+        return false;
+      }
+      return true;
+      `
+    },
+    {
+      name: 'generateURL',
+      javaType: 'String',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'invitation',
+          type: 'Invitation'
+        },
+        {
+          name: 'business',
+          type: 'Business'
+        },
+        {
+          name: 'logger',
+          type: 'Logger'
+        }
+      ],
+      javaCode: `
+        // REGENERATE URL
+        String    email       = "";
+        Token     token       = null;
+        Date      today       = new Date();
+        long      oneWeek     = 1000*60*60*24*7;
+        Date      expiryDate  = new Date(today.getTime() + oneWeek);
+        DAO       tokenDAO    = (DAO) x.get("tokenDAO");
+
+        List<Token> tokenList = ((ArraySink) tokenDAO.where(AND(
+            EQ(Token.PROCESSED, false),
+            GTE(Token.EXPIRY, expiryDate)
+          )
+        ).select(new ArraySink())).getArray();
+        
+        for (Token t : tokenList) {
+          email = (String)((Map)t.getParameters()).get("inviteeEmail");
+          // if (t.getExpiry() != null && t.getExpiry().getTime() < expiryDate.getTime()) continue; 
+          if ( email != null && SafetyUtil.equals(email, invitation.getEmail())) {
+            token = t;
+            break;
+          }
+        }
+
+        if ( token == null ) {
+          return "";
+        }
+
+        Group group         = business.findGroup(x);
+        AppConfig appConfig = group.getAppConfig(x);
+        String url          = appConfig.getUrl().replaceAll("/$", "");
+
+        if ( invitation.getInternal() ) {
+          return url += "/service/joinBusiness?token=" + token.getData() + "&redirect=/";
+        }
+
+        // Encoding business name and email to handle special characters.
+        String encodedBusinessName, encodedEmail;
+        try {
+          encodedEmail =  URLEncoder.encode(invitation.getEmail(), "UTF-8");
+          encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
+        } catch(Exception e) {
+          logger.error("@SigningOfficerReminderCron: Error encoding the email or business name.", e);
+          return "";
+        }
+
+        String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
+
+        url += "?token=" + token.getData();
+        if ( country != null ) url += "&country=" + country;
+        return url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
       `
     }
   ]
