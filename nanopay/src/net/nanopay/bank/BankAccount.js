@@ -16,7 +16,6 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Branch',
     'foam.core.Currency',
@@ -30,7 +29,6 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
-    'java.util.ArrayList',
     'java.util.List'
   ],
 
