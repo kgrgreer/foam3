@@ -354,9 +354,9 @@ foam.CLASS({
       code: function() {
         var output = '(' + this.id + ') ';
         if ( this.name ) {
-          output =+ this.name;
+          output += this.name;
         } else if ( this.desc ) {
-          output =+ this.desc;
+          output += this.desc;
         }
         return output;
       },
