@@ -20,7 +20,6 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
-  { name: 'net/nanopay/account/Relationships' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
