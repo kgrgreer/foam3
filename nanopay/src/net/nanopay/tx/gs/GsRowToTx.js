@@ -32,6 +32,7 @@ foam.CLASS({
 
         ProgressBarData pbd = new ProgressBarData ();
         pbd.setId(progId);
+        pbd.setName(progId);
         pbd.setStatus("Reading CSV...");
         DAO pbdDAO = (DAO) x.get("ProgressBarDAO");
         pbdDAO.put(pbd);

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'GSFileUploadScreen',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
 
   documentation: 'View for downloading Alterna CSV',
 
@@ -74,11 +74,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id_',
-      hidden: true
-    },
-    {
-      class: 'Long',
-      name: 'c'
+      view: function(args, X) {
+        return {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: '<Select Upload>',
+            dao: X.ProgressBarDAO,
+            objToChoice: function(a) {
+              return [a.id, a.name];
+          }
+        };
+      },
     },
     {
       name: 'scriptToUse',
@@ -99,28 +104,14 @@ foam.CLASS({
       class: 'String',
       name: 'progressBarValue',
       //view: { class: 'foam.nanos.pm.TemperatureCView' },
-      expression: function(id_,c){
-          return this.ProgressBarDAO.find(id_).then( function(data) {
-          if ( data != null )
-            return data.state+'%';
-          return '0%';
-
-          });
-        }
-      //value: '50%'
+      value: '0%'
     },
         {
           class: 'String',
           name: 'progressBarStatus',
           //view: { class: 'foam.nanos.pm.TemperatureCView' },
-          expression: function(id_,c){
-              return this.ProgressBarDAO.find(id_).then((data) => {
-              if ( data != null )
-                return data.status;
-              return 'Awaiting File Upload.';
-              });
-            }
-          //value: 'Ingested: 300000 of 600000'
+
+          value: 'Awaiting File Upload.'
         }
   ],
 
@@ -132,38 +123,39 @@ foam.CLASS({
     })
   },
     function initE(){
-
       var self = this;
-      var timeout = setInterval
-      (() => {this.c++},1000);
+      var timeout = setInterval(() => {
+        this.ProgressBarDAO.find(this.id_).then((data) => {
+          if ( data != null ) {
+            this.progressBarStatus = data.status;
+            this.progressBarValue = data.value;
+          }
+          else {
+            this.progressBarStatus = 'Awaiting File Upload.';
+            this.progressBarValue = '0%';
+          }
+        });
+      }, 1000);
 
       this.onDetach(function() {
-      this.clearInterval(timeout);
+        this.clearInterval(timeout);
       }.bind(this));
 
       this.SUPER();
       this.addClass(this.myClass())
       .start().addClass('light-roboto-h2').addClass('button').add('Settlement CSV File Upload').end()
+      .start().add('Choose a current upload: ').add(this.ID_).addClass('button').end()
       .start( this.FileDropZone, {
         files$: this.uploadedCSVs$,
         supportedFormats: { 'csv': 'CSV' },
         isMultipleFiles: false,
         maxSize: 1024
       }).end()
-
-        .startContext({data: this})
           .start().addClass('button')
             .start().add(this.PROCESS).end()
           .end()
-
-        .endContext()
-
-
-      .add(self.slot(function(progressBarValue, progressBarStatus) {
-        return self.E()
-
         .start()
-         .start().addClass('light-roboto-h2').add(progressBarStatus).addClass('button').end()
+         .start().addClass('light-roboto-h2').add(this.progressBarStatus$).addClass('button').end()
           .start()
             .addClass('progress-bar')
             .start()
@@ -171,14 +163,13 @@ foam.CLASS({
             .start()
               .addClass('front')
               .style({
-                width: progressBarValue
+                width: this.progressBarValue$
               })
                .end()
             .end()
           .end()
         .end()
 
-      }))
     }
   ],
 
@@ -192,7 +183,10 @@ foam.CLASS({
           console.log(this.id_+ " :lol look: "+ this.scriptToUse.progressId);
           this.scriptToUse.run();
         }
-      }
+      },
+      //enabled: function(progressBarStatus) {
+     //   if ( progressBarStatus != 'Awaiting File Upload.')
+      //}
     },
   ]
 
