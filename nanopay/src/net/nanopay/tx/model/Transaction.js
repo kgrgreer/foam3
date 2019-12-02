@@ -478,7 +478,8 @@ foam.CLASS({
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
