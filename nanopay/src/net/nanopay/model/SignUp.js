@@ -92,7 +92,7 @@ foam.CLASS({
                 this.acceptanceDocumentService.
                 updateUserAcceptanceDocument(x, userId, accDoc, (accDoc != 0)),
                 this.acceptanceDocumentService.
-                    updateUserAcceptanceDocument(x, userId, accDoc2, (accDoc2 != 0))
+                updateUserAcceptanceDocument(x, userId, accDoc2, (accDoc2 != 0))
               ])
               .finally(() => {
                 this.finalRedirectionCall();
