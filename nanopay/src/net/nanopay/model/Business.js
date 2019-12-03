@@ -550,16 +550,14 @@ foam.CLASS({
         DAO               userDAO  = (DAO) x.get("localUserDAO");
         Logger              logger = (Logger) x.get("logger");
 
-        // Gets the notification settings for this business and sends notification.
-        List<NotificationSetting> settings = ((ArraySink) getNotificationSettings(x).select(new ArraySink())).getArray();
-        for( NotificationSetting businessSetting : settings ) {
-          businessSetting.sendNotification(x, this, notification);
-        }
+        // Send business notifications
+        super.doNotify(x, notification);
 
         // Gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
           .where(EQ(UserUserJunction.TARGET_ID, getId()))
           .select(new ArraySink())).getArray();
+
         for( UserUserJunction businessUserJunction : businessUserJunctions ) {
           User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
           if ( businessUser == null ) {
