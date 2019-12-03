@@ -575,8 +575,18 @@ p({
   "client":
   """
   {
-    "of":"foam.nanos.auth.User",
-    "cache":true,
+    "of": "foam.nanos.auth.User",
+    "cache": true,
+    "order": [
+      {
+        "class": "foam.mlang.order.Desc",
+        "arg1": {
+          "class": "__Property__",
+          "forClass_": "foam.nanos.auth.User",
+          "name": "created"
+        }
+      }
+    ],
     "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
