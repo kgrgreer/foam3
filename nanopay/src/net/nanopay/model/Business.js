@@ -563,7 +563,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getSigningOfficer',
+      name: 'findSigningOfficer',
       type: 'User',
       args: [
         {

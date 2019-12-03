@@ -56,7 +56,7 @@ public class InvoiceVoidEmailDAO
       invoice.getInvoiceNumber();
 
     String payerFirstName = isPayerABusiness ?
-      ((Business) payer).getSigningOfficer(x).getFirstName() :
+      ((Business) payer).findSigningOfficer(x).getFirstName() :
       payer.getFirstName();
 
     message.setTo(new String[]{payer.getEmail()});

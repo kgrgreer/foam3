@@ -110,7 +110,7 @@ foam.CLASS({
         message.setTo(new String[]{business.getEmail()});
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-        User signingOfficer = business.getSigningOfficer(x);
+        User signingOfficer = business.findSigningOfficer(x);
         args.put("business", business.getBusinessName());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);

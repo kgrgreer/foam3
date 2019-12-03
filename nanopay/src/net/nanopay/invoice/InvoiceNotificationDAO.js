@@ -118,11 +118,11 @@ foam.CLASS({
 
           try {
             String payerSigningOfficerFirstName = isPayerABusiness ?
-              ((Business) payerUser).getSigningOfficer(x).getFirstName() :
+              ((Business) payerUser).findSigningOfficer(x).getFirstName() :
               payerUser.getFirstName();
-              
+
             String payeeSigningOfficerFirstName = isPayeeABusiness ?
-              ((Business) payeeUser).getSigningOfficer(x).getFirstName() :
+              ((Business) payeeUser).findSigningOfficer(x).getFirstName() :
               payeeUser.getFirstName();
 
             if ( invoiceIsBeingPaidButNotComplete ) {
