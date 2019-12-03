@@ -42,17 +42,16 @@ foam.CLASS({
       class: 'Int',
       name: 'currentIndex',
       value: 0,
+      preSet: function(old, nu) {
+        if ( nu > this.numOfParts - 1 ) return this.numOfParts - 1;
+        if ( nu < 1 ) return 0;
+        return nu;
+      }
     },
     {
       class: 'Int',
       name: 'numOfParts',
       value: 6,
-      preSet: function(old, nu) {
-        if ( nu >= this.numOfParts - 1 ) return this.numOfParts - 1;
-        if ( nu <= 0 ) return 0;
-        if ( nu < 0 || this.choices.length === 0 ) return 0;
-        return nu;
-      }
     },
     {
       class: 'FObjectArray',
@@ -73,23 +72,24 @@ foam.CLASS({
         v.on('focus', () => {
           self.currentIndex = i;
         });
-        v.on('keydown', function onkeyDown(e) {
+        v.on('keydown', (e) => {
           switch ( e.keyCode ) {
             case 37:
-                self.currentIndex--;
-                self.elements[self.currentIndex].focus();
+                this.currentIndex--;
+                // this.elements[this.currentIndex].focus();
             break;
             case 39:
-                self.currentIndex++;
-                self.elements[self.currentIndex].focus();
+                this.currentIndex++;
+                // this.elements[this.currentIndex].focus();
             break;
             case 8:
-              if ( self.elements[self.currentIndex].data === ' ' || ! self.elements[self.currentIndex].data ) {
-                if ( self.currentIndex === 0 ) break;
-                self.elements[self.currentIndex - 1].focus();
+              if ( this.elements[this.currentIndex].data === ' ' || ! this.elements[this.currentIndex].data ) {
+                this.currentIndex--;
+                // this.elements[this.currentIndex].focus();
               };
             break;
           }
+          this.elements[this.currentIndex].focus();
         });
 
         this.tag(v).addClass(this.myClass());
@@ -106,13 +106,9 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       code: function(detachable, eventName, propertyName, propertySlot) {
-        console.log(this.data);
         if ( propertySlot.get() ) {
-          
-          if ( this.currentIndex >= this.numOfParts - 1 ) return;
-          this.elements[this.currentIndex + 1].focus();
-        } else {
-          console.log(eventName)
+          this.currentIndex++;
+          this.elements[this.currentIndex].focus();
         }
       }
     }
