@@ -33,8 +33,9 @@ public class InvoiceVoidEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    Business payer = (Business) invoice.findPayerId(x);
-    Business payee = (Business) invoice.findPayeeId(x);
+    boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business) ? true : false;
+    User payer = (User) invoice.findPayerId(x);
+    User payee = (User) invoice.findPayeeId(x);
 
     // Checks to make sure invoice is set to Void
     if (  PaymentStatus.VOID != invoice.getPaymentMethod() )
@@ -54,14 +55,17 @@ public class InvoiceVoidEmailDAO
       (SafetyUtil.isEmpty(invoice.getPurchaseOrder()) ? "N/A" : invoice.getPurchaseOrder()) :
       invoice.getInvoiceNumber();
 
-    User signingOfficer = payer.getSigningOfficer(x);
+    String payerFirstName = isPayerABusiness ?
+      ((Business) payer).getSigningOfficer(x).getFirstName() :
+      payer.getFirstName();
+
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account",  accountVar);
     args.put("amount",   formatter.format(invoice.getAmount()/100.00));
     args.put("link",     config.getUrl());
     args.put("fromName", payee.label());
-    args.put("toName",   signingOfficer.getFirstName());
+    args.put("toName", payerFirstName);
     args.put("sendTo",   payer.getEmail());
     args.put("supportEmail", SafetyUtil.isEmpty(config.getSupportEmail()) ? payerGroup.getSupportEmail() : config.getSupportEmail());
 

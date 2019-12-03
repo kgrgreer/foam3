@@ -55,8 +55,11 @@ foam.CLASS({
         invoice = (Invoice) super.put_(x, invoice);
         if ( invoice == null ) return invoice;
 
-        Business payerUser = (Business) invoice.findPayerId(x);
-        Business payeeUser = (Business) invoice.findPayeeId(x);
+        User payerUser = (User) invoice.findPayerId(x);
+        User payeeUser = (User) invoice.findPayeeId(x);
+
+        boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business) ? true : false;
+        boolean isPayeeABusiness = (invoice.findPayeeId(x) instanceof Business) ? true : false;
 
         String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
 
@@ -114,15 +117,21 @@ foam.CLASS({
           // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
 
           try {
+            String payerSigningOfficerFirstName = isPayerABusiness ?
+              ((Business) payerUser).getSigningOfficer(x).getFirstName() :
+              payerUser.getFirstName();
+              
+            String payeeSigningOfficerFirstName = isPayeeABusiness ?
+              ((Business) payeeUser).getSigningOfficer(x).getFirstName() :
+              payeeUser.getFirstName();
+
             if ( invoiceIsBeingPaidButNotComplete ) {
-              User signingOfficer = payeeUser.getSigningOfficer(x);
-              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeSigningOfficerFirstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               args.put("agentName", agent.getFirstName());
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              User signingOfficer = payerUser.getSigningOfficer(x);
-              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerSigningOfficerFirstName, payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
@@ -140,18 +149,15 @@ foam.CLASS({
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              User signingOfficer = payeeUser.getSigningOfficer(x);
-              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeSigningOfficerFirstName, payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              User signingOfficer = payerUser.getSigningOfficer(x);
-              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              args = populateArgsForEmail(args, invoice, payerSigningOfficerFirstName, agent.getFirstName(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              User signingOfficer = payerUser.getSigningOfficer(x);
-              args = populateArgsForEmail(args, invoice, signingOfficer.getFirstName(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerSigningOfficerFirstName, payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
           } catch (Exception e) {
