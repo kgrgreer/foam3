@@ -73,8 +73,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'payeeId',
-    'payerId',
+    'searchName',
     'invoiceId',
     'type',
     'status',
@@ -478,7 +477,8 @@ foam.CLASS({
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
@@ -661,6 +661,15 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      hidden: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    }
   ],
 
   methods: [
@@ -891,6 +900,33 @@ foam.CLASS({
         }
       }
       return getStatus();
+      `
+    },
+    {
+      name: 'findRoot',
+      code: async function findRoot() {
+        var txnParent = await this.parent$find;
+        if ( txnParent ) {
+          // Find the root transaction in the chain
+          while ( txnParent.parent != '' ) {
+            txnParent = await txnParent.parent$find;
+          }
+        }
+        return txnParent;
+      },
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Transaction',
+      javaCode: `
+        Transaction txnParent = this.findParent(x);
+        if ( txnParent != null ) {
+          // Find the root transaction in the chain
+          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
+            txnParent = txnParent.findParent(x);
+          }
+        }
+        return txnParent;
       `
     },
     {
