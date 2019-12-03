@@ -569,13 +569,14 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.ID).build() })
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
   """,
   "client":
   """
   {
     "of":"foam.nanos.auth.User",
+    "cache":true,
     "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
@@ -643,6 +644,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .setInnerDAO(x.get("localBusinessDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.model.Business.CREATED).build() })
       .build();
   """,
   "client":
