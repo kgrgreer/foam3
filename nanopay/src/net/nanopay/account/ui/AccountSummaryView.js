@@ -28,7 +28,7 @@ foam.CLASS({
     function init() {
       this.views = [
         [{
-          class: 'foam.u2.view.TableView',
+          class: 'foam.u2.view.ScrollTableView',
           data: this.accountDAO
         }, 'Table'],
         [

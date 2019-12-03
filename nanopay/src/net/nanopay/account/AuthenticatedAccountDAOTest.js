@@ -15,7 +15,8 @@ foam.CLASS({
     'foam.util.Auth',
     'java.lang.Object',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -147,7 +148,7 @@ foam.CLASS({
         test(false, "Tests for 'find' failed due to an unexpected exception.");
         t.printStackTrace();
       } finally {
-        accountDAO.removeAll();
+        accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
       }
       `
     },
@@ -171,8 +172,8 @@ foam.CLASS({
         // Update the account to be USD denominated, assert that the account is now USD
         clonedAccount = (DigitalAccount) putAccount.fclone();
         clonedAccount.setDenomination("USD");
-        accountDAO.put_(user1Context, clonedAccount);
-        FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
+        accountDAO.put(clonedAccount);
+        FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
         return updatedPutAccount.getProperty("denomination").equals("USD");
       } catch (Throwable t) {
         t.printStackTrace();

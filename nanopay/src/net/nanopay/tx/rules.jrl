@@ -155,3 +155,70 @@ p({
   },
   "enabled": true
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"GD Fee",
+  "daoKey":"localTransactionQuotePlanDAO",
+  "ruleGroup":"GD",
+  "operation":0,
+  "priority":100,
+  "documentation":"A customized rule to add cash-out transaction fee for Grain Discovery.",
+  "action":{
+    "class":"net.nanopay.tx.ruler.AddGDTxnFeeLineItem",
+    "fee":150
+  },
+  "enabled":false
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit had failed",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email to business that micro deposit had failed",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "arg1": {
+        "class":"foam.mlang.predicate.Eq",
+        "arg1": {
+          "class": "foam.mlang.expr.Dot",
+          "arg1": {
+            "class":"foam.mlang.ContextObject",
+            "key":"NEW"
+          },
+          "arg2": {
+            "class":"net.nanopay.tx.cico.VerificationTransaction.STATUS",
+          }
+        },
+        "arg2": {
+          "class": "net.nanopay.tx.model.TransactionStatus.DECLINED",
+        },
+      },
+      "arg2": {
+        "class":"foam.mlang.predicate.NEQ",
+        "arg1": {
+          "class": "foam.mlang.expr.Dot",
+          "arg1": {
+            "class":"foam.mlang.ContextObject",
+            "key":"OLD"
+          },
+          "arg2": {
+            "class":"net.nanopay.tx.cico.VerificationTransaction.STATUS",
+          }
+        },
+        "arg2": {
+          "class": "net.nanopay.tx.model.TransactionStatus.DECLINED",
+        },
+      },
+
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositFailed"
+    },
+    "enabled":true,
+    "saveHistory":true
+})

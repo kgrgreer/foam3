@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
+  label: 'Canadian Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -31,20 +32,56 @@ foam.CLASS({
   ],
 
   properties: [
+     {
+      name: 'country',
+      value: 'CA',
+      createMode: 'HIDDEN'
+    },
     {
+      name: 'flagImage',
+      label: '',
+      value: 'images/flags/cad.png',
+      createMode: 'HIDDEN'
+    },
+    {
+      name: 'denomination',
+      value: 'CAD',
+    },
+    {
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/Canada-Check.png',
+      section: 'accountDetails',
+      visibility: 'RO',
+      transient: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image'
+        };
+      },
+    },
+    {
+      name: 'desc',
+    },
+    {
+      // Relationship
       name: 'branch',
       label: 'Transit No.'
     },
     {
       name: 'branchId',
+      type: 'String',
       label: 'Transit No.',
       visibility: 'FINAL',
+      section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
         maxLength: 5,
         onKey: true
       },
+      gridColumns: 4,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
@@ -54,7 +91,7 @@ foam.CLASS({
           return;
         }
         if ( branchId === '' ) {
-          return 'Transit number required';
+          return 'Transit number required.';
         } else if ( ! /^\d+$/.test(branchId) ) {
           return 'Transit number must contain only digits.';
         } else if ( branchId.length !== 5 ) {
@@ -66,15 +103,17 @@ foam.CLASS({
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
+      visibility: 'FINAL',
       label: 'Inst. No.',
+      section: 'accountDetails',
       storageTransient: true,
-      hidden: true,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123',
         maxLength: 3,
         onKey: true
       },
+      gridColumns: 2,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
@@ -91,18 +130,76 @@ foam.CLASS({
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 5 and 12 digits long.';
         }
+      },
+      gridColumns: 6,
+      visibility: 'FINAL',
+      section: 'accountDetails'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((institution, institutionDAO) => {
+            return institutionDAO.find(institution).then((result) => {
+              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                  .end()
+                  .start('span').add(`${result.name} |`).end();
+              }
+            });
+          }))
+        .end()
+        .start()
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
+              }
+            });
+          }))
+        .end()
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
+        .end();
       }
-    },
-    {
-      name: 'country',
-      value: 'CA'
-    },
-    {
-      name: 'flagImage',
-      value: 'images/flags/cad.png'
     }
   ],
   methods: [
+    {
+      name: 'getBankCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Institution institution = findInstitution(x);
+        if ( institution != null ) {
+          code.append(institution.getInstitutionNumber());
+        }
+        return code.toString();
+      `
+    },
     {
       name: 'validate',
       args: [
@@ -192,6 +289,23 @@ foam.CLASS({
         throw new IllegalStateException("Transit number must be 5 digits long.");
       }
       `
-    }
+    },
+    {
+      name: 'getRoutingCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder code = new StringBuilder();
+        Branch branch = findBranch(x);
+        if ( branch != null ) {
+          code.append(branch.getBranchId());
+        }
+        return code.toString();
+      `
+    },
   ]
 });

@@ -1,26 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'INBankAccount',
+  label: 'Indian Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern'
-  ],
-
-  properties: [
-     {
-      name: 'country',
-      value: 'IN'
-    },
-    {
-      name: 'flagImage',
-      value: 'images/flags/india.png'
-    },
-    {
-      name: 'denomination',
-      value: 'INR'
-    }
   ],
 
   documentation: 'Indian Bank account information.',
@@ -30,6 +16,88 @@ foam.CLASS({
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+    }
+  ],
+
+  properties: [
+     {
+      name: 'country',
+      value: 'IN',
+      createMode: 'HIDDEN'
+    },
+    {
+      name: 'flagImage',
+      label: '',
+      value: 'images/flags/india.png',
+      createMode: 'HIDDEN'
+    },
+    {
+      name: 'desc',
+    },
+    {
+      name: 'denomination',
+      value: 'INR'
+    },
+    { // REVIEW: remove
+      name: 'institutionNumber',
+      hidden: true
+    },
+    { // REVIEW: remove
+      name: 'branchId',
+      hidden: true
+    },
+    {
+      name: 'accountRelationship',
+      class: 'Reference',
+      of: 'net.nanopay.tx.AccountRelationship',
+      value: 'Employer/Employee',
+      label: 'Relation to the contact',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Please select',
+          choices: [
+            'Employer/Employee',
+            'Contractor',
+            'Vendor/Client',
+            'Other'
+          ]
+        },
+        otherKey: 'Other'
+      },
+      section: 'accountDetails'
+    },
+    {
+      class: 'String',
+      name: 'ifscCode',
+      label: 'IFSC Code',
+      validateObj: function(ifscCode) {
+        var accNumberRegex = /^\w{11}$/;
+
+        if ( ifscCode === '' ) {
+          return 'Please enter an IFSC Code.';
+        } else if ( ! accNumberRegex.test(ifscCode) ) {
+          return 'IFSC Code must be 11 digits long.';
+        }
+      },
+      section: 'accountDetails'
+    },
+    {
+      name: 'accountNumber',
+      label: 'International Bank Account No.',
+      preSet: function(o, n) {
+        return /^\w*$/.test(n) ? n : o;
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^\w{16,30}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an International Bank Account No.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'International Bank Account No must be between 16 and 30 digits long.';
+        }
+      },
     }
   ],
 
