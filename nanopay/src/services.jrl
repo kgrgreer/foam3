@@ -569,13 +569,13 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.ID).build() })
       .build();
   """,
   "client":
   """
   {
     "of":"foam.nanos.auth.User",
-    "cache":true,
     "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
