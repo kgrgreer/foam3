@@ -6,8 +6,11 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.model.Business',
+    'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   properties: [
@@ -47,6 +50,19 @@ foam.CLASS({
         ((Logger) x.get("logger")).error("instanceof DigitalTransaction cannot be updated.");
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
+       User sourceOwner = findSourceAccount(x).findOwner(x);
+       if ( sourceOwner instanceof Business
+         && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
+       ) {
+         throw new RuntimeException("Sender needs to pass business compliance.");
+       }
+       User destinationOwner = findDestinationAccount(x).findOwner(x);
+       if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
+         // We throw when the destination account owner failed compliance however
+         // we obligate to not expose the fact that the user failed compliance.
+         throw new RuntimeException("Receiver needs to pass compliance.");
+       }
+
       `
     },
   ]

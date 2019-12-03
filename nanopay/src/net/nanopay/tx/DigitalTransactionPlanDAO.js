@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.List',
-    'java.util.ArrayList',
+    'java.util.ArrayList'
   ],
   
   axioms: [
