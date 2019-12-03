@@ -42,7 +42,7 @@ foam.CLASS({
             args.put("userEmail", user.getEmail());
             args.put("sendTo", user.getEmail());
             EmailMessage message = new EmailMessage.Builder(x).setTo((new String[] { user.getEmail() })).build();
-            EmailsUtility.sendEmailFromTemplate(x, user, message, "failed-verifiedBank", args);
+            EmailsUtility.sendEmailFromTemplate(x, user, message, "successed-verifiedBank", args);
           }
       }, "send notification");
       `
