@@ -205,7 +205,7 @@ foam.CLASS({
     },
     {
       name: 'homeAddressSection',
-      title: 'Enter your signing officer\'s home address',
+      title: 'Enter your signing officer\'s personal information',
       help: 'Awesome! Next, I’ll need to know your signing officer\'s home address…',
     },
     {
@@ -608,6 +608,42 @@ foam.CLASS({
       }
     ],
     validationTextVisible: true
+    },
+    {
+      class: 'String',
+      name: 'adminJobTitle',
+      label: 'Job Title',
+      section: 'homeAddressSection',
+      width: 100,
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
+      },
+      validationPredicates: [
+        {
+          args: ['adminJobTitle'],
+          predicateFactory: function(e) {
+            return e.OR(
+                e.GT(
+                  foam.mlang.StringLength.create({
+                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
+                  }), 0),
+                  e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
+                );
+            },
+          errorString: 'Please select a job title.'
+        }
+      ]
     },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
@@ -1068,7 +1104,7 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) {
           // note: owner1.ownershipPercent is set in its own property
-          this.owner1.jobTitle = this.jobTitle;
+          this.owner1.jobTitle = this.adminJobTitle;
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
           this.owner1.birthday = this.birthday;
@@ -1110,8 +1146,8 @@ foam.CLASS({
       class: 'String',
       name: 'roJobTitle',
       label: 'Job Title',
-      expression: function(jobTitle) {
-        return jobTitle;
+      expression: function(adminJobTitle) {
+        return adminJobTitle;
       },
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
@@ -1140,6 +1176,33 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'String',
+      name: 'roAdminFirstName',
+      expression: function(adminFirstName) {
+        return adminFirstName;
+      },
+      section: 'personalOwnershipSection',
+      visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      class: 'String',
+      name: 'roAdminLastName',
+      expression: function(adminLastName) {
+        return adminLastName;
+      },
+      section: 'personalOwnershipSection',
+      visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      class: 'String',
+      name: 'roAdminJobTitle',
+      expression: function(adminJobTitle) {
+        return adminJobTitle;
+      },
+      section: 'personalOwnershipSection',
+      visibility: foam.u2.Visibility.HIDDEN
+    },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
       index: 1
