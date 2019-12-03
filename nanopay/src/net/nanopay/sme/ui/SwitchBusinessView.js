@@ -141,7 +141,7 @@ foam.CLASS({
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
-            // .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
             .then((mapSink) => {
               return party.entities.junctionDAO.where(

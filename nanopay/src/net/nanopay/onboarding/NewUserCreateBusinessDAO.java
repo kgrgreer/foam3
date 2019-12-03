@@ -158,21 +158,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setOrganization(user.getOrganization())
       .setAddress(businessAddress)
       .setSpid(hasSpidCreatePermission ? currentUser.getSpid() : "nanopay")
-      // We need to be able to send emails to businesses, but until now we were
-      // avoiding giving businesses an email address. However, in Ablii users
-      // are always acting as a business, meaning the payer and payee of every
-      // invoice are always businesses, and therefore we need an email address
-      // somehow associated with a business so that we can send payment-related
-      // emails to it.
-      // We have a few options:
-      //   1. Set the email address of the business to the email address of the
-      //      user that creates it. Allow it to be updated later.
-      //   2. Send emails to everyone in the business when that business needs
-      //      to receive an email.
-      // I'm going with option 1 right now, but I don't know if it's a perfect
-      // solution or if there might be unforeseen consequences for letting
-      // businesses have email addresses.
-      // .setEmail(user.getEmail())
       .setEmailVerified(true)
       .build();
 
