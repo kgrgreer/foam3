@@ -18,7 +18,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.payment.PaymentProvider',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
+    'foam.core.X'
   ],
 
   constants: [
@@ -34,10 +35,6 @@ foam.CLASS({
       name: 'createCITransfers',
       args: [
         {
-          name: 'x',
-          type: 'Context'
-        },
-        {
           name: 'txn',
           type: 'Transaction'
         },
@@ -48,6 +45,7 @@ foam.CLASS({
       ],
       type: 'Transfer[]',
       javaCode: `
+      X x = getX();
       BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
       TrustAccount trustAccount = TrustAccount.find(x,sourceAccount,institution);
       List all = new ArrayList();
@@ -69,10 +67,6 @@ foam.CLASS({
       name: 'createCOTransfers',
       args: [
         {
-          name: 'x',
-          type: 'Context'
-        },
-        {
           name: 'txn',
           type: 'Transaction'
         },
@@ -83,6 +77,7 @@ foam.CLASS({
       ],
       type: 'Transfer[]',
       javaCode: `
+      X x = getX(); // use system X for transaction planning
       BankAccount destinationAccount = (BankAccount) txn.findDestinationAccount(x);
       TrustAccount trustAccount = TrustAccount.find(x,destinationAccount,institution);
       List all = new ArrayList();
