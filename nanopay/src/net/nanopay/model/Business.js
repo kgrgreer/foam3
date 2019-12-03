@@ -373,7 +373,6 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
-    'foam.dao.Sink',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthenticationException',
@@ -386,10 +385,7 @@ foam.CLASS({
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
     'java.util.List',
-    'net.nanopay.sme.onboarding.BusinessOnboarding',
-    'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding',
-    'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
+    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -572,32 +568,17 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO userDAO = (DAO) x.get("userDAO");
-        Sink sink = new ArraySink();
-        //find signing officer
-        businessOnboardingDAO.where(
-          AND(
-            EQ(BusinessOnboarding.BUSINESS_ID, this.getId()),
-            EQ(BusinessOnboarding.SIGNING_OFFICER, true))
-          ).select(sink);
-        uSBusinessOnboardingDAO.where(
-          AND(
-            EQ(USBusinessOnboarding.BUSINESS_ID, this.getId()),
-            EQ(USBusinessOnboarding.SIGNING_OFFICER, true))
-          ).select(sink);
-
-        List list = ((ArraySink) sink).getArray();
-        if ( list == null || list.size() == 0 ) {
-          throw new RuntimeException("User not found");
+        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        
+        List signingOfficers = ((ArraySink) signingOfficerJunctionDAO.where(
+            EQ(BusinessUserJunction.SOURCE_ID, this.getId())
+          ).select(new ArraySink())).getArray();
+        if ( signingOfficers == null || signingOfficers.size() == 0 ) {
+          throw new RuntimeException("Signing officer not found");
         }
-
-        BusinessOnboarding bo = (BusinessOnboarding) list.get(0);
-        User user = (User) userDAO.find(bo.getUserId());
-        if ( user == null ) {
-          throw new RuntimeException("User not found");
-        }
+        BusinessUserJunction businessUserJunction = (BusinessUserJunction) signingOfficers.get(0);
+        User user = (User) userDAO.find(businessUserJunction.getTargetId());
 
         return user;
       `
