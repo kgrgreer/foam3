@@ -37,6 +37,7 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
   'net.nanopay.tx.ruler.MicroDepositSuccessed',
+  'net.nanopay.tx.ruler.MicroDepositFailed',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',

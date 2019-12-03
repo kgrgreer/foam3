@@ -62,3 +62,20 @@ p({
 })
 p({"class":"foam.nanos.ruler.RuleGroup","id":"AgentJunctions"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"UserCreate"})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"DepositTransacationVerify",
+  "predicate": {
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.bmo.cico.BmoVerificationTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.cico.VerificationTransaction"
+      }
+    ]
+  }
+})
