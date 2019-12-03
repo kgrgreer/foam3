@@ -22,7 +22,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'net.nanopay.tx.Transfer',
   ],
   
   axioms: [
@@ -56,7 +57,7 @@ foam.CLASS({
       } else {
         dt = (Transaction) txn.fclone();
       }
-      dt.setTransfers(createTransfers(x, dt));
+      dt.setTransfers(createTransfers(dt));
       dt.setIsQuoted(true);
       quote.addPlan(dt);
     }
@@ -67,16 +68,13 @@ foam.CLASS({
       name: 'createTransfers',
       args: [
         {
-          name: 'x',
-          type: 'Context'
-        },
-        {
           name: 'txn',
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
+        X x = getX();
         List all = new ArrayList();
         all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getTotal()).build());
         all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getTotal()).build());
