@@ -8,6 +8,10 @@ foam.CLASS({
     add banking information for inviting a contact,
   `,
 
+  requires: [
+    'net.nanopay.bank.INBankAccount'
+  ],
+
   imports: [
     'auth',
     'accountDAO as bankAccountDAO',
@@ -179,7 +183,6 @@ foam.CLASS({
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()
             .add(this.slot(function(bankAdded) {
-              console.log(bankAdded);
               if ( bankAdded || this.viewData.isBankingProvided ) {
                 return this.E().tag({
                   class: 'foam.u2.detail.SectionedDetailView',
@@ -198,7 +201,9 @@ foam.CLASS({
         .end()
         .startContext({ data: this.wizard })
           .start()
-            .hide(this.isEdit)
+            .hide(this.slot(function(isEdit, bankAccount) {
+              return isEdit || this.INBankAccount.isInstance(bankAccount);
+            }))
             .addClass(this.myClass('invite'))
             .add(this.wizard.SHOULD_INVITE)
           .end()
