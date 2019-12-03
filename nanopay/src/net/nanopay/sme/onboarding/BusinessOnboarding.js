@@ -206,7 +206,7 @@ foam.CLASS({
     {
       name: 'homeAddressSection',
       title: 'Enter your signing officer\'s personal information',
-      help: 'Awesome! Next, I’ll need to know your signing officer\'s home address…',
+      help: 'Awesome! Next, I’ll need to know your signing officer\'s personal information…',
     },
     {
       name: 'businessAddressSection',
