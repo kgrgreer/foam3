@@ -77,7 +77,6 @@ FOAM_FILES([
   { name: 'net/nanopay/account/NoPendingTransactionsRule' },
   { name: 'net/nanopay/account/NoChildrenRule' },
   { name: 'net/nanopay/account/CreateDefaultDigitalAccountOnUserCreateRule' },
-  { name: 'net/nanopay/account/Relationships' },
   { name: 'net/nanopay/account/SecuritiesAccount' },
   { name: 'net/nanopay/account/SecurityAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
@@ -103,6 +102,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
+
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
@@ -139,8 +139,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
-  { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
-  { name: 'net/nanopay/auth/ui/SignInView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserTableView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserCitationView', flags: ['web'] },
@@ -195,6 +193,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
+  { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
@@ -230,7 +229,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXUser' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
-  { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
@@ -374,10 +372,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
   { name: 'net/nanopay/tx/DebtTransaction' },
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
+  { name: 'net/nanopay/tx/DigitalTransactionPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/cico/ReverseCIRule'},
   { name: 'net/nanopay/tx/cico/ReverseCORule'},
+  { name: 'net/nanopay/tx/LoanTransactionPlanDAO' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
@@ -408,6 +408,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/PayeeRowView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/PayeeSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/PayeePayerSearchView', flags: ['web'] },
   { name: 'net/nanopay/ui/DisclosureView', flags: ['web'] },
 
   { name: 'net/nanopay/util/ChallengeGenerator' },
@@ -557,6 +558,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
+  { name: 'net/nanopay/tx/cico/CABankTransactionPlanDAO' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaFormat' },
   { name: 'net/nanopay/tx/alterna/SFTPService' },
@@ -637,6 +639,7 @@ FOAM_FILES([
   { name: 'net/nanopay/documents/ui/AcceptanceDocumentView' },
 
   // settings
+  { name: 'net/nanopay/model/SignUp' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
@@ -811,7 +814,11 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
-
+  { name: 'net/nanopay/ui/TopSideNavigation', flags: ['web'] },
+  { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
+  { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
+  { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
+  
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
@@ -859,9 +866,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/TopCardsOnDashboard', flags: ['web'] },
   { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/SignInView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/SplitBorder', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEStyles', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/DeleteBankAccountModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ContactController', flags: ['web'] },
@@ -1196,6 +1200,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
+  { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },

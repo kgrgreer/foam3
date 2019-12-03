@@ -73,8 +73,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'payeeId',
-    'payerId',
+    'searchName',
     'invoiceId',
     'type',
     'status',
@@ -478,7 +477,8 @@ foam.CLASS({
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
@@ -558,6 +558,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      aliases: ['sourceDenomination'],
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
@@ -574,6 +575,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      aliases: ['destinationDenomination'],
       label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
@@ -661,6 +663,15 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      hidden: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    }
   ],
 
   methods: [
@@ -789,11 +800,15 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
+        if (! canTransfer(x, oldTxn) ) {
+          return new Transfer[0];
+        }
+
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
           for ( int j = 0; j < transfers.length; j++ ) {
             all.add(transfers[j]);
           }
@@ -891,6 +906,33 @@ foam.CLASS({
         }
       }
       return getStatus();
+      `
+    },
+    {
+      name: 'findRoot',
+      code: async function findRoot() {
+        var txnParent = await this.parent$find;
+        if ( txnParent ) {
+          // Find the root transaction in the chain
+          while ( txnParent.parent != '' ) {
+            txnParent = await txnParent.parent$find;
+          }
+        }
+        return txnParent;
+      },
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Transaction',
+      javaCode: `
+        Transaction txnParent = this.findParent(x);
+        if ( txnParent != null ) {
+          // Find the root transaction in the chain
+          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
+            txnParent = txnParent.findParent(x);
+          }
+        }
+        return txnParent;
       `
     },
     {

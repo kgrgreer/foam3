@@ -104,7 +104,7 @@ public class TransactionDAO
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
-    Transfer[] ts = txn.createTransfers(y, oldTxn);
+    Transfer[] ts = txn.createTransfers(y, oldTxn); // just get transfers we no longer auto generate any
 
         // legacy support for REVERSE
     if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&

@@ -35,14 +35,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessName',
-      documentation: `The name of the business associated with the public 
+      documentation: `The name of the business associated with the public
         information of a User.`,
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'organization',
-      documentation: `The organization/business associated with the public 
+      documentation: `The organization/business associated with the public
         nformation of a User.`,
       visibility: foam.u2.Visibility.RO
     },
@@ -54,7 +54,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: `The profile picture of the individual user, or real user, 
+      documentation: `The profile picture of the individual user, or real user,
         initially defaulting to a placeholder picture.`,
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
     },
@@ -62,7 +62,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      documentation: `Returns the postal address of the business associated with the 
+      documentation: `Returns the postal address of the business associated with the
         public information of a User.  It is drawn from the Address model.`,
       visibility: foam.u2.Visibility.RO
     },
@@ -70,7 +70,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'phone',
-      documentation: `Returns the phone number of the business associated with the 
+      documentation: `Returns the phone number of the business associated with the
         public information of a User. It is drawn from the Phone model.`,
       view: { class: 'foam.u2.detail.VerticalDetailView' },
       visibility: foam.u2.Visibility.RO
@@ -78,7 +78,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
-      documentation: `The profile picture of the business, initially defaulting 
+      documentation: `The profile picture of the business, initially defaulting
         to a placeholder picture.`,
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       visibility: foam.u2.Visibility.RO

@@ -4,6 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
 import foam.nanos.auth.AuthorizationException;
@@ -212,6 +214,7 @@ public class TransactionDAOTest
     tx.setStatus(TransactionStatus.DECLINED);
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction remains in status DECLINED" );
+    test(((Count) tx.getAssociatedTransactions(x_).select(MLang.COUNT())).getValue() == 1, "A reverse txn was made");
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
   }
 

@@ -7,8 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Invitation'
   ],
 
@@ -20,17 +19,15 @@ foam.CLASS({
 
   exports: [
     'addContact',
-    'caAccount',
-    'isCABank',
+    'bankAdded',
     'isConnecting',
     'isEdit',
     'sendInvite',
-    'usAccount'
   ],
 
   css: `
     ^ {
-      width: 510px;
+      width: 540px;
       box-sizing: border-box;
     }
     ^ .foam-u2-tag-Input,
@@ -91,7 +88,7 @@ foam.CLASS({
       display: grid;
       grid-gap: 16px;
       grid-template-columns: 1fr 1fr;
-    }
+    },
 `,
 
   messages: [
@@ -150,32 +147,16 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'caAccount',
-      documentation: `The contact's bank account if they choose CA.`,
+      name: 'bankAccount',
       factory: function() {
-        var account = this.CABankAccount.create({
-          denomination: 'CAD'
-        });
-        return account;
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'usAccount',
-      documentation: `The contact's bank account if they choose US.`,
-      factory: function() {
-        var account =  this.USBankAccount.create({
-          denomination: 'USD'
-        });
-        account.address.countryId = 'US';
+        var account = this.BankAccount.create();
         return account;
       }
     },
     {
       class: 'Boolean',
-      name: 'isCABank',
-      documentation: `True if working with a CA bank account, otherwise US.`,
-      value: true
+      name: 'bankAdded',
+      value: false
     }
   ],
 
