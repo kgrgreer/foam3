@@ -194,6 +194,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
+  { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
@@ -1198,6 +1199,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
+  { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
