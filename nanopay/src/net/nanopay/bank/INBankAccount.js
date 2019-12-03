@@ -15,7 +15,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+      javaValue: 'Pattern.compile("^[0-9]{16,30}$")'
     }
   ],
 
@@ -98,7 +98,35 @@ foam.CLASS({
           return 'International Bank Account No must be between 16 and 30 digits long.';
         }
       },
-    }
+    },
+    {
+      name: 'purposeCode',
+      class: 'Reference',
+      of: 'net.nanopay.tx.PurposeCode',
+      label: 'Purpose of Transfer',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Please select',
+          choices: [
+            'Payables for Products/Services',
+            'Working Capital',
+            'Bill Payments',
+            'Intra Company bank transfers',
+            'Government Fee and Taxes',
+            'Other',
+          ]
+        },
+        otherKey: 'Other'
+      },
+      section: 'accountDetails',
+      validateObj: function(purposeCode) {
+        if ( purposeCode === '' ) {
+          return 'Please enter a Purpose of Transfer';
+        }
+      },
+    },
   ],
 
   methods: [

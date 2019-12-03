@@ -15,8 +15,7 @@ foam.CLASS({
       class: 'String',
       name: 'code',
       validateObj: function(code) {
-        var regex = /^[PS][0-9]{4}$/;
-        if ( ! regex.test(code) ) {
+        if ( code == '' ) {
           return 'Please enter a purpose code.';
         }
       }
