@@ -33,7 +33,7 @@ public class InvoiceVoidEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business) ? true : false;
+    boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business);
     User payer = (User) invoice.findPayerId(x);
     User payee = (User) invoice.findPayeeId(x);
 

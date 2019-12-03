@@ -58,8 +58,8 @@ foam.CLASS({
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
 
-        boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business) ? true : false;
-        boolean isPayeeABusiness = (invoice.findPayeeId(x) instanceof Business) ? true : false;
+        boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business);
+        boolean isPayeeABusiness = (invoice.findPayeeId(x) instanceof Business);
 
         String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
 
