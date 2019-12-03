@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.core.Action',
     'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice'
@@ -20,6 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'accountingIntegrationUtil',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
@@ -86,8 +88,9 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'invite',
-              isEnabled: function() {
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED;
+              isEnabled: async function() {
+                account = await self.accountDAO.find(this.bankAccount);
+                return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({
