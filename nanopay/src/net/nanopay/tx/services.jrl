@@ -201,13 +201,39 @@ p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceMonthlyReduceManager",
 p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceQuarterlyReduceManager",               "serve":true,  "serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x).setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\")).setDestDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\")).setPeriodLengthMs(3*30*7*24*60*60*1000).build();"})
 p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceAnnuallyReduceManager",               "serve":true,  "serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x).setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\")).setDestDAO((foam.dao.DAO) x.get(\"accountBalanceAnnuallyCandlestickDAO\")).setPeriodLengthMs(12*30*7*24*60*60*1000).build();"})
 
-p({"class":"foam.nanos.boot.NSpec","name":"accountBalanceHourlyCandlestickDAO","serve":true,"serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());","client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
-p({"class":"foam.nanos.boot.NSpec","name":"accountBalanceDailyCandlestickDAO","serve":true,"serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());","client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
-p({"class":"foam.nanos.boot.NSpec","name":"accountBalanceDailyReduceManager","serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceHourlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfDay.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"})
-p({"class":"foam.nanos.boot.NSpec","name":"accountBalanceWeeklyReduceManager","serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceWeeklyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfWeek.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"})
-p({"class":"foam.nanos.boot.NSpec","id":"accountBalanceMonthlyReduceManager","serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfMonth.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"})
-p({"class":"foam.nanos.boot.NSpec","id":"accountBalanceQuarterlyReduceManager","serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfQuarter.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"})
-p({"class":"foam.nanos.boot.NSpec","id":"accountBalanceAnnuallyReduceManager","serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceAnnuallyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfYear.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accountBalanceHourlyCandlestickDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accountBalanceDailyCandlestickDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({"class": "foam.nanos.boot.NSpec","name": "accountBalanceDailyReduceManager","serviceScript":"""return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceHourlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfDay.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"""})
+p({"class": "foam.nanos.boot.NSpec","name": "accountBalanceWeeklyReduceManager","serviceScript":"""return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceWeeklyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfWeek.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"""})
+p({"class": "foam.nanos.boot.NSpec","id": "accountBalanceMonthlyReduceManager","serviceScript":"""return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceDailyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfMonth.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"""})
+p({"class": "foam.nanos.boot.NSpec","id": "accountBalanceQuarterlyReduceManager","serviceScript":"""return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfQuarter.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"""})
+p({"class": "foam.nanos.boot.NSpec","id": "accountBalanceAnnuallyReduceManager","serviceScript":"""return new foam.nanos.analytics.DAOReduceManager.Builder(x)\n  .setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\"))\n  .setDestDAO((foam.dao.DAO) x.get(\"accountBalanceAnnuallyCandlestickDAO\"))\n  .setCloseTimeExpr(new foam.glang.EndOfYear.Builder(x)\n    .setDelegate(new foam.mlang.IdentityExpr.Builder(x).build())\n    .build())\n  .build();"""})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"afexTradeResponseDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.CreateTradeResponse.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexTradeResponse\").build();","client":"{\"of\":\"net.nanopay.fx.afex.CreateTradeResponse\"}" })
 
