@@ -211,8 +211,41 @@ p({"class":"foam.nanos.boot.NSpec","id":"accountBalanceAnnuallyReduceManager","s
 
 p({"class":"foam.nanos.boot.NSpec", "name":"afexTradeResponseDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.CreateTradeResponse.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexTradeResponse\").build();","client":"{\"of\":\"net.nanopay.fx.afex.CreateTradeResponse\"}" })
 
-p({"class":"foam.nanos.boot.NSpec","name":"paymentProviderDAO",                       "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.payment.PaymentProvider.getOwnClassInfo(), \"paymentProviders\"));", "client":"{\"of\":\"net.nanopay.payment.PaymentProvider\"}"})
-p({"class":"foam.nanos.boot.NSpec","name":"InstitutionPaymentProviderDAO",                 "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.payment.InstitutionPaymentProvider.getOwnClassInfo(), \"InstitutionPaymentProvider\"));", "client":"{\"of\":\"net.nanopay.payment.InstitutionPaymentProvider\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentProviderDAO",                       
+  "lazy": false,  
+  "serve": true, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("paymentProviders")
+      .setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo())
+      .build();
+  """, 
+  "client":"{\"of\":\"net.nanopay.payment.PaymentProvider\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "InstitutionPaymentProviderDAO",                 
+  "lazy": false,  
+  "serve": true, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("InstitutionPaymentProvider")
+      .setOf(net.nanopay.payment.InstitutionPaymentProvider.getOwnClassInfo())
+      .build();
+  """, 
+  "client": "{\"of\":\"net.nanopay.payment.InstitutionPaymentProvider\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec", 
