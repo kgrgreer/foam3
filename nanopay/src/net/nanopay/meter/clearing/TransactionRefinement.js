@@ -62,3 +62,20 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.meter.clearing',
+  name: 'AscendantFXTransactionRefinement',
+  refines: 'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
+
+  implements: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait'
+  ],
+
+  properties: [
+    {
+      name: 'clearingTimes',
+      javaFactory: 'return new java.util.HashMap<>();'
+    }
+  ]
+});

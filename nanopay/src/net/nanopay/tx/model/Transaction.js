@@ -73,8 +73,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'payeeId',
-    'payerId',
+    'searchName',
     'invoiceId',
     'type',
     'status',
@@ -238,7 +237,8 @@ foam.CLASS({
       section: 'basicInfo',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       expression: function(statusHistory) {
-        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[0].getTimeStamp() : null;
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
       javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
       javaFactory: `
@@ -293,7 +293,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
-      visibility: 'RO',
+      visibility: 'FINAL',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
@@ -477,7 +477,8 @@ foam.CLASS({
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
@@ -619,8 +620,9 @@ foam.CLASS({
       documentation: 'The date that a transaction changed to its current status',
       visibility: 'RO',
       storageTransient: true,
-      expression: function (statusHistory) {
-        return Array.isArray(statusHistory) && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].getTimeStamp() : null;
+      expression: function(statusHistory) {
+        return Array.isArray(statusHistory)
+          && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
       }
     },
     {
@@ -659,6 +661,15 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      hidden: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    }
   ],
 
   methods: [
@@ -889,6 +900,33 @@ foam.CLASS({
         }
       }
       return getStatus();
+      `
+    },
+    {
+      name: 'findRoot',
+      code: async function findRoot() {
+        var txnParent = await this.parent$find;
+        if ( txnParent ) {
+          // Find the root transaction in the chain
+          while ( txnParent.parent != '' ) {
+            txnParent = await txnParent.parent$find;
+          }
+        }
+        return txnParent;
+      },
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Transaction',
+      javaCode: `
+        Transaction txnParent = this.findParent(x);
+        if ( txnParent != null ) {
+          // Find the root transaction in the chain
+          while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
+            txnParent = txnParent.findParent(x);
+          }
+        }
+        return txnParent;
       `
     },
     {

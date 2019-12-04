@@ -15,7 +15,6 @@ foam.CLASS({
     'agent',
     'appConfig',
     'auth',
-    'canReceiveCurrencyDAO',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'contactDAO',

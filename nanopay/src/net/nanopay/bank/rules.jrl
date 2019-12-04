@@ -1,0 +1,70 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set default bank account if account owner has none in denomination.",
+  "priority":100,
+  "ruleGroup":"bankOperations",
+  "documentation":"Set newly verified bank account to default if owner has no default bank accounts in the verified bank accounts denomination.",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "predicate": {
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.Dot",
+      "arg1":{
+        "class":"foam.mlang.ContextObject",
+        "key":"NEW"
+      },
+      "arg2":{
+        "class":"__Property__",
+        "forClass_":"net.nanopay.bank.BankAccount",
+        "name":"status"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"net.nanopay.bank.BankAccountStatus",
+        "ordinal":1
+      }
+    }
+  },
+  "action":{
+    "class":"net.nanopay.bank.DefaultBankAccountRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set old default bank account to false.",
+  "priority":100,
+  "ruleGroup":"bankOperations",
+  "documentation":"Rule prevents users from setting default on non verified bank accounts as well as setting old default account to false if isDefault is being set to true on obj.",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "predicate": {
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.Dot",
+      "arg1":{
+        "class":"foam.mlang.ContextObject",
+        "key":"NEW"
+      },
+      "arg2":{
+        "class":"__Property__",
+        "forClass_":"net.nanopay.bank.BankAccount",
+        "name":"isDefault"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":true
+    }
+  },
+  "action":{
+    "class":"net.nanopay.bank.IsDefaultRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

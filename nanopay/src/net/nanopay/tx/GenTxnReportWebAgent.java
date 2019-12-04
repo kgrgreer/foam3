@@ -25,6 +25,7 @@ import static foam.mlang.MLang.*;
 
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
+  private final static long MIN_MONTHLY_PAYMENT = 250000;
 
   @Override
   public void execute(X x) {
@@ -74,12 +75,15 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       long ciAmountCAD = 0;
       long coAmountCAD = 0;
+      long coFee = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
         .where(
           OR(
             INSTANCE_OF(CITransaction.class),
-            INSTANCE_OF(COTransaction.class)
+            INSTANCE_OF(COTransaction.class),
+            INSTANCE_OF(DigitalTransaction.class),
+            INSTANCE_OF(BulkTransaction.class)
           )
         )
         .select(new ArraySink())).getArray();
@@ -87,15 +91,17 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       for ( Transaction txn : transactionList ) {
         HistoricStatus[] statusHistoryArr = txn.getStatusHistory();
         for ( int j = statusHistoryArr.length - 1; j >= 0; j-- ) {
-          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate) 
+          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate)
             && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
 
+            Transaction rootTxn = txn.findRoot(x);
+
             String bodyString = this.buildCSVLine(
               11,
               txn.getId(),
-              SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
+              rootTxn != null ? rootTxn.getId() : "N/A" ,
               txn.getCreated().toString(),
               txn.getType(),
               Long.toString(txn.findDestinationAccount(x).getOwner()),
@@ -114,6 +120,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD = ciAmountCAD + txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD = coAmountCAD + txn.getAmount();
+                coFee = coFee + txn.getCost();
               }
             }
             break;
@@ -153,8 +160,30 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         ""
       );
 
+      String sumFee = currencyCAD.format(coFee);
+      if (coFee <= MIN_MONTHLY_PAYMENT ) {
+        sumFee = sumFee
+          + "(Minimum Payment: " + currencyCAD.format(MIN_MONTHLY_PAYMENT) + ")";
+      }
+
+      String sumFeeString = this.buildCSVLine(
+        11,
+        "",
+        "",
+        "",
+        "CO Fee",
+        "",
+        "",
+        StringEscapeUtils.escapeCsv(sumFee),
+        currencyCAD.getId(),
+        "",
+        "",
+        ""
+      );
+
       writer.write(sumCIString);
       writer.write(sumCOString);
+      writer.write(sumFeeString);
       writer.flush();
       writer.close();
     } catch (IOException e) {

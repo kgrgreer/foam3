@@ -218,7 +218,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       sourceOfFunds = "N/A";
     }
 
-    String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
     String baseCurrency;
     String internationalTransactions = "No";
     String purposeOfTransactions;
@@ -305,7 +304,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String taxId = business.getTaxIdentificationNumber();
         list.add(new ListItem("Tax Identification Number: " + taxId));
       }
-      list.add(new ListItem("Do you operate this business from your residence? " + residenceOperated));
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
