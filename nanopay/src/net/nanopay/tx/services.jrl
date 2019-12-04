@@ -242,7 +242,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionRecord.getOwnClassInfo())
       .setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"transactionRecord\")
+      .setJournalName("transactionRecord")
       .build();
   """
 })

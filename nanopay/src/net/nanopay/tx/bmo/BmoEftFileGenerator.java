@@ -15,7 +15,6 @@ import net.nanopay.model.Branch;
 import foam.core.Currency;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.TransactionRecord;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -213,13 +212,13 @@ public class BmoEftFileGenerator {
 
           sum = sum + transaction.getAmount();
           detailRecords.add(detailRecord);
-          transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction added to EFT file").build());
+          transaction.getTransactionRecords(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
           tempSuccessHolder.             add(transaction);
 
         } catch ( Exception e ) {
           this.logger.error("Error when add transaction to BMO EFT file", e);
-          transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord(e.getMessage()).build());
+          transaction.getTransactionRecords(x).inX(x).put(new TransactionRecord.Builder(x).setRecord(e.getMessage()).build());
           transaction.setStatus(TransactionStatus.FAILED);
         }
 
@@ -311,7 +310,7 @@ public class BmoEftFileGenerator {
   }
 
   public boolean isValidTransaction(Transaction transaction) {
-    transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction picked by BmoEftFileGenerator").build());
+    transaction.getTransactionRecords(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction picked by BmoEftFileGenerator").build());
 
     if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction || transaction instanceof BmoVerificationTransaction) ) {
       throw new RuntimeException("Wrong transaction type");

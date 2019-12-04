@@ -877,8 +877,8 @@ foam.RELATIONSHIP({
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.TransactionRecord',
-  forwardName: 'transactionRecord',
-  inverseName: 'transactionId',
+  forwardName: 'transactionRecords',
+  inverseName: 'transaction',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionRecordDAO',

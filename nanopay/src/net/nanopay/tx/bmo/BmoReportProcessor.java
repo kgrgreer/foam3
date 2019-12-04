@@ -150,7 +150,7 @@ public class BmoReportProcessor {
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
-      transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction was settled by BMO.").build());
+      transaction.getTransactionRecords(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction was settled by BMO.").build());
       ((BmoTransaction)transaction).setSettled(true);
 
       transactionDAO.inX(this.x).put(transaction);
@@ -226,7 +226,7 @@ public class BmoReportProcessor {
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
       transaction.setStatus(TransactionStatus.DECLINED);
-      transaction.getTransactionRecord(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction rejected.").build());
+      transaction.getTransactionRecords(x).inX(x).put(new TransactionRecord.Builder(x).setRecord("Transaction rejected.").build());
       ((BmoTransaction)transaction).setRejectReason(rejectReason);
       transaction.setCompletionDate(new Date());
 
