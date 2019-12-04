@@ -9,6 +9,10 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   documentation: 'Indian Bank account information.',
 
   constants: [
@@ -104,28 +108,21 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
-      view: {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
-          choices: [
-            'Payables for Products/Services',
-            'Working Capital',
-            'Bill Payments',
-            'Intra Company bank transfers',
-            'Government Fee and Taxes',
-            'Other',
-          ]
-        },
-        otherKey: 'Other'
-      },
       section: 'accountDetails',
       validateObj: function(purposeCode) {
         if ( purposeCode === '' ) {
           return 'Please enter a Purpose of Transfer';
         }
       },
+      view: function(_, x) {
+        return foam.u2.view.ChoiceView.create({
+          dao: x.purposeCodeDAO,
+          placeholder: '--',
+          objToChoice: function(purposeCode) {
+            return [purposeCode.code, purposeCode.description];
+          }
+        });
+      }
     },
   ],
 
