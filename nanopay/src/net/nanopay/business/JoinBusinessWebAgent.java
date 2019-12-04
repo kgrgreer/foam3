@@ -12,6 +12,7 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
+import net.nanopay.onboarding.CreateOnboardingCloneService;
 import net.nanopay.sme.onboarding.BusinessOnboarding;
 import net.nanopay.sme.onboarding.OnboardingStatus;
 import net.nanopay.sme.onboarding.USBusinessOnboarding;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static foam.mlang.MLang.EQ;
@@ -40,8 +42,6 @@ import static foam.mlang.MLang.AND;
 public class JoinBusinessWebAgent implements WebAgent {
 
   public EnvironmentConfiguration config_;
-  public DAO businessOnboardingDAO_;
-  public DAO uSBusinessOnboardingDAO_;
 
   @Override
   public void execute(X x) {
@@ -53,9 +53,6 @@ public class JoinBusinessWebAgent implements WebAgent {
     String tokenUUID = request.getParameter("token");
     String redirect = request.getParameter("redirect");
     User user = null;
-
-    businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");
-    uSBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
 
     try {
       // Look up the token.
@@ -88,41 +85,11 @@ public class JoinBusinessWebAgent implements WebAgent {
       // Process the token.
       tokenService.processToken(x, user, tokenUUID);
 
-      //get onboarding object
-      ArraySink businessOnBoardingSink = (ArraySink) businessOnboardingDAO_.where(
-        AND(
-          EQ(BusinessOnboarding.BUSINESS_ID, businessId)
-        )).select(new ArraySink());
-      uSBusinessOnboardingDAO_.where(
-        AND(
-          EQ(USBusinessOnboarding.BUSINESS_ID, businessId)
-        )).select(businessOnBoardingSink);
+      CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(x);
+      List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
 
-      java.util.List<Object> onboardings = businessOnBoardingSink.getArray();
-
-      if ( onboardings.size() > 0 ) {
-        Object onboarding = onboardings.get(0);
-
-        if ( onboarding instanceof BusinessOnboarding ) {
-          BusinessOnboarding businessOnboardingClone = (BusinessOnboarding) ((BusinessOnboarding) onboarding).fclone();
-
-          businessOnboardingClone.setSigningOfficer(false);
-          businessOnboardingClone.setSigningOfficerEmail(null);
-          businessOnboardingClone.setUserId(token.getUserId());
-          businessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
-
-          businessOnboardingDAO_.put_(x, businessOnboardingClone);
-        } else if ( onboarding instanceof USBusinessOnboarding ) {
-          USBusinessOnboarding uSBusinessOnboardingClone = (USBusinessOnboarding) ((USBusinessOnboarding) onboarding).fclone();
-
-          uSBusinessOnboardingClone.setSigningOfficer(false);
-          uSBusinessOnboardingClone.setSigningOfficerEmail(null);
-          uSBusinessOnboardingClone.setUserId(token.getUserId());
-          uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
-
-          uSBusinessOnboardingDAO_.put_(x, uSBusinessOnboardingClone);
-        }
-      }
+      if ( onboardings.size() > 0 )
+        createOnboardingCloneService.putOnboardingClone(x, onboardings, token.getUserId());
     } catch (Throwable t) {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }

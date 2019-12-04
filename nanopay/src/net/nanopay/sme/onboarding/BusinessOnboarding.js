@@ -987,7 +987,7 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
-      value: -1,
+      value: 1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4 ],
@@ -1006,7 +1006,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
-                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 1),
                 e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4)
               )
             );
