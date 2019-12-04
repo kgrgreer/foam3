@@ -8,12 +8,17 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
+import foam.util.SafetyUtil;
+import net.nanopay.account.Account;
+import net.nanopay.bank.INBankAccount;
+import net.nanopay.kotak.model.paymentRequest.EnrichmentSetType;
 import net.nanopay.kotak.model.paymentRequest.Payment;
 import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.model.Business;
 import net.nanopay.tx.KotakCOTransaction;
+import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -29,6 +34,7 @@ public class KotakPaymentProcessor implements ContextAgent {
     DAO    transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO    userDAO        = (DAO) x.get("localUserDAO");
     Logger logger         = (Logger) x.get("logger");
+    KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
 
     transactionDAO
       .where(AND(
@@ -40,33 +46,35 @@ public class KotakPaymentProcessor implements ContextAgent {
         try {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
           User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayeeId()));
+          INBankAccount destinationBankAccount = getAccountById(x, kotakCOTxn.getDestinationAccount());
 
+          /**
+           * Payment request Header
+           */
           RequestHeaderType paymentHeader = new RequestHeaderType();
           String paymentMessageId = KotakUtils.getUniqueId();
           kotakCOTxn.setKotakMsgId(paymentMessageId);
           paymentHeader.setMessageId(paymentMessageId);
           paymentHeader.setBatchRefNmbr(paymentMessageId);
-          paymentHeader.setMsgSource("NANOPAY");
-          paymentHeader.setClientCode("TESTAPI");
+          paymentHeader.setMsgSource(credentials.getMsgSource());
+          paymentHeader.setClientCode(credentials.getClientCode());
 
+          /**
+           * Payment request instruments section
+           */
           List<net.nanopay.kotak.model.paymentRequest.InstrumentType> instruments = new ArrayList<>();
           net.nanopay.kotak.model.paymentRequest.InstrumentType requestInstrument = new net.nanopay.kotak.model.paymentRequest.InstrumentType();
-          requestInstrument.setMyProdCode("NETPAY");
+          requestInstrument.setMyProdCode(credentials.getMyProdCode());
           requestInstrument.setPaymentDt(KotakUtils.getCurrentIndianDate());
           Date sentDate = new Date();
           kotakCOTxn.setSentDate(sentDate);
           requestInstrument.setRecBrCd(kotakCOTxn.getIFSCCode());
           requestInstrument.setInstRefNo(paymentMessageId);
-          requestInstrument.setAccountNo(String.valueOf(kotakCOTxn.getSourceAccount()));
+          requestInstrument.setAccountNo(credentials.getRemitterAcNo());
           requestInstrument.setTxnAmnt((double) kotakCOTxn.getAmount());
-          requestInstrument.setPurposeCode(kotakCOTxn.getPurposeCode());
-          requestInstrument.setAccountRelationship(kotakCOTxn.getAccountRelationship());
-          long remitterId = kotakCOTxn.getPayerId();
-          requestInstrument.setRemitterId(String.valueOf(remitterId));
-          User remitter = (User) userDAO.find(EQ(User.ID, remitterId));
-          if ( remitter != null ) requestInstrument.setRemitterCountry(((Business)remitter).getCountryOfBusinessRegistration());
-          requestInstrument.setBeneAcctNo(String.valueOf(kotakCOTxn.getDestinationAccount()));
-          requestInstrument.setBeneName(payee.getFirstName() + " " + payee.getLastName());
+
+          requestInstrument.setBeneAcctNo(destinationBankAccount.getAccountNumber());
+          requestInstrument.setBeneName(getName(payee));
           requestInstrument.setBeneEmail(payee.getEmail());
           requestInstrument.setBeneMb(payee.getPhoneNumber());
           requestInstrument.setBeneAddr1(payee.getAddress().getAddress());
@@ -75,22 +83,36 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
 
-          instruments.add(requestInstrument);
+          // TODO wait for Neel, will fix it later
+          String remitPurpose = "";
+          String beneACType = ""; // from configure for now
 
+          EnrichmentSetType type = new EnrichmentSetType();
+          type.setEnrichment(new String[]{
+            credentials.getRemitterName() + "~" +
+            beneACType + "~" +
+            credentials.getRemitterAddress() + "~" +
+            credentials.getRemitterAcNo() + "~" +
+            remitPurpose + "~~~"});
+          requestInstrument.setEnrichmentSet(type);
+
+          instruments.add(requestInstrument);
           net.nanopay.kotak.model.paymentRequest.InstrumentListType instrumentList =
             new net.nanopay.kotak.model.paymentRequest.InstrumentListType();
           instrumentList.setInstrument((net.nanopay.kotak.model.paymentRequest.InstrumentType[]) instruments.toArray());
 
-          // generate request
+          /**
+           * Init the request
+           */
           Payment paymentRequest = new Payment();
           paymentRequest.setRequestHeader(paymentHeader);
           paymentRequest.setInstrumentList(instrumentList);
 
-          // send request and parse response
+          /**
+           * Send request and parse the response
+           */
           KotakService kotakService = new KotakService(x);
-
           AcknowledgementType response = kotakService.submitPayment(paymentRequest);
-
           Acknowledgement ackHeader = response.getAckHeader();
 
           String paymentResponseStatusCode = ackHeader.getStatusCd();
@@ -123,5 +145,32 @@ public class KotakPaymentProcessor implements ContextAgent {
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);
+  }
+
+  public INBankAccount getAccountById(X x, long id) {
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+
+    Account account = (Account) accountDAO.inX(x).find(id);
+
+    if ( ! (account instanceof INBankAccount) ) {
+      throw new RuntimeException("Wrong bank account type");
+    }
+
+    return (INBankAccount) account;
+  }
+
+  public String getName(User user) {
+
+    String displayName;
+
+    if ( ! SafetyUtil.isEmpty(user.getBusinessName().trim()) ) {
+      displayName = user.getBusinessName();
+    } else if ( ! SafetyUtil.isEmpty(user.getOrganization().trim()) ) {
+      displayName = user.getOrganization();
+    } else {
+      displayName = user.getFirstName() + " " + user.getLastName();
+    }
+
+    return displayName;
   }
 }
