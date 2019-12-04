@@ -7,11 +7,7 @@ foam.CLASS({
     'net.nanopay.account.Balance'
   ],
 
-<<<<<<< HEAD
-  implements: [
-=======
   javaImplements: [
->>>>>>> CPF-3692/TransactionEngineTransferfix
     'java.lang.Comparable'
   ],
 
