@@ -36,6 +36,7 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
+  'net.nanopay.tx.ruler.MicroDepositFailed',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
@@ -238,6 +239,7 @@ var classes = [
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.BusinessRegistration',
   'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
+  'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
@@ -787,6 +789,7 @@ var classes = [
   'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
   'net.nanopay.business.SetBusinessNameDAO',
+  'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

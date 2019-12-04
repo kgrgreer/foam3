@@ -8,20 +8,22 @@ foam.CLASS({
     add banking information for inviting a contact,
   `,
 
+  requires: [
+    'net.nanopay.bank.INBankAccount'
+  ],
+
   imports: [
     'auth',
     'accountDAO as bankAccountDAO',
     'addContact',
+    'bankAdded',
     'branchDAO',
-    'caAccount',
     'closeDialog',
     'ctrl',
     'institutionDAO',
-    'isCABank',
     'isConnecting',
     'isEdit',
     'sendInvite',
-    'usAccount',
     'user'
   ],
 
@@ -110,6 +112,13 @@ foam.CLASS({
     ^adding-account{
       margin-top: 16px;
     }
+    ^ .existing-account .property-objectClass {
+      pointer-events: none;
+    }
+    .Country-label {
+      font-size: 16px;
+      font-weight: bold;
+    }
   `,
 
   messages: [
@@ -131,13 +140,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'voidCheckPath',
-      expression: function(isCABank) {
-        return isCABank
-          ? 'images/Canada-Check@2x.png'
-          : 'images/USA-Check@2x.png';
-      }
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.BankAccount',
+      name: 'bankAccount'
     }
   ],
 
@@ -151,65 +156,7 @@ foam.CLASS({
             if ( account == null ) {
               throw new Error(`Could not find account with id ${this.wizard.data.bankAccount}.`);
             }
-            if ( account.denomination === 'CAD' ) {
-              // 1) IF CAD BANK ACCOUNT
-              this.caAccount.copyFrom(account);
-              this.isCABank = true;
-
-              // Get the institution number since the backend stores them on a
-              // different property.
-              this.institutionDAO
-                .find(account.institution)
-                .then((institution) => {
-                  if ( institution == null ) {
-                    throw new Error(this.INSTITUTION_NOT_FOUND);
-                  }
-                  this.caAccount.copyFrom({
-                    institutionNumber: institution.institutionNumber,
-                    // Need to set this to zero otherwise the backend won't
-                    // recognize the change in institution.
-                    institution: 0
-                  });
-                })
-                .catch((err) => {
-                  var msg = err.message || this.INSTITUTION_NOT_FOUND;
-                  this.ctrl.notify(msg, 'error');
-                });
-
-              // Get the branch number.
-              this.branchDAO
-                .find(account.branch)
-                .then((branch) => {
-                  if ( branch == null ) throw new Error(this.BRANCH_NOT_FOUND);
-                  this.caAccount.copyFrom({
-                    branchId: branch.branchId,
-                    // Need to set this to zero otherwise the backend won't
-                    // recognize the change in institution.
-                    branch: 0
-                  });
-                })
-                .catch((err) => {
-                  var msg = err.message || this.BRANCH_NOT_FOUND;
-                  this.ctrl.notify(msg, 'error');
-                });
-            } else {
-              // 2) IF US BANK ACCOUNT
-              this.usAccount.copyFrom(account);
-              this.isCABank = false;
-              // Get the routing number (aka branch number).
-              this.branchDAO
-                .find(account.branch)
-                .then((branch) => {
-                  if ( branch == null ) throw new Error(this.BRANCH_NOT_FOUND);
-                  this.usAccount.copyFrom({
-                    branchId: branch.branchId
-                  });
-                })
-                .catch((err) => {
-                  var msg = err.message || this.BRANCH_NOT_FOUND;
-                  this.ctrl.notify(msg, 'error');
-                });
-            }
+            this.bankAccount = account;
             this.isConnecting = false;
           })
           .catch((err) => {
@@ -217,8 +164,8 @@ foam.CLASS({
             this.ctrl.notify(msg, 'error');
             this.isConnecting = false;
           });
-      } else {
-        this.isCABank = await this.auth.check(null, 'currency.read.CAD');
+      } else if ( this.wizard.bankAccount ) {
+        this.bankAccount = this.wizard.bankAccount;
       }
     },
 
@@ -226,124 +173,37 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start().addClass('title-block')
-          .start()
-            .addClass('contact-title')
-            .add(this.BANKING_TITLE)
-          .end()
-          .start().addClass('step-indicator')
-            .add(this.STEP_INDICATOR)
-          .end()
-        .end()
-        .start('p')
-          .addClass('instruction')
-          .add(this.INSTRUCTION)
+        .start('h2')
+          .add(this.BANKING_TITLE)
         .end()
         .start()
-          .addClass('bank-option-container')
-          .addClass('two-column')
-          .show(! this.wizard.data.bankAccount)
-          .start(this.SELECT_CABANK)
-            .addClass('bankAction')
-            .enableClass('selected', this.isCABank$)
-            .start('p')
-              .add(this.LABEL_CA)
-            .end()
-          .end()
-          .start(this.SELECT_USBANK)
-            .addClass('bankAction')
-            .enableClass('selected', this.isCABank$, true)
-            .start('p')
-              .add(this.LABEL_US)
-            .end()
+          .addClass('Country-label')
+          .add('Country')
+        .end()
+        .start().enableClass('existing-account', this.viewData.isBankingProvided)
+          .start()
+            .add(this.slot(function(bankAdded) {
+              if ( bankAdded || this.viewData.isBankingProvided ) {
+                return this.E().tag({
+                  class: 'foam.u2.detail.SectionedDetailView',
+                  of: 'net.nanopay.bank.BankAccount',
+                  data$: self.bankAccount$ // Bind value to the property
+                });
+              }
+
+              return this.E().tag({
+                class: 'foam.u2.view.FObjectView',
+                of: 'net.nanopay.bank.BankAccount',
+                data$: self.bankAccount$ // Bind value to the property
+              });
+            }))
           .end()
         .end()
-        .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath$ })
-          .addClass('check-image')
-        .end()
-        .add(this.slot(function(isCABank) {
-          if ( isCABank ) {
-            return this.E()
-              .startContext({ data: self.caAccount })
-                .start()
-                  .addClass('check-margin')
-                  .addClass('flex')
-                  .start()
-                    .addClass('transit-container')
-                    .start()
-                      .addClass('field-label')
-                      .add(self.caAccount.BRANCH_ID.label)
-                    .end()
-                    .tag(self.caAccount.BRANCH_ID) // Transit number
-                  .end()
-                  .start()
-                    .addClass('institution-container')
-                    .start()
-                      .addClass('field-label')
-                      .add(self.caAccount.INSTITUTION_NUMBER.label)
-                    .end()
-                    .tag(self.caAccount.INSTITUTION_NUMBER)
-                  .end()
-                  .start()
-                    .addClass('account-container')
-                    .start()
-                      .addClass('field-label')
-                      .add(self.caAccount.ACCOUNT_NUMBER.label)
-                    .end()
-                    .tag(self.caAccount.ACCOUNT_NUMBER)
-                  .end()
-                .end()
-                .start()
-                  .start()
-                    .addClass('field-label')
-                    .add(self.NAME_LABEL)
-                  .end()
-                  .start(self.caAccount.NAME)
-                    .setAttribute('placeholder', this.CA_ACCOUNT_NAME_PLACEHOLDER)
-                  .end()
-                .end()
-                .start()
-                  .addClass('divider')
-                .end()
-              .endContext();
-          } else {
-            return this.E()
-              .startContext({ data: self.usAccount })
-                .start()
-                  .addClass('check-margin')
-                  .addClass('two-column')
-                  .start()
-                    .start()
-                      .addClass('field-label')
-                      .add(self.LABEL_ACH_ROUTING_LABEL)
-                    .end()
-                    .tag(self.usAccount.BRANCH_ID)
-                  .end()
-                  .start()
-                    .start()
-                      .addClass('field-label')
-                      .add(self.LABEL_ACH_ACCOUNT_LABEL)
-                    .end()
-                    .tag(self.usAccount.ACCOUNT_NUMBER)
-                  .end()
-                .end()
-                .start()
-                  .addClass('divider')
-                .end()
-                .start()
-                  .start().addClass('field-label')
-                    .add(self.NAME_LABEL)
-                  .end()
-                  .start(self.usAccount.NAME)
-                    .setAttribute('placeholder', this.US_ACCOUNT_NAME_PLACEHOLDER)
-                  .end()
-                .end()
-              .endContext();
-          }
-        }))
         .startContext({ data: this.wizard })
           .start()
-            .hide(this.isEdit)
+            .hide(this.slot(function(isEdit, bankAccount) {
+              return isEdit || this.INBankAccount.isInstance(bankAccount);
+            }))
             .addClass(this.myClass('invite'))
             .add(this.wizard.SHOULD_INVITE)
           .end()
@@ -359,12 +219,7 @@ foam.CLASS({
         });
     },
 
-    /** Chooses a CA or US bank account. */
-    function selectBank(bank) {
-      this.isCABank = bank === 'CA';
-    },
-
-    function validateBank(bankAccount, countryId) {
+    function validateBank(bankAccount) {
       if ( ! bankAccount.name ) {
         this.ctrl.notify('Financial institution name is required', 'error');
         return false;
@@ -412,28 +267,11 @@ foam.CLASS({
       },
       code: function(X) {
         // Validate the contact bank account fields.
-        var correctFields;
-        if ( this.isCABank ) correctFields = this.validateBank(this.caAccount, 'CA');
-        else correctFields = this.validateBank(this.usAccount, 'US');
-        if ( ! correctFields ) return;
-
+        if ( ! this.validateBank(this.bankAccount) ) return;
+        this.bankAccount.isDefault = true;
+        this.wizard.bankAccount = this.bankAccount;
+        this.bankAdded = true;
         X.pushToId('AddContactStepThree');
-      }
-    },
-    {
-      name: 'selectCABank',
-      label: '',
-      enabledPermissions: ['currency.read.CAD'],
-      code: function() {
-        this.selectBank('CA');
-      }
-    },
-    {
-      name: 'selectUSBank',
-      label: '',
-      enabledPermissions: ['currency.read.USD'],
-      code: function() {
-        this.selectBank('US');
       }
     }
   ]

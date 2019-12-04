@@ -13,3 +13,18 @@ p({
   "enabled": true,
   "saveHistory": false
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Create default notification settings for agentJunction",
+  "priority":100,
+  "ruleGroup":"AgentJunctions",
+  "documentation":"Creates default notification settings on agentJunction",
+  "daoKey":"agentJunctionDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.business.ruler.JunctionNotificationSettingsRule"
+  },
+  "after":true,
+  "enabled":true
+})

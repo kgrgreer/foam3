@@ -43,6 +43,8 @@ foam.CLASS({
             .build();
 
           DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
+          ((Logger) x.get("logger")).info("PersonSanctionValidator ran for user id: " + searchData.getSearchId() + ", user name: " + searchData.getFirstName() + " " + searchData.getSurName());
+
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;

@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
     'foam.core.Currency',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -51,7 +52,32 @@ foam.CLASS({
      javaCode: `
        return false;
      `
-   }
+   },
+   {
+    documentation: `Collect all line items of succeeding transactions of self.`,
+    name: 'collectLineItems',
+    javaCode: `
+    collectLineItemsFromChain(getNext());
+    `
+  },
+  {
+    documentation: `Collect all line items of succeeding transactions of transactions.`,
+    name: 'collectLineItemsFromChain',
+    args: [
+      {
+        name: 'transactions',
+        type: 'net.nanopay.tx.model.Transaction[]'
+      }
+    ],
+    javaCode: `
+    if ( transactions != null ) {
+      for ( Transaction transaction : transactions ) {
+        addLineItems(transaction.getLineItems(), transaction.getReverseLineItems());
+        collectLineItemsFromChain(transaction.getNext());
+      }
+    }
+    `
+  }
  ]
 
 });

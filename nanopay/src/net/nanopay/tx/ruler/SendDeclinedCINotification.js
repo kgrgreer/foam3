@@ -7,21 +7,22 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.core.ContextAgent',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
+    'net.nanopay.model.Business',
     'net.nanopay.tx.model.Transaction',
     'java.text.NumberFormat',
-    'java.util.HashMap',
+    'java.util.HashMap'
 
   ],
 
@@ -48,15 +49,15 @@ foam.CLASS({
 
               // CHECK IF ABLII-TRANSACTION FOUND
               long invoiceId = 0;
-              User sender = null;
-              User receiver = null;
+              Business sender = null;
+              Business receiver = null;
               if ( t == null || !(t instanceof net.nanopay.tx.AbliiTransaction) ) {
-                sender = tx.findSourceAccount(x).findOwner(x);
-                receiver = tx.findDestinationAccount(x).findOwner(x);
+                sender = (Business) tx.findSourceAccount(x).findOwner(x);
+                receiver = (Business) tx.findDestinationAccount(x).findOwner(x);
               } else {
                 invoiceId = t.getInvoiceId();
-                sender = t.findSourceAccount(x).findOwner(x);
-                receiver = t.findDestinationAccount(x).findOwner(x);
+                sender = (Business) t.findSourceAccount(x).findOwner(x);
+                receiver = (Business) t.findDestinationAccount(x).findOwner(x);
               }
 
               // DEPENDING ON ABOVE - send either 'pay-from-bank-account-reject' or 'cashin-reject' email
@@ -77,8 +78,13 @@ foam.CLASS({
                   args.put("invoiceNumber", invoice.getInvoiceNumber());
                 }
 
+                User signingOfficer = sender.findSigningOfficer(x);
+
                 args.put("amount", currency.format(t.getAmount()));
-                args.put("toName", sender.label());
+                args.put("toName", (signingOfficer != null) ?
+                  signingOfficer.getFirstName() :
+                  sender.label()
+                );
                 args.put("name", receiver.label());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());
