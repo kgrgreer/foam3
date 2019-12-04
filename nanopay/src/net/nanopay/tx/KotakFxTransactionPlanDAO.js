@@ -75,6 +75,7 @@ foam.CLASS({
         // txn 3: Kotak IN bank -> destination IN bank
         KotakCOTransaction t3 = new KotakCOTransaction.Builder(x).build();
         t3.copyFrom(request);
+        t3.setAmount(request.getDestinationAmount());
         t3.addLineItems(
           new TransactionLineItem[] {
             new PurposeCodeLineItem.Builder(x).setPurposeCode("P1099").build(),

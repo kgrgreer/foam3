@@ -14,6 +14,9 @@ foam.CLASS({
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.AbliiTransaction',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -37,13 +40,17 @@ foam.CLASS({
       }
 
       Transaction request = quote.getRequestTransaction();
-      Transaction txn;
-      if ( request.getType().equals("Transaction") ) {
-        txn = new SummaryTransaction.Builder(x).build();
-        txn.copyFrom(request);
-      } else {
-        txn = (Transaction) request.fclone();
-      }
+      
+      // get fx rate
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
+      FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
+      
+      // calculate source amount 
+      Long amount =  new Double(request.getDestinationAmount()/fxQuote.getRate()).longValue();
+      request.setAmount(amount);
+
+      FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
+      txn.copyFrom(request);
       txn.setStatus(TransactionStatus.PENDING);
       DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), sourceAccount.getDenomination());
       // split 1: CA bank -> CA digital
@@ -82,13 +89,11 @@ foam.CLASS({
         return super.put_(x, quote);
       }
 
-      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
-      FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
-      txn.addLineItems(new TransactionLineItem[] { new FeeLineItem.Builder(x).setName("Foreign Exchange Fee ( rate: " + fxQuote.getRate() + " )").setAmount((long)fxQuote.getRate() * (quote.getRequestTransaction().getAmount()) ).build()},null);
-
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.setIsQuoted(true);
-      ((SummaryTransaction) txn).collectLineItems();
+      ((FXSummaryTransaction) txn).setFxRate(fxQuote.getRate());
+      txn.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(500).setCurrency(request.getSourceCurrency()).build()}, null);  
+      ((FXSummaryTransaction) txn).collectLineItems();
       quote.addPlan(txn);
       return super.put_(x, quote);`
     },
