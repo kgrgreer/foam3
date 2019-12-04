@@ -191,15 +191,68 @@ p({"class":"foam.nanos.boot.NSpec", "name":"lineItemTypeAccountDAO",            
 p({"class":"foam.nanos.boot.NSpec", "name":"taxService",                   "serve":true, "serviceScript":"return new net.nanopay.tax.TaxMockService(x);"})
 p({"class":"foam.nanos.boot.NSpec", "name":"lineItemTaxDAO",                     "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer(\"lineItemTaxDAO\")).setGuid(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"lineItemTax\").setOf(net.nanopay.tax.LineItemTax.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.tax.LineItemTax\"}","description":"Tax to apply for a particular LineItem type, TaxCode, Country and Region."})
 p({"class":"foam.nanos.boot.NSpec", "name":"lineItemTaxDAO",                     "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setPm(true).setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer(\"lineItemTaxDAO\")).setGuid(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"lineItemTax\").setOf(net.nanopay.tax.LineItemTax.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.tax.LineItemTax\"}","description":"Tax to apply for a particular LineItem type, TaxCode, Country and Region."})
-// Candlesticks
-p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceWeeklyCandlestickDAO",                     "serve":true,  "serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());", "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceMonthlyCandlestickDAO",                     "serve":true,  "serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());", "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceQuarterlyCandlestickDAO",                     "serve":true,  "serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());", "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceAnnuallyCandlestickDAO",                     "serve":true,  "serviceScript":"return new foam.dao.MDAO(foam.nanos.analytics.Candlestick.getOwnClassInfo());", "client":"{\"of\":\"foam.nanos.analytics.Candlestick\"}"})
+
 // Reduce Managers
 p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceMonthlyReduceManager",               "serve":true,  "serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x).setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceWeeklyCandlestickDAO\")).setDestDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\")).setPeriodLengthMs(30*7*24*60*60*1000).build();"})
 p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceQuarterlyReduceManager",               "serve":true,  "serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x).setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceMonthlyCandlestickDAO\")).setDestDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\")).setPeriodLengthMs(3*30*7*24*60*60*1000).build();"})
 p({"class":"foam.nanos.boot.NSpec", "name":"accountBalanceAnnuallyReduceManager",               "serve":true,  "serviceScript":"return new foam.nanos.analytics.DAOReduceManager.Builder(x).setSourceDAO((foam.dao.DAO) x.get(\"accountBalanceQuarterlyCandlestickDAO\")).setDestDAO((foam.dao.DAO) x.get(\"accountBalanceAnnuallyCandlestickDAO\")).setPeriodLengthMs(12*30*7*24*60*60*1000).build();"})
+
+// Candlesticks
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "accountBalanceWeeklyCandlestickDAO",                     
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "accountBalanceMonthlyCandlestickDAO",                     
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "accountBalanceQuarterlyCandlestickDAO",                     
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "accountBalanceAnnuallyCandlestickDAO",                     
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
