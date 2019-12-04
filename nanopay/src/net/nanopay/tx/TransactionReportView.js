@@ -96,14 +96,25 @@ foam.CLASS({
         ))
         .select()
         .then((transactions) => {
+          this.startDate.setHours(0, 0, 0, 0);
+          this.endDate.setHours(23, 59, 59);
+
           return transactions.array.reduce((arr, transaction) => {
             var statusHistoryArr = transaction.statusHistory;
             if ( statusHistoryArr.length < 1 ) return arr;
-            if ( statusHistoryArr[0].timeStamp > this.endDate ) return arr;
-            if ( statusHistoryArr[statusHistoryArr.length-1].timeStamp < this.startDate ) return arr;
+
+            var firstStatusHistory = statusHistoryArr[0].timeStamp;
+            if ( firstStatusHistory > this.endDate ) return arr;
+
+            var lastStatusHistory = statusHistoryArr[statusHistoryArr.length-1]
+              .timeStamp;
+            if ( lastStatusHistory < this.startDate ) return arr;
+
             for ( var i = statusHistoryArr.length-1; i >= 0; i-- ) {
-              if ( statusHistoryArr[i].timeStamp <= this.endDate
-                && statusHistoryArr[i].timeStamp >= this.startDate ) {
+              var statusHistoryTimeStamp = statusHistoryArr[i].timeStamp;
+
+              if ( statusHistoryTimeStamp <= this.endDate
+                && statusHistoryTimeStamp >= this.startDate ) {
                 transaction.status = statusHistoryArr[i].status;
                 transaction.lastModified = statusHistoryArr[i].timeStamp;
                 arr.push(transaction);
@@ -161,9 +172,9 @@ foam.CLASS({
       code: function() {
         var url = window.location.origin
           + '/service/genTxnReport?startDate='
-          + this.startDate.toDateString()
+          + this.startDate.toString()
           +'&endDate='
-          + this.endDate.toDateString();
+          + this.endDate.toString();
       window.location.assign(url);
       }
     }

@@ -39,7 +39,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     response.setContentType("text/csv");
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
 
-    SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
+   SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd yyyy H:m:s 'GMT'Z (zz)");
 
     Date startDate = null;
     try {
@@ -47,6 +47,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     } catch (ParseException e) {
       e.printStackTrace();
     }
+
     Date endDate = null;
     try {
       endDate = formatter.parse(req.getParameter("endDate"));
