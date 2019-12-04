@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{1,11}$")'
+      javaValue: 'Pattern.compile("^[0-9]{1,20}$")'
     }
   ],
 
@@ -77,7 +77,7 @@ foam.CLASS({
       name: 'ifscCode',
       label: 'IFSC Code',
       validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{1,11}$/;
+        var accNumberRegex = /^\w{1,20}$/;
 
         if ( ifscCode === '' ) {
           return 'Please enter an IFSC Code.';
@@ -94,12 +94,12 @@ foam.CLASS({
         return /^\d*$/.test(n) ? n : o;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^\w{1,11}$/;
+        var accNumberRegex = /^\w{1,20}$/;
 
         if ( accountNumber === '' ) {
           return 'Please enter an International Bank Account No.';
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Indian Bank Account No cannot exceed 11 digits.';
+          return 'Indian Bank Account No cannot exceed 20 digits.';
         }
       },
     },
