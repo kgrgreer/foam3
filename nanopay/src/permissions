@@ -538,3 +538,4 @@ p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceHistories","desc
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.approvalRequests","description":"Permission to read to the compliance approval requests table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.paymentCards","description":"Permission to read the payment cards table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessTypeDAO","description":"Permission to access businessTypeDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"padcapture.create","description":"Permission to create pad captures"})
