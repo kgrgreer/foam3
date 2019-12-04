@@ -3,7 +3,7 @@ foam.ENUM({
   name: 'OnboardingStatus',
   values: [
     'DRAFT',  // Save & Exit action
-    'SUBMITTED', // when singing officer finished til the end of onboarding process
-    'SAVED' // when non signing officer finished til the end of onboarding process
+    'SUBMITTED', // A signing officer completed the on boarding process
+    'SAVED' // A non signing officer completed the on boarding process
   ]
 });

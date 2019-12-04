@@ -466,46 +466,7 @@ foam.CLASS({
       section: 'homeAddressSection',
       label: 'First Name',
       width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
-                }), 0),
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First Name Required.'
-        },
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.LT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
-                }), 70),
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First name cannot exceed 70 characters.'
-        },
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME, /^[a-zA-Z ]*$/),
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First name cannot contain numbers or special characters.'
-        }
-      ],
-      validationTextVisible: true
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -513,46 +474,7 @@ foam.CLASS({
       label: 'Last Name',
       section: 'homeAddressSection',
       width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.GT(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
-              }), 0),
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last Name Required.'
-      },
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME
-              }), 70),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last name cannot exceed 70 characters.'
-      },
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_LAST_NAME, /^[a-zA-Z ]*$/),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last name cannot contain numbers or special characters.'
-      }
-    ],
-    validationTextVisible: true
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -1168,16 +1090,6 @@ foam.CLASS({
         class: 'net.nanopay.sme.onboarding.ui.TwoFactorAuthOnboarding'
       }
     },
-    {
-      class: 'String',
-      name: 'roJobTitle',
-      label: 'Job Title',
-      expression: function(adminJobTitle) {
-        return adminJobTitle;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.RO
-    },
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
@@ -1203,33 +1115,6 @@ foam.CLASS({
         }
       ]
     }),
-    {
-      class: 'String',
-      name: 'roAdminFirstName',
-      expression: function(adminFirstName) {
-        return adminFirstName;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
-    {
-      class: 'String',
-      name: 'roAdminLastName',
-      expression: function(adminLastName) {
-        return adminLastName;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
-    {
-      class: 'String',
-      name: 'roAdminJobTitle',
-      expression: function(adminJobTitle) {
-        return adminJobTitle;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
       index: 1

@@ -419,12 +419,10 @@ foam.CLASS({
         {
           args: ['jobTitle'],
           predicateFactory: function(e) {
-            return e.AND(
-            e.GT(
+            return e.GT(
               foam.mlang.StringLength.create({
                 arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
-              }), 0)
-            );
+              }), 0);
           },
           errorString: 'Please select a job title.'
         }
@@ -520,46 +518,7 @@ foam.CLASS({
       documentation: 'Signing officer \' first name',
       label: 'First Name',
       width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_FIRST_NAME
-                }), 0),
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First Name Required.'
-        },
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.LT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_FIRST_NAME
-                }), 70),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First name cannot exceed 70 characters.'
-        },
-        {
-          args: ['adminFirstName', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.REG_EXP(net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_FIRST_NAME, /^[a-zA-Z ]*$/),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-            );
-          },
-          errorString: 'First name cannot contain numbers or special characters.'
-        }
-      ],
-      validationTextVisible: true
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -568,46 +527,7 @@ foam.CLASS({
       section: 'homeAddressSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.GT(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_LAST_NAME
-              }), 0),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last Name Required.'
-      },
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_LAST_NAME
-              }), 70),
-            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last name cannot exceed 70 characters.'
-      },
-      {
-        args: ['adminLastName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.REG_EXP(net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_LAST_NAME, /^[a-zA-Z ]*$/),
-            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-          );
-        },
-        errorString: 'Last name cannot contain numbers or special characters.'
-      }
-    ],
-    validationTextVisible: true
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -1142,16 +1062,6 @@ foam.CLASS({
         class: 'net.nanopay.sme.onboarding.ui.TwoFactorAuthOnboarding'
       }
     },
-    {
-      class: 'String',
-      name: 'roJobTitle',
-      label: 'Job Title',
-      expression: function(adminJobTitle) {
-        return adminJobTitle;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.RO
-    },
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
@@ -1176,33 +1086,6 @@ foam.CLASS({
         }
       ]
     }),
-    {
-      class: 'String',
-      name: 'roAdminFirstName',
-      expression: function(adminFirstName) {
-        return adminFirstName;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
-    {
-      class: 'String',
-      name: 'roAdminLastName',
-      expression: function(adminLastName) {
-        return adminLastName;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
-    {
-      class: 'String',
-      name: 'roAdminJobTitle',
-      expression: function(adminJobTitle) {
-        return adminJobTitle;
-      },
-      section: 'personalOwnershipSection',
-      visibility: foam.u2.Visibility.HIDDEN
-    },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
       index: 1
@@ -1255,7 +1138,7 @@ foam.CLASS({
       class: 'Int',
       name: 'totalOwnership',
       section: 'reviewOwnersSection',
-      expression: function(amountOfOwners,
+      postSet: function(amountOfOwners,
                            owner1$ownershipPercent,
                            owner2$ownershipPercent,
                            owner3$ownershipPercent,

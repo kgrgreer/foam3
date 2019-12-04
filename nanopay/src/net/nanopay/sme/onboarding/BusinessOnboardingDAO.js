@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.NEQ',
     'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
@@ -53,7 +54,8 @@ foam.CLASS({
             Invitation existingInvite = (Invitation) businessInvitationDAO.find(
               AND(
                 EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail()),
-                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId())
+                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId()),
+                NEQ(Invitation.STATUS, net.nanopay.model.InvitationStatus.COMPLETED)
               )
             );
 
