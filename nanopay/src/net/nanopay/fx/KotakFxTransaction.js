@@ -13,6 +13,14 @@ foam.CLASS({
 
    documentation: `Kotak transaction that stays in pending until a manual transaction rate is entered`,
 
+   properties: [
+    {
+      name: 'initialStatus',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;',
+    }
+   ],
+
    methods: [
      {
       name: 'canTransfer',

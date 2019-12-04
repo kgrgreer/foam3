@@ -121,7 +121,7 @@ public class TransactionTest
       .build();
     test(TestUtils.testThrows(
       () -> ((DAO) x_.get("transactionDAO")).put_(x_, finalTxn2),
-      "Invalid transfer, LoanedTotalAccount account balance must remain >= 0. nanopay Loan Account CAD",
+      "Cannot over pay account "+loanAccount.getId(),
       RuntimeException.class), "Exception: try to overpay loan");
 
 

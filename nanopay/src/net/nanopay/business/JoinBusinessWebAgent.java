@@ -1,6 +1,7 @@
 package net.nanopay.business;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
@@ -11,6 +12,10 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
+import net.nanopay.onboarding.CreateOnboardingCloneService;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
@@ -23,9 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
 
 /**
  * When an existing user is invited to join another business, they can click a
@@ -77,6 +84,12 @@ public class JoinBusinessWebAgent implements WebAgent {
 
       // Process the token.
       tokenService.processToken(x, user, tokenUUID);
+
+      CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(x);
+      List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
+
+      if ( onboardings.size() > 0 )
+        createOnboardingCloneService.putOnboardingClone(x, onboardings, token.getUserId());
     } catch (Throwable t) {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
@@ -119,4 +132,3 @@ public class JoinBusinessWebAgent implements WebAgent {
     }
   }
 }
-

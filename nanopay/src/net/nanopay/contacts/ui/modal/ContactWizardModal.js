@@ -227,7 +227,9 @@ foam.CLASS({
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
-        createdBy: this.user.id
+        createdBy: this.user.id,
+        inviteeId: this.data.id,
+        message: ''
       });
 
       try {
