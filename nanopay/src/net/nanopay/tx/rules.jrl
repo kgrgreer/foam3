@@ -192,7 +192,7 @@ p({
             },
             "arg2": {
               "class":"__Property__",
-              "forClass_":"net.nanopay.tx.model.Transaction",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
               "name":"status"
             }
           },
@@ -214,7 +214,7 @@ p({
             },
             "arg2": {
               "class":"__Property__",
-              "forClass_":"net.nanopay.tx.model.Transaction",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
               "name":"status"
             }
           },
@@ -256,7 +256,7 @@ p({
             },
             "arg2": {
               "class":"__Property__",
-              "forClass_":"net.nanopay.tx.model.Transaction",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
               "name":"status"
             }
           },
@@ -278,7 +278,7 @@ p({
             },
             "arg2": {
               "class":"__Property__",
-              "forClass_":"net.nanopay.tx.model.Transaction",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
               "name":"status"
             }
           },
