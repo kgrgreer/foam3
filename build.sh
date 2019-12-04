@@ -539,6 +539,7 @@ fi
 ############################
 
 JOURNAL_CONFIG=default
+JOURNAL_SPECIFIED=0
 INSTANCE=
 HOST_NAME=`hostname -s`
 VERSION=
@@ -584,7 +585,8 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
-        J) JOURNAL_CONFIG=$OPTARG ;;
+        J) JOURNAL_CONFIG=$OPTARG
+           JOURNAL_SPECIFIED=1 ;;
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
@@ -603,6 +605,7 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
            ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
+           JOURNAL_SPECIFIED=1
 
            echo ""                             
            echo -e "\033[34;1m   (                       (     \033[0m"    
@@ -645,8 +648,12 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
-    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
-    JOURNAL_CONFIG=test
+    if [ $JOURNAL_SPECIFIED -ne 1 ]; then
+        echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+        JOURNAL_CONFIG=test
+    else
+        echo "INFO :: Mode is TEST, but JOURNAL_CONFIG is ${JOURNAL_CONFIG}"
+    fi
 fi
 
 if [ ${CLEAN_BUILD} -eq 1 ]; then

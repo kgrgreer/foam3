@@ -397,7 +397,8 @@ foam.CLASS({
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
     'java.util.List',
-    'static foam.mlang.MLang.EQ'
+    'net.nanopay.model.BusinessUserJunction',
+    'static foam.mlang.MLang.*'
   ],
 
   implements: [
@@ -571,6 +572,31 @@ foam.CLASS({
             setting.sendNotification(x, businessUser, notification);
           }
         }
+      `
+    },
+    {
+      name: 'findSigningOfficer',
+      type: 'User',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("userDAO");
+        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        
+        List signingOfficers = ((ArraySink) signingOfficerJunctionDAO.where(
+            EQ(BusinessUserJunction.SOURCE_ID, this.getId())
+          ).select(new ArraySink())).getArray();
+        if ( signingOfficers == null || signingOfficers.size() == 0 ) {
+          throw new RuntimeException("Signing officer not found");
+        }
+        BusinessUserJunction businessUserJunction = (BusinessUserJunction) signingOfficers.get(0);
+        User user = (User) userDAO.find(businessUserJunction.getTargetId());
+
+        return user;
       `
     }
   ],
