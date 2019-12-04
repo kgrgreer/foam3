@@ -54,7 +54,7 @@ public class JoinBusinessWebAgent implements WebAgent {
     String redirect = request.getParameter("redirect");
     User user = null;
 
-    businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");;
+    businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");
     uSBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
 
     try {
@@ -165,4 +165,3 @@ public class JoinBusinessWebAgent implements WebAgent {
     }
   }
 }
-
