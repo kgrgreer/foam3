@@ -7,6 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.account.TrustAccount'
   ],
 
@@ -61,6 +62,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
+    },
+    {
+      name: 'initialStatus',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 
