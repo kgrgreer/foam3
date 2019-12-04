@@ -52,11 +52,21 @@ foam.CLASS({
           // payee then quote a single transaction, which is a one to one transaction.
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
-              bulkTxn.setSourceAccount(sourceAccount.getId());
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
+
+              // SourceAccount and DestinationAccount are required
+              bulkTxn.setSourceAccount(sourceAccount.getId());
               bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+
               parentQuote.setRequestTransaction(bulkTxn);
-              return getDelegate().put_(x, parentQuote);
+              parentQuote = (TransactionQuote) getDelegate().put_(x, parentQuote);
+              
+              // Update the child of the bulk transaction
+              bulkTxn.addNext(parentQuote.getPlan());
+              bulkTxn.setIsQuoted(true);
+
+              parentQuote.setPlan(bulkTxn);
+              return parentQuote;
             } else {
               throw new RuntimeException("BulkTransaction missing child transactions or a payee.");
             }
