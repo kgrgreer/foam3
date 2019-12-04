@@ -17,7 +17,6 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.cico.VerificationTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'java.util.HashMap',
     'static foam.mlang.MLang.*'
   ],
