@@ -542,3 +542,4 @@ p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.5ce586f7-5e
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b","description":"Permission to see IN bank account in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d","description":"Permission to see US bank account in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"padcapture.create","description":"Permission to create PADCaptures"})
+p({"class":"foam.nanos.auth.Permission","id":"service.purposeCodeDAO","description":"Permission to access purposeCodeDAO"})
