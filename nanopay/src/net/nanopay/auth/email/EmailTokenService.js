@@ -19,7 +19,7 @@ foam.CLASS({
       javaCode: `
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
-          AppConfig appConfig = (AppConfig) x.get("appConfig");          
+          AppConfig appConfig = (AppConfig) x.get("appConfig");
           String url = appConfig.getUrl()
               .replaceAll("/$", "");
 
@@ -36,6 +36,7 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("email", user.getEmail());
           args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
+          args.put("sendTo", user.getEmail());
 
           // add app store / play store links
           if ( "Personal".equals(user.getType()) && user.getPortalAdminCreated() ) {
