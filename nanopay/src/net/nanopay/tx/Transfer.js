@@ -7,6 +7,10 @@ foam.CLASS({
     'net.nanopay.account.Balance'
   ],
 
+  implements: [
+    'java.lang.Comparable'
+  ],
+
   properties: [
     {
       name: 'description',
@@ -61,6 +65,16 @@ foam.CLASS({
       type: 'Any',
       javaCode: `
         return String.valueOf(getAccount()).intern();
+      `
+    },
+    {
+      name: 'compareTo',
+      type: 'int',
+      args: { name: 't', type: 'net.nanopay.tx.model.Transfer'},
+      javaCode: `
+        if ( getAccount() < t.getAccount()) return -1;
+        if ( getAccount() > t.getAccount()) return 1;
+        return 0;
       `
     }
   ]

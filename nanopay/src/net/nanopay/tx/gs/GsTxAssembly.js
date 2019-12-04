@@ -62,6 +62,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'transaction',
       documentation: `
         Intermediate property used internally. Do not set this.
@@ -88,20 +89,17 @@ foam.CLASS({
         else
           t = parseExternal(getX(),getRow1());
 
-        checkTrusty(getX(),t);
-        verifyBalance(getX(),t);
-        
-        if ( getConcurrentPuts() )
-          getOutputDAO().put(t);
-        else
+
+
           setTransaction(t);
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        if ( ! getConcurrentPuts() )
-          getOutputDAO().put(getTransaction());
+        checkTrusty(getX(), getTransaction());
+        verifyBalance(getX(),getTransaction());
+        getOutputDAO().put(getTransaction());
       `
     },
     /* TODO: need to verify trust account has enough $, and account have enough $
@@ -250,7 +248,7 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        DAO accountDAO = ((DAO) x.get("localAccountDAO"));
+        DAO accountDAO = ((DAO) x.get("accountDAO"));
         DAO transactionDAO = ((DAO) x.get("transactionDAO"));
 
         Account source = txn.findSourceAccount(x);
@@ -272,14 +270,14 @@ foam.CLASS({
           b = (BankAccount) accountDAO.put_(x,b).fclone();
           System.out.println("woops "+txn.getSourceCurrency());
         }
-         if ( (long) source.findBalance(x) < txn.getAmount() ) {
-
+         Long topUp = txn.getAmount() - (long) source.findBalance(x);
+         if ( topUp > 0 ) {
            Transaction ci = new Transaction.Builder(x)
              .setDestinationAccount(source.getId())
              .setSourceAccount(b.getId())
              .setDestinationCurrency(txn.getSourceCurrency())
              .setSourceCurrency(b.getDenomination())
-             .setDestinationAmount(txn.getAmount())
+             .setDestinationAmount(topUp)
              .setLastStatusChange(txn.getLastStatusChange())
              .build();
           if ( SafetyUtil.equals(ci.getSourceCurrency(),ci.getDestinationCurrency())) {
@@ -298,9 +296,9 @@ foam.CLASS({
                   MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
                 )
               ).select(new ArraySink());
-              w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
-            } else {
               w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
+            } else {
+              w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
             }
             if ( w == 0) System.out.println("uuuuhhhohhh");
             ci.setAmount((long) ((double) ci.getDestinationAmount()*w));

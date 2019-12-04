@@ -68,24 +68,24 @@ foam.CLASS({
         f.setSourceAccount(txn.getSourceAccount());
         f.setLastStatusChange(txn.getLastStatusChange());
         f.setDestinationAccount(txn.getDestinationAccount());
-        f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
+        //f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
+            .setDescription(TrustAccount.find(getX(), txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
+            .setAccount(TrustAccount.find(getX(), txn.findSourceAccount(x)).getId())
             .setAmount(txn.getAmount())
             .build());
-        all.add( new Transfer.Builder(getX())
+        all.add( new Transfer.Builder(x)
             .setDescription("Source FX transfer")
             .setAccount(txn.getSourceAccount())
             .setAmount(-txn.getAmount())
             .build());
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findDestinationAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findDestinationAccount(x)).getId())
+            .setDescription(TrustAccount.find(getX(), txn.findDestinationAccount(x)).getName()+" FX Transfer COMPLETED")
+            .setAccount(TrustAccount.find(getX(), txn.findDestinationAccount(x)).getId())
             .setAmount(-txn.getDestinationAmount())
             .build());
-        all.add( new Transfer.Builder(getX())
+        all.add( new Transfer.Builder(x)
             .setDescription("Destination FX transfer")
             .setAccount(txn.getDestinationAccount())
             .setAmount(txn.getDestinationAmount())

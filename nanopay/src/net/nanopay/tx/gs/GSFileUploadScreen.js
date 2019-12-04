@@ -128,7 +128,7 @@ foam.CLASS({
         this.ProgressBarDAO.find(this.id_).then((data) => {
           if ( data != null ) {
             this.progressBarStatus = data.status;
-            this.progressBarValue = data.value;
+            this.progressBarValue = data.state+'%';
           }
           else {
             this.progressBarStatus = 'Awaiting File Upload.';

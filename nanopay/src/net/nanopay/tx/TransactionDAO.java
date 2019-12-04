@@ -104,9 +104,10 @@ public class TransactionDAO
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
-    Transfer[] ts = txn.createTransfers(y, oldTxn); // just get transfers we no longer auto generate any
+    Transfer[] ts = txn.getTransfers(); // just get transfers we no longer auto generate any
 
         // legacy support for REVERSE
+     /*
     if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
          txn.getStatus() == TransactionStatus.REVERSE &&
          oldTxn != null &&
@@ -127,12 +128,9 @@ public class TransactionDAO
               .build());
       ts = (Transfer[]) all.toArray(new Transfer[0]);
     }
+    */
 
-    // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
-    if ( ts.length != 1 ) {
-      validateTransfers(x, txn, ts);
-    }
-    return lockAndExecute(x, txn, ts, 0);
+    return lockAndExecute(x, txn, ts);
   }
 
   void validateTransfers(X x, Transaction txn, Transfer[] ts)
@@ -164,33 +162,34 @@ public class TransactionDAO
   }
 
   /** Sorts array of transfers. **/
-  FObject lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
-    // sort to avoid deadlock
-    java.util.Arrays.sort(ts);
+  FObject lockAndExecute(X x, Transaction txn, Transfer[] ts) {
 
-    return lockAndExecute_(x, txn, ts, i);
+    // Combine transfers to the same account
+    HashMap<Long, Transfer> hm = new HashMap();
+
+    for ( Transfer tr : ts ) {
+       if ( hm.get(tr.getAccount()) != null ) {
+         tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+       }
+      hm.put(tr.getAccount(), tr);
+    }
+    Transfer [] newTs = hm.values().toArray(new Transfer[0]);
+
+    // validate the transfers we have combined.
+    validateTransfers(x, txn, newTs);
+    //sort the transfer array
+    java.util.Arrays.sort(newTs);
+    return lockAndExecute_(x, txn, newTs, 0);
   }
 
   /** Lock each transfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
-    HashMap<Long, Transfer> hm = new HashMap();
 
-    for ( Transfer tr : ts ) {
-      // REVIEW: as the TODO above suggest, this creates an incorrect transfer list
-      // when transfers to the same account exist.
-      // if ( hm.get(tr.getAccount()) != null ) {
-      //   tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
-      // }
-      hm.put(tr.getAccount(), tr);
-    }
-
-    Transfer [] newTs = hm.values().toArray(new Transfer[0]);
     if ( i > ts.length - 1 ) {
-      return execute(x, txn, newTs);
+      return execute(x, txn, ts);
     }
-
     synchronized ( ts[i].getLock() ) {
-      return lockAndExecute_(x, txn, newTs, i + 1);
+      return lockAndExecute_(x, txn, ts, i + 1);
     }
   }
 
