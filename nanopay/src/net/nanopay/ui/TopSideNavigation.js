@@ -42,18 +42,15 @@ foam.CLASS({
       background: /*%GREY5%*/ #f5f7fas;
     }
     ^ .selected-sub {
-      color: /*%PRIMARY3%*/ #406dea;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 800;
     }
     ^ .submenu {
-      max-height: 120px;
+      max-height: 204px;
       overflow-y: scroll;
       overflow-x: hidden;
       font-size: 14px;
       border-bottom: 1px solid /*%GREY4%*/ #e7eaec;
-    }
-    ^ li:hover {
-      cursor: pointer;
     }
     ^ .icon {
       width: 16px;
@@ -99,9 +96,12 @@ foam.CLASS({
       background: /*%PRIMARY5%*/ #e5f1fc;
       color: /*%BLACK%*/ black;
     }
-    ^ li {
-      width: 100%;
-      padding: 5px 0px 5px 50px;
+    ^submenu-item {
+      display: flex;
+      padding: 12px 12px 12px 51px;
+    }
+    ^submenu-item:hover {
+      cursor: pointer;
     }
     ^ .foam-u2-view-RichChoiceView {
       margin-bottom: 20px;
@@ -116,6 +116,18 @@ foam.CLASS({
     }
     ^ .foam-u2-view-RichChoiceView-heading {
       padding: 10px;
+    }
+    ^submenu-item ^selected-dot {
+      border-radius: 999px;
+      min-width: 8px;
+      height: 8px;
+      background-color: transparent;
+      display: inline-block;
+      margin-right: 8px;
+      margin-top: 4px;
+    }
+    ^ .selected-sub ^selected-dot {
+      background-color: /*%PRIMARY3%*/ #406dea;
     }
   `,
 
@@ -166,7 +178,8 @@ foam.CLASS({
         // Sets currentMenu and listeners on search selections and subMenu scroll on load.
         if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
 
-        this.start().addClass(this.myClass())
+        this.start()
+          .addClass(this.myClass())
           .show(this.loginSuccess$)
           .start().addClass('side-nav-view')
             .tag(this.MENU_SEARCH)
@@ -207,25 +220,28 @@ foam.CLASS({
                     })).end()
                   .end()
 
-                  .start().addClass('submenu')
-                  .show(slot)
+                  .start()
+                    .addClass('submenu')
+                    .show(slot)
                     .select(self.dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
                       hasChildren.set(true);
                       var e = this.E()
-                        .start('li')
-                          .attrs({ name: subMenu.id })
-                          .on('click', function() {
-                            if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
-                              self.pushMenu(subMenu.id);
-                              self.menuSearch = menu.id;
-                            }
-                          })
-                          .add(subMenu.label)
-                          .enableClass('selected-sub', self.currentMenu$.map((currentMenu) => {
-                            return currentMenu != null && currentMenu.id === subMenu.id;
-                          }))
-                        .end();
+                        .addClass(self.myClass('submenu-item'))
+                        .start().addClass(self.myClass('selected-dot')).end()
+                        .attrs({ name: subMenu.id })
+                        .on('click', function() {
+                          if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
+                            self.pushMenu(subMenu.id);
+                            self.menuSearch = menu.id;
+                          }
+                        })
+                        .start('span').add(subMenu.label).end()
+                        .enableClass('selected-sub', self.currentMenu$.map((currentMenu) => {
+                          return currentMenu != null && currentMenu.id === subMenu.id;
+                        }));
+
                       if ( self.currentMenu == subMenu ) self.subMenu = e;
+
                       return e;
                     })
                   .end()
