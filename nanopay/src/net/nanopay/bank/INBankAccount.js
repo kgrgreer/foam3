@@ -9,13 +9,17 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   documentation: 'Indian Bank account information.',
 
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+      javaValue: 'Pattern.compile("^[0-9]{1,20}$")'
     }
   ],
 
@@ -50,13 +54,12 @@ foam.CLASS({
       name: 'accountRelationship',
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
-      value: 'Employer/Employee',
       label: 'Relation to the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: '--',
           choices: [
             'Employer/Employee',
             'Contractor',
@@ -66,38 +69,97 @@ foam.CLASS({
         },
         otherKey: 'Other'
       },
+      validationPredicates: [
+        {
+          args: ['accountRelationship'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
+          },
+          errorString: 'Please specify your relation to the contact.'
+        }
+      ],
       section: 'accountDetails'
     },
     {
       class: 'String',
       name: 'ifscCode',
       label: 'IFSC Code',
-      validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{11}$/;
-
-        if ( ifscCode === '' ) {
-          return 'Please enter an IFSC Code.';
-        } else if ( ! accNumberRegex.test(ifscCode) ) {
-          return 'IFSC Code must be 11 digits long.';
+      validationPredicates: [
+        {
+          args: ['ifscCode'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{1,11}$/);
+          },
+          errorString: 'IFSC Code must be 11 digits long.'
         }
-      },
+      ],
       section: 'accountDetails'
     },
     {
       name: 'accountNumber',
-      label: 'International Bank Account No.',
+      label: 'Bank Account No.',
       preSet: function(o, n) {
-        return /^\w*$/.test(n) ? n : o;
+        return /^\d*$/.test(n) ? n : o;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^\w{16,30}$/;
+        var accNumberRegex = /^\w{1,20}$/;
 
         if ( accountNumber === '' ) {
           return 'Please enter an International Bank Account No.';
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'International Bank Account No must be between 16 and 30 digits long.';
+          return 'Indian Bank Account No cannot exceed 20 digits.';
         }
       },
+    },
+    {
+      name: 'purposeCode',
+      class: 'Reference',
+      of: 'net.nanopay.tx.PurposeCode',
+      label: 'Purpose of Transfer',
+      section: 'accountDetails',
+      validationPredicates: [
+        {
+          args: ['purposeCode'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
+          },
+          errorString: 'Please enter a Purpose of Transfer.'
+        }
+      ],
+      view: function(_, x) {
+        return foam.u2.view.ChoiceWithOtherView.create({
+          choiceView: foam.u2.view.ChoiceView.create({
+            dao: x.purposeCodeDAO,
+            placeholder: '--',
+            objToChoice: function(purposeCode) {
+              return [purposeCode.code, purposeCode.description];
+            }
+          }),
+          otherKey: 'Other'
+        });
+      }
+    },
+    {
+      class: 'String',
+      name: 'beneAccountType',
+      labe: 'Account Type',
+      section: 'accountDetails',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: '--',
+          choices: [
+            ['CHEQUING', 'Chequing'],
+            ['SAVING', 'Savings']
+          ]
+        },
+      },
+      validateObj: function(beneAccountType) {
+        if ( beneAccountType === '' ) {
+          return 'Please enter a Account Type';
+        }
+      }
     }
   ],
 

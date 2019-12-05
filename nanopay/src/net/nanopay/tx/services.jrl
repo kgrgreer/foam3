@@ -299,3 +299,19 @@ p({
       .build();
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionEventDAO",
+  "lazy":false,
+  "serve":true,
+  "client":"{\"of\":\"net.nanopay.tx.TransactionEvent\"}",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.TransactionEvent.getOwnClassInfo())
+      .setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("transactionEvent")
+      .build();
+  """
+})

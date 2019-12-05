@@ -181,43 +181,120 @@ p({
     "operation":1,
     "predicate":{
       "class":"foam.mlang.predicate.And",
-      "arg1": {
-        "class":"foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "foam.mlang.expr.Dot",
+      "args":[
+        {
+          "class":"foam.mlang.predicate.Eq",
           "arg1": {
-            "class":"foam.mlang.ContextObject",
-            "key":"NEW"
+            "class": "foam.mlang.expr.Dot",
+            "arg1": {
+              "class":"foam.mlang.ContextObject",
+              "key":"NEW"
+            },
+            "arg2": {
+              "class":"__Property__",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
+              "name":"status"
+            }
           },
           "arg2": {
-            "class":"net.nanopay.tx.cico.VerificationTransaction.STATUS",
+            "class":"foam.mlang.Constant",
+            "value":{
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":4
+            }
           }
         },
-        "arg2": {
-          "class": "net.nanopay.tx.model.TransactionStatus.DECLINED",
-        },
-      },
-      "arg2": {
-        "class":"foam.mlang.predicate.NEQ",
-        "arg1": {
-          "class": "foam.mlang.expr.Dot",
+        {
+          "class":"foam.mlang.predicate.Neq",
           "arg1": {
-            "class":"foam.mlang.ContextObject",
-            "key":"OLD"
+            "class": "foam.mlang.expr.Dot",
+            "arg1": {
+              "class":"foam.mlang.ContextObject",
+              "key":"OLD"
+            },
+            "arg2": {
+              "class":"__Property__",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
+              "name":"status"
+            }
           },
           "arg2": {
-            "class":"net.nanopay.tx.cico.VerificationTransaction.STATUS",
+            "class":"foam.mlang.Constant",
+            "value":{
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":4
+            }
           }
-        },
-        "arg2": {
-          "class": "net.nanopay.tx.model.TransactionStatus.DECLINED",
-        },
-      },
-
+        }
+      ]
     },
     "after":true,
     "action":{
         "class":"net.nanopay.tx.ruler.MicroDepositFailed"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit succeeded",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email when micro deposit succeeded",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          "class":"foam.mlang.predicate.Eq",
+          "arg1": {
+            "class": "foam.mlang.expr.Dot",
+            "arg1": {
+              "class":"foam.mlang.ContextObject",
+              "key":"NEW"
+            },
+            "arg2": {
+              "class":"__Property__",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
+              "name":"status"
+            }
+          },
+          "arg2": {
+            "class":"foam.mlang.Constant",
+            "value":{
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":5
+            }
+          }
+        },
+        {
+          "class":"foam.mlang.predicate.Neq",
+          "arg1": {
+            "class": "foam.mlang.expr.Dot",
+            "arg1": {
+              "class":"foam.mlang.ContextObject",
+              "key":"OLD"
+            },
+            "arg2": {
+              "class":"__Property__",
+              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
+              "name":"status"
+            }
+          },
+          "arg2": {
+            "class":"foam.mlang.Constant",
+            "value":{
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":5
+            }
+          }
+        }
+      ]
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositSuccessed"
     },
     "enabled":true,
     "saveHistory":true
