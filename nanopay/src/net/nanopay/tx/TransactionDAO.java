@@ -175,10 +175,10 @@ public class TransactionDAO
     }
     Transfer [] newTs = hm.values().toArray(new Transfer[0]);
 
-    // validate the transfers we have combined.
-    validateTransfers(x, txn, newTs);
     //sort the transfer array
     java.util.Arrays.sort(newTs);
+
+    // lock accounts in transfers
     return lockAndExecute_(x, txn, newTs, 0);
   }
 
@@ -186,6 +186,9 @@ public class TransactionDAO
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
 
     if ( i > ts.length - 1 ) {
+      // validate the transfers we have combined.
+      validateTransfers(x, txn, ts);
+
       return execute(x, txn, ts);
     }
     synchronized ( ts[i].getLock() ) {
