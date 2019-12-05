@@ -240,7 +240,7 @@ p({
     "id":"Send email when the micro deposit succeeded",
     "priority":100,
     "ruleGroup":"DepositTransacationVerify",
-    "documentation":"Send email to business that micro deposit had successed",
+    "documentation":"Send email when micro deposit succeeded",
     "daoKey":"localTransactionDAO",
     "operation":1,
     "predicate":{
