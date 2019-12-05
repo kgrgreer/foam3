@@ -83,9 +83,8 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
 
-          // TODO wait for Neel, will fix it later
-          String remitPurpose = "";
-          String beneACType = ""; // from configure for now
+          String remitPurpose = destinationBankAccount.getPurposeCode();
+          String beneACType   = destinationBankAccount.getBeneAccountType();
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
@@ -111,25 +110,27 @@ public class KotakPaymentProcessor implements ContextAgent {
           /**
            * Send request and parse the response
            */
-          KotakService kotakService = new KotakService(x);
-          AcknowledgementType response = kotakService.submitPayment(paymentRequest);
-          Acknowledgement ackHeader = response.getAckHeader();
+          if ( credentials.getEnable() ) {
+            KotakService kotakService = new KotakService(x);
+            AcknowledgementType response = kotakService.submitPayment(paymentRequest);
+            Acknowledgement ackHeader = response.getAckHeader();
 
-          String paymentResponseStatusCode = ackHeader.getStatusCd();
-          kotakCOTxn.setPaymentStatusCode(paymentResponseStatusCode);
+            String paymentResponseStatusCode = ackHeader.getStatusCd();
+            kotakCOTxn.setPaymentStatusCode(paymentResponseStatusCode);
 
-          String paymentResponseStatusRem = ackHeader.getStatusRem();
-          kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
+            String paymentResponseStatusRem = ackHeader.getStatusRem();
+            kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
 
-          if ( paymentResponseStatusCode.equals("00") ) {
-            kotakCOTxn.setStatus(TransactionStatus.SENT);
-          } else if ( paymentResponseStatusCode.equals("VAL_ERR") ) {
-            kotakCOTxn.setStatus(TransactionStatus.FAILED);
-            sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakCOTxn.getId() +
-              ". Reason: " + kotakCOTxn.getPaymentStatusRem() + ".");
+            if ( paymentResponseStatusCode.equals("00") ) {
+              kotakCOTxn.setStatus(TransactionStatus.SENT);
+            } else if ( paymentResponseStatusCode.equals("VAL_ERR") ) {
+              kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakCOTxn.getId() +
+                ". Reason: " + kotakCOTxn.getPaymentStatusRem() + ".");
+            }
+
+            transactionDAO.put(kotakCOTxn);
           }
-
-          transactionDAO.put(kotakCOTxn);
 
         } catch (Exception e) {
           logger.error(e);

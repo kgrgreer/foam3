@@ -6,6 +6,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'enable'
+    },
+    {
       class: 'String',
       name: 'clientId'
     },
