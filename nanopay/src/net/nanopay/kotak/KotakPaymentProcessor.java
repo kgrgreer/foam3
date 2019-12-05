@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
@@ -18,6 +19,7 @@ import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.model.Business;
 import net.nanopay.tx.KotakCOTransaction;
+import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -45,6 +47,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         try {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
+          kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
           User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayeeId()));
           INBankAccount destinationBankAccount = getAccountById(x, kotakCOTxn.getDestinationAccount());
 
@@ -107,6 +110,10 @@ public class KotakPaymentProcessor implements ContextAgent {
           paymentRequest.setRequestHeader(paymentHeader);
           paymentRequest.setInstrumentList(instrumentList);
 
+          KotakXMLOutputter xmlOutputter = new KotakXMLOutputter(OutputterMode.NETWORK);
+          xmlOutputter.output(paymentRequest);
+          kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak Xml Request: " + xmlOutputter.toString()).build());
+
           /**
            * Send request and parse the response
            */
@@ -117,19 +124,24 @@ public class KotakPaymentProcessor implements ContextAgent {
 
             String paymentResponseStatusCode = ackHeader.getStatusCd();
             kotakCOTxn.setPaymentStatusCode(paymentResponseStatusCode);
+            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusCode: " + paymentResponseStatusCode).build());
 
             String paymentResponseStatusRem = ackHeader.getStatusRem();
             kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
+            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusRem: " + paymentResponseStatusRem).build());
 
             if ( paymentResponseStatusCode.equals("00") ) {
               kotakCOTxn.setStatus(TransactionStatus.SENT);
             } else if ( paymentResponseStatusCode.equals("VAL_ERR") ) {
               kotakCOTxn.setStatus(TransactionStatus.FAILED);
+              kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction Failed.").build());
               sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakCOTxn.getId() +
                 ". Reason: " + kotakCOTxn.getPaymentStatusRem() + ".");
             }
 
             transactionDAO.put(kotakCOTxn);
+          } else {
+            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak is not enabled.").build());
           }
 
         } catch (Exception e) {
