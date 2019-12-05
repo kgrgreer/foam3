@@ -164,22 +164,21 @@ foam.CLASS({
         if ( ems.size() == 0 ) {
           // FIRST EMAIL - ONE DAY AFTER
           comparisonTime = invitation.getTimestamp().getTime();
-          if ( (today.getTime() - comparisonTime) < intervalArray[0] ) return false;
+          return ! ( (today.getTime() - comparisonTime) < intervalArray[0] );
         } else if ( ems.size() == 1 ) {
           // SECOND EMAIL - SEVEN DAYS AFTER
           comparisonTime = ems.get(0).getCreated().getTime();
-          if ( (today.getTime() - comparisonTime) < intervalArray[1] ) return false;
+          return ! ( (today.getTime() - comparisonTime) < intervalArray[1] );
         } else if ( ems.size() == 2 ) {
           // THIRD EMAIL - FOURTEEN DAYS AFTER
           comparisonTime = ems.get(0).getCreated().getTime() > ems.get(1).getCreated().getTime() ? 
             ems.get(0).getCreated().getTime() : ems.get(1).getCreated().getTime();
-          if ( (today.getTime() - comparisonTime) < intervalArray[1] ) return false;
+          return ! ( (today.getTime() - comparisonTime) < intervalArray[1] );
         } else { return false; }
       } catch (Exception e) {
         logger.warning("@SigningOfficerReminderCron: while checking time references on business.", e);
         return false;
       }
-      return true;
       `
     },
     {
@@ -220,7 +219,6 @@ foam.CLASS({
         
         for (Token t : tokenList) {
           email = (String)((Map)t.getParameters()).get("inviteeEmail");
-          // if (t.getExpiry() != null && t.getExpiry().getTime() < expiryDate.getTime()) continue; 
           if ( email != null && SafetyUtil.equals(email, invitation.getEmail())) {
             token = t;
             break;
