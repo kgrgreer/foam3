@@ -91,10 +91,12 @@ foam.CLASS({
       color: /*%BLACK%*/ black;
     }
     ^ .menu-label:hover {
-      width: 100%;
-      border-left: 4px solid /*%PRIMARY3%*/ #406dea !important;
-      background: /*%PRIMARY5%*/ #e5f1fc;
       color: /*%BLACK%*/ black;
+      cursor: pointer;
+    }
+    ^ .menu-label:not(.selected-root):hover {
+      border-left: 4px solid transparent;
+      background: /*%GREY4%*/ #e7eaec;
     }
     ^submenu-item {
       display: flex;
@@ -190,7 +192,10 @@ foam.CLASS({
                 .start()
                   .attrs({ name: menu.label })
                   .on('click', function() {
-                    if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) return;
+                    if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
+                      slot.set(! slot.get());
+                      return;
+                    }
                     if ( ! hasChildren.get() ) {
                       self.menuListener(menu.id);
                       self.pushMenu(menu.id);
