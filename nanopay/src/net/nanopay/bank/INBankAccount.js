@@ -115,16 +115,19 @@ foam.CLASS({
       section: 'accountDetails',
       validateObj: function(purposeCode) {
         if ( purposeCode === '' ) {
-          return 'Please enter a Purpose of Transfer';
+          return 'Please enter a Purpose of Transfer.';
         }
       },
       view: function(_, x) {
-        return foam.u2.view.ChoiceView.create({
-          dao: x.purposeCodeDAO,
-          placeholder: '--',
-          objToChoice: function(purposeCode) {
-            return [purposeCode.code, purposeCode.description];
-          }
+        return foam.u2.view.ChoiceWithOtherView.create({
+          choiceView: foam.u2.view.ChoiceView.create({
+            dao: x.purposeCodeDAO,
+            placeholder: '--',
+            objToChoice: function(purposeCode) {
+              return [purposeCode.code, purposeCode.description];
+            }
+          }),
+          otherKey: 'Other'
         });
       }
     },
@@ -137,7 +140,7 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: '--',
           choices: [
             ['CHEQUING', 'Chequing'],
             ['SAVING', 'Savings']
