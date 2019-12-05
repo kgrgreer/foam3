@@ -57,7 +57,7 @@ foam.CLASS({
         DAO        businessInvitationDAO    = (DAO) x.get("businessInvitationDAO");
         long[]              intervalArray    = timeIntervalsBasedOnAppMode(x);
         if ( intervalArray == null ) {
-          logger.warning("@SigningOfficerReminderCron and no appConfig found :S ");
+          logger.warning("@SigningOfficerReminderCron no appConfig found.");
           return;
         }
         
@@ -258,4 +258,3 @@ foam.CLASS({
     }
   ]
 });
-
