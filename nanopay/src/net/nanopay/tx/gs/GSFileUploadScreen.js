@@ -22,10 +22,7 @@ foam.CLASS({
     ^ .progress-bar {
       position: relative;
       padding-left: 20px;
-      padding-top: 20px;
-      height: 30px;
       width: 50%;
-      overflow: hidden;
       border-radius: 6px;
     }
     ^ .back {

@@ -33,7 +33,7 @@ if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
 fi
 
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xmx"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"
+  JAVA_OPTS="${JAVA_OPTS} -Xmx12000m"
 fi
 
 # memory - stack

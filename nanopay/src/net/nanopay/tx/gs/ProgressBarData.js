@@ -21,10 +21,10 @@ foam.CLASS({
       value: 100
     },
     {
-      class: 'Long',
+      class: 'Double',
       name: 'state',
       expression: function(value, maxValue){
-        return Math.floor(( (value / maxValue) * 100))
+        return ( (value / maxValue) * 100);
       }
     },
     {

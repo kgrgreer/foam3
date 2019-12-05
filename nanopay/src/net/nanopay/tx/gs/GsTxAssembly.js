@@ -26,7 +26,8 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.dao.ArraySink',
     'net.nanopay.tx.InfoLineItem',
-    'net.nanopay.fx.ExchangeRate'
+    'net.nanopay.fx.ExchangeRate',
+    'net.nanopay.tx.gs.ProgressBarData'
   ],
 
   properties: [
@@ -62,6 +63,12 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.ProgressBarData',
+      name: 'pbd',
+      documentation: 'bar to put to bar DAO'
+    },
+    {
+      class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'transaction',
       documentation: `
@@ -88,31 +95,20 @@ foam.CLASS({
           t = parseInternal(getX(),getRow1(),getRow2());
         else
           t = parseExternal(getX(),getRow1());
-
-
-
           setTransaction(t);
+        checkTrusty(getX(), getTransaction());
+
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        checkTrusty(getX(), getTransaction());
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
+        if ( getPbd() != null )
+          ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
       `
     },
-    /* TODO: need to verify trust account has enough $, and account have enough $
-              checkTrusty(x,t);
-              if (! verifyBalance(x,t))
-                ci++;
-              transactionDAO.put(t);*/
-
-     /* TODO: timing..
-             long startTime = System.currentTimeMillis();
-             Long begining = cleanTimeStamp(r.getTimeStamp());
-             Long offset = startTime - begining-14400000;
-             */
     {
       documentation: 'Makes a transaction out of two GS rows.',
       name: 'parseInternal',
@@ -296,7 +292,8 @@ foam.CLASS({
                   MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
                 )
               ).select(new ArraySink());
-              w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
+              if ((ex.getArray().toArray()).length == 0) w = 0;
+              else w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
             } else {
               w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
             }
@@ -353,7 +350,7 @@ foam.CLASS({
       javaCode: `
          DAO accountDAO = ((DAO) x.get("localAccountDAO"));
           TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
-          BankAccount sourceBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Bank Account"));
+          //BankAccount sourceBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Bank Account"));
           if(sourceTrust == null){
           System.out.println("Trustie not found for "+txn.getSourceCurrency()+" ... Generating...");
             sourceTrust = new TrustAccount.Builder(x)
@@ -361,7 +358,7 @@ foam.CLASS({
               .setDenomination(txn.getSourceCurrency())
               .setName(txn.getSourceCurrency() +" Trust Account")
               .build();
-          sourceBank = new BankAccount.Builder(x)
+          BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005)
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getSourceCurrency())
@@ -375,7 +372,7 @@ foam.CLASS({
           if (SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()))
             return;
           TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Trust Account"));
-          BankAccount destBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Bank Account"));
+          //BankAccount destBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Bank Account"));
           if( destinationTrust == null ){
           System.out.println("Trustie not found for "+txn.getDestinationCurrency()+" ... Generating...");
             destinationTrust = new TrustAccount.Builder(x)
@@ -384,7 +381,7 @@ foam.CLASS({
               .setName(txn.getDestinationCurrency() +" Trust Account")
               .build();
           accountDAO.put(destinationTrust);
-          destBank = new BankAccount.Builder(x)
+          BankAccount destBank = new BankAccount.Builder(x)
                     .setOwner(8005)
                     .setAccountNumber("000000")
                     .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)

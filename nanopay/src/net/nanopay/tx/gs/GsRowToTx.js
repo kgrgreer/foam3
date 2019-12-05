@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.dao.ArraySink',
     'foam.util.concurrent.SyncAssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine',
     'java.util.List',
     'net.nanopay.tx.gs.ProgressBarData'
   ],
@@ -64,7 +65,7 @@ foam.CLASS({
         pbd.setStatus("Parsing Transaction: 0 of " + am);
         pbdDAO.put(pbd);
 
-        SyncAssemblyLine transactionProcessor = new SyncAssemblyLine();
+        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
 
         List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
            .select(new ArraySink())).getArray();
@@ -75,18 +76,19 @@ foam.CLASS({
         int i = 0;
         System.out.println("I have: "+ rows.size() + " rows..");
         for ( GsTxCsvRow row1 : rows ) {
-        System.out.println("on iteration: "+ i);
+        //System.out.println("on iteration: "+ i);
         i++;
-        if ( i % 10 == 0){
+        GsTxAssembly job = new GsTxAssembly.Builder(x)
+          .setOutputDAO( (DAO) x.get("localTransactionDAO") )
+          .setRow1(row1)
+          .build();
+        if ( i % 11 == 0){
+          pbd = (ProgressBarData) pbd.fclone();
           pbd.setValue(i);
           pbd.setStatus("Parsing Transaction: "+ pbd.getValue() +" of " + rows.size());
-          pbdDAO.put(pbd);
+          job.setPbd(pbd);
+          //pbdDAO.put(pbd);
         }
-          GsTxAssembly job = new GsTxAssembly.Builder(x)
-            .setOutputDAO( (DAO) x.get("localTransactionDAO") )
-            .setRow1(row1)
-            .build();
-
           /*long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           if ( count == 0 )
             break; */
@@ -129,9 +131,10 @@ foam.CLASS({
 
           transactionProcessor.enqueue(job);
         }
+
         pbd.setValue(am);
         pbd.setStatus("💰🤑💸 Congratualtions File Has  Been Ingested 💸🤑💰");
-        pbdDAO.put(pbd);
+        //pbdDAO.put(pbd);
       `
     },
     {
