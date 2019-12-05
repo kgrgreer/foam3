@@ -96,7 +96,7 @@ foam.CLASS({
           try {
             EmailsUtility.sendEmailFromTemplate(x, business, message, "signingOfficerReminder", args);
           } catch (Throwable t) {
-            logger.error("@SigningOfficerReminderCron: while sending email for businsess" + business.getId(), t);
+            logger.error("@SigningOfficerReminderCron: while sending email for business " + business.getId(), t);
             continue;
           }
         }
