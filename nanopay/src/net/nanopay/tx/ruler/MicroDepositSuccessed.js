@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'MicroDepositSuccessed',
 
-  documentation: `Send email when micro deposit from bank account verification fails`,
+  documentation: `Send email when micro deposit to bank account succeeds (Funds should be visible in their account).`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
