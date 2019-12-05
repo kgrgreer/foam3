@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'TransactionRecord',
+  name: 'TransactionEvent',
 
   implements: [
     'foam.nanos.auth.CreatedAware'

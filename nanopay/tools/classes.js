@@ -358,7 +358,7 @@ var classes = [
   'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
-  'net.nanopay.tx.TransactionRecord',
+  'net.nanopay.tx.TransactionEvent',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.GreenfenceTransaction',
   'net.nanopay.tx.InvoiceTransaction',
