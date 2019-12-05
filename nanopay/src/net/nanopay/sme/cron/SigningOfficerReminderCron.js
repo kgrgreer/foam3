@@ -176,7 +176,7 @@ foam.CLASS({
           if ( (today.getTime() - comparisonTime) < intervalArray[1] ) return false;
         } else { return false; }
       } catch (Exception e) {
-        logger.warning("@SigningOfficerReminderCron: while checking time references on businsess.", e);
+        logger.warning("@SigningOfficerReminderCron: while checking time references on business.", e);
         return false;
       }
       return true;
