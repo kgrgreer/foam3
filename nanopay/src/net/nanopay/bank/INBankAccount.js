@@ -54,13 +54,12 @@ foam.CLASS({
       name: 'accountRelationship',
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
-      value: 'Employer/Employee',
       label: 'Relation to the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: '--',
           choices: [
             'Employer/Employee',
             'Contractor',
@@ -70,6 +69,11 @@ foam.CLASS({
         },
         otherKey: 'Other'
       },
+      validateObj: function(accountRelationship) {
+        if ( accountRelationship === '' ) {
+          return 'Please specify your relation to the contact.';
+        }
+      },
       section: 'accountDetails'
     },
     {
@@ -77,7 +81,7 @@ foam.CLASS({
       name: 'ifscCode',
       label: 'IFSC Code',
       validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{1,20}$/;
+        var accNumberRegex = /^\w{1,11}$/;
 
         if ( ifscCode === '' ) {
           return 'Please enter an IFSC Code.';

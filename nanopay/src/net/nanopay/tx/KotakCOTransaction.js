@@ -1,13 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakCOTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.cico.COTransaction',
 
   documentation: `Hold Kotak Bank specific properties`,
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.account.TrustAccount'
   ],
 
@@ -62,11 +61,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
-    },
-    {
-      name: 'initialStatus',
-      value: 'PENDING',
-      javaFactory: 'return TransactionStatus.PENDING;'
     }
   ],
 
