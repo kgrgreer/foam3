@@ -77,7 +77,7 @@ foam.CLASS({
         for ( GsTxCsvRow row1 : rows ) {
         System.out.println("on iteration: "+ i);
         i++;
-        if ( i % 100 == 0){
+        if ( i % 10 == 0){
           pbd.setValue(i);
           pbd.setStatus("Parsing Transaction: "+ pbd.getValue() +" of " + rows.size());
           pbdDAO.put(pbd);
@@ -129,6 +129,9 @@ foam.CLASS({
 
           transactionProcessor.enqueue(job);
         }
+        pbd.setValue(am);
+        pbd.setStatus("💰🤑💸 Congratualtions File Has  Been Ingested 💸🤑💰");
+        pbdDAO.put(pbd);
       `
     },
     {
