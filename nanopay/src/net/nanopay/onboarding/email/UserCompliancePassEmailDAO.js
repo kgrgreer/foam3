@@ -64,12 +64,9 @@ foam.CLASS({
       String url = appConfig.getUrl().replaceAll("/$", "");
 
       message.setTo(new String[]{user.getEmail()});
-      args.put("business", user.label());
-      args.put("link",     url);
-
-      message.setTo(new String[]{user.getEmail()});
-      args.put("business",        user.label());
       args.put("link",   url + "#sme.main.dashboard");
+      args.put("sendTo", user.getEmail());
+      args.put("business", user.getOrganization());
 
       try {
         EmailsUtility.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
