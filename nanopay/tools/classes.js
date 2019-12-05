@@ -196,7 +196,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
-  
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -360,6 +360,7 @@ var classes = [
   'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
+  'net.nanopay.tx.TransactionEvent',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.GreenfenceTransaction',
   'net.nanopay.tx.InvoiceTransaction',

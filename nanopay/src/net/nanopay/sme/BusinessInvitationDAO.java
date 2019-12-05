@@ -187,7 +187,7 @@ public class BusinessInvitationDAO
 
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
-    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
+    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "&businessId=" + business.getId() + "#sign-up";
     args.put("link", url);
     EmailsUtility.sendEmailFromTemplate(x, business, message, "join-business-external", args);
   }
