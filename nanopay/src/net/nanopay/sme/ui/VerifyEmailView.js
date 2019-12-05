@@ -7,8 +7,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'foam.u2.Element',
-    'net.nanopay.sme.ui.SplitBorder'
+    'foam.u2.Element'
   ],
 
   imports: [
@@ -74,9 +73,9 @@ foam.CLASS({
       width: 35% !important;
     }
     ^ .left-block {
-      width: 65% !important;
+      width: 45% !important;
       position: relative;
-      right: 100px;
+      left: 10vw;
     }
     ^ .sme-image {
       margin-top: 15vh !important;
@@ -136,7 +135,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var split = net.nanopay.sme.ui.SplitBorder.create();
+      var split = foam.u2.borders.SplitScreenBorder.create();
 
       var left = this.Element.create()
       .addClass('cover-img-block')

@@ -96,10 +96,12 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
 
+            Transaction rootTxn = txn.findRoot(x);
+
             String bodyString = this.buildCSVLine(
               11,
               txn.getId(),
-              SafetyUtil.isEmpty(txn.getParent()) ? "N/A" : txn.getParent(),
+              rootTxn != null ? rootTxn.getId() : "N/A" ,
               txn.getCreated().toString(),
               txn.getType(),
               Long.toString(txn.findDestinationAccount(x).getOwner()),

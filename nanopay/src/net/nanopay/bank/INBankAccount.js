@@ -9,13 +9,17 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   documentation: 'Indian Bank account information.',
 
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+      javaValue: 'Pattern.compile("^[0-9]{1,20}$")'
     }
   ],
 
@@ -69,17 +73,78 @@ foam.CLASS({
       section: 'accountDetails'
     },
     {
-      name: 'accountNumber',
-      label: 'International Bank Account No.',
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{9,18}$/;
+      class: 'String',
+      name: 'ifscCode',
+      label: 'IFSC Code',
+      validateObj: function(ifscCode) {
+        var accNumberRegex = /^\w{1,20}$/;
 
-        if ( accountNumber === '' ) {
-          return 'Please enter an account number.';
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Account number must be between 8 and 18 digits long.';
+        if ( ifscCode === '' ) {
+          return 'Please enter an IFSC Code.';
+        } else if ( ! accNumberRegex.test(ifscCode) ) {
+          return 'IFSC Code must be 11 digits long.';
         }
       },
+      section: 'accountDetails'
+    },
+    {
+      name: 'accountNumber',
+      label: 'Bank Account No.',
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^\w{1,20}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an International Bank Account No.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Indian Bank Account No cannot exceed 20 digits.';
+        }
+      },
+    },
+    {
+      name: 'purposeCode',
+      class: 'Reference',
+      of: 'net.nanopay.tx.PurposeCode',
+      label: 'Purpose of Transfer',
+      section: 'accountDetails',
+      validateObj: function(purposeCode) {
+        if ( purposeCode === '' ) {
+          return 'Please enter a Purpose of Transfer';
+        }
+      },
+      view: function(_, x) {
+        return foam.u2.view.ChoiceView.create({
+          dao: x.purposeCodeDAO,
+          placeholder: '--',
+          objToChoice: function(purposeCode) {
+            return [purposeCode.code, purposeCode.description];
+          }
+        });
+      }
+    },
+    {
+      class: 'String',
+      name: 'beneAccountType',
+      labe: 'Account Type',
+      section: 'accountDetails',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Please select',
+          choices: [
+            ['CHEQUING', 'Chequing'],
+            ['SAVING', 'Savings']
+          ]
+        },
+      },
+      validateObj: function(beneAccountType) {
+        if ( beneAccountType === '' ) {
+          return 'Please enter a Account Type';
+        }
+      }
     }
   ],
 
