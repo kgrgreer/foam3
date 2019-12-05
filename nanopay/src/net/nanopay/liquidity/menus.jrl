@@ -35,3 +35,24 @@ p({
   "parent": "liquid.rules"
 })
 
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.restrictentitiesrules",
+  "label":"Restrict Entities Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictEntitiesRule"
+      },
+      "defaultColumns":["id","enabled","createdBy","sourceAccount","destinationAccount"],
+      "of":"net.nanopay.liquidity.tx.RestrictEntitiesRule"
+    }
+  },
+  "order":5001,
+  "parent": "liquid.rules"
+})
+

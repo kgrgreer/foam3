@@ -833,6 +833,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/RestrictEntitiesRule' },
 
    // liquidity roles
    { name: 'net/nanopay/liquidity/roles/Role' },

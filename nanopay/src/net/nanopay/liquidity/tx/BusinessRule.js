@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.*',
     'foam.mlang.*',
     'foam.mlang.expr.*',
@@ -34,11 +35,11 @@ foam.CLASS({
       name: 'id',
       section: 'basicInfo',
       label: 'Rule Name',
-      tableWidth: 750
+      tableWidth: 400
     },
     {
       name: 'enabled',
-      label: 'Current status',
+      label: 'Enabled',
       value: true,
       tableWidth: 125,
       tableCellFormatter: function(value, obj) {
