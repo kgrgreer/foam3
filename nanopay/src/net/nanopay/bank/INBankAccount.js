@@ -54,13 +54,12 @@ foam.CLASS({
       name: 'accountRelationship',
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
-      value: 'Employer/Employee',
       label: 'Relation to the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: '--',
           choices: [
             'Employer/Employee',
             'Contractor',
@@ -70,21 +69,30 @@ foam.CLASS({
         },
         otherKey: 'Other'
       },
+      validationPredicates: [
+        {
+          args: ['accountRelationship'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
+          },
+          errorString: 'Please specify your relation to the contact.'
+        }
+      ],
       section: 'accountDetails'
     },
     {
       class: 'String',
       name: 'ifscCode',
       label: 'IFSC Code',
-      validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{1,20}$/;
-
-        if ( ifscCode === '' ) {
-          return 'Please enter an IFSC Code.';
-        } else if ( ! accNumberRegex.test(ifscCode) ) {
-          return 'IFSC Code must be 11 digits long.';
+      validationPredicates: [
+        {
+          args: ['ifscCode'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{1,11}$/);
+          },
+          errorString: 'IFSC Code must be 11 digits long.'
         }
-      },
+      ],
       section: 'accountDetails'
     },
     {
@@ -109,18 +117,25 @@ foam.CLASS({
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
       section: 'accountDetails',
-      validateObj: function(purposeCode) {
-        if ( purposeCode === '' ) {
-          return 'Please enter a Purpose of Transfer';
+      validationPredicates: [
+        {
+          args: ['purposeCode'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
+          },
+          errorString: 'Please enter a Purpose of Transfer.'
         }
-      },
+      ],
       view: function(_, x) {
-        return foam.u2.view.ChoiceView.create({
-          dao: x.purposeCodeDAO,
-          placeholder: '--',
-          objToChoice: function(purposeCode) {
-            return [purposeCode.code, purposeCode.description];
-          }
+        return foam.u2.view.ChoiceWithOtherView.create({
+          choiceView: foam.u2.view.ChoiceView.create({
+            dao: x.purposeCodeDAO,
+            placeholder: '--',
+            objToChoice: function(purposeCode) {
+              return [purposeCode.code, purposeCode.description];
+            }
+          }),
+          otherKey: 'Other'
         });
       }
     },
@@ -133,7 +148,7 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: '--',
           choices: [
             ['CHEQUING', 'Chequing'],
             ['SAVING', 'Savings']

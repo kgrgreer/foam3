@@ -190,4 +190,4 @@ p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"
 
 p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P0306","description":"Payment For Travel","send":false})
 p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P1306","description":"Tax Payments In India","send":false})
-
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"Other","description":"Other","send":false})

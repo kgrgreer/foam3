@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
+    'bankAdded',
     'auth',
     'closeDialog',
     'countryDAO',
@@ -28,6 +29,7 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -152,6 +154,8 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
+        this.wizard.bankAccount = this.BankAccount.create();
+        this.bankAdded = false;
         this.isConnecting = false;
         if ( X.subStack.depth > 1 ) {
           X.subStack.back();
