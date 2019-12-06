@@ -220,10 +220,6 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount) {
-      if ( ! bankAccount.name ) {
-        this.ctrl.notify('Financial institution name is required', 'error');
-        return false;
-      }
       try {
         bankAccount.validate();
       } catch (e) {
