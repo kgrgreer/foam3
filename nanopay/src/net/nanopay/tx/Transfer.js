@@ -4,7 +4,8 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance'
+    'net.nanopay.account.Balance',
+    'foam.util.SafetyUtil'
   ],
 
   javaImplements: [
@@ -72,9 +73,7 @@ foam.CLASS({
       type: 'int',
       args: [{ name: 't', type: 'net.nanopay.tx.Transfer'}],
       javaCode: `
-        if ( getAccount() < t.getAccount()) return -1;
-        if ( getAccount() > t.getAccount()) return 1;
-        return 0;
+        return SafetyUtil.compare(getAccount(),t.getAccount());
       `
     }
   ]
