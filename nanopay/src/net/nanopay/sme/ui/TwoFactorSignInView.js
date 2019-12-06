@@ -74,6 +74,7 @@ foam.CLASS({
     }
     ^ .sme-image {
       width: 30vw;
+      min-width: 560px; 
       margin-top: 19vh;
       margin-left: 12vw;
     }
