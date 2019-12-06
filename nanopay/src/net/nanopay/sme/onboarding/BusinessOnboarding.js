@@ -556,7 +556,7 @@ foam.CLASS({
             return e.OR(
                 e.GT(
                   foam.mlang.StringLength.create({
-                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
+                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_JOB_TITLE
                   }), 0),
                   e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
                 );
@@ -987,10 +987,10 @@ foam.CLASS({
       name: 'amountOfOwners',
       label: '',
       section: 'ownershipAmountSection',
-      value: 1,
+      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
-        choices: [ 1, 2, 3, 4 ],
+        choices: [ 0, 1, 2, 3, 4 ],
         isHorizontal: true
       },
       postSet: function(_, n) {
@@ -1002,13 +1002,14 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['amountOfOwners'],
+          args: ['amountOfOwners', 'signingOfficer'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
-                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 1),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4)
-              )
+              ),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
           errorString: 'Please select a number of owners.'
