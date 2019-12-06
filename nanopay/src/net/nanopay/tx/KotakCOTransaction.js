@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakCOTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.cico.COTransaction',
 
   documentation: `Hold Kotak Bank specific properties`,
 

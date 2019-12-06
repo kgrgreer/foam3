@@ -15,6 +15,7 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
+    'bankAdded',
     'auth',
     'closeDialog',
     'countryDAO',
@@ -28,6 +29,7 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -93,16 +95,21 @@ foam.CLASS({
           .tag(this.wizard.data.BUSINESS_ADDRESS, {
             customCountryDAO: this.PromisedDAO.create({
               promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                var q = hasPermission
-                  ? this.OR(
-                      this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US'),
-                      this.EQ(this.Country.ID, 'IN')
-                    )
-                  : this.OR(
+                var q;
+                if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
+                  q = this.OR(
                     this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US'),
                     this.EQ(this.Country.ID, 'IN')
                   );
+                } else if ( hasPermission ) {
+                  q = this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US')
+                  );
+                } else {
+                  q = this.EQ(this.Country.ID, 'CA');
+                }
                 return this.countryDAO.where(q);
               })
             })
@@ -152,6 +159,8 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
+        this.wizard.bankAccount = this.BankAccount.create();
+        this.bankAdded = false;
         this.isConnecting = false;
         if ( X.subStack.depth > 1 ) {
           X.subStack.back();

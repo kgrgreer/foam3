@@ -7,6 +7,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
+import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -149,7 +150,7 @@ public class BmoReportProcessor {
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
-      ((BmoTransaction)transaction).addHistory("Transaction was settled by BMO.");
+      transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction was settled by BMO.").build());
       ((BmoTransaction)transaction).setSettled(true);
 
       transactionDAO.inX(this.x).put(transaction);
@@ -225,7 +226,7 @@ public class BmoReportProcessor {
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
       transaction.setStatus(TransactionStatus.DECLINED);
-      ((BmoTransaction)transaction).addHistory("Transaction rejected.");
+      transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction rejected.").build());
       ((BmoTransaction)transaction).setRejectReason(rejectReason);
       transaction.setCompletionDate(new Date());
 

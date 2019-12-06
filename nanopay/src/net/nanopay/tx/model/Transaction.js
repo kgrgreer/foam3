@@ -73,8 +73,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'payeeId',
-    'payerId',
+    'searchName',
     'invoiceId',
     'type',
     'status',
@@ -478,7 +477,8 @@ foam.CLASS({
               return output;
             });
         }));
-      }
+      },
+      tableWidth: 250,
     },
     {
       // REVIEW: why do we have total and amount?
@@ -661,6 +661,15 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
+    {
+      class: 'String',
+      name: 'searchName',
+      label: 'Payer/Payee Name',
+      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
+      transient: true,
+      hidden: true,
+      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    }
   ],
 
   methods: [

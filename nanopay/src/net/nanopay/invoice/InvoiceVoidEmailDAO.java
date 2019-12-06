@@ -13,6 +13,7 @@ import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.model.Business;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class InvoiceVoidEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
+    boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business);
     User payer = (User) invoice.findPayerId(x);
     User payee = (User) invoice.findPayeeId(x);
 
@@ -53,15 +55,17 @@ public class InvoiceVoidEmailDAO
       (SafetyUtil.isEmpty(invoice.getPurchaseOrder()) ? "N/A" : invoice.getPurchaseOrder()) :
       invoice.getInvoiceNumber();
 
+    String payerFirstName = isPayerABusiness ?
+      ((Business) payer).findSigningOfficer(x).getFirstName() :
+      payer.getFirstName();
+
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
     args.put("account",  accountVar);
     args.put("amount",   formatter.format(invoice.getAmount()/100.00));
     args.put("link",     config.getUrl());
-    args.put("name",     payer.getFirstName());
-
     args.put("fromName", payee.label());
-    args.put("toName",   payer.label());
+    args.put("toName", payerFirstName);
     args.put("sendTo",   payer.getEmail());
     args.put("supportEmail", SafetyUtil.isEmpty(config.getSupportEmail()) ? payerGroup.getSupportEmail() : config.getSupportEmail());
 
