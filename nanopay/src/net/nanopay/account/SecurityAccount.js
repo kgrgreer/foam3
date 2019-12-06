@@ -112,6 +112,36 @@ foam.CLASS({
         }
         return 0L;
       `
+    },
+    {
+      name: 'validateAmount',
+      documentation: `Allows a specific value to be used to perform a balance operation.
+        For example: Trust accounts can be negative.`,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'balance',
+          type: 'net.nanopay.account.Balance'
+        },
+        {
+          name: 'amount',
+
+          type: 'Long'
+        }
+      ],
+      javaCode: `
+        long bal = balance == null ? 0L : balance.getBalance();
+
+        /*if ( amount < 0 &&
+             -amount > bal ) {
+          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.debug(this, "amount", amount, "balance", bal);
+          throw new RuntimeException("Insufficient balance in account " + this.getId());
+        } // Lets just we can go into margin on securities for now.. */
+      `
     }
   ]
 });
