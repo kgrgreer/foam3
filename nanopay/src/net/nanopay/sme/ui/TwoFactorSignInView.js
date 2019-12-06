@@ -1,123 +1,5 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'AuthView',
-  extends: 'foam.u2.View',
-  requires: [
-    'foam.core.ArraySlot',
-    'foam.u2.TextField'
-  ],
-
-  css: `
-    ^ {
-      width: 80%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-    }
-    ^ input {
-      border-width: 1px;
-      border-radius: 5px;
-      width: 48px;
-      height: 48px;
-      text-align: center;
-      margin: 8px 14px 8px 0;
-      font-size: 22px;
-    }
-    ^ .wrong-code {
-      border-color: #f91c1c;
-      background-color: #fff6f6;
-    }
-  `,
-  properties: [
-    {
-      class: 'String',
-      name: 'data'
-    },
-    {
-      class: 'Boolean',
-      name: 'incorrectCode',
-    },
-    {
-      class: 'Int',
-      name: 'currentIndex',
-      value: 0,
-      preSet: function(old, nu) {
-        if ( nu > this.numOfParts - 1 ) return this.numOfParts - 1;
-        if ( nu < 1 ) return 0;
-        return nu;
-      }
-    },
-    {
-      class: 'Int',
-      name: 'numOfParts',
-      value: 6,
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.u2.Element',
-      name: 'elements'
-    }
-  ],
-  methods: [
-    function initE() {
-      this.SUPER();
-      var self = this;
-      for ( let i = 0; i < this.numOfParts; i++ ) {
-        var isFirstElement = i === 0;
-        let v = this.TextField.create({ onKey: true });
-        v.setAttribute('maxlength', 1);
-        v.setAttribute('autofocus', isFirstElement);
-        v.addClass('input').enableClass('wrong-code', this.incorrectCode$ );
-        v.on('focus', () => {
-          self.currentIndex = i;
-        });
-        v.on('keydown', (e) => {
-          switch ( e.keyCode ) {
-            case 37:
-                this.currentIndex--;
-                // this.elements[this.currentIndex].focus();
-            break;
-            case 39:
-                this.currentIndex++;
-                // this.elements[this.currentIndex].focus();
-            break;
-            case 8:
-              if ( this.elements[this.currentIndex].data === ' ' || ! this.elements[this.currentIndex].data ) {
-                this.currentIndex--;
-                // this.elements[this.currentIndex].focus();
-              };
-            break;
-          }
-          this.elements[this.currentIndex].focus();
-        });
-
-        this.tag(v).addClass(this.myClass());
-        this.onDetach(v.data$.sub(this.onDataUpdate));
-        this.elements.push(v);
-      }
-
-      this.onDetach(this.data$.follow(this.ArraySlot.create({
-        slots: this.elements.map((elm) => elm.data$)
-      }).map((arr) => arr.reduce((str, c) => str + (c || ' '), ''))));
-    }
-  ],
-  listeners: [
-    {
-      name: 'onDataUpdate',
-      code: function(detachable, eventName, propertyName, propertySlot) {
-        if ( propertySlot.get() ) {
-          this.currentIndex++;
-          this.elements[this.currentIndex].focus();
-        }
-      }
-    }
-  ],
-});
-
-
-foam.CLASS({
-  package: 'net.nanopay.sme.ui',
   name: 'TwoFactorSignInView',
   extends: 'foam.u2.Controller',
 
@@ -127,6 +9,7 @@ foam.CLASS({
     'loginSuccess',
     'notify',
     'twofactor',
+    'theme'
   ],
 
   requires: [
@@ -137,41 +20,38 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin-top: 20vh;
+      margin-top: 21vh;
     }
-
     ^button {
-      margin-top: 56px;
+      color: #8e9090;
       cursor: pointer;
+      display: inline;
       font-size: 16px;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
-      line-height: 1.5;
+      left: 20px;
       letter-spacing: normal;
-      color: #8e9090;
-      display: inline;
+      line-height: 1.5;
+      margin-top: 56px;
       position: relative;
       top: 20px;
-      left: 20px;
     }
-
-    ^ .link {
-      margin-right: 5px;
+    ^ .app-link {
+      text-decoration: none;
     }
     ^ .tfa-container {
       border-radius: 2px;
-      margin-top: 20px;
+      margin-top: 26px;
       width: 450px;
     }
     ^ .tf-container {
-      width: 450px;
       margin: 0 auto 0 0;
+      width: 450px;
     }
-
     ^verify-button {
-      width: 80%;
       height: 48px;
+      width: 80%;
       margin-top: 20px;
     }
     ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView {
@@ -192,22 +72,31 @@ foam.CLASS({
       font-weight: 300;
       line-height: 24px;
     }
+    ^ .sme-image {
+      width: 30vw;
+      margin-top: 19vh;
+      margin-left: 12vw;
+    }
     ^TwoFactAuthNote {
+      align-items: flex-start;
       display: flex;
       flex-direction: row;
-      align-items: flex-start;
       width: 80%;
     }
     ^TwoFactAuthIntro {
-      padding: 0 16px;
       font-size: 14px;
       font-family: Lato-Regular;
       line-height: 1.6;
       height: 63px;
+      padding: 0 16px;
     }
     ^ .error-msg {
       display: flex;
       color: #f91c1c;
+    }
+
+    ^ .top-bar-inner {
+      margin: 0 128px
     }
   `,
 
@@ -221,7 +110,7 @@ foam.CLASS({
       name: 'twoFactorToken',
       view: function(_, X) {
         return {
-          class: 'net.nanopay.sme.ui.AuthView',
+          class: 'foam.u2.view.MultiBoxInputView',
           incorrectCode$: X.data.incorrectCode$
         };
       }
@@ -247,8 +136,7 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
       var split = foam.u2.borders.SplitScreenBorder.create();
-
-      var left = this.Element.create().addClass('cover-img-block')
+      var left = this.Element.create()
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/sign_in_illustration.png')
@@ -258,7 +146,9 @@ foam.CLASS({
       .addClass(this.myClass())
       .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
       .start().addClass('tf-container')
-        .start('h2').add(this.TWO_FACTOR_TITLE).end()
+        .start('h2').style({
+          margin: '26px 0'
+        }).add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
           .start('img').attr('src', 'images/phone-iphone-24-px.png').end()
           .start().addClass(this.myClass('TwoFactAuthIntro'))
@@ -294,11 +184,9 @@ foam.CLASS({
       .end()
       .start().addClass(this.myClass('sme-subtitle'))
         .start('strong').add(this.TWO_FACTOR_NOTES_1).end()
-        .start('span').addClass('app-link')
+        .start('a').addClass('app-link')
+          .attrs({ href: 'mailto:support@nanopay.net' })
           .add(this.TWO_FACTOR_NOTES_2)
-          .on('click', function() {
-            console.log('got you');
-          })
         .end()
       .end();
 
@@ -323,7 +211,6 @@ foam.CLASS({
         .end()
       .add(split);
     },
-
   ],
 
   actions: [
@@ -331,7 +218,6 @@ foam.CLASS({
       name: 'verify',
       code: function(X) {
         var self = this;
-        console.log(this.twoFactorToken)
         if ( ! this.twoFactorToken ) {
           this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
           return;
@@ -344,7 +230,6 @@ foam.CLASS({
           } else {
             self.incorrectCode = true;
             self.loginSuccess = false;
-            self.notify(self.TWO_FACTOR_ERROR, 'error');
           }
         });
       }
