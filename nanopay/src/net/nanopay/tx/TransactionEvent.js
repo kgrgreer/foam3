@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'record'
+      name: 'event'
     },
     {
       class: 'DateTime',

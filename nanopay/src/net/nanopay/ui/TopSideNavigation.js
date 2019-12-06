@@ -32,7 +32,7 @@ foam.CLASS({
       position: fixed;
       height: 100vh;
       width: 240px;
-      padding-top: 75px;
+      padding-top: 60px;
       overflow-y: scroll;
       overflow-x: hidden;
       z-index: 100;
@@ -106,18 +106,8 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ .foam-u2-view-RichChoiceView {
-      margin-bottom: 20px;
-    }
-    ^ .foam-u2-view-RichChoiceView .search input {
-      height: 40px;
-    }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      width: 240px;
-      height: 40px;
-      padding-left: 20px;
-    }
-    ^ .foam-u2-view-RichChoiceView-heading {
-      padding: 10px;
+      width: calc(240px - 16px - 16px);
+      margin: 16px;
     }
     ^submenu-item ^selected-dot {
       border-radius: 999px;
@@ -158,7 +148,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
-              heading: 'Menus',
+              heading: '',
               dao: X.menuDAO
             },
           ],

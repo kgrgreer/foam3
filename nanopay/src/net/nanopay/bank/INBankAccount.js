@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   properties: [
-     {
+    {
       name: 'country',
       value: 'IN',
       createMode: 'HIDDEN'
@@ -51,41 +51,42 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'accountRelationship',
-      class: 'Reference',
-      of: 'net.nanopay.tx.AccountRelationship',
-      value: 'Employer/Employee',
-      label: 'Relation to the contact',
-      view: {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
-          choices: [
-            'Employer/Employee',
-            'Contractor',
-            'Vendor/Client',
-            'Other'
-          ]
-        },
-        otherKey: 'Other'
-      },
+      class: 'String',
+      name: 'ifscCode',
+      label: 'IFSC Code',
+      validationPredicates: [
+        {
+          args: ['ifscCode'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{1,11}$/);
+          },
+          errorString: 'IFSC Code must be 11 digits long.'
+        }
+      ],
       section: 'accountDetails'
     },
     {
       class: 'String',
-      name: 'ifscCode',
-      label: 'IFSC Code',
-      validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{1,20}$/;
-
-        if ( ifscCode === '' ) {
-          return 'Please enter an IFSC Code.';
-        } else if ( ! accNumberRegex.test(ifscCode) ) {
-          return 'IFSC Code must be 11 digits long.';
-        }
+      name: 'beneAccountType',
+      label: 'Account Type',
+      section: 'accountDetails',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          ['CURRENT', 'Current'],
+          ['SAVING', 'Savings']
+        ]
       },
-      section: 'accountDetails'
+      validationPredicates: [
+        {
+          args: ['beneAccountType'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.BENE_ACCOUNT_TYPE, '');
+          },
+          errorString: 'Please select an Account Type.'
+        }
+      ],
     },
     {
       name: 'accountNumber',
@@ -97,11 +98,41 @@ foam.CLASS({
         var accNumberRegex = /^\w{1,20}$/;
 
         if ( accountNumber === '' ) {
-          return 'Please enter an International Bank Account No.';
+          return 'Please enter a Bank Account No.';
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Indian Bank Account No cannot exceed 20 digits.';
         }
       },
+    },
+    {
+      name: 'accountRelationship',
+      class: 'Reference',
+      of: 'net.nanopay.tx.AccountRelationship',
+      label: 'Relation to the contact',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Please Select',
+          choices: [
+            'Employer/Employee',
+            'Contractor',
+            'Vendor/Client',
+            'Other'
+          ]
+        },
+        otherKey: 'Other'
+      },
+      validationPredicates: [
+        {
+          args: ['accountRelationship'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
+          },
+          errorString: 'Please specify your relation to the contact.'
+        }
+      ],
+      section: 'accountDetails'
     },
     {
       name: 'purposeCode',
@@ -109,41 +140,26 @@ foam.CLASS({
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
       section: 'accountDetails',
-      validateObj: function(purposeCode) {
-        if ( purposeCode === '' ) {
-          return 'Please enter a Purpose of Transfer';
+      validationPredicates: [
+        {
+          args: ['purposeCode'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
+          },
+          errorString: 'Please enter a Purpose of Transfer.'
         }
-      },
+      ],
       view: function(_, x) {
-        return foam.u2.view.ChoiceView.create({
-          dao: x.purposeCodeDAO,
-          placeholder: '--',
-          objToChoice: function(purposeCode) {
-            return [purposeCode.code, purposeCode.description];
-          }
+        return foam.u2.view.ChoiceWithOtherView.create({
+          choiceView: foam.u2.view.ChoiceView.create({
+            dao: x.purposeCodeDAO,
+            placeholder: 'Please select',
+            objToChoice: function(purposeCode) {
+              return [purposeCode.code, purposeCode.description];
+            }
+          }),
+          otherKey: 'Other'
         });
-      }
-    },
-    {
-      class: 'String',
-      name: 'beneAccountType',
-      labe: 'Account Type',
-      section: 'accountDetails',
-      view: {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
-          choices: [
-            ['CHEQUING', 'Chequing'],
-            ['SAVING', 'Savings']
-          ]
-        },
-      },
-      validateObj: function(beneAccountType) {
-        if ( beneAccountType === '' ) {
-          return 'Please enter a Account Type';
-        }
       }
     }
   ],

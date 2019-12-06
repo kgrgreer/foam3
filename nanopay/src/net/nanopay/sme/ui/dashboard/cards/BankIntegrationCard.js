@@ -117,10 +117,12 @@ foam.CLASS({
       if ( this.isAccountThere ) {
         this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
         let branch = await this.branchDAO.find(this.account.branch);
-        let institution = await this.institutionDAO.find(branch.institution);
-        if ( institution ) {
-          this.abbreviation = institution.abbreviation;
-          this.bankName = institution.name;
+        if ( branch ) {
+          let institution = await this.institutionDAO.find(branch.institution);
+          if ( institution ) {
+            this.abbreviation = institution.abbreviation;
+            this.bankName = institution.name;
+          }
         }
       }
     },

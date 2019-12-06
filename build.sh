@@ -527,6 +527,15 @@ elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 11 ]; then
   echo -e "\033[34;1m |_| |_|\\__,_|_| |_\033[31;1m'/   \\'\033[0m .__/ \\__,_|\\__, | \033[0m"
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[0m|_|          |___/  \033[0m"
   echo ""
+elif [ $(date +%m) -eq 12 ]; then
+
+ echo -e "                         \033[32m#\033[0m"
+ echo -e "                        \033[32m###\033[0m"
+ echo -e "\033[38;5;46m _ __   __ _ _ __   ___\033[0m\033[32m##\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;46m_   __ _ _   _\033[0m"
+ echo -e "\033[38;5;34m| '_ \\ / _\` | '_ \\ / _\033[0m\033[32m#\033[0m\033[31;1;5mO\033[0m\033[32m##\033[0m\033[36;1;5mO\033[0m\033[32m##\033[0m\033[38;5;34m\\ / _\` | | | |\033[0m"
+ echo -e "\033[38;5;28m| | | | (_| | | | | (\033[0m\033[32m#\033[0m\033[36;1;5mO\033[0m\033[32m#\033[0m\033[38;5;94m| |\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;28m| (_| | |_| |\033[0m"
+ echo -e "\033[38;5;22m|_| |_|\\__,_|_| |_|\\\\\033[0m\033[32m##_#\033[0m\033[34;1;5mO\033[0m\033[32m#.#_\033[0m\033[31;1;5mO\033[0m\033[32m#\033[0m\033[38;5;22m\\__,_|\\__, |\033[0m"
+ echo -e "\033[33m(c) nanopay Corporation\033[0m \033[38;5;94m|_|\033[0m          \033[38;5;22m|___/\033[0m"
 else
   echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
   echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
@@ -572,7 +581,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -580,6 +589,14 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
+           ;;
+        e) warning "Skipping genJava task"
+           skipGenFlag="-Pfoamoptions.skipgenjava=true"
+           if [ "$GRADLE_FLAGS" == "" ]; then
+                GRADLE_FLAGS=$skipGenFlag
+           else
+                GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
+           fi
            ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;

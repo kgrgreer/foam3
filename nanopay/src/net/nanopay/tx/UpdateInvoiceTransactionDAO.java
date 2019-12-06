@@ -66,8 +66,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     // Since SaveChainedTransactionDAO will save all children transactions, we
     // can copy the invoiceId from the root transaction without having to
     // updateInvoice after the fact.
-    if ( SafetyUtil.isEmpty(transaction.getId())
-      && transaction.getInvoiceId() == 0
+    if ( transaction.getInvoiceId() == 0
       && ( transaction instanceof CITransaction ||
            transaction instanceof COTransaction ||
            transaction instanceof FXTransaction ||
