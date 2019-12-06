@@ -571,7 +571,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -579,6 +579,14 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
+           ;;
+        e) warning "Skipping genJava task"
+           skipGenFlag="-Pfoamoptions.skipgenjava=true"
+           if [ "$GRADLE_FLAGS" == "" ]; then
+                GRADLE_FLAGS=$skipGenFlag
+           else
+                GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
+           fi
            ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
