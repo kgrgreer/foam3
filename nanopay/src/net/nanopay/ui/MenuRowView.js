@@ -9,8 +9,9 @@ foam.CLASS({
     ^ {
       background: white;
       padding: 8px 16px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^:hover {
       background: /*%PRIMARY5%*/ #e5f1fc;
