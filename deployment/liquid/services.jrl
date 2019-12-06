@@ -225,6 +225,7 @@ p({
     dao = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
+    dao = new net.nanopay.tx.SecurityPlanDAO(x, dao);
     dao = new net.nanopay.tx.DebtablePlanDAO.Builder(x)
       .setDelegate(dao)
       .build();

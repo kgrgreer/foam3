@@ -376,6 +376,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtTransaction' },
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
   { name: 'net/nanopay/tx/DigitalTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/SecurityPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/cico/ReverseCIRule'},

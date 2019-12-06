@@ -402,6 +402,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.DigitalTransactionPlanDAO',
+  'net.nanopay.tx.SecurityPlanDAO',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
   'net.nanopay.tx.PlanETAComparator',
