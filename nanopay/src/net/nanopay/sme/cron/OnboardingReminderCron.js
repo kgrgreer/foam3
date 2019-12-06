@@ -10,8 +10,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.auth.Group',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -19,9 +19,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.BusinessUserJunction',
-    'static foam.mlang.MLang.*',
-    'foam.nanos.auth.User'
+    'static foam.mlang.MLang.*'
   ],
   documentation: 'Send onboarding reminder email to businesses created over 24 hours ago without yet completing their onboarding or setting up their bank account',
 
@@ -36,19 +34,15 @@ foam.CLASS({
       ],
       javaCode:
       `
-      EmailMessage         message        = null;
       Map<String, Object>  args           = null;
       DAO                  businessDAO    = (DAO) x.get("businessDAO");
-      DAO                  agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-      DAO                  userDAO        = (DAO) x.get("userDAO");
+      Group                group          = (Group) x.get("group");
 
       // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
       Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
       Date                 endInterval    = null;
-      Date                 testStartInt   = new Date(new Date().getTime());
-      Date                 testEndInt     = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
       Long                 disruptionDiff = 0L;
-      Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
+      Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago")).getLastRun();
 
       // Check if there was no service disruption - if so, add/sub diff from endInterval
       disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
@@ -56,12 +50,12 @@ foam.CLASS({
 
       List<Business> businessCreatedOverOneDay = ( (ArraySink) businessDAO.where(
         AND(
-          GTE(Business.CREATED, testEndInt),
-          LT(Business.CREATED, testStartInt))
+          GTE(Business.CREATED, endInterval),
+          LT(Business.CREATED, startInterval)
+        )
         ).select(new ArraySink())).getArray();
 
       for(Business business: businessCreatedOverOneDay) {
-
         //check if business has a verfied bank account set up
         boolean verfiedBankAccount = false;
         List<BankAccount> accounts = ( (ArraySink) business.getAccounts(x).where(
@@ -74,43 +68,16 @@ foam.CLASS({
             break;
           }
         }
-        boolean sendEmail = false;
         if(!business.getOnboarded() || !verfiedBankAccount){
-          //send email
-          message        = new EmailMessage();
-          args           = new HashMap<>();
-
+          //send onboarding reminder email
+          args = new HashMap<>();
           try {
-            //find first name of email recepient
-            String recepientFirstName = null;
-            if(business.getOnboarded()){
-              recepientFirstName = business.findSigningOfficer(x).getFirstName();
-            }
-            //no registered signing officers
-            else{
-              // List<BusinessUserJunction> businessAgents = ((ArraySink) agentJunctionDAO.where(
-              //     EQ(BusinessUserJunction.TARGET_ID, business.getId())
-              // ).select(new ArraySink())).getArray();
-              // if ( businessAgents == null || businessAgents.size() == 0 ) {
-              //   throw new RuntimeException("Agents not found");
-              // }
-              //
-              // for(BusinessUserJunction businessUserJunction: businessAgents){
-              //   User user = (User) userDAO.find(businessUserJunction.getSourceId());
-              //   if(user.getEmail().equals(business.getEmail())){
-              //     recepientFirstName = user.getFirstName();
-              //     break;
-              //   }
-              // }
-              List users = ((ArraySink) userDAO.where(
-                EQ(User.EMAIL, business.getEmail())
-              ).select(new ArraySink())).getArray();
-              User user = (User) users.get(0);
-              recepientFirstName = user.getFirstName();
-            }
+            String recepientFirstName = business.getOnboarded() ?
+              business.findSigningOfficer(x).getFirstName() :
+              business.label();
 
-            message.setTo(new String[]{ business.getEmail() });
             args.put("name", recepientFirstName);
+            args.put("business", business.getBusinessName());
             args.put("sendTo", business.getEmail());
             args.put(
               "businessRegistrationLink",
@@ -120,17 +87,26 @@ foam.CLASS({
               "bankAccountSetupLink",
               "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
             );
-            EmailsUtility.sendEmailFromTemplate(x, business, message, "onboarding-reminder", args);
+
+            Notification onboardingReminderNotification = new Notification.Builder(x)
+            .setBody("Complete Business Regeistration on Ablii")
+            .setNotificationType("OnboardingReminder")
+            .setGroupId(group.toString())
+            .setEmailIsEnabled(true)
+            .setEmailArgs(args)
+            .setUserId(business.getId())
+            .setEmailName("onboarding-reminder")
+            .build();
+
+            business.doNotify(x, onboardingReminderNotification);
+
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
             sb.append("Email meant for business onboarding-reminder Error: Business ");
             sb.append(business.getId());
             ((Logger) x.get("logger")).error(sb.toString(), t);
           }
-
-          sendEmail = true;
         }
-        boolean bp = sendEmail;
       }
       `
     }

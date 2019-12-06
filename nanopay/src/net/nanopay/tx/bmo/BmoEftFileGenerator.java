@@ -14,7 +14,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
 import foam.core.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
+import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -212,13 +212,13 @@ public class BmoEftFileGenerator {
 
           sum = sum + transaction.getAmount();
           detailRecords.add(detailRecord);
-          ((BmoTransaction)transaction). addHistory("Transaction added to EFT file");
+          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setRecord("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
           tempSuccessHolder.             add(transaction);
 
         } catch ( Exception e ) {
           this.logger.error("Error when add transaction to BMO EFT file", e);
-          ((BmoTransaction)transaction).addHistory(e.getMessage());
+          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setRecord(e.getMessage()).build());
           transaction.setStatus(TransactionStatus.FAILED);
         }
 
@@ -310,7 +310,7 @@ public class BmoEftFileGenerator {
   }
 
   public boolean isValidTransaction(Transaction transaction) {
-    ((BmoTransaction) transaction).addHistory("Transaction picked by BmoEftFileGenerator");
+    transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setRecord("Transaction picked by BmoEftFileGenerator").build());
 
     if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction || transaction instanceof BmoVerificationTransaction) ) {
       throw new RuntimeException("Wrong transaction type");

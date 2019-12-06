@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'MicroDepositFailed',
+  name: 'MicroDepositSuccessed',
 
-  documentation: `Send email when micro deposit from bank account verification fails`,
+  documentation: `Send email when micro deposit to bank account succeeds (Funds should be visible in their account).`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -11,7 +11,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
@@ -30,7 +29,6 @@ foam.CLASS({
            public void execute(X x) {
             VerificationTransaction txn = (VerificationTransaction) obj;
             DAO accountDAO = (DAO) x.get("accountDAO");
-            Logger logger = (Logger) x.get("logger");
             HashMap<String, Object> args = new HashMap<>();
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
@@ -41,10 +39,7 @@ foam.CLASS({
             args.put("userEmail", user.getEmail());
             args.put("sendTo", user.getEmail());
             EmailMessage message = new EmailMessage.Builder(x).setTo((new String[] { user.getEmail() })).build();
-            EmailsUtility.sendEmailFromTemplate(x, user, message, "failed-verifiedBank", args);
-            try {
-              accountDAO.remove(acc);
-            } catch (Exception E) { logger.error("Failed to remove bankaccount. "+E); };
+            EmailsUtility.sendEmailFromTemplate(x, user, message, "successed-verifiedBank", args);
           }
       }, "send notification");
       `
