@@ -8,8 +8,7 @@ foam.CLASS({
   imports: [
     'loginSuccess',
     'notify',
-    'twofactor',
-    'theme'
+    'twofactor'
   ],
 
   requires: [
