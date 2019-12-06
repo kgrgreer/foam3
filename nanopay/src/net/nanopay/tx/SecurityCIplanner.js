@@ -25,20 +25,22 @@ foam.CLASS({
       javaCode: `
         TransactionQuote txq = (TransactionQuote) obj;
         // --> Probably not needed.   Transaction tx = txq.getRequestTransaction();
-        SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
-
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        Account secTrust = accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount));
-
-        plan.setSourceCurrency(txq.getSourceUnit());
-        plan.setDestinationCurrency(txq.getDestinationUnit());
-
-        plan.setSourceAccount(txq.getSourceAccount().getId()); //TODO add the security so we know which account to actually get.
-        plan.setDestinationAccount(txq.getDestinationAccount().getId());
-
 
 
         if ( txq.getSourceAccount() instanceof brokerAccount ) { // cashin
+        // -- do this better..
+          SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+
+          DAO accountDAO = (DAO) x.get("accountDAO");
+          Account secTrust = accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount));
+
+          plan.setSourceCurrency(txq.getSourceUnit());
+          plan.setDestinationCurrency(txq.getDestinationUnit());
+
+          plan.setSourceAccount(txq.getSourceAccount().getId());
+          plan.setDestinationAccount(txq.getDestinationAccount().getId());
+
+        //--
           plan.setTransfers(createTransfers_(getX(), plan,
             ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
             secTrust.getId(), true)
@@ -48,6 +50,20 @@ foam.CLASS({
         }
 
         else if ( txq.getDestinationAccount() instanceof brokerAccount ) { //cashout
+
+        // -- do this better..
+          SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+
+          DAO accountDAO = (DAO) x.get("accountDAO");
+          Account secTrust = accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount));
+
+          plan.setSourceCurrency(txq.getSourceUnit());
+          plan.setDestinationCurrency(txq.getDestinationUnit());
+
+          plan.setSourceAccount(txq.getSourceAccount().getId());
+          plan.setDestinationAccount(txq.getDestinationAccount().getId());
+
+        //--
           plan.setTransfers(createTransfers_(getX(), plan,
             ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId(),
             secTrust.getId(), false)
