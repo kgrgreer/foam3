@@ -94,6 +94,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
+      view: {
+        class: 'foam.u2.view.StringView',
+      },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^\w{1,20}$/;
 

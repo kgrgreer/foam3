@@ -95,16 +95,21 @@ foam.CLASS({
           .tag(this.wizard.data.BUSINESS_ADDRESS, {
             customCountryDAO: this.PromisedDAO.create({
               promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                var q = hasPermission
-                  ? this.OR(
-                      this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US'),
-                      this.EQ(this.Country.ID, 'IN')
-                    )
-                  : this.OR(
+                var q;
+                if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
+                  q = this.OR(
                     this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US'),
                     this.EQ(this.Country.ID, 'IN')
                   );
+                } else if ( hasPermission ) {
+                  q = this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US')
+                  );
+                } else {
+                  q = this.EQ(this.Country.ID, 'CA');
+                }
                 return this.countryDAO.where(q);
               })
             })
