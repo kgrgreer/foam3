@@ -139,7 +139,8 @@ public class BankAccountBranchDAO
       USBankAccount usBankAccount = (USBankAccount) fObject;
 
       Branch branch = (Branch) branchDAO.find(usBankAccount.getBranch());
-      usBankAccount.setBranchId(branch.getBranchId());
+      if ( branch != null )
+        usBankAccount.setBranchId(branch.getBranchId());
 
       return usBankAccount;
     }
