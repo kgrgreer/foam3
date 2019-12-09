@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -35,7 +36,7 @@ foam.CLASS({
       if ( user == null || user.getId() == 0 )
         return getDelegate().put_(x, obj);
 
-      if ( user instanceof Business )
+      if ( ! (user instanceof Business) )
         return getDelegate().put_(x, obj);
 
       // Checks if User has existed which is really just a duplicate check of user.getId() == 0, or at least it should.
@@ -55,23 +56,23 @@ foam.CLASS({
       }
 
       user = (User) getDelegate().put_(x , obj);
+      Address businessAddress = user.getAddress();
 
-      EmailMessage            message      = new EmailMessage();
-      Map<String, Object>     args         = new HashMap<>();
-      Group                   group        = (Group) user.findGroup(x);
-      AppConfig               appConfig    = group.getAppConfig(x);
+      if( !businessAddress.getCountryId().equals("US")){
+        EmailMessage            message      = new EmailMessage();
+        Map<String, Object>     args         = new HashMap<>();
+        String                  url          = "http://ablii:8080/#sme.main.dashboard";
 
-      String url = appConfig.getUrl().replaceAll("/$", "");
+        message.setTo(new String[]{user.getEmail()});
+        args.put("link", url);
+        args.put("sendTo", user.getEmail());
+        args.put("business", user.getOrganization());
 
-      message.setTo(new String[]{user.getEmail()});
-      args.put("link",   url + "#sme.main.dashboard");
-      args.put("sendTo", user.getEmail());
-      args.put("business", user.getOrganization());
-
-      try {
-        EmailsUtility.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
-      } catch (Exception e) {
-        logger.error("Error sending compliance-notification-to-user email.", e);
+        try {
+          EmailsUtility.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
+        } catch (Exception e) {
+          logger.error("Error sending compliance-notification-to-user email.", e);
+        }
       }
 
       return user;

@@ -118,9 +118,7 @@ foam.CLASS({
         EmailMessage         message        = new EmailMessage();
         Map<String, Object>  args           = new HashMap<>();
         DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
-        Group                group          = (Group) localGroupDAO.find(business.getGroup());
-        AppConfig            appConfig      = group.getAppConfig(x);
-        String               url            = appConfig.getUrl().replaceAll("/$", "");
+        String               url            = "http://ablii:8080/#sme.main.dashboard";
 
         message.setTo(new String[]{business.getEmail()});
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
@@ -129,7 +127,7 @@ foam.CLASS({
         args.put("business", business.getBusinessName());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
-        args.put("link",   url + "#sme.main.dashboard");
+        args.put("link",   url);
         args.put("sendTo", business.getEmail());
         args.put("name", signingOfficer.getFirstName());
 
