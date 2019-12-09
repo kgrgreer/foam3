@@ -342,7 +342,7 @@ foam.CLASS({
             .add(this.SUBTITLE3)
           .end()
           .start()
-          .show(this.notificationsCount$.map((value) => value > 0))
+          .show(this.notificationsCount$.map((value) => value > 0) && this.user.spid == 'GD' )
             .select(this.myDaoNotification$proxy, function(notif) {
               return this.E().start({
                 class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
