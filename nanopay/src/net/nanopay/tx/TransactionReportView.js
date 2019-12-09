@@ -172,10 +172,10 @@ foam.CLASS({
       code: function() {
         var url = window.location.origin
           + '/service/genTxnReport?startDate='
-          + this.startDate.toString()
+          + this.startDate.toISOString().substring(0, 10)
           +'&endDate='
-          + this.endDate.toString();
-      window.location.assign(url);
+          + this.endDate.toISOString().substring(0, 10);
+        window.location.assign(url);
       }
     }
   ]
