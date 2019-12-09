@@ -114,4 +114,29 @@ public class BankAccountBranchDAO
     ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
     return newBranch;
   }
+
+  @Override
+  public FObject find_(X x, Object obj) {
+
+    FObject fObject = this.getDelegate().find_(x, obj).fclone();
+
+    DAO branchDAO = (DAO) x.get("branchDAO");
+
+    if (fObject instanceof CABankAccount) {
+      CABankAccount caBankAccount = (CABankAccount) fObject;
+
+      Branch branch = (Branch) branchDAO.find(caBankAccount.getBranch());
+      caBankAccount.setBranchId(branch.getBranchId());
+
+      return caBankAccount;
+    } else if (fObject instanceof USBankAccount) {
+      USBankAccount usBankAccount = (USBankAccount) fObject;
+
+      Branch branch = (Branch) branchDAO.find(usBankAccount.getBranch());
+      usBankAccount.setBranchId(branch.getBranchId());
+
+      return usBankAccount;
+    }
+    return fObject;
+  }
 }
