@@ -96,7 +96,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
-    section: 'accountDetails',
+    section: 'parentSection',
     order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
@@ -106,7 +106,8 @@ foam.RELATIONSHIP({
         placeholder: 'select Parent',
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
-    }
+    },
+    readPermissionRequired: true
   }
 });
 
@@ -288,7 +289,7 @@ foam.RELATIONSHIP({
   inverseName: 'associateTransaction',
   sourceProperty: {
     visibility: 'FINAL',
-    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } 
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
     visibility: 'FINAL',
@@ -871,4 +872,15 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'assetClassDAO',
   targetDAOKey: 'securitiesDAO',
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.TransactionEvent',
+  forwardName: 'transactionEvents',
+  inverseName: 'transaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'transactionEventDAO',
 });

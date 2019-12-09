@@ -501,20 +501,7 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: foam.dao.PromisedDAO.create({
-                promise: X.publicBusinessDAO
-                  .select(m.MAP(net.nanopay.model.Business.ID))
-                  .then(function(sink) {
-                    return X.user.contacts
-                      .where(
-                        m.OR(
-                          m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array),
-                          m.EQ(net.nanopay.contacts.Contact.BUSINESS_ID, 0)
-                        )
-                      )
-                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-                  })
-              })
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
             }
           ]
         };

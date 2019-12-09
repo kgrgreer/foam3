@@ -2,6 +2,7 @@ package net.nanopay.onboarding;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Address;
@@ -15,8 +16,13 @@ import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
+import net.nanopay.onboarding.CreateOnboardingCloneService;
+import net.nanopay.sme.onboarding.BusinessOnboarding;
+import net.nanopay.sme.onboarding.OnboardingStatus;
+import net.nanopay.sme.onboarding.USBusinessOnboarding;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 import static foam.mlang.MLang.AND;
@@ -134,6 +140,12 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             ).fclone();
           invitation.setStatus(InvitationStatus.COMPLETED);
           invitationDAO_.inX(businessContext).put(invitation);
+
+          CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(sysContext);
+          List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
+
+          if ( onboardings.size() > 0 )
+            createOnboardingCloneService.putOnboardingClone(sysContext, onboardings, user.getId());
 
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create(external)/update(internal) the user and
