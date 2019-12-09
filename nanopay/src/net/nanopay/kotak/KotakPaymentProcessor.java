@@ -50,7 +50,6 @@ public class KotakPaymentProcessor implements ContextAgent {
         try {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
           kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
-          //User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayeeId()));
           INBankAccount destinationBankAccount = getAccountById(x, kotakCOTxn.getDestinationAccount());
           User payee = destinationBankAccount.findOwner(x);
 
