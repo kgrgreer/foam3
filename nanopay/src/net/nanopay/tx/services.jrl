@@ -119,23 +119,10 @@ p({
       .build();
     dao = new TransactionDAO(x, dao);
     dao = new HashingJDAO(x, "SHA-256", true, dao, "transactions");
-    dao = new DeletedAwareDAO.Builder(x)
-      .setName("transaction")
-      .setDelegate(dao)
-      .build();
     dao = new foam.dao.ContextualizingDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new RulerDAO(x, dao, "localTransactionDAO");
-    dao = new foam.nanos.auth.CreatedAwareDAO.Builder(x)
-      .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
-        .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
-          .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
-            .setDelegate(new foam.dao.GUIDDAO(dao))
-            .build())
-          .build())
-        .build())
-      .build();
+    dao = new foam.dao.GUIDDAO(dao);
     dao = new net.nanopay.fx.afex.AFEXTransactionDAO(x, dao);
     dao = new net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO(x, dao);
     dao = new net.nanopay.tx.SaveChainedTransactionDAO(x, dao);
@@ -154,9 +141,8 @@ p({
       .setOf(Transaction.getOwnClassInfo())
       .setInnerDAO(dao)
       .setPm(true)
+//      .setGuid(true)
       .setPipelinePm(true)
-      .setEnableInterfaceDecorators(false)
-      .setRuler(false)
       .setAuthorize(false)
       .build();
     """
