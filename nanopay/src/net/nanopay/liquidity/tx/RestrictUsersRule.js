@@ -1,16 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
-  name: 'RestrictEntitiesRule',
+  name: 'RestrictUsersRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
-  documentation: 'Restrict Entities Rule.',
-
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
-  ],
+  documentation: 'Prevents specified users from transacting.',
 
   javaImports: [
     'net.nanopay.liquidity.tx.*',
@@ -18,7 +11,7 @@ foam.CLASS({
     'foam.mlang.expr.*',
     'foam.mlang.predicate.*',
     'foam.mlang.MLang.*',
-    'net.nanopay.account.Account'
+    'foam.nanos.auth.User'
   ],
 
   requires: [
@@ -26,7 +19,7 @@ foam.CLASS({
     'foam.mlang.expr.PropertyExpr',
     'foam.mlang.predicate.Eq',
     'foam.mlang.predicate.Neq',
-    'net.nanopay.account.Account'
+    'foam.nanos.auth.User'
   ],
 
   searchColumns: [
@@ -40,50 +33,48 @@ foam.CLASS({
     { name: 'description' },
     {
       class: 'Reference',
-      name: 'sourceAccount',
-      label: 'Source',
+      name: 'sourceUser',
       section: 'basicInfo',
-      targetDAOKey: 'accountDAO',
-      of: 'net.nanopay.account.Account',
+      targetDAOKey: 'userDAO',
+      of: 'foam.nanos.auth.User',
       view: {
         class: 'foam.u2.view.ReferenceView',
         placeholder: '--'
       },
       tableCellFormatter: function(value) {
         var self = this;
-        this.__subSubContext__.accountDAO.find(value).then((account)=> {
-          self.add(account.name);
+        this.__subSubContext__.userDAO.find(value).then((user)=> {
+          user.firstName && user.lastName ? self.add(user.firstName + ' ' + user.lastName) : self.add(user.email);
         });
       }
     },
     {
       class: 'Reference',
-      name: 'destinationAccount',
-      label: 'Destination',
+      name: 'destinationUser',
       section: 'basicInfo',
-      targetDAOKey: 'accountDAO',
-      of: 'net.nanopay.account.Account',
+      targetDAOKey: 'userDAO',
+      of: 'foam.nanos.auth.User',
       view: {
         class: 'foam.u2.view.ReferenceView',
         placeholder: '--'
       },
       tableCellFormatter: function(value) {
         var self = this;
-        this.__subSubContext__.accountDAO.find(value).then((account)=> {
-          self.add(account.name);
+        this.__subSubContext__.userDAO.find(value).then((user)=> {
+          user.firstName && user.lastName ? self.add(user.firstName + ' ' + user.lastName) : self.add(user.email);
         });
       }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'sourcePredicate',
-      expression: function(sourceAccount) {
+      expression: function(sourceUser) {
         var expr = this.PropertyExpr.create({
-          of: 'net.nanopay.account.Account',
-          property: this.Account.ID
+          of: 'foam.nanos.auth.User',
+          property: this.User.ID
         });
         var cons = this.Constant.create({
-          value: sourceAccount
+          value: sourceUser
         });
         var pred = this.Eq.create({
           arg1: expr,
@@ -94,11 +85,11 @@ foam.CLASS({
       javaGetter: `
         return new Eq.Builder(getX())
           .setArg1(new PropertyExpr.Builder(getX())
-            .setOf(Account.getOwnClassInfo())
-            .setProperty(Account.ID)
+            .setOf(User.getOwnClassInfo())
+            .setProperty(User.ID)
             .build())
           .setArg2(new Constant.Builder(getX())
-            .setValue(this.getSourceAccount())
+            .setValue(this.getSourceUser())
             .build())
           .build();
       `,
@@ -107,13 +98,13 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'destinationPredicate',
-      expression: function(destinationAccount) {
+      expression: function(destinationUser) {
         var expr = this.PropertyExpr.create({
-          of: 'net.nanopay.account.Account',
-          property: this.Account.ID
+          of: 'foam.nanos.auth.User',
+          property: this.User.ID
         });
         var cons = this.Constant.create({
-          value: destinationAccount
+          value: destinationUser
         });
         var pred = this.Eq.create({
           arg1: expr,
@@ -124,11 +115,11 @@ foam.CLASS({
       javaGetter: `
         return new Eq.Builder(getX())
           .setArg1(new PropertyExpr.Builder(getX())
-            .setOf(Account.getOwnClassInfo())
-            .setProperty(Account.ID)
+            .setOf(User.getOwnClassInfo())
+            .setProperty(User.ID)
             .build())
           .setArg2(new Constant.Builder(getX())
-            .setValue(this.getDestinationAccount())
+            .setValue(this.getDestinationUser())
             .build())
           .build();
       `,
@@ -136,7 +127,7 @@ foam.CLASS({
     },
     {
       name: 'ruleGroup',
-      value: 'restrictEntitiesRules',
+      value: 'restrictUsersRules',
       hidden: true
     },
     {
@@ -145,7 +136,7 @@ foam.CLASS({
       hidden: true,
       javaGetter: `
         return foam.mlang.MLang.AND(
-          (new BusinessRuleTransactionPredicate.Builder(getX())).setIsSourcePredicate(true).setPredicate(this.getSourcePredicate()).build(), 
+          (new BusinessRuleTransactionPredicate.Builder(getX())).setIsSourcePredicate(true).setPredicate(this.getSourcePredicate()).build(),
           (new BusinessRuleTransactionPredicate.Builder(getX())).setIsSourcePredicate(false).setPredicate(this.getDestinationPredicate()).build());
       `
     },

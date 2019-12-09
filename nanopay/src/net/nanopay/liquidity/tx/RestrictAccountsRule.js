@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
-  name: 'GenericBusinessRule',
+  name: 'RestrictAccountsRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
-  documentation: 'Generic Business Rule.',
+  documentation: 'Prevents specified accounts from transacting.',
 
   javaImports: [
     'net.nanopay.liquidity.tx.*',
@@ -25,25 +25,56 @@ foam.CLASS({
   searchColumns: [
     'id',
     'enabled',
-    'businessRuleAction',
-    'createdBy',
-    'description'
+    'createdBy'
   ],
 
   properties: [
     { name: 'id' },
     { name: 'description' },
     {
+      class: 'Reference',
+      name: 'sourceAccount',
+      section: 'basicInfo',
+      targetDAOKey: 'accountDAO',
+      of: 'net.nanopay.account.Account',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        placeholder: '--'
+      },
+      tableCellFormatter: function(value) {
+        var self = this;
+        this.__subSubContext__.accountDAO.find(value).then((account)=> {
+          account.name ? self.add(account.name) : self.add(account.id);
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'destinationAccount',
+      section: 'basicInfo',
+      targetDAOKey: 'accountDAO',
+      of: 'net.nanopay.account.Account',
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        placeholder: '--'
+      },
+      tableCellFormatter: function(value) {
+        var self = this;
+        this.__subSubContext__.accountDAO.find(value).then((account)=> {
+          account.name ? self.add(account.name) : self.add(account.id);
+        });
+      }
+    },
+    {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'sourcePredicate',
-      label: 'Source Condition',
-      section: 'basicInfo',
-      factory: function() {
+      expression: function(sourceAccount) {
         var expr = this.PropertyExpr.create({
-          property: this.Account.NAME
+          of: 'net.nanopay.account.Account',
+          property: this.Account.ID
         });
         var cons = this.Constant.create({
-          value: "Source Account"
+          value: sourceAccount
         });
         var pred = this.Eq.create({
           arg1: expr,
@@ -51,27 +82,29 @@ foam.CLASS({
         });
         return pred;
       },
-      javaFactory: `
+      javaGetter: `
         return new Eq.Builder(getX())
           .setArg1(new PropertyExpr.Builder(getX())
-            .setProperty(Account.NAME)
+            .setOf(Account.getOwnClassInfo())
+            .setProperty(Account.ID)
             .build())
           .setArg2(new Constant.Builder(getX())
+            .setValue(this.getSourceAccount())
             .build())
           .build();
-      `
+      `,
+      hidden: true
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'destinationPredicate',
-      label: 'Destination Condition',
-      section: 'basicInfo',
-      factory: function() {
+      expression: function(destinationAccount) {
         var expr = this.PropertyExpr.create({
-          property: this.Account.NAME
+          of: 'net.nanopay.account.Account',
+          property: this.Account.ID
         });
         var cons = this.Constant.create({
-          value: "Destination Account"
+          value: destinationAccount
         });
         var pred = this.Eq.create({
           arg1: expr,
@@ -79,27 +112,22 @@ foam.CLASS({
         });
         return pred;
       },
-      javaFactory: `
+      javaGetter: `
         return new Eq.Builder(getX())
           .setArg1(new PropertyExpr.Builder(getX())
-            .setProperty(Account.NAME)
+            .setOf(Account.getOwnClassInfo())
+            .setProperty(Account.ID)
             .build())
           .setArg2(new Constant.Builder(getX())
+            .setValue(this.getDestinationAccount())
             .build())
           .build();
-      `
-    },
-    {
-      class: 'Enum',
-      of: 'net.nanopay.liquidity.tx.BusinessRuleAction',
-      name: 'businessRuleAction',
-      section: 'basicInfo',
-      label: 'Action Type',
-      tableWidth: 125
+      `,
+      hidden: true
     },
     {
       name: 'ruleGroup',
-      value: 'businessRules',
+      value: 'restrictAccountsRules',
       hidden: true
     },
     {
@@ -117,19 +145,8 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaGetter: `
-        // RESTRICT
-        if (this.getBusinessRuleAction() == BusinessRuleAction.RESTRICT)
-          return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " restricting operation. " + this.getDescription()).build();
-
-        // NOTIFY
-        if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
-          return new BusinessRuleNotificationAction.Builder(getX()).setBusinessRuleId(this.getId()).build();  // TODO - add proper configuration for this email address
-
-        // APPROVAL - TODO
-
-        // ALLOW
-        return null;
-      `,
+        return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " restricting operation. " + this.getDescription()).build();
+      `
     }
   ]
 });

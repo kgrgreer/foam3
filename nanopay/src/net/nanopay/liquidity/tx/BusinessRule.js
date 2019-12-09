@@ -6,13 +6,6 @@ foam.CLASS({
 
   documentation: 'Business rule base class.',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
-  ],
-
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.*',

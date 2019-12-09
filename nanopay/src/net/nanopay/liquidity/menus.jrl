@@ -37,8 +37,8 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"liquid.restrictentitiesrules",
-  "label":"Restrict Entities Rules",
+  "id":"liquid.restrictaccountsrules",
+  "label":"Restrict Accounts Rules",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{ 
@@ -46,13 +46,34 @@ p({
       "daoKey":"ruleDAO",
       "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.liquidity.tx.RestrictEntitiesRule"
+        "targetClass": "net.nanopay.liquidity.tx.RestrictAccountsRule"
       },
       "defaultColumns":["id","enabled","createdBy","sourceAccount","destinationAccount"],
-      "of":"net.nanopay.liquidity.tx.RestrictEntitiesRule"
+      "of":"net.nanopay.liquidity.tx.RestrictAccountsRule"
     }
   },
   "order":5001,
+  "parent": "liquid.rules"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.restrictusersrules",
+  "label":"Restrict Users Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
+      },
+      "defaultColumns":["id","enabled","createdBy","sourceUser","destinationUser"],
+      "of":"net.nanopay.liquidity.tx.RestrictUsersRule"
+    }
+  },
+  "order":5002,
   "parent": "liquid.rules"
 })
 

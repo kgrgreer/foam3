@@ -3,4 +3,5 @@ p({"class":"net.nanopay.tx.test.TemporalRelationshipTest", "id":"relationshipTes
 p({"class":"net.nanopay.liquidity.LiquiditySettingsTest", "id":"LiquiditySettingsTest"})
 p({"class":"net.nanopay.tx.test.TransactionTest", "id":"transactionTests"})
 p({"class":"net.nanopay.tx.test.BulkTransactionTest", "id":"bulkTransactionTest"})
-p({"class":"net.nanopay.liquidity.tx.RestrictEntitiesRuleTest", "id":"restrictEntitiesRuleTest"})
+p({"class":"net.nanopay.liquidity.tx.RestrictAccountsRuleTest", "id":"restrictAccountsRuleTest"})
+p({"class":"net.nanopay.liquidity.tx.RestrictUsersRuleTest", "id":"restrictUsersRuleTest"})

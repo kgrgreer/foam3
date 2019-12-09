@@ -3,10 +3,6 @@ package net.nanopay.liquidity.tx;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.mlang.*;
-import foam.mlang.expr.*;
-import foam.mlang.predicate.*;
-import foam.nanos.ruler.Operations;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
@@ -14,24 +10,23 @@ import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.liquidity.tx.*;
 
 import static foam.mlang.MLang.*;
 
-/* 
-  Test for RestrictEntitiesRule, creates a test rule with a source and destination account.
-  Tries sending a transaction between those accounts which should throw a RuntimeException.
+/*
+  Test for RestrictUsersRule, creates a test rule with a source and destination user.
+  Tries sending a transaction between the default accounts of each user which should throw a RuntimeException.
 */
 
-public class RestrictEntitiesRuleTest
+public class RestrictUsersRuleTest
   extends Test
 {
   Account sourceAccount_, destinationAccount_;
   ArraySink sourceAccountSink_, destinationAccountSink_;
   DAO accountDAO_, ruleDAO_, transactionDAO_, userDAO_;
-  RestrictEntitiesRule rule_;
+  RestrictUsersRule rule_;
   Transaction transaction_;
-  User sourceUser_, destinationUser_;
+  User sourceUser_, destinationUser_, user_;
   X x_;
 
   public void runTest(X x) {
@@ -39,13 +34,14 @@ public class RestrictEntitiesRuleTest
     ruleDAO_ = (DAO) x.get("ruleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
+    user_ = (User) x.get("user");
     x_ = x;
 
-    // create source user which generates source account 
-    sourceUser_ = (User) userDAO_.find(EQ(User.EMAIL, "sourceuser@nanopay.net"));
+    // create source user which generates source account
+    sourceUser_ = (User) userDAO_.find(EQ(User.EMAIL, "source_user_test@nanopay.net"));
     if ( sourceUser_ == null ) {
       sourceUser_ = new User();
-      sourceUser_.setEmail("sourceuser@nanopay.net");
+      sourceUser_.setEmail("source_user_test@nanopay.net");
     }
     sourceUser_ = (User) sourceUser_.fclone();
     sourceUser_.setFirstName("Source");
@@ -55,10 +51,10 @@ public class RestrictEntitiesRuleTest
     userDAO_.put(sourceUser_);
 
     // create destination user which generates destination account
-    destinationUser_ = (User) userDAO_.find(EQ(User.EMAIL, "destinationuser@nanopay.net"));
+    destinationUser_ = (User) userDAO_.find(EQ(User.EMAIL, "destination_user_test@nanopay.net"));
     if ( destinationUser_ == null ) {
       destinationUser_ = new User();
-      destinationUser_.setEmail("destinationuser@nanopay.net");
+      destinationUser_.setEmail("destination_user_test@nanopay.net");
     }
     destinationUser_ = (User) destinationUser_.fclone();
     destinationUser_.setFirstName("Destination");
@@ -76,7 +72,6 @@ public class RestrictEntitiesRuleTest
     ).select(new ArraySink());
     sourceAccount_ = (Account) sourceAccountSink_.getArray().get(0);
 
-    // fetch destination account
     destinationAccountSink_ = (ArraySink) destinationUser_.getAccounts(x_).where(
       AND(
         EQ(Account.TYPE, DigitalAccount.class.getSimpleName()),
@@ -85,12 +80,13 @@ public class RestrictEntitiesRuleTest
     ).select(new ArraySink());
     destinationAccount_ = (Account) destinationAccountSink_.getArray().get(0);
 
-    // create test rule to restrict source account from transacting with destination account
-    rule_ = new RestrictEntitiesRule();
-    rule_.setId("Restrict Entities Test Rule");
-    rule_.setDescription("Tests the RestrictEntitiesRule.");
-    rule_.setSourceAccount(sourceAccount_.getId());
-    rule_.setDestinationAccount(destinationAccount_.getId());
+    // create test rule to restrict users from transacting
+    rule_ = new RestrictUsersRule();
+    rule_.setId("Restrict Users Test Rule");
+    rule_.setDescription("Tests the RestrictUsersRule.");
+    rule_.setCreatedBy(user_.getId());
+    rule_.setSourceUser(sourceUser_.getId());
+    rule_.setDestinationUser(destinationUser_.getId());
     rule_.setEnabled(true);
     ruleDAO_.put(rule_);
 
@@ -108,7 +104,7 @@ public class RestrictEntitiesRuleTest
         rule_.getId() + " restricting operation. " + rule_.getDescription(),
         RuntimeException.class
       ),
-      "Send transaction between restricted entities throws RuntimeException."
+      "Send transaction between restricted users throws RuntimeException."
     );
   }
 }
