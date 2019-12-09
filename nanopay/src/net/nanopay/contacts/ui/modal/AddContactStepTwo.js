@@ -9,7 +9,8 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.bank.INBankAccount'
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.bank.CABankAccount'
   ],
 
   imports: [
@@ -47,7 +48,6 @@ foam.CLASS({
     ^ .bankAction {
       background-color: white;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       height: 44px;
       padding: 10px;
@@ -81,7 +81,6 @@ foam.CLASS({
       height: 24px;
       line-height: 1.5;
       font-size: 14px;
-      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .bankAction:hover {
       background-color: white;
@@ -220,6 +219,10 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount) {
+      if ( this.CABankAccount.isInstance(this.bankAccount) && this.bankAccount.institutionNumber == '' ) {
+        this.ctrl.notify('Please enter an Inst. No.', 'error');
+        return;
+      }
       try {
         bankAccount.validate();
       } catch (e) {
