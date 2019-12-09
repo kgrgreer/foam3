@@ -21,6 +21,9 @@ foam.CLASS({
     ^ {
       margin-top: 21vh;
     }
+    ^ .app-link {
+      text-decoration: none;
+    }
     ^button {
       color: #8e9090;
       cursor: pointer;
@@ -36,16 +39,16 @@ foam.CLASS({
       position: relative;
       top: 20px;
     }
-    ^ .app-link {
-      text-decoration: none;
+    ^ .tf-container {
+      margin: 0 auto 0 0;
+      width: 450px;
+    }
+    ^ tfa-title {
+      margin: 26px 0;
     }
     ^ .tfa-container {
       border-radius: 2px;
       margin-top: 26px;
-      width: 450px;
-    }
-    ^ .tf-container {
-      margin: 0 auto 0 0;
       width: 450px;
     }
     ^verify-button {
@@ -85,7 +88,7 @@ foam.CLASS({
     }
     ^TwoFactAuthIntro {
       font-size: 14px;
-      font-family: Lato-Regular;
+      font-family: Lato;
       line-height: 1.6;
       height: 63px;
       padding: 0 16px;
@@ -94,11 +97,25 @@ foam.CLASS({
       display: flex;
       color: #f91c1c;
     }
-
+    ^ .error-string {
+      margin: 0 8px 0 0;
+    }
     ^ .top-bar-inner {
-      margin: 0 128px
+      margin: 0 128px;
+    }
+    ^ .sub-note {
+      font-family: Lato;
+      font-size: 12px 
     }
   `,
+
+  constants: [
+    { name: 'PHONE_IPHONE_IMAGE', value: 'images/phone-iphone-24-px.png' },
+    { name: 'SIGN_IN_IMAGE', value: 'images/sign_in_illustration.png' },
+    { name: 'ERROR_ICON', value: 'images/inline-error-icon.svg' },
+    { name: 'CONTACT_EMAIL', value: 'mailto:support@nanopay.net' },
+    { name: 'ABLII_ADDRESS', value: 'https://www.ablii.com' },
+  ],
 
   properties: [
     {
@@ -139,40 +156,34 @@ foam.CLASS({
       var left = this.Element.create()
         .start('img')
           .addClass('sme-image')
-          .attr('src', 'images/sign_in_illustration.png')
+          .attr('src', this.SIGN_IN_IMAGE)
         .end();
 
       var right = this.Element.create()
       .addClass(this.myClass())
       .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
       .start().addClass('tf-container')
-        .start('h2').style({
-          margin: '26px 0'
-        }).add(this.TWO_FACTOR_TITLE).end()
+        .start('h2').addClass('tfa-title').add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
-          .start('img').attr('src', 'images/phone-iphone-24-px.png').end()
+          .start('img').attr('src', this.PHONE_IPHONE_IMAGE).end()
           .start().addClass(this.myClass('TwoFactAuthIntro'))
           .add(this.TWO_FACTOR_EXPLANATION).end()
         .end()
         .start('form')
           .addClass('tfa-container')
           .start('label')
+            .addClass('sub-note')
             .add(this.TWO_FACTOR_LABEL)
-            .style({ 'font-family': 'Lato-Regular', 'font-size': 12 })
           .end()
           .start()
             .tag(this.TWO_FACTOR_TOKEN)
             .start().addClass('error-msg').show( this.incorrectCode$ )
               .start({
                 class: 'foam.u2.tag.Image',
-                data: 'images/inline-error-icon.svg',
+                data: this.ERROR_ICON,
                 displayHeight: 16,
                 displayWidth: 16
-              })
-                .style({
-                  'justify-content': 'flex-start',
-                  'margin': '0 8px 0 0'
-                })
+              }).addClass('error-string')
               .end()
               .start('span').add(this.TWO_FACTOR_ERROR).end()
             .end()
@@ -185,7 +196,7 @@ foam.CLASS({
       .start().addClass(this.myClass('sme-subtitle'))
         .start('strong').add(this.TWO_FACTOR_NOTES_1).end()
         .start('a').addClass('app-link')
-          .attrs({ href: 'mailto:support@nanopay.net' })
+          .attrs({ href: this.CONTACT_EMAIL })
           .add(this.TWO_FACTOR_NOTES_2)
         .end()
       .end();
@@ -204,7 +215,7 @@ foam.CLASS({
               .end()
               .add(this.GO_BACK)
               .on('click', () => {
-                window.location = 'https://www.ablii.com';
+                window.location = this.ABLII_ADDRESS;
               })
             .end()
           .end()
