@@ -46,3 +46,28 @@ p({
     print("Liquidity Weekly Run");
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": 1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "scheduledTime": "2019-09-09T16:56:00.000Z",
+  "id": "ls.monthly",
+  "description": "This cron job is scheduled for cashout on the first date of the month.",
+  "code": 
+  """
+    import net.nanopay.liquidity.LiquiditySettingsCheckCron;
+    import net.nanopay.util.Frequency;
+    ls = new LiquiditySettingsCheckCron(Frequency.MONTHLY);
+    ls.execute(x);
+    print("Liquidity Monthly Run");
+  """
+})
