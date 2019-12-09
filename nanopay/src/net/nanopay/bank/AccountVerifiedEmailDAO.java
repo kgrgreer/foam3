@@ -6,13 +6,13 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import net.nanopay.contacts.Contact;
 import foam.nanos.auth.Group;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import foam.nanos.notification.Notification;
-import net.nanopay.contacts.Contact;
 import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
 
@@ -88,6 +88,7 @@ public class AccountVerifiedEmailDAO
             .setNotificationType("BankNotifications")
             .setGroupId(group.toString())
             .setEmailIsEnabled(true)
+            .setEmailArgs(args)
             .setUserId(owner.getId())
             .setEmailName("verifiedBank")
             .build();

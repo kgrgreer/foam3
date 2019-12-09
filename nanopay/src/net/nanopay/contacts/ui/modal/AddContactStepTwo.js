@@ -8,6 +8,11 @@ foam.CLASS({
     add banking information for inviting a contact,
   `,
 
+  requires: [
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.bank.CABankAccount'
+  ],
+
   imports: [
     'auth',
     'accountDAO as bankAccountDAO',
@@ -43,7 +48,6 @@ foam.CLASS({
     ^ .bankAction {
       background-color: white;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       height: 44px;
       padding: 10px;
@@ -77,7 +81,6 @@ foam.CLASS({
       height: 24px;
       line-height: 1.5;
       font-size: 14px;
-      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .bankAction:hover {
       background-color: white;
@@ -179,7 +182,6 @@ foam.CLASS({
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()
             .add(this.slot(function(bankAdded) {
-              console.log(bankAdded);
               if ( bankAdded || this.viewData.isBankingProvided ) {
                 return this.E().tag({
                   class: 'foam.u2.detail.SectionedDetailView',
@@ -198,7 +200,9 @@ foam.CLASS({
         .end()
         .startContext({ data: this.wizard })
           .start()
-            .hide(this.isEdit)
+            .hide(this.slot(function(isEdit, bankAccount) {
+              return isEdit || this.INBankAccount.isInstance(bankAccount);
+            }))
             .addClass(this.myClass('invite'))
             .add(this.wizard.SHOULD_INVITE)
           .end()
@@ -215,9 +219,9 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount) {
-      if ( ! bankAccount.name ) {
-        this.ctrl.notify('Financial institution name is required', 'error');
-        return false;
+      if ( this.CABankAccount.isInstance(this.bankAccount) && this.bankAccount.institutionNumber == '' ) {
+        this.ctrl.notify('Please enter an Inst. No.', 'error');
+        return;
       }
       try {
         bankAccount.validate();

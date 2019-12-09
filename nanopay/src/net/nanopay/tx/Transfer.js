@@ -4,7 +4,12 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance'
+    'net.nanopay.account.Balance',
+    'foam.util.SafetyUtil'
+  ],
+
+  javaImplements: [
+    'java.lang.Comparable'
   ],
 
   properties: [
@@ -61,6 +66,14 @@ foam.CLASS({
       type: 'Any',
       javaCode: `
         return String.valueOf(getAccount()).intern();
+      `
+    },
+    {
+      name: 'compareTo',
+      type: 'int',
+      args: [{ name: 't', type: 'net.nanopay.tx.Transfer'}],
+      javaCode: `
+        return SafetyUtil.compare(getAccount(),t.getAccount());
       `
     }
   ]
