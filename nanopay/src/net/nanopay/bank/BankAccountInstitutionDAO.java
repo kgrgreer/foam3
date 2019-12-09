@@ -100,7 +100,12 @@ public class BankAccountInstitutionDAO
   @Override
   public FObject find_(X x, Object obj) {
 
-    FObject fObject = this.getDelegate().find_(x, obj).fclone();
+    FObject fObject = this.getDelegate().find_(x, obj);
+
+    if ( fObject == null ) {
+      return fObject;
+    }
+    fObject = fObject.fclone();
 
     DAO instDAO = (DAO) x.get("institutionDAO");
 
@@ -108,7 +113,8 @@ public class BankAccountInstitutionDAO
       CABankAccount caBankAccount = (CABankAccount) fObject;
 
       Institution institution = (Institution) instDAO.find(caBankAccount.getInstitution());
-      caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
+      if ( institution != null )
+        caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
 
       return caBankAccount;
     }

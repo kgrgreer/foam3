@@ -118,7 +118,12 @@ public class BankAccountBranchDAO
   @Override
   public FObject find_(X x, Object obj) {
 
-    FObject fObject = this.getDelegate().find_(x, obj).fclone();
+    FObject fObject = this.getDelegate().find_(x, obj);
+
+    if ( fObject == null ) {
+      return fObject;
+    }
+    fObject = fObject.fclone();
 
     DAO branchDAO = (DAO) x.get("branchDAO");
 
@@ -126,7 +131,8 @@ public class BankAccountBranchDAO
       CABankAccount caBankAccount = (CABankAccount) fObject;
 
       Branch branch = (Branch) branchDAO.find(caBankAccount.getBranch());
-      caBankAccount.setBranchId(branch.getBranchId());
+      if ( branch != null )
+        caBankAccount.setBranchId(branch.getBranchId());
 
       return caBankAccount;
     } else if (fObject instanceof USBankAccount) {
