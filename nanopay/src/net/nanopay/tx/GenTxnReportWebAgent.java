@@ -62,7 +62,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       long ciAmountCAD = 0;
       long coAmountCAD = 0;
-      long coFee = 0;
+      long totalFee = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
         .where(
@@ -106,7 +106,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD = ciAmountCAD + txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD = coAmountCAD + txn.getAmount();
-                coFee = coFee + txn.getCost();
+              } else if (txn instanceof DigitalTransaction) {
+                totalFee = totalFee + txn.getCost();
               }
             }
             break;
@@ -146,8 +147,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         ""
       );
 
-      String sumFee = currencyCAD.format(coFee);
-      if (coFee <= MIN_MONTHLY_PAYMENT ) {
+      String sumFee = currencyCAD.format(totalFee);
+      if ( totalFee <= MIN_MONTHLY_PAYMENT ) {
         sumFee = sumFee
           + "(Minimum Payment: " + currencyCAD.format(MIN_MONTHLY_PAYMENT) + ")";
       }
@@ -157,13 +158,13 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "",
         "",
         "",
-        "CO Fee",
+        "Total Fee",
+        "",
+        "",
         "",
         "",
         StringEscapeUtils.escapeCsv(sumFee),
         currencyCAD.getId(),
-        "",
-        "",
         ""
       );
 
