@@ -58,6 +58,15 @@ foam.CLASS({
   
   properties: [
     {
+      name: 'name',
+      label: 'Bank account name',
+      validateObj: function(name) {
+        if ( name == '' ) {
+          return 'Please enter a Bank account name.';
+        }
+      },
+    },
+    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',

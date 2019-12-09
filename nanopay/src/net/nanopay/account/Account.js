@@ -126,7 +126,7 @@ foam.CLASS({
       permissionRequired: true,
       order: 3
     },
-    { 
+    {
       name: 'balanceDetails',
       permissionRequired: true,
       order: 4

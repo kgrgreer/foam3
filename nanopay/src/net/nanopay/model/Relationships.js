@@ -289,7 +289,7 @@ foam.RELATIONSHIP({
   inverseName: 'associateTransaction',
   sourceProperty: {
     visibility: 'FINAL',
-    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } 
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
     visibility: 'FINAL',
@@ -959,4 +959,15 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'assetClassDAO',
   targetDAOKey: 'securitiesDAO',
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.TransactionEvent',
+  forwardName: 'transactionEvents',
+  inverseName: 'transaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'transactionEventDAO',
 });
