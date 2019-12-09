@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'MicroDepositSent',
 
-  documentation: `Send email to remind user when micro deposit from bank account verification has been processed`,
+  documentation: `Send email to user explaining that a bank account has been added and a micro deposit for the added bank account has been sent.`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -38,8 +39,16 @@ foam.CLASS({
             args.put("accountType", acc.getType());
             args.put("userEmail", user.getEmail());
             args.put("sendTo", user.getEmail());
+
             EmailMessage message = new EmailMessage.Builder(x).setTo((new String[] { user.getEmail() })).build();
-            EmailsUtility.sendEmailFromTemplate(x, user, message, "sent-verifiedBank", args);
+            Notification notification = new Notification.Builder(x)
+            .setUserId(user.getId())
+            .setEmailIsEnabled(true)
+            .setEmailName("sent-verifiedBank")
+            .setEmailArgs(args)
+            .build();
+            ((DAO) x.get("localNotificationDAO")).put(notification);
+            // user.doNotify(x, notification);
 
           }
       }, "send notification");
