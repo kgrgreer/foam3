@@ -88,7 +88,7 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'invite',
-              isEnabled: async function() {
+              isAvailable: async function() {
                 account = await self.accountDAO.find(this.bankAccount);
                 return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
               },
