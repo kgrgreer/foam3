@@ -1,4 +1,4 @@
-package net.nanopay.tx;
+package net.nanopay.meter.report;
 
 import foam.core.Currency;
 import foam.core.X;
@@ -6,6 +6,9 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
 import net.nanopay.meter.reports.AbstractReport;
+import net.nanopay.tx.BulkTransaction;
+import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.HistoricStatus;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;

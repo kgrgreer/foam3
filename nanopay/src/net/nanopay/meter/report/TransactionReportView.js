@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.meter.report',
   name: 'TransactionReportView',
   extends: 'foam.u2.Controller',
 
@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.u2.view.date.DateTimePicker',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionReport'
+    'net.nanopay.meter.report.TransactionReport'
   ],
 
   imports: [

@@ -477,7 +477,6 @@ var classes = [
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
-  'net.nanopay.tx.TransactionReport',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',
@@ -629,6 +628,7 @@ var classes = [
   // report
   'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
+  'net.nanopay.meter.report.TransactionReport',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
