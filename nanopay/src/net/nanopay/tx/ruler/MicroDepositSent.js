@@ -11,9 +11,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.Notification',
-    'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.cico.VerificationTransaction',
@@ -30,9 +28,21 @@ foam.CLASS({
            public void execute(X x) {
             VerificationTransaction txn = (VerificationTransaction) obj;
             DAO accountDAO = (DAO) x.get("accountDAO");
-            HashMap<String, Object> args = new HashMap<>();
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
+            
+            String subject = "Your bank account has been added";
+            String title = "Bank account added";
+            String infor = "Your bank account has been added to your business:";
+            String content1 = "We\’ve made a very small deposit into your bank account. The micro-deposit will take 1-3 business days to show up on your statement. The statement description for this deposit will be NANOPAY X-BORDER.";
+            String content2 = "We will notify you when the micro-deposit arrives in your account. Your bank account will remain unverified until you enter the micro-deposit amount.";
+            
+            HashMap<String, Object> args = new HashMap<>();
+            args.put("subject", subject);
+            args.put("title", title);
+            args.put("infor", infor);
+            args.put("content1", content1);
+            args.put("content2", content2);
             args.put("name", user.getFirstName());
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
@@ -40,15 +50,11 @@ foam.CLASS({
             args.put("userEmail", user.getEmail());
             args.put("sendTo", user.getEmail());
 
-            EmailMessage message = new EmailMessage.Builder(x).setTo((new String[] { user.getEmail() })).build();
             Notification notification = new Notification.Builder(x)
-            .setUserId(user.getId())
-            .setEmailIsEnabled(true)
-            .setEmailName("sent-verifiedBank")
+            .setEmailName("micro-deposit-bank-verify")
             .setEmailArgs(args)
             .build();
-            ((DAO) x.get("localNotificationDAO")).put(notification);
-            // user.doNotify(x, notification);
+            user.doNotify(x, notification);
 
           }
       }, "send notification");
