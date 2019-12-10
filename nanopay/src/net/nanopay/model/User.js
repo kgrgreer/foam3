@@ -129,13 +129,6 @@ foam.CLASS({
       section: 'administrative'
     },
     {
-      class: 'String',
-      name: 'declinedReason',
-      storageTransient: true,
-      documentation: 'The reason of the declined compliance status.',
-      section: 'administrative'
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
