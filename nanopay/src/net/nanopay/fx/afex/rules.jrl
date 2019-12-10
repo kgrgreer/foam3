@@ -151,3 +151,22 @@ p({
   "enabled":false,
   "saveHistory":true
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Add IN Currency Permission to Business",
+  "documentation":"Rule to add IN currency and strategizer Permission when a business is pushed to AFEX and AFEXBusiness is created.",
+  "priority":100,
+  "ruleGroup":"onboarding",
+  "daoKey":"afexBusinessDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.fx.AddINCurrencyPermissionRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

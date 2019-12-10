@@ -6,15 +6,17 @@ import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.json.OutputterMode;
+import foam.mlang.MLang;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.INBankAccount;
-import net.nanopay.kotak.model.paymentRequest.EnrichmentSetType;
-import net.nanopay.kotak.model.paymentRequest.Payment;
-import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
+import net.nanopay.contacts.Contact;
+import net.nanopay.kotak.model.paymentRequest.*;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.model.Business;
@@ -48,8 +50,8 @@ public class KotakPaymentProcessor implements ContextAgent {
         try {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
           kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
-          User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayeeId()));
           INBankAccount destinationBankAccount = getAccountById(x, kotakCOTxn.getDestinationAccount());
+          User payee = destinationBankAccount.findOwner(x);
 
           /**
            * Payment request Header
@@ -65,7 +67,6 @@ public class KotakPaymentProcessor implements ContextAgent {
           /**
            * Payment request instruments section
            */
-          List<net.nanopay.kotak.model.paymentRequest.InstrumentType> instruments = new ArrayList<>();
           net.nanopay.kotak.model.paymentRequest.InstrumentType requestInstrument = new net.nanopay.kotak.model.paymentRequest.InstrumentType();
           requestInstrument.setMyProdCode(credentials.getMyProdCode());
           requestInstrument.setPaymentDt(KotakUtils.getCurrentIndianDate());
@@ -74,20 +75,23 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setRecBrCd(kotakCOTxn.getIFSCCode());
           requestInstrument.setInstRefNo(paymentMessageId);
           requestInstrument.setAccountNo(credentials.getRemitterAcNo());
-          requestInstrument.setTxnAmnt((double) kotakCOTxn.getAmount());
+          requestInstrument.setTxnAmnt( ((double) kotakCOTxn.getAmount()) / 100.0);
+
+          Address payeeAdd = getAddress(payee);
 
           requestInstrument.setBeneAcctNo(destinationBankAccount.getAccountNumber());
           requestInstrument.setBeneName(getName(payee));
           requestInstrument.setBeneEmail(payee.getEmail());
           requestInstrument.setBeneMb(payee.getPhoneNumber());
-          requestInstrument.setBeneAddr1(payee.getAddress().getAddress());
+          requestInstrument.setBeneAddr1(payeeAdd.getAddress());
           requestInstrument.setCountry("IN");
-          requestInstrument.setState(payee.getAddress().getRegionId());
+          requestInstrument.setState(payeeAdd.getRegionId());
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
 
-          String remitPurpose = destinationBankAccount.getPurposeCode();
+          String remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
           String beneACType   = destinationBankAccount.getBeneAccountType();
+          String relationShip = destinationBankAccount.getAccountRelationship();
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
@@ -95,13 +99,12 @@ public class KotakPaymentProcessor implements ContextAgent {
             beneACType + "~" +
             credentials.getRemitterAddress() + "~" +
             credentials.getRemitterAcNo() + "~" +
-            remitPurpose + "~~~"});
+            remitPurpose + "~~" +
+            relationShip + "~"});
           requestInstrument.setEnrichmentSet(type);
 
-          instruments.add(requestInstrument);
-          net.nanopay.kotak.model.paymentRequest.InstrumentListType instrumentList =
-            new net.nanopay.kotak.model.paymentRequest.InstrumentListType();
-          instrumentList.setInstrument((net.nanopay.kotak.model.paymentRequest.InstrumentType[]) instruments.toArray());
+          InstrumentListType instrumentList = new InstrumentListType();
+          instrumentList.setInstrument(new InstrumentType[]{requestInstrument});
 
           /**
            * Init the request
@@ -186,4 +189,37 @@ public class KotakPaymentProcessor implements ContextAgent {
 
     return displayName;
   }
+
+  public Address getAddress(User user) {
+    Address address = null;
+
+    if ( user instanceof Contact ) {
+      address = ((Contact) user).getBusinessAddress();
+    } else {
+      address = user.getAddress();
+    }
+
+    return address;
+  }
+
+  public String getPurposeText(String purposeCode) {
+
+    switch (purposeCode) {
+      case "P0306":
+        return "PAYMENTS_FOR_TRAVEL";
+
+      case "P1306":
+        return "TAX_PAYMENTS_IN_INDIA";
+
+      case "P0011":
+        return "EMI_PAYMENTS_FOR_REPAYMENT_OF_LOANS";
+
+      case "P0103":
+        return "ADVANCE_AGAINST_EXPORTS";
+
+      default:
+        return "TRADE_TRANSACTION";
+    }
+  }
+
 }
