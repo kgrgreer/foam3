@@ -37,6 +37,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.genericrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.restrictaccountsrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.restrictusersrules"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.4b5d8b34-a3bf-487a-a451-a9e68a91df7f"}) // AggregateAccount
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.eca7cf8e-82d7-42a7-9061-26a01cce4dc7"}) // DigitalAccount
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.dfce5b83-3861-4fcd-9196-93da05f9a931"}) // ShadowAccount
 
 //======================================================================================================================
 // TODO: GRANTING GLOBAL PERMISSIONS JUST FOR TESTING WILL REMOVE LATER AFTER ROPE & GROUPS ARE IMPLEMENTED
@@ -94,7 +97,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 
 // Allowed classes for Business Rules
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.b0d7bed9-a82e-478b-a0f8-a2d1d2d2d031"}) // User
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.30c2262e-4d0b-47a4-9389-b7e6867d894a"}) // Account
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.30c2262f-4d0b-47a4-9389-b7e6867d894a"}) // Transaction
 
 // Allowed expressions for Business Rules
