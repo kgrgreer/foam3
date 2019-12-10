@@ -118,6 +118,9 @@ foam.CLASS({
       font-size: 16px;
       font-weight: bold;
     }
+    .foam-u2-layout-Grid span {
+      display: none;
+    }
   `,
 
   messages: [
