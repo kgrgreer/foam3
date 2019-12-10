@@ -103,11 +103,9 @@ public class BankAccountInstitutionDAO
     }
     fObject = fObject.fclone();
 
-    DAO branchDAO = (DAO) x.get("branchDAO");
-
     if (fObject instanceof CABankAccount) {
       CABankAccount caBankAccount = (CABankAccount) fObject;
-      Branch branch = (Branch) branchDAO.find(caBankAccount.getBranch());
+      Branch branch =  caBankAccount.findBranch(x);
       if ( branch != null ) {
         Institution institution = branch.findInstitution(x);
         if (institution != null)

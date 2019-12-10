@@ -125,12 +125,10 @@ public class BankAccountBranchDAO
     }
     fObject = fObject.fclone();
 
-    DAO branchDAO = (DAO) x.get("branchDAO");
-
     if (fObject instanceof BankAccount) {
       BankAccount bankAccount = (BankAccount) fObject;
 
-      Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
+      Branch branch = bankAccount.findBranch(x);
       if ( branch != null )
         bankAccount.setBranchId(branch.getBranchId());
 
