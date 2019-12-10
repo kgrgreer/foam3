@@ -13,7 +13,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'foam.u2.dialog.NotificationMessage'
   ],
-  
+
   documentation: `
     A configurable view to create an instance of a specified model
   `,
@@ -25,21 +25,10 @@ foam.CLASS({
       expression: function() {
         return {
           class: 'foam.u2.view.FObjectView',
-          choices: [
-              ['net.nanopay.account.AggregateAccount', 'Aggregate account'],
-              ['net.nanopay.account.DigitalAccount', 'Digital account'],
-              ['net.nanopay.account.ShadowAccount', 'Shadow account']
-          ],
+          of: 'net.nanopay.account.Account'
         };
       }
     },
-    {
-      name: 'data',
-      preSet: function(_, n) {
-        if ( n.cls_ === net.nanopay.account.Account ) return this.DigitalAccount.create();
-        return n;
-      }      
-    }
   ],
 
   actions: [
