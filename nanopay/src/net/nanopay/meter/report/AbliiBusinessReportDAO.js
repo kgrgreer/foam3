@@ -133,6 +133,7 @@ foam.CLASS({
               .setBankAccountAdded(bankAdded)
               .setDateSubmitted(onboardSubmitDate)
               .setStatus(business.getCompliance())
+              .setDeclinedReason(business.getDeclinedReason())
               .setNumOfTransaction(numOfTransaction)
               .setIp(ip)
               .setEmail(business.getEmail())
