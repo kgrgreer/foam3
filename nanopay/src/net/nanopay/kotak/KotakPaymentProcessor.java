@@ -83,7 +83,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setBeneName(getName(payee));
           requestInstrument.setBeneMb(payee.getPhoneNumber());
           requestInstrument.setBeneAddr1(payeeAdd.getAddress());
-          requestInstrument.setCountry("NET"); // this is the remitter country, it should be us.
+          requestInstrument.setCountry(credentials.getRemitterCountry()); // this is the remitter country, it should be us.
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
 
