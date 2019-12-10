@@ -6,32 +6,22 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Adds IN currency and strategizer permissions to a business when AFEXBUsiness is created.`,
+  documentation: `Adds IN currency and strategizer permissions to a business when an AFEXBUsiness is created.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'foam.util.SafetyUtil',
-    'java.util.HashMap',
-    'java.util.Map',
     'javax.security.auth.AuthPermission',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.fx.afex.AFEXBusiness',
     'net.nanopay.model.Business',
-    'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'
-
   ],
 
   methods: [
@@ -75,7 +65,7 @@ foam.CLASS({
             }
           }
         }
-      }, "Adds  IN currency and strategizer permissions to business when AFEXBUsiness is created.");
+      }, "Adds IN currency and strategizer permissions to business when an AFEXBUsiness is created.");
       `
     }
   ]

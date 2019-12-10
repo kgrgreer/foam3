@@ -6,16 +6,12 @@
 
 package net.nanopay.bank;
 
-import foam.core.Detachable;
 import foam.core.X;
 import foam.core.FObject;
 import foam.dao.*;
 
 import static foam.mlang.MLang.EQ;
 
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
-import foam.nanos.analytics.Foldable;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 
@@ -107,16 +103,17 @@ public class BankAccountInstitutionDAO
     }
     fObject = fObject.fclone();
 
-    DAO instDAO = (DAO) x.get("institutionDAO");
+    DAO branchDAO = (DAO) x.get("branchDAO");
 
     if (fObject instanceof CABankAccount) {
       CABankAccount caBankAccount = (CABankAccount) fObject;
-
-      Institution institution = (Institution) instDAO.find(caBankAccount.getInstitution());
-      if ( institution != null )
-        caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
-
-      return caBankAccount;
+      Branch branch = (Branch) branchDAO.find(caBankAccount.getBranch());
+      if ( branch != null ) {
+        Institution institution = branch.findInstitution(x);
+        if (institution != null)
+          caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
+        return caBankAccount;
+      }
     }
     return fObject;
   }

@@ -127,22 +127,14 @@ public class BankAccountBranchDAO
 
     DAO branchDAO = (DAO) x.get("branchDAO");
 
-    if (fObject instanceof CABankAccount) {
-      CABankAccount caBankAccount = (CABankAccount) fObject;
+    if (fObject instanceof BankAccount) {
+      BankAccount bankAccount = (BankAccount) fObject;
 
-      Branch branch = (Branch) branchDAO.find(caBankAccount.getBranch());
+      Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
       if ( branch != null )
-        caBankAccount.setBranchId(branch.getBranchId());
+        bankAccount.setBranchId(branch.getBranchId());
 
-      return caBankAccount;
-    } else if (fObject instanceof USBankAccount) {
-      USBankAccount usBankAccount = (USBankAccount) fObject;
-
-      Branch branch = (Branch) branchDAO.find(usBankAccount.getBranch());
-      if ( branch != null )
-        usBankAccount.setBranchId(branch.getBranchId());
-
-      return usBankAccount;
+      return bankAccount;
     }
     return fObject;
   }
