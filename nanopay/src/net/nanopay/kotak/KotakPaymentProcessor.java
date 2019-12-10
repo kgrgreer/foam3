@@ -72,7 +72,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setPaymentDt(KotakUtils.getCurrentIndianDate());
           Date sentDate = new Date();
           kotakCOTxn.setSentDate(sentDate);
-          requestInstrument.setRecBrCd(kotakCOTxn.getIFSCCode());
+          requestInstrument.setRecBrCd(destinationBankAccount.getIfscCode());
           requestInstrument.setInstRefNo(paymentMessageId);
           requestInstrument.setAccountNo(credentials.getRemitterAcNo());
           requestInstrument.setTxnAmnt( ((double) kotakCOTxn.getAmount()) / 100.0);
@@ -81,11 +81,9 @@ public class KotakPaymentProcessor implements ContextAgent {
 
           requestInstrument.setBeneAcctNo(destinationBankAccount.getAccountNumber());
           requestInstrument.setBeneName(getName(payee));
-          requestInstrument.setBeneEmail(payee.getEmail());
           requestInstrument.setBeneMb(payee.getPhoneNumber());
           requestInstrument.setBeneAddr1(payeeAdd.getAddress());
-          requestInstrument.setCountry("IN");
-          requestInstrument.setState(payeeAdd.getRegionId());
+          requestInstrument.setCountry("NET"); // this is the remitter country, it should be us.
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
 
