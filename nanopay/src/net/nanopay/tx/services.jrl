@@ -181,7 +181,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.Transaction.getOwnClassInfo())
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
