@@ -35,12 +35,14 @@ foam.CLASS({
             String title = "Micro-deposit has arrived";
             String infor = "We\’ve sent you a very small deposit to your bank account:";
             String content1 = "The statement description for this deposit will be NANOPAY. Please verify your bank account by entering the micro-deposit amount that appears on your bank statement.";
+            String action = "Verify bank account";
             
             HashMap<String, Object> args = new HashMap<>();
             args.put("subject", subject);
             args.put("title", title);
             args.put("infor", infor);
             args.put("content1", content1);
+            args.put("action", action);
             args.put("name", user.getFirstName());
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));

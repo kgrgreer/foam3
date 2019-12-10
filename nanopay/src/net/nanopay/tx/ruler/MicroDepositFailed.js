@@ -37,12 +37,14 @@ foam.CLASS({
             String title = "Bank account verification failed";
             String infor = "Your bank account verification was unsuccessful:";
             String content1 = "We were unable to send a micro-deposit to your bank account. Please confirm your account information is correct and try adding a bank account again. Your bank account details will remain confidential, as privacy is our top priority.";
+            String action = "Update banking information";
             
             HashMap<String, Object> args = new HashMap<>();
             args.put("subject", subject);
             args.put("title", title);
             args.put("infor", infor);
             args.put("content1", content1);
+            args.put("action", action);
             args.put("name", user.getFirstName());
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));

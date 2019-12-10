@@ -36,6 +36,7 @@ foam.CLASS({
             String infor = "Your bank account has been added to your business:";
             String content1 = "We\’ve made a very small deposit into your bank account. The micro-deposit will take 1-3 business days to show up on your statement. The statement description for this deposit will be NANOPAY X-BORDER.";
             String content2 = "We will notify you when the micro-deposit arrives in your account. Your bank account will remain unverified until you enter the micro-deposit amount.";
+            String action = "Go to ablii";
             
             HashMap<String, Object> args = new HashMap<>();
             args.put("subject", subject);
@@ -43,6 +44,7 @@ foam.CLASS({
             args.put("infor", infor);
             args.put("content1", content1);
             args.put("content2", content2);
+            args.put("action", action);
             args.put("name", user.getFirstName());
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
