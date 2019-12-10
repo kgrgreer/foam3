@@ -113,7 +113,7 @@ foam.CLASS({
     { name: 'PHONE_IPHONE_IMAGE', value: 'images/phone-iphone-24-px.png' },
     { name: 'SIGN_IN_IMAGE', value: 'images/sign_in_illustration.png' },
     { name: 'ERROR_ICON', value: 'images/inline-error-icon.svg' },
-    { name: 'CONTACT_EMAIL', value: 'mailto:support@nanopay.net' },
+    { name: 'CONTACT_EMAIL', value: 'mailto:support@ablii.com' },
     { name: 'ABLII_ADDRESS', value: 'https://www.ablii.com' },
   ],
 
