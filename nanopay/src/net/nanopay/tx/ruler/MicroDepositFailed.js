@@ -44,7 +44,7 @@ foam.CLASS({
             args.put("infor", infor);
             args.put("content1", content1);
             args.put("name", user.getFirstName());
-            args.put("institution",acc.getInstitutionNumber());
+            args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
             args.put("accountType", acc.getType());
             args.put("userEmail", user.getEmail());
