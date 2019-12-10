@@ -36,12 +36,12 @@ foam.CLASS({
       name: 'save',
       code: function() {
         this.data.owner = this.__subContext__.user.id;
-        this.data.enabled = false;
-        this.config.dao.put(this.data).then(o => {
+        this.data.enabled = true;
+        this.config.dao.put(this.data).then((o) => {
           this.data = o;
           this.finished.pub();
           this.stack.back();
-        }, e => {
+        }, (e) => {
           this.throwError.pub(e);
           this.add(this.NotificationMessage.create({
             message: e.message,
