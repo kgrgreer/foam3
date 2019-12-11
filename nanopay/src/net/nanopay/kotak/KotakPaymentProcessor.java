@@ -185,7 +185,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       displayName = user.getFirstName() + " " + user.getLastName();
     }
 
-    return displayName;
+    return displayName.length() > 40 ? displayName.substring(0, 40) : displayName;
   }
 
   public Address getAddress(User user) {
