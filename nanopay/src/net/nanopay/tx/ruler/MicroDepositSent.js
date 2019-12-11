@@ -31,21 +31,8 @@ foam.CLASS({
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
             
-            String subject = "Your bank account has been added";
-            String title = "Bank account added";
-            String infor = "Your bank account has been added to your business:";
-            String content1 = "We\’ve made a very small deposit into your bank account. The micro-deposit will take 1-3 business days to show up on your statement. The statement description for this deposit will be NANOPAY X-BORDER.";
-            String content2 = "We will notify you when the micro-deposit arrives in your account. Your bank account will remain unverified until you enter the micro-deposit amount.";
-            String action = "Go to ablii";
-            
             HashMap<String, Object> args = new HashMap<>();
-            args.put("subject", subject);
-            args.put("title", title);
-            args.put("infor", infor);
-            args.put("content1", content1);
-            args.put("content2", content2);
-            args.put("action", action);
-            args.put("name", user.getFirstName());
+            args.put("name", User.FIRST_NAME);
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
             args.put("accountType", acc.getType());
@@ -53,7 +40,9 @@ foam.CLASS({
             args.put("sendTo", user.getEmail());
 
             Notification notification = new Notification.Builder(x)
-            .setEmailName("micro-deposit-bank-verify")
+            .setBody(acc.getAccountNumber() + " is processing ")
+            .setNotificationType("bankNotifications")
+            .setEmailName("micro-deposit-sent")
             .setEmailArgs(args)
             .build();
             user.doNotify(x, notification);

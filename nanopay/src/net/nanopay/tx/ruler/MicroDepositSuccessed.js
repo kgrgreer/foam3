@@ -31,19 +31,8 @@ foam.CLASS({
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
             
-            String subject = "Your micro deposit has completed";
-            String title = "Micro-deposit has arrived";
-            String infor = "We\’ve sent you a very small deposit to your bank account:";
-            String content1 = "The statement description for this deposit will be NANOPAY. Please verify your bank account by entering the micro-deposit amount that appears on your bank statement.";
-            String action = "Verify bank account";
-            
             HashMap<String, Object> args = new HashMap<>();
-            args.put("subject", subject);
-            args.put("title", title);
-            args.put("infor", infor);
-            args.put("content1", content1);
-            args.put("action", action);
-            args.put("name", user.getFirstName());
+            args.put("name", User.FIRST_NAME);
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
             args.put("accountType", acc.getType());
@@ -51,7 +40,9 @@ foam.CLASS({
             args.put("sendTo", user.getEmail());
 
             Notification notification = new Notification.Builder(x)
-            .setEmailName("micro-deposit-bank-verify")
+            .setBody(acc.getAccountNumber() + "micro deposit has been verified")
+            .setNotificationType("bankNotifications")
+            .setEmailName("micro-deposit-successed")
             .setEmailArgs(args)
             .build();
             user.doNotify(x, notification);

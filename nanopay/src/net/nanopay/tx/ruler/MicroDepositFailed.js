@@ -33,19 +33,8 @@ foam.CLASS({
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
             
-            String subject = "Your bank account verification has failed";
-            String title = "Bank account verification failed";
-            String infor = "Your bank account verification was unsuccessful:";
-            String content1 = "We were unable to send a micro-deposit to your bank account. Please confirm your account information is correct and try adding a bank account again. Your bank account details will remain confidential, as privacy is our top priority.";
-            String action = "Update banking information";
-            
             HashMap<String, Object> args = new HashMap<>();
-            args.put("subject", subject);
-            args.put("title", title);
-            args.put("infor", infor);
-            args.put("content1", content1);
-            args.put("action", action);
-            args.put("name", user.getFirstName());
+            args.put("name", User.FIRST_NAME);
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
             args.put("accountType", acc.getType());
@@ -53,7 +42,9 @@ foam.CLASS({
             args.put("sendTo", user.getEmail());
 
             Notification notification = new Notification.Builder(x)
-            .setEmailName("micro-deposit-bank-verify")
+            .setBody(acc.getAccountNumber() + " verification failed!")
+            .setNotificationType("bankNotifications")
+            .setEmailName("micro-deposit-failed")
             .setEmailArgs(args)
             .build();
             user.doNotify(x, notification);
