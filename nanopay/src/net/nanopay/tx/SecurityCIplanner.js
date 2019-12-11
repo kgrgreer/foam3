@@ -11,11 +11,13 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.SecuritiesAccount',
     'net.nanopay.account.SecuritiesTrustAccount',
-        'net.nanopay.account.BrokerAccount',
+    'net.nanopay.account.BrokerAccount',
     'java.util.List',
     'java.util.ArrayList',
     'foam.dao.DAO',
-
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
 
@@ -24,16 +26,19 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         TransactionQuote txq = (TransactionQuote) obj;
+        Transaction tx = txq.getRequestTransaction();
         // --> Probably not needed.   Transaction tx = txq.getRequestTransaction();
-
-
-        if ( txq.getSourceAccount() instanceof brokerAccount ) { // cashin
+        agency.submit(x, new ContextAgent() {
+                            @Override
+                            public void execute(X x) {
+        System.out.println("should be able to see this, inside securityCI action");
+        if ( txq.getSourceAccount() instanceof BrokerAccount ) { // cashin
         // -- do this better..
           SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
-
+          plan.copyFrom(tx);
           DAO accountDAO = (DAO) x.get("accountDAO");
-          Account secTrust = accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount));
-
+          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount.class));
+          plan.setName("Security CI of "+txq.getSourceUnit());
           plan.setSourceCurrency(txq.getSourceUnit());
           plan.setDestinationCurrency(txq.getDestinationUnit());
 
@@ -41,36 +46,46 @@ foam.CLASS({
           plan.setDestinationAccount(txq.getDestinationAccount().getId());
 
         //--
-          plan.setTransfers(createTransfers_(getX(), plan,
-            ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
-            secTrust.getId(), true)
-          );
-          plan.setIsQuoted(true);
-          txq.addPlan(plan);
-        }
 
-        else if ( txq.getDestinationAccount() instanceof brokerAccount ) { //cashout
-
-        // -- do this better..
-          SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
-
-          DAO accountDAO = (DAO) x.get("accountDAO");
-          Account secTrust = accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount));
-
-          plan.setSourceCurrency(txq.getSourceUnit());
-          plan.setDestinationCurrency(txq.getDestinationUnit());
-
-          plan.setSourceAccount(txq.getSourceAccount().getId());
-          plan.setDestinationAccount(txq.getDestinationAccount().getId());
-
-        //--
-          plan.setTransfers(createTransfers_(getX(), plan,
+          plan.setTransfers(createTransfers_(x, plan,
             ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId(),
-            secTrust.getId(), false)
+            secTrust.getSecurityAccount(x,txq.getDestinationUnit()).getId(), true)
           );
           plan.setIsQuoted(true);
-          txq.addPlan(plan);
+          System.out.println("should be able to see this, made CI");
+          txq.setPlan(plan);
         }
+
+
+        else if ( txq.getDestinationAccount() instanceof BrokerAccount ) { //cashout
+
+        // -- do this better..
+          SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+          plan.copyFrom(tx);
+          DAO accountDAO = (DAO) x.get("accountDAO");
+          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount.class));
+
+          plan.setSourceCurrency(txq.getSourceUnit());
+          plan.setDestinationCurrency(txq.getDestinationUnit());
+          plan.setName("Security CO of "+txq.getSourceUnit());
+          plan.setSourceAccount(txq.getSourceAccount().getId());
+          plan.setDestinationAccount(txq.getDestinationAccount().getId());
+
+        //--
+
+
+
+          plan.setTransfers(createTransfers_(x, plan,
+            ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
+            secTrust.getSecurityAccount(x,txq.getSourceUnit()).getId(), false)
+          );
+          plan.setIsQuoted(true);
+          txq.setPlan(plan);
+          }
+          }
+
+
+        }, "Security CICO Planner");
 
       `
     },
@@ -111,13 +126,13 @@ foam.CLASS({
         }
 
         if (ci) {
-          all.add(new Transfer.Builder(x).setAccount(transferTrust).setAmount(-newPlan.getTotal()).build());
-          all.add(new Transfer.Builder(x).setAccount(transferAcct).setAmount(newPlan.getTotal()).build());
+          all.add(new Transfer.Builder(x).setAccount(transferTrust).setAmount(-newPlan.getAmount()).build());
+          all.add(new Transfer.Builder(x).setAccount(transferAcct).setAmount(newPlan.getAmount()).build());
         }
 
         else {
-          all.add(new Transfer.Builder(x).setAccount(transferTrust).setAmount(newPlan.getTotal()).build());
-          all.add(new Transfer.Builder(x).setAccount(transferAcct).setAmount(-newPlan.getTotal()).build());
+          all.add(new Transfer.Builder(x).setAccount(transferTrust).setAmount(newPlan.getAmount()).build());
+          all.add(new Transfer.Builder(x).setAccount(transferAcct).setAmount(-newPlan.getAmount()).build());
         }
 
         return (Transfer[]) all.toArray(new Transfer[0]);

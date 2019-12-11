@@ -1248,6 +1248,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/ProgressBarData' },
   { name: 'net/nanopay/tx/gs/GSFileUploadScreen' },
   { name: 'net/nanopay/script/CsvUploadScript' },
+  { name: 'net/nanopay/tx/QuoteFillerDAO' },
 
   // grain discovery
   { name: 'net/nanopay/tx/TransactionReport' },

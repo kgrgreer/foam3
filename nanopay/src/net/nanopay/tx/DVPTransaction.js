@@ -27,6 +27,11 @@ foam.CLASS({
       class: 'String',
       name: 'paymentDenomination',
       required: true
+    },
+    {
+      class: 'Long',
+      name: 'paymentAmount',
+      required: true
     }
   ]
 });

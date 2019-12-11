@@ -24,7 +24,7 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-    public DigitalTransactionPlanDAO(X x, DAO delegate) {
+    public SecurityPlanDAO(X x, DAO delegate) {
       setX(x);
       setDelegate(delegate);
       System.err.println("Direct constructor use is deprecated. Use Builder instead.");
@@ -40,11 +40,11 @@ foam.CLASS({
       javaCode: `
 
     TransactionQuote quote = (TransactionQuote) obj;
-    quote = ((DAO) x.get("securityPlannerDAO")).put(quote);
-
+    DAO d = ((DAO) x.get("securityPlannerDAO"));
+    quote = (TransactionQuote) d.put(quote);
+    System.out.println("did some security stuff, "+ quote.getPlan());
     if ( quote.getPlan() != null )
       return quote;
-
     return super.put_(x, quote);
     `
     }

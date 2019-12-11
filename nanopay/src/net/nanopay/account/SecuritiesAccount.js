@@ -113,9 +113,8 @@ foam.CLASS({
       ],
 
       javaCode: `
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        SecurityAccount sa = (SecurityAccount) accountDAO.where(EQ(
-          SecurityAccount.SECURITIES_ACCOUNT, getId())).find(EQ(
+        DAO accountDAO = (DAO) this.getSubAccounts(x);
+        SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
         if (sa == null || sa.getId() == 0)
           return createSecurityAccount_(x,unit);
@@ -140,7 +139,7 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.setName(unit+ " subAccount for "+this.getId());
+        sa.setName(unit+ " subAccount for "+getId());
         sa.setSecuritiesAccount(this.getId());
         DAO accountDAO = (DAO) x.get("accountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);

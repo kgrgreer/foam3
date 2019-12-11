@@ -13,10 +13,12 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
+    'net.nanopay.tx.DVPTransaction',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
+    'net.nanopay.account.BrokerAccount',
     'foam.dao.MDAO',
     'foam.dao.DAO',
     'foam.dao.EasyDAO',
@@ -27,7 +29,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.fx.ExchangeRate',
-    'net.nanopay.tx.gs.ProgressBarData'
+    'net.nanopay.tx.gs.ProgressBarData',
+    'net.nanopay.exchangeable.Security'
   ],
 
   properties: [
@@ -120,25 +123,41 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         Transaction t = new Transaction();
-
+        // find the send/receiver.
         GsTxCsvRow sourceRow = row2;
         GsTxCsvRow destRow = row1;
         if ( row1.getCashUSD() < row2.getCashUSD() ) {
           sourceRow = row1;
           destRow = row2;
         }
-        
-        t.setSourceAccount(findAcc(x,sourceRow));
-        t.setDestinationAccount(findAcc(x,destRow));
-        t.setSourceCurrency(sourceRow.getCurrency());
-        t.setDestinationCurrency(destRow.getCurrency());
+
         if (isCash(sourceRow)) {
-          t.setAmount((long) Math.abs(sourceRow.getCashQty()));
+          t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
+          t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
+          t.setSourceCurrency(sourceRow.getCurrency());
+          t.setDestinationCurrency(destRow.getCurrency());
+
+          t.setAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
           t.setDestinationAmount((long) Math.abs(destRow.getCashQty()));
         }
-        else {
-          t.setAmount((long) Math.abs(sourceRow.getMarketValueLocal()));
-          t.setDestinationAmount((long) Math.abs(destRow.getMarketValueLocal()));
+
+        else { // securities
+        verifySecurity(x,sourceRow.getProductId());
+          if(isDVP(sourceRow)){
+            DVPTransaction tx = new DVPTransaction();
+            tx.setSourcePaymentAccount(findAcc(x,destRow,true));
+            tx.setDestinationPaymentAccount(findAcc(x,sourceRow,true));
+            tx.setPaymentDenomination(sourceRow.getCurrency());
+            tx.setPaymentAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
+            t = tx;
+            System.out.println("ham.. have DVP");
+          }
+          t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
+          t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
+          t.setSourceCurrency(sourceRow.getProductId());
+          t.setDestinationCurrency(destRow.getProductId());
+          t.setAmount(toLong(x,sourceRow.getProductId(),sourceRow.getSecQty()));
+          t.setDestinationAmount((long) Math.abs(destRow.getSecQty()));
         }
         t = assembleIFLs(t,sourceRow,destRow);
 
@@ -157,38 +176,69 @@ foam.CLASS({
       javaCode: `
       DAO accountDAO = (DAO) x.get("localAccountDAO");
         Transaction t = new Transaction();
-        t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
         if ( row1.getCashUSD() < 0 ){
           //sending
-          t.setSourceAccount(findAcc(x,row1));
-          t.setDestinationAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
-          t.setSourceCurrency(row1.getCurrency());
-          t.setDestinationCurrency("USD");
           if(isCash(row1)) {
-            t.setAmount((long) Math.abs(row1.getCashQty()));
+            t.setSourceAccount(findAcc(x,row1,isCash(row1)));
+            t.setDestinationAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
+            t.setSourceCurrency(row1.getCurrency());
+            t.setDestinationCurrency("USD");
+            t.setAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
             t.setDestinationAmount((long) Math.abs(row1.getCashUSD()));
           }
           else {
-            t.setAmount((long) Math.abs(row1.getMarketValueLocal()));
-            t.setDestinationAmount((long) Math.abs(row1.getMarketValue()));
+            verifySecurity(x,row1.getProductId());
+            if( isDVP(row1) ) {
+
+              DVPTransaction tx = new DVPTransaction();
+              tx.setPaymentAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
+              tx.setPaymentDenomination(row1.getMarketValueCCy());
+              tx.setDestinationPaymentAccount(findAcc(x,row1,true)); // get the cash version of this account
+              tx.setSourcePaymentAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
+              t = tx;
+              // add cash peice
+              }
+
+            t.setSourceAccount(findAcc(x,row1,isCash(row1)));
+            t.setDestinationAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setSourceCurrency(row1.getProductId());
+            t.setDestinationCurrency(t.getSourceCurrency());
+            t.setAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
+            t.setDestinationAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
           }
         }
         else {
           //receiving
-          t.setSourceAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
-          t.setDestinationAccount(findAcc(x,row1));
-          t.setSourceCurrency("USD");
-          t.setDestinationCurrency(row1.getCurrency());
           if(isCash(row1)) {
-            t.setAmount((long) Math.abs(row1.getCashUSD()));
-            t.setDestinationAmount((long) Math.abs(row1.getCashQty()));
+            t.setSourceAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
+            t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
+            t.setSourceCurrency("USD");
+            t.setDestinationCurrency(row1.getCurrency());
+            t.setAmount(toLong(x,"USD",row1.getCashUSD()));
+            t.setDestinationAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
           }
           else {
-            t.setAmount((long) Math.abs(row1.getMarketValue()));
-            t.setDestinationAmount((long) Math.abs(row1.getMarketValueLocal()));
+          verifySecurity(x,row1.getProductId());
+            if( isDVP(row1) ) {
+              DVPTransaction tx = new DVPTransaction();
+              tx.setSourcePaymentAccount(findAcc(x,row1,true)); //se me
+              tx.setDestinationPaymentAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId()); //yep
+              tx.setPaymentAmount(toLong(x,row1.getMarketValueCCy(),row1.getCashQty()));
+              tx.setPaymentDenomination(row1.getMarketValueCCy());
+              t = tx;
+              // add cash peice
+            }
+
+            t.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
+            t.setDestinationCurrency(row1.getProductId());
+            t.setSourceCurrency(t.getDestinationCurrency());
+            t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
+            t.setDestinationAmount(t.getAmount());
           }
         }
-        t = assembleIFLs(t,row1,row1);
+          t = assembleIFLs(t,row1,row1);
+          t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
 
         return t;
       `
@@ -197,7 +247,7 @@ foam.CLASS({
     {
       name: 'isCash',
       args: [
-      { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'}
+        { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'}
       ],
       type: 'Boolean',
       javaCode: `
@@ -206,21 +256,37 @@ foam.CLASS({
         return false;
       `
     },
-
+    {
+      name: 'isDVP',
+      args: [
+        { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'}
+      ],
+      type: 'Boolean',
+      javaCode: `
+        if ( SafetyUtil.equals(row.getSettleType(),"DVP") )
+          return true;
+        return false;
+      `
+    },
     {
       name: 'findAcc',
       args: [
         { name: 'x', type: 'foam.core.X'},
-        { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'}
+        { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'},
+        { name: 'cash', type: 'Boolean'}
       ],
       type: 'long',
       javaCode: `
       DAO accountDAO = ((DAO) x.get("localAccountDAO"));
       String type = "SECURITIES";
-      if (SafetyUtil.equals("Cash",row.getSettleType())){
+      String name;
+      if (cash){
         type = "CASH";
+        name = row.getCompany()+" "+type+" ("+row.getCurrency()+")";
       }
-      String name = row.getCompany()+" "+type+" ("+row.getCurrency()+")";
+      else
+        name = row.getCompany()+" ("+type+")";
+
       Account a = (Account) (accountDAO.find(MLang.EQ(Account.NAME, name)));
       if (a == null){
         System.out.println("Missing account: "+name+"  ... creating...");
@@ -249,6 +315,32 @@ foam.CLASS({
 
         Account source = txn.findSourceAccount(x);
         Account b = null;
+        if ( txn instanceof DVPTransaction ) {
+          System.out.println("have a DVP transaction cheese");
+          Transaction txn2 = new Transaction();
+          txn2.setDestinationAccount(((DVPTransaction) txn).getDestinationPaymentAccount());
+          txn2.setSourceAccount(((DVPTransaction) txn).getSourcePaymentAccount());
+          txn2.setAmount(((DVPTransaction) txn).getPaymentAmount());
+          txn2.setDestinationCurrency(((DVPTransaction) txn).getPaymentDenomination());
+          txn2.setSourceCurrency(((DVPTransaction) txn).getPaymentDenomination());
+          verifyBalance(x,txn2);
+        }
+
+        if ( ((DAO) x.get("currencyDAO")).find(txn.getSourceCurrency()) == null ) {
+
+          long remainder = (long) source.findBalance(x) - txn.getAmount(); // is this the correct account ?
+          if ( remainder < 0 ) {
+            Transaction secCI = new Transaction();
+            secCI.setAmount(Math.abs(remainder));
+            secCI.setDestinationAccount(source.getId());
+            secCI.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            secCI.setSourceCurrency(txn.getSourceCurrency());
+            secCI.setDestinationCurrency(txn.getSourceCurrency());
+            transactionDAO.put(secCI); // top up the sending security account
+          }
+          return true;
+        }
+
         if(! (source instanceof net.nanopay.account.ShadowAccount) ){
             b = (Account) accountDAO.find(MLang.EQ(Account.NAME,((source.getName()).substring(0,4)+" Shadow Account")));
         }
@@ -349,6 +441,8 @@ foam.CLASS({
       ],
       javaCode: `
          DAO accountDAO = ((DAO) x.get("localAccountDAO"));
+
+         if( ((DAO) x.get("currencyDAO")).find(txn.getSourceCurrency()) == null ) return;
           TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
           //BankAccount sourceBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Bank Account"));
           if(sourceTrust == null){
@@ -394,6 +488,22 @@ foam.CLASS({
 
     },
     {
+      name: 'verifySecurity',
+      args: [
+        { name: 'x', type: 'foam.core.X'},
+        { name: 'security', type: 'String'},
+      ],
+      javaCode: `
+        DAO secDAO = (DAO) x.get("securitiesDAO");
+        if (secDAO.find(security) != null ) return;
+        Security newSec = new Security();
+        newSec.setName("Security: "+ security); // concurrency issue maybe
+        newSec.setId(security);
+        secDAO.put(newSec);
+      `
+    },
+
+    {
       name: 'createInfoLineItem',
       args: [
         { name: 'title', type: 'String'},
@@ -430,6 +540,23 @@ foam.CLASS({
           System.out.println("cant parse: "+ts);
         }
         return 0;
+      `
+    },
+    {
+      name: 'toLong',
+      args: [
+        { name: 'x', type: 'foam.core.X'},
+        { name: 'curr', type: 'String'},
+        { name: 'amount', type: 'Double'}
+      ],
+      type: 'Long',
+      javaCode: `
+        foam.core.Currency cur = (foam.core.Currency) ((DAO) x.get("currencyDAO")).find(curr);
+        if ( cur != null ) {
+          long precision = cur.getPrecision();
+          return (long) (Math.floor(amount * (10^precision)));
+        }
+        return (long) (Math.floor(amount));
       `
     }
   ]

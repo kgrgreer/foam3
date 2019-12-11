@@ -869,12 +869,12 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
-        throw new RuntimeException("Source currency is not supported");
+      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getSourceCurrency()) == null) { //TODO switch to just unitDAO
+        throw new RuntimeException("Source denomination is not supported");
       }
 
-      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null ) {
-        throw new RuntimeException("Destination currency is not supported");
+      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getDestinationCurrency()) == null ) { //TODO switch to just unitDAO
+        throw new RuntimeException("Destination denomination is not supported");
       }
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());

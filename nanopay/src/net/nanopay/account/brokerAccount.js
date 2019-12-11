@@ -6,5 +6,5 @@ foam.CLASS({
   documentation: 'The account to ingest securities from. model of what a broker holding securities for nanopay.',
 
 
-  ]
+
 });

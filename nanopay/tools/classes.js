@@ -840,6 +840,7 @@ var classes = [
   'net.nanopay.tx.gs.GsRowToTx',
   'net.nanopay.script.CsvUploadScript',
   'net.nanopay.tx.gs.GsTxAssembly',
+  'net.nanopay.tx.QuoteFillerDAO',
 
   // Ticket
   'net.nanopay.ticket.SudoTicket',

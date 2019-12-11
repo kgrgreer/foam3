@@ -65,7 +65,7 @@ foam.CLASS({
         pbd.setStatus("Parsing Transaction: 0 of " + am);
         pbdDAO.put(pbd);
 
-        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
+        SyncAssemblyLine transactionProcessor = new SyncAssemblyLine();
 
         List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
            .select(new ArraySink())).getArray();

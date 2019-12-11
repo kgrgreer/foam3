@@ -176,41 +176,6 @@ p({
     dao = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
       .setDelegate(null)
       .build();
-    dao = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build(); 
-    dao = new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.KotakTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
-      .setEnabled(false).setDelegate(dao)
-      .build();
-    dao = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
-      .setEnabled(false)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
-      .setEnabled(true)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.NanopayFXTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.CompliancePlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
     dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
       .setDelegate(dao)
       .build();
@@ -221,25 +186,11 @@ p({
       .setDelegate(dao)
       .build();
     dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
-    dao = new net.nanopay.tx.RetailTransactionPlanDAO(x, dao);
-    dao = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
     dao = new net.nanopay.tx.SecurityPlanDAO(x, dao);
-    dao = new net.nanopay.tx.DebtablePlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
-    dao = new net.nanopay.tx.LoanTransactionPlanDAO(x,dao);
-    dao = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x)
+    dao = new net.nanopay.tx.QuoteFillerDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.PayerTransactionDAO.Builder(x)
-      .setDelegate(dao)
-      .build(); 
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())

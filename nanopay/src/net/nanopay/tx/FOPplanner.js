@@ -6,10 +6,13 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.SecurityTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.SecuritiesAccount',
+    'net.nanopay.account.BrokerAccount',
     'java.util.List',
     'java.util.ArrayList'
   ],
@@ -20,23 +23,34 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         TransactionQuote txq = (TransactionQuote) obj;
-        // --> Probably not needed.   Transaction tx = txq.getRequestTransaction();
-        SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+                agency.submit(x, new ContextAgent() {
+                                    @Override
+                                    public void execute(X x) {
+          Transaction tx = txq.getRequestTransaction();
+          if ( (! ( txq.getSourceAccount() instanceof BrokerAccount ) ) && (! (txq.getDestinationAccount() instanceof BrokerAccount ) ) ) {
+            SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+            plan.copyFrom(tx);
+            plan.setSourceCurrency(txq.getSourceUnit());
+            plan.setDestinationCurrency(txq.getDestinationUnit());
 
-        plan.setSourceCurrency(txq.getSourceUnit());
-        plan.setDestinationCurrency(txq.getDestinationUnit());
+            plan.setAmount(tx.getAmount());
+            plan.setDestinationAmount(tx.getAmount());
 
-        plan.setSourceAccount(txq.getSourceAccount().getId()); //TODO add the security so we know which account to actually get.
-        plan.setDestinationAccount(txq.getDestinationAccount().getId());
+            plan.setSourceAccount(txq.getSourceAccount().getId());
+            plan.setDestinationAccount(txq.getDestinationAccount().getId());
 
-        plan.setIsQuoted(true);
-        plan.setTransfers(
-          createTransfers_(getX(), plan,
-          ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
-          ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
-        ));
 
-        txq.addPlan(plan);
+            plan.setIsQuoted(true);
+            plan.setTransfers(
+              createTransfers_(x, plan,
+              ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
+              ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
+            ));
+
+            txq.setPlan(plan);
+          }
+        }}, "FOP Security Planner");
+
       `
     },
     {
@@ -70,9 +84,8 @@ foam.CLASS({
             all.add(transfers[j]);
           }
         }
-        all.add(new Transfer.Builder(x).setAccount(transferFrom).setAmount(-newPlan.getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(transferTo).setAmount(newPlan.getTotal()).build());
-        if (newPlan.findSourceAccount(x) instanceof BrokerAccount )
+        all.add(new Transfer.Builder(x).setAccount(transferFrom).setAmount(-newPlan.getAmount()).build());
+        all.add(new Transfer.Builder(x).setAccount(transferTo).setAmount(newPlan.getAmount()).build());
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
