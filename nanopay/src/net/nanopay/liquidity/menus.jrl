@@ -95,3 +95,25 @@ p({
   "order":330,
   "parent": "liquid.rules"
 })
+
+// Move the Email menu to admin
+p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessage","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"emailMessageDAO"},"order":1000,"parent":"admin"})
+
+// Remove unnecessary menu items
+r({"class":"foam.nanos.menu.Menu","id":"sme"})
+r({"class":"foam.nanos.menu.Menu","id":"operation"})
+r({"class":"foam.nanos.menu.Menu","id":"report"})
+r({"class":"foam.nanos.menu.Menu","id":"tickets"})
+
+r({"class":"foam.nanos.menu.Menu","id":"connect"})
+r({"class":"foam.nanos.menu.Menu","id":"alterna-eft"})
+r({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBusinesses"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBeneficiaries"})
+r({"class":"foam.nanos.menu.Menu","id":"account-balance"})
+
+// Remove unnecessary right menu items
+r({"class":"foam.nanos.menu.Menu","id":"set-bus"})
+r({"class":"foam.nanos.menu.Menu","id":"set-bank"})
+r({"class":"foam.nanos.menu.Menu","id":"set-multi-user"})
+r({"class":"foam.nanos.menu.Menu","id":"set-integrate"})

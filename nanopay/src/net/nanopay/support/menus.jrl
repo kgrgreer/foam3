@@ -19,7 +19,7 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.dig","label":"DIG","handler":{"class
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "doc.dug",
-  "label": "DUGs",
+  "label": "DUG",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
