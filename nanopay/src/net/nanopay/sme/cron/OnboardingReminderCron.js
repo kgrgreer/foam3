@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.cron',
   name: 'OnboardingReminderCron',
+
   implements: [
     'foam.core.ContextAgent'
   ],
@@ -12,6 +13,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.mlang.sink.Count',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -21,6 +24,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'static foam.mlang.MLang.*'
   ],
+
   documentation: 'Send onboarding reminder email to businesses created over 24 hours ago without yet completing their onboarding or setting up their bank account',
 
   methods: [
@@ -55,48 +59,44 @@ foam.CLASS({
         )
         ).select(new ArraySink())).getArray();
 
-      for(Business business: businessCreatedOverOneDay) {
-        //check if business has a verfied bank account set up
-        boolean verfiedBankAccount = false;
-        List<BankAccount> accounts = ( (ArraySink) business.getAccounts(x).where(
-          INSTANCE_OF(BankAccount.class)
-        ).select(new ArraySink())).getArray();
+      for( Business business: businessCreatedOverOneDay ) {
+        // check if business has a verified bank account set up
+        Count accounts = (Count) business.getAccounts(x).where(
+            AND(
+              INSTANCE_OF(BankAccount.class),
+              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+            )).select(new Count());
 
-        for(BankAccount account: accounts){
-          if(BankAccountStatus.VERIFIED.equals(account.getStatus())){
-            verfiedBankAccount = true;
-            break;
-          }
-        }
-        if(!business.getOnboarded() || !verfiedBankAccount){
-          //send onboarding reminder email
+        boolean verfiedBankAccount = accounts.getValue() > 0;
+
+        if( ! business.getOnboarded() || ! verfiedBankAccount ){
+          // send onboarding reminder email
           args = new HashMap<>();
           try {
             String recepientFirstName = business.getOnboarded() ?
-              business.findSigningOfficer(x).getFirstName() :
-              business.label();
+                business.findSigningOfficer(x).getFirstName() :
+                business.label();
 
             args.put("name", recepientFirstName);
             args.put("business", business.getBusinessName());
-            args.put("sendTo", business.getEmail());
             args.put(
-              "businessRegistrationLink",
-              "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/983084"
+                "businessRegistrationLink",
+                "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/983084"
             );
             args.put(
-              "bankAccountSetupLink",
-              "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
+                "bankAccountSetupLink",
+                "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
             );
 
             Notification onboardingReminderNotification = new Notification.Builder(x)
-            .setBody("Complete Business Regeistration on Ablii")
-            .setNotificationType("OnboardingReminder")
-            .setGroupId(group.toString())
-            .setEmailIsEnabled(true)
-            .setEmailArgs(args)
-            .setUserId(business.getId())
-            .setEmailName("onboarding-reminder")
-            .build();
+                .setBody("Complete Business Regeistration on Ablii")
+                .setNotificationType("OnboardingReminder")
+                .setGroupId(group.toString())
+                .setEmailIsEnabled(true)
+                .setEmailArgs(args)
+                .setUserId(business.getId())
+                .setEmailName("onboarding-reminder")
+                .build();
 
             business.doNotify(x, onboardingReminderNotification);
 
