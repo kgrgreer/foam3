@@ -74,29 +74,29 @@ foam.CLASS({
           args = new HashMap<>();
           try {
             String recepientFirstName = business.getOnboarded() ?
-                business.findSigningOfficer(x).getFirstName() :
-                business.label();
+              business.findSigningOfficer(x).getFirstName() :
+              business.label();
 
             args.put("name", recepientFirstName);
             args.put("business", business.getBusinessName());
             args.put(
-                "businessRegistrationLink",
-                "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/983084"
+              "businessRegistrationLink",
+              "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/983084"
             );
             args.put(
-                "bankAccountSetupLink",
-                "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
+              "bankAccountSetupLink",
+              "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
             );
 
             Notification onboardingReminderNotification = new Notification.Builder(x)
-                .setBody("Complete Business Regeistration on Ablii")
-                .setNotificationType("OnboardingReminder")
-                .setGroupId(group.toString())
-                .setEmailIsEnabled(true)
-                .setEmailArgs(args)
-                .setUserId(business.getId())
-                .setEmailName("onboarding-reminder")
-                .build();
+              .setBody("Complete Business Regeistration on Ablii")
+              .setNotificationType("OnboardingReminder")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setUserId(business.getId())
+              .setEmailName("onboarding-reminder")
+              .build();
 
             business.doNotify(x, onboardingReminderNotification);
 
