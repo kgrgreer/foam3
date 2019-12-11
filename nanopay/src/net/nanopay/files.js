@@ -838,6 +838,10 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
 

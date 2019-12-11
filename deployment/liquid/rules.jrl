@@ -79,7 +79,24 @@ p({
   "saveHistory": true
 })
 
-// Business rules
+// Transaction limit business rule example for 200,000.00 EUR
+p({
+  "class":"net.nanopay.liquidity.tx.TxLimitRule",
+  "id":"GS09 Securities EUR $200,000 Account Limit",
+  "applyLimitTo":1,
+  "accountToLimit":1651,
+  "limit":20000000,
+  "currentLimits":{},
+  "created":"2019-11-30T12:30:00.000Z",
+  "createdBy":8006,
+  "lastModified":"2019-11-30T12:30:00.000Z",
+  "lastModifiedBy":8006,
+  "enabled": false
+})
+
+
+
+// Generic business rule example
 p({
   "class":"net.nanopay.liquidity.tx.GenericBusinessRule",
   "id":"GS10 Account Tx Notification Rule",

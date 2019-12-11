@@ -317,6 +317,10 @@ var classes = [
    'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
    'net.nanopay.liquidity.tx.ExceptionRuleAction',
    'net.nanopay.liquidity.tx.GenericBusinessRule',
+   'net.nanopay.liquidity.tx.TxLimitAction',
+   'net.nanopay.liquidity.tx.TxLimitEntityType',
+   'net.nanopay.liquidity.tx.TxLimitPredicate',
+   'net.nanopay.liquidity.tx.TxLimitRule',
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
 

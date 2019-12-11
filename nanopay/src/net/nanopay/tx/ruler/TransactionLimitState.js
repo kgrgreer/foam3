@@ -34,7 +34,7 @@ foam.CLASS({
       ],
       javaCode: `
       long now   = System.currentTimeMillis();
-      long delta = now - getLastActivity();
+      long delta = getLastActivity() != 0 ? now - getLastActivity() : 0;
 
       setLastActivity(now);
       setSpent(Math.max(getSpent() - delta * limit / period.getMs(), 0));
