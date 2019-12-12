@@ -78,20 +78,12 @@ p({
   "daoKey": "localAccountDAO",
   "operation": 2,
   "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.account.BankAccount",
-        "isNew":false
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"deleted",
-        "propValue":true,
-        "isNew":false
-      }
-    ]
+    {
+      "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+      "propName":"deleted",
+      "propValue":true,
+      "isNew":false
+    }
   },
   "action": {
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"

@@ -26,6 +26,7 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
+            if ( ! ( obj instanceof BankAccount ) ) return;
             DAO          userDAO = (DAO) x.get("userDAO");
             BankAccount  account = (BankAccount) obj;
             User           owner = (User) userDAO.find(account.getOwner());
