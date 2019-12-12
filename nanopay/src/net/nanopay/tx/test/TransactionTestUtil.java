@@ -30,7 +30,7 @@ public class TransactionTestUtil {
 
   public static User setupTestUser(X x, String email, String currency, long initialAmount) {
     // Create the user
-    User user = (User) ((DAO) x.get("localUserDAO")).find(EQ(User.EMAIL, email));
+    User user = (User) ((DAO) x.get("localUserDAO")).find(EQ(User.EMAIL, email.toLowerCase()));
     if ( user == null || user.getDeleted() ) {
       user = new User();
       user.setEmail(email);
@@ -78,8 +78,12 @@ public class TransactionTestUtil {
       transaction.setSourceAccount(bankAccount.getId());
       transaction.setDestinationAccount(digitalAccount.getId());
       transaction = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, transaction).fclone();
-      transaction.setStatus(TransactionStatus.COMPLETED);
-      transaction = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
+      
+      // Only update the transaction if it isn't already complete
+      if (transaction.getStatus() != TransactionStatus.COMPLETED) {
+        transaction.setStatus(TransactionStatus.COMPLETED);
+        transaction = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
+      }
     }
 
     // Return the newly setup user
