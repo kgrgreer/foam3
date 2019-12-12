@@ -7,13 +7,14 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.User',
-    'net.nanopay.contacts.Contact',
-    'net.nanopay.bank.BankAccount',
     'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
-    'foam.core.X'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact'
   ],
 
   methods: [
@@ -25,7 +26,8 @@ foam.CLASS({
           public void execute(X x) {
             DAO userDAO = (DAO) x.get("userDAO");
             BankAccount  account = (BankAccount) super.remove_(x, obj);
-            AppConfig    config  = (AppConfig) x.get("appConfig");
+            Group       group      = owner.findGroup(x);
+            AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
             User         owner   = (User) userDAO.find(account.getOwner());
 
             if ( owner instanceof Contact ){
@@ -37,8 +39,15 @@ foam.CLASS({
             args.put("name",    User.FIRST_NAME);
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
-            Notification notification = new Notification();
-            owner.doNotify(x, notification);
+            Notification deletedNotification = new Notification.Builder(x)
+                    .setBody(account.getName() + " has been deleted.")
+                    .setNotificationType("BankNotifications")
+                    .setEmailIsEnabled(true)
+                    .setEmailArgs(args)
+                    .setEmailName("deletedBank")
+                    .build();
+
+            owner.doNotify(x, deletedNotification);
           }
         }, "Send notification to account owner when account has been deleted.");
       `
