@@ -77,19 +77,19 @@ p({
   "documentation": "Send notification to account owner when account has been deleted.",
   "daoKey": "localAccountDAO",
   "operation": 2,
-  "after": true,
   "predicate": {
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.account.BankAccount"
+        "of":"net.nanopay.account.BankAccount",
+        "isNew":false
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
         "propName":"deleted",
         "propValue":true,
-        "isNew": false
+        "isNew":false
       }
     ]
   },

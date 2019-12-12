@@ -7,8 +7,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'java.util.HashMap',
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -24,15 +26,13 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            DAO userDAO = (DAO) x.get("userDAO");
-            BankAccount  account = (BankAccount) super.remove_(x, obj);
-            Group       group      = owner.findGroup(x);
-            AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
-            User         owner   = (User) userDAO.find(account.getOwner());
+            DAO          userDAO = (DAO) x.get("userDAO");
+            BankAccount  account = (BankAccount) obj;
+            User           owner = (User) userDAO.find(account.getOwner());
+            Group          group = owner.findGroup(x);
+            AppConfig     config = group != null ? (AppConfig) group.getAppConfig(x) : null;
 
-            if ( owner instanceof Contact ){
-              return super.remove_(x, obj);
-            }
+            if ( owner instanceof Contact ) return;
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("link",    config.getUrl());
