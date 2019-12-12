@@ -8,10 +8,11 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.Group',
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -36,6 +37,7 @@ foam.CLASS({
         EmailMessage         message        = null;
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
+        Group                group          = (Group) x.get("group");
 
         // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
         Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
@@ -45,11 +47,12 @@ foam.CLASS({
 
         // Check if there was no service disruption - if so, add/sub diff from endInterval
         disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
+        Date testEndInterval = new Date(startInterval.getTime() - (1000 * 60 * 60 * 10));
         endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(
-            GTE(Business.CREATED, endInterval),
+            GTE(Business.CREATED, testEndInterval),
             LT(Business.CREATED, startInterval))
           ).select(new ArraySink())).getArray();
 
@@ -58,9 +61,21 @@ foam.CLASS({
           args           = new HashMap<>();
 
           message.setTo(new String[]{ business.getEmail() });
-          args.put("name", business.label());  
+          args.put("name", business.label());
           try {
-            EmailsUtility.sendEmailFromTemplate(x, business, message, "helpsignup", args);
+
+            Notification helpSignUpNotification = new Notification.Builder(x)
+              .setBody("Send Welcome Email After 30 Minutes")
+              .setNotificationType("WelcomeEmail")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setUserId(business.getId())
+              .setEmailName("helpsignup")
+              .build();
+
+            business.doNotify(x, helpSignUpNotification);
+
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
             sb.append("Email meant for business SignUp Error: Business ");
@@ -72,4 +87,3 @@ foam.CLASS({
     }
   ]
 });
-
