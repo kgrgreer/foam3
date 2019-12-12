@@ -31,7 +31,7 @@ p({
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id": "Set loginEnabled as false for ",
+  "id": "Set loginEnabled as false for gd spid",
   "priority": 100,
   "ruleGroup": "GD",
   "documentation": "Set loginEnabled to false for new user creation on spid gd",
@@ -45,5 +45,6 @@ p({
     "propName": "spid",
     "propValue": "gd"
   },
+  "after": false,
   "enabled": false
 })
