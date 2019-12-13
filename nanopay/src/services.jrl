@@ -791,7 +791,7 @@ p({
       .setPipelinePm(true)
       .setRuler(false)
       .setSeqNo(true)
-      .setAuthorize(true)
+      .setAuthorize(false) // FIXME
       .setValidated(true)
       .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
       .setEnableInterfaceDecorators(false)
