@@ -903,10 +903,10 @@ p({
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksService",                "serve":true,  "authenticate":false, "serviceClass":"net.nanopay.accounting.quickbooks.QuickbooksIntegrationService","boxClass":"net.nanopay.accounting.IntegrationServiceSkeleton","client":"{\"class\":\"net.nanopay.accounting.ClientIntegrationService\"}"})
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
+  "class": "foam.nanos.boot.NSpec",
   "name": "quickbooksTokenDAO",
-  "serve": true,  
-  "serviceScript": 
+  "serve": true,
+  "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -957,9 +957,9 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "accountingResultDAO",              
-  "serve": true,  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accountingResultDAO",           
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -1006,7 +1006,14 @@ p({
   "client": "{\"of\":\"net.nanopay.onboarding.model.Questionnaire\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"inviteToken",                      "serve":true,  "serviceClass":"net.nanopay.onboarding.InvitationTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "inviteToken",                     
+  "serve": true,  
+  "serviceClass": "net.nanopay.onboarding.InvitationTokenService",
+  "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
+  "client": "{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
