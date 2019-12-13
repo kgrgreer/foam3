@@ -40,6 +40,7 @@ foam.CLASS({
       `
       Map<String, Object>  args           = null;
       DAO                  businessDAO    = (DAO) x.get("businessDAO");
+      Group                group          = (Group) x.get("group");
 
       // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
       Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
