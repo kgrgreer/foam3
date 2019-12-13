@@ -16,7 +16,7 @@ p({
       .setOf(net.nanopay.fx.afex.AFEXBusiness.getOwnClassInfo())
       .setSeqNo(true)
       .setName("afexBusinessDAO")
-      .setJournalName("afexBusinessDAO")
+      .setJournalName("afexBusiness")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .build();
@@ -34,7 +34,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.fx.afex.AFEXBeneficiary.getOwnClassInfo())
       .setSeqNo(true)
-      .setName("afexBeneficiaries")
       .setJournalName("afexBeneficiaries")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
@@ -72,6 +71,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
+      .setPipelinePm(true)
       .setOf(net.nanopay.fx.FXQuote.getOwnClassInfo())
       .setJournalName("fxQuotes")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
