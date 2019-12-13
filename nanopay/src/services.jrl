@@ -1063,19 +1063,18 @@ p({
   "pm": true, 
   "serviceScript": 
   """
-    new foam.dao.EasyDAO.Builder(x)
+    return new net.nanopay.retail.AuthenticatedP2PTxnRequestDAO(x, new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setInnerDAO(hashingJDAO)
       .setSeqNo(true)
       .setDecorator(new net.nanopay.retail.P2PTxnRequestUserInfoDAO(x, 
-        new net.nanopay.retail.AuthenticatedP2PTxnRequestDAO(x, 
         new net.nanopay.retail.NewP2PTxnRequestDAO(x, 
         new net.nanopay.retail.ExistingP2PTxnRequestDAO(x, 
-        new net.nanopay.retail.P2PTxnRequestNotificationDAO(x, null))))))
+        new net.nanopay.retail.P2PTxnRequestNotificationDAO(x, null)))))
       .setJournalName("p2pTxnRequests")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setOf(net.nanopay.retail.NewP2PTxnRequestDAO.getOwnClassInfo())
-      .build()
+      .build())
   """,
   "client": "{\"of\":\"net.nanopay.retail.model.P2PTxnRequest\"}"         
 })
@@ -1120,6 +1119,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.flow.Document.getOwnClassInfo())
+      .setAuthorize(false)
       .setInnerDAO(x.get("localDocumentDAO"))
       .setReadOnly(true)
       .build();
@@ -1162,19 +1162,18 @@ p({
       .setDelegate(null)
       .build();
     dao = new net.nanopay.partners.PartnerInfoDAO(x, dao);
-    dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, \"partnerId\", \"partnerInfo\", dao);
-    dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, \"yourId\", \"yourInfo\", dao);
+    dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, "partnerId", "partnerInfo", dao);
+    dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, "yourId", "yourInfo", dao);
     dao = new foam.nanos.auth.PermissionedPropertyDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new foam.nanos.auth.AuthorizationDAO(x, dao, new foam.nanos.auth.AuthorizableAuthorizer(\"agentJunction\"));
     dao = new net.nanopay.meter.SkipNullReferencedPropertyDAO.Builder(x)
       .setProperty(foam.nanos.auth.UserUserJunction.TARGET_ID)
       .setDelegate(dao)
       .build();
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("agentJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("agentJunctions")
       .setDecorator(dao)
