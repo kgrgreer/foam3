@@ -12,7 +12,6 @@ foam.CLASS({
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
-    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.mlang.sink.Count',
     'java.util.Date',
@@ -40,7 +39,6 @@ foam.CLASS({
       `
       Map<String, Object>  args           = null;
       DAO                  businessDAO    = (DAO) x.get("businessDAO");
-      Group                group          = (Group) x.get("group");
 
       // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
       Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
@@ -85,9 +83,8 @@ foam.CLASS({
             );
 
             Notification onboardingReminderNotification = new Notification.Builder(x)
-              .setBody("Complete Business Regeistration on Ablii")
+              .setBody("Here's a reminder to complete your business registration on Ablii.")
               .setNotificationType("OnboardingReminder")
-              .setGroupId(group.toString())
               .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("onboarding-reminder")
