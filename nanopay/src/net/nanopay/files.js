@@ -224,6 +224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/KotakFxTransaction' },
   { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
   { name: 'net/nanopay/fx/GenericFXPlanDAO' },
+  { name: 'net/nanopay/fx/AddINCurrencyPermissionRule' },
 
   // mock
   { name: 'net/nanopay/fx/mock/MockFXService' },
@@ -1074,7 +1075,8 @@ FOAM_FILES([
   // report
   { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
-
+  { name: 'net/nanopay/meter/report/TransactionReport' },
+  { name: 'net/nanopay/meter/report/TransactionReportView' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1280,10 +1282,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
   { name: 'net/nanopay/script/CsvUploadScript' },
-
-  // grain discovery
-  { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },

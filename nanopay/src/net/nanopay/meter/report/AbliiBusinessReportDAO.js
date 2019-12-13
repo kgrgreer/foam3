@@ -18,6 +18,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'net.nanopay.account.Account',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.auth.LoginAttempt',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.FXSummaryTransaction',
@@ -50,6 +53,7 @@ foam.CLASS({
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
         DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
         DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");
+        DAO approvalRequestDAO      = (DAO) x.get("approvalRequestDAO");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
         businessDAO.select(new AbstractSink() {
@@ -98,6 +102,19 @@ foam.CLASS({
               );
               if ( ubo != null ) onboardSubmitDate = dateFormat.format(ubo.getLastModified());
             }
+
+            // get the reason why the business' compliance is declined
+            String declinedReason = "";
+            if ( business.getCompliance() == ComplianceStatus.FAILED ) {
+              ApprovalRequest ar = (ApprovalRequest) approvalRequestDAO.find(
+                MLang.AND(
+                  MLang.EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+                  MLang.EQ(ApprovalRequest.OBJ_ID, business.getId()),
+                  MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
+                )
+              );
+              declinedReason = ar.getMemo();
+            }
     
             // check whether the business has ever created a transaction
             Count count = (Count) transactionDAO.where(
@@ -110,7 +127,6 @@ foam.CLASS({
               )
             ).select(new Count());
             long numOfTransaction = count.getValue();
-
     
             // get the IP address of the last time any user of the business logged in
             map = new Map.Builder(x)
@@ -133,6 +149,7 @@ foam.CLASS({
               .setBankAccountAdded(bankAdded)
               .setDateSubmitted(onboardSubmitDate)
               .setStatus(business.getCompliance())
+              .setDeclinedReason(declinedReason)
               .setNumOfTransaction(numOfTransaction)
               .setIp(ip)
               .setEmail(business.getEmail())
