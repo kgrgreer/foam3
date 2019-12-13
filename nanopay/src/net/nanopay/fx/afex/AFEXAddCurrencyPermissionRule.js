@@ -121,7 +121,7 @@ foam.CLASS({
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
         args.put("link",   url + "#sme.main.dashboard");
-        args.put("sendTo", business.getEmail());
+        args.put("sendTo", User.EMAIL);
         args.put("name", signingOfficer.getFirstName());
 
         try {

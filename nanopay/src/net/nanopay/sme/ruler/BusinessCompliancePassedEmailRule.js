@@ -11,6 +11,7 @@ foam.CLASS({
       'foam.core.X',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
+      'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'foam.nanos.notification.email.EmailMessage',
@@ -32,14 +33,14 @@ foam.CLASS({
 
             if( ! businessAddress.getCountryId().equals("US") ){
               Logger                  logger       = (Logger) x.get("logger");
-              Group                   group        = (Group) x.get("group");
+              Group                   group        = business.findGroup(x);
+              String                  url          = group.getUrl().replaceAll("/$", "");
               EmailMessage            message      = new EmailMessage();
               Map<String, Object>     args         = new HashMap<>();
-              String                  url          = "http://ablii:8080/#sme.main.dashboard";
 
               message.setTo(new String[]{business.getEmail()});
-              args.put("link", url);
-              args.put("sendTo", business.getEmail());
+              args.put("link",   url + "#sme.main.dashboard");
+              args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
 
               try {
