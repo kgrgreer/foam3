@@ -1192,7 +1192,8 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())
-      .setJournalName("loginAttempt")
+      .setJournalName("loginAttempts")
+      .setPermissionPrefix("loginAttempt")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
       .build();
@@ -1211,7 +1212,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("ipHistory")
+      .setJournalName("ipHistories")
       .setName("ipHistory")
       .setOf(net.nanopay.meter.IpHistory.getOwnClassInfo())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.meter.IpHistory.CREATED).build() })
