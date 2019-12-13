@@ -15,6 +15,16 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Password',
+      name: 'desiredPassword',
+      label: 'Password',
+      view: {
+        class: 'net.nanopay.ui.NewPasswordView',
+        passwordIcon: true
+      },
+      minLength: 6
+    },
+    {
       class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       name: 'acceptanceDoc',
       docName: 'NanopayTermsAndConditions',
@@ -66,6 +76,7 @@ foam.CLASS({
         // arrayOfProperties is to arrange the properties in the view.
         // extending foam SignUp sets the acceptanceDocuments at the top, thus rearranging here
         var arrayOfProperties = this.cls_.getAxiomsByClass(foam.core.Property);
+        arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());
       }

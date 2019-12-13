@@ -160,6 +160,9 @@ public class BusinessInvitationDAO
 
     // Create token for user registration
     Token token = new Token();
+    Date today  = new Date();
+    long oneMonth = 1000l*60l*60l*24l*30l;
+    token.setExpiry(new Date(today.getTime() + oneMonth));
     token.setParameters(tokenParams);
     token.setData(UUID.randomUUID().toString());
     token = (Token) tokenDAO.put(token);
@@ -171,6 +174,7 @@ public class BusinessInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
+    args.put("sendTo", invite.getEmail());
 
     // Encoding business name and email to handle special characters.
     String encodedBusinessName, encodedEmail;
@@ -186,7 +190,7 @@ public class BusinessInvitationDAO
 
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
-    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
+    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "&businessId=" + business.getId() + "#sign-up";
     args.put("link", url);
     EmailsUtility.sendEmailFromTemplate(x, business, message, "join-business-external", args);
   }

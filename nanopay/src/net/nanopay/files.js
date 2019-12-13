@@ -194,6 +194,7 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
+  { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
@@ -223,6 +224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/KotakFxTransaction' },
   { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
   { name: 'net/nanopay/fx/GenericFXPlanDAO' },
+  { name: 'net/nanopay/fx/AddINCurrencyPermissionRule' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -289,7 +291,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
-  
+
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
@@ -358,6 +360,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
+  { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
+  { name: 'net/nanopay/tx/ruler/MicroDepositFailed' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
@@ -550,6 +554,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItemCitationView' },
+  { name: 'net/nanopay/tx/TransactionEvent', flags:['web'] },
   { name: 'net/nanopay/tx/DisclosureLineItem' },
   { name: 'net/nanopay/tx/ReferenceLineItem' },
   { name: 'net/nanopay/tx/ReferenceLineItemCitationView' },
@@ -1016,7 +1021,8 @@ FOAM_FILES([
   // report
   { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
-
+  { name: 'net/nanopay/meter/report/TransactionReport' },
+  { name: 'net/nanopay/meter/report/TransactionReportView' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1198,6 +1204,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
+  { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
@@ -1237,10 +1244,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
   { name: 'net/nanopay/script/CsvUploadScript' },
-
-  // grain discovery
-  { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },

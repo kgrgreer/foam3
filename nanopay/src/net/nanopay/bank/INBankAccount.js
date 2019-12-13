@@ -9,18 +9,22 @@ foam.CLASS({
     'java.util.regex.Pattern'
   ],
 
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   documentation: 'Indian Bank account information.',
 
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
+      javaValue: 'Pattern.compile("^[0-9]{8,20}$")'
     }
   ],
 
   properties: [
-     {
+    {
       name: 'country',
       value: 'IN',
       createMode: 'HIDDEN'
@@ -47,16 +51,85 @@ foam.CLASS({
       hidden: true
     },
     {
+      class: 'String',
+      name: 'rbiLink',
+      label: '',
+      value: 'https://www.rbi.org.in/Scripts/IFSCMICRDetails.aspx',
+      section: 'accountDetails',
+      view: {
+        class: 'net.nanopay.sme.ui.Link',
+        data: this.value,
+        text: 'Search for your Bank',
+        isExternal: false
+      },
+    },
+    {
+      class: 'String',
+      name: 'ifscCode',
+      label: 'IFSC Code',
+      validationPredicates: [
+        {
+          args: ['ifscCode'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{11}$/);
+          },
+          errorString: 'IFSC Code must be 11 digits long.'
+        }
+      ],
+      section: 'accountDetails'
+    },
+    {
+      class: 'String',
+      name: 'beneAccountType',
+      label: 'Account Type',
+      section: 'accountDetails',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          ['CURRENT', 'Current'],
+          ['SAVING', 'Savings']
+        ]
+      },
+      validationPredicates: [
+        {
+          args: ['beneAccountType'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.BENE_ACCOUNT_TYPE, '');
+          },
+          errorString: 'Please select an Account Type.'
+        }
+      ],
+    },
+    {
+      name: 'accountNumber',
+      label: 'Bank Account No.',
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
+      view: {
+        class: 'foam.u2.view.StringView',
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^\w{8,20}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter a Bank Account No.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Indian Bank Account No must be between 8 and 20 digits.';
+        }
+      },
+    },
+    {
       name: 'accountRelationship',
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
-      value: 'Employer/Employee',
-      label: 'Relation to the contact',
+      label: 'Relationship with the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please select',
+          placeholder: 'Please Select',
           choices: [
             'Employer/Employee',
             'Contractor',
@@ -66,38 +139,44 @@ foam.CLASS({
         },
         otherKey: 'Other'
       },
+      validationPredicates: [
+        {
+          args: ['accountRelationship'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
+          },
+          errorString: 'Please specify your Relationship with the contact.'
+        }
+      ],
       section: 'accountDetails'
     },
     {
-      class: 'String',
-      name: 'ifscCode',
-      label: 'IFSC Code',
-      validateObj: function(ifscCode) {
-        var accNumberRegex = /^\w{11}$/;
-
-        if ( ifscCode === '' ) {
-          return 'Please enter an IFSC Code.';
-        } else if ( ! accNumberRegex.test(ifscCode) ) {
-          return 'IFSC Code must be 11 digits long.';
+      name: 'purposeCode',
+      class: 'Reference',
+      of: 'net.nanopay.tx.PurposeCode',
+      label: 'Purpose of Transfer',
+      section: 'accountDetails',
+      validationPredicates: [
+        {
+          args: ['purposeCode'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
+          },
+          errorString: 'Please enter a Purpose of Transfer.'
         }
-      },
-      section: 'accountDetails'
-    },
-    {
-      name: 'accountNumber',
-      label: 'International Bank Account No.',
-      preSet: function(o, n) {
-        return /^\w*$/.test(n) ? n : o;
-      },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^\w{16,30}$/;
-
-        if ( accountNumber === '' ) {
-          return 'Please enter an International Bank Account No.';
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'International Bank Account No must be between 16 and 30 digits long.';
-        }
-      },
+      ],
+      view: function(_, x) {
+        return foam.u2.view.ChoiceWithOtherView.create({
+          choiceView: foam.u2.view.ChoiceView.create({
+            dao: x.purposeCodeDAO,
+            placeholder: 'Please select',
+            objToChoice: function(purposeCode) {
+              return [purposeCode.code, purposeCode.description];
+            }
+          }),
+          otherKey: 'Other'
+        });
+      }
     }
   ],
 
