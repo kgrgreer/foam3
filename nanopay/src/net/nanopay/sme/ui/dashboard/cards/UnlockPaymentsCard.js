@@ -104,7 +104,7 @@ foam.CLASS({
     },
     {
       name: 'TITLE_INTERNATIONAL_CAD',
-      message: 'Unlock US payments'
+      message: 'Unlock International payments'
     },
     {
       name: 'DESCRIPTION_DOMESTIC',
@@ -120,7 +120,7 @@ foam.CLASS({
     },
     {
       name: 'DESCRIPTION_CAD_INTERNATIONAL',
-      message: 'Complete the requirements to unlock US payments. More corridors coming soon!'
+      message: 'Complete the requirements to unlock payments to the US and India!'
     },
     {
       name: 'COMPLETE',

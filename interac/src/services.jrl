@@ -1,6 +1,57 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"payeeDAO",                         "serve":true,  "serviceScript":"return x.get(\"userDAO\");","client":"{\"of\":\"foam.nanos.auth.User\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"countryAgentDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.JDAO(x, net.nanopay.interac.model.CountryAgent.getOwnClassInfo(), \"countryAgents\")));","client":"{\"of\":\"net.nanopay.interac.model.CountryAgent\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"identificationDAO",                "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.JDAO(x, net.nanopay.interac.model.Identification.getOwnClassInfo(), \"identification\")));","client":"{\"of\":\"net.nanopay.interac.model.Identification\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"pacs008ISOPurposeDAO",             "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.JDAO(x, net.nanopay.interac.model.Pacs008ISOPurpose.getOwnClassInfo(), \"pacs8iso\")));","client":"{\"of\":\"net.nanopay.interac.model.Pacs008ISOPurpose\"}"})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "countryAgentDAO",                  
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setPm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("countryAgents")
+      .setPipelinePm(true)
+      .setOf(net.nanopay.interac.model.CountryAgent.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.interac.model.CountryAgent\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "identificationDAO",                
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setPm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("identification")
+      .setPipelinePm(true)
+      .setOf(net.nanopay.interac.model.Identification.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.interac.model.Identification\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "pacs008ISOPurposeDAO",             
+  "serve": true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setPm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("pacs8iso")
+      .setPipelinePm(true)
+      .setOf(net.nanopay.interac.model.Pacs008ISOPurpose.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.interac.model.Pacs008ISOPurpose\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"pacs008IndiaPurposeDAO",           "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.JDAO(x, net.nanopay.interac.model.Pacs008IndiaPurpose.getOwnClassInfo(), \"pacs8india\")));","client":"{\"of\":\"net.nanopay.interac.model.Pacs008IndiaPurpose\"}"})
-// p({"class":"foam.nanos.boot.NSpec", "name":"dateAndPlaceOfBirthDAO",           "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.JDAO(x, net.nanopay.interac.model.DateAndPlaceOfBirth.getOwnClassInfo(), \"dateofbirth\")));","client":"{\"of\":\"net.nanopay.interac.model.DateAndPlaceOfBirth\"}"})

@@ -6,6 +6,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'enable'
+    },
+    {
       class: 'String',
       name: 'clientId'
     },
@@ -28,6 +32,35 @@ foam.CLASS({
     {
       class: 'String',
       name: 'reversaltUrl'
+    },
+    {
+      class: 'String',
+      name: 'msgSource'
+    },
+    {
+      class: 'String',
+      name: 'clientCode'
+    },
+    {
+      class: 'String',
+      name: 'myProdCode'
+    },
+    {
+      class: 'String',
+      name: 'remitterName',
+      documentation: 'remitter should always be nanopay for now'
+    },
+    {
+      class: 'String',
+      name: 'remitterAddress',
+    },
+    {
+      class: 'String',
+      name: 'remitterAcNo'
+    },
+    {
+      class: 'String',
+      name: 'remitterCountry'
     }
   ]
 });
