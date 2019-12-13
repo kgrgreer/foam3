@@ -10,10 +10,6 @@ p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requ
 // Business Rules
 p({"class":"foam.nanos.menu.Menu","id":"liquid.rules","label":"Business Rules","handler":{"class":"foam.nanos.menu.SubMenu"},"order":2000})
 
-// TODO: add restriction of entity rules - order 1st
-// TODO: add multi-level approval rules  - order 2nd
-// TODO: add transaction limit rules     - order 3rd
-
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.genericrules",
@@ -52,7 +48,7 @@ p({
       "of":"net.nanopay.liquidity.tx.RestrictAccountsRule"
     }
   },
-  "order":5001,
+  "order":300,
   "parent": "liquid.rules"
 })
 
@@ -73,7 +69,51 @@ p({
       "of":"net.nanopay.liquidity.tx.RestrictUsersRule"
     }
   },
-  "order":5002,
+  "order":310,
   "parent": "liquid.rules"
 })
 
+// TODO: add multi-level approval rules  - order 2nd
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.txlimitrules",
+  "label":"Transaction Limits",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
+      },
+      "defaultColumns":["id","enabled","applyLimitTo","send","limit","period"],
+      "of":"net.nanopay.liquidity.tx.TxLimitRule"
+    }
+  },
+  "order":330,
+  "parent": "liquid.rules"
+})
+
+// Move the Email menu to admin
+p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessage","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"emailMessageDAO"},"order":1000,"parent":"admin"})
+
+// Remove unnecessary menu items
+r({"class":"foam.nanos.menu.Menu","id":"sme"})
+r({"class":"foam.nanos.menu.Menu","id":"operation"})
+r({"class":"foam.nanos.menu.Menu","id":"report"})
+r({"class":"foam.nanos.menu.Menu","id":"tickets"})
+
+r({"class":"foam.nanos.menu.Menu","id":"connect"})
+r({"class":"foam.nanos.menu.Menu","id":"alterna-eft"})
+r({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBusinesses"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBeneficiaries"})
+r({"class":"foam.nanos.menu.Menu","id":"account-balance"})
+
+// Remove unnecessary right menu items
+r({"class":"foam.nanos.menu.Menu","id":"set-bus"})
+r({"class":"foam.nanos.menu.Menu","id":"set-bank"})
+r({"class":"foam.nanos.menu.Menu","id":"set-multi-user"})
+r({"class":"foam.nanos.menu.Menu","id":"set-integrate"})

@@ -6,12 +6,12 @@ foam.CLASS({
   documentation: 'Generic Business Rule.',
 
   javaImports: [
+    'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.*',
     'foam.mlang.*',
     'foam.mlang.expr.*',
     'foam.mlang.predicate.*',
-    'foam.mlang.MLang.*',
-    'net.nanopay.account.Account'
+    'foam.mlang.MLang.*'
   ],
 
   requires: [

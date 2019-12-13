@@ -396,6 +396,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BucketTransaction' },
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
+  { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -838,6 +839,10 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
 

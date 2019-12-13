@@ -32,9 +32,10 @@ foam.CLASS({
     },
     {
       name: 'enabled',
-      label: 'Enabled',
-      value: true,
       tableWidth: 125,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Current status');
+      },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
       }
