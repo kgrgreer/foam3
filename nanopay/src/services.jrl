@@ -811,7 +811,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(true)
+      .setAuthorize(false) // FIXME
       .setSeqNo(true)
       .setJournalName("invoiceHistory")
       .setJournalType(faom.dao.JournalType.SINGLE_JOURNAL)
