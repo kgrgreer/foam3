@@ -1351,10 +1351,12 @@ p({
     import foam.nanos.notification.email.NullEmailService; 
     import foam.nanos.notification.email.ProxyEmailService; 
     
+    // When configuring email, remove this NullEmailService and use
+    // the SMTPEmailService after configuring host, and user details
     return new ProxyEmailService.Builder(x)
       .setDelegate(
-        new NullEmailService.Builder(x).build()
-      ).build();
+        new NullEmailService.Builder(x).build())
+      .build();
 
     // EmailService es = new SMTPEmailService.Builder(x)
     //  .setHost("<smtp-host>")
