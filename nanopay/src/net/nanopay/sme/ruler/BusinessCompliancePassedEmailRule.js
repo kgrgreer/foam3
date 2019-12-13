@@ -50,7 +50,6 @@ foam.CLASS({
                   .setGroupId(group.toString())
                   .setEmailIsEnabled(true)
                   .setEmailArgs(args)
-                  .setUserId(business.getId())
                   .setEmailName("compliance-notification-to-user")
                   .build();
 

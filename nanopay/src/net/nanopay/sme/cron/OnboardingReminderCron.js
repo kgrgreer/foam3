@@ -40,7 +40,6 @@ foam.CLASS({
       `
       Map<String, Object>  args           = null;
       DAO                  businessDAO    = (DAO) x.get("businessDAO");
-      Group                group          = (Group) x.get("group");
 
       // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
       Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
@@ -73,11 +72,7 @@ foam.CLASS({
           // send onboarding reminder email
           args = new HashMap<>();
           try {
-            String recepientFirstName = business.getOnboarded() ?
-              business.findSigningOfficer(x).getFirstName() :
-              business.label();
-
-            args.put("name", recepientFirstName);
+            args.put("name", User.FIRST_NAME);
             args.put("business", business.getBusinessName());
             args.put(
               "businessRegistrationLink",
@@ -94,7 +89,6 @@ foam.CLASS({
               .setGroupId(group.toString())
               .setEmailIsEnabled(true)
               .setEmailArgs(args)
-              .setUserId(business.getId())
               .setEmailName("onboarding-reminder")
               .build();
 
