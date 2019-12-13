@@ -113,13 +113,13 @@ p({
   "parent":"report"
 })
 
-// TransactionReport
+// Transaction Report
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"report.txnReport",
-  "label":"Transaction Settlement Report",
+  "label":"Transaction Report",
   "handler":{"class":"foam.nanos.menu.ViewMenu",
-  "view":{"class":"net.nanopay.tx.TransactionReportView"}},
+  "view":{"class":"net.nanopay.meter.report.TransactionReportView"}},
   "order":20,
   "parent":"report"
 })
