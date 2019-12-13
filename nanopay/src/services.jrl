@@ -1379,7 +1379,6 @@ p({
       .setJournalName("payrolls")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
-    return new foam.dao.PMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.payment.PayrollDAO(x, new foam.dao.java.JDAO(x, net.nanopay.payment.Payroll.getOwnClassInfo(), \"payrolls\"))));
   """,
   "client":"{\"of\":\"net.nanopay.payment.Payroll\"}"
 })
