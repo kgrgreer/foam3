@@ -196,9 +196,6 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
 
-  // compliance Email notification
-  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
-
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
@@ -821,7 +818,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
-  
+
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
@@ -912,6 +909,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/BusinessOnboardingDAOTest' },
   { name: 'net/nanopay/sme/OnboardingPaymentOpsNotification' },
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
+  { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

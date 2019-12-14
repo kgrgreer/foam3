@@ -219,11 +219,12 @@ var classes = [
   'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
-  'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
+  'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',
 
   // sme cron
   'net.nanopay.sme.cron.WelcomeEmailCron',
   'net.nanopay.sme.cron.SigningOfficerReminderCron',
+  'net.nanopay.sme.cron.OnboardingReminderCron',
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
