@@ -14,11 +14,17 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        return AND(
-          EQ(DOT(NEW_OBJ, INSTANCE_OF(BankAccount.class)), true),
-          EQ(DOT(NEW_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED),
-          NEQ(DOT(OLD_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED)
-        ).f(obj);
+        BankAccount oldBankAccount = (BankAccount) OLD_OBJ.f(obj);
+        return (oldBankAccount != null) ?
+          AND(
+            EQ(DOT(NEW_OBJ, INSTANCE_OF(BankAccount.class)), true),
+            EQ(DOT(NEW_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED),
+            NEQ(DOT(OLD_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED)
+          ).f(obj) :
+          AND(
+            EQ(DOT(NEW_OBJ, INSTANCE_OF(BankAccount.class)), true),
+            EQ(DOT(NEW_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED)
+          ).f(obj);
       `
     }
   ]

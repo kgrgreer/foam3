@@ -76,6 +76,17 @@ foam.CLASS({
       t.setIsQuoted(true);
       t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
       quote.setPlan(t);
+
+      Transaction[] plans = quote.getPlans();
+      if ( plans != null && plans.length > 0 ) {
+        int planLength = plans.length;
+        Transaction[] newPlans = new Transaction[planLength + 1];
+        System.arraycopy(plans, 0, newPlans, 0, planLength + 1);
+        newPlans[planLength] = t;
+        quote.setPlans(newPlans);
+      } else {
+        quote.setPlans(new Transaction[] {t});      }
+
       return quote;
 
     }
@@ -101,6 +112,17 @@ foam.CLASS({
       t.setIsQuoted(true);
       t.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
       quote.setPlan(t);
+
+      Transaction[] plans = quote.getPlans();
+      if ( plans != null && plans.length > 0 ) {
+        int planLength = plans.length;
+        Transaction[] newPlans = new Transaction[planLength + 1];
+        System.arraycopy(plans, 0, newPlans, 0, planLength + 1);
+        newPlans[planLength] = t;
+        quote.setPlans(newPlans);
+      } else {
+        quote.setPlans(new Transaction[] {t});
+      }
       return quote;
     }
     return getDelegate().put_(x, quote);

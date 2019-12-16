@@ -1,10 +1,119 @@
-p({"class":"foam.nanos.menu.Menu","id":"liquid.root","label":"Liquid","handler":{"class":"foam.nanos.menu.SubMenu"}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.DetailView","of":"net.nanopay.liquidity.ui.Dashboard"}},"order":5000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":5500,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO"},"order":6000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"liquiditySettingsDAO"},"order":7000,"parent":"liquid.root"})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","predicate":{"class": "foam.mlang.predicate.Not","arg1": {"class": "foam.mlang.predicate.IsInstanceOf","targetClass": "net.nanopay.bank.BankAccount"}},"defaultColumns":["name","balance","homeBalance"]}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}}})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.fileUpload","label":"File Upload","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.gs.GSFileUploadScreen"}},"parent":"liquid.root","order":8000})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}},"order":100})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","defaultColumns":["name","balance","homeBalance"]}},"order":200})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}},"order":300})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"userDAO","browseTitle":"Users"}},"order":400})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.roles","label":"Roles","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleDAO","browseTitle":"Roles"}},"order":500})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.roletemplates","label":"Role Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleAssignmentTemplateDAO","browseTitle":"Role Templates"}},"order":500})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"order":600})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"approvalRequestDAO","browseTitle":"Approval Requests","of":"net.nanopay.liquidity.LiquidApprovalRequest"}},"order":700})
+
+// Business Rules
+p({"class":"foam.nanos.menu.Menu","id":"liquid.rules","label":"Business Rules","handler":{"class":"foam.nanos.menu.SubMenu"},"order":2000})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.genericrules",
+  "label":"Generic Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.GenericBusinessRule"
+      },
+      "defaultColumns":["id","enabled","businessRuleAction","createdBy"],
+      "of":"net.nanopay.liquidity.tx.GenericBusinessRule"
+    }
+  },
+  "order":5000,
+  "parent": "liquid.rules"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.restrictaccountsrules",
+  "label":"Restrict Accounts Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictAccountsRule"
+      },
+      "defaultColumns":["id","enabled","createdBy","sourceAccount","destinationAccount"],
+      "of":"net.nanopay.liquidity.tx.RestrictAccountsRule"
+    }
+  },
+  "order":300,
+  "parent": "liquid.rules"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.restrictusersrules",
+  "label":"Restrict Users Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
+      },
+      "defaultColumns":["id","enabled","createdBy","sourceUser","destinationUser"],
+      "of":"net.nanopay.liquidity.tx.RestrictUsersRule"
+    }
+  },
+  "order":310,
+  "parent": "liquid.rules"
+})
+
+// TODO: add multi-level approval rules  - order 2nd
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.txlimitrules",
+  "label":"Transaction Limits",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
+      },
+      "defaultColumns":["id","enabled","applyLimitTo","send","limit","period"],
+      "of":"net.nanopay.liquidity.tx.TxLimitRule"
+    }
+  },
+  "order":330,
+  "parent": "liquid.rules"
+})
+
+// Move the Email menu to admin
+p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessage","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"emailMessageDAO"},"order":1000,"parent":"admin"})
+
+// Remove unnecessary menu items
+r({"class":"foam.nanos.menu.Menu","id":"sme"})
+r({"class":"foam.nanos.menu.Menu","id":"operation"})
+r({"class":"foam.nanos.menu.Menu","id":"report"})
+r({"class":"foam.nanos.menu.Menu","id":"tickets"})
+
+r({"class":"foam.nanos.menu.Menu","id":"connect"})
+r({"class":"foam.nanos.menu.Menu","id":"alterna-eft"})
+r({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBusinesses"})
+r({"class":"foam.nanos.menu.Menu","id":"afexBeneficiaries"})
+r({"class":"foam.nanos.menu.Menu","id":"account-balance"})
+
+// Remove unnecessary right menu items
+r({"class":"foam.nanos.menu.Menu","id":"set-bus"})
+r({"class":"foam.nanos.menu.Menu","id":"set-bank"})
+r({"class":"foam.nanos.menu.Menu","id":"set-multi-user"})
+r({"class":"foam.nanos.menu.Menu","id":"set-integrate"})

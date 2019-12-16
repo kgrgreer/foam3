@@ -57,7 +57,7 @@ p({
     foam.dao.DAO AAD = new net.nanopay.account.AuthenticatedAccountDAO(x, 
       new foam.nanos.auth.PermissionedPropertyDAO(x, 
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
-          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
+          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")),
             new net.nanopay.bank.BankAccountValidator()))));
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)

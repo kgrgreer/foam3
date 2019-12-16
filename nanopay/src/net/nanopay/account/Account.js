@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
-    'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
@@ -52,28 +51,47 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'All',
       predicateFactory: function(e) {
-        return e.TRUE;
+        return e.AND(
+          e.EQ(net.nanopay.account.Account.DELETED, false),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.EQ(net.nanopay.account.Account.ENABLED, true)
+        );
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+          e.EQ(net.nanopay.account.Account.DELETED, false),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.EQ(net.nanopay.account.Account.ENABLED, true)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Aggregate Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+          e.EQ(net.nanopay.account.Account.DELETED, false),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.EQ(net.nanopay.account.Account.ENABLED, true)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
-        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
+        return e.AND(
+          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+          e.EQ(net.nanopay.account.Account.DELETED, false),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.EQ(net.nanopay.account.Account.ENABLED, true)
+        )
       }
     },
     {
@@ -399,7 +417,9 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
+        return x.balanceDAO 
+          ? x.balanceDAO.find(this.id).then(b => b ? b.balance : 0) 
+          : 0;
       },
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");

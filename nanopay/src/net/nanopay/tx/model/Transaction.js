@@ -240,7 +240,12 @@ foam.CLASS({
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
-      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
+      javaGetter: `
+        if ( getStatusHistory().length > 0 ){
+          return getStatusHistory()[0].getTimeStamp();
+        }
+        return new java.util.Date();
+      `,
       javaFactory: `
         if ( getStatusHistory().length > 0 ) {
           return getStatusHistory()[0].getTimeStamp();

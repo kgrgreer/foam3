@@ -1,0 +1,2 @@
+p({"class":"foam.nanos.crunch.Capability","id":"liquidDashboard","label":"Liquid Dashboard","description":"Capability to allow viewing of the Liquid Dashboard menu (if a user is a maker/approver for accounts)","permissionsGranted":["menu.read.liquid.dashboard"]})
+p({"class":"foam.nanos.crunch.Capability","id":"liquidApprovals","label":"Liquid Approvals","description":"Capability to allow viewing of the Liquid Approval Requests menu (if a user is a maker/approver at all)","permissionsGranted":["menu.read.liquid.approvals"]})

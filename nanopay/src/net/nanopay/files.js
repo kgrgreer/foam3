@@ -224,6 +224,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/GenericFXPlanDAO' },
   { name: 'net/nanopay/fx/AddINCurrencyPermissionRule' },
 
+  // mock
+  { name: 'net/nanopay/fx/mock/MockFXService' },
+
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXUser' },
@@ -395,6 +398,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BucketTransaction' },
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
+  { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -827,12 +831,62 @@ FOAM_FILES([
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
+   { name: 'net/nanopay/liquidity/LiquidApprovalRequest' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/tx/BusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
+   { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
+   { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
+   { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
+   { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
 
-  // partners
+   // liquidity roles
+   { name: 'net/nanopay/liquidity/roles/Role' },
+   { name: 'net/nanopay/liquidity/roles/RoleAssignmentTemplate' },
+   { name: 'net/nanopay/liquidity/roles/RoleAssignmentTrunction' },
+
+   // liquidity rules
+   { name: 'net/nanopay/liquidity/rules/account/AccountCreateApproval' },
+   { name: 'net/nanopay/liquidity/rules/account/AccountApprovalsInterceptorDAO' },
+   { name: 'net/nanopay/liquidity/rules/approvalRequest/FulfilledAccountApprovals' },
+   { name: 'net/nanopay/liquidity/rules/approvalRequest/FulfilledAccountApprovalsPredicate' },
+   { name: 'net/nanopay/liquidity/rules/businessRule/LiquidApprovalRequestsOnBusinessRulePut' },
+   { name: 'net/nanopay/liquidity/rules/businessRule/LiquidApprovalRequestsOnBusinessRuleRemove' },
+   { name: 'net/nanopay/liquidity/rules/liquiditySettings/LiquidApprovalRequestsOnLiquiditySettingsPut' },
+   { name: 'net/nanopay/liquidity/rules/liquiditySettings/LiquidApprovalRequestsOnLiquiditySettingsRemove' },
+   { name: 'net/nanopay/liquidity/rules/role/LiquidApprovalRequestsOnRolePut' },
+   { name: 'net/nanopay/liquidity/rules/role/LiquidApprovalRequestsOnRoleRemove' },
+   { name: 'net/nanopay/liquidity/rules/transaction/LiquidApprovalRequestsOnTransactionPut' },
+   { name: 'net/nanopay/liquidity/rules/transaction/LiquidApprovalRequestsOnTransactionRemove' },
+   { name: 'net/nanopay/liquidity/rules/user/LiquidApprovalRequestsonUserPut' },
+   { name: 'net/nanopay/liquidity/rules/user/LiquidApprovalRequestsOnUserRemove' },
+
+   // liquidity ui
+   { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
+   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
+   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
+   { name: 'net/nanopay/liquidity/ui/account/Overview' },
+   { name: 'net/nanopay/liquidity/ui/account/Balance' },
+   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+  
+   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
@@ -1162,22 +1216,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchData' },
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
-
-  // liquidity
-  { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
-  { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
-  { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
-  { name: 'net/nanopay/liquidity/ui/account/Overview' },
-  { name: 'net/nanopay/liquidity/ui/account/Balance' },
-  { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
