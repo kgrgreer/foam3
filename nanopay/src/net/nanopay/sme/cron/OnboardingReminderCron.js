@@ -30,6 +30,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'threshold',
+      value: 1440,
       documentation: 'Interval threshold in minutes for cronjob.'
     }
   ],
