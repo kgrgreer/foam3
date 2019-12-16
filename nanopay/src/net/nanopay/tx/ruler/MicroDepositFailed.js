@@ -38,8 +38,8 @@ foam.CLASS({
             args.put("institution", acc.getInstitutionNumber());
             args.put("accountNumber", acc.getAccountNumber().substring(4));
             args.put("accountType", acc.getType());
-            args.put("userEmail", user.getEmail());
-            args.put("sendTo", user.getEmail());
+            args.put("userEmail", User.EMAIL);
+            args.put("sendTo", User.EMAIL);
 
             Notification notification = new Notification.Builder(x)
             .setBody(acc.getAccountNumber() + " verification failed!")
