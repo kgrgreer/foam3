@@ -1,5 +1,5 @@
 foam.CLASS({
-    package: 'net.nanopay.sme.ruler',
+    package: 'net.nanopay.invoice.ruler',
     name: 'InvoiceVoidEmailRule',
 
     documentation: `Sends email to payer notifying them that the invoice has been voided.`,

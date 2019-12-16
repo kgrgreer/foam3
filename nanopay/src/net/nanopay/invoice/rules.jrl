@@ -32,3 +32,19 @@ p({
     "enabled":true,
     "saveHistory":true
 })
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Send invoice voided email to payer",
+  "priority": 100,
+  "ruleGroup": "InvoiceNotification",
+  "documentation": "Send invoice voided email to payer",
+  "daoKey": "invoiceDAO",
+  "operation": 3,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.invoice.ruler.InvoiceVoidEmailRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
