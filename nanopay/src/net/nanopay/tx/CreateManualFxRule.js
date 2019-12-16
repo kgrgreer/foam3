@@ -35,6 +35,8 @@ foam.CLASS({
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
             approvalRequestDAO.put_(x,
               new ManualFxApprovalRequest.Builder(x)
+                .setClassification("Kotak Manual FX Transaction Completion")
+                .setDescription("Kotak Manul FX transfer is comlpeted")
                 .setDaoKey("transactionDAO")
                 .setObjId(kotakFxTransaction.getId())
                 .setGroup("payment-ops")

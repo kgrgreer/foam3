@@ -301,6 +301,10 @@ foam.CLASS({
     .login {
       margin-top: 24px !important;
     }
+    /* specifically overriding the action but intenet is only for SignIn/Up: TODO remove AbliiActionView*/
+    .net-nanopay-sme-ui-AbliiActionView-login {
+      width: 100%;
+    }
     .sme-title {
       font-size: 32px;
       line-height: 1.5;

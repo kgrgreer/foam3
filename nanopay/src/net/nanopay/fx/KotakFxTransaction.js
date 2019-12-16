@@ -6,8 +6,9 @@ foam.CLASS({
    javaImports: [
     'java.util.ArrayList',
     'java.util.List',
-    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer'
   ],
 
@@ -18,7 +19,11 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;',
-    }
+    },
+    {
+      name: 'status',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
    ],
 
    methods: [

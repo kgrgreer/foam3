@@ -126,6 +126,15 @@ foam.CLASS({
 
         return true;
       `
+    },
+    {
+      name: 'generateExpiryDate',
+      type: 'Date',
+      javaCode: `
+      Calendar cal = Calendar.getInstance(); 
+      cal.add(Calendar.MONTH, 1);
+      return cal.getTime();
+      `
     }
   ]
 });
