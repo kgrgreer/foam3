@@ -816,7 +816,7 @@ p({
       .setAuthorize(false) // FIXME
       .setSeqNo(true)
       .setJournalName("invoiceHistory")
-      .setJournalType(faom.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqPropertyName("seqNo")
       .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
       .build();
