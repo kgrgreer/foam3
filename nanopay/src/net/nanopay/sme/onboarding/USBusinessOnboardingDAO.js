@@ -49,7 +49,6 @@ foam.CLASS({
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        //if ( old != null && old.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
         if ( businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           if ( businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
