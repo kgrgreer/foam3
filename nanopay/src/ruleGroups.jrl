@@ -39,7 +39,7 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"bankOperations",
   "predicate":{
-    "class":"IsInstancePredicate",
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
     "of":"net.nanopay.bank.BankAccount"
   }
 })
