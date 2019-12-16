@@ -21,8 +21,7 @@ p({
     nbaae = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x)
       .setDelegate(r)
       .build();
-    ave = new net.nanopay.bank.AccountVerifiedEmailDAO(x, nbaae);
-    ade = new net.nanopay.bank.AccountDeletedEmailDAO(x, ave);
+    ade = new net.nanopay.bank.AccountDeletedEmailDAO(x, nbaae);
     be = new net.nanopay.bank.BankEmailDAO(x, ade);
     afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, be);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);

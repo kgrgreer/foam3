@@ -113,6 +113,7 @@ var classes = [
   'net.nanopay.bank.BankWeekend',
   'net.nanopay.bank.DefaultBankAccountRule',
   'net.nanopay.bank.IsDefaultRule',
+  'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
