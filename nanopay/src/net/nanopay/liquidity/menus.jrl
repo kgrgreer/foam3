@@ -6,6 +6,7 @@ p({"class":"foam.nanos.menu.Menu","id":"liquid.roles","label":"Roles","handler":
 p({"class":"foam.nanos.menu.Menu","id":"liquid.roletemplates","label":"Role Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"roleAssignmentTemplateDAO","browseTitle":"Role Templates"}},"order":500})
 p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"order":600})
 p({"class":"foam.nanos.menu.Menu","id":"liquid.approvals","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"approvalRequestDAO","browseTitle":"Approval Requests","of":"net.nanopay.liquidity.LiquidApprovalRequest"}},"order":700})
+p({"class":"foam.nanos.menu.Menu","id":"liquid.fileUpload","label":"File Upload","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.gs.GSFileUploadScreen"}},"order":800})
 
 // Business Rules
 p({"class":"foam.nanos.menu.Menu","id":"liquid.rules","label":"Business Rules","handler":{"class":"foam.nanos.menu.SubMenu"},"order":2000})
