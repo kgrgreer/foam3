@@ -114,6 +114,7 @@ var classes = [
   'net.nanopay.bank.DefaultBankAccountRule',
   'net.nanopay.bank.IsDefaultRule',
   'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
+  'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
