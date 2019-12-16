@@ -23,6 +23,14 @@ foam.CLASS({
 
   documentation: 'Send Welcome Email to Ablii Business 30min after SignUp',
 
+  properties: [
+    {
+      class: 'Int',
+      name: 'threshold',
+      documentation: 'Interval threshold in minutes for cronjob.'
+    }
+  ],
+
   methods: [
     {
       name: 'execute',
@@ -39,14 +47,14 @@ foam.CLASS({
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
 
         // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
-        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 30));
+        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
         Date                 endInterval    = null;
         Long                 disruptionDiff = 0L;
         Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
 
         // Check if there was no service disruption - if so, add/sub diff from endInterval
         disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
-        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 30) + disruptionDiff );
+        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * this.getThreshold()) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(

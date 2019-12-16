@@ -127,7 +127,7 @@ p({
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":20,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},
   "id":"Send Welcome Email to Ablii Business 30min after SignUp",
   "description":"Send Welcome Email to Ablii Business",
-  "code":"import net.nanopay.sme.cron.WelcomeEmailCron;\ncron = new WelcomeEmailCron();\ncron.execute(x);\nprint(\"done\");"
+  "code":"import net.nanopay.sme.cron.WelcomeEmailCron;\ncron = new WelcomeEmailCron.Builder(x).setThreshold(30).build();\ncron.execute(x);\nprint(\"done\");"
 })
 p({
   "class": "foam.nanos.cron.Cron",
@@ -138,7 +138,6 @@ p({
   "description":"Send reminder email to SigningOfficers who were invited to take over",
   "code":"import net.nanopay.sme.cron.SigningOfficerReminderCron;\ncron = new SigningOfficerReminderCron();\ncron.execute(x);\nprint(\"done\");"
 })
-
 p({
   "class": "foam.nanos.cron.Cron",
   "enabled":true,
@@ -146,5 +145,5 @@ p({
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":59,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":-1},
   "id": "Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago",
   "description": "Send onboarding reminder email to businesses created over 24 hours ago without yet completing their onboarding or setting up their bank account",
-  "code": "import net.nanopay.sme.cron.OnboardingReminderCron;\ncron = new OnboardingReminderCron();\ncron.execute(x);\nprint(\"done\");"
+  "code": "import net.nanopay.sme.cron.OnboardingReminderCron;\ncron = new OnboardingReminderCron.Builder(x).setThreshold(1440).build();\ncron.execute(x);\nprint(\"done\");"
 })
