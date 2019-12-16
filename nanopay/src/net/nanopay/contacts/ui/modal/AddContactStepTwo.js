@@ -9,7 +9,8 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.bank.INBankAccount'
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.bank.CABankAccount'
   ],
 
   imports: [
@@ -47,7 +48,6 @@ foam.CLASS({
     ^ .bankAction {
       background-color: white;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       height: 44px;
       padding: 10px;
@@ -81,7 +81,6 @@ foam.CLASS({
       height: 24px;
       line-height: 1.5;
       font-size: 14px;
-      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .bankAction:hover {
       background-color: white;
@@ -118,6 +117,18 @@ foam.CLASS({
     .Country-label {
       font-size: 16px;
       font-weight: bold;
+    }
+    .contact-bank-account .foam-u2-layout-Grid span {
+      display: none;
+    }
+    .contact-bank-account option[value="-1"] {
+      display: none;
+    }
+    .property-rbiLink {
+      margin-top: -33px;
+      top: 50px;
+      position: relative;
+      float: right;
     }
   `,
 
@@ -182,6 +193,7 @@ foam.CLASS({
         .end()
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()
+          .addClass('contact-bank-account')
             .add(this.slot(function(bankAdded) {
               if ( bankAdded || this.viewData.isBankingProvided ) {
                 return this.E().tag({
@@ -220,6 +232,10 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount) {
+      if ( this.CABankAccount.isInstance(this.bankAccount) && this.bankAccount.institutionNumber == '' ) {
+        this.ctrl.notify('Please enter an Inst. No.', 'error');
+        return;
+      }
       try {
         bankAccount.validate();
       } catch (e) {

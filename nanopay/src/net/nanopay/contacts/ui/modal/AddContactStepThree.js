@@ -62,7 +62,8 @@ foam.CLASS({
     { name: 'BANKING_TITLE', message: 'Add business address' },
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
-    { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
+    { name: 'STEP_INDICATOR', message: 'Step 3 of 3' },
+    { name: 'STREET_NUMBER', message: 'Street number can only contain numbers.' }
   ],
 
   properties: [
@@ -95,16 +96,21 @@ foam.CLASS({
           .tag(this.wizard.data.BUSINESS_ADDRESS, {
             customCountryDAO: this.PromisedDAO.create({
               promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                var q = hasPermission
-                  ? this.OR(
-                      this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US'),
-                      this.EQ(this.Country.ID, 'IN')
-                    )
-                  : this.OR(
+                var q;
+                if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
+                  q = this.OR(
                     this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US'),
                     this.EQ(this.Country.ID, 'IN')
                   );
+                } else if ( hasPermission ) {
+                  q = this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US')
+                  );
+                } else {
+                  q = this.EQ(this.Country.ID, 'CA');
+                }
                 return this.countryDAO.where(q);
               })
             })
@@ -175,6 +181,11 @@ foam.CLASS({
         var businessAddress = this.wizard.data.businessAddress;
         if ( businessAddress.errors_ ) {
           this.ctrl.notify(businessAddress.errors_[0][1], 'error');
+          return;
+        }
+        var reg = /^\d+$/;
+        if ( ! reg.test(businessAddress.streetNumber) ) {
+          this.ctrl.notify(this.STREET_NUMBER, 'error');
           return;
         }
 
