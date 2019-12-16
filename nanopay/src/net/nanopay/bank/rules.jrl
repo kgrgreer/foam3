@@ -78,7 +78,7 @@ p({
   "daoKey":"localAccountDAO",
   "operation":3,
   "predicate":{
-    "class":"foam.mlang.predicate.AND",
+    "class":"foam.mlang.predicate.And",
     "args": [
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
