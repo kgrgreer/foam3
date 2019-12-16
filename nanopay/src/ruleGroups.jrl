@@ -79,3 +79,4 @@ p({
     ]
   }
 })
+p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})

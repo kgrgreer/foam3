@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.meter.report',
   name: 'TransactionReport',
 
   requires: [

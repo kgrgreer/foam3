@@ -196,9 +196,6 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
 
-  // compliance Email notification
-  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
-
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
@@ -822,7 +819,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
-  
+
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
@@ -913,6 +910,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/BusinessOnboardingDAOTest' },
   { name: 'net/nanopay/sme/OnboardingPaymentOpsNotification' },
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
+  { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -1022,7 +1020,8 @@ FOAM_FILES([
   // report
   { name: 'net/nanopay/meter/report/AbliiBusinessReport' },
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
-
+  { name: 'net/nanopay/meter/report/TransactionReport' },
+  { name: 'net/nanopay/meter/report/TransactionReportView' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1244,10 +1243,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
   { name: 'net/nanopay/script/CsvUploadScript' },
-
-  // grain discovery
-  { name: 'net/nanopay/tx/TransactionReport' },
-  { name: 'net/nanopay/tx/TransactionReportView' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },
