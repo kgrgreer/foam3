@@ -364,7 +364,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         bankRoutingCode = "0" + bankAccount.getBankCode(x) + bankRoutingCode;
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
-      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress());
+      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress().replace("#", ""));
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
       createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
       createBeneficiaryRequest.setBeneficiaryName(beneficiaryName);

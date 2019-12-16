@@ -48,6 +48,23 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
+  name: 'VerificationTransactionRefinement',
+  refines: 'net.nanopay.tx.cico.VerificationTransaction',
+
+  implements: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait'
+  ],
+
+  properties: [
+    {
+      name: 'clearingTimes',
+      javaFactory: 'return new java.util.HashMap<>();'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.meter.clearing',
   name: 'AscendantFXTransactionRefinement',
   refines: 'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
 

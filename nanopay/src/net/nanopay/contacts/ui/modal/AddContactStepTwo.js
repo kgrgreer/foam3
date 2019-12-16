@@ -118,6 +118,18 @@ foam.CLASS({
       font-size: 16px;
       font-weight: bold;
     }
+    .contact-bank-account .foam-u2-layout-Grid span {
+      display: none;
+    }
+    .contact-bank-account option[value="-1"] {
+      display: none;
+    }
+    .property-rbiLink {
+      margin-top: -33px;
+      top: 50px;
+      position: relative;
+      float: right;
+    }
   `,
 
   messages: [
@@ -181,6 +193,7 @@ foam.CLASS({
         .end()
         .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()
+          .addClass('contact-bank-account')
             .add(this.slot(function(bankAdded) {
               if ( bankAdded || this.viewData.isBankingProvided ) {
                 return this.E().tag({
