@@ -182,7 +182,9 @@ foam.CLASS({
       code: function() {
         if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({ status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED') }));
+        dao.put(this.data.clone().copyFrom({ status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+                                             sendInvitation : false
+                                          }));
       }
     }
   ],
@@ -199,7 +201,8 @@ foam.CLASS({
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({
-            status : (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED')
+            status : (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
+            sendInvitation : true
           })).
           then(async () => {
             let user = await x.userDAO.find(x.user.id);
@@ -222,7 +225,8 @@ foam.CLASS({
       code: function(x) {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
         dao.put(this.data.clone().copyFrom({
-          status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED')
+          status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+          sendInvitation : true
           })).
           then(function() {
             x.ctrl.notify('Progress saved.');

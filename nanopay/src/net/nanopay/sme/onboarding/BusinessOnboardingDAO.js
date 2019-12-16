@@ -47,13 +47,14 @@ foam.CLASS({
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
 
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        //if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           if ( businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
             Invitation existingInvite = (Invitation) businessInvitationDAO.find(
               AND(
-                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail()),
+                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail().toLowerCase()),
                 EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId()),
                 NEQ(Invitation.STATUS, net.nanopay.model.InvitationStatus.COMPLETED)
               )
@@ -93,6 +94,7 @@ foam.CLASS({
             }
           }
 
+          businessOnboarding.setSendInvitation(false);
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -184,7 +186,8 @@ foam.CLASS({
             business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
           }
 
-          business.setOnboarded(true);
+          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
+            business.setOnboarded(true);
 
           if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
             business.setCompliance(ComplianceStatus.REQUESTED);

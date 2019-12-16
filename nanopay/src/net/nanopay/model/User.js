@@ -36,7 +36,7 @@ foam.CLASS({
       value: 70
     }
   ],
-  
+
   tableColumns: [
     'id',
     'type',
@@ -148,13 +148,13 @@ foam.CLASS({
       },
       section: 'business'
     },
-    {
-      class: 'String',
-      name: 'jobTitle',
-      label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.',
-      section: 'business'
-    },
+//    {
+//      class: 'String',
+//      name: 'jobTitle',
+//      label: 'Job Title',
+//      documentation: 'The job title of the individual person, or real user.',
+//      section: 'business'
+//    },
     {
       class: 'Boolean',
       name: 'welcomeEmailSent',
