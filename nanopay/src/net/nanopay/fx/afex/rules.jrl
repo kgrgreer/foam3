@@ -14,7 +14,7 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true
 })
 r({
@@ -44,7 +44,7 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true
 })
 p({
@@ -70,7 +70,7 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true
 })
 p({
@@ -96,7 +96,7 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBusinessOnboardingRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true
 })
 p({

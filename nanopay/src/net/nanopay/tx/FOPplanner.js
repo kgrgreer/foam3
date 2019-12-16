@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.account.SecuritiesAccount',
     'net.nanopay.account.BrokerAccount',
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil'
   ],
 
 
@@ -27,9 +28,11 @@ foam.CLASS({
                                     @Override
                                     public void execute(X x) {
           Transaction tx = txq.getRequestTransaction();
-          if ( (! ( txq.getSourceAccount() instanceof BrokerAccount ) ) && (! (txq.getDestinationAccount() instanceof BrokerAccount ) ) ) {
+          if ( (! ( txq.getSourceAccount() instanceof BrokerAccount ) ) && (! (txq.getDestinationAccount() instanceof BrokerAccount ) ) && SafetyUtil.equals(txq.getSourceUnit(), txq.getDestinationUnit() )  ) {
             SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+
             plan.copyFrom(tx);
+            plan.setName("Digital Security Transaction");
             plan.setSourceCurrency(txq.getSourceUnit());
             plan.setDestinationCurrency(txq.getDestinationUnit());
 

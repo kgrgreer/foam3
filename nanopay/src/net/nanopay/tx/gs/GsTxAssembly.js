@@ -60,11 +60,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'String',
-      name: 'settleType',
-      documentation: 'one of either: DVP, FOP, Cash'
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.gs.ProgressBarData',
       name: 'pbd',
@@ -126,38 +121,48 @@ foam.CLASS({
         // find the send/receiver.
         GsTxCsvRow sourceRow = row2;
         GsTxCsvRow destRow = row1;
-        if ( row1.getCashUSD() < row2.getCashUSD() ) {
-          sourceRow = row1;
-          destRow = row2;
+
+        if (isCash(sourceRow)){
+          if ( row1.getCashUSD() < row2.getCashUSD() ) {
+            sourceRow = row1;
+            destRow = row2;
+          }
+        }
+        else {
+          if ( row1.getSecQty() < row2.getSecQty() ) {
+            sourceRow = row1;
+            destRow = row2;
+          }
         }
 
-        if (isCash(sourceRow)) {
+        if (isCash(sourceRow) ) {
           t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getCurrency());
           t.setDestinationCurrency(destRow.getCurrency());
 
           t.setAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
-          t.setDestinationAmount((long) Math.abs(destRow.getCashQty()));
+          t.setDestinationAmount(toLong(x,destRow.getCurrency(),destRow.getCashQty()));
         }
 
         else { // securities
         verifySecurity(x,sourceRow.getProductId());
+        if ( ! SafetyUtil.equals(sourceRow.getProductId(),destRow.getProductId()) )
+          System.out.println("limes "+sourceRow.getTransactionId());
           if(isDVP(sourceRow)){
             DVPTransaction tx = new DVPTransaction();
             tx.setSourcePaymentAccount(findAcc(x,destRow,true));
             tx.setDestinationPaymentAccount(findAcc(x,sourceRow,true));
-            tx.setPaymentDenomination(sourceRow.getCurrency());
             tx.setPaymentAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
+            tx.setDestinationPaymentAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
             t = tx;
-            System.out.println("ham.. have DVP");
           }
           t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getProductId());
           t.setDestinationCurrency(destRow.getProductId());
           t.setAmount(toLong(x,sourceRow.getProductId(),sourceRow.getSecQty()));
-          t.setDestinationAmount((long) Math.abs(destRow.getSecQty()));
+          t.setDestinationAmount(toLong(x,destRow.getProductId(),destRow.getSecQty()));
         }
         t = assembleIFLs(t,sourceRow,destRow);
 
@@ -176,23 +181,23 @@ foam.CLASS({
       javaCode: `
       DAO accountDAO = (DAO) x.get("localAccountDAO");
         Transaction t = new Transaction();
-        if ( row1.getCashUSD() < 0 ){
+       // if {
           //sending
-          if(isCash(row1)) {
+          if(isCash(row1) && ( row1.getCashUSD() < 0 )) {
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
             t.setSourceCurrency(row1.getCurrency());
             t.setDestinationCurrency("USD");
             t.setAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
-            t.setDestinationAmount((long) Math.abs(row1.getCashUSD()));
+            t.setDestinationAmount(toLong(x,"USD", row1.getCashUSD()));
           }
-          else {
+          if (! isCash(row1) && ( row1.getSecQty() < 0 )){ //sending some securities
             verifySecurity(x,row1.getProductId());
             if( isDVP(row1) ) {
 
               DVPTransaction tx = new DVPTransaction();
               tx.setPaymentAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
-              tx.setPaymentDenomination(row1.getMarketValueCCy());
+              tx.setDestinationPaymentAmount(toLong(x,"USD",row1.getCashUSD()));
               tx.setDestinationPaymentAccount(findAcc(x,row1,true)); // get the cash version of this account
               tx.setSourcePaymentAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
               t = tx;
@@ -202,14 +207,14 @@ foam.CLASS({
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
             t.setSourceCurrency(row1.getProductId());
-            t.setDestinationCurrency(t.getSourceCurrency());
-            t.setAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
-            t.setDestinationAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
+            t.setDestinationCurrency(row1.getProductId());
+            t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
+            t.setDestinationAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
           }
-        }
-        else {
+        //}
+        //else {
           //receiving
-          if(isCash(row1)) {
+          if(isCash(row1) && ( row1.getCashUSD() > 0 )) {
             t.setSourceAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setSourceCurrency("USD");
@@ -217,14 +222,14 @@ foam.CLASS({
             t.setAmount(toLong(x,"USD",row1.getCashUSD()));
             t.setDestinationAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
           }
-          else {
+          if ( ! isCash(row1) && ( row1.getSecQty() > 0 )) {
           verifySecurity(x,row1.getProductId());
             if( isDVP(row1) ) {
               DVPTransaction tx = new DVPTransaction();
               tx.setSourcePaymentAccount(findAcc(x,row1,true)); //se me
               tx.setDestinationPaymentAccount(((Account)accountDAO.find( MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId()); //yep
-              tx.setPaymentAmount(toLong(x,row1.getMarketValueCCy(),row1.getCashQty()));
-              tx.setPaymentDenomination(row1.getMarketValueCCy());
+              tx.setPaymentAmount(toLong(x,"USD",row1.getCashUSD()));
+              tx.setDestinationPaymentAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
               t = tx;
               // add cash peice
             }
@@ -232,11 +237,11 @@ foam.CLASS({
             t.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationCurrency(row1.getProductId());
-            t.setSourceCurrency(t.getDestinationCurrency());
+            t.setSourceCurrency(row1.getProductId());
             t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
-            t.setDestinationAmount(t.getAmount());
+            t.setDestinationAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
           }
-        }
+
           t = assembleIFLs(t,row1,row1);
           t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
 
@@ -316,17 +321,19 @@ foam.CLASS({
         Account source = txn.findSourceAccount(x);
         Account b = null;
         if ( txn instanceof DVPTransaction ) {
-          System.out.println("have a DVP transaction cheese");
           Transaction txn2 = new Transaction();
           txn2.setDestinationAccount(((DVPTransaction) txn).getDestinationPaymentAccount());
           txn2.setSourceAccount(((DVPTransaction) txn).getSourcePaymentAccount());
           txn2.setAmount(((DVPTransaction) txn).getPaymentAmount());
-          txn2.setDestinationCurrency(((DVPTransaction) txn).getPaymentDenomination());
-          txn2.setSourceCurrency(((DVPTransaction) txn).getPaymentDenomination());
+          txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
+          txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
+          txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
           verifyBalance(x,txn2);
         }
 
         if ( ((DAO) x.get("currencyDAO")).find(txn.getSourceCurrency()) == null ) {
+
+          if ( txn.findSourceAccount(x) instanceof BrokerAccount ) return true; //for a security txn CI we dont need topups.
 
           long remainder = (long) source.findBalance(x) - txn.getAmount(); // is this the correct account ?
           if ( remainder < 0 ) {
@@ -363,7 +370,7 @@ foam.CLASS({
            Transaction ci = new Transaction.Builder(x)
              .setDestinationAccount(source.getId())
              .setSourceAccount(b.getId())
-             .setDestinationCurrency(txn.getSourceCurrency())
+             .setDestinationCurrency(source.getDenomination())
              .setSourceCurrency(b.getDenomination())
              .setDestinationAmount(topUp)
              .setLastStatusChange(txn.getLastStatusChange())
@@ -390,7 +397,8 @@ foam.CLASS({
               w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
             }
             if ( w == 0) System.out.println("uuuuhhhohhh");
-            ci.setAmount((long) ((double) ci.getDestinationAmount()*w));
+            ci.setAmount(toLong(x,ci.getSourceCurrency(), (double) ci.getDestinationAmount()*w));
+            //System.out.println(" calculated w of "+ci.getAmount()+ " in curr "+ ci.getSourceCurrency() + " "+b.getDenomination());
           }
           if (! (b instanceof BankAccount) ){
             verifyBalance(x,ci);
@@ -554,9 +562,9 @@ foam.CLASS({
         foam.core.Currency cur = (foam.core.Currency) ((DAO) x.get("currencyDAO")).find(curr);
         if ( cur != null ) {
           long precision = cur.getPrecision();
-          return (long) (Math.floor(amount * (10^precision)));
+          return (long) Math.floor((Math.abs(amount * (10^precision))));
         }
-        return (long) (Math.floor(amount));
+        return (long) Math.floor((Math.abs(amount)));
       `
     }
   ]

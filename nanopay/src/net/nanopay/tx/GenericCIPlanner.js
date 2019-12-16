@@ -65,12 +65,12 @@ foam.CLASS({
       all.add(new Transfer.Builder(x)
           .setDescription(trustAccount.getName()+" Cash-In")
           .setAccount(trustAccount.getId())
-          .setAmount(-t.getTotal())
+          .setAmount(-t.getAmount())
           .build());
       all.add(new Transfer.Builder(x)
           .setDescription("Cash-In")
           .setAccount(destinationAccount.getId())
-          .setAmount(t.getTotal())
+          .setAmount(t.getAmount())
           .build());
       t.setTransfers((Transfer[]) all.toArray(new Transfer[0]));
       t.setIsQuoted(true);
@@ -90,12 +90,12 @@ foam.CLASS({
       all.add(new Transfer.Builder(x)
         .setDescription(trustAccount.getName()+" Cash-Out")
         .setAccount(trustAccount.getId())
-        .setAmount(t.getTotal())
+        .setAmount(t.getAmount())
         .build());
       all.add( new Transfer.Builder(x)
         .setDescription("Cash-Out")
         .setAccount(sourceAccount.getId())
-        .setAmount(-t.getTotal())
+        .setAmount(-t.getAmount())
         .build());
       t.setTransfers((Transfer[]) all.toArray(new Transfer[0]));
       t.setIsQuoted(true);

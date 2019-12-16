@@ -50,6 +50,7 @@ foam.CLASS({
     if ( quote.getSourceAccount() instanceof DigitalAccount &&
          quote.getDestinationAccount() instanceof DigitalAccount &&
          SafetyUtil.equals(txn.getSourceCurrency(), txn.getDestinationCurrency()) ) {
+
       Transaction dt;
       if ( ! ( txn instanceof DigitalTransaction ) ) {
         dt = new DigitalTransaction.Builder(x).build();
@@ -60,6 +61,7 @@ foam.CLASS({
       dt.setTransfers(createTransfers(dt));
       dt.setIsQuoted(true);
       quote.addPlan(dt);
+      quote.setPlan(dt);
     }
     return super.put_(x, quote);
     `
@@ -76,8 +78,8 @@ foam.CLASS({
       javaCode: `
         X x = getX();
         List all = new ArrayList();
-        all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getAmount()).build());
+        all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getDestinationAmount()).build());
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

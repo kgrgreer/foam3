@@ -42,7 +42,6 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
     DAO d = ((DAO) x.get("securityPlannerDAO"));
     quote = (TransactionQuote) d.put(quote);
-    System.out.println("did some security stuff, "+ quote.getPlan());
     if ( quote.getPlan() != null )
       return quote;
     return super.put_(x, quote);

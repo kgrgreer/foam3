@@ -179,12 +179,12 @@ p({
     dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
       .setDelegate(dao)
       .build();
+    dao = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
+          .setDelegate(dao)
+          .build();
     dao = new net.nanopay.tx.GenericCIPlanner.Builder(x)
           .setDelegate(dao)
           .build();
-    dao = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
     dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
     dao = new net.nanopay.tx.SecurityPlanDAO(x, dao);
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
@@ -201,6 +201,4 @@ p({
       .build();
   """
 })
-p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
-p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})

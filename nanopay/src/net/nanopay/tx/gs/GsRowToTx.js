@@ -65,7 +65,7 @@ foam.CLASS({
         pbd.setStatus("Parsing Transaction: 0 of " + am);
         pbdDAO.put(pbd);
 
-        SyncAssemblyLine transactionProcessor = new SyncAssemblyLine();
+        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
 
         List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
            .select(new ArraySink())).getArray();
@@ -75,6 +75,7 @@ foam.CLASS({
         // -- begin Job creation and execution
         int i = 0;
         System.out.println("I have: "+ rows.size() + " rows..");
+
         for ( GsTxCsvRow row1 : rows ) {
         //System.out.println("on iteration: "+ i);
         i++;
@@ -112,13 +113,11 @@ foam.CLASS({
             continue;
           }
           job.setRow2( (GsTxCsvRow) arr[0] );
-          job.setSettleType("Cash");
-
           }
           else {
-            if ( row1.getMarketValue() < 0 ) continue;
+            if ( row1.getSecQty() < 0 ) continue;
             Object [] arr = ( (ArraySink) gsTxCsvRowDAO
-              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
+              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY, -row1.getSecQty()))
               .limit(1)
               .select(new ArraySink())).getArray().toArray();
             if ( arr.length == 0 ) {
@@ -126,7 +125,6 @@ foam.CLASS({
               continue;
             }
             job.setRow2( (GsTxCsvRow) arr[0] );
-            job.setSettleType(row1.getSettleType());
           }
 
           transactionProcessor.enqueue(job);

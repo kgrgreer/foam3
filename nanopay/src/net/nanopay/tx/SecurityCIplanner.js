@@ -31,7 +31,6 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
                             @Override
                             public void execute(X x) {
-        System.out.println("should be able to see this, inside securityCI action");
         if ( txq.getSourceAccount() instanceof BrokerAccount ) { // cashin
         // -- do this better..
           SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
@@ -52,7 +51,6 @@ foam.CLASS({
             secTrust.getSecurityAccount(x,txq.getDestinationUnit()).getId(), true)
           );
           plan.setIsQuoted(true);
-          System.out.println("should be able to see this, made CI");
           txq.setPlan(plan);
         }
 
