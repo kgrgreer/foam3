@@ -24,8 +24,6 @@ foam.CLASS({
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'java.math.RoundingMode',
-    'java.text.DecimalFormat',
     'java.time.LocalDateTime',
     'java.time.ZoneId',
     'java.util.Date',
