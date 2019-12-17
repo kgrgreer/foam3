@@ -60,7 +60,7 @@ foam.CLASS({
 
       CITransaction t = new CITransaction.Builder(x).build();
       t.copyFrom(request);
-      TrustAccount trustAccount = TrustAccount.find(getX(),sourceAccount);
+      TrustAccount trustAccount = TrustAccount.find(x,sourceAccount);
       List all = new ArrayList();
       all.add(new Transfer.Builder(x)
           .setDescription(trustAccount.getName()+" Cash-In")
