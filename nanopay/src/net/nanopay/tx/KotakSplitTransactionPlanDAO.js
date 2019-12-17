@@ -24,6 +24,8 @@ foam.CLASS({
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'java.math.RoundingMode',
+    'java.text.DecimalFormat',
     'java.time.LocalDateTime',
     'java.time.ZoneId',
     'java.util.Date',
@@ -61,8 +63,8 @@ foam.CLASS({
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
       
       // calculate source amount 
-      Long amount =  new Double(request.getDestinationAmount()/fxQuote.getRate()).longValue();
-      request.setAmount(amount);
+      Double amount =  Math.ceil(request.getDestinationAmount()/100.00/fxQuote.getRate()*100);
+      request.setAmount(amount.longValue());
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(request);
@@ -152,7 +154,7 @@ foam.CLASS({
       javaCode: `
         KotakCredentials credentials = (KotakCredentials) getX().get("kotakCredentials");
 
-        if ( request.getDestinationAmount() >= credentials.getTradePurposeCodeLimit() ) {
+        if ( request.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
           throw new RuntimeException("Exceed INR Transaction limit");
         }
         
@@ -189,7 +191,7 @@ foam.CLASS({
           }
         }
         
-        if ( limit + request.getDestinationAmount() >= credentials.getTradePurposeCodeLimit() ) {
+        if ( limit + request.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
           throw new RuntimeException("Exceed INR Transaction limit");
         }
       `
