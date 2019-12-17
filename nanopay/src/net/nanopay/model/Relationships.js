@@ -95,7 +95,7 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   forwardName: 'children',
   cardinality: '1:*',
-  targetProperty: {
+  /*targetProperty: {
     section: 'parentSection',
     order: 4,
     view: function(_, X) {
@@ -106,9 +106,9 @@ foam.RELATIONSHIP({
         placeholder: 'select Parent',
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
-    },
-    readPermissionRequired: true
-  }
+    },*/
+   // readPermissionRequired: true
+  //}
 });
 
 // A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`

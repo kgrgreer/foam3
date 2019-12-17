@@ -10,10 +10,12 @@ foam.CLASS({
     'foam.dao.DAO',
     'net.nanopay.tx.DVPTransaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.SecurityTransaction',
     'net.nanopay.tx.Transfer',
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'java.util.List',
     'java.util.ArrayList'
   ],
@@ -23,11 +25,16 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+      agency.submit(x, new ContextAgent() {
+                                  @Override
+                                  public void execute(X x) {
         TransactionQuote txq = (TransactionQuote) obj;
         DVPTransaction tx = (DVPTransaction) txq.getRequestTransaction();
         CompositeTransaction ct = new CompositeTransaction.Builder(x).build();
+        ct.copyFrom(tx);
+        ct.setIsQuoted(true);
         SecurityTransaction fop = new SecurityTransaction.Builder(x).build();
-        DigitalTransaction dt = new DigitalTransaction.Builder(x).build();
+        Transaction dt = new Transaction.Builder(x).build();
         DAO quoter = ((DAO) x.get("localTransactionQuotePlanDAO"));
 
         // create the FOP transaction
@@ -35,15 +42,19 @@ foam.CLASS({
         fop.setDestinationAccount(tx.getDestinationAccount());
         fop.setSourceCurrency(tx.getSourceCurrency());
         fop.setDestinationCurrency(tx.getDestinationCurrency());
+        fop.setAmount(tx.getAmount());
         TransactionQuote tq1 = new TransactionQuote.Builder(x).setRequestTransaction(fop).build();
         tq1 = (TransactionQuote) quoter.put(tq1);
         ct.addNext(tq1.getPlan());
 
         //create the Payment digital transaction
-        dt.setSourceCurrency(tx.getPaymentDenomination());
-        dt.setDestinationCurrency(tx.getPaymentDenomination());
         dt.setSourceAccount(tx.getSourcePaymentAccount());
         dt.setDestinationAccount(tx.getDestinationPaymentAccount());
+        dt.setSourceCurrency(dt.findSourceAccount(x).getDenomination());
+        dt.setDestinationCurrency(dt.findDestinationAccount(x).getDenomination());
+        dt.setAmount(tx.getPaymentAmount());
+        dt.setDestinationAmount(tx.getDestinationPaymentAmount());
+
         TransactionQuote tq2 = new TransactionQuote.Builder(x).setRequestTransaction(dt).build();
         tq2 = (TransactionQuote) quoter.put(tq2);
         ct.addNext(tq2.getPlan());
@@ -52,7 +63,8 @@ foam.CLASS({
         tx.addNext(ct);
         tx.setIsQuoted(true);
         tx.setTransfers(new Transfer[0]);
-        txq.addPlan(tx);
+        txq.setPlan(tx);
+        }}, "DVP Security Transaction Planner");
       `
     }
   ]
