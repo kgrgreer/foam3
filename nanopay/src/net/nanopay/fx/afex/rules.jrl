@@ -1,4 +1,4 @@
-p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":false,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":true,"saveHistory":true})
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Add FX Currency Permission to Business",
@@ -14,7 +14,7 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule"
   },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true
 })
 r({
@@ -44,7 +44,7 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
   },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true
 })
 p({
@@ -70,7 +70,7 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
   },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true
 })
 p({
@@ -96,7 +96,7 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBusinessOnboardingRule"
   },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true
 })
 p({
@@ -147,24 +147,6 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule2"
-  },
-  "enabled":false,
-  "saveHistory":true
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"Add IN Currency Permission to Business",
-  "documentation":"Rule to add IN currency and strategizer Permission when a business is pushed to AFEX and AFEXBusiness is created.",
-  "priority":100,
-  "ruleGroup":"onboarding",
-  "daoKey":"afexBusinessDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
-  },
-  "action":{
-    "class":"net.nanopay.fx.AddINCurrencyPermissionRule"
   },
   "enabled":false,
   "saveHistory":true
