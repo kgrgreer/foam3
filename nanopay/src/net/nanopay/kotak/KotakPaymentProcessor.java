@@ -89,7 +89,7 @@ public class KotakPaymentProcessor implements ContextAgent {
 
           String remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
           String beneACType   = destinationBankAccount.getBeneAccountType();
-          String relationShip = destinationBankAccount.getAccountRelationship();
+          String relationShip = destinationBankAccount.getAccountRelationship().replace("/", " ");
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
