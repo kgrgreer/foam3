@@ -227,7 +227,7 @@ foam.CLASS({
     { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' },
     { name: 'UNABLE_TO_PAY_TITLE', message: '*NOTICE: CANNOT PAY TO THIS CURRENCY.' },
     { name: 'CANNOT_PAY_TO_CURRENCY', message: 'Sorry, you cannot pay to this currency. You require enabling FX on our platform to complete the payment.' },
-    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit, you have ' }
+    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit for payments to India. For help, contact support at support@ablii.com' }
 
   ],
 
