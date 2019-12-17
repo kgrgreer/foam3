@@ -13,9 +13,7 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.SecurityAccount',
     'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count',
-    'foam.dao.ArraySink',
-    'java.util.ArrayList',
+    'foam.mlang.sink.Count'
   ],
 
   searchColumns: [

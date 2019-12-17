@@ -470,7 +470,6 @@ foam.CLASS({
           accountDAO.put(sourceTrust);
           accountDAO.put(sourceBank);
           }
-
           if (SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()))
             return;
           TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Trust Account"));

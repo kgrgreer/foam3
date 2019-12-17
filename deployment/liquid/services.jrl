@@ -113,10 +113,7 @@ p({
     import foam.dao.DAO;
     DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
-    dao = new net.nanopay.liquidity.rules.account.AccountApprovalsInterceptorDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    
+
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)

@@ -55,7 +55,7 @@ p({
   "action": {
     "class": "net.nanopay.liquidity.rules.account.AccountCreateApproval"
   },
-  "enabled": true,
+  "enabled": false,
   "saveHistory": true
 })
 
@@ -72,7 +72,7 @@ p({
   "action": {
     "class": "net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovals"
   },
-  "enabled": true,
+  "enabled": false,
   "saveHistory": true
 })
 

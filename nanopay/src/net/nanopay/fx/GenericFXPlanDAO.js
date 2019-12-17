@@ -38,7 +38,7 @@ foam.CLASS({
 
             // has source and destination but no rate or has all 3.
             if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
-              quote.setPlan(buildFxTransaction_(x,txn));
+              quote.setPlan(buildFxTransaction_(getX(),txn));
               return quote;//super.put_(x,quote);
             }
           }
