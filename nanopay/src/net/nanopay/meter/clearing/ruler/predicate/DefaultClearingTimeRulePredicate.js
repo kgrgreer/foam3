@@ -11,6 +11,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
+    'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'static foam.mlang.MLang.*'
@@ -23,7 +24,8 @@ foam.CLASS({
         return AND(
           OR(
             EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
-            EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
+            EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true),
+            EQ(DOT(NEW_OBJ, INSTANCE_OF(VerificationTransaction.class)), true)
           ),
           NEQ(DOT(OLD_OBJ, Transaction.STATUS), TransactionStatus.SENT),
           EQ(DOT(NEW_OBJ, Transaction.STATUS), TransactionStatus.SENT)

@@ -1452,4 +1452,79 @@ p({
   """
 })
 
-p({"class":"foam.nanos.script.Script","id":"create notification settings for existing users","description":"Creates notification settings for existing users","code":"import foam.nanos.auth.User;\nimport net.nanopay.model.Business;\nimport foam.dao.DAO;\nimport foam.nanos.notification.NotificationSetting;\nimport foam.nanos.notification.EmailSetting;\nimport foam.dao.ArraySink;\nimport static foam.mlang.MLang.*;\nimport foam.mlang.predicate.Predicate;\nimport foam.mlang.sink.Count;\n\nuser = (User) x.get(\"user\");\nuserDAO = (DAO) x.get(\"bareUserDAO\");\nagentJunctionDAO = (DAO) x.get(\"agentJunctionDAO\");\nnotificationSettingDAO = (DAO) x.get(\"notificationSettingDAO\");\n\nusers = userDAO.select(new ArraySink()).getArray();\n\nfor ( User user : users ) {\n\nnotificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());\nemailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());\n\nprint(emailSetting.getValue());\nif (notificationSetting.getValue() <= 0) {\nnotificationSetting = new NotificationSetting();\nnotificationSetting.setOwner(user.getId());\nnotificationSettingDAO.put(notificationSetting);\nprint(\"Notification Setting created for user: \" + user.getId());\n}\n\nif ( ! ( user instanceof Business ) ) {\nif (emailSetting.getValue() <= 0) {\nemailsetting = new EmailSetting();\nemailsetting.setOwner(user.getId());\nnotificationSettingDAO.put(emailsetting);\nprint(\"Email Setting created for user: \" + user.getId());\n}\n}\n}\n\njunctions = agentJunctionDAO.select(new ArraySink()).getArray();\n\nfor ( junction : junctions ) {\njunctionId = new foam.nanos.auth.UserUserJunctionId();\njunctionId.setSourceId(junction.getSourceId());\njunctionId.setTargetId(junction.getTargetId());\n\nnotificationSettings = notificationSettingDAO.where(AND(new Predicate [] {\nNOT(INSTANCE_OF(EmailSetting.class)),\nEQ(NotificationSetting.USER_JUNCTION, junctionId)\n})).select(new Count()).getValue();\n\nemailSettings = notificationSettingDAO.where(AND(new Predicate [] {\nINSTANCE_OF(EmailSetting.class),\nEQ(NotificationSetting.USER_JUNCTION, junctionId)\n})).select(new Count()).getValue();\n\nprint(notificationSettings);\nif ( notificationSettings <= 0 ){\nnotificationSetting = new NotificationSetting();\nnotificationSetting.setUserJunction(junctionId);\nnotificationSettingDAO.put(notificationSetting);\nprint(\"Notification setting created for junction: sourceId: \" + junctionId.getSourceId() + \" targetId: \" + junctionId.getTargetId());\n}\n\nif ( emailSettings <= 0 ) {\nemailsetting = new EmailSetting();\nemailsetting.setUserJunction(junctionId);\nnotificationSettingDAO.put(emailsetting);\nprint(\"Email setting created for junction: sourceId: \" + junctionId.getSourceId() + \" targetId: \" + junctionId.getTargetId());\n}\n}\nprint(\"done\");"})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"create notification settings for existing users",
+  "description":"Creates notification settings for existing users",
+  "code":"""
+    import foam.nanos.auth.User;
+    import net.nanopay.model.Business;
+    import foam.dao.DAO;
+    import foam.nanos.notification.NotificationSetting;
+    import foam.nanos.notification.EmailSetting;
+    import foam.dao.ArraySink;
+    import static foam.mlang.MLang.*;
+    import foam.mlang.predicate.Predicate;
+    import foam.mlang.sink.Count;
+    
+    user = (User) x.get("user");
+    userDAO = (DAO) x.get("bareUserDAO");
+    agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+    users = userDAO.select(new ArraySink()).getArray();
+    
+    for ( User user : users ) {
+      notificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());
+      emailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());
+      
+      if (notificationSetting.getValue() <= 0) {
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setOwner(user.getId());
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification Setting created for user: " + user.getId());
+      }
+      
+      if ( ! ( user instanceof Business ) ) {
+        if (emailSetting.getValue() <= 0) {
+          emailsetting = new EmailSetting();
+          emailsetting.setOwner(user.getId());
+          notificationSettingDAO.put(emailsetting);
+          print("Email Setting created for user: " + user.getId());
+        }
+      }
+    }
+    
+    junctions = agentJunctionDAO.select(new ArraySink()).getArray();
+    for ( junction : junctions ) {
+      junctionId = new foam.nanos.auth.UserUserJunctionId();
+      junctionId.setSourceId(junction.getSourceId());
+      junctionId.setTargetId(junction.getTargetId());
+      
+      notificationSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        NOT(INSTANCE_OF(EmailSetting.class)),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+      
+      emailSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        INSTANCE_OF(EmailSetting.class),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+            
+      if ( notificationSettings <= 0 ){
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+      
+      if ( emailSettings <= 0 ) {
+        emailsetting = new EmailSetting();
+        emailsetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(emailsetting);
+        print("Email setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+    }
+    
+    print("done");
+  """
+})

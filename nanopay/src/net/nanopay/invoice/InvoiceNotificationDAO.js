@@ -47,6 +47,7 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
         User agent = (User) x.get("agent");
+        User user = (User) x.get("user");
 
         String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
 
@@ -72,7 +73,7 @@ foam.CLASS({
           &&
           invoice.getPaymentMethod() == PaymentStatus.CHEQUE; //PaymentStatus.CHEQUE is used when we 'Mark as Complete'
 
-        boolean isARecievable = invoice.getCreatedBy() == invoice.getPayeeId();
+        boolean isARecievable = user.getId() == invoice.getPayeeId();
         boolean invoiceIsBeingPaidButNotComplete =
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PROCESSING )
           &&

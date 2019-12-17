@@ -1,12 +1,14 @@
-package net.nanopay.tx;
+package net.nanopay.meter.report;
 
 import foam.core.Currency;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
-import foam.util.SafetyUtil;
 import net.nanopay.meter.reports.AbstractReport;
+import net.nanopay.tx.BulkTransaction;
+import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.HistoricStatus;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -15,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
@@ -39,20 +41,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
     response.setContentType("text/csv");
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
 
-    SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
-
-    Date startDate = null;
-    try {
-      startDate = formatter.parse(req.getParameter("startDate"));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    Date endDate = null;
-    try {
-      endDate = formatter.parse(req.getParameter("endDate"));
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+    LocalDate startDate = LocalDate.parse(req.getParameter("startDate"));
+    LocalDate endDate = LocalDate.parse(req.getParameter("endDate"));
 
     try {
       PrintWriter writer = response.getWriter();
@@ -75,7 +65,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       long ciAmountCAD = 0;
       long coAmountCAD = 0;
-      long coFee = 0;
+      long totalFee = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
         .where(
@@ -91,11 +81,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       for ( Transaction txn : transactionList ) {
         HistoricStatus[] statusHistoryArr = txn.getStatusHistory();
         for ( int j = statusHistoryArr.length - 1; j >= 0; j-- ) {
-          if ( ! statusHistoryArr[j].getTimeStamp().after(endDate)
-            && ! statusHistoryArr[j].getTimeStamp().before(startDate) ) {
+          if ( ! statusHistoryArr[j].getTimeStamp().after( Date.from(endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()) )
+            && ! statusHistoryArr[j].getTimeStamp().before( Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())) ) {
 
             Currency currency = (Currency) currencyDAO.find(txn.getSourceCurrency());
-
             Transaction rootTxn = txn.findRoot(x);
 
             String bodyString = this.buildCSVLine(
@@ -120,7 +109,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD = ciAmountCAD + txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD = coAmountCAD + txn.getAmount();
-                coFee = coFee + txn.getCost();
+              } else if (txn instanceof DigitalTransaction) {
+                totalFee = totalFee + txn.getCost();
               }
             }
             break;
@@ -160,8 +150,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         ""
       );
 
-      String sumFee = currencyCAD.format(coFee);
-      if (coFee <= MIN_MONTHLY_PAYMENT ) {
+      String sumFee = currencyCAD.format(totalFee);
+      if ( totalFee <= MIN_MONTHLY_PAYMENT ) {
         sumFee = sumFee
           + "(Minimum Payment: " + currencyCAD.format(MIN_MONTHLY_PAYMENT) + ")";
       }
@@ -171,13 +161,13 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         "",
         "",
         "",
-        "CO Fee",
+        "Total Fee",
+        "",
+        "",
         "",
         "",
         StringEscapeUtils.escapeCsv(sumFee),
         currencyCAD.getId(),
-        "",
-        "",
         ""
       );
 

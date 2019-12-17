@@ -81,14 +81,6 @@ foam.CLASS({
                       group.getPermissions(x).add(permission);
                     }
 
-                    // add permission for INBankAccount strategizer if country of business is Canada
-                    if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b")) && businessAddress.getCountryId().equals("CA") ) {
-                      permission = new Permission.Builder(x).setId("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b").build();
-                      group.getPermissions(x).add(permission);
-                      permission = new Permission.Builder(x).setId("currency.read.INR").build();
-                      group.getPermissions(x).add(permission);
-                    }
-
                   } catch(Throwable t) {
                     logger.error("Error adding " + permissionString + " to business " + business.getId(), t);
                   }
@@ -118,9 +110,8 @@ foam.CLASS({
         EmailMessage         message        = new EmailMessage();
         Map<String, Object>  args           = new HashMap<>();
         DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
-        Group                group          = (Group) localGroupDAO.find(business.getGroup());
-        AppConfig            appConfig      = group.getAppConfig(x);
-        String               url            = appConfig.getUrl().replaceAll("/$", "");
+        Group                group          = business.findGroup(x);
+        String               url            = group.getUrl().replaceAll("/$", "");
 
         message.setTo(new String[]{business.getEmail()});
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
@@ -130,7 +121,7 @@ foam.CLASS({
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
         args.put("link",   url + "#sme.main.dashboard");
-        args.put("sendTo", business.getEmail());
+        args.put("sendTo", User.EMAIL);
         args.put("name", signingOfficer.getFirstName());
 
         try {
