@@ -94,7 +94,7 @@ foam.CLASS({
         else
           t = parseExternal(getX(),getRow1());
           setTransaction(t);
-
+        checkTrusty(getX(), getTransaction());
       `
     },
     {
@@ -148,7 +148,6 @@ foam.CLASS({
         else { // securities
         verifySecurity(x,sourceRow.getProductId());
         if ( ! SafetyUtil.equals(sourceRow.getProductId(),destRow.getProductId()) )
-          System.out.println("limes "+sourceRow.getTransactionId());
           if(isDVP(sourceRow)){
             DVPTransaction tx = new DVPTransaction();
             tx.setSourcePaymentAccount(findAcc(x,destRow,true));
@@ -449,7 +448,13 @@ foam.CLASS({
       ],
       javaCode: `
          DAO accountDAO = ((DAO) x.get("localAccountDAO"));
-
+          if( txn instanceof DVPTransaction ){
+            Transaction txn2 = new Transaction ();
+            txn2.setSourceCurrency(((DVPTransaction) txn ).findSourcePaymentAccount(getX()).getDenomination());
+            txn2.setDestinationCurrency(((DVPTransaction) txn ).findDestinationPaymentAccount(getX()).getDenomination());
+            checkTrusty(x,txn2);
+            return;
+          }
          if( ((DAO) x.get("currencyDAO")).find(txn.getSourceCurrency()) == null ) return;
           TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
           //BankAccount sourceBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Bank Account"));

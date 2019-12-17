@@ -127,11 +127,11 @@ p({
       .setOf(Account.getOwnClassInfo())
       .setIndex(new foam.core.PropertyInfo[] {
         net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
-        net.nanopay.account.Account.OWNER, 
-        net.nanopay.account.Account.NAME, 
-        net.nanopay.account.Account.ID, 
-        net.nanopay.account.Account.ENABLED, 
-        net.nanopay.account.Account.IS_DEFAULT, 
+        net.nanopay.account.Account.OWNER,
+        net.nanopay.account.Account.NAME,
+        net.nanopay.account.Account.ID,
+        net.nanopay.account.Account.ENABLED,
+        net.nanopay.account.Account.IS_DEFAULT,
         net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
       .setAuthorize(false)
