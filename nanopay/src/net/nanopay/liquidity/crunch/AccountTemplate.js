@@ -18,6 +18,13 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'List',
+      of: 'net.nanopay.liquidity.roles.Role',
+      view: () => { // broken
+        return {
+          class: 'foam.u2.view.ReferenceArrayView',
+          daoKey: 'accountDAO'
+        };
+      },
       javaType: 'java.util.List<Long>'
     }
   ],

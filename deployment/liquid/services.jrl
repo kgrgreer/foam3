@@ -510,3 +510,18 @@ p({
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"accountTemplateDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("accountTemplates")
+      .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
+      .setAuthorize(false) // authorize this later on
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.AccountTemplate\"}"
+})
