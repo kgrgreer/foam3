@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TxLimitRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
+  imports: [
+    'currencyDAO',
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
@@ -93,7 +97,28 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
       },
+      tableCellFormatter: function(value, obj) {
+        if ( obj.denomination ) {
+          obj.currencyDAO.find(obj.denomination).then(function(currency) {
+              if ( currency ) {
+                this.add( currency.format(value) );
+              } else {
+                this.add( value );
+              }
+          }.bind(this));
+        } else {
+          this.add( value );
+        }
+      },
       tableWidth: 200,
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'denomination',
+      targetDAOKey: 'currencyDAO',
+      documentation: 'The unit of measure of the transaction limit.',
+      section: 'basicInfo',
     },
     {
       class: 'foam.core.Enum',

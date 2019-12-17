@@ -74,6 +74,7 @@ public class TxLimitRuleTest
     } else if (entityType == TxLimitEntityType.ACCOUNT) {
       txLimitRule.setAccountToLimit(sourceAccount.getId());
     }
+    txLimitRule.setDenomination("CAD");
     txLimitRule.setSend(true);
     txLimitRule.setLimit(limit);
     txLimitRule.setPeriod(period);
@@ -86,6 +87,7 @@ public class TxLimitRuleTest
       Transaction transaction = new Transaction();
       transaction.setSourceAccount(sourceAccount.getId());
       transaction.setDestinationAccount(destinationAccount.getId());
+      transaction.setSourceCurrency("CAD");
       transaction.setAmount(txAmounts[i]);
       transaction.setStatus(TransactionStatus.COMPLETED);
       transactionDAO.put(transaction);
@@ -95,6 +97,7 @@ public class TxLimitRuleTest
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(sourceAccount.getId());
     transaction.setDestinationAccount(destinationAccount.getId());
+    transaction.setSourceCurrency("CAD");
     transaction.setAmount(txAmounts[txAmounts.length - 1]);
     transaction.setStatus(TransactionStatus.COMPLETED);
 

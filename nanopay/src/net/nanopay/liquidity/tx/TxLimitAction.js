@@ -18,7 +18,9 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
     'net.nanopay.tx.ruler.TransactionLimitState',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.util.Frequency',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FXQuote'
   ],
 
   methods: [
@@ -46,18 +48,40 @@ foam.CLASS({
         txLimitRule.getCurrentLimits().put(key, limitState);
       }
 
-      // Compute the available limit
+      // Amount of the transaction in the transaction source currency
+      long amount = transaction.getAmount();
+
+      // Retrieve the currencies
       DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
-      Currency currency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-      String availableLimit = (currency != null) ?
-        currency.format(txLimitRule.getLimit() - limitState.getSpent()) :
+      Currency transactionCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
+      Currency ruleCurrency = (Currency) currencyDAO.find(txLimitRule.getDenomination());
+
+      // Convert to rule currency if necessary
+      if ( ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
+        User user = (User) x.get("user");
+        FXService fxService = (FXService) x.get("fxService");
+        
+        FXQuote fxQuote = fxService.getFXRate(transactionCurrency.getId(), ruleCurrency.getId(), amount, 0l, "Buy", null, user.getId(), null);
+        if (fxQuote.getTargetAmount() == 0l) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("FX conversion missing for " + transactionCurrency.getId() + " -> " + ruleCurrency.getId() + ". Skipping aggregation on transaction limit: " + txLimitRule.getId());
+
+          // Skip transaction limit if there is no currency conversion
+          return;
+        }
+
+        amount = fxQuote.getTargetAmount();
+      }
+      
+      // Compute the amounts
+      String availableLimit = (ruleCurrency != null) ?
+        ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
         String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
-      String txAmount = (currency != null) ?
-        currency.format(transaction.getAmount()) :
-        String.format("%s", transaction.getAmount());
+      String txAmount = (transactionCurrency != null) ?
+        transactionCurrency.format(amount) :
+        String.format("%s", amount);
       Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
       User user = account.findOwner(x);
-        
 
       // Add information if this is a probe
       if ( testedRule != null ) {
@@ -73,7 +97,7 @@ foam.CLASS({
       }
 
       // Check the limit
-      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), transaction.getAmount()) ) {
+      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
         throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
           + " transaction limit was exceeded with a " + txAmount + " transaction " 
           + (txLimitRule.getApplyLimitTo() != TxLimitEntityType.TRANSACTION ? (txLimitRule.getSend() ? "from " : "to ") : "on ")
@@ -84,9 +108,15 @@ foam.CLASS({
           + ". If you require further assistance, please contact us.");
       }
 
+      // Note: there is a race condition here between the check call above and the updateSpent call below
+      //       users could submit two transactions in close enough proximity and could get through these limits
+      //       if they both checked before one of them updated the txLimitState
+
       // Update the amount spent in the limit state
+      final long spentAmount = amount;
+      final Frequency period = txLimitRule.getPeriod();
       final TransactionLimitState txLimitState = limitState;
-      agency.submit(x, x1 -> txLimitState.updateSpent(Long.valueOf(transaction.getAmount())), "Transaciton limits proccessing amount spent.");
+      agency.submit(x, x1 -> txLimitState.updateSpent(Long.valueOf(spentAmount), period), "Transaciton limits proccessing amount spent.");
       `
     },
     {
@@ -110,6 +140,8 @@ foam.CLASS({
           .append(":")
           .append(rule.getApplyLimitTo() == TxLimitEntityType.USER ? rule.getUserToLimit() :
                   rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() : 0)
+          .append(":")
+          .append(rule.getDenomination())
           .append(":")
           .append(rule.getPeriod());
         return sb.toString();
