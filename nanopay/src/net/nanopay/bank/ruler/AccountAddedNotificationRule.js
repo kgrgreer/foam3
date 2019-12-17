@@ -33,16 +33,16 @@ foam.CLASS({
           public void execute(X x) {
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-            String accountNumber = account.getAccountNumber() != null ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
+            String accountNumber   = account.getAccountNumber() != null ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
             
             HashMap<String, Object> args = new HashMap<>();
             args.put("name",    User.FIRST_NAME);
             args.put("account", accountNumber);
             args.put("link",    config.getUrl());
-            args.put("business", user.getOrganization());
+            args.put("business", owner.getOrganization());
             
             Notification addedNotification = new Notification.Builder(x)
-                    .setBody(accountNumber.getName() + " has been added!")
+                    .setBody(accountNumber + " has been added!")
                     .setNotificationType("BankNotifications")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
