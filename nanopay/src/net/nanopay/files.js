@@ -849,6 +849,10 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/roles/RoleAssignmentTemplate' },
    { name: 'net/nanopay/liquidity/roles/RoleAssignmentTrunction' },
 
+   // liquidity crunches
+   { name: 'net/nanopay/liquidity/crunch/LiquidCapability' },
+   { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
+
    // liquidity rules
    { name: 'net/nanopay/liquidity/rules/account/AccountCreateApproval' },
    { name: 'net/nanopay/liquidity/rules/account/AccountApprovalsInterceptorDAO' },
