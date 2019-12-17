@@ -1041,7 +1041,7 @@ p({
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": 138,
-  "name": "failed-verifiedBank",
+  "name": "micro-deposit-failed",
   "sendTo": "{{userEmail}}",
   "group": "sme",
   "displayName": "Ablii",
@@ -1051,7 +1051,7 @@ p({
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": 139,
-  "name": "successed-verifiedBank",
+  "name": "micro-deposit-successed",
   "sendTo": "{{userEmail}}",
   "group": "sme",
   "displayName": "Ablii",
