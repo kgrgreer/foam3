@@ -21,9 +21,6 @@ p({"class":"foam.nanos.ruler.Rule","id":"Declined Cash In Transaction Notificati
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Verification Transaction Notification","enabled":true})  // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Compliance Transaction Notification","enabled":false})   // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"statusHistory Update Rule","enabled":true})                       // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"FOP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"DVP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"Bucket Transaction Planner","enabled":false})                     // Tx Planning
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance Transaction Planner","enabled":false})                 // Tx Planning / Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","enabled":false})        // AFEX
 p({"class":"foam.nanos.ruler.Rule","id":"Transaction Final Compliance Rule","enabled":false})              // Compliance

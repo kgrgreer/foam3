@@ -94,13 +94,13 @@ foam.CLASS({
         else
           t = parseExternal(getX(),getRow1());
           setTransaction(t);
-        checkTrusty(getX(), getTransaction());
 
       `
     },
     {
       name: 'endJob',
       javaCode: `
+        checkTrusty(getX(), getTransaction());
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )

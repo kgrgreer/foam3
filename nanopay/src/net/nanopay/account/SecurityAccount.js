@@ -45,6 +45,10 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
+            tableCellFormatter: function(value, obj, id) {
+              return this.balance;
+            },
+      /*
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
@@ -59,7 +63,7 @@ foam.CLASS({
                 })
             })
         }));
-      },
+      },*/
       tableWidth: 145
     },
     {

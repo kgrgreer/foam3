@@ -12,7 +12,10 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.SecurityAccount',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.mlang.sink.Count',
+    'foam.dao.ArraySink',
+    'java.util.ArrayList',
   ],
 
   searchColumns: [
@@ -48,7 +51,10 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
+            tableCellFormatter: function(value, obj, id) {
+              return this.balance;
+            },
+      /*tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
         this.add(obj.homeDenomination$.map(function(_) {
@@ -62,7 +68,7 @@ foam.CLASS({
                 })
             })
         }));
-      },
+      },*/
       tableWidth: 145
     },
 
@@ -114,7 +120,7 @@ foam.CLASS({
 
       javaCode: `
         DAO accountDAO = (DAO) this.getSubAccounts(x);
-        SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
+        SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ( // very slow operation current bottle nexk.
           SecurityAccount.DENOMINATION,unit));
         if (sa == null || sa.getId() == 0)
           return createSecurityAccount_(x,unit);
