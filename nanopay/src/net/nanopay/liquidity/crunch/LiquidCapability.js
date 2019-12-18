@@ -16,6 +16,10 @@ foam.CLASS({
       updateMode: 'RO'
     }, 
     {
+      name: 'wasDirectlyAssigned',
+      class: 'Boolean'
+    },
+    {
       name: 'of',
       javaFactory: ` return net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo(); `,
       hidden: true,
