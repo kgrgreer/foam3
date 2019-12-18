@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'java.text.SimpleDateFormat',
     'java.util.*',
     'net.nanopay.invoice.model.BillingInvoice',
@@ -213,12 +213,18 @@ foam.CLASS({
         } else {
           Group group = (Group) userBeingSentEmail.findGroup(x);
           AppConfig appConfig = group.getAppConfig(x);
-
           args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          EmailMessage message = new EmailMessage.Builder(x)
-            .setTo((new String[] { sendTo }))
+
+          Notification notification = new Notification.Builder(x)
+            .setBody("Invoice Notification.")
+            .setNotificationType(emailTemplateName + " email.")
+            .setEmailIsEnabled(true)
+            .setEmailArgs(args)
+            .setGroupId(group.getId())
+            .setEmailName(emailTemplateName)
             .build();
-          EmailsUtility.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
+
+          userBeingSentEmail.doNotify(x, notification);
         }
       `
     },
