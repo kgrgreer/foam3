@@ -8,6 +8,11 @@ foam.CLASS({
   name: 'AccountTemplate', // TODO get a better name?
   implements: [ 'foam.core.Validatable' ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.account.Account'
+  ],
+
   documentation: `
   A model for the data to be stored in user-liquidCapability junctions
   This model contains a list of accounts for which a capabilities will be granted to a user on,
@@ -39,6 +44,7 @@ properties: [
     {
       name: 'isParentOf',
       args: [
+        { name: 'x', javaType: 'foam.core.X' },
         { name: 'childAccountId', class: 'Long' }
       ],
       javaType: 'Boolean',
@@ -47,18 +53,18 @@ properties: [
       `,
       javaCode: `
         // TODO add implementation for checking subtemplates of the current
-        if ( getAccounts() == null && getAccounts.size() == 0 ) return false;
+        if ( getAccounts() == null && getAccounts().size() == 0 ) return false;
 
-        DAO accountDAO = (DAO) getX().get("accountDAO");
+        DAO accountDAO = (DAO) x.get("accountDAO");
 
         Account childAccount = (Account) accountDAO.find(childAccountId);
 
         while ( childAccount != null ) {
-          if ( getAccounts().containsKey(childAccount.getId()) {
+          if ( getAccounts().containsKey(childAccount.getId()) ) {
             // TODO!!!check if isCascading
             return true;
           } 
-          childAcccount = (Account) childAccount.findParent(x);
+          childAccount = (Account) childAccount.findParent(x);
         }
 
         return false;

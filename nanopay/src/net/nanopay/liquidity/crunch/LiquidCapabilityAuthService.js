@@ -85,10 +85,11 @@ foam.CLASS({
             if ( capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
           }
         } else {
-          Long relatedAccountId = 0L;
+          Long relatedAccountId = 0L; // = ((ApprovableInterface)  obj).getOutgoingAccountId(); 
+          // except we don't have object in authservice
           for ( UserCapabilityJunction ucj : ucjs ) {
             Capability capability = (Capability) capabilityDAO.find(ucj.getTargetId());
-            if ( ((AccountTemplate) ucj.getData()).containsAccount(relatedAccountId) && capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
+            if ( ((AccountTemplate) ucj.getData()).isParentOf(x, relatedAccountId) && capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
           }
         }
 
