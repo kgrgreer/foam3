@@ -849,27 +849,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
 
-   // liquidity roles
-   { name: 'net/nanopay/liquidity/roles/Role' },
-   { name: 'net/nanopay/liquidity/roles/RoleAssignmentTemplate' },
-   { name: 'net/nanopay/liquidity/roles/RoleAssignmentTrunction' },
-
-   // liquidity rules
-   { name: 'net/nanopay/liquidity/rules/account/AccountCreateApproval' },
-   { name: 'net/nanopay/liquidity/rules/account/AccountApprovalsInterceptorDAO' },
-   { name: 'net/nanopay/liquidity/rules/approvalRequest/FulfilledAccountApprovals' },
-   { name: 'net/nanopay/liquidity/rules/approvalRequest/FulfilledAccountApprovalsPredicate' },
-   { name: 'net/nanopay/liquidity/rules/businessRule/LiquidApprovalRequestsOnBusinessRulePut' },
-   { name: 'net/nanopay/liquidity/rules/businessRule/LiquidApprovalRequestsOnBusinessRuleRemove' },
-   { name: 'net/nanopay/liquidity/rules/liquiditySettings/LiquidApprovalRequestsOnLiquiditySettingsPut' },
-   { name: 'net/nanopay/liquidity/rules/liquiditySettings/LiquidApprovalRequestsOnLiquiditySettingsRemove' },
-   { name: 'net/nanopay/liquidity/rules/role/LiquidApprovalRequestsOnRolePut' },
-   { name: 'net/nanopay/liquidity/rules/role/LiquidApprovalRequestsOnRoleRemove' },
-   { name: 'net/nanopay/liquidity/rules/transaction/LiquidApprovalRequestsOnTransactionPut' },
-   { name: 'net/nanopay/liquidity/rules/transaction/LiquidApprovalRequestsOnTransactionRemove' },
-   { name: 'net/nanopay/liquidity/rules/user/LiquidApprovalRequestsonUserPut' },
-   { name: 'net/nanopay/liquidity/rules/user/LiquidApprovalRequestsOnUserRemove' },
-
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
