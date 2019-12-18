@@ -417,7 +417,8 @@ foam.CLASS({
               logger.warning("No exchange rate exists for " + ci.getSourceCurrency() + " -> " + ci.getDestinationCurrency());
             }
             ci.setAmount(toLong(x, ci.getSourceCurrency(), (double) ci.getDestinationAmount() * w));
-            logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() + " -> " + b.getDenomination() + ": " + w);
+            logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() + 
+                         " -> " + ci.getDestinationCurrency() + " for " + b.getDenomination() + ": " + w);
           }
 
           // Ensure the bank account has a sufficient balance too
