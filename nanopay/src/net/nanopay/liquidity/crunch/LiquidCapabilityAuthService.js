@@ -59,6 +59,12 @@ foam.CLASS({
         // check if we are looking for ucjs of global or accountbased liquidcapabilities
         // special case for usercapabilityjunction
         Boolean isGlobal = ! ( "account".equals(className) || "transaction".equals(className) );
+        if ( "usercapabilityjunction".equals(className) ) {
+          UserCapabilityJunction targetUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(objId);
+          Capability targetCapability = (Capability) capabilityDAO.find(targetUcj.getTargetId());
+          isGlobal = (targetCapability instanceof GlobalLiquidCapability);
+        }
+
         foam.mlang.predicate.Predicate pred = isGlobal ? INSTANCE_OF(GlobalLiquidCapability.getOwnClassInfo()) : INSTANCE_OF(AccountBasedLiquidCapability.getOwnClassInfo());
         
         DAO filteredUserCapabilityJunctionDAO = "usercapabilityjunction".equals(className) ? userCapabilityJunctionDAO : userCapabilityJunctionDAO.where(pred);
@@ -72,11 +78,8 @@ foam.CLASS({
         //          WHERE IS RELATED ACCOUNT ID THO
         //    2. global permission?
         //          return true if cap implies permission
-        //    3. ucj???       
 
-        if ( "usercapabilityjunction".equals(className) ) {
-          // ???
-        } else if ( isGlobal ) {
+        if ( isGlobal ) {
           for ( UserCapabilityJunction ucj : ucjs ) {
             Capability capability = (Capability) capabilityDAO.find(ucj.getTargetId());
             if ( capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
