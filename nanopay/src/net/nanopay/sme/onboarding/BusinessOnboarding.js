@@ -913,7 +913,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make selection.'
+          errorString: 'Please make a selection.'
         }
       ]
     }),
@@ -944,7 +944,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make selection.'
+          errorString: 'Please make a selection.'
         }
       ]
     }),
@@ -975,7 +975,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make selection.'
+          errorString: 'Please make a selection.'
         }
       ]
     }),
