@@ -121,7 +121,7 @@ p({
       .setCreatedByAware(true)
       .setLastModifiedAware(true)
       .setLastModifiedByAware(true)
-      .setDeletedAware(true)
+      .setDeletedAware(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setOf(Account.getOwnClassInfo())

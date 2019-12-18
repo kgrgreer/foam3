@@ -5,7 +5,9 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.analytics.Foldable',
-    'foam.nanos.auth.LastModifiedAware'
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LifecycleAware',
+    'net.nanopay.liquidity.approvalRequest.ApprovableInterface'
   ],
 
   requires: [
@@ -60,9 +62,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'cashOutFrequency',
-      factory: function() {
-        return net.nanopay.util.Frequency.DAILY;
-      },
+      factory: function() { return net.nanopay.util.Frequency.DAILY; },
       documentation: 'Determines how often an automatic cash out can occur.',
       section: 'basicInfo'
     },
@@ -108,6 +108,13 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'Last modified date'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      section: 'basicInfo',
+      value: foam.nanos.auth.LifecycleState.ACTIVE
     }
   ],
   methods: [
@@ -128,6 +135,27 @@ foam.CLASS({
 if ( getLastModified() == null ) return;
 fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThreshold());
 fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
+      `
+    },
+    {
+      name: 'getKey',
+      type: 'String',
+      javaCode: `
+        String id = ((Long) getId()).toString();
+        return id;
+      `
+    },
+    {
+      name: 'getOutgoingAccount',
+      type: 'Long',
+      args: [
+        {
+          type: 'foam.core.X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return 0;
       `
     }
   ]
