@@ -37,9 +37,9 @@ properties: [
       `
     },
     {
-      name: 'containsAccount',
+      name: 'isParentOf',
       args: [
-        { name: 'accountId', class: 'Long' }
+        { name: 'childAccountId', class: 'Long' }
       ],
       javaType: 'Boolean',
       documentation: `
@@ -47,8 +47,22 @@ properties: [
       `,
       javaCode: `
         // TODO add implementation for checking subtemplates of the current
-        if ( getAccounts() != null ) return getAccounts().containsKey(accountId);
+        if ( getAccounts() == null && getAccounts.size() == 0 ) return false;
+
+        DAO accountDAO = (DAO) getX().get("accountDAO");
+
+        Account childAccount = (Account) accountDAO.find(childAccountId);
+
+        while ( childAccount != null ) {
+          if ( getAccounts().containsKey(childAccount.getId()) {
+            // TODO!!!check if isCascading
+            return true;
+          } 
+          childAcccount = (Account) childAccount.findParent(x);
+        }
+
         return false;
+
       `
     }
   ]
