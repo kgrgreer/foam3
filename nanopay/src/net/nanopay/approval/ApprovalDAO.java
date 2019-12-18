@@ -6,7 +6,6 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.ruler.Operations;
-import net.nanopay.liquidity.LiquidApprovalRequest;
 
 import static foam.mlang.MLang.*;
 
