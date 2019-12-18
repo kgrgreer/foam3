@@ -851,6 +851,7 @@ FOAM_FILES([
 
    // liquidity crunches
    { name: 'net/nanopay/liquidity/crunch/LiquidCapability' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidCapabilityAuthService' },
    { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
 
    // liquidity rules

@@ -311,7 +311,10 @@ var classes = [
    'net.nanopay.liquidity.rules.user.LiquidApprovalRequestsOnUserPut',
    'net.nanopay.liquidity.rules.user.LiquidApprovalRequestsOnUserRemove',
    'net.nanopay.liquidity.crunch.LiquidCapability',
+   'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+   'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
    'net.nanopay.liquidity.crunch.AccountTemplate',
+   'net.nanopay.liquidity.crunch.LiquidCapabilityAuthService',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.tx.BusinessRule',

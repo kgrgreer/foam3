@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'java.util.Date',
     'java.util.List',
+    'foam.mlang.predicate.Predicate',
     'static foam.mlang.MLang.*'
   ],
 
@@ -38,6 +39,9 @@ foam.CLASS({
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
 
+        DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+        DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO")).where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()));
+
         // dissect the permission string
         String[] permissionComponents = permission.split(".");
         if ( permissionComponents.length != 3 ) {
@@ -45,22 +49,48 @@ foam.CLASS({
         }
         String className = permissionComponents[0];
         String operation = permissionComponents[1];
-        // Object objId;
+        Object objId = new Object();
         try {
-          objId = (Long) Long.parse(objId, "10");
-        } else {
-          objId = (String) objId;
+          objId = (Long) Long.parseLong((String) objId, 10);
+        } catch (NumberFormatException e ) {
+          objId = (String) objId; 
         }
 
-        Boolean isGlobal = ! ( "account".equals(className) || "transaction".equals(className)  ) )
+        // check if we are looking for ucjs of global or accountbased liquidcapabilities
+        // special case for usercapabilityjunction
+        Boolean isGlobal = ! ( "account".equals(className) || "transaction".equals(className) );
+        foam.mlang.predicate.Predicate pred = isGlobal ? INSTANCE_OF(GlobalLiquidCapability.getOwnClassInfo()) : INSTANCE_OF(AccountBasedLiquidCapability.getOwnClassInfo());
+        
+        DAO filteredUserCapabilityJunctionDAO = "usercapabilityjunction".equals(className) ? userCapabilityJunctionDAO : userCapabilityJunctionDAO.where(pred);
 
-        // first problem - how to differentiate between global vs account based roles when granting permission to assigner
-        Boolean isGlobal = isGlobal && ( "usercapabilityjunction".equals(className) && )
+        List<UserCapabilityJunction> ucjs = (List<UserCapabilityJunction>) ((ArraySink) filteredUserCapabilityJunctionDAO.select(new ArraySink())).getArray();
+        
+        // find all the ucjs and check if each crunch implies the permission
+        // if so, 2 cases
+        //    1. account-based permission?
+        //          check if related account is in the accounttemplate stored in ucj, if so return true if cap implies permission if not move on
+        //          WHERE IS RELATED ACCOUNT ID THO
+        //    2. global permission?
+        //          return true if cap implies permission
+        //    3. ucj???       
 
+        if ( "usercapabilityjunction".equals(className) ) {
+          // ???
+        } else if ( isGlobal ) {
+          for ( UserCapabilityJunction ucj : ucjs ) {
+            Capability capability = (Capability) capabilityDAO.find(ucj.getTargetId());
+            if ( capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
+          }
+        } else {
+          Long relatedAccountId = 0L;
+          for ( UserCapabilityJunction ucj : ucjs ) {
+            Capability capability = (Capability) capabilityDAO.find(ucj.getTargetId());
+            if ( ((AccountTemplate) ucj.getData()).containsAccount(relatedAccountId) && capability.implies(x, permission) ) return getDelegate().checkUser(x, user, permission);
+          }
+        }
 
-
-
-        return getDelegate().checkUser(x, user, permission);
+        // return getDelegate().checkUser(x, user, permission);
+        return false;
       `
     }
   ]

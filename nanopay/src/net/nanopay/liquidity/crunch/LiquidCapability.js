@@ -24,28 +24,6 @@ foam.CLASS({
       In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
       `
     },
-    { class: 'Boolean', name: 'accountViewer' },
-    { class: 'Boolean', name: 'accountMaker' },
-    { class: 'Boolean', name: 'accountApprover' },
-    { class: 'Boolean', name: 'transactionViewer' },
-    { class: 'Boolean', name: 'transactionMaker' },
-    { class: 'Boolean', name: 'transactionApprover' },
-    { class: 'Boolean', name: 'ruleViewer' },
-    { class: 'Boolean', name: 'ruleMaker' },
-    { class: 'Boolean', name: 'ruleApprover' },
-    { class: 'Boolean', name: 'userViewer' },
-    { class: 'Boolean', name: 'userMaker' },
-    { class: 'Boolean', name: 'userApprover' },
-    { class: 'Boolean', name: 'liquiditysettingViewer' },
-    { class: 'Boolean', name: 'liquiditysettingMaker' },
-    { class: 'Boolean', name: 'liquiditysettingApprover' },
-    { class: 'Boolean', name: 'capabilityViewer' },
-    { class: 'Boolean', name: 'capabilityMaker' },
-    { class: 'Boolean', name: 'capabilityApprover' },
-    { class: 'Boolean', name: 'usercapabilityjunctionMaker' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'usercapabilityjunctionApprover' }, // is an account id(s) attached in the ucj
-
-
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
     {
@@ -122,3 +100,47 @@ foam.CLASS({
     },
   ]
 });
+
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.crunch',
+  name: 'AccountBasedLiquidCapability',
+  extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+
+  properties: [
+    { class: 'Boolean', name: 'accountViewer' },
+    { class: 'Boolean', name: 'accountMaker' },
+    { class: 'Boolean', name: 'accountApprover' },
+    { class: 'Boolean', name: 'transactionViewer' },
+    { class: 'Boolean', name: 'transactionMaker' },
+    { class: 'Boolean', name: 'transactionApprover' },
+    { class: 'Boolean', name: 'usercapabilityjunctionMaker' }, // global role vs. account role maker/approver may be implied by whether there
+    { class: 'Boolean', name: 'usercapabilityjunctionApprover' }, //
+  ]
+});
+
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.crunch',
+  name: 'GlobalLiquidCapability',
+  extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+
+  properties: [
+    { class: 'Boolean', name: 'ruleViewer' },
+    { class: 'Boolean', name: 'ruleMaker' },
+    { class: 'Boolean', name: 'ruleApprover' },
+    { class: 'Boolean', name: 'userViewer' },
+    { class: 'Boolean', name: 'userMaker' },
+    { class: 'Boolean', name: 'userApprover' },
+    { class: 'Boolean', name: 'liquiditysettingViewer' },
+    { class: 'Boolean', name: 'liquiditysettingMaker' },
+    { class: 'Boolean', name: 'liquiditysettingApprover' },
+    { class: 'Boolean', name: 'capabilityViewer' },
+    { class: 'Boolean', name: 'capabilityMaker' },
+    { class: 'Boolean', name: 'capabilityApprover' },
+    { class: 'Boolean', name: 'usercapabilityjunctionMaker' }, // global role vs. account role maker/approver may be implied by whether there
+    { class: 'Boolean', name: 'usercapabilityjunctionApprover' }, //
+  ]
+});
+
+

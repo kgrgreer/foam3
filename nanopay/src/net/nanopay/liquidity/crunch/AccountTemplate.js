@@ -14,18 +14,17 @@ foam.CLASS({
   as well as implements validation for the accounts supplied
   `,
 
-  properties: [  
+properties: [  
     {
       name: 'accounts',
-      class: 'List',
-      of: 'net.nanopay.liquidity.roles.Role',
-      view: () => { // broken
-        return {
-          class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'accountDAO'
-        };
-      },
-      javaType: 'java.util.List<Long>'
+      class: 'Map',
+      // view: () => { // broken
+      //   return {
+      //     class: 'foam.u2.view.ReferenceArrayView', TODO this needs a view pref with a nice account selector for keys and checkbox for value
+      //     daoKey: 'accountDAO'
+      //   };
+      // },
+      javaType: 'java.util.Map<Long, Boolean>'
     }
   ],
 
@@ -35,6 +34,21 @@ foam.CLASS({
       javaCode: `
         // TODO
         // return false;
+      `
+    },
+    {
+      name: 'containsAccount',
+      args: [
+        { name: 'accountId', class: 'Long' }
+      ],
+      javaType: 'Boolean',
+      documentation: `
+      Checks if a given account is in this AccountTemplate or any AccountTemplate that this one 'extends'
+      `,
+      javaCode: `
+        // TODO add implementation for checking subtemplates of the current
+        if ( getAccounts() != null ) return getAccounts().containsKey(accountId);
+        return false;
       `
     }
   ]
