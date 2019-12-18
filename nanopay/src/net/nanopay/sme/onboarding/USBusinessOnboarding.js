@@ -1084,6 +1084,14 @@ foam.CLASS({
         } else if ( this.amountOfOwners === 0 ) {
           this.userOwnsPercent = false;
         };
+
+        this.userId$find.then((user) => {
+          if ( this.signingOfficer ) {
+            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+          } else {
+            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+          }
+        });
       },
       validationPredicates: [
         {
