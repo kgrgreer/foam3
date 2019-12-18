@@ -55,7 +55,7 @@ foam.CLASS({
                     }
                   ];
 
-
+                  // TODO: Need to wire up after crunchy
                   return user.capabilities.dao.select().then(capabilities => {
                     var capabilitiesArray = capabilities.array;
 

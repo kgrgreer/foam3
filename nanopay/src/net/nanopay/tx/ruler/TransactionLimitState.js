@@ -6,6 +6,9 @@ foam.CLASS({
   'The object is stored in a hash map on the TransactionLimitRule' +
   'along with the object that it stores limit for(account, business, user..)',
 
+  javaImports: [
+    'net.nanopay.util.Frequency'
+  ],
 
   properties: [
     {
@@ -57,8 +60,8 @@ foam.CLASS({
           return false;
         }
 
-        public synchronized void updateSpent(Long amount) {
-          setSpent(Math.max(0, getSpent() + amount));
+        public synchronized void updateSpent(Long amount, Frequency period) {
+          setSpent((period == Frequency.PER_TRANSACTION) ? 0 : Math.max(0, getSpent() + amount));
         }
         `);
       }

@@ -105,10 +105,6 @@ foam.CLASS({
           name: 'nu',
           type: 'net.nanopay.tx.model.Transaction'
         },
-        {
-          name: 'reverse',
-          type: 'Boolean'
-        }
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
@@ -124,24 +120,12 @@ foam.CLASS({
           setDestinationAccount(nu.getDestinationAccount());
         }
 
-
-        if ( ! reverse ) {
-          return new Transfer [] {
-            new Transfer.Builder(x).setAccount(getSourceAccount())
-              .setAmount(-value).build(),
-            new Transfer.Builder(x).setAccount(getDestinationAccount())
-              .setAmount(value).build()
-          };
-        } else if ( getReversable() ) {
-          return new Transfer [] {
-            new Transfer.Builder(x).setAccount(getDestinationAccount())
-              .setAmount(-value).build(),
-            new Transfer.Builder(x).setAccount(getSourceAccount())
-              .setAmount(value).build()
-          };
-        } else {
-           return new Transfer[0];
-        }
+        return new Transfer [] {
+          new Transfer.Builder(x).setAccount(getSourceAccount())
+            .setAmount(-value).build(),
+          new Transfer.Builder(x).setAccount(getDestinationAccount())
+            .setAmount(value).build()
+        };
       `
     },
     {

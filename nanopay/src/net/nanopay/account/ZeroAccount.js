@@ -68,7 +68,7 @@ foam.CLASS({
         long bal = balance == null ? 0L : balance.getBalance();
         if ( amount > 0 &&
              amount > -bal) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
+          throw new RuntimeException("Invalid transfer, for: "+amount +" and "+ bal+  " "+ this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
         }
       `
     }

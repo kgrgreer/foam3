@@ -21,9 +21,6 @@ p({"class":"foam.nanos.ruler.Rule","id":"Declined Cash In Transaction Notificati
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Verification Transaction Notification","enabled":true})  // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Compliance Transaction Notification","enabled":false})   // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"statusHistory Update Rule","enabled":true})                       // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"FOP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"DVP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"Bucket Transaction Planner","enabled":false})                     // Tx Planning
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance Transaction Planner","enabled":false})                 // Tx Planning / Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","enabled":false})        // AFEX
 p({"class":"foam.nanos.ruler.Rule","id":"Transaction Final Compliance Rule","enabled":false})              // Compliance
@@ -58,7 +55,7 @@ p({
   "action": {
     "class": "net.nanopay.liquidity.rules.account.AccountCreateApproval"
   },
-  "enabled": true,
+  "enabled": false,
   "saveHistory": true
 })
 
@@ -75,17 +72,18 @@ p({
   "action": {
     "class": "net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovals"
   },
-  "enabled": true,
+  "enabled": false,
   "saveHistory": true
 })
 
 // Transaction limit business rule example for 200,000.00 EUR
 p({
   "class":"net.nanopay.liquidity.tx.TxLimitRule",
-  "id":"GS09 Securities EUR $200,000 Account Limit",
+  "id":"GS09 Securities €200,000.00 EUR Account Limit",
   "applyLimitTo":1,
   "accountToLimit":1651,
   "limit":20000000,
+  "denomination":"EUR",
   "currentLimits":{},
   "created":"2019-11-30T12:30:00.000Z",
   "createdBy":8006,

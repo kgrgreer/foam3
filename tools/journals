@@ -1,7 +1,4 @@
 acceptanceDocuments
-accountApproverJunctions
-accountMakerJunctions
-accountViewerJunctions
 accounts
 accountTemplates
 alarmConfig
@@ -56,12 +53,6 @@ questionnaires
 quickbooksToken
 regions
 reports
-roles
-roleAssignmentApproverJunctions
-roleAssignmentTemplates
-roleAssignmentMakerJunctions
-roleAssignmentTrunctions
-roleRoleJunctions
 ruleGroups
 rules
 scripts
@@ -74,11 +65,8 @@ tests
 themes
 ticketStatuses
 transactionfees
-transactionApproverJunctions
 transactionLimits
-transactionMakerJunctions
 transactionPurposes
-transactionViewerJunctions
 transactions
 txnProcessors
 userCapabilityJunctions

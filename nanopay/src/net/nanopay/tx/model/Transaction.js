@@ -563,6 +563,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      aliases: ['sourceDenomination'],
       label: 'Source Currency',
       visibility: 'RO',
       section: 'paymentInfo',
@@ -579,6 +580,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      aliases: ['destinationDenomination'],
       label: 'Destination Currency',
       visibilityExpression: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
@@ -803,11 +805,15 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
+        if (! canTransfer(x, oldTxn) ) {
+          return new Transfer[0];
+        }
+
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
           for ( int j = 0; j < transfers.length; j++ ) {
             all.add(transfers[j]);
           }
@@ -868,12 +874,12 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
-        throw new RuntimeException("Source currency is not supported");
+      if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getSourceCurrency()) == null) { //TODO switch to just unitDAO
+        throw new RuntimeException("Source denomination is not supported");
       }
 
-      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null ) {
-        throw new RuntimeException("Destination currency is not supported");
+      if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getDestinationCurrency()) == null ) { //TODO switch to just unitDAO
+        throw new RuntimeException("Destination denomination is not supported");
       }
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());

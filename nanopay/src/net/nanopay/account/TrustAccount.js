@@ -18,6 +18,7 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.CONTAINS_IC',
     'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -58,7 +59,7 @@ foam.CLASS({
                                 INSTANCE_OF(TrustAccount.class),
                                 EQ(Account.ENABLED, true),
                                 EQ(Account.OWNER, user.getId()),
-                                EQ(Account.DENOMINATION, currency)
+                                CONTAINS_IC(Account.DENOMINATION, currency)
                               )
                             );
                         //    .select(new ArraySink())).getArray();
@@ -66,7 +67,7 @@ foam.CLASS({
             count = (Count) accounts.select(count);
             if ( count.getValue() == 0 ) {
               logger.error("No TrustAccounts found for ", user.getId());
-              throw new RuntimeException("No TrustAccounts found for "+user.getId());
+              throw new RuntimeException("No TrustAccounts found for "+user.getId()+ " currency: "+ currency);
             }
             return accounts;
           }

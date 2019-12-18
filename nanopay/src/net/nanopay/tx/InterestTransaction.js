@@ -9,8 +9,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.LoanAccount',
-    'java.util.List',
-    'java.util.ArrayList',
     'net.nanopay.account.LoanedTotalAccount'
   ],
 
@@ -58,26 +56,6 @@ foam.CLASS({
       }
       return tx;
     `
-    },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        List all = new ArrayList();
-        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
     }
   ]
 });
