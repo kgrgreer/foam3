@@ -100,7 +100,7 @@ foam.CLASS({
     {
       name: 'endJob',
       javaCode: `
-        checkTrusty(getX(), getTransaction()); // why are you checking the trustie twice?
+        checkTrusty(getX(), getTransaction()); // why are you checking the trustee twice?
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
@@ -325,19 +325,19 @@ foam.CLASS({
         }  
 
         DAO accountDAO = ((DAO) x.get("accountDAO"));
-        DAO currencyDAO = ((DAO) x.get("currencyDAO"))
+        DAO currencyDAO = ((DAO) x.get("currencyDAO"));
         DAO transactionDAO = ((DAO) x.get("transactionDAO"));        
 
         Account source = txn.findSourceAccount(x);
 
         // Process securities transaction by ensuring that the broker account has the securities to draw from
-        if ( currrencyDAO.find(txn.getSourceCurrency()) == null ) {
+        if ( currencyDAO.find(txn.getSourceCurrency()) == null ) {
 
           // For a security CI transaction on the broker account, we dont need topups
           if ( txn.findSourceAccount(x) instanceof BrokerAccount ) 
             return true; 
 
-          // Calculate the number of remain securities and top up the source account
+          // Calculate the number of remaining securities and top up the source account
           long remainder = (long) source.findBalance(x) - txn.getAmount(); // is this the correct account ?
           if ( remainder < 0 ) {
             Transaction secCI = new Transaction();
@@ -357,7 +357,7 @@ foam.CLASS({
             b = (Account) accountDAO.find(MLang.EQ(Account.NAME, source.getName().substring(0,4) + " Shadow Account"));
         }
         else {
-          b = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME, source.getDenomination() + " Bank Account")));
+          b = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME, source.getDenomination() + " Bank Account"));
         }
 
         // Check if account for topping up needs to be created
@@ -417,7 +417,7 @@ foam.CLASS({
               logger.warning("No exchange rate exists for " + ci.getSourceCurrency() + " -> " + ci.getDestinationCurrency());
             }
             ci.setAmount(toLong(x, ci.getSourceCurrency(), (double) ci.getDestinationAmount() * w));
-            logger.debug("Calculated a w of " + ci.getAmount() + " in currency " ci.getSourceCurrency() + " -> " + b.getDenomination() + ": " + w);
+            logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() + " -> " + b.getDenomination() + ": " + w);
           }
 
           // Ensure the bank account has a sufficient balance too
@@ -425,7 +425,7 @@ foam.CLASS({
             verifyBalance(x, ci);
           }
 
-          // Ensure trustie exists
+          // Ensure trustee exists
           checkTrusty(x,ci);
 
           // Complete the cash in transaction
@@ -489,15 +489,14 @@ foam.CLASS({
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         
-        // Skip trustie for securities
+        // Skip trustee for securities
         if( currencyDAO.find(txn.getSourceCurrency()) == null ) 
           return;
         
-        // Create the source trustie account
+        // Create the source trustee account
         TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
-        //BankAccount sourceBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Bank Account"));
         if( sourceTrust == null ) {
-          logger.info("Trustie not found for " + txn.getSourceCurrency() + " ... Generating...");
+          logger.info("trustee not found for " + txn.getSourceCurrency() + " ... Generating...");
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getSourceCurrency())
@@ -518,11 +517,10 @@ foam.CLASS({
         if (SafetyUtil.equals(txn.getSourceCurrency(), txn.getDestinationCurrency()))
             return;
         
-        // Create the destination trustie account
+        // Create the destination trustee account
         TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Trust Account"));
-        //BankAccount destBank = (BankAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Bank Account"));
         if( destinationTrust == null ) {
-          logger.info("Trustie not found for " + txn.getDestinationCurrency() + " ... Generating...");
+          logger.info("trustee not found for " + txn.getDestinationCurrency() + " ... Generating...");
           destinationTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getDestinationCurrency())
@@ -556,8 +554,9 @@ foam.CLASS({
         
         // Otherwise create the security
         Security newSec = new Security.Builder(x)
-          setName("Security: "+ security) // concurrency issue maybe
-          setId(security);
+          .setName("Security: "+ security) // concurrency issue maybe
+          .setId(security)
+          .build();
         securitiesDAO.put(newSec);
       `
     },
@@ -598,7 +597,7 @@ foam.CLASS({
           String time2 = time+"";
           return dateFormat.parse(time2).getTime();
         } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
+          Logger logger = (Logger) getX().get("logger");
           logger.error("Can't parse" + ts);
         }
         return 0;

@@ -113,16 +113,16 @@ foam.CLASS({
 
           //-- Cash txns.
           if ( isCash(row1) ) {
-            // Make sure the amount if positive
+            // Make sure the amount is positive
             if ( row1.getCashUSD() < 0 ) continue;
 
-            // Find the matching cash transaction to the original row
+            // Find the matching cash transaction from the original row
             Object [] arr = ( (ArraySink) gsTxCsvRowDAO
               .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
               .limit(1)
               .select(new ArraySink())).getArray().toArray();
             if ( arr.length == 0 ) {
-              logger.warning("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
+              logger.error("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
               continue;
             }
             job.setRow2( (GsTxCsvRow) arr[0] );
@@ -131,13 +131,13 @@ foam.CLASS({
             // Make sure the quantity is positive
             if ( row1.getSecQty() < 0 ) continue;
 
-            // Find the matching securities transaction to the original row
+            // Find the matching securities transaction from the original row
             Object [] arr = ( (ArraySink) gsTxCsvRowDAO
               .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY, -row1.getSecQty()))
               .limit(1)
               .select(new ArraySink())).getArray().toArray();
             if ( arr.length == 0 ) {
-              logger.warning("Unmatched internal securities transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
+              logger.error("Unmatched internal securities transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
               continue;
             }
             job.setRow2( (GsTxCsvRow) arr[0] );
