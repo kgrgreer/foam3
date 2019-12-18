@@ -45,19 +45,20 @@ foam.CLASS({
       ],
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
-
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+        user = (User) user.fclone();
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
         if ( businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          if ( businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") ) {
+          if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail())) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
             Invitation existingInvite = (Invitation) businessInvitationDAO.find(
               AND(
                 EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail().toLowerCase()),
-                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId()),
-                NEQ(Invitation.STATUS, net.nanopay.model.InvitationStatus.COMPLETED)
+                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId())
               )
             );
 
@@ -120,11 +121,8 @@ foam.CLASS({
         }
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
-        user = (User) user.fclone();
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());

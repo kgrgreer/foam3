@@ -129,7 +129,8 @@ foam.CLASS({
     {
       name: 'signingOfficerQuestionSection',
       title: 'Are you considered a signing officer at your company?',
-      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…'
+      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…',
+      permissionRequired: true
     },
     {
       name: 'personalInformationSection',
@@ -344,6 +345,7 @@ foam.CLASS({
         if ( this.signingOfficer ) {
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone;
+          this.signingOfficerEmail = '';
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
@@ -522,13 +524,7 @@ foam.CLASS({
         {
           args: ['adminPhone', 'signingOfficer'],
           predicateFactory: function(e) {
-            return e.OR(
-                e.GT(
-                  foam.mlang.StringLength.create({
-                    arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_PHONE
-                  }), 0),
-                  e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
-                );
+            return e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false);
             },
           errorString: 'Please enter phone number'
         }
@@ -728,7 +724,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select a type of business.'
+          errorString: 'Please select type of business.'
         }
       ]
     }),
@@ -749,7 +745,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select a nature of business.'
+          errorString: 'Please select nature of business.'
         }
       ]
     },
@@ -789,7 +785,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide a primary source of funds.'
+          errorString: 'Please provide primary source of funds.'
         }
       ]
     }),
@@ -829,7 +825,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please enter a business name.'
+          errorString: 'Please enter business name.'
         }
       ],
       validationTextVisible: true
@@ -912,7 +908,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
+          errorString: 'Please enter valid Federal Tax ID Number (EIN).'
         }
       ]
     },
@@ -943,7 +939,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -974,7 +970,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -1005,7 +1001,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -1043,7 +1039,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide a transaction purpose.'
+          errorString: 'Please provide transaction purpose.'
         }
       ]
     }),
@@ -1131,7 +1127,7 @@ foam.CLASS({
           this.clearProperty('owner1');
         }
 
-        if ( this.owner1.firstName === this.adminFirstName && this.owner1.lastName === this.adminLastName && foam.util.equals(this.owner1.birthday, this.birthday) ) {
+        if ( this.owner1.firstName === this.firstName && this.owner1.lastName === this.lastName && foam.util.equals(this.owner1.birthday, this.birthday) ) {
           // to fix a problem that comes from cloning which resets owner1
           this.clearProperty('owner1');
         }
@@ -1245,6 +1241,7 @@ foam.CLASS({
                            owner3$ownershipPercent,
                            owner4$ownershipPercent) {
         var sum = 0;
+
         if ( amountOfOwners >= 1 ) sum += owner1$ownershipPercent;
         if ( amountOfOwners >= 2 ) sum += owner2$ownershipPercent;
         if ( amountOfOwners >= 3 ) sum += owner3$ownershipPercent;

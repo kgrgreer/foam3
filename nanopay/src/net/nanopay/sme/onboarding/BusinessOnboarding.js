@@ -189,7 +189,8 @@ foam.CLASS({
     {
       name: 'signingOfficerQuestionSection',
       title: 'Are you considered a signing officer at the company?',
-      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…'
+      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…',
+      permissionRequired: true
     },
     {
       name: 'personalInformationSection',
@@ -405,6 +406,7 @@ foam.CLASS({
         if ( this.signingOfficer ) {
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone;
+          this.signingOfficerEmail = '';
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
@@ -574,13 +576,7 @@ foam.CLASS({
         {
           args: ['adminPhone', 'signingOfficer'],
           predicateFactory: function(e) {
-            return e.OR(
-                e.GT(
-                  foam.mlang.StringLength.create({
-                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_PHONE
-                  }), 0),
-                  e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
-                );
+            return e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false);
             },
           errorString: 'Please enter phone number'
         }
@@ -785,7 +781,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select a type of business.'
+          errorString: 'Please select type of business.'
         }
       ]
     }),
@@ -806,7 +802,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select a nature of business.'
+          errorString: 'Please select nature of business.'
         }
       ]
     },
@@ -846,7 +842,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide a primary source of funds.'
+          errorString: 'Please provide primary source of funds.'
         }
       ]
     }),
@@ -917,7 +913,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -948,7 +944,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -979,7 +975,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'Please make selection.'
         }
       ]
     }),
@@ -1017,7 +1013,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide a transaction purpose.'
+          errorString: 'Please provide transaction purpose.'
         }
       ]
     }),
