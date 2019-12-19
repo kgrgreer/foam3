@@ -29,7 +29,7 @@ properties: [
       //     daoKey: 'accountDAO'
       //   };
       // },
-      javaType: 'java.util.Map<Long, Boolean>'
+      javaType: 'java.util.Map<Long, AccountData>'
     }
   ],
 
