@@ -4,11 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
-  implements: [
-    'foam.nanos.auth.LifecycleAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableInterface',
-  ],
-
   documentation: 'Business rule base class.',
 
   javaImports: [
@@ -37,9 +32,10 @@ foam.CLASS({
     },
     {
       name: 'enabled',
-      label: 'Enabled',
-      value: true,
       tableWidth: 125,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Current status');
+      },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
       }
@@ -138,46 +134,6 @@ foam.CLASS({
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
       visibility: 'RO',
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'foam.nanos.auth.LifecycleState',
-      name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.ACTIVE
-    },
-  ],
-
-  methods: [
-    {
-      name: 'getKey',
-      type: 'String',
-      javaCode: `
-        String id = (String) getId();
-        return id;
-      `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      args: [
-        {
-          type: 'foam.core.X',
-          name: 'x',
-        }
-      ],
-      javaCode: `
-        return 0;
-      `
-    },
-    {
-      name: 'toSummary',
-      documentation: `When using a reference to the roleDAO, the labels associated
-        to it will show a chosen property rather than the first alphabetical string
-        property. In this case, we are using the name.
-      `,
-      code: function(x) {
-        return this.id;
-      }
     }
   ]
 });

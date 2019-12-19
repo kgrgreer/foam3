@@ -5,11 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
-import foam.nanos.logger.Logger;
 import foam.nanos.ruler.Operations;
-import net.nanopay.liquidity.approvalRequest.LiquidApprovalRequest;
-
-import java.util.Map;
 
 import static foam.mlang.MLang.*;
 
@@ -53,12 +49,7 @@ public class ApprovalDAO
   private void rePutObject(X x, ApprovalRequest request) {
     DAO dao = (DAO) x.get(request.getDaoKey());
     FObject found = dao.inX(x).find(request.getObjId()).fclone();
-
-    if ( request instanceof LiquidApprovalRequest && ((LiquidApprovalRequest) request).getOperation() == Operations.REMOVE ){
-      dao.inX(x).remove(found);
-    } else {
-      dao.inX(x).put(found);
-    }
+    dao.inX(x).put(found);
   }
 
   private void removeUnusedRequests(DAO dao) {
