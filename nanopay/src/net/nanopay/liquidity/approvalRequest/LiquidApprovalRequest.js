@@ -2,7 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'LiquidApprovalRequest',
   extends: 'net.nanopay.approval.ApprovalRequest',
-  implements: [ 'foam.nanos.auth.Authorizable' ],
 
   javaImports : [
     'foam.dao.ArraySink',
@@ -95,44 +94,6 @@ foam.CLASS({
       code: function() {
         return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
       }
-    },
-    {
-      name: 'authorizeOnCreate',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! auth.check(x, createPermission("create")) ) throw new AuthorizationException("You don't have permission to create this notification.");
-      `
-    },
-    {
-      name: 'authorizeOnUpdate',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! auth.check(x, createPermission("update")) ) throw new AuthorizationException("You don't have permission to update notifications you do not own.");
-      `
-    },
-    {
-      name: 'authorizeOnDelete',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! auth.check(x, "*") ) throw new AuthorizationException("You don't have permission to delete notifications you do not own.");
-      `
-    },
-    {
-      name: 'authorizeOnRead',
-      javaCode: `
-      AuthService auth = (AuthService) x.get("auth");
-      if ( ! auth.check(x, createPermission("read")) ) throw new AuthorizationException("You don't have permission to read notifications you do not own.");
-      `
-    },
-    {
-      name: 'createPermission',
-      args: [
-        { name: 'operation', type: 'String' }
-      ],
-      type: 'String',
-      javaCode: `
-        return "liquidApprovalRequest." + operation + "." + getId();
-      `
     },
     {
       name: 'validate',
