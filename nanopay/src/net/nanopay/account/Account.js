@@ -9,7 +9,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
+    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.LifecycleAware',
