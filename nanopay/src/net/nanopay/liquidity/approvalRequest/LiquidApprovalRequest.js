@@ -1,7 +1,21 @@
 foam.CLASS({
-  package: 'net.nanopay.liquidity',
+  package: 'net.nanopay.liquidity.approvalRequest',
   name: 'LiquidApprovalRequest',
   extends: 'net.nanopay.approval.ApprovalRequest',
+  implements: [ 'foam.nanos.auth.Authorizable' ],
+
+  javaImports : [
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.auth.*',
+    'java.util.ArrayList',
+    'foam.core.FObject',
+    'foam.nanos.ruler.Operations',
+    'java.util.List',
+    'net.nanopay.account.Account',
+    'foam.nanos.logger.Logger',
+    'static foam.mlang.MLang.*'
+  ],
 
   tableColumns: [
     'classification',
@@ -9,8 +23,7 @@ foam.CLASS({
     'outgoingAccount',
     'initiatingUser',
     'approver',
-    'status',
-    'referenceObj'
+    'status'
   ],
 
   topics: [
@@ -69,7 +82,10 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'propertiesToUpdate'
+      name: 'propertiesToUpdate',
+      factory: function(){
+        return {};
+      }
     }
   ],
 
@@ -79,7 +95,70 @@ foam.CLASS({
       code: function() {
         return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
       }
-    }
+    },
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+      AuthService auth = (AuthService) x.get("auth");
+      if ( ! auth.check(x, createPermission("create")) ) throw new AuthorizationException("You don't have permission to create this notification.");
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      javaCode: `
+      AuthService auth = (AuthService) x.get("auth");
+      if ( ! auth.check(x, createPermission("update")) ) throw new AuthorizationException("You don't have permission to update notifications you do not own.");
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      javaCode: `
+      AuthService auth = (AuthService) x.get("auth");
+      if ( ! auth.check(x, "*") ) throw new AuthorizationException("You don't have permission to delete notifications you do not own.");
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      javaCode: `
+      AuthService auth = (AuthService) x.get("auth");
+      if ( ! auth.check(x, createPermission("read")) ) throw new AuthorizationException("You don't have permission to read notifications you do not own.");
+      `
+    },
+    {
+      name: 'createPermission',
+      args: [
+        { name: 'operation', type: 'String' }
+      ],
+      type: 'String',
+      javaCode: `
+        return "liquidApprovalRequest." + operation + "." + getId();
+      `
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+      Logger logger = (Logger) x.get("logger");
+      DAO dao = (DAO) x.get(getDaoKey());
+      if ( dao == null ) {
+        logger.error(this.getClass().getSimpleName(), "DaoKey not found", getDaoKey());
+        throw new RuntimeException("Invalid dao key for the approval request object.");
+      }
+      
+      if ( getOperation() != Operations.CREATE ){
+        FObject obj = dao.inX(x).find(getObjId());
+        if ( obj == null ) {
+          logger.error(this.getClass().getSimpleName(), "ObjId not found", getObjId());
+          throw new RuntimeException("Invalid object id.");
+        }
+      }
+      `
+    },
   ],
 
   actions: [
@@ -97,7 +176,11 @@ foam.CLASS({
       code: function() {
         // TODO: CLone approvalRequest object then once it gets put you can set this as approved
         this.status = this.ApprovalStatus.APPROVED; // fixme
-        this.approvalRequestDAO.put(this).then(o => {
+
+        var approvedApprovalRequest = this.clone();
+        approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
+
+        this.approvalRequestDAO.put(approvedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.stack.back();
@@ -135,6 +218,6 @@ foam.CLASS({
           }));
         });
       }
-    },
+    }
   ]
 });
