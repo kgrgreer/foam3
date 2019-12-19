@@ -8,8 +8,10 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.nanos.auth.DeletedAware',
-    'foam.core.Validatable'
+    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
+    'foam.core.Validatable',
+    'foam.nanos.auth.LifecycleAware',
+    'net.nanopay.liquidity.approvalRequest.ApprovableInterface'
   ],
 
   javaImports: [
@@ -249,10 +251,37 @@ foam.CLASS({
         placeholderImage: 'images/ic-placeholder.png'
       },
       section: 'personal'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE
     }
   ],
 
   methods: [
+    {
+      name: 'getKey',
+      type: 'String',
+      javaCode: `
+        String id = ((Long) getId()).toString();
+        return id;
+      `
+    },
+    {
+      name: 'getOutgoingAccount',
+      type: 'Long',
+      args: [
+        {
+          type: 'foam.core.X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return 0;
+      `
+    },
     {
       name: `validate`,
       args: [
