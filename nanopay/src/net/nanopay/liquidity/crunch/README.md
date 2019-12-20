@@ -7,7 +7,7 @@
 - hides the unneeded fields of Capaility 
 - sets the 'of' property to hidden and factory to return `AccountTemplate`
 
-### GlobalLiquidCapability
+### AccountBasedLiquidCapability
 - extends LiquidCapability
 - includes boolean properties on all of the global roles 
 - overrides the implies method such that it :
@@ -16,7 +16,7 @@
     If so, find the ucj and check if the outgoingAccountId is in the accountTemplate map or a child of
     an account in the accountTemplate map stored in the ucj.
 
-### AccountBasedLiquidCapability
+### GlobalLiquidCapability
 - extends LiquidCapability
 - include boolean properties on all the account-based roles
 - overrides the implies method such that it 
@@ -54,6 +54,9 @@
 - overrides `authorizeOnRead` so that it checks if either `super.authorizeOnRead` passes or the user is a transaction viewer of the destinationAccount
 
 ## UserCapabilityJunctionDAO.js
+
+### UserCapabilityJunctionDAO
+
 - extends `foam.nanos.crunch.UserCapabilityJunctionDAO`
 - a liquid specific decorator for the `UserCapabilityJunctionDAO` such that it provides alternative implementations of the following methods: 
   - `put_(x, obj)` : A liquid specific decorator for the UserCapabilityJunctionDAO so that the accountTemplateData will be updated instead of overwritten on ucj update.
