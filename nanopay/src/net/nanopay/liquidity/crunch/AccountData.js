@@ -20,6 +20,14 @@ foam.CLASS({
         name: 'approverLevel',
         class: 'Int',
         value: 1
+      },
+      {
+        name: 'inherited',
+        class: 'Boolean',
+        documentation: `
+        Describes whether this account was added explicitly to the map or 
+        as a result of cascading / only cascading for a segment of the tree
+        `
       }
     ],
   });
