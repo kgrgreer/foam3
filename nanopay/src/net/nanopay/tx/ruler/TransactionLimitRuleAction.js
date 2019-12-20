@@ -77,7 +77,7 @@ foam.CLASS({
               " transaction limit. If you require further assistance, please contact us. ");
         }
       }
-      agency.submit(x, x1 -> limitState.updateSpent(Long.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
+      agency.submit(x, x1 -> limitState.updateSpent(Long.valueOf(txn.getAmount()), this.getPeriod()), "Your transaciton will be proccessed.");
       `
     },
     {

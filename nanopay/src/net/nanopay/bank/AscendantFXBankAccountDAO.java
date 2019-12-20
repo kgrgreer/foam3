@@ -51,7 +51,7 @@ public class AscendantFXBankAccountDAO
         ascendantFXUser.setName(accountOwner.getLegalName());
         ascendantFXUser.setUser(accountOwner.getId());
         ascendantFXUser.setUserStatus(FXUserStatus.PENDING);
-        ascendantFXUserDAO.put_(x, ascendantFXUser);
+        ascendantFXUserDAO.put_(getX(), ascendantFXUser);
 
         //Create Ascendant Organization notification
         String message = "Organization setup on AscendantFX system is required for User with id: " + accountOwner.getId() ;

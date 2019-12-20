@@ -12,3 +12,23 @@ p({
   "after":true,
   "enabled":true
 })
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Set loginEnabled as false for gd spid",
+  "priority": 100,
+  "ruleGroup": "GD",
+  "documentation": "Set loginEnabled to false for new user creation on spid gd",
+  "daoKey": "localUserDAO",
+  "operation": 0,
+  "action": {
+    "class": "net.nanopay.business.ruler.RegistrationLoginDisabledRule"
+  },
+  "predicate": {
+    "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName": "spid",
+    "propValue": "gd"
+  },
+  "after": false,
+  "enabled": false
+})

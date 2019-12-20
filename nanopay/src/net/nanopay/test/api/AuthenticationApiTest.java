@@ -17,14 +17,13 @@ public class AuthenticationApiTest extends ApiTestBase {
   
   // Create the transaction summary report
   public void runTest(X x) {
-
     try 
     {
       // Enable the test user.
       DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
       User user = (User) (localUserDAO.find(EQ(User.EMAIL, TEST_USER_EMAIL_ADDRESS))).fclone();
       user.setLoginEnabled(true);
-      localUserDAO.put(user);
+      user = (User) localUserDAO.put(user);
 
       // Create the request
       String digUrl = this.getBaseUrl(x) + "/service/dig";
