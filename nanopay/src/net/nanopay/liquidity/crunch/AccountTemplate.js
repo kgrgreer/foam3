@@ -37,8 +37,6 @@ properties: [
     {
       name: 'validate',
       javaCode: `
-        // TODO
-        // return false;
       `
     },
     {
@@ -47,7 +45,7 @@ properties: [
         { name: 'map', javaType: 'net.nanopay.liquidity.crunch.AccountTemplate' }
       ],
       documentation: `
-      Update the map stored on this model so that 
+      Update the map stored on this model so that to include entries in the new map.
       `,
       javaCode: `
       `
@@ -61,8 +59,31 @@ properties: [
       If account is in the map, remove the account from the map.
       If account is implied by an account in the map (through cascading), 
       add the immediate parent of account explicitly to the map with cascading set to false and inherited set to true
+      THIS IS WRONG TODO, PARENTS ACCOUNTS MORE THAN ONE CHILD 
       `,
       javaCode: `
+        Map<Boolean, AccountData> map = getAccounts();
+        if ( map == null && map.size() == 0 ) return;
+        if ( map.containsKey(childAccountId) ) {
+          map.remove(childAccountId);
+          setAccounts(map);
+          return;
+        }
+
+        DAO accountDAO = (DAO) x.get("accountDAO");
+
+        Account childAccount = (Account) accountDAO.find(childAccountId);
+        Account parentAccount = childAccount.findParent(x);
+        Account immediateParentAccount = parentAccount;
+
+        while (  ) {
+          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getCascading() ) {
+            AccountData data = map.get(immediateParentAccount.getId());
+            map.put(immediateParentAccount.getId(), data.setCascading(false));
+          }
+          parentAccount = (Account) parentAccount.findParent(x);
+        }
+
 
       `
     },
@@ -74,22 +95,25 @@ properties: [
       ],
       javaType: 'Boolean',
       documentation: `
-      Checks if a given account is in this AccountTemplate or any AccountTemplate that this one 'extends'
+      Check if a given account is in the map or implied by ay an account in the map through
+      cascading.
       `,
       javaCode: `
         // TODO add implementation for checking subtemplates of the current
-        if ( getAccounts() == null && getAccounts().size() == 0 ) return false;
+        Map<Boolean, AccountData> map = getAccounts();
+        if ( map == null && map.size() == 0 ) return false;
+        if ( map.containsKey(childAccountId) ) return true;
 
         DAO accountDAO = (DAO) x.get("accountDAO");
 
         Account childAccount = (Account) accountDAO.find(childAccountId);
+        Account parentAccount = childAccount.findParent(x);
 
-        while ( childAccount != null ) {
-          if ( getAccounts().containsKey(childAccount.getId()) ) {
-            // TODO!!!check if isCascading
+        while ( parentAccount != null ) {
+          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getCascading() ) {
             return true;
           } 
-          childAccount = (Account) childAccount.findParent(x);
+          parentAccount = (Account) parentAccount.findParent(x);
         }
 
         return false;
