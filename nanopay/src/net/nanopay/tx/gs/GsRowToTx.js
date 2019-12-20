@@ -80,7 +80,7 @@ foam.CLASS({
         // -- begin Job creation and execution
         logger.info(" ** Processing: " + rows.size() + " rows ...");
         int i = 0;
-        int modulus = (rows.size() / 10) + 1;
+        int modulus = 21;
         for ( GsTxCsvRow row1 : rows ) {
           // logger.info(" ** On iteration: " + i + " of: " + am);
           i++;
@@ -88,14 +88,14 @@ foam.CLASS({
             .setOutputDAO( (DAO) x.get("localTransactionDAO") )
             .setRow1(row1)
             .build();
-          if ( i % modulus == 0 ) {
+          if ( i % modulus == 0 || i == rows.size() ) {
             pbd = (ProgressBarData) pbd.fclone();
             pbd.setValue(i);
             pbd.setStatus("Parsing Transaction: " + pbd.getValue() + " of " + rows.size());
             job.setPbd(pbd);
             //progressBarDAO.put(pbd);
 
-            logger.info(" ** " + pbd.getStatus());
+            //logger.info(" ** " + pbd.getStatus());
           }
           
           /*
@@ -148,7 +148,7 @@ foam.CLASS({
 
         pbd.setValue(am);
         pbd.setStatus("💰🤑💸 Congratualtions File Has  Been Ingested 💸🤑💰");
-        //progressBarDAO.put(pbd);
+        progressBarDAO.put(pbd);
         logger.info(" ** " + pbd.getStatus());
       `
     },
