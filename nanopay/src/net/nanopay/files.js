@@ -851,11 +851,11 @@ FOAM_FILES([
 
    // liquidity crunches
    { name: 'net/nanopay/liquidity/crunch/LiquidCapability' },
-  //  { name: 'net/nanopay/liquidity/crunch/LiquidCapabilityAuthService' },
    { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
    { name: 'net/nanopay/liquidity/crunch/AccountData' },
    { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
+   { name: 'net/nanopay/liquidity/crunch/UserCapabilityJunctionDAO' },
    
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },

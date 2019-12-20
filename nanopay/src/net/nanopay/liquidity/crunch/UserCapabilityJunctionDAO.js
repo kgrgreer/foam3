@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'UserCapabilityJunctionDAO',
-  extends: 'foam.nanos.auth.UserCapabilityJunctionDAO',
+  extends: 'foam.nanos.crunch.UserCapabilityJunctionDAO',
 
   documentation: `Authenticated DAO decorator to only show capabilities owned by a user. Updates can only be performed by system.`,
 
@@ -96,20 +96,23 @@ foam.CLASS({
             /**
              * A liquid specific remove_ method to remove a capability from a user
              * for a specific account instead of removing the relationship altogether
-             * /
-            public FObject remove_(X x, FObject obj, Long accountId) {
+             */
+            public FObject remove_(foam.core.X x, foam.core.FObject obj, Long accountId) {
 
-              UserCapabilityJunction ucjToRemove = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(obj.getId());
+              UserCapabilityJunction ucjToRemove = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(((UserCapabilityJunction) obj).getId());
       
               if ( ucjToRemove == null ) return null;
 
               AccountTemplate data = (AccountTemplate) ucjToRemove.getData();
-              if ( data == null || ! data.containsKey(accountId) ) return null;
+              if ( data == null ) return null;
+
+              java.util.Map<Long, AccountData> map = data.getAccounts();
+              if ( map == null || ! map.containsKey(accountId) ) return null;
 
               data.removeAccount(accountId);
               ucjToRemove.setData(data);
 
-              getDelegate().put_(x, ucjToRemove);
+              return getDelegate().put_(x, ucjToRemove);
               
             }
           `

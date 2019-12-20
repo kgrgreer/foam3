@@ -299,9 +299,9 @@ var classes = [
    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
    'net.nanopay.liquidity.crunch.AccountTemplate',
    'net.nanopay.liquidity.crunch.AccountData',
-  //  'net.nanopay.liquidity.crunch.LiquidCapabilityAuthService',
    'net.nanopay.liquidity.crunch.LiquidAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer',
+   'net.nanopay.liquidity.crunch.UserCapabilityJunctionDAO',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.tx.BusinessRule',
