@@ -146,7 +146,7 @@ foam.CLASS({
         }
         else { // securities
           verifySecurity(x, sourceRow.getProductId());
-          if ( ! SafetyUtil.equals(sourceRow.getProductId(), destRow.getProductId()) ) {
+          //if ( ! SafetyUtil.equals(sourceRow.getProductId(), destRow.getProductId()) ) {
             if( isDVP(sourceRow) ) {
               DVPTransaction tx = new DVPTransaction();
               tx.setSourcePaymentAccount(findAcc(x,destRow,true));
@@ -155,7 +155,7 @@ foam.CLASS({
               tx.setDestinationPaymentAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
               t = tx;
             }
-          }
+          //}
           t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getProductId());
@@ -342,15 +342,16 @@ foam.CLASS({
           if ( remainder < 0 ) {
             Transaction secCI = new Transaction();
             secCI.setAmount(Math.abs(remainder));
+            secCI.setDestinationAmount(secCI.getAmount()); // no trading allowed during top ups.
             secCI.setDestinationAccount(source.getId());
             secCI.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
             secCI.setSourceCurrency(txn.getSourceCurrency());
-            secCI.setDestinationCurrency(txn.getSourceCurrency());
+            secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
             transactionDAO.put(secCI); // top up the sending security account
           }
           return true;
         }
-
+        //*** CASH ***
         // Find the account where the top up will come from for the given source account
         Account b = null;
         if ( ! (source instanceof net.nanopay.account.ShadowAccount) ) {
@@ -374,14 +375,14 @@ foam.CLASS({
         }
 
         // Create a top up transaction if necessary
-        Long topUp = txn.getAmount() - (long) source.findBalance(x);
-        if ( topUp > 0 ) {
+        Long topUp = (long) source.findBalance(x) - txn.getAmount();
+        if ( topUp < 0 ) {
           Transaction ci = new Transaction.Builder(x)
             .setDestinationAccount(source.getId())
             .setSourceAccount(b.getId())
             .setDestinationCurrency(source.getDenomination())
             .setSourceCurrency(b.getDenomination())
-            .setDestinationAmount(topUp)
+            .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
             .build();
 
@@ -416,9 +417,9 @@ foam.CLASS({
             if ( w == 0) {
               logger.warning("No exchange rate exists for " + ci.getSourceCurrency() + " -> " + ci.getDestinationCurrency());
             }
-            ci.setAmount(toLong(x, ci.getSourceCurrency(), (double) ci.getDestinationAmount() * w));
-            logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() + 
-                         " -> " + ci.getDestinationCurrency() + " for " + b.getDenomination() + ": " + w);
+            ci.setAmount(toLong(x, ci.getSourceCurrency(), ( (double) ci.getDestinationAmount() * w)));
+            //logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() +
+            //             " -> " + ci.getDestinationAmount() + " for " + ci.getDestinationCurrency() + ": " + w);
           }
 
           // Ensure the bank account has a sufficient balance too
@@ -616,7 +617,7 @@ foam.CLASS({
         foam.core.Currency cur = (foam.core.Currency) ((DAO) x.get("currencyDAO")).find(curr);
         if ( cur != null ) {
           long precision = cur.getPrecision();
-          return (long) Math.floor((Math.abs(amount * (10^precision))));
+          return (long) Math.floor(Math.abs(amount * (Math.pow(10,precision))));
         }
         return (long) Math.floor((Math.abs(amount)));
       `
