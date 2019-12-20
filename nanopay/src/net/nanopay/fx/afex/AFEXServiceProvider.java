@@ -771,9 +771,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
     if ( afexBeneficiary == null ) {
       DAO localAccountDAO = (DAO) x.get("localAccountDAO");
-      System.out.println(" beneficiaryId is: " + beneficiaryId);
       BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
-      System.out.println(" beneficiaryId is: " + beneficiaryId);
       if ( null != bankAccount ) {
         System.out.println(" bankAccount is not null ");
         try {
