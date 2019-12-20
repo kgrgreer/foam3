@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.ApprovableInterface',
-    'net.nanopay.liquidity.approvalRequest.LiquidApprovalRequest'
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
 
   properties: [
@@ -46,11 +46,11 @@ foam.CLASS({
       type: 'void',
       args: [
         { name: 'x', type: 'X' },
-        { name: 'req', type: 'LiquidApprovalRequest' },
+        { name: 'req', type: 'RoleApprovalRequest' },
         { name: 'userId', type: 'long' }
       ],
       javaCode: `
-        LiquidApprovalRequest request = (LiquidApprovalRequest) req.fclone();
+        RoleApprovalRequest request = (RoleApprovalRequest) req.fclone();
         request.clearId();
         request.setApprover(userId);
         ((DAO) x.get("approvalRequestDAO")).put_(x, request);
@@ -61,7 +61,7 @@ foam.CLASS({
       type: 'void',
       args: [
         { name: 'x', type: 'X' },
-        { name: 'liquidRequest', type: 'LiquidApprovalRequest' }
+        { name: 'request', type: 'RoleApprovalRequest' }
       ],
       javaCode:`
 
@@ -227,7 +227,7 @@ foam.CLASS({
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
-              foam.mlang.MLang.EQ(LiquidApprovalRequest.OPERATION, Operations.REMOVE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -249,7 +249,7 @@ foam.CLASS({
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
-        LiquidApprovalRequest approvalRequest = new LiquidApprovalRequest.Builder(getX())
+        RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableObj.getKey())
           .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
@@ -288,7 +288,7 @@ foam.CLASS({
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
-              foam.mlang.MLang.EQ(LiquidApprovalRequest.OPERATION, Operations.REMOVE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -310,7 +310,7 @@ foam.CLASS({
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
-        LiquidApprovalRequest approvalRequest = new LiquidApprovalRequest.Builder(getX())
+        RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableObj.getKey())
           .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
@@ -330,7 +330,7 @@ foam.CLASS({
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
-              foam.mlang.MLang.EQ(LiquidApprovalRequest.OPERATION, Operations.CREATE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -355,7 +355,7 @@ foam.CLASS({
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
-        LiquidApprovalRequest approvalRequest = new LiquidApprovalRequest.Builder(getX())
+        RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableObj.getKey())
           .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
@@ -388,7 +388,7 @@ foam.CLASS({
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "approvableDAO"),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableId),
-              foam.mlang.MLang.EQ(LiquidApprovalRequest.OPERATION, Operations.UPDATE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.UPDATE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -416,7 +416,7 @@ foam.CLASS({
           .setObjId(approvableObj.getKey())
           .setPropertiesToUpdate(updatedProperties).build());
 
-        LiquidApprovalRequest approvalRequest = new LiquidApprovalRequest.Builder(getX())
+        RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
           .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))

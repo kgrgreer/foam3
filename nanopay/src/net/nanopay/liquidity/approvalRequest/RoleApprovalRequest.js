@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
-  name: 'LiquidApprovalRequest',
+  name: 'RoleApprovalRequest',
   extends: 'net.nanopay.approval.ApprovalRequest',
 
   javaImports : [
@@ -55,13 +55,17 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      documentation: `
+        0 by default, designed to work with account specific role based decorators as well
+      `,
       name: 'outgoingAccount',
       tableCellFormatter: function(outgoingAccount) {
         let self = this;
         this.__subSubContext__.accountDAO.find(outgoingAccount).then((account)=> {
           self.add(account.toSummary())
         });
-      }
+      },
+      value: 0
     },
     {
       class: 'Enum',
@@ -77,13 +81,6 @@ foam.CLASS({
         this.__subSubContext__.userDAO.find(initiatingUser).then((user)=> {
           self.add(user.toSummary());
         });
-      }
-    },
-    {
-      class: 'Map',
-      name: 'propertiesToUpdate',
-      factory: function(){
-        return {};
       }
     }
   ],
@@ -135,9 +132,6 @@ foam.CLASS({
         return initiatingUser !== approver;
       },
       code: function() {
-        // TODO: CLone approvalRequest object then once it gets put you can set this as approved
-        this.status = this.ApprovalStatus.APPROVED; // fixme
-
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
 
@@ -166,8 +160,10 @@ foam.CLASS({
         return initiatingUser !== approver;
       },
       code: function() {
-        this.status = this.ApprovalStatus.REJECTED;
-        this.approvalRequestDAO.put(this).then(o => {
+        var rejectedApprovalRequest = this.clone();
+        rejectedApprovalRequest.status = this.ApprovalStatus.REJECTED;
+
+        this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.stack.back();

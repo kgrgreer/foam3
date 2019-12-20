@@ -300,7 +300,7 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
-   'net.nanopay.liquidity.approvalRequest.LiquidApprovalRequest',
+   'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',

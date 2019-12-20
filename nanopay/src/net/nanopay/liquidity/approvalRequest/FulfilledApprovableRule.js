@@ -19,7 +19,7 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.ApprovableId',
-    'net.nanopay.liquidity.approvalRequest.LiquidApprovalRequest'
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
 
   implements: ['foam.nanos.ruler.RuleAction'],
