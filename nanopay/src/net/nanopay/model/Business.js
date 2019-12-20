@@ -211,6 +211,18 @@ foam.CLASS({
       section: 'business'
     },
     {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'The phone number of the business.',
+      section: 'business'
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneNumberVerified',
+      writePermissionRequired: true,
+      section: 'business'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
@@ -370,6 +382,7 @@ foam.CLASS({
  ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.Address',
@@ -379,8 +392,13 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.EQ'
+    'java.util.List',
+    'net.nanopay.model.BusinessUserJunction',
+    'static foam.mlang.MLang.*'
   ],
 
   implements: [
@@ -523,6 +541,62 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
         return "";
+      `
+    },
+    {
+      name: 'doNotify',
+      javaCode: `
+        DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+        DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+        DAO               userDAO  = (DAO) x.get("localUserDAO");
+        Logger              logger = (Logger) x.get("logger");
+
+        // Send business notifications
+        super.doNotify(x, notification);
+
+        // Gets all the business-user pairs
+        List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
+          .where(EQ(UserUserJunction.TARGET_ID, getId()))
+          .select(new ArraySink())).getArray();
+
+        for( UserUserJunction businessUserJunction : businessUserJunctions ) {
+          User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
+          if ( businessUser == null ) {
+            logger.warning("A business user junction for business ", businessUserJunction.getTargetId(), "  and user ", businessUserJunction.getSourceId(), " exists, but the user cannot be found.");
+            continue;
+          }
+
+          // Gets the notification settings for this business-user pair
+          List<NotificationSetting> userSettings = ((ArraySink) businessUserJunction.getNotificationSettingsForUserUsers(x).select(new ArraySink())).getArray();
+          for( NotificationSetting setting : userSettings ) {
+            setting.sendNotification(x, businessUser, notification);
+          }
+        }
+      `
+    },
+    {
+      name: 'findSigningOfficer',
+      type: 'User',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("userDAO");
+        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        
+        List signingOfficers = ((ArraySink) signingOfficerJunctionDAO.where(
+            EQ(BusinessUserJunction.SOURCE_ID, this.getId())
+          ).select(new ArraySink())).getArray();
+        if ( signingOfficers == null || signingOfficers.size() == 0 ) {
+          throw new RuntimeException("Signing officer not found");
+        }
+        BusinessUserJunction businessUserJunction = (BusinessUserJunction) signingOfficers.get(0);
+        User user = (User) userDAO.find(businessUserJunction.getTargetId());
+
+        return user;
       `
     }
   ],

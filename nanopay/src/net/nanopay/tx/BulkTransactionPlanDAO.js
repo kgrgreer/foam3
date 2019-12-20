@@ -18,7 +18,9 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.liquidity.LiquiditySettings',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -50,11 +52,21 @@ foam.CLASS({
           // payee then quote a single transaction, which is a one to one transaction.
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
-              bulkTxn.setSourceAccount(sourceAccount.getId());
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
+
+              // SourceAccount and DestinationAccount are required
+              bulkTxn.setSourceAccount(sourceAccount.getId());
               bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+
               parentQuote.setRequestTransaction(bulkTxn);
-              return getDelegate().put_(x, parentQuote);
+              parentQuote = (TransactionQuote) getDelegate().put_(x, parentQuote);
+              
+              // Update the child of the bulk transaction
+              bulkTxn.addNext(parentQuote.getPlan());
+              bulkTxn.setIsQuoted(true);
+
+              parentQuote.setPlan(bulkTxn);
+              return parentQuote;
             } else {
               throw new RuntimeException("BulkTransaction missing child transactions or a payee.");
             }
@@ -86,9 +98,21 @@ foam.CLASS({
             // Set the source of each child transaction to its parent destination digital account
             childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
-            // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+            // Get the default digital account
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
+
+            LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
+            Boolean explicitCO = bulkTxn.getExplicitCO();
+
+            // Check liquidity settings of the digital account associated to the digital transaction
+            if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
+              // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
+              explicitCO = false;
+            }
+
+            // Set the destination of each child transaction to payee's default digital account
+            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO).getId());
 
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);

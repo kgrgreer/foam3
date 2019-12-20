@@ -23,7 +23,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'ruleGroup',
       value: 'transactionLimits',
       visibility: 'RO',

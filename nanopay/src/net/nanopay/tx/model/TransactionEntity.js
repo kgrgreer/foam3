@@ -38,9 +38,9 @@ foam.CLASS({
       class: 'String',
       name: 'displayName',
       expression: function(firstName, lastName, businessName, userClass) {
-        var name = this.fullName.trim();
+        var name = businessName.trim();
         if ( ! name ) {
-          name = businessName.trim();
+          name = this.fullName.trim();
         }
         return name;
       }

@@ -11,6 +11,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.FXQuote;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
 import net.nanopay.tx.cico.CITransaction;
@@ -65,7 +66,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   public void testTxnChain(X x) {
     // test top level txn
     test( "".equals(txn.getParent()), "top level txn has no parent");
-    test(txn.getClass() == SummaryTransaction.class, "top level txn is a SummaryTransaction");
+    test(txn.getClass() == FXSummaryTransaction.class, "top level txn is a SummaryTransaction");
     test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED");
     test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state PENDING");
     test(SafetyUtil.equals(txn.getSourceCurrency(), "CAD"), "top level txn has source currency CAD");
@@ -213,6 +214,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
       destinationAccount.setOwner(receiver.getId());
       destinationAccount.setAccountNumber("9876543210");
       destinationAccount.setStatus(BankAccountStatus.VERIFIED);
+      destinationAccount.setPurposeCode("P1306");
       destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount);
     }
   }

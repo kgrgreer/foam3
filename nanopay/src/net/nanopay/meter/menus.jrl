@@ -27,22 +27,23 @@ p({
   "parent":"operation"
 })
 p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "operation.bus_limits",
-  "label": "Business Limits",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "ruleDAO",
-      "predicate": {
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.txlimitrules",
+  "label":"Transaction Limits",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.tx.ruler.BusinessLimit"
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
       },
-      "of": "net.nanopay.tx.ruler.BusinessLimit"
+      "defaultColumns":["id","enabled","applyLimitTo","send","limit","period"],
+      "of":"net.nanopay.liquidity.tx.TxLimitRule"
     }
   },
-  "order": 2100,
+  "order":2100,
   "parent": "operation"
 })
 p({
@@ -88,10 +89,14 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc","label":"Ac
 // ComplianceItem
 p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})
 
-
-
 // Reports
-p({"class":"foam.nanos.menu.Menu","id":"report","label":"Reports","handler":{"class":"foam.nanos.menu.SubMenu"},"order":200})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"report",
+  "label":"Reports",
+  "handler":{"class":"foam.nanos.menu.SubMenu"},
+  "order":200
+})
 
 // BusinessReport
 p({
@@ -106,5 +111,16 @@ p({
     "editEnabled":   false
   },
   "order":10,
+  "parent":"report"
+})
+
+// Transaction Report
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"report.txnReport",
+  "label":"Transaction Report",
+  "handler":{"class":"foam.nanos.menu.ViewMenu",
+  "view":{"class":"net.nanopay.meter.report.TransactionReportView"}},
+  "order":20,
   "parent":"report"
 })

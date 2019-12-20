@@ -13,7 +13,12 @@ foam.ENUM({
     {
       name: 'WEEKLY',
       label: 'Weekly',
-      ms: 7* 24 * 60 * 60 * 1000
+      ms: 7 * 24 * 60 * 60 * 1000
+    },
+    {
+      name: 'MONTHLY',
+      label: 'Monthly',
+      ms: 30 * 24 * 60 * 60 * 1000
     },
     {
       name: 'PER_TRANSACTION',

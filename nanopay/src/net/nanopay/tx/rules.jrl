@@ -1,10 +1,135 @@
-p({"class":"foam.nanos.ruler.Rule","id":"Pending FX Rate Transactions","priority":100,"ruleGroup":"ManualFxTxn","documentation":"Create a FX approval request for FX quote","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Eq","arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},"arg2":{"class":"foam.mlang.PredicatedExpr","arg1":{"class":"foam.mlang.predicate.IsInstanceOf","targetClass":"net.nanopay.fx.KotakFxTransaction"}}},"arg2":{"class":"foam.mlang.Constant","value":true}},{"class":"foam.mlang.predicate.Eq","arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},"arg2":{"class":"__Property__","forClass_":"net.nanopay.tx.model.Transaction","name":"status"}},"arg2":{"class":"foam.mlang.Constant","value":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}}}]},"action":{"class":"net.nanopay.tx.CreateManualFxRule"},"enabled":true,"saveHistory":false})
-p({"class":"foam.nanos.ruler.Rule","id":"Getting FX Rate for Transactions","priority":100,"ruleGroup":"ManualFxTxn","documentation":"Get FX rate if a FX quote is available","daoKey":"approvalRequestDAO","operation":1,"after":false,"predicate":{"class":"foam.mlang.predicate.Eq","arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},"arg2":{"class":"foam.mlang.PredicatedExpr","arg1":{"class":"foam.mlang.predicate.IsInstanceOf","targetClass":"net.nanopay.fx.ManualFxApprovalRequest"}}},"arg2":{"class":"foam.mlang.Constant","value":true}},"action":{"class":"net.nanopay.tx.ManualFxRule"},"enabled":true,"saveHistory":false})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Pending FX Rate Transactions",
+  "priority":100,
+  "ruleGroup":"ManualFxTxn",
+  "documentation":"Create a FX approval request for FX quote",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[{
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject",
+          "key":"NEW"
+        },
+        "arg2":{
+          "class":"foam.mlang.PredicatedExpr",
+          "arg1":{
+            "class":"foam.mlang.predicate.IsInstanceOf",
+            "targetClass":"net.nanopay.fx.KotakFxTransaction"
+      }}},
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":true
+    }},{
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject",
+          "key":"NEW"
+        },
+        "arg2":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.tx.model.Transaction",
+          "name":"status"
+      }},
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":{
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+  }}}]},
+  "action":{
+    "class":"net.nanopay.tx.CreateManualFxRule"
+  },
+  "enabled":true,
+  "saveHistory":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Getting FX Rate for Transactions",
+  "priority":100,
+  "ruleGroup":"ManualFxTxn",
+  "documentation":"Get FX rate if a FX quote is available",
+  "daoKey":"approvalRequestDAO",
+  "operation":1,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.Dot",
+      "arg1":{
+        "class":"foam.mlang.ContextObject",
+        "key":"NEW"
+      },
+      "arg2":{
+        "class":"foam.mlang.PredicatedExpr",
+        "arg1":{
+          "class":"foam.mlang.predicate.IsInstanceOf",
+          "targetClass":"net.nanopay.fx.ManualFxApprovalRequest"
+    }}},
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":true
+  }},
+  "action":{
+    "class":"net.nanopay.tx.ManualFxRule"
+  },
+  "enabled":true,
+  "saveHistory":false
+})
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule1","priority":100,"ruleGroup":"compliance","documentation":"when a compliance transaction gets created create an approval request for Jackie","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},"action":{"class":"net.nanopay.tx.JackieRuleOnCreate"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule2","priority":100,"ruleGroup":"compliance","documentation":"When a compliance transaction is saved, check if jackie approved it or not.","daoKey":"localTransactionDAO","predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Eq","arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},"arg2":{"class":"foam.mlang.PredicatedExpr","arg1":{"class":"foam.mlang.predicate.IsInstanceOf","targetClass":"net.nanopay.tx.ComplianceTransaction"}}},"arg2":{"class":"foam.mlang.Constant","value":true}},{"class":"foam.mlang.predicate.Eq","arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},"arg2":{"class":"__Property__","forClass_":"net.nanopay.tx.model.Transaction","name":"status"}},"arg2":{"class":"foam.mlang.Constant","value":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}}}]},"operation":1,"after":false,"action":{"class":"net.nanopay.tx.JackieRuleOnPut"},"enabled":false,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","priority":100,"ruleGroup":"FastPay","documentation":"when a CI transaction gets put in complete status for an Ablii FastPay enabled user, create a debtRepaymentTxn","daoKey":"localTransactionDAO","operation":1,"after":true,"action":{"class":"net.nanopay.tx.RepayDebtOnCIRule"},"enabled":true,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":"Proper Status after Pause, Rule","priority":100,"ruleGroup":"StatusRules","documentation":"Change PPC to Pending if parent complete","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.ParentCompleteToPendingRule"},"after":false,"enabled":true,"saveHistory":false})
-p({"class":"foam.nanos.ruler.Rule","id":"Set Approved By","priority":100,"ruleGroup":"InvoicePayment","documentation":"Set approvedBy property if the payment status is PROCESSING","daoKey":"invoiceDAO","operation":1,"after":false,"action":{"class":"net.nanopay.tx.ruler.InvoiceApprovedByRule"},"enabled":true,"saveHistory":false})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"DebtDestroyer","priority":100,
+  "ruleGroup":"FastPay",
+  "documentation":"when a CI transaction gets put in complete status for an Ablii FastPay enabled user, create a debtRepaymentTxn",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "action":{
+    "class":"net.nanopay.tx.RepayDebtOnCIRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Proper Status after Pause, Rule",
+  "priority":100,
+  "ruleGroup":"StatusRules",
+  "documentation":"Change PPC to Pending if parent complete",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "action":{
+    "class":"net.nanopay.tx.ParentCompleteToPendingRule"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set Approved By",
+  "priority":100,
+  "ruleGroup":"InvoicePayment",
+  "documentation":"Set approvedBy property if the payment status is PROCESSING",
+  "daoKey":"invoiceDAO",
+  "operation":1,
+  "after":false,
+  "action":{
+    "class":"net.nanopay.tx.ruler.InvoiceApprovedByRule"
+  },
+  "enabled":true,
+  "saveHistory":false
+})
 p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","priority":100,"ruleGroup":"FastPay","documentation":"If we know that fast pay will fail due to nsf in some account, transition to slowpay","daoKey":"localTransactionDAO","operation":1,"after":false,"action":{"class":"net.nanopay.tx.ruler.SlowDownRule"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":"Modify Cico Status","priority":100,"ruleGroup":"ModifyCicoStatus","documentation":"When a cico transaction is updated, check if status is SENT and check if ApprovalRequest is Approved, then update transaction status to COMPLETED.","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"}]},"action":{"class":"net.nanopay.tx.ModifyCicoStatus"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","priority":100,"ruleGroup":"CreateExpediteApprovalRequest","documentation":"When a cico transaction is created, create an approval request that allows the status to be modified.","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"},"action":{"class":"net.nanopay.tx.CreateExpediteApprovalRequest"},"enabled":true,"saveHistory":true})
@@ -154,4 +279,132 @@ p({
     "class": "net.nanopay.tx.ruler.ComplianceTransactionPlanner"
   },
   "enabled": true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"GD Fee",
+  "daoKey":"localTransactionQuotePlanDAO",
+  "ruleGroup":"GD",
+  "operation":0,
+  "priority":100,
+  "documentation":"A customized rule to add cash-out transaction fee for Grain Discovery.",
+  "action":{
+    "class":"net.nanopay.tx.ruler.AddGDTxnFeeLineItem",
+    "fee":150
+  },
+  "enabled":false
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit had failed",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email to business that micro deposit had failed",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
+            "ordinal":4
+          }
+        },
+        {
+          "class":"foam.mlang.predicate.And",
+          "args":[
+            {
+              "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+              "propName":"status",
+              "propValue": {
+                "class": "net.nanopay.tx.model.TransactionStatus",
+                "ordinal":5
+              },
+              "isNew":false
+            },
+            {
+              "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+              "propName":"status",
+              "propValue": {
+                "class": "net.nanopay.tx.model.TransactionStatus",
+                "ordinal":4
+              },
+              "isNew":false
+            }
+          ]
+        }
+      ]
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositFailed"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit succeeded",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email when micro deposit succeeded",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
+            "ordinal":5
+          }
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
+            "ordinal":5
+          },
+          "isNew":false
+        }
+      ]
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositSuccessed"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit sent",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email when micro deposit sent",
+    "daoKey":"localTransactionDAO",
+    "operation":0,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue": {
+        "class": "net.nanopay.tx.model.TransactionStatus",
+        "ordinal":0
+      }
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositSent"
+    },
+    "enabled":true,
+    "saveHistory":true
 })
