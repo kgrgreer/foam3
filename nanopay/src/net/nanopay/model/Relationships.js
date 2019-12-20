@@ -884,3 +884,11 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PaymentCode',
+  forwardName: 'paymentCode',
+  inverseName: 'owner',
+  cardinality: '1:*',
+});

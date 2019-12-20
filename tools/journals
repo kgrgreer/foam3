@@ -42,6 +42,7 @@ menus
 notifications
 notificationTemplates
 payoutOptions
+paymentCodes
 paymentProviders
 permissions
 prerequisiteCapabilityJunctions
