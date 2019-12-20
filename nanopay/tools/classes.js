@@ -296,6 +296,16 @@ var classes = [
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
    'net.nanopay.util.Frequency',
+   'net.nanopay.liquidity.tx.BusinessRule',
+   'net.nanopay.liquidity.tx.BusinessRuleAction',
+   'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
+   'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
+   'net.nanopay.liquidity.tx.ExceptionRuleAction',
+   'net.nanopay.liquidity.tx.GenericBusinessRule',
+   'net.nanopay.liquidity.tx.TxLimitAction',
+   'net.nanopay.liquidity.tx.TxLimitEntityType',
+   'net.nanopay.liquidity.tx.TxLimitPredicate',
+   'net.nanopay.liquidity.tx.TxLimitRule',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
