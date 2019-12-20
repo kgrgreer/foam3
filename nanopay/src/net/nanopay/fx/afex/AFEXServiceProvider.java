@@ -341,11 +341,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
     if ( null == bankAddress ) {
-      if ( bankInformation == null ) {
-        throw new RuntimeException("Bank Account Address is null " + bankAccountId );
-      }
       bankAddress = new Address.Builder(x)
-        .setCountryId(bankInformation.getIsoCountryCode())
+        .setCountryId(bankAccount.getCountry())
         .build();
     }
 
@@ -774,8 +771,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
     if ( afexBeneficiary == null ) {
       DAO localAccountDAO = (DAO) x.get("localAccountDAO");
+      System.out.println(" beneficiaryId is: " + beneficiaryId);
       BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
+      System.out.println(" beneficiaryId is: " + beneficiaryId);
       if ( null != bankAccount ) {
+        System.out.println(" bankAccount is not null ");
         try {
           addPayee(beneficiaryId, bankAccount.getId(), ownerId);
           afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
