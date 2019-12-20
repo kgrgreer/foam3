@@ -57,7 +57,7 @@
 
 ### LiquidApprovalRequestAuthorizer (TODO ruby)
 - extends `LiquidAuthorizer`
-- overrides `getPermission` logic so that it return the permission string in the form of "canApprove{classname}" or "canApprove{classname}.outgoingAccountId"
+- overrides `createPermission` logic so that it return the permission string in the form of "canApprove{classname}" or "canApprove{classname}.outgoingAccountId"
 
 ## CapabilityAssignment.js (TODO ruby)
 - custom file that handles assigning capabilitys by appending to the ucj data or creating ucj, whichever is appropriate.
