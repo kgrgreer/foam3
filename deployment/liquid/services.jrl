@@ -377,7 +377,7 @@ p({
     .setSeqNo(true)
     .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-    .setJournalName(\"liquiditySettings\")
+    .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
     .build();
