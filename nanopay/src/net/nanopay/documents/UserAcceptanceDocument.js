@@ -61,7 +61,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
-      name: 'businessId',
+      name: 'business',
       documentation: 'Business who created the entry'
     },
     {

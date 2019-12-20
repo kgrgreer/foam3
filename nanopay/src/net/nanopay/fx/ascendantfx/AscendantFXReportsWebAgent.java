@@ -346,7 +346,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
             ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
               AND(
                 EQ(UserAcceptanceDocument.USER, newUserId),
-                EQ(UserAcceptanceDocument.BUSINESS_ID, business.getId())
+                EQ(UserAcceptanceDocument.BUSINESS, business.getId())
               )
             ).select(new ArraySink());
             java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
