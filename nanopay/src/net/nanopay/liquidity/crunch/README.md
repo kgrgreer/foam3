@@ -30,9 +30,9 @@
 - the data stored in the liquid specific UserCapabilityJunction
 - includes a property called `accounts` of type `Map<Long, AccountData>` where the keys represent account IDs and values are the corresponding `AccountData` object
 - methods include: 
-  - `isParentOf(x, childAccountId)` : Check if a given account is in the map or implied by an account in the map through cascading.
+  - `isParentOf(x, childAccountId)` : Check if a given account is in the map or implied by an account in the map through cascading. (TODO ruby: the accounts will also be stored in the map as they are traversed, maybe)
   - `mergeMaps(map)` : Update the map stored on this model so that to include entries in the new map.
-  - `removeAccount(accountId)` : If account is in the map, remove the account from the map. If account is implied by an account in the map (through cascading), add the immediate parent of account explicitly to the map with cascading set to false and inherited set to true.
+  - `removeAccount(accountId)` : If account is in the map, remove the account from the map. If account is implied by an account in the map (through cascading), add the immediate parent of account explicitly to the map with cascading set to false and inherited set to true. 
       
 ## AccountData.js
 
@@ -53,12 +53,15 @@
 - extends `LiquidAuthorizer`
 - overrides `authorizeOnRead` so that it checks if either `super.authorizeOnRead` passes or the user is a transaction viewer of the destinationAccount
 
-## UserCapabilityJunctionDAO.js
+## LiquidApprovalRequestAuthorizer.js
 
-### UserCapabilityJunctionDAO
+### LiquidApprovalRequestAuthorizer (TODO ruby)
+- extends `LiquidAuthorizer`
+- overrides `getPermission` logic so that it return the permission string in the form of "canApprove{classname}" or "canApprove{classname}.outgoingAccountId"
 
-- extends `foam.nanos.crunch.UserCapabilityJunctionDAO`
-- a liquid specific decorator for the `UserCapabilityJunctionDAO` such that it provides alternative implementations of the following methods: 
-  - `put_(x, obj)` : A liquid specific decorator for the UserCapabilityJunctionDAO so that the accountTemplateData will be updated instead of overwritten on ucj update.
-  - `remove_(x, obj)` :  A liquid specific decorator for the UserCapabilityJunctionDAO so that the accountTemplateData will be updated instead of overwritten on ucj update.
-  - `remove_(x, obj, accountId)` : A liquid specific remove_ for the UserCapabilityJunction such that it removes an account in the junction data instead of removing the whole junction, used for unassigning a capability of an User for some account
+## CapabilityAssignment.js (TODO ruby)
+- custom file that handles assigning capabilitys by appending to the ucj data or creating ucj, whichever is appropriate.
+- and handles revoking by removing from the ucj data or removing the ucj, whichever is appropriate.
+- to be used for the custom cap assignment view (implement is js ruby)
+
+
