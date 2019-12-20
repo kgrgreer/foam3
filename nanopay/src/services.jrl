@@ -610,13 +610,12 @@ p({
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
     inner = (new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get(\"localUserDAO\"))).where(predicate);
     nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(inner).build();
-    ed = new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setInnerDAO(nuoe)
       .setEnableInterfaceDecorators(false)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .build();
-    return new foam.nanos.ruler.RulerDAO(x, ed, "localBusinessDAO");
   """,
   "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
 })
