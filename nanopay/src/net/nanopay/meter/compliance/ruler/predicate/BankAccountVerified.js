@@ -17,7 +17,10 @@ foam.CLASS({
         return AND(
           EQ(DOT(NEW_OBJ, INSTANCE_OF(BankAccount.class)), true),
           EQ(DOT(NEW_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED),
-          NEQ(DOT(OLD_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED)
+          OR(
+            EQ(OLD_OBJ, null),
+            NEQ(DOT(OLD_OBJ, BankAccount.STATUS), BankAccountStatus.VERIFIED)
+          )
         ).f(obj);
       `
     }

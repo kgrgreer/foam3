@@ -392,6 +392,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BucketTransaction' },
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
+  { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -828,8 +829,18 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/tx/BusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },
+   { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
+   { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
+   { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
+   { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
 
-  // partners
+   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },

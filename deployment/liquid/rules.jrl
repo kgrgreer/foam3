@@ -1,0 +1,89 @@
+// disable localTransactionDAO rules
+p({"class":"foam.nanos.ruler.Rule","id":"Pending FX Rate Transactions","enabled":false})                   // Kotak
+p({"class":"foam.nanos.ruler.Rule","id":"Getting FX Rate for Transactions","enabled":false})               // Kotak
+p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule1","enabled":false})                               // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule2","enabled":false})                               // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","enabled":true})                                   // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"Proper Status after Pause, Rule","enabled":true})                 // Parent Pending Complete
+p({"class":"foam.nanos.ruler.Rule","id":"Set Approved By","enabled":true})                                 // Invoice rule
+p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","enabled":true})                                 // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"Modify Cico Status","enabled":true})                              // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":true})                 // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Prune Cico Approval Cleanup","enabled":false})                    // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Account Liquification","enabled":true})                           // Liquidity Settings
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashIn","enabled":true})                                   // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashOut","enabled":true})                                  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"observeStatus","enabled":true})                                   // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Quote Transaction Based on Status","enabled":true})               // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Ablii Completed Transaction Notification","enabled":false})       // Ablii Transaction
+p({"class":"foam.nanos.ruler.Rule","id":"Ablii FX Completed Transaction Notification","enabled":false})    // Ablii Transaction
+p({"class":"foam.nanos.ruler.Rule","id":"Declined Cash In Transaction Notification","enabled":true})       // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Declined Verification Transaction Notification","enabled":true})  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Declined Compliance Transaction Notification","enabled":false})   // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"statusHistory Update Rule","enabled":true})                       // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"FOP Transaction Planner","enabled":false})                        // Tx Planning
+p({"class":"foam.nanos.ruler.Rule","id":"DVP Transaction Planner","enabled":false})                        // Tx Planning
+p({"class":"foam.nanos.ruler.Rule","id":"Bucket Transaction Planner","enabled":false})                     // Tx Planning
+p({"class":"foam.nanos.ruler.Rule","id":"Compliance Transaction Planner","enabled":false})                 // Tx Planning / Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","enabled":false})        // AFEX
+p({"class":"foam.nanos.ruler.Rule","id":"Transaction Final Compliance Rule","enabled":false})              // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind transfer transaction","enabled":false})              // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Clear transaction approval requests","enabled":false})            // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabled":false})                // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":true})    // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":true})             // Tx Processing
+
+// Transaction limit business rule example for 200,000.00 EUR
+p({
+  "class":"net.nanopay.liquidity.tx.TxLimitRule",
+  "id":"GS09 Securities €200,000.00 EUR Account Limit",
+  "applyLimitTo":1,
+  "accountToLimit":1651,
+  "limit":20000000,
+  "denomination":"EUR",
+  "currentLimits":{},
+  "created":"2019-11-30T12:30:00.000Z",
+  "createdBy":8006,
+  "lastModified":"2019-11-30T12:30:00.000Z",
+  "lastModifiedBy":8006,
+  "enabled": false
+})
+
+// Generic business rule example
+p({
+  "class":"net.nanopay.liquidity.tx.GenericBusinessRule",
+  "id":"GS10 Account Tx Notification Rule",
+  "description":"Sample Goldman Business Rule",
+  "sourcePredicate":{
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.PropertyExpr",
+      "of":"net.nanopay.account.Account",
+      "property":{
+        "class":"__Property__",
+        "forClass_":"net.nanopay.account.Account",
+        "name":"name"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":"GS10 Shadow Account"
+    }
+  },
+  "destinationPredicate":{
+    "class":"foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"foam.mlang.expr.PropertyExpr",
+      "of":"foam.nanos.auth.User",
+      "property":{
+        "class":"__Property__",
+        "forClass_":"foam.nanos.auth.User",
+        "name":"email"
+      }
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":"liquiddev@nanopay.net"
+    }
+  },
+  "businessRuleAction":2})

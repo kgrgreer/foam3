@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.cicoShadow',
   name: 'DashboardCicoShadow',
   extends: 'foam.u2.Element',
-  description: 'Displays a horizontal bar graph for the cash flow of shadow accounts',
+  documentation: 'Displays a horizontal bar graph for the cash flow of shadow accounts',
 
   implements: [
     'foam.mlang.Expressions'
