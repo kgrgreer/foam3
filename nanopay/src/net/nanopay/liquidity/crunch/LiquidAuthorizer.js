@@ -26,7 +26,6 @@ foam.CLASS({
       name: 'createPermission',
       args: [
         { name: 'op', class: 'String' },
-        { name: 'id', class: 'Object' },
         { name: 'outgoingAccountId', class: 'Long' }
       ],
       type: 'String',
@@ -37,7 +36,6 @@ foam.CLASS({
         String permission = "can" + op + getPermissionPrefix();
         if ( outgoingAccountId >= 0 ) permission += "." + outgoingAccountId;
         return permission;
-
       `
     },
     {
@@ -45,7 +43,7 @@ foam.CLASS({
       javaCode:  `
         // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountId() : -1;
         Long accountId = 0L;
-        String permission = createPermission("Make", obj.getProperty("id"), accountId);
+        String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {
@@ -58,9 +56,9 @@ foam.CLASS({
       javaCode:  `
         // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountId() : -1;
         Long accountId = 0L;
-        String readPermission = createPermission("View", obj.getProperty("id"), accountId);
-        String approvePermission = createPermission("Approve", obj.getProperty("id"), accountId);
-        String makePermission = createPermission("Make", obj.getProperty("id"), accountId);
+        String readPermission = createPermission("View", accountId);
+        String approvePermission = createPermission("Approve", accountId);
+        String makePermission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
