@@ -42,6 +42,31 @@ properties: [
       `
     },
     {
+      name: 'mergeMaps',
+      args: [
+        { name: 'map', javaType: 'net.nanopay.liquidity.crunch.AccountTemplate' }
+      ],
+      documentation: `
+      Update the map stored on this model so that 
+      `,
+      javaCode: `
+      `
+    },
+    {
+      name: 'removeAccount',
+      args: [
+        { name: 'accountId', class: 'Long' }
+      ],
+      documentation: `
+      If account is in the map, remove the account from the map.
+      If account is implied by an account in the map (through cascading), 
+      add the immediate parent of account explicitly to the map with cascading set to false and inherited set to true
+      `,
+      javaCode: `
+
+      `
+    },
+    {
       name: 'isParentOf',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
