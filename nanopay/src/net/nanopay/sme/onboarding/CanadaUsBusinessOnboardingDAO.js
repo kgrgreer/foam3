@@ -37,12 +37,25 @@ foam.CLASS({
         CanadaUsBusinessOnboarding businessOnboarding = (CanadaUsBusinessOnboarding) obj;
         CanadaUsBusinessOnboarding old = (CanadaUsBusinessOnboarding)getDelegate().find_(x, obj);
 
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
+
+        // ACCEPTANCE DOCUMENTS
+        Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
+        if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+        Long oldInternationAgrement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
+        if ( oldInternationAgrement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
+            businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
+        }
+
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
-
-        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
   
         // TODO: Please call the java validator of the businessOnboarding here
 
@@ -56,19 +69,6 @@ foam.CLASS({
         business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
         localBusinessDAO.put(business);
-
-        // ACCEPTANCE DOCUMENTS
-        Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
-        if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
-          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
-        }
-        Long oldInternationAgrement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
-        if ( oldInternationAgrement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
-          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
-            businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
-        }
 
         // Generate the notification sent to Fraud-ops & Payment-ops group only
         DAO localNotificationDAO = (DAO) x.get("localNotificationDAO");
