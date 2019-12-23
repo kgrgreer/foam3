@@ -622,6 +622,28 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "paymentCodeDAO",
+  "serve": true,
+  "serviceScript": 
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setPipelinePm(true)
+    .setGuid(true)
+    .setJournalName("paymentCodes")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
+    .build();
+  """,
+  "client": """
+  {
+    "of": "net.nanopay.payment.PaymentCode"
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "publicBusinessDAO",
   "serve": true,
   "description": "A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.",
