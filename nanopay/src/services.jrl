@@ -430,8 +430,12 @@ p({
   "authenticate": false,
   "serviceScript":
   """
+  foam.dao.DAO dao =  new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
+  dao.addIndex( new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+  dao.addIndex( new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+
   return new foam.dao.EasyDAO.Builder(x)
-    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.GROUP})
     .setPm(true)
     .setPipelinePm(true)
     .setSeqNo(true)
@@ -440,6 +444,7 @@ p({
     .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
     .setJournalName("users")
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    //.setInnerDAO(dao)
     .setAuthorize(false)
     .build();
   """,
