@@ -204,7 +204,7 @@ foam.CLASS({
               }
 
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
-            t.setDestinationAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setDestinationAccount(((Account) accountDAO.find(20)).getId());
             t.setSourceCurrency(row1.getProductId());
             t.setDestinationCurrency(row1.getProductId());
             t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
@@ -233,7 +233,7 @@ foam.CLASS({
               // add cash peice
             }
 
-            t.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setSourceAccount(((Account) accountDAO.find(20)).getId());
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationCurrency(row1.getProductId());
             t.setSourceCurrency(row1.getProductId());
