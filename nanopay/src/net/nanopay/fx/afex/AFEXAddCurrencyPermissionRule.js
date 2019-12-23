@@ -122,7 +122,6 @@ foam.CLASS({
         args.put("name", User.FIRST_NAME);
 
         try {
-          // EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
 
           Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
             .setBody("AFEX Business can make international payments.")
