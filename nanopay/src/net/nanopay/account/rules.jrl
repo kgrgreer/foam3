@@ -5,4 +5,16 @@ p({"class":"foam.nanos.ruler.Rule","id":"Balance not 0","priority":120,"ruleGrou
 p({"class":"foam.nanos.ruler.Rule","id":"Currency Permission Check - Accounts","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to have an account in the currency they set the denomination of the account to.","daoKey":"localAccountDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.account.Account","name":"denomination"}},"after":false,"enabled":true,"saveHistory":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Currency Permission Check - Transactions","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to create transactions based on destination currency.","daoKey":"localTransactionDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.tx.model.Transaction","name":"destinationCurrency"}},"after":false,"enabled":true,"saveHistory":false})
 p({"class":"foam.nanos.ruler.Rule","id":"Currency Permission Check - Invoices","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to create invoices based on destination currency.","daoKey":"invoiceDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.invoice.model.Invoice","name":"destinationCurrency"}},"after":false,"enabled":true,"saveHistory":false})
-p({"class":"foam.nanos.ruler.Rule","id":"Create Default Digital Account","priority":100,"ruleGroup":"CreateDefaultDigitalAccount","documentation":"Creates a default digital account when a user is created.","daoKey":"localUserDAO","operation":0,"action":{"class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule"},"after":true,"enabled":true,"saveHistory":false})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Create Default Digital Account",
+  "priority":100,
+  "ruleGroup":"CreateDefaultDigitalAccount",
+  "documentation":"Creates a default digital account when a user is created.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "action":{"class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule"},
+  "after":true,
+  "enabled":true,
+  "saveHistory":false
+})

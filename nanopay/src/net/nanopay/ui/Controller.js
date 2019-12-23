@@ -220,27 +220,44 @@ foam.CLASS({
           this.ModalStyling.create();
 
           this.findBalance();
-          this
-            .addClass(this.myClass())
-            .start()
-              .tag(this.topNavigation_)
-            .end()
-            .start()
-              .addClass('stack-wrapper')
-              .enableClass('login-wrapper', this.loginSuccess$)
-              .tag({
-                class: 'net.nanopay.ui.banner.Banner',
-                data$: this.bannerData$
-              })
-              .tag(this.StackView, {
-                data: this.stack,
-                showActions: false
-              })
-            .end()
-            .start()
-              .enableClass('footer-wrapper', this.loginSuccess$)
-              .tag(this.footerView_)
-            .end();
+          if ( ! this.isIframe() ){
+            this
+              .addClass(this.myClass())
+              .start()
+                .tag(this.topNavigation_)
+              .end()
+              .start()
+                .addClass('stack-wrapper')
+                .enableClass('login-wrapper', this.loginSuccess$)
+                .tag({
+                  class: 'net.nanopay.ui.banner.Banner',
+                  data$: this.bannerData$
+                })
+                .tag(this.StackView, {
+                  data: this.stack,
+                  showActions: false
+                })
+              .end()
+              .start()
+                .enableClass('footer-wrapper', this.loginSuccess$)
+                .tag(this.footerView_)
+              .end();
+          } else {
+            this
+              .addClass(this.myClass())
+              .start()
+                .addClass('stack-wrapper')
+                .enableClass('login-wrapper', this.loginSuccess$)
+                .tag({
+                  class: 'net.nanopay.ui.banner.Banner',
+                  data$: this.bannerData$
+                })
+                .tag(this.StackView, {
+                  data: this.stack,
+                  showActions: false
+                })
+              .end();
+          }
         });
       });
     },
@@ -323,7 +340,15 @@ foam.CLASS({
         self.stack.push({ class: 'foam.u2.view.LoginView', topBarShow_: false, mode_: 'SignIn' }, self);
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function isIframe () {
+          try {
+            return window.self !== window.top;
+          } catch (e) {
+            return true;
+          }
+        }
   ],
 
   listeners: [

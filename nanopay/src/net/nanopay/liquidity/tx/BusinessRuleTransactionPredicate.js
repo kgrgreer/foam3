@@ -8,7 +8,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.mlang.expr.*',
     'foam.mlang.predicate.*',
@@ -32,18 +31,21 @@ foam.CLASS({
       javaCode: `
         Binary binaryPredicate = (Binary) this.getPredicate();
         PropertyExpr propertyExpr = (PropertyExpr) binaryPredicate.getArg1();
+        Transaction tx = (Transaction) NEW_OBJ.f(obj);
+
+        // Apply to transaction
         if (propertyExpr.getOf() == Transaction.getOwnClassInfo()) {
-          Transaction tx = (Transaction) NEW_OBJ.f(obj);
           return binaryPredicate.f(tx);
         }
-        else if (propertyExpr.getOf() == Account.getOwnClassInfo()) {
-          Transaction tx = (Transaction) NEW_OBJ.f(obj);
-          Account account = this.getIsSourcePredicate() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
+
+        // Apply to account
+        Account account = this.getIsSourcePredicate() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
+        if (propertyExpr.getOf() == Account.getOwnClassInfo()) {
           return binaryPredicate.f(account);
         }
-        else if (propertyExpr.getOf() == User.getOwnClassInfo()) {
-          Transaction tx = (Transaction) NEW_OBJ.f(obj);
-          Account account = this.getIsSourcePredicate() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
+        
+        // Apply to user
+        if (propertyExpr.getOf() == User.getOwnClassInfo()) {
           User user = account.findOwner((X) obj);
           return binaryPredicate.f(user);
         }

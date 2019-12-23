@@ -68,6 +68,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      targetDAOKey: 'businessDAO',
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      },
+      documentation: 'The business to limit.',
+      name: 'businessToLimit',
+      section: 'basicInfo',
+      visibilityExpression: function(applyLimitTo) {
+        return (applyLimitTo == 'BUSINESS') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
       class: 'Boolean',
       name: 'send',
       value: true,

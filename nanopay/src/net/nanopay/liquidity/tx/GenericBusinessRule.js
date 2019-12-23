@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'GenericBusinessRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
+  implements: [ 'foam.mlang.Expressions' ],
 
   documentation: 'Generic Business Rule.',
 
@@ -39,26 +40,10 @@ foam.CLASS({
       label: 'Source Condition',
       section: 'basicInfo',
       factory: function() {
-        var expr = this.PropertyExpr.create({
-          property: this.Account.NAME
-        });
-        var cons = this.Constant.create({
-          value: "Source Account"
-        });
-        var pred = this.Eq.create({
-          arg1: expr,
-          arg2: cons
-        });
-        return pred;
+        return this.EQ(Account.NAME, 'Source Account');
       },
       javaFactory: `
-        return new Eq.Builder(getX())
-          .setArg1(new PropertyExpr.Builder(getX())
-            .setProperty(Account.NAME)
-            .build())
-          .setArg2(new Constant.Builder(getX())
-            .build())
-          .build();
+        return MLang.EQ(Account.NAME, "Source Account");
       `
     },
     {
@@ -67,26 +52,10 @@ foam.CLASS({
       label: 'Destination Condition',
       section: 'basicInfo',
       factory: function() {
-        var expr = this.PropertyExpr.create({
-          property: this.Account.NAME
-        });
-        var cons = this.Constant.create({
-          value: "Destination Account"
-        });
-        var pred = this.Eq.create({
-          arg1: expr,
-          arg2: cons
-        });
-        return pred;
+        return this.EQ(this.Account.NAME, 'Destination Account');
       },
       javaFactory: `
-        return new Eq.Builder(getX())
-          .setArg1(new PropertyExpr.Builder(getX())
-            .setProperty(Account.NAME)
-            .build())
-          .setArg2(new Constant.Builder(getX())
-            .build())
-          .build();
+        return MLang.EQ(Account.NAME, "Destination Account");
       `
     },
     {
@@ -123,9 +92,10 @@ foam.CLASS({
 
         // NOTIFY
         if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
-          return new BusinessRuleNotificationAction.Builder(getX()).setBusinessRuleId(this.getId()).build();  // TODO - add proper configuration for this email address
-
-        // APPROVAL - TODO
+          return new BusinessRuleNotificationAction.Builder(getX())
+            .setBusinessRuleId(this.getId())
+            .setGroupId("liquidDev")
+            .build();
 
         // ALLOW
         return null;

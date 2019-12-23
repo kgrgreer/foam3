@@ -18,6 +18,11 @@ foam.ENUM({
       name: 'TRANSACTION',
       label: 'All Transactions',
       documentation: 'Limits on all transactions.'
+    },
+    {
+      name: 'BUSINESS',
+      label: 'Business',
+      documenation: 'Limits for businesses.'
     }
   ]
 });

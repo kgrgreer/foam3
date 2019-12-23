@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: 'Business rule base class.',
 
   javaImports: [
-    'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.*',
     'foam.mlang.*',
     'foam.mlang.expr.*',
@@ -67,9 +66,7 @@ foam.CLASS({
     {
       name: 'priority',
       hidden: true,
-      javaGetter: `
-        return 10;
-      `
+      value: 10,
     },
     {
       name: 'ruleGroup',
