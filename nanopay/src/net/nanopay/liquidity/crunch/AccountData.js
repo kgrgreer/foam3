@@ -24,6 +24,7 @@ foam.CLASS({
       {
         name: 'inherited',
         class: 'Boolean',
+        hidden: true,
         documentation: `
         Describes whether this account was added explicitly to the map or 
         as a result of cascading / only cascading for a segment of the tree
