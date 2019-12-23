@@ -11,7 +11,7 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'getKey',
+      name: 'getApprovableKey',
       type: 'String'
     }
   ]

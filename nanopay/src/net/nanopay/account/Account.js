@@ -468,7 +468,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getKey',
+      name: 'getApprovableKey',
       type: 'String',
       javaCode: `
         Long key = getId();

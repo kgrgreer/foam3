@@ -262,7 +262,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getKey',
+      name: 'getApprovableKey',
       type: 'String',
       javaCode: `
         String id = ((Long) getId()).toString();

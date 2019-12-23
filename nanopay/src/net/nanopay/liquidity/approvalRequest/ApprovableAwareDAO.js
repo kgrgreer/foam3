@@ -202,7 +202,7 @@ foam.CLASS({
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -227,7 +227,7 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableAwareObj.getKey())
+          .setObjId(approvableAwareObj.getApprovableKey())
           // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
@@ -254,7 +254,7 @@ foam.CLASS({
 
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       LifecycleAware lifecycleObj = (LifecycleAware) obj;
-      FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getKey());
+      FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
       if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
         approvableAwareObj = (ApprovableAware) currentObjectInDAO;
@@ -263,7 +263,7 @@ foam.CLASS({
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -288,7 +288,7 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableAwareObj.getKey())
+          .setObjId(approvableAwareObj.getApprovableKey())
           // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
@@ -305,7 +305,7 @@ foam.CLASS({
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -333,7 +333,7 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableAwareObj.getKey())
+          .setObjId(approvableAwareObj.getApprovableKey())
           // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.CREATE)
@@ -356,7 +356,7 @@ foam.CLASS({
         ApprovableId approvableId = new ApprovableId.Builder(getX())
           .setDaoKey(getDaoKey())
           .setPropertiesToUpdate(updatedProperties)
-          .setObjId(approvableAwareObj.getKey())
+          .setObjId(approvableAwareObj.getApprovableKey())
           .build();
 
         List approvedObjUpdateRequests = ((ArraySink) approvalRequestDAO
@@ -389,7 +389,7 @@ foam.CLASS({
         Approvable approvable = (Approvable) approvableDAO.put_(getX(), new Approvable.Builder(getX())
           .setDaoKey(getDaoKey())
           .setStatus(ApprovalStatus.REQUESTED)
-          .setObjId(approvableAwareObj.getKey())
+          .setObjId(approvableAwareObj.getApprovableKey())
           .setPropertiesToUpdate(updatedProperties).build());
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
