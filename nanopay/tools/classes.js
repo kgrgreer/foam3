@@ -39,6 +39,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitState',
   'net.nanopay.tx.ruler.MicroDepositSuccessed',
   'net.nanopay.tx.ruler.MicroDepositFailed',
+  'net.nanopay.tx.ruler.MicroDepositSent',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
@@ -116,6 +117,9 @@ var classes = [
   'net.nanopay.bank.BankWeekend',
   'net.nanopay.bank.DefaultBankAccountRule',
   'net.nanopay.bank.IsDefaultRule',
+  'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
+  'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
+  'net.nanopay.bank.ruler.AccountAddedNotificationRule',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -267,6 +271,7 @@ var classes = [
   'net.nanopay.invoice.InvoiceLineItem',
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
+  'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',

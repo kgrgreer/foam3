@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'MicroDepositSuccessed',
+  name: 'MicroDepositSent',
 
-  documentation: `Send email when micro deposit to bank account succeeds (Funds should be visible in their account).`,
+  documentation: `Send email to user explaining that a bank account has been added and a micro deposit for the added bank account has been sent.`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -40,12 +40,13 @@ foam.CLASS({
             args.put("sendTo", User.EMAIL);
 
             Notification notification = new Notification.Builder(x)
-            .setBody(acc.getAccountNumber() + "micro deposit has been verified")
+            .setBody(acc.getAccountNumber() + " is processing ")
             .setNotificationType("bankNotifications")
-            .setEmailName("micro-deposit-successed")
+            .setEmailName("micro-deposit-sent")
             .setEmailArgs(args)
             .build();
             user.doNotify(x, notification);
+
           }
       }, "send notification");
       `

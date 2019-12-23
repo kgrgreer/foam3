@@ -59,7 +59,7 @@ foam.CLASS({
       view: {
         class: 'net.nanopay.sme.ui.Link',
         data: this.value,
-        text: 'Search for your Bank',
+        text: 'Search IFSC code here',
         isExternal: false
       },
     },

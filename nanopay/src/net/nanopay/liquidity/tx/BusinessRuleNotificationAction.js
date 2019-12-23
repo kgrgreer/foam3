@@ -14,12 +14,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -28,6 +26,11 @@ foam.CLASS({
       name: 'businessRuleId',
       class: 'String'
     },
+    {
+      name: 'groupId',
+      class: 'String',
+      value: 'liquidDev'
+    }
   ],
 
   methods: [
@@ -52,7 +55,7 @@ foam.CLASS({
               // notification
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
-              notification.setGroupId("liquidBasic");
+              notification.setGroupId(getGroupId());
               notification.setBody(notificationMsg);
               notification.setNotificationType("Business Rule Transaction Alert");
               try {

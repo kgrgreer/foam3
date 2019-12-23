@@ -254,19 +254,15 @@ p({
   "name": "ruleDAO",
   "serve": true,
   "serviceScript": """
-    ed = new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
       .setRuler(false)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
-      .setLastModifiedByAware(true)
+      .setValidated(true)
       .build();
-    return new foam.dao.ValidatingDAO(x, ed);
   """,
   "client": """
     {
