@@ -358,7 +358,7 @@ p({
   DAO dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
     .setFm(
       new foam.nanos.analytics.DAOFoldManager.Builder(x)
-        .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))
+        .setDao((foam.dao.DAO) x.get("liquidityThresholdCandlestickDAO"))
         .setPeriodLengthMs(60 * 60 * 1000)
         .build()
     )
