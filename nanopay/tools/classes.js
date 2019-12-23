@@ -314,10 +314,8 @@ var classes = [
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
 
-   'net.nanopay.liquidity.ucjQuery.UcjQueryService',
-   'net.nanopay.liquidity.ucjQuery.CachedUcjQueryService',
-   'net.nanopay.liquidity.ucjQuery.AccountUcjQueryService',
-   'net.nanopay.liquidity.ucjQuery.CachedAccountUcjQueryService',
+   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',

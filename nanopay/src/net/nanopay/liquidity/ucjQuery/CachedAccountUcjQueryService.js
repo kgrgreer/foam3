@@ -6,9 +6,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
-  name: 'CachedAccountUcjQueryService',
+  name: 'CachedAccountUCJQueryService',
 
-  documentation: 'A cached implementation of the AccountUcjQueryService interface.',
+  documentation: 'A cached implementation of the AccountUCJQueryService interface.',
 
   properties: [
     {
@@ -17,7 +17,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'ttl',
+      name: 'TTL',
       value: 5000
     }
   ],
