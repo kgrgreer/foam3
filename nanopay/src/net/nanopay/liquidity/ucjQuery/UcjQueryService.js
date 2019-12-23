@@ -9,8 +9,8 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-            name: 'userId',
-            type: 'Long'
+          name: 'userId',
+          type: 'Long'
         },
       ]
     },
@@ -21,8 +21,8 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-            name: 'roleId',
-            type: 'String'
+          name: 'roleId',
+          type: 'String'
         }
       ]
     },
