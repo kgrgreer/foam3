@@ -856,7 +856,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidApprovalRequestAuthorizer' },
-   { name: 'net/nanopay/liquidity/crunch/CapabilityAssignmentRequest'}
+   { name: 'net/nanopay/liquidity/crunch/CapabilityAssignmentRequest'},
 
    
    // liquidity ui
