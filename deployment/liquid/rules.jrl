@@ -92,8 +92,6 @@ p({
   "enabled": false
 })
 
-
-
 // Generic business rule example
 p({
   "class":"net.nanopay.liquidity.tx.GenericBusinessRule",

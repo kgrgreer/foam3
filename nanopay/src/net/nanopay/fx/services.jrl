@@ -16,7 +16,7 @@ p({
       .setOf(net.nanopay.fx.afex.AFEXBusiness.getOwnClassInfo())
       .setSeqNo(true)
       .setName("afexBusinessDAO")
-      .setJournalName("afexBusiness")
+      .setJournalName("afexBusinesses")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .build();
