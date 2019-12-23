@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
-  name: 'ApprovableDecorator',
+  name: 'ApprovableAwareDAO',
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
@@ -25,7 +25,8 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.Approvable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableInterface',
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
 
@@ -61,50 +62,36 @@ foam.CLASS({
       type: 'void',
       args: [
         { name: 'x', type: 'X' },
-        { name: 'request', type: 'RoleApprovalRequest' }
+        { name: 'request', type: 'RoleApprovalRequest' },
+        { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
-
       /**
         TODO: REIMPLEMENT WITH CRUNCH
-        Long outgoingAccountId = liquidRequest.getOutgoingAccount();
-        
-        if ( outgoingAccountId >= 0 ){
-          DAO requestingDAO;
+        DAO requestingDAO;
 
-          if ( liquidRequest.getDaoKey().equals("approvableDAO") ){
-            DAO approvableDAO = (DAO) x.get("approvableDAO");
+        if ( request.getDaoKey().equals("approvableDAO") ){
+          DAO approvableDAO = (DAO) x.get("approvableDAO");
 
-            Approvable approvable = (Approvable) approvableDAO.find(liquidRequest.getObjId());
+          Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
 
-            requestingDAO = (DAO) x.get(approvable.getDaoKey());
-          } else {
-            requestingDAO = (DAO) x.get(liquidRequest.getDaoKey());
-          }
+          requestingDAO = (DAO) x.get(approvable.getDaoKey());
+        } else {
+          requestingDAO = (DAO) x.get(request.getDaoKey());
+        }
 
-          DAO accountDAO = (DAO) x.get("accountDAO");
+        DAO accountDAO = (DAO) x.get("accountDAO");
 
-          String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-          Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
+        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
+        Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
 
-          Boolean isGlobalRole = true;
-          List<Role> baseRoles;
-          Role baseRole;
-          DAO approverDAO;
+        Boolean isGlobalRole = true;
+        List<Role> baseRoles;
+        Role baseRole;
+        DAO approverDAO;
 
-          switch(modelName){
-            case "Account":
-              approverDAO = outgoingAccount.getAccountApprovers(getX()).getDAO();
-              isGlobalRole = false;
-              break;
-            case "RoleAssignmentTemplate":
-              approverDAO = outgoingAccount.getRoleAssignmentApprovers(getX()).getDAO();
-              isGlobalRole = false;
-              break;
-            case "Transaction":
-              approverDAO = outgoingAccount.getTransactionApprovers(getX()).getDAO();
-              isGlobalRole = false;
-              break;
+        // TODO: REDO DAOS after configuring services and connecting with CRUNCH
+        switch(modelName){
             case "User":
               // there should be only one of each base role but we include this incase the id changes or duplicate names are used
               baseRoles = ((ArraySink) roleDAO.where(
@@ -179,35 +166,24 @@ foam.CLASS({
               break;
             default:
               approverDAO = null;
-          }
-          
-          if ( approverDAO != null ){
-            // makers cannot approve their own requests even if they are an approver for the account
-            // however they will receive an approvalRequest which they can only view and not approve or reject
-            // so that they can keep track of the status of their requests
-            sendSingleRequest(x, liquidRequest, liquidRequest.getInitiatingUser());
-
-            if ( isGlobalRole ){
-              // so that we don't accidentally double count the maker if they are also an approver
-              approverDAO.where(MLang.NEQ( RoleAssignmentTrunction.USER_ID, liquidRequest.getInitiatingUser() )).select(new AbstractSink() {
-                  @Override
-                  public void put(Object obj, Detachable sub) {
-                    sendSingleRequest(x, liquidRequest, ((RoleAssignmentTrunction)obj).getUserId());
-                  }
-              });
-
-            } else {
-              // so that we don't accidentally double count the maker if they are also an approver
-              approverDAO.where(MLang.NEQ( User.ID, liquidRequest.getInitiatingUser() )).select(new AbstractSink() {
-                @Override
-                public void put(Object obj, Detachable sub) {
-                  sendSingleRequest(x, liquidRequest, ((User)obj).getId());
-                }
-              });
-            }
-          }
+          default:
+            approverDAO = null;
         }
+        
+        if ( approverDAO != null ){
+          // makers cannot approve their own requests even if they are an approver for the account
+          // however they will receive an approvalRequest which they can only view and not approve or reject
+          // so that they can keep track of the status of their requests
+          sendSingleAccountRequest(x, accountRequest, request.getInitiatingUser());
 
+          // TODO: 
+          approverDAO.where(MLang.NEQ( UserCapabilityJunction.SOURCE_ID, request.getInitiatingUser() )).select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              sendSingleRequest(x, request, ((UserCapabilityJunction) obj).getSourceId());
+            }
+          });
+        }
        */
       `
     },
@@ -219,14 +195,14 @@ foam.CLASS({
         // system and admins override the approval process
         if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.remove_(x,obj);
 
-        ApprovableInterface approvableObj = (ApprovableInterface) obj;
+        ApprovableAware approvableAwareObj = (ApprovableAware) obj;
         DAO approvalRequestDAO = ((DAO) getX().get("approvalRequestDAO"));
 
         List approvedObjRemoveRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -251,14 +227,14 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableObj.getKey())
-          .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
+          .setObjId(approvableAwareObj.getKey())
+          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
           .setInitiatingUser(((User) x.get("user")).getId())
           .setStatus(ApprovalStatus.REQUESTED).build(); 
 
-        fullSend(getX(), approvalRequest);
+        fullSend(getX(), approvalRequest, obj);
 
         // we need to prevent the remove_ call from being passed all the way down to actual deletion since
         // we are just creating the approval requests for deleting the object as of now
@@ -276,18 +252,18 @@ foam.CLASS({
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
 
-      ApprovableInterface approvableObj = (ApprovableInterface) obj;
+      ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       LifecycleAware lifecycleObj = (LifecycleAware) obj;
-      FObject currentObjectInDAO = (FObject) dao.find(approvableObj.getKey());
+      FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getKey());
       
       if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
-        approvableObj = (ApprovableInterface) currentObjectInDAO;
+        approvableAwareObj = (ApprovableAware) currentObjectInDAO;
           
         List approvedObjRemoveRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -312,14 +288,14 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableObj.getKey())
-          .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
+          .setObjId(approvableAwareObj.getKey())
+          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
           .setInitiatingUser(((User) x.get("user")).getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
 
-        fullSend(getX(), approvalRequest);
+        fullSend(getX(), approvalRequest, obj);
 
         return null;  // we aren't updating the object to deleted just yet
       }
@@ -329,7 +305,7 @@ foam.CLASS({
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableObj.getKey()),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
@@ -357,14 +333,14 @@ foam.CLASS({
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
-          .setObjId(approvableObj.getKey())
-          .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
+          .setObjId(approvableAwareObj.getKey())
+          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.CREATE)
           .setInitiatingUser(((User) x.get("user")).getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
 
-        fullSend(getX(), approvalRequest);
+        fullSend(getX(), approvalRequest, obj);
 
         // we are storing the object in it's related dao with a lifecycle state of PENDING
         return super.put_(x,obj);
@@ -380,7 +356,7 @@ foam.CLASS({
         ApprovableId approvableId = new ApprovableId.Builder(getX())
           .setDaoKey(getDaoKey())
           .setPropertiesToUpdate(updatedProperties)
-          .setObjId(approvableObj.getKey())
+          .setObjId(approvableAwareObj.getKey())
           .build();
 
         List approvedObjUpdateRequests = ((ArraySink) approvalRequestDAO
@@ -413,19 +389,19 @@ foam.CLASS({
         Approvable approvable = (Approvable) approvableDAO.put_(getX(), new Approvable.Builder(getX())
           .setDaoKey(getDaoKey())
           .setStatus(ApprovalStatus.REQUESTED)
-          .setObjId(approvableObj.getKey())
+          .setObjId(approvableAwareObj.getKey())
           .setPropertiesToUpdate(updatedProperties).build());
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
-          .setOutgoingAccount(approvableObj.getOutgoingAccount(getX()))
+          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.UPDATE)
           .setInitiatingUser(((User) x.get("user")).getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
 
-        fullSend(getX(), approvalRequest);
+        fullSend(getX(), approvalRequest, obj);
 
         return null; // we aren't updating the object just yet
       }

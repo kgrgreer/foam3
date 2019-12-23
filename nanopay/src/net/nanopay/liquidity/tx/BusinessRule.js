@@ -6,7 +6,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.LifecycleAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableInterface',
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
   ],
 
   documentation: 'Business rule base class.',
@@ -154,19 +154,6 @@ foam.CLASS({
       javaCode: `
         String id = (String) getId();
         return id;
-      `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      args: [
-        {
-          type: 'foam.core.X',
-          name: 'x',
-        }
-      ],
-      javaCode: `
-        return 0;
       `
     },
     {

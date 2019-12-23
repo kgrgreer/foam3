@@ -3,9 +3,11 @@ FOAM_FILES([
   { name: 'net/nanopay/dao/EasyDAO'},
 
   // Approvable
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableInterface'},
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableDecorator' },
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsPredicate' },
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },

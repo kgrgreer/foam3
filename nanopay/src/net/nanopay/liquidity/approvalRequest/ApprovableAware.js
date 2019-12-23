@@ -1,6 +1,9 @@
 foam.INTERFACE({
   package: 'net.nanopay.liquidity.approvalRequest',
-  name: 'ApprovableInterface',
+  name: 'ApprovableAware',
+  implements: [
+    'foam.nanos.auth.LifecycleAware'
+  ],
 
   javaImports: [
     'foam.core.X'
@@ -10,16 +13,6 @@ foam.INTERFACE({
     {
       name: 'getKey',
       type: 'String'
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      args: [
-        {
-          type: 'X',
-          name: 'x',
-        }
-      ]
     }
   ]
 });

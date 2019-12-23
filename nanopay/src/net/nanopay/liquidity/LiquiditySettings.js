@@ -7,7 +7,7 @@ foam.CLASS({
     'foam.nanos.analytics.Foldable',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LifecycleAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableInterface'
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
   requires: [
@@ -143,19 +143,6 @@ fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshol
       javaCode: `
         String id = ((Long) getId()).toString();
         return id;
-      `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      args: [
-        {
-          type: 'foam.core.X',
-          name: 'x',
-        }
-      ],
-      javaCode: `
-        return 0;
       `
     }
   ]

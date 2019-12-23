@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.core.Validatable',
     'foam.nanos.auth.LifecycleAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableInterface'
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
   javaImports: [
@@ -267,19 +267,6 @@ foam.CLASS({
       javaCode: `
         String id = ((Long) getId()).toString();
         return id;
-      `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      args: [
-        {
-          type: 'foam.core.X',
-          name: 'x',
-        }
-      ],
-      javaCode: `
-        return 0;
       `
     },
     {
