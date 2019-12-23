@@ -53,21 +53,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      documentation: `
-        0 by default, designed to work with account specific role based decorators as well
-      `,
-      name: 'outgoingAccount',
-      tableCellFormatter: function(outgoingAccount) {
-        let self = this;
-        this.__subSubContext__.accountDAO.find(outgoingAccount).then((account)=> {
-          self.add(account.toSummary())
-        });
-      },
-      value: 0
-    },
-    {
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation'
