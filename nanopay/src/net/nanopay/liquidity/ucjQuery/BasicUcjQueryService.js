@@ -8,5 +8,5 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
   name: 'BasicUcjQueryService',
 
-  documentation: 'A basic implementation of the StrategizerService interface.',
+  documentation: 'A basic implementation of the UcjQueryService interface.',
 });
