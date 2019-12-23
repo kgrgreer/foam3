@@ -79,7 +79,13 @@ foam.CLASS({
         X x = getX();
         List all = new ArrayList();
         all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getAmount()).build());
-        all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getDestinationAmount()).build());
+        all.add(
+          new Transfer.Builder(x)
+            .setAccount(txn.getDestinationAccount())
+            .setAmount(txn.getDestinationAmount() != 0 ? 
+              txn.getDestinationAmount() : 
+              txn.getAmount())
+            .build());
         return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }

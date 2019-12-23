@@ -50,8 +50,10 @@ public class TransactionTest
   public void testLoanTransaction(){
     User loaneeTester = addUser("loantest1@transactiontest.com");
     User loanerTester = addUser("loantest2@transactiontest.com");
+
     // get the actual lending account
     DigitalAccount benefactorAccount = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER,loanerTester.getId()),INSTANCE_OF(DigitalAccount.class)));
+
     // fund the lending account
     CABankAccount fundAct = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER,loanerTester.getId()),INSTANCE_OF(CABankAccount.class)));
     test(! ( fundAct == null ), "funding account exists"  );
@@ -72,14 +74,20 @@ public class TransactionTest
       .setDenomination("CAD")
       .setLenderAccount(benefactorAccount.getId())
       .build();
-
     loanAccount = (LoanAccount) ((DAO) x_.get("accountDAO")).put_(x_,loanAccount);
+
     // get the account that will receive the funds
     DigitalAccount loaneeDepositAcc = (DigitalAccount) (((DAO) x_.get("accountDAO")).find(
-      AND(EQ(DigitalAccount.OWNER, loaneeTester.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class), NOT(INSTANCE_OF(LoanAccount.class)))));
+      AND(
+        EQ(DigitalAccount.OWNER, loaneeTester.getId()),
+        EQ(DigitalAccount.DENOMINATION,"CAD"),
+        INSTANCE_OF(DigitalAccount.class),
+        NOT(INSTANCE_OF(LoanAccount.class)))));
+
     // get the global loan account
     LoanedTotalAccount globalAccount = (LoanedTotalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(LoanedTotalAccount.DENOMINATION,"CAD"),INSTANCE_OF(LoanedTotalAccount.class)));
-    if( globalAccount == null ) throw new RuntimeException("Global Loan Account not Found");
+    if( globalAccount == null )
+      throw new RuntimeException("Global Loan Account not Found");
     long beforeLoanAmount = (long) globalAccount.findBalance(x_);
 
     //build the loan txn
