@@ -1,6 +1,6 @@
 foam.INTERFACE({
   package: 'net.nanopay.liquidity.ucjQuery',
-  name: 'AccountUcjQueryService',
+  name: 'AccountUCJQueryService',
   methods: [
     {
       name: 'getRoles',
