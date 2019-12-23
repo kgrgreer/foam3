@@ -315,9 +315,9 @@ var classes = [
    'net.nanopay.liquidity.tx.RestrictUsersRule',
 
    'net.nanopay.liquidity.ucjQuery.UcjQueryService',
-   'net.nanopay.liquidity.ucjQuery.BasicUcjQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedUcjQueryService',
    'net.nanopay.liquidity.ucjQuery.AccountUcjQueryService',
-   'net.nanopay.liquidity.ucjQuery.BasicAccountUcjQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedAccountUcjQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',

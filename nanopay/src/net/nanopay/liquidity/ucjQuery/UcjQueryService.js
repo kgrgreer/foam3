@@ -4,7 +4,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRoles',
-      type: 'foam.dao.DAO',
+      type: 'FObjectArray',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -16,7 +16,7 @@ foam.INTERFACE({
     },
     {
       name: 'getUsers',
-      type: 'foam.dao.DAO',
+      type: 'FObjectArray',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -28,7 +28,7 @@ foam.INTERFACE({
     },
     {
       name: 'getApproversByLevel',
-      type: 'foam.dao.DAO',
+      type: 'FObjectArray',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
