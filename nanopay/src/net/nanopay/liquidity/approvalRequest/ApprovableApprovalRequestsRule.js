@@ -3,8 +3,8 @@ foam.CLASS({
   name: 'ApprovableApprovalRequestsRule',
 
   documentation: `
-    A rule to determine what to do with an account once the 
-    approval request has been APPROVED or REJECTED
+    A rule to update the approvable once it's related approval request has been
+    APPROVED or REJECTED
   `,
 
   javaImports: [

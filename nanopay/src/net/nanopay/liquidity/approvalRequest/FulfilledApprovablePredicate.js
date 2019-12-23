@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'FulfilledApprovablePredicate',
 
-  documentation: 'Returns true if from the localAccountDAO and the ApprovalStatus is APPROVED',
+  documentation: 'Returns true if from the approvableDAO and the Approvable is APPROVED',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
