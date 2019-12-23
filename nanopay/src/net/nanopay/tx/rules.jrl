@@ -309,48 +309,35 @@ p({
       "class":"foam.mlang.predicate.And",
       "args":[
         {
-          "class":"foam.mlang.predicate.Eq",
-          "arg1": {
-            "class": "foam.mlang.expr.Dot",
-            "arg1": {
-              "class":"foam.mlang.ContextObject",
-              "key":"NEW"
-            },
-            "arg2": {
-              "class":"__Property__",
-              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
-              "name":"status"
-            }
-          },
-          "arg2": {
-            "class":"foam.mlang.Constant",
-            "value":{
-            "class":"net.nanopay.tx.model.TransactionStatus",
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
             "ordinal":4
-            }
           }
         },
         {
-          "class":"foam.mlang.predicate.Neq",
-          "arg1": {
-            "class": "foam.mlang.expr.Dot",
-            "arg1": {
-              "class":"foam.mlang.ContextObject",
-              "key":"OLD"
+          "class":"foam.mlang.predicate.And",
+          "args":[
+            {
+              "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+              "propName":"status",
+              "propValue": {
+                "class": "net.nanopay.tx.model.TransactionStatus",
+                "ordinal":5
+              },
+              "isNew":false
             },
-            "arg2": {
-              "class":"__Property__",
-              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
-              "name":"status"
+            {
+              "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+              "propName":"status",
+              "propValue": {
+                "class": "net.nanopay.tx.model.TransactionStatus",
+                "ordinal":4
+              },
+              "isNew":false
             }
-          },
-          "arg2": {
-            "class":"foam.mlang.Constant",
-            "value":{
-            "class":"net.nanopay.tx.model.TransactionStatus",
-            "ordinal":4
-            }
-          }
+          ]
         }
       ]
     },
@@ -373,48 +360,21 @@ p({
       "class":"foam.mlang.predicate.And",
       "args":[
         {
-          "class":"foam.mlang.predicate.Eq",
-          "arg1": {
-            "class": "foam.mlang.expr.Dot",
-            "arg1": {
-              "class":"foam.mlang.ContextObject",
-              "key":"NEW"
-            },
-            "arg2": {
-              "class":"__Property__",
-              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
-              "name":"status"
-            }
-          },
-          "arg2": {
-            "class":"foam.mlang.Constant",
-            "value":{
-            "class":"net.nanopay.tx.model.TransactionStatus",
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
             "ordinal":5
-            }
           }
         },
         {
-          "class":"foam.mlang.predicate.Neq",
-          "arg1": {
-            "class": "foam.mlang.expr.Dot",
-            "arg1": {
-              "class":"foam.mlang.ContextObject",
-              "key":"OLD"
-            },
-            "arg2": {
-              "class":"__Property__",
-              "forClass_":"net.nanopay.tx.cico.VerificationTransaction",
-              "name":"status"
-            }
-          },
-          "arg2": {
-            "class":"foam.mlang.Constant",
-            "value":{
-            "class":"net.nanopay.tx.model.TransactionStatus",
+          "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+          "propName":"status",
+          "propValue": {
+            "class": "net.nanopay.tx.model.TransactionStatus",
             "ordinal":5
-            }
-          }
+          },
+          "isNew":false
         }
       ]
     },
@@ -423,5 +383,29 @@ p({
         "class":"net.nanopay.tx.ruler.MicroDepositSuccessed"
     },
     "enabled":false,
+    "saveHistory":true
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send email when the micro deposit sent",
+    "priority":100,
+    "ruleGroup":"DepositTransacationVerify",
+    "documentation":"Send email when micro deposit sent",
+    "daoKey":"localTransactionDAO",
+    "operation":0,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue": {
+        "class": "net.nanopay.tx.model.TransactionStatus",
+        "ordinal":0
+      }
+    },
+    "after":true,
+    "action":{
+        "class":"net.nanopay.tx.ruler.MicroDepositSent"
+    },
+    "enabled":true,
     "saveHistory":true
 })

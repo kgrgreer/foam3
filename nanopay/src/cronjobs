@@ -138,7 +138,6 @@ p({
   "description":"Send reminder email to SigningOfficers who were invited to take over",
   "code":"import net.nanopay.sme.cron.SigningOfficerReminderCron;\ncron = new SigningOfficerReminderCron();\ncron.execute(x);\nprint(\"done\");"
 })
-
 p({
   "class": "foam.nanos.cron.Cron",
   "enabled":true,
