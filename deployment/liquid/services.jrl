@@ -102,7 +102,7 @@ p({
         """
       }
     }]
-  }
+  }f
 })
 p({
   "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
@@ -112,7 +112,14 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
+
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER, net.nanopay.account.Account.IS_DEFAULT });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.NAME });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
+
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -125,14 +132,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setOf(Account.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {
-        net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
-        net.nanopay.account.Account.OWNER,
-        net.nanopay.account.Account.NAME,
-        net.nanopay.account.Account.ID,
-        net.nanopay.account.Account.ENABLED,
-        net.nanopay.account.Account.IS_DEFAULT,
-        net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
       .setAuthorize(false)
       .build();
