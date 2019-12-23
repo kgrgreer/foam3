@@ -72,6 +72,10 @@ foam.CLASS({
       name: 'lowLiquidity',
       section: 'thresholds',
       gridColumns: 6,
+      view: {
+        class: 'foam.u2.detail.VerticalDetailView',
+        of: 'net.nanopay.liquidity.Liquidity'
+      },
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
@@ -91,6 +95,10 @@ foam.CLASS({
       name: 'highLiquidity',
       section: 'thresholds',
       gridColumns: 6,
+      view: {
+        class: 'foam.u2.detail.VerticalDetailView',
+        of: 'net.nanopay.liquidity.Liquidity'
+      },
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
