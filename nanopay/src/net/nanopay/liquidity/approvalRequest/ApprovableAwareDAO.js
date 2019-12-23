@@ -222,6 +222,8 @@ foam.CLASS({
         } 
         
         if ( approvedObjRemoveRequests.size() > 1 ){
+          Logger logger = (Logger) x.get("logger");
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
