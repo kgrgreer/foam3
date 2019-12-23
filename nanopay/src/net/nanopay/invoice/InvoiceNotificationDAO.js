@@ -119,7 +119,7 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getCreated(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
