@@ -30,7 +30,7 @@
 - the data stored in the liquid specific UserCapabilityJunction
 - includes a property called `accounts` of type `Map<Long, AccountData>` where the keys represent account IDs and values are the corresponding `AccountData` object
 - methods include: 
-  - `isParentOf(x, childAccountId)` : Check if a given account is in the map or implied by an account in the map through cascading. (TODO ruby: the accounts will also be stored in the map as they are traversed, maybe)
+  - `hasAccount(x, childAccountId)` : Check if a given account is in the map or implied by an account in the map through cascading. (TODO ruby: the accounts will also be stored in the map as they are traversed, maybe)
   - `mergeMaps(map)` : Update the map stored on this model so that to include entries in the new map.
   - `removeAccount(accountId)` : If account is in the map, remove the account from the map. If account is implied by an account in the map (through cascading), add the immediate parent of account explicitly to the map with cascading set to false and inherited set to true. 
       
