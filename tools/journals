@@ -44,6 +44,7 @@ notificationTemplates
 payoutOptions
 paymentCodes
 paymentProviders
+PADTypes
 permissions
 prerequisiteCapabilityJunctions
 purposeCodes
