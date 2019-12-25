@@ -10,7 +10,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'java.util.Map'
   ],
 
   documentation: `
@@ -53,6 +54,7 @@ properties: [
     {
       name: 'removeAccount',
       args: [
+        { name: 'x', javaType: 'foam.core.X' },
         { name: 'accountId', class: 'Long' }
       ],
       documentation: `
@@ -62,24 +64,25 @@ properties: [
       THIS IS WRONG TODO, PARENTS ACCOUNTS MORE THAN ONE CHILD 
       `,
       javaCode: `
-        Map<Boolean, AccountData> map = getAccounts();
+        Map<Long, AccountData> map = getAccounts();
         if ( map == null && map.size() == 0 ) return;
-        if ( map.containsKey(childAccountId) ) {
-          map.remove(childAccountId);
+        if ( map.containsKey(accountId) ) {
+          map.remove(accountId);
           setAccounts(map);
           return;
         }
 
         DAO accountDAO = (DAO) x.get("accountDAO");
 
-        Account childAccount = (Account) accountDAO.find(childAccountId);
+        Account childAccount = (Account) accountDAO.find(accountId);
         Account parentAccount = childAccount.findParent(x);
         Account immediateParentAccount = parentAccount;
 
-        while (  ) {
-          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getCascading() ) {
+        while ( parentAccount != null ) {
+          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getIsCascading() ) {
             AccountData data = map.get(immediateParentAccount.getId());
-            map.put(immediateParentAccount.getId(), data.setCascading(false));
+            data.setIsCascading(false);
+            map.put(immediateParentAccount.getId(), data);
           }
           parentAccount = (Account) parentAccount.findParent(x);
         }
@@ -100,7 +103,7 @@ properties: [
       `,
       javaCode: `
         // TODO add implementation for checking subtemplates of the current
-        Map<Boolean, AccountData> map = getAccounts();
+        Map<Long, AccountData> map = getAccounts();
         if ( map == null && map.size() == 0 ) return false;
         if ( map.containsKey(childAccountId) ) return true;
 
@@ -110,7 +113,7 @@ properties: [
         Account parentAccount = childAccount.findParent(x);
 
         while ( parentAccount != null ) {
-          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getCascading() ) {
+          if ( map.containsKey(parentAccount.getId()) && map.get(parentAccount.getId()).getIsCascading() ) {
             return true;
           } 
           parentAccount = (Account) parentAccount.findParent(x);

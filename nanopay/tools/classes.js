@@ -302,7 +302,6 @@ var classes = [
    'net.nanopay.liquidity.crunch.LiquidAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer',
-   'net.nanopay.liquidity.crunch.UserCapabilityJunctionDAO',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.tx.BusinessRule',

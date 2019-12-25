@@ -22,7 +22,7 @@ foam.CLASS({
       javaCode:  `
 
         Long accountId = ((Transaction) obj).getDestinationAccount();
-        String readPermission = createPermission("View", obj.getProperty("id"), accountId);
+        String readPermission = createPermission("View", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, readPermission) ) {

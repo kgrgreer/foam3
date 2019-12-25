@@ -20,11 +20,12 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'createPermission',
+      name: 'createApprovePermission',
       args: [
         { name: 'className', class: 'String' },
         { name: 'outgoingAccountId', class: 'Long' }
       ],
+      type: 'String',
       javaCode: `
         String permission = "canApprove";
         permission += className.substring(0, 1).toUpperCase() + className.substring(1);
@@ -45,10 +46,11 @@ foam.CLASS({
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
         LiquidApprovalRequest ar = (LiquidApprovalRequest) oldObj;
-        Long accountId = ar.getOutgoingAccount().getId();
-        String className = ar.getDaoKey().getOf().getName();
 
-        String permission = createPermission(className, accountId);
+        Long accountId = ar.getOutgoingAccount();
+        String className = ((foam.dao.DAO) x.get(ar.getDaoKey())).getOf().getClass().getSimpleName();
+
+        String permission = createApprovePermission(className, accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {

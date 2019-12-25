@@ -18,7 +18,7 @@ foam.CLASS({
       },
       {
         name: 'approverLevel',
-        class: 'Integer',
+        type: 'Integer',
         value: 1
       },
       {
