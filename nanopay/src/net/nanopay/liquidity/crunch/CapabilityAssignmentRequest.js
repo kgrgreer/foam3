@@ -6,6 +6,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'CapabilityAssignmentRequest', 
+  implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
     'userCapabilityJunctionDAO'
@@ -39,9 +40,23 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'assignUser',
+      code: async function assignUser(userId, capabilityId, accountTemplate = null) {
+        var ucj = this.UserCapabilityJunction.create({
+          sourceId: userId,
+          targetId: capabilityId,
+          data: accountTemplate
+        })
+        await this.userCapabilityJunctionDAO.put_(this.__subContext__, ucj);
+      }
+    },
+  ],
+  
+  actions: [
+    {
       name: 'submit',
       code: function submit() {
-        var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(capability);
+        var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(this.capability);
         if ( isAccountBasedCapability && ( ! accounts || account.length == 0 )) {
           console.err("account must must be supplied to assign account-based capability to user");
           return;
@@ -53,17 +68,6 @@ foam.CLASS({
         });
       }
     },
-    {
-      name: 'assignUser',
-      code: async function assignUser(userId, capabilityId, accountTemplate = null) {
-        var ucj = this.UserCapabilityJunction.create({
-          sourceId: userId,
-          targetId: capabilityId,
-          data: accountTemplate
-        })
-        await this.userCapabilityJunctionDAO.put(ucj);
-      }
-    }
   ]
 });
 
