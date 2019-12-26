@@ -1,6 +1,18 @@
 FOAM_FILES([
   // DAO
   { name: 'net/nanopay/dao/EasyDAO'},
+
+  // Approvable
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsPredicate' },
+  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
+  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },
+  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
+
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
@@ -833,11 +845,11 @@ FOAM_FILES([
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
-   { name: 'net/nanopay/liquidity/LiquidApprovalRequest' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },

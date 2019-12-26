@@ -29,7 +29,7 @@ foam.CLASS({
     {
       name: 'groupId',
       class: 'String',
-      value: 'liquidDev'
+      value: 'liquidBasic'
     }
   ],
 
