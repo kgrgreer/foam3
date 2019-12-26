@@ -36,7 +36,7 @@ p({
       .setCreatedByAware(true)
       .setLastModifiedAware(true)
       .setLastModifiedByAware(true)
-      .setDeletedAware(true)
+      .setDeletedAware(false)
       .setOf(Account.getOwnClassInfo())
       .setInnerDAO(eoddapc)
       .setAuthorize(false)

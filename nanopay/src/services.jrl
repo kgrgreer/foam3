@@ -474,6 +474,7 @@ p({
       .setEnableInterfaceDecorators(false)
       .setRuler(true)
       .setAuthorize(false)
+      .setDeletedAware(false)
       .setValidated(true)
       .setInnerDAO(x.get("bareUserDAO"))
       .setDecorator(dao)
@@ -497,6 +498,7 @@ p({
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
         .setEnableInterfaceDecorators(false)
+        .setDeletedAware(false)
         .build();
   """,
   "client":
@@ -570,6 +572,7 @@ p({
       .setEnableInterfaceDecorators(false)
       .setPm(true)
       .setPipelinePm(true)
+      .setDeletedAware(false)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
