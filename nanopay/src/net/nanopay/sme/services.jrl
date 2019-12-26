@@ -19,6 +19,7 @@ p({
       .setValidated(true)
       .setLastModifiedAware(false)
       .setLastModifiedByAware(false)
+      .setDeletedAware(false)
       .setCreatedAware(false)
       .setCreatedByAware(false)
       .setInnerDAO(x.get("localUserDAO"))
