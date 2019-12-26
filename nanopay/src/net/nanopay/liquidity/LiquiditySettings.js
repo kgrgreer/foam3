@@ -6,7 +6,6 @@ foam.CLASS({
     'foam.mlang.Expressions',
     'foam.nanos.analytics.Foldable',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LifecycleAware',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
@@ -114,7 +113,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       section: 'basicInfo',
-      value: foam.nanos.auth.LifecycleState.ACTIVE
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
     }
   ],
   methods: [

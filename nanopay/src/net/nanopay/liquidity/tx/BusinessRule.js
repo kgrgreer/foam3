@@ -5,8 +5,7 @@ foam.CLASS({
   abstract: true,
 
   implements: [
-    'foam.nanos.auth.LifecycleAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
   documentation: 'Business rule base class.',
@@ -36,8 +35,6 @@ foam.CLASS({
     },
     {
       name: 'enabled',
-      label: 'Enabled',
-      value: true,
       tableWidth: 125,
       tableHeaderFormatter: function(axiom) {
         this.add('Current status');
@@ -143,7 +140,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.ACTIVE
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
     },
   ],
 

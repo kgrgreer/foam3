@@ -10,7 +10,6 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.core.Validatable',
-    'foam.nanos.auth.LifecycleAware',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
@@ -256,7 +255,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.ACTIVE
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
     }
   ],
 
