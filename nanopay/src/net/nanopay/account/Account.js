@@ -390,6 +390,14 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getOutgoingAccount',
+      type: 'Long',
+      javaCode: `
+        if ( parentIsSet_ ) return getParent();
+        return 0L;
+      `
+    },
+    {
       name: 'toSummary',
       documentation: `
         When using a reference to the accountDAO, the labels associated with it will show

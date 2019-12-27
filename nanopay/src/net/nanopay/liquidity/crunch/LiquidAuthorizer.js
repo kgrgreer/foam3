@@ -12,6 +12,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'net.nanopay.account.Account',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -33,7 +35,7 @@ foam.CLASS({
       Return a liquid specific permission string in the form of "can{Operation}{ClassName}.{outgoingAccountId}"
       `,
       javaCode: `
-        String permission = "can" + op + getPermissionPrefix();
+        String permission = "can" + op + getPermissionPrefix().substring(0, 1).toUpperCase() + getPermissionPrefix().substring(1);
         if ( outgoingAccountId >= 0 ) permission += "." + outgoingAccountId;
         return permission;
       `
@@ -42,7 +44,9 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode:  `
         // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountId() : -1;
-        Long accountId = 0L;
+
+        Long accountId = ( obj instanceof Account ) ? ((Account) obj).getOutgoingAccount() : (( obj instanceof Transaction) ? ((Transaction) obj).getOutgoingAccount(): 0L);
+
         String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
@@ -55,7 +59,10 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode:  `
         // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountId() : -1;
-        Long accountId = 0L;
+
+        Long accountId = ( obj instanceof Account ) ? ((Account) obj).getOutgoingAccount() : (( obj instanceof Transaction) ? ((Transaction) obj).getOutgoingAccount(): 0L);
+
+
         String readPermission = createPermission("View", accountId);
         String approvePermission = createPermission("Approve", accountId);
         String makePermission = createPermission("Make", accountId);

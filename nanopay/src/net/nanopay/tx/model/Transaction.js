@@ -680,14 +680,22 @@ foam.CLASS({
   ],
 
   methods: [
-      {
-        name: 'doFolds',
-        javaCode: `
-          for ( Balance b : getBalances() ) {
-            fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-          }
-        `
-      },
+    {
+      name: 'getOutgoingAccount',
+      type: 'Long',
+      javaCode: `
+        if ( sourceAccountIsSet_ ) return getSourceAccount();
+        return 0L;
+      `
+    },
+    {
+      name: 'doFolds',
+      javaCode: `
+        for ( Balance b : getBalances() ) {
+          fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+        }
+      `
+    },
     {
       name: 'limitedClone',
       args: [
