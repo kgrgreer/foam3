@@ -85,8 +85,8 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewTransaction' },
     { class: 'Boolean', name: 'canMakeTransaction' },
     { class: 'Boolean', name: 'canApproveTransaction' },
-    { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, //
+    // { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, 
+    // { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, // UserCapabilityJunctions are now global roles ONLY
   ],
 
   methods: [
@@ -117,7 +117,7 @@ foam.CLASS({
           AccountTemplate template = (AccountTemplate) ucj.getData();
           if ( template == null ) return false;
 
-          return template.isParentOf(x, outgoingAccountId);
+          return template.hasAccount(x, outgoingAccountId);
         }
 
         return false;
