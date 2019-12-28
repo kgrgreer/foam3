@@ -14,21 +14,13 @@ foam.CLASS({
   properties: [  
       {
         name: 'isCascading',
-        class: 'Boolean'
+        class: 'Boolean',
+        value: true
       },
       {
         name: 'approverLevel',
         type: 'Integer',
         value: 1
-      },
-      {
-        name: 'inherited',
-        class: 'Boolean',
-        hidden: true,
-        documentation: `
-        Describes whether this account was added explicitly to the map or 
-        as a result of cascading / only cascading for a segment of the tree
-        `
       }
     ],
   });
