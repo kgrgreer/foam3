@@ -119,14 +119,11 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    /*
-    deletedAware = new DeletedAwareDAO.Builder(x)
-      .setName("transaction")
+    lifecycleAware = new LifecycleAwareDAO.Builder(x)
       .setDelegate(a)
       .build();
-    */
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
-      .setDelegate(a)
+      .setDelegate(lifecycleAware)
       .build();
     ruler = new RulerDAO(x, ctx, "localTransactionDAO");
     foam.dao.ProxyDAO aware = new foam.nanos.auth.CreatedAwareDAO.Builder(x)
