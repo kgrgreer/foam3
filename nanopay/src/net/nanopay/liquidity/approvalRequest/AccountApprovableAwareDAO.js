@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'AccountApprovableAwareDAO',
-  extends: 'foam.dao.ProxyDAO',
+  extends: 'net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO',
 
   javaImports: [
     'foam.core.X',
@@ -28,19 +28,7 @@ foam.CLASS({
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'daoKey'
-    },
-    {
-      class: 'Class',
-      name: 'of'
-    }
   ],
 
   methods: [

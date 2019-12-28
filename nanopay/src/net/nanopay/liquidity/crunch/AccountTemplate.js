@@ -1,0 +1,144 @@
+/**
+ * @license
+ * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+foam.CLASS({
+  package: 'net.nanopay.liquidity.crunch',
+  name: 'AccountTemplate', // TODO get a better name?
+  implements: [ 'foam.core.Validatable' ],
+
+  imports: [
+    'localAccountDAO'
+  ],
+
+  javaImports: [
+    'foam.dao.DAO',
+    'net.nanopay.account.Account',
+    'java.util.Map'
+  ],
+  
+  documentation: `
+  A model for the data to be stored in user-liquidCapability junctions
+  This model contains a list of accounts for which a capabilities will be granted to a user on,
+  as well as implements validation for the accounts supplied
+  `,
+
+properties: [  
+    {
+      name: 'accounts',
+      class: 'Map',
+      javaType: 'java.util.Map<Long, AccountData>',
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+      `
+    },
+    {
+      name: 'addAccount',
+      args: [
+        { name: 'account', class: 'Long' },
+        { name: 'data', class: 'net.nanopay.liquidity.crunch.AccountData' }
+      ],
+      documentation: `
+      `,
+      code: function addAccount(account, data) {
+        // check if the new account is parent of any entries in the map, if it is, remove the entry
+        var keySetIterator = this.accounts.keys();
+        var existingAccount = keySetIterator.next().value;
+        while ( existingAccount ) {
+          if ( existingAcconut ===  account || isParentAccount(account, existingAccount) ) this.accounts.delete(existingAccount);
+          existingAccount = keySetIterator.next().value;
+        }
+        this.accounts.set(account, data);
+      }
+    },
+    {
+      name: 'isParentAccount',
+      args: [
+        { name: 'parent', class: 'Long' },
+        { name: 'child', class: 'Long' },
+      ],
+      type: 'Boolean',
+      code: async function isParentAccount(parent, child) {
+        if ( parent === child ) return true;
+
+        childAccount = await this.localAccountDAO.find(child);
+        child = childAccount.parent;
+        if ( child ) return isParentAccount(parent, child);
+
+        return false;
+      }
+    },
+    {
+      name: 'removeAccount',
+      args: [
+        { name: 'accountId', class: 'Long' },
+      ],
+      documentation: `
+      remove an account from the map, abiding the the following rules : 
+        1. if the account is in the map keySet, remove the entry
+        2. if the account is not in the map, reject the operation
+      `,
+      code: function removeAccount(accountId) {
+        if ( this.accounts.has(accountId) ) {
+          this.accounts.delete(accountId);
+        } else {
+          console.error('The account provided is not an entry in the accountTemplate.');
+        }
+      }
+    },
+    {
+      name: 'hasAccount',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'childAccountId', class: 'Long' }
+      ],
+      javaType: 'Boolean',
+      documentation: `
+      Check if a given account is in the map or implied by ay an account in the map through
+      cascading.
+      `,
+      code: async function hasAccount(x, childAccountId) {
+        var map = this.accounts;
+        if ( map == null || map.size == 0 ) return false;
+        if ( map.has(childAccountId) ) return true;
+        
+        var childAccount = await this.localAccountDAO.find(childAccountId);
+        var parentId;
+        while ( childAccount ) {
+          parentId = childAccount.parent;
+          if ( map.has(parentId) && map.parentId.isCascading ) return true;
+          childAccount = await this.localAccountDAO.find(parentId);
+        }
+        return false;
+      },
+      javaCode: `
+        Map<Long, AccountData> map = getAccounts();
+
+        if ( map == null && map.size() == 0 ) return false;
+        if ( map.containsKey(childAccountId) ) return true;
+
+        DAO accountDAO = (DAO) x.get("accountDAO");
+
+        Account parentAccount = ((Account) accountDAO.find(childAccountId)).findParent(x);
+
+        AccountData temp;
+
+        while ( parentAccount != null ) {
+          temp = map.get(parentAccount.getId());
+          if ( temp == null ) parentAccount = (Account) parentAccount.findParent(x);
+          return temp.getIsCascading();
+        }
+
+        return false;
+      `
+    }
+  ]
+});
+
+  

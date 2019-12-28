@@ -113,14 +113,11 @@ p({
     import foam.dao.DAO;
     DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
-
-    /* TODO: Uncomment once new permissioning system gets in
-    dao = new net.nanopay.liquidity.approvalRequest.ApprovableDecorator.Builder(x)
-      .setDaoKey("localAccountDAO")
+    accountApprovableAware = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
-      .setDelegate(dao)
+      .setDaoKey("localAccountDAO")
+      .setDelegate(a)
       .build();
-    */
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -133,6 +130,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setOf(Account.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("account").build())
       .setIndex(new foam.core.PropertyInfo[] {
         net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
         net.nanopay.account.Account.OWNER,
@@ -142,7 +140,6 @@ p({
         net.nanopay.account.Account.IS_DEFAULT,
         net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
-      .setAuthorize(false)
       .build();
   """
 })
@@ -169,6 +166,7 @@ p({
     import net.nanopay.security.RandomNonceDAO;
     import net.nanopay.fx.afex.AFEXTransactionDAO;
     import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
+    import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
     MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
@@ -185,12 +183,19 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
+    /*
     deletedAware = new DeletedAwareDAO.Builder(x)
       .setName("transaction")
       .setDelegate(a)
       .build();
+    */
+    accountApprovableAware = new AccountApprovableAwareDAO.Builder(x)
+      .setOf(Transaction.getOwnClassInfo())
+      .setDaoKey("localTransactionDAO")
+      .setDelegate(a)
+      .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
-      .setDelegate(deletedAware)
+      .setDelegate(accountApprovableAware)
       .build();
     // TODO: Will make our own liquid rules journal and then re-enable the rule engine
     ruler = new RulerDAO(x, ctx, "localTransactionDAO");
@@ -216,7 +221,8 @@ p({
     quoted = new CheckQuotedTransactionDAO(x, exec);
     RealexTransactionDAO real = new net.nanopay.tx.realex.RealexTransactionDAO(x, quoted);
     DAO stripe = new StripeTransactionDAO(x, real);
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,stripe));
+    DAO auth = new foam.nanos.auth.AuthorizationDAO(x, stripe, new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer.Builder(x).setPermissionPrefix("transaction").build());
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,auth));
     """
 })
 p({
@@ -259,53 +265,6 @@ p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"ne
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "userDAO",
-  "serve": true,  
-  "description": "Client authenticated userDAO", 
-  "authenticate": false,
-  "serviceScript":
-  """
-    import foam.nanos.auth.User;
-    import foam.dao.DAO;
-    
-    /* TODO: Uncomment once new permissioning system gets implemented
-    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableDecorator.Builder(x)
-    .setDaoKey("userDAO")
-    .setOf(User.getOwnClassInfo())
-    .build();
-    */
-
-    return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setPipelinePm(true)
-        .setValidated(true)
-        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
-        .setOf(foam.nanos.auth.User.getOwnClassInfo())
-        .setInnerDAO(x.get("localUserDAO"))
-        // TODO: uncomment once new permissioning system gets implemented
-        // .setDecorator(dao)
-        .setDeletedAware(false)
-        .build();
-  """,
-  "client":
-  """
-  {
-    "of": "foam.nanos.auth.User",
-    "cache": false,
-    "decorators": [
-      {
-        "class":"foam.nanos.fs.FileDAODecorator"
-      },
-      {
-        "class":"foam.nanos.fs.FileArrayDAODecorator"
-      }
-    ]
-  }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "ruleDAO",
   "serve": true,
   "serviceScript": 
@@ -331,14 +290,17 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
-      .setContextualize(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
-      .setDecorator(dao)
-      .setValidated(true)
       .setRuler(false)
+      .setCreatedAware(true)
+      .setCreatedByAware(true)
+      .setLastModifiedAware(true)
+      .setLastModifiedByAware(true)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("rule").build())
       .build();
+    return new foam.dao.ValidatingDAO(x, ed);
   """,
   "client": """
     {
@@ -387,20 +349,49 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"approvableDAO",
-  "serve":true,  
-  "serviceScript": """
+  "class":"foam.nanos.boot.NSpec",
+  "name":"liquidCapabilityDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("approvables")
-      .setOf(net.nanopay.liquidity.approvalRequest.Approvable.getOwnClassInfo())
+      .setJournalName("liquidCapabilities")
+      .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
       .build();
   """,
-  "client": """
-    {
-      "of": "net.nanopay.liquidity.approvalRequest.Approvable"
-    }
-  """
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"accountTemplateDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("accountTemplates")
+      .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
+      .setAuthorize(false) // authorize this later on
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.AccountTemplate\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"userCapabilityJunctionDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("userCapabilityJunction").build())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("userCapabilityJunctions")
+      .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
+})
+

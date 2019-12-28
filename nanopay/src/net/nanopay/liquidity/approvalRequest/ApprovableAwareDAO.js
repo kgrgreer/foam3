@@ -26,7 +26,6 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
 

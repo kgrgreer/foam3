@@ -1,5 +1,6 @@
 acceptanceDocuments
 accounts
+accountTemplates
 alarmConfig
 ascendantfxusers
 ascendantUserPayeeJunctions
@@ -37,6 +38,7 @@ lineItemFees
 lineItemTax
 lineItemTypeAccounts
 lineItemTypes
+liquidCapabilities
 liquiditySettings
 menus
 notifications

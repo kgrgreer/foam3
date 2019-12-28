@@ -439,7 +439,6 @@ p({
     .setJournalName("users")
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setAuthorize(false)
-    .setDeletedAware(false)
     .build();
   """,
   "client": """
@@ -538,7 +537,6 @@ p({
       .setInnerDAO(filtered)
       .setEnableInterfaceDecorators(false)
       .setAuthorize(false)
-      .setDeletedAware(false)
       .build();
   """,
   "client":
@@ -619,7 +617,6 @@ p({
       .setAuthorize(false)
       .setInnerDAO(nuoe)
       .setEnableInterfaceDecorators(false)
-      .setDeletedAware(false)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .build();
   """,
@@ -638,7 +635,6 @@ p({
     .setRuler(false)
     .setInnerDAO(x.get("localBusinessDAO"))
     .setEnableInterfaceDecorators(false)
-    .setDeletedAware(false)
     .setDecorator(new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(null).build())
     .setOf(net.nanopay.model.Business.getOwnClassInfo())
     .build();
@@ -661,7 +657,6 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
-      .setDeletedAware(false)
       .setInnerDAO(x.get("localBusinessDAO"))
       .setEnableInterfaceDecorators(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.model.Business.CREATED).build() })
