@@ -6,12 +6,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
-  name: 'CachedAccountUCJQueryService',
-  documentation: 'A cached implementation of the AccountUCJQueryService interface.',
+  name: 'CachedUCJQueryService',
 
-  implements: [
-    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService'
-  ],
+  documentation: 'A cached implementation of the UCJQueryService interface.',
+
   javaImports: [
     'java.util.ArrayList',
     'foam.core.FObject'
@@ -39,15 +37,11 @@ foam.CLASS({
         {
           name: 'userId',
           type: 'Long'
-        },
-        {
-          name: 'accountId',
-          type: 'Long'
         }
       ],
       javaCode: `
         return new FObject[1];
-      `,
+      `
     },
     {
       name: 'getUsers',
@@ -58,34 +52,11 @@ foam.CLASS({
         {
           name: 'roleId',
           type: 'String'
-        },
-        {
-          name: 'accountId',
-          type: 'Long'
         }
       ],
       javaCode: `
         return new FObject[1];
-      `,
-    },
-    {
-      name: 'getAccounts',
-      type: 'FObject[]',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          name: 'userId',
-          type: 'Long'
-        },
-        {
-          name: 'roleId',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        return new FObject[1];
-      `,
+      `
     },
     {
       name: 'getApproversByLevel',
@@ -98,17 +69,13 @@ foam.CLASS({
           type: 'String'
         },
         {
-          name: 'accountId',
-          type: 'String'
-        },
-        {
           name: 'level',
           type: 'Integer'
         }
       ],
       javaCode: `
         return new FObject[1];
-      `,
+      `
     }
   ]
 });

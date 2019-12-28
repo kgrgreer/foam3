@@ -6,7 +6,7 @@
 
 foam.INTERFACE({
   package: 'net.nanopay.liquidity.ucjQuery',
-  name: 'AccountUCJQueryService',
+  name: 'UCJQueryService',
   methods: [
     {
       name: 'getRoles',
@@ -17,10 +17,6 @@ foam.INTERFACE({
         {
           name: 'userId',
           type: 'Long'
-        },
-        {
-          name: 'accountId',
-          type: 'Long'
         }
       ]
     },
@@ -30,26 +26,6 @@ foam.INTERFACE({
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
-        {
-          name: 'roleId',
-          type: 'String'
-        },
-        {
-          name: 'accountId',
-          type: 'Long'
-        }
-      ]
-    },
-    {
-      name: 'getAccounts',
-      type: 'FObject[]',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          name: 'userId',
-          type: 'Long'
-        },
         {
           name: 'roleId',
           type: 'String'
@@ -64,10 +40,6 @@ foam.INTERFACE({
       args: [
         {
           name: 'roleId',
-          type: 'String'
-        },
-        {
-          name: 'accountId',
           type: 'String'
         },
         {

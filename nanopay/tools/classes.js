@@ -325,6 +325,8 @@ var classes = [
 
    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
