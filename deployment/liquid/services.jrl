@@ -117,7 +117,7 @@ p({
     accountApprovableAware = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
-      .setDelegate(a)
+      .setDelegate(dao)
       .build();
     */
 
@@ -147,53 +147,6 @@ p({
 })
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "userDAO",
-  "serve": true,  
-  "description": "Client authenticated userDAO", 
-  "authenticate": false,
-  "serviceScript":
-  """
-    import foam.nanos.auth.User;
-    import foam.dao.DAO;
-
-    /* TODO: Uncomment once new permissioning system gets implemented
-    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("userDAO")
-    .setOf(User.getOwnClassInfo())
-    .build();
-    */
-
-    return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setPipelinePm(true)
-        .setValidated(true)
-        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
-        .setOf(foam.nanos.auth.User.getOwnClassInfo())
-        .setInnerDAO(x.get("localUserDAO"))
-        // TODO: uncomment once new permissioning system gets implemented
-        // .setDecorator(dao)
-        .setDeletedAware(false)
-        .build();
-  """,
-  "client":
-  """
-  {
-    "of": "foam.nanos.auth.User",
-    "cache": false,
-    "decorators": [
-      {
-        "class":"foam.nanos.fs.FileDAODecorator"
-      },
-      {
-        "class":"foam.nanos.fs.FileArrayDAODecorator"
-      }
-    ]
-  }
-  """
-})
 
 p({
   "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",              "lazy":false,  "serviceScript":
@@ -309,6 +262,53 @@ p({
 p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": false,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userDAO",
+  "serve": true,  
+  "description": "Client authenticated userDAO", 
+  "authenticate": false,
+  "serviceScript":
+  """
+    import foam.nanos.auth.User;
+    import foam.dao.DAO;
+
+    /* TODO: Uncomment once new permissioning system gets implemented
+    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    .setDaoKey("userDAO")
+    .setOf(User.getOwnClassInfo())
+    .build();
+    */
+
+    return new foam.dao.EasyDAO.Builder(x)
+        .setPm(true)
+        .setPipelinePm(true)
+        .setValidated(true)
+        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
+        .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setInnerDAO(x.get("localUserDAO"))
+        // TODO: uncomment once new permissioning system gets implemented
+        // .setDecorator(dao)
+        .setDeletedAware(false)
+        .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
