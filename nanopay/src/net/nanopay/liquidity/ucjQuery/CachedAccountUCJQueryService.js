@@ -110,5 +110,17 @@ foam.CLASS({
         return new FObject[1];
       `,
     }
+  ],
+
+  listeners: [
+    {
+      name: 'purge',
+      code: function() {
+        for (let [key, value] of Object.entries(this.cache)) {
+          if ( value.date.getTime() >= Date.now() - this.ttl ) continue;
+          delete this.cache[key];
+        }
+      }
+    }
   ]
 });
