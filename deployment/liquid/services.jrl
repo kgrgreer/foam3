@@ -356,6 +356,25 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec", 
+  "name":"approvableDAO",
+  "serve":true,  
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("approvables")
+      .setOf(net.nanopay.liquidity.approvalRequest.Approvable.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.liquidity.approvalRequest.Approvable"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
   "name":"liquiditySettingsDAO",
   "serve":true,  
   "serviceScript":

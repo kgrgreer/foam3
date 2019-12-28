@@ -87,7 +87,7 @@ p({
     import foam.dao.DAO;
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
-    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.auth.LifecycleAwareDAO;
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
