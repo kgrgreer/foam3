@@ -144,10 +144,13 @@ foam.CLASS({
 
     TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(bulk).build();
     quote = (TransactionQuote) transactionQuoteDAO.inX(x).put(quote);
-
-    bulk = (BulkTransaction) quote.getPlan();
-    CITransaction ciTransaction = (CITransaction) bulk.getNext()[0];
-    COTransaction coTransaction = (COTransaction) bulk.getNext()[0].getNext()[0].getNext()[0].getNext()[0];
+    Transaction next = quote.getPlan(); // BulkTransaction
+    CITransaction ciTransaction = (CITransaction) next.getNext()[0];  
+    next = ciTransaction;
+    next = next.getNext()[0]; // Composite
+    next = next.getNext()[0]; // Compliance
+    next = next.getNext()[0]; // Digital
+    COTransaction coTransaction = (COTransaction) next.getNext()[0];
     
     test(PADTypeLineItem.getPADTypeFrom(x, ciTransaction).getId() == 700, "CI Transaction PAD type set to 700.");
     test(PADTypeLineItem.getPADTypeFrom(x, coTransaction).getId() == 700, "CO Transaction PAD type set to 700.");
