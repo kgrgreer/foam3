@@ -18,8 +18,6 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
-    'static foam.mlang.MLang.CONTAINS_IC',
-    //'static foam.mlang.MLang.EQ_IC',
     'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',

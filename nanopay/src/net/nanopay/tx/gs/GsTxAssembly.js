@@ -178,6 +178,7 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
+        Long brokerID = 20;
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         Transaction t = new Transaction();
         // if {
@@ -204,7 +205,7 @@ foam.CLASS({
               }
 
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
-            t.setDestinationAccount(((Account) accountDAO.find(20)).getId());
+            t.setDestinationAccount(((Account) accountDAO.find(brokerID)).getId());
             t.setSourceCurrency(row1.getProductId());
             t.setDestinationCurrency(row1.getProductId());
             t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
@@ -233,7 +234,7 @@ foam.CLASS({
               // add cash peice
             }
 
-            t.setSourceAccount(((Account) accountDAO.find(20)).getId());
+            t.setSourceAccount(((Account) accountDAO.find(brokerID)).getId());
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationCurrency(row1.getProductId());
             t.setSourceCurrency(row1.getProductId());
