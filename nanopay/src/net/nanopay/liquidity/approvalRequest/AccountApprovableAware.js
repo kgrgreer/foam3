@@ -15,7 +15,7 @@ foam.INTERFACE({
       type: 'Long',
       args: [
         {
-          type: 'X',
+          type: 'Context',
           name: 'x',
         }
       ]
@@ -25,7 +25,7 @@ foam.INTERFACE({
       type: 'Long',
       args: [
         {
-          type: 'X',
+          type: 'Context',
           name: 'x',
         }
       ]
@@ -35,7 +35,7 @@ foam.INTERFACE({
       type: 'Long',
       args: [
         {
-          type: 'X',
+          type: 'Context',
           name: 'x',
         }
       ]
@@ -45,7 +45,7 @@ foam.INTERFACE({
       type: 'Long',
       args: [
         {
-          type: 'X',
+          type: 'Context',
           name: 'x',
         }
       ]

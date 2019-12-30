@@ -1158,7 +1158,7 @@ foam.CLASS({
     type: 'Long',
     args: [
       {
-        type: 'X',
+        type: 'Context',
         name: 'x',
       }
     ],
@@ -1171,7 +1171,7 @@ foam.CLASS({
     type: 'Long',
     args: [
       {
-        type: 'X',
+        type: 'Context',
         name: 'x',
       }
     ],
@@ -1184,7 +1184,7 @@ foam.CLASS({
     type: 'Long',
     args: [
       {
-        type: 'X',
+        type: 'Context',
         name: 'x',
       }
     ],
@@ -1197,7 +1197,7 @@ foam.CLASS({
     type: 'Long',
     args: [
       {
-        type: 'X',
+        type: 'Context',
         name: 'x',
       }
     ],
