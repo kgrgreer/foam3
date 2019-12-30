@@ -13,7 +13,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'net.nanopay.account.Account',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
   ],
 
   properties: [
@@ -36,16 +37,14 @@ foam.CLASS({
       `,
       javaCode: `
         String permission = "can" + op + getPermissionPrefix().substring(0, 1).toUpperCase() + getPermissionPrefix().substring(1);
-        if ( outgoingAccountId >= 0 ) permission += "." + outgoingAccountId;
+        if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
         return permission;
       `
     },
     {
       name: 'authorizeOnCreate',
       javaCode:  `
-        // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountCreate() : -1;
-
-        Long accountId = ( obj instanceof Account ) ? ((Account) obj).getOutgoingAccountCreate(x) : (( obj instanceof Transaction) ? ((Transaction) obj).getOutgoingAccountCreate(x): 0L);
+        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : 0;
 
         String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
@@ -58,10 +57,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        // Long accountId = obj instanceof ApprovableInterface ? ((ApprovableInterface) obj).getOutgoingAccountId() : -1;
-
-        Long accountId = ( obj instanceof Account ) ? ((Account) obj).getOutgoingAccountRead(x) : (( obj instanceof Transaction) ? ((Transaction) obj).getOutgoingAccountRead(x): 0L);
-
+        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
 
         String readPermission = createPermission("View", accountId);
         String approvePermission = createPermission("Approve", accountId);
@@ -76,15 +72,27 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode:  `
-        // TODO if oldObj.getoutgoingaccount != newobj.getoutgoingaccount authorizeOncreate(x, newObj)
-        authorizeOnCreate(x, oldObj);
-        authorizeOnCreate(x, newObj);
+        Long accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : 0;
+
+        String permission = createPermission("Make", accountId);
+        AuthService authService = (AuthService) x.get("auth");
+
+        if ( ! authService.check(x, permission) ) {
+          throw new AuthorizationException();
+        }
       `
     },
     {
       name: 'authorizeOnDelete',
       javaCode:  `
-        authorizeOnCreate(x, obj);
+        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : 0;
+
+        String permission = createPermission("Make", accountId);
+        AuthService authService = (AuthService) x.get("auth");
+
+        if ( ! authService.check(x, permission) ) {
+          throw new AuthorizationException();
+        }
       `
     },
     { name: 'checkGlobalRead',

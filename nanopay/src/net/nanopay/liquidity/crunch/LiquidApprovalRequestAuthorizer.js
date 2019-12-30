@@ -4,8 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- // TODO ruby change outgoingaccount stuff after approvable interface stuff merged
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'LiquidApprovalRequestAuthorizer',
@@ -15,7 +13,8 @@ foam.CLASS({
   javaImports: [
       'foam.nanos.auth.AuthorizationException',
       'foam.nanos.auth.AuthService',
-      'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
+      'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+      'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
     ],
 
   methods: [
@@ -29,14 +28,28 @@ foam.CLASS({
       javaCode: `
         String permission = "canApprove";
         permission += className.substring(0, 1).toUpperCase() + className.substring(1);
-        if ( outgoingAccountId >= 0 ) permission += "." + outgoingAccountId;
+        if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
         return permission;
       `
     },
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        this.authorizeOnUpdate(x, obj, null);
+        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
+
+        // TODO: Yoyo fix this after
+        AccountRoleApprovalRequest ar = (AccountRoleApprovalRequest) obj;
+
+        Long accountId = ( obj instanceof AccountApprovableAware ) ? ((AccountApprovableAware) ar).getOutgoingAccountRead(x) : 0L;
+        String className = ((foam.dao.DAO) x.get(ar.getDaoKey())).getOf().getClass().getSimpleName();
+
+        String permission = createApprovePermission(className, accountId);
+        AuthService authService = (AuthService) x.get("auth");
+
+        if ( ! authService.check(x, permission) ) {
+          throw new AuthorizationException();
+        }
       `
     },
     {
@@ -48,7 +61,7 @@ foam.CLASS({
         // TODO: Yoyo fix this after
         AccountRoleApprovalRequest ar = (AccountRoleApprovalRequest) oldObj;
 
-        Long accountId = ar.getOutgoingAccount();
+        Long accountId = ( oldObj instanceof AccountApprovableAware ) ? ((AccountApprovableAware) ar).getOutgoingAccountUpdate(x) : 0L;
         String className = ((foam.dao.DAO) x.get(ar.getDaoKey())).getOf().getClass().getSimpleName();
 
         String permission = createApprovePermission(className, accountId);
