@@ -8,10 +8,9 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
@@ -1144,65 +1143,6 @@ foam.CLASS({
     javaThrows: ['AuthorizationException'],
     javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
-    `
-  },
-  {
-    name: 'getApprovableKey',
-    type: 'String',
-    javaCode: `
-      return getId();
-    `
-  },
-  {
-    name: 'getOutgoingAccountCreate',
-    type: 'Long',
-    args: [
-      {
-        type: 'Context',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountRead',
-    type: 'Long',
-    args: [
-      {
-        type: 'Context',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountUpdate',
-    type: 'Long',
-    args: [
-      {
-        type: 'Context',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountDelete',
-    type: 'Long',
-    args: [
-      {
-        type: 'Context',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
     `
   }
 ],
