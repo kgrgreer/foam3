@@ -63,14 +63,14 @@ foam.CLASS({
           if ( isAccountBasedCapability ) {
             var accounttemplate = ucj.data;
             accounttemplate = accounttemplate.removeAccount(this.__subContext__, account, cascadedRemove);
-            if ( accounttemplate.isEmpty() ) {
-              await this.userCapabilityJunctionDAO.remove_(this.__subContext__, ucj.id);
+            if ( accounttemplate.accounts.size === 0 ) {
+              this.userCapabilityJunctionDAO.remove_(this.__subContext__, ucj.id);
             } else {
               ucj.data = accounttemplate;
               this.userCapabilityJunctionDAO.put_(this.__subContext, ucj);
             }
           } else {
-            await this.userCapabilityJunctionDAO.remove_(this.__subContext__, ucj.id);
+            this.userCapabilityJunctionDAO.remove_(this.__subContext__, ucj.id);
           }
         }).catch((err) => {
           console.error(err);
