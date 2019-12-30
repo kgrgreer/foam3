@@ -10,7 +10,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
   ],
 
   imports: [
@@ -22,6 +23,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -676,18 +678,25 @@ foam.CLASS({
       transient: true,
       hidden: true,
       searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
     }
   ],
 
   methods: [
-      {
-        name: 'doFolds',
-        javaCode: `
-          for ( Balance b : getBalances() ) {
-            fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-          }
-        `
-      },
+    {
+      name: 'doFolds',
+      javaCode: `
+        for ( Balance b : getBalances() ) {
+          fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+        }
+      `
+    },
     {
       name: 'limitedClone',
       args: [
@@ -1135,6 +1144,65 @@ foam.CLASS({
     javaThrows: ['AuthorizationException'],
     javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'getApprovableKey',
+    type: 'String',
+    javaCode: `
+      return getId();
+    `
+  },
+  {
+    name: 'getOutgoingAccountCreate',
+    type: 'Long',
+    args: [
+      {
+        type: 'X',
+        name: 'x',
+      }
+    ],
+    javaCode: `
+      return getSourceAccount();
+    `
+  },
+  {
+    name: 'getOutgoingAccountRead',
+    type: 'Long',
+    args: [
+      {
+        type: 'X',
+        name: 'x',
+      }
+    ],
+    javaCode: `
+      return getSourceAccount();
+    `
+  },
+  {
+    name: 'getOutgoingAccountUpdate',
+    type: 'Long',
+    args: [
+      {
+        type: 'X',
+        name: 'x',
+      }
+    ],
+    javaCode: `
+      return getSourceAccount();
+    `
+  },
+  {
+    name: 'getOutgoingAccountDelete',
+    type: 'Long',
+    args: [
+      {
+        type: 'X',
+        name: 'x',
+      }
+    ],
+    javaCode: `
+      return getSourceAccount();
     `
   }
 ],
