@@ -79,7 +79,10 @@ public class AccountHierarchyService
     List<Account> allChildrenList = new ArrayList<Account>();
     ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
     allChildrenList = allChildrenSink.getArray();
-    allChildren.add(account);
+    
+    if ( ! allChildren.contains(account) ) {
+      allChildren.add(account);
+    }
 
     if ( allChildrenList.size() > 0 ) {
       for ( int i = 0; i < allChildrenList.size(); i++ ) {
