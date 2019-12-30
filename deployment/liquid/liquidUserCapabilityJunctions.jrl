@@ -1,0 +1,29 @@
+p({
+  "class":"foam.nanos.crunch.UserCapabilityJunction",
+  "sourceId":8007,
+  "targetId":"adminAccountBasedLiquidCapability",
+  "data":{
+    "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+    "templateName":"rootAccountTemplate",
+    "accounts": {
+      "1040": {
+        "class":"net.nanopay.liquidity.crunch.AccountData",
+        "isCascading":true,
+        "approverLevel":{
+          "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+          "approverLevel":1,
+        }
+      }
+    }
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.UserCapabilityJunction",
+  "sourceId":8007,
+  "targetId":"adminGlobalLiquidCapability",
+  "data":{
+    "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+    "approverLevel":1,
+  }
+})

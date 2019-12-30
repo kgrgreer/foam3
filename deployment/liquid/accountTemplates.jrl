@@ -1,0 +1,12 @@
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":1,
+  "templateName":"rootAccountTemplate",
+  "accounts": {
+    1040: {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "approverLevel":1
+    }
+  }
+});
