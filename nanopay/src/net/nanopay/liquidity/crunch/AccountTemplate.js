@@ -24,7 +24,15 @@ foam.CLASS({
   as well as implements validation for the accounts supplied
   `,
 
-properties: [  
+  properties: [  
+    {
+      name: 'id',
+      class: 'Long',
+      hidden: true
+    },
+    { name: 'templateName',
+      class: 'String'
+    },
     {
       name: 'accounts',
       class: 'Map',
