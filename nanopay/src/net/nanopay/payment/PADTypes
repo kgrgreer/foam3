@@ -1,0 +1,23 @@
+// see full list: https://www.payments.ca/sites/default/files/standard_007.pdf
+
+// Personal use
+p({"class":"net.nanopay.payment.PADType", "id":200,"description":"Payroll Deposit"})
+p({"class":"net.nanopay.payment.PADType", "id":230,"description":"Pension"})
+p({"class":"net.nanopay.payment.PADType", "id":240,"description":"Annuity"})
+p({"class":"net.nanopay.payment.PADType", "id":250,"description":"Dividend"})
+p({"class":"net.nanopay.payment.PADType", "id":260,"description":"Investment"})
+p({"class":"net.nanopay.payment.PADType", "id":280,"description":"Interest"})
+p({"class":"net.nanopay.payment.PADType", "id":300,"description":"Federal Payment"})
+p({"class":"net.nanopay.payment.PADType", "id":330,"description":"Insurance"})
+p({"class":"net.nanopay.payment.PADType", "id":350,"description":"Loans"})
+p({"class":"net.nanopay.payment.PADType", "id":370,"description":"Mortgage"})
+p({"class":"net.nanopay.payment.PADType", "id":380,"description":"Taxes"})
+p({"class":"net.nanopay.payment.PADType", "id":400,"description":"Rent/Lease"})
+p({"class":"net.nanopay.payment.PADType", "id":420,"description":"Cash Management"})
+p({"class":"net.nanopay.payment.PADType", "id":430,"description":"Bill Payment"})
+p({"class":"net.nanopay.payment.PADType", "id":450,"description":"Misc. Payments"})
+p({"class":"net.nanopay.payment.PADType", "id":600,"description":"Prov./Local Gvt. Payment"})
+
+// Business use - All Ablii transaction should set to 700
+p({"class":"net.nanopay.payment.PADType", "id":700,"description":"Business PAD"})
+p({"class":"net.nanopay.payment.PADType", "id":729,"description":"Commercial Accounts Payable"})

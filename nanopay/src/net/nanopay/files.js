@@ -18,6 +18,8 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
   { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
+  { name: 'net/nanopay/payment/PADType' },
+  { name: 'net/nanopay/payment/PADTypeLineItem' },
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
