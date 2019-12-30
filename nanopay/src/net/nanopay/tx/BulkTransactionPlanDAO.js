@@ -19,6 +19,9 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.liquidity.LiquiditySettings',
     'static foam.mlang.MLang.*'
   ],
@@ -32,6 +35,8 @@ foam.CLASS({
         // Check whether it is bulkTransaction
         if ( parentQuote.getRequestTransaction() instanceof BulkTransaction) {
           BulkTransaction bulkTxn = (BulkTransaction) parentQuote.getRequestTransaction();
+          
+          PADType bulkTxnPADType = PADTypeLineItem.getPADTypeFrom(x, bulkTxn);
 
           DAO userDAO = (DAO) x.get("localUserDAO");
           DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
@@ -114,6 +119,9 @@ foam.CLASS({
             // Set the destination of each child transaction to payee's default digital account
             childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO).getId());
 
+            // set the pad type for each child transaction
+            if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(childTransaction, bulkTxnPADType.getId()); }
+
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);
 
@@ -140,6 +148,7 @@ foam.CLASS({
             cashInTransaction.setSourceAccount(payerDefaultBankAccount.getId());
             cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
             cashInTransaction.setAmount(bulkTxn.getAmount());
+            if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(cashInTransaction, bulkTxnPADType.getId()); }
             TransactionQuote cashInTransactionQuote = new TransactionQuote();
             cashInTransactionQuote.setRequestTransaction(cashInTransaction);
             cashInTransactionQuote = (TransactionQuote) planDAO.put(cashInTransactionQuote);
@@ -198,6 +207,47 @@ foam.CLASS({
           return DigitalAccount.findDefault(x, user, currency);
         }
       `
-    }
+    },
+    // {
+    //   name: 'setPADType',
+    //   args: [
+    //     {
+    //       name: 'transaction',
+    //       type: 'Transaction'
+    //     },
+    //     {
+    //       name: 'padType',
+    //       class: 'Int'
+    //     },
+    //   ],
+    //   javaCode: `
+    //     // only set the pad type if it's not provided by client
+    //     if ( getPADType(transaction) == 0 ) {
+    //       PADTypeLineItem lineItem = new PADTypeLineItem();
+    //       lineItem.setPadType(padType);
+    //       transaction.addLineItems(new TransactionLineItem[] { lineItem }, null);
+    //     }
+    //   `
+    // },
+    // {
+    //   name: 'getPADType',
+    //   javaType: 'int',
+    //   args: [
+    //     {
+    //       name: 'transaction',
+    //       type: 'Transaction'
+    //     }
+    //   ],
+    //   javaCode:`
+    //     PADTypeLineItem padTypeLineItem = null;
+    //     for (TransactionLineItem lineItem : transaction.getLineItems()) {
+    //       if ( lineItem instanceof PADTypeLineItem ) {
+    //         padTypeLineItem = (PADTypeLineItem) lineItem;
+    //       }
+    //     }
+    //
+    //     return padTypeLineItem == null ? 0 : padTypeLineItem.getPadType();
+    //   `
+    // }
   ]
 });

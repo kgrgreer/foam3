@@ -29,9 +29,14 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.cico.VerificationTransaction',
+    'net.nanopay.payment.PaymentProvider',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
-   constants: [
+  constants: [
     {
       name: 'PROVIDER_ID',
       type: 'String',
@@ -90,6 +95,9 @@ foam.CLASS({
         t.setTransfers(createCITransfers(t, institutionNumber));
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
       } else if ( sourceAccount instanceof DigitalAccount &&
@@ -108,6 +116,9 @@ foam.CLASS({
         t.setTransfers(createCOTransfers(t, institutionNumber));
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
       }
