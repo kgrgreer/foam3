@@ -430,7 +430,7 @@ p({
   """
 
   return new foam.dao.EasyDAO.Builder(x)
-    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.GROUP})
+    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.GROUP}) // will add index by EMAIL when easyDAO indexing fixed.
     .setPm(true)
     .setPipelinePm(true)
     .setSeqNo(true)
