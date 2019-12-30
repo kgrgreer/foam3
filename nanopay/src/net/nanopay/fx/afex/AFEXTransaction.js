@@ -368,6 +368,7 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
+      setAfexTradeResponseNumber(((AFEXTransaction) other).getAfexTradeResponseNumber());
       setLineItems(other.getLineItems());
       `
     },
