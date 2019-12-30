@@ -148,7 +148,10 @@ p({
     quoted = new CheckQuotedTransactionDAO(x, exec);
     RealexTransactionDAO real = new net.nanopay.tx.realex.RealexTransactionDAO(x, quoted);
     DAO stripe = new StripeTransactionDAO(x, real);
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,stripe));
+    padCheck = new net.nanopay.payment.PADTypeCheckDAO.Builder(x)
+        .setDelegate(stripe)
+        .build();
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,padCheck));
     """
 })
 
@@ -342,6 +345,7 @@ p({"class": "foam.nanos.boot.NSpec","id": "accountBalanceAnnuallyReduceManager",
 
 p({"class":"foam.nanos.boot.NSpec", "name":"afexTradeResponseDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.CreateTradeResponse.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexTradeResponse\").build();","client":"{\"of\":\"net.nanopay.fx.afex.CreateTradeResponse\"}" })
 
+p({"class":"foam.nanos.boot.NSpec","name":"padTypeDAO",                      "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.payment.PADType.getOwnClassInfo(), \"PADTypes\"));", "client":"{\"of\":\"net.nanopay.payment.PADType\"}"})
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "paymentProviderDAO",                       
@@ -446,3 +450,4 @@ p({
       .build();
   """
 })
+>>>>>>> facec04b0dece79865829739f71b184a426b50c0

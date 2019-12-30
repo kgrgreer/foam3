@@ -15,6 +15,9 @@ import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
+import net.nanopay.payment.PADType;
+import net.nanopay.payment.PADTypeLineItem;
+import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -350,6 +353,7 @@ public class CsvUtil {
             }
           }
 
+          alternaFormat.setTxnCode(getPADTypeCode(x, t));
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
@@ -375,5 +379,17 @@ public class CsvUtil {
 
   public static String removeComma(String str) {
     return str.replace("," , " ");
+  }
+
+  public static String getPADTypeCode(X x, Transaction transaction) {
+
+    PADType padType = PADTypeLineItem.getPADTypeFrom(x, transaction);
+
+    if ( padType != null && padType.getId() != 700 ) {
+      return String.valueOf(padType.getId());
+    }
+
+    // we need to map 700 to 729 for Alterna EFT
+    return "729";
   }
 }

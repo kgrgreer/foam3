@@ -24,6 +24,8 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.payment.PaymentProvider',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.bmo.cico.*',
     'net.nanopay.tx.cico.VerificationTransaction',
@@ -99,6 +101,9 @@ foam.CLASS({
 
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
+      if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+        PADTypeLineItem.addEmptyLineTo(t);
+      }
       t.setIsQuoted(true);
       quote.addPlan(t);
     } else if ( sourceAccount instanceof DigitalAccount &&
@@ -119,6 +124,9 @@ foam.CLASS({
       t.setTransfers(createCOTransfers(t, institutionNumber));
       // TODO: use EFT calculation process - ClearingTimeService
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
+      if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+        PADTypeLineItem.addEmptyLineTo(t);
+      }
       t.setIsQuoted(true);
       quote.addPlan(t);
     }

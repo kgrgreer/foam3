@@ -428,8 +428,9 @@ p({
   "authenticate": false,
   "serviceScript":
   """
+
   return new foam.dao.EasyDAO.Builder(x)
-    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.GROUP}) // will add index by EMAIL when easyDAO indexing fixed.
     .setPm(true)
     .setPipelinePm(true)
     .setSeqNo(true)
@@ -624,6 +625,28 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentCodeDAO",
+  "serve": true,
+  "serviceScript": 
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setPipelinePm(true)
+    .setGuid(true)
+    .setJournalName("paymentCodes")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
+    .build();
+  """,
+  "client": """
+  {
+    "of": "net.nanopay.payment.PaymentCode"
+  }
+  """
 })
 
 p({

@@ -87,6 +87,15 @@ p({
           "class": "net.nanopay.bank.BankAccountStatus",
           "ordinal":1
         }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "isNew":false,
+        "propValue": {
+          "class": "net.nanopay.bank.BankAccountStatus",
+          "ordinal":1
+        }
       }
     ]
   },
@@ -108,21 +117,16 @@ p({
   "operation": 2,
   "after":true,
   "predicate": {
-    "class":"foam.mlang.predicate.True",
-    "args": [
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"deleted",
-        "propValue":true,
-        "isNew":false
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"deleted",
+    "propValue":true,
+    "isNew":false
   },
   "action": {
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true 
 })
 
 p({

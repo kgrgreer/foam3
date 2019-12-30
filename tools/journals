@@ -45,7 +45,9 @@ menus
 notifications
 notificationTemplates
 payoutOptions
+paymentCodes
 paymentProviders
+PADTypes
 permissions
 prerequisiteCapabilityJunctions
 purposeCodes
