@@ -87,15 +87,6 @@ p({
           "class": "net.nanopay.bank.BankAccountStatus",
           "ordinal":1
         }
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"status",
-        "isNew":false,
-        "propValue": {
-          "class": "net.nanopay.bank.BankAccountStatus",
-          "oridinal":1
-        }
       }
     ]
   },
