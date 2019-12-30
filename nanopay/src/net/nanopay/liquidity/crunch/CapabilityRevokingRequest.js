@@ -5,7 +5,7 @@
  */
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'CapabilityAssignmentRequest', 
+  name: 'CapabilityRevokingRequest', 
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
