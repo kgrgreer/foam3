@@ -690,14 +690,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      javaCode: `
-        if ( sourceAccountIsSet_ ) return getSourceAccount();
-        return 0L;
-      `
-    },
-    {
       name: 'doFolds',
       javaCode: `
         for ( Balance b : getBalances() ) {
