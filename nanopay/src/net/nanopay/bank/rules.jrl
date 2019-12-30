@@ -68,3 +68,79 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Send notification when bank account has been verified.",
+  "priority":100,
+  "ruleGroup":"bankOperations",
+  "documentation":"Sends a notification to account owner detailing that their bank account has been verified.",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.bank.BankAccountStatus",
+          "ordinal":1
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "isNew":false,
+        "propValue": {
+          "class": "net.nanopay.bank.BankAccountStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.bank.ruler.AccountVerifiedNotificationRule"
+  },
+  "enabled":true,
+  "after":true,
+  "saveHistory":true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id": "Send notification to account owner when account has been deleted.",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "documentation": "Send notification to account owner when account has been deleted.",
+  "daoKey": "localAccountDAO",
+  "operation": 2,
+  "after":true,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"deleted",
+    "propValue":true,
+    "isNew":false
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id": "Send notification to account owner when account has been added.",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "documentation": "Send notification to account owner when account has been added.",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "action": {
+    "class": "net.nanopay.bank.ruler.AccountAddedNotificationRule"
+  },
+  "enabled":true,
+  "after":true,
+  "saveHistory":true
+})

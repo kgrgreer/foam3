@@ -11,10 +11,9 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
-import net.nanopay.tx.AbliiTransaction;
-import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.Transfer;
+import net.nanopay.payment.PADType;
+import net.nanopay.payment.PADTypeLineItem;
+import net.nanopay.tx.*;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
@@ -42,6 +41,7 @@ public class TransactionTest
 
     testTransactionMethods();
     testAbliiTransaction();
+    testPADType();
     testVerificationTransaction();
     testFXTransaction();
     testLoanTransaction();
@@ -178,7 +178,7 @@ public class TransactionTest
 
     test(txn2.getStatus()== TransactionStatus.PENDING,"verification transaction is "+txn.getStatus().toString());
     test(txn2.getTransfers().length == 0 ,"The verification transaction has "+txn.getTransfers().length+" transfers");
-    test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
+    // test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
 
     TransactionQuote tq = new TransactionQuote.Builder(x_)
       .setRequestTransaction(txn)
@@ -291,6 +291,53 @@ public class TransactionTest
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
     test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
 
+  }
+
+  public void testPADType() {
+    DAO bankDAO = (DAO) x_.get("localAccountDAO");
+    DAO quoteDAO = (DAO) x_.get("localTransactionQuotePlanDAO");
+
+    CABankAccount bankAccount = (CABankAccount) bankDAO.find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)));
+    DigitalAccount digitalAccount = (DigitalAccount) bankDAO.find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
+
+    Transaction txn = new Transaction.Builder(x_)
+      .setAmount(2000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    TransactionQuote tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn = tq.getPlan();
+
+    PADTypeLineItem padTypeLineItem = null;
+    for (TransactionLineItem lineItem : txn.getLineItems()) {
+      if ( lineItem instanceof PADTypeLineItem ) {
+        padTypeLineItem = (PADTypeLineItem) lineItem;
+      }
+    }
+
+    test(padTypeLineItem != null, "pad type line item must be set");
+    test(padTypeLineItem.getPadType() <= 0, "Quote plan should not set the default value");
+
+    Transaction txn2 = new Transaction.Builder(x_)
+      .setAmount(3000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    PADTypeLineItem.addTo(txn2, 700);
+    tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn2)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn2 = tq.getPlan();
+
+    test(PADTypeLineItem.getPADTypeFrom(x_, txn2).getId() == 700, "pad type set before quote");
   }
 
   public User addUser(String email) {

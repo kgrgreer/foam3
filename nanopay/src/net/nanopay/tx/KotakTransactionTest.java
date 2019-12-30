@@ -214,6 +214,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
       destinationAccount.setOwner(receiver.getId());
       destinationAccount.setAccountNumber("9876543210");
       destinationAccount.setStatus(BankAccountStatus.VERIFIED);
+      destinationAccount.setPurposeCode("P1306");
       destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount);
     }
   }

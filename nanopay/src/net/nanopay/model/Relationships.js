@@ -111,6 +111,7 @@ foam.RELATIONSHIP({
   }
 });
 
+// A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.account.SecuritiesAccount',
   targetModel: 'net.nanopay.account.SecurityAccount',
@@ -119,8 +120,6 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   sourceDAOKey: 'accountDAO',
   cardinality: '1:*',
-  documentation: `A securities account is one account that all the security transactions go to and from.
-   The subaccounts hold the actual securities, and there is one per Security`,
 });
 
 foam.RELATIONSHIP({
@@ -883,4 +882,12 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PaymentCode',
+  forwardName: 'paymentCode',
+  inverseName: 'owner',
+  cardinality: '1:*',
 });

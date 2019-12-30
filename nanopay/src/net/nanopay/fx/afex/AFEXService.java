@@ -49,6 +49,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   public AFEXService(X x) {
     setX(x);
+    logger = (Logger) x.get("logger");
+    logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
+    omLogger = (OMLogger) x.get("OMLogger");
+
     AFEXCredentials credentials = getCredentials();
     apiKey = credentials.getApiKey();
     apiPassword = credentials.getApiPassword();
@@ -58,9 +62,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     jsonParser = new JSONParser();
     jsonParser.setX(x);
-    logger = (Logger) x.get("logger");
-    logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
-    omLogger = (OMLogger) x.get("OMLogger");
   }
 
   protected AFEXCredentials getCredentials() {

@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{1,20}$")'
+      javaValue: 'Pattern.compile("^[0-9]{8,20}$")'
     }
   ],
 
@@ -52,13 +52,26 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'rbiLink',
+      label: '',
+      value: 'https://www.rbi.org.in/Scripts/IFSCMICRDetails.aspx',
+      section: 'accountDetails',
+      view: {
+        class: 'net.nanopay.sme.ui.Link',
+        data: this.value,
+        text: 'Search IFSC code here',
+        isExternal: false
+      },
+    },
+    {
+      class: 'String',
       name: 'ifscCode',
       label: 'IFSC Code',
       validationPredicates: [
         {
           args: ['ifscCode'],
           predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{1,11}$/);
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{11}$/);
           },
           errorString: 'IFSC Code must be 11 digits long.'
         }
@@ -94,13 +107,16 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
+      view: {
+        class: 'foam.u2.view.StringView',
+      },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^\w{1,20}$/;
+        var accNumberRegex = /^\w{8,20}$/;
 
         if ( accountNumber === '' ) {
           return 'Please enter a Bank Account No.';
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Indian Bank Account No cannot exceed 20 digits.';
+          return 'Indian Bank Account No must be between 8 and 20 digits.';
         }
       },
     },
@@ -108,7 +124,7 @@ foam.CLASS({
       name: 'accountRelationship',
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
-      label: 'Relation to the contact',
+      label: 'Relationship with the contact',
       view: {
         class: 'foam.u2.view.ChoiceWithOtherView',
         choiceView: {
@@ -129,7 +145,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
           },
-          errorString: 'Please specify your relation to the contact.'
+          errorString: 'Please specify your Relationship with the contact.'
         }
       ],
       section: 'accountDetails'

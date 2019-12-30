@@ -32,7 +32,7 @@ foam.CLASS({
       position: fixed;
       height: 100vh;
       width: 240px;
-      padding-top: 75px;
+      padding-top: 60px;
       overflow-y: scroll;
       overflow-x: hidden;
       z-index: 100;
@@ -106,18 +106,8 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ .foam-u2-view-RichChoiceView {
-      margin-bottom: 20px;
-    }
-    ^ .foam-u2-view-RichChoiceView .search input {
-      height: 40px;
-    }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      width: 240px;
-      height: 40px;
-      padding-left: 20px;
-    }
-    ^ .foam-u2-view-RichChoiceView-heading {
-      padding: 10px;
+      width: calc(240px - 16px - 16px);
+      margin: 16px;
     }
     ^submenu-item ^selected-dot {
       border-radius: 999px;
@@ -158,7 +148,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
-              heading: 'Menus',
+              heading: '',
               dao: X.menuDAO
             },
           ],
@@ -188,6 +178,7 @@ foam.CLASS({
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
+              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
               return this.E()
                 .start()
                   .attrs({ name: menu.label })
@@ -220,14 +211,12 @@ foam.CLASS({
                     .start('span')
                       .add(menu.label)
                     .end()
-                    .start().enableClass('up-arrow', slot.map((slot) => {
-                      return slot && hasChildren;
-                    })).end()
+                    .start().enableClass('up-arrow', visibilitySlot).end()
                   .end()
 
                   .start()
                     .addClass('submenu')
-                    .show(slot)
+                    .show(visibilitySlot)
                     .select(self.dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
                       hasChildren.set(true);
                       var e = this.E()

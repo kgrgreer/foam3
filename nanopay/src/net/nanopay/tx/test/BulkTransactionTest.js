@@ -29,6 +29,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem'
   ],
 
   methods: [
@@ -113,6 +115,45 @@ foam.CLASS({
         }
       }
     }
+    
+    testPADTypeBeforeQuote(x, sender, receiver);
+      `
+    },
+    {
+      name: 'testPADTypeBeforeQuote',
+      args: [
+        {
+          name: 'x',
+          type: 'X'
+        },
+        {
+          name: 'sender',
+          type: 'User'
+        },
+        {
+          name: 'receiver',
+          type: 'User',
+        }
+      ],
+      javaCode: `
+    DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+    BulkTransaction bulk = createBulkTransaction(x, sender, new User[] {receiver});
+    PADTypeLineItem.addTo(bulk, 700);
+    bulk.setExplicitCI(true);
+    bulk.setExplicitCO(true);
+
+    TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(bulk).build();
+    quote = (TransactionQuote) transactionQuoteDAO.inX(x).put(quote);
+    Transaction next = quote.getPlan(); // BulkTransaction
+    CITransaction ciTransaction = (CITransaction) next.getNext()[0];  
+    next = ciTransaction;
+    next = next.getNext()[0]; // Composite
+    next = next.getNext()[0]; // Compliance
+    next = next.getNext()[0]; // Digital
+    COTransaction coTransaction = (COTransaction) next.getNext()[0];
+    
+    test(PADTypeLineItem.getPADTypeFrom(x, ciTransaction).getId() == 700, "CI Transaction PAD type set to 700.");
+    test(PADTypeLineItem.getPADTypeFrom(x, coTransaction).getId() == 700, "CO Transaction PAD type set to 700.");
       `
     },
     {

@@ -8,10 +8,11 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -21,6 +22,15 @@ foam.CLASS({
   ],
 
   documentation: 'Send Welcome Email to Ablii Business 30min after SignUp',
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'threshold',
+      value: 30,
+      documentation: 'Interval threshold in minutes for cronjob.'
+    }
+  ],
 
   methods: [
     {
@@ -38,14 +48,14 @@ foam.CLASS({
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
 
         // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
-        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 20));
+        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
         Date                 endInterval    = null;
         Long                 disruptionDiff = 0L;
         Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
 
         // Check if there was no service disruption - if so, add/sub diff from endInterval
         disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
-        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 20) + disruptionDiff );
+        endInterval    = new Date(startInterval.getTime() - (1000 * 60 * this.getThreshold()) + disruptionDiff );
 
         List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
           AND(
@@ -58,9 +68,18 @@ foam.CLASS({
           args           = new HashMap<>();
 
           message.setTo(new String[]{ business.getEmail() });
-          args.put("name", business.label());  
+          args.put("name", User.FIRST_NAME);
           try {
-            EmailsUtility.sendEmailFromTemplate(x, business, message, "helpsignup", args);
+            Notification helpSignUpNotification = new Notification.Builder(x)
+              .setBody("Send Welcome Email After 30 Minutes.")
+              .setNotificationType("WelcomeEmail")
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setEmailName("helpsignup")
+              .build();
+
+            business.doNotify(x, helpSignUpNotification);
+
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
             sb.append("Email meant for business SignUp Error: Business ");
@@ -72,4 +91,3 @@ foam.CLASS({
     }
   ]
 });
-

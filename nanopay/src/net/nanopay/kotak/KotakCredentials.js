@@ -57,6 +57,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'remitterAcNo'
+    },
+    {
+      class: 'String',
+      name: 'remitterCountry'
+    },
+    {
+      class: 'Long',
+      name: 'tradePurposeCodeLimit'
     }
   ]
 });

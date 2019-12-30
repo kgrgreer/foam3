@@ -341,11 +341,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
     if ( null == bankAddress ) {
-      if ( bankInformation == null ) {
-        throw new RuntimeException("Bank Account Address is null " + bankAccountId );
-      }
       bankAddress = new Address.Builder(x)
-        .setCountryId(bankInformation.getIsoCountryCode())
+        .setCountryId(bankAccount.getCountry())
         .build();
     }
 
@@ -364,7 +361,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         bankRoutingCode = "0" + bankAccount.getBankCode(x) + bankRoutingCode;
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
-      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress());
+      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress().replace("#", ""));
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
       createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
       createBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
