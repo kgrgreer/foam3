@@ -9,16 +9,22 @@ foam.CLASS({
   name: 'LiquidCapability',
   extends: 'foam.nanos.crunch.Capability',
 
+  tableColumns: [ 'id' ],
+
   properties: [
     {
       name: 'id',
       class: 'String',
       updateMode: 'RO'
-    }, 
+    },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
     {
       name: 'permissionsGranted',
+      hidden: true,
+    },
+    {
+      name: 'description',
       hidden: true,
     },
     {
@@ -63,6 +69,16 @@ foam.CLASS({
      'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*'
+  ],
+
+  tableColumns: [
+    'id',
+    'canViewAccount',
+    'canMakeAccount',
+    'canApproveAccount',
+    'canViewTransaction',
+    'canMakeTransaction',
+    'canApproveTransaction'
   ],
 
   properties: [
@@ -127,6 +143,24 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'GlobalLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+
+  tableColumns: [
+    'id',
+    'canViewRule',
+    'canMakeRule',
+    'canApproveRule',
+    'canViewUser',
+    'canMakeUser',
+    'canApproveUser',
+    'canViewLiquiditysetting',
+    'canMakeLiquiditysetting',
+    'canApproveLiquiditysetting',
+    'canViewCapability',
+    'canMakerCapability',
+    'canApproveCapability',
+    'canMakeUsercapabilityjunction',
+    'canApproverUsercapabilityjunction'
+  ],
 
   properties: [
     { class: 'Boolean', name: 'canViewRule' },
