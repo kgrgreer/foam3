@@ -40,52 +40,9 @@ public class AFEXTransactionDAO
       return getDelegate().put_(x, obj);
     }
 
-    AFEXTransaction transaction = (AFEXTransaction) obj;
-    AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
-    Logger logger = (Logger) x.get("logger");
-
-    if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED && transaction.getAfexTradeResponseNumber() == 0 ) {
-      try {
-        int result = afexService.createTrade(transaction);
-        transaction.setAfexTradeResponseNumber(result);
-      } catch (Throwable t) {
-        logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
-        throw new RuntimeException(t.getMessage());
-      }
-    }
-    
-    if ( transaction.getStatus() != TransactionStatus.PENDING || ! ( SafetyUtil.isEmpty( transaction.getReferenceNumber()) ) ) {
-      return getDelegate().put_(x, obj);
-    }
-
-  ///Submit transation to AFEX
-    try {
-      Transaction txn = afexService.submitPayment(transaction);
-      if ( ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
-        transaction.setStatus(TransactionStatus.SENT);
-        transaction.setReferenceNumber(txn.getReferenceNumber());
-        FXQuote fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(transaction.getFxQuoteId()));
-        
-        if ( null != fxQuote ) {
-          Date date = null;
-          try{
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-            transaction.setCompletionDate(format.parse(fxQuote.getValueDate()));
-          } catch ( Exception e) {
-            ((Logger) x.get("logger")).error(" Error parsing FX quote value date ", e);
-          }
-          
-        }
-      } else {
-        transaction.setStatus(TransactionStatus.DECLINED);
-        logger.error("Error submitting payment to AFEX.");
-        return getDelegate().put_(x, obj);
-      }
-    } catch (Throwable t) {
-      transaction.setStatus(TransactionStatus.DECLINED);
-      getDelegate().put_(x, transaction);
-      ((Logger)x.get("logger")).error(" Error submitting payment for AfexTransaction " + transaction.getId(), t);
-      throw new RuntimeException(t.getMessage());
+    AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+    if ( transaction.getStatus() == TransactionStatus.PENDING && SafetyUtil.isEmpty( transaction.getReferenceNumber())  ) {
+      transaction.setStatus(TransactionStatus.SENT);
     }
     
     return super.put_(x, transaction);

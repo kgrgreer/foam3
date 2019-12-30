@@ -201,6 +201,10 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  'net.nanopay.fx.afex.AFEXCreateTradePredicate',
+  'net.nanopay.fx.afex.AFEXCreateTradeRule',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
