@@ -12,18 +12,19 @@ foam.CLASS({
   javaImports: [
     'java.util.ArrayList',
     'java.util.List',
-    'foam.core.FObject'
+    'foam.core.FObject',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.mlang.MLang',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'net.nanopay.liquidity.crunch.AccountTemplate',
+    'net.nanopay.liquidity.crunch.ApproverLevel'
   ],
 
   properties: [
     {
       class: 'Map',
       name: 'cache'
-    },
-    {
-      class: 'Int',
-      name: 'TTL',
-      value: 5000
     }
   ],
 
@@ -40,7 +41,20 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      // TODO: Could probably later on use INSTANCE_OF for data to get global only
+
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+
+      List ucjsForUser = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId)).select(new ArraySink())).getArray();
+      List roleIdsForUser = new ArrayList();
+
+      for ( int i = 0; i < ucjsForUser.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForUser.get(i);
+
+        roleIdsForUser.add(currentUCJ.getTargetId());
+      }
+
+      return roleIdsForUser;
       `
     },
     {
@@ -55,7 +69,18 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+
+      List ucjsForRole = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
+      List userIdsForRole = new ArrayList();
+
+      for ( int i = 0; i < ucjsForRole.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForRole.get(i);
+
+        userIdsForRole.add(currentUCJ.getSourceId());
+      }
+
+      return userIdsForRole;
       `
     },
     {
@@ -74,20 +99,21 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
-      `
-    }
-  ],
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
-  listeners: [
-    {
-      name: 'purge',
-      code: function() {
-        for (let [key, value] of Object.entries(this.cache)) {
-          if ( value.date.getTime() >= Date.now() - this.ttl ) continue;
-          delete this.cache[key];
-        }
+      List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
+      List approverIdsForLevel = new ArrayList();
+
+      for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+
+        ApproverLevel approverLevel = (ApproverLevel) currentUCJ.getData();
+
+        if ( approverLevel.getApproverLevel() == level ) approverIdsForLevel.add(currentUCJ.getSourceId());
       }
+
+      return approverIdsForLevel;
+      `
     }
   ]
 });

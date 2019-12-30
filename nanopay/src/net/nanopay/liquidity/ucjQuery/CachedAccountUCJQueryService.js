@@ -28,11 +28,6 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'cache'
-    },
-    {
-      class: 'Int',
-      name: 'TTL',
-      value: 5000
     }
   ],
 
@@ -86,6 +81,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf AccountTemplate
       DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
       List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
@@ -180,18 +176,6 @@ foam.CLASS({
 
       return approversFilteredByAccountAndLevel;
       `,
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'purge',
-      code: function() {
-        for (let [key, value] of Object.entries(this.cache)) {
-          if ( value.date.getTime() >= Date.now() - this.ttl ) continue;
-          delete this.cache[key];
-        }
-      }
     }
   ]
 });
