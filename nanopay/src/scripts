@@ -1527,3 +1527,25 @@ p({
     print("done");
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "CreatePaymentCode",
+  "code": """
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import net.nanopay.payment.PaymentCode;
+    paymentCodeDAO = x.get("paymentCodeDAO");
+    businessDAO = x.get("localBusinessDAO");
+    businesses = businessDAO.select().getArray();
+    for ( int i = 0 ; i < businesses.size() ; i++ ) {
+      businessId = businesses.get(i).getId();
+      if ( paymentCodeDAO.find(foam.mlang.MLang.EQ(PaymentCode.OWNER, businessId)) == null ) {
+        paymentCode = new PaymentCode.Builder(x).setOwner(businessId).build();
+        paymentCodeDAO.put(paymentCode);
+      }
+    }
+  """
+})

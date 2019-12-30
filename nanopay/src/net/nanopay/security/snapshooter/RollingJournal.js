@@ -686,16 +686,6 @@ try {
     {
       name: 'put',
       documentation: 'Overriding regular put to a journal.',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          type: 'foam.core.FObject',
-          name: 'obj'
-        }
-      ],
       javaCode: `
         /\* Busy wait when the journals are being rolled. */\
         while ( daoLock_ ) {
@@ -706,66 +696,17 @@ try {
           }
         }
 
-        getDelegate().put(x, obj);
+        FObject result = getDelegate().put(x, prefix, dao, obj);
         incrementRecord(false);
 
         if ( isJournalImpure() )
           rollJournal();
-      `
-    },
-    {
-      name: 'put_',
-      documentation: 'Overriding put with an update to a journal.',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          type: 'foam.core.FObject',
-          name: 'old'
-        },
-        {
-          type: 'foam.core.FObject',
-          name: 'nu'
-        }
-      ],
-      javaCode: `
-        /\* Busy wait when the journals are being rolled. */\
-        while ( daoLock_ ) {
-          try {
-            Thread.sleep(10);
-          } catch ( InterruptedException e ){
-            getLogger().error("RollingJournal :: put_ wait interrupted. " + e);
-          }
-        }
-
-        getDelegate().put_(x, old, nu);
-
-        if ( old != null) { // if this is an update- it's dirty put
-          if ( ! SafetyUtil.isEmpty(((FileJournal) getDelegate()).getOutputter().stringifyDelta(old, nu)) )
-            incrementRecord(true);
-        } else { // else it is a new put- it's clean
-          incrementRecord(false);
-        }
-
-        if ( isJournalImpure() )
-          rollJournal();
+        return result;
       `
     },
     {
       name: 'remove',
       documentation: 'Overriding remove from the journal.',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          type: 'foam.core.FObject',
-          name: 'obj'
-        }
-      ],
       javaCode: `
         /\* Busy wait when the journals are being rolled. */\
         while ( daoLock_ ) {
@@ -776,11 +717,13 @@ try {
           }
         }
 
-        getDelegate().remove(x, obj);
+        FObject result = getDelegate().remove(x, prefix, dao, obj);
         incrementRecord(true); // Removes are always dirty
 
         if ( isJournalImpure() )
           rollJournal();
+
+        return result;
       `
     },
     {
