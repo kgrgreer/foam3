@@ -311,6 +311,7 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
    'net.nanopay.liquidity.crunch.ApproverLevel',
    'net.nanopay.liquidity.crunch.LiquidCapability',
+   'net.nanopay.liquidity.crunch.LiquidCapabilityAuthService',
    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
    'net.nanopay.liquidity.crunch.AccountTemplate',
