@@ -1450,3 +1450,102 @@ p({
     print("Done");
   """
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"create notification settings for existing users",
+  "description":"Creates notification settings for existing users",
+  "code":"""
+    import foam.nanos.auth.User;
+    import net.nanopay.model.Business;
+    import foam.dao.DAO;
+    import foam.nanos.notification.NotificationSetting;
+    import foam.nanos.notification.EmailSetting;
+    import foam.dao.ArraySink;
+    import static foam.mlang.MLang.*;
+    import foam.mlang.predicate.Predicate;
+    import foam.mlang.sink.Count;
+    
+    user = (User) x.get("user");
+    userDAO = (DAO) x.get("bareUserDAO");
+    agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+    users = userDAO.select(new ArraySink()).getArray();
+    
+    for ( User user : users ) {
+      notificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());
+      emailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());
+      
+      if (notificationSetting.getValue() <= 0) {
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setOwner(user.getId());
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification Setting created for user: " + user.getId());
+      }
+      
+      if ( ! ( user instanceof Business ) ) {
+        if (emailSetting.getValue() <= 0) {
+          emailsetting = new EmailSetting();
+          emailsetting.setOwner(user.getId());
+          notificationSettingDAO.put(emailsetting);
+          print("Email Setting created for user: " + user.getId());
+        }
+      }
+    }
+    
+    junctions = agentJunctionDAO.select(new ArraySink()).getArray();
+    for ( junction : junctions ) {
+      junctionId = new foam.nanos.auth.UserUserJunctionId();
+      junctionId.setSourceId(junction.getSourceId());
+      junctionId.setTargetId(junction.getTargetId());
+      
+      notificationSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        NOT(INSTANCE_OF(EmailSetting.class)),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+      
+      emailSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        INSTANCE_OF(EmailSetting.class),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+            
+      if ( notificationSettings <= 0 ){
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+      
+      if ( emailSettings <= 0 ) {
+        emailsetting = new EmailSetting();
+        emailsetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(emailsetting);
+        print("Email setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+    }
+    
+    print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "CreatePaymentCode",
+  "code": """
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import net.nanopay.payment.PaymentCode;
+    paymentCodeDAO = x.get("paymentCodeDAO");
+    businessDAO = x.get("localBusinessDAO");
+    businesses = businessDAO.select().getArray();
+    for ( int i = 0 ; i < businesses.size() ; i++ ) {
+      businessId = businesses.get(i).getId();
+      if ( paymentCodeDAO.find(foam.mlang.MLang.EQ(PaymentCode.OWNER, businessId)) == null ) {
+        paymentCode = new PaymentCode.Builder(x).setOwner(businessId).build();
+        paymentCodeDAO.put(paymentCode);
+      }
+    }
+  """
+})

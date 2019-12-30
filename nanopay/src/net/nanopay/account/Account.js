@@ -9,9 +9,10 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
+    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
   imports: [
@@ -21,6 +22,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -52,9 +54,8 @@ foam.CLASS({
       label: 'All',
       predicateFactory: function(e) {
         return e.AND(
-          e.EQ(net.nanopay.account.Account.DELETED, false),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
-          e.EQ(net.nanopay.account.Account.ENABLED, true)
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         );
       }
     },
@@ -64,9 +65,8 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.AND(
           e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
-          e.EQ(net.nanopay.account.Account.DELETED, false),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
-          e.EQ(net.nanopay.account.Account.ENABLED, true)
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         )
       }
     },
@@ -76,9 +76,8 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.AND(
           e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
-          e.EQ(net.nanopay.account.Account.DELETED, false),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
-          e.EQ(net.nanopay.account.Account.ENABLED, true)
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         )
       }
     },
@@ -88,9 +87,8 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.AND(
           foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-          e.EQ(net.nanopay.account.Account.DELETED, false),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
-          e.EQ(net.nanopay.account.Account.ENABLED, true)
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         )
       }
     },
@@ -386,6 +384,13 @@ foam.CLASS({
         }));
       }
     },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
+    }
   ],
 
   methods: [
@@ -425,10 +430,10 @@ foam.CLASS({
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
-          //((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
+          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
           return balance.getBalance();
         } else {
-          //((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
+          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
       `
@@ -461,6 +466,66 @@ foam.CLASS({
           logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
+      `
+    },
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        Long key = getId();
+        return (String) key.toString();
+      `
+    },
+    {
+      name: 'getOutgoingAccountCreate',
+      type: 'Long',
+      args: [
+        {
+          type: 'X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getParent();
+      `
+    },
+    {
+      name: 'getOutgoingAccountRead',
+      type: 'Long',
+      args: [
+        {
+          type: 'X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountUpdate',
+      type: 'Long',
+      args: [
+        {
+          type: 'X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountDelete',
+      type: 'Long',
+      args: [
+        {
+          type: 'X',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
       `
     }
   ]

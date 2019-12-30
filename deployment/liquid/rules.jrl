@@ -11,10 +11,10 @@ p({"class":"foam.nanos.ruler.Rule","id":"Modify Cico Status","enabled":true})   
 p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":true})                 // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Prune Cico Approval Cleanup","enabled":false})                    // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Account Liquification","enabled":true})                           // Liquidity Settings
-p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashIn","enabled":true})                                   // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashOut","enabled":true})                                  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashIn","enabled":false})                                  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashOut","enabled":false})                                 // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"observeStatus","enabled":true})                                   // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"Quote Transaction Based on Status","enabled":true})               // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Quote Transaction Based on Status","enabled":false})              // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Ablii Completed Transaction Notification","enabled":false})       // Ablii Transaction
 p({"class":"foam.nanos.ruler.Rule","id":"Ablii FX Completed Transaction Notification","enabled":false})    // Ablii Transaction
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Cash In Transaction Notification","enabled":true})       // Tx Processing
@@ -91,8 +91,6 @@ p({
   "lastModifiedBy":8006,
   "enabled": false
 })
-
-
 
 // Generic business rule example
 p({

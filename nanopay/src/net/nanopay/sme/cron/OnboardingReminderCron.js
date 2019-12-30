@@ -26,6 +26,15 @@ foam.CLASS({
 
   documentation: 'Send onboarding reminder email to businesses created over 24 hours ago without yet completing their onboarding or setting up their bank account',
 
+  properties: [
+    {
+      class: 'Int',
+      name: 'threshold',
+      value: 1440,
+      documentation: 'Interval threshold in minutes for cronjob.'
+    }
+  ],
+
   methods: [
     {
       name: 'execute',
@@ -41,14 +50,14 @@ foam.CLASS({
       DAO                  businessDAO    = (DAO) x.get("businessDAO");
 
       // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
-      Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+      Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
       Date                 endInterval    = null;
       Long                 disruptionDiff = 0L;
       Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago")).getLastRun();
 
       // Check if there was no service disruption - if so, add/sub diff from endInterval
       disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
-      endInterval    = new Date(startInterval.getTime() - (1000 * 60 * 60 * 24) + disruptionDiff );
+      endInterval    = new Date(startInterval.getTime() - (1000 * 60 * this.getThreshold()) + disruptionDiff );
 
       List<Business> businessCreatedOverOneDay = ( (ArraySink) businessDAO.where(
         AND(

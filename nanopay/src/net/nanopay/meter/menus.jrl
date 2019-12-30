@@ -27,22 +27,23 @@ p({
   "parent":"operation"
 })
 p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "operation.bus_limits",
-  "label": "Business Limits",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "ruleDAO",
-      "predicate": {
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.txlimitrules",
+  "label":"Transaction Limits",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{ 
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ruleDAO",
+      "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.tx.ruler.BusinessLimit"
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
       },
-      "of": "net.nanopay.tx.ruler.BusinessLimit"
+      "defaultColumns":["id","enabled","applyLimitTo","send","limit","period"],
+      "of":"net.nanopay.liquidity.tx.TxLimitRule"
     }
   },
-  "order": 2100,
+  "order":2100,
   "parent": "operation"
 })
 p({

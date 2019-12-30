@@ -4,10 +4,13 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
+  implements: [
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+  ],
+
   documentation: 'Business rule base class.',
 
   javaImports: [
-    'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.*',
     'foam.mlang.*',
     'foam.mlang.expr.*',
@@ -60,9 +63,7 @@ foam.CLASS({
     {
       name: 'priority',
       hidden: true,
-      javaGetter: `
-        return 10;
-      `
+      value: 10,
     },
     {
       name: 'ruleGroup',
@@ -134,6 +135,34 @@ foam.CLASS({
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
       visibility: 'RO',
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
+    },
+  ],
+
+  methods: [
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        String id = (String) getId();
+        return id;
+      `
+    },
+    {
+      name: 'toSummary',
+      documentation: `When using a reference to the roleDAO, the labels associated
+        to it will show a chosen property rather than the first alphabetical string
+        property. In this case, we are using the name.
+      `,
+      code: function(x) {
+        return this.id;
+      }
     }
   ]
 });

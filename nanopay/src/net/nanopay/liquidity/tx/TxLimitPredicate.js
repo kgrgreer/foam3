@@ -10,9 +10,10 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'net.nanopay.account.Account',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.Account',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',
   ],
   properties: [
@@ -63,6 +64,13 @@ foam.CLASS({
         User user = account.findOwner((X) obj);
         if (this.getEntityType() == TxLimitEntityType.USER) {
           return user.getId() == this.getId();
+        }
+
+        // Check business
+        if (this.getEntityType() == TxLimitEntityType.BUSINESS &&
+            user instanceof Business) {
+          Business business = (Business) user;
+          return business.getId() == this.getId();
         }
 
         // otherwise this is an unknown entity type

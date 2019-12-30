@@ -45,7 +45,6 @@ foam.CLASS({
       ],
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
-
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
@@ -103,11 +102,15 @@ foam.CLASS({
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);
