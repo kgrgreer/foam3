@@ -117,12 +117,15 @@ p({
   "operation": 2,
   "after":true,
   "predicate": {
-    {
-      "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-      "propName":"deleted",
-      "propValue":true,
-      "isNew":false
-    }
+    "class":"foam.mlang.predicate.True",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"deleted",
+        "propValue":true,
+        "isNew":false
+      }
+    ]
   },
   "action": {
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
