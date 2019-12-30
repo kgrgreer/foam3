@@ -111,6 +111,8 @@ foam.CLASS({
         DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
         Group                group          = business.findGroup(x);
         String               url            = group.getUrl().replaceAll("/$", "");
+        // AppConfig appConfig = group.getAppConfig(x);
+        // String url = appConfig.getUrl().replaceAll("/$", "");
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
