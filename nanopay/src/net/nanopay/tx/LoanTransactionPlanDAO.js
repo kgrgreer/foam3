@@ -58,6 +58,7 @@ foam.CLASS({
     if ( txn instanceof InterestTransaction ){
       txn.setIsQuoted(true);
       txn.setStatus(TransactionStatus.COMPLETED);
+      txn = createTransfers(x,txn.getSourceAccount(),txn.getDestinationAccount(),txn);
       quote.setPlan(txn);
       return quote;
     }
@@ -82,6 +83,7 @@ foam.CLASS({
         ((Logger) getX().get("logger")).error("Total Loan Account not found");
         throw new RuntimeException("Total Loan Account not found");
       }
+      txn = createTransfers(x,theLoanAccount.getId(),globalLoanAccount.getId(),txn);
       withdrawLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( theLoanAccount.getId() )
         .setDestinationAccount( globalLoanAccount.getId() )
@@ -105,6 +107,7 @@ foam.CLASS({
         ((Logger) getX().get("logger")).error("Total Loan Account not found");
         throw new RuntimeException("Total Loan Account not found");
       }
+      txn = createTransfers(x,globalLoanAccount.getId(),theLoanAccount.getId(),txn);
       depositLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( globalLoanAccount.getId() )
         .setDestinationAccount( theLoanAccount.getId() )
@@ -121,8 +124,14 @@ foam.CLASS({
     //if ( ! ( plan.getDestinationAmount() == 0 ) && ! ( depositLineItem == null ) ) depositLineItem.setAmount( plan.getDestinationAmount() );
 
     //while(plan.getNext()!=null) plan = plan.getNext();
-    if ( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
-    if ( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
+    if ( withdrawLineItem != null ) {
+      plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
+      plan = createTransfers(x,withdrawLineItem.getSourceAccount(),withdrawLineItem.getDestinationAccount(),plan);
+    }
+    if ( depositLineItem != null ) {
+      plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
+      plan = createTransfers(x,depositLineItem.getSourceAccount(),depositLineItem.getDestinationAccount(),plan);
+    }
     return quote;
     `
     },
@@ -134,16 +143,28 @@ foam.CLASS({
           type: 'Context'
         },
         {
+          name: 'source',
+          type: 'Long'
+        },
+        {
+          name: 'destination',
+          type: 'Long'
+        },
+        {
           name: 'txn',
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.Transfer[]',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         List all = new ArrayList();
-        all.add(new Transfer.Builder(x).setAccount(txn.getSourceAccount()).setAmount(-txn.getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(txn.getDestinationAccount()).setAmount(txn.getTotal()).build());
-        return (Transfer[]) all.toArray(new Transfer[0]);
+        all.add(new Transfer.Builder(x).setAccount(source).setAmount(-txn.getAmount()).build());
+        all.add(new Transfer.Builder(x).setAccount(destination).setAmount(txn.getAmount()).build());
+        for (Transfer i : txn.getTransfers()){
+          all.add(i);
+        }
+        txn.setTransfers((Transfer[]) all.toArray(new Transfer[0]));
+        return txn;
       `
     } 
   ]
