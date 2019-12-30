@@ -19,8 +19,9 @@ foam.CLASS({
       },
       {
         name: 'approverLevel',
-        type: 'Integer',
-        value: 1
+        class: 'FObjectProperty',
+        of: 'net.nanopay.liquidity.crunch.ApproverLevel',
+        javaType: 'net.nanopay.liquidity.crunch.ApproverLevel',
       }
     ],
   });

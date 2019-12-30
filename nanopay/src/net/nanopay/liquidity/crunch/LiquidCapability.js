@@ -15,19 +15,6 @@ foam.CLASS({
       class: 'String',
       updateMode: 'RO'
     }, 
-    {
-      name: 'wasDirectlyAssigned',
-      class: 'Boolean'
-    },
-    {
-      name: 'of',
-      javaFactory: ` return net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo(); `,
-      hidden: true,
-      documentation: `
-      Class of the information stored in data field of UserCapabilityJunctions, if there is any.
-      In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
-      `
-    },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
     {
@@ -87,6 +74,15 @@ foam.CLASS({
     { class: 'Boolean', name: 'canApproveTransaction' },
     // { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, 
     // { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, // UserCapabilityJunctions are now global roles ONLY
+    {
+      name: 'of',
+      javaFactory: ` return net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo(); `,
+      hidden: true,
+      documentation: `
+      Class of the information stored in data field of UserCapabilityJunctions, if there is any.
+      In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
+      `
+    },
   ],
 
   methods: [
@@ -147,6 +143,16 @@ foam.CLASS({
     { class: 'Boolean', name: 'canApproveCapability' },
     { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, // global role vs. account role maker/approver may be implied by whether there
     { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, //
+    {
+      name: 'of',
+      javaFactory: ` return net.nanopay.liquidity.crunch.ApproverLevel.getOwnClassInfo(); `,
+      hidden: true,
+      documentation: `
+      Class of the information stored in data field of UserCapabilityJunctions, if there is any.
+      In this case, it is an Integer representing approver level, or 0 if the capability does not grant 
+      an approver role.
+      `
+    },
   ],
 
   methods: [
@@ -162,5 +168,4 @@ foam.CLASS({
     },
   ]
 });
-
 
