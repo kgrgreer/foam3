@@ -1,7 +1,7 @@
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localTransactionQuotePlanDAO",
-  "lazy":false,
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localTransactionQuotePlanDAO",
+  "lazy": false,
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x)
@@ -78,20 +78,21 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"transactionQuotePlanDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
+  "class": "foam.nanos.boot.NSpec",
+  "name": "transactionQuotePlanDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
     return x.get("localTransactionQuotePlanDAO");
-    """,
-  "client":"{\"of\":\"net.nanopay.tx.TransactionQuote\"}"
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.TransactionQuote\"}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localTransactionDAO",
-  "lazy":false,
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localTransactionDAO",
+  "lazy": false,
   "serviceScript":
   """
     import net.nanopay.tx.model.Transaction;
@@ -161,11 +162,10 @@ p({
 })
 
 p({
-  "class":
-  "foam.nanos.boot.NSpec", 
-  "name":"transactionDAO",                   
-  "lazy":false,  
-  "serve":true,  
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "transactionDAO",                   
+  "lazy": false,  
+  "serve": true,  
   "serviceScript":
   """
     return  new net.nanopay.tx.AuthenticatedTransactionDAO(x,
