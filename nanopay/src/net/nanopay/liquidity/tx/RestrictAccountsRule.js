@@ -49,6 +49,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'includeSourceChildAccounts',
+      section: 'basicInfo'
+    },
+    {
       class: 'Reference',
       name: 'destinationAccount',
       section: 'basicInfo',
@@ -64,6 +69,11 @@ foam.CLASS({
           account.name ? self.add(account.name) : self.add(account.id);
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'includeDestinationChildAccounts',
+      section: 'basicInfo'
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
@@ -136,8 +146,19 @@ foam.CLASS({
       hidden: true,
       javaGetter: `
         return foam.mlang.MLang.AND(
-          (new BusinessRuleTransactionPredicate.Builder(getX())).setIsSourcePredicate(true).setPredicate(this.getSourcePredicate()).build(), 
-          (new BusinessRuleTransactionPredicate.Builder(getX())).setIsSourcePredicate(false).setPredicate(this.getDestinationPredicate()).build());
+          (new BusinessRuleTransactionPredicate.Builder(getX()))
+            .setIsSourcePredicate(true)
+            .setIncludeChildAccounts(this.getIncludeSourceChildAccounts())
+            .setParentId(this.getSourceAccount())
+            .setPredicate(this.getSourcePredicate())
+            .build(),
+          (new BusinessRuleTransactionPredicate.Builder(getX()))
+            .setIsSourcePredicate(false)
+            .setIncludeChildAccounts(this.getIncludeDestinationChildAccounts())
+            .setParentId(this.getDestinationAccount())
+            .setPredicate(this.getDestinationPredicate())
+            .build()
+        );
       `
     },
     {
