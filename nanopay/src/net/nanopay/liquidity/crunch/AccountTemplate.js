@@ -120,7 +120,7 @@ foam.CLASS({
         var parentId;
         while ( childAccount ) {
           parentId = childAccount.parent;
-          if ( map.has(parentId) && map.parentId.isCascading ) return true;
+          if ( map.has(parentId) && map[parentId].isCascading ) return true;
           childAccount = await this.localAccountDAO.find(parentId);
         }
         return false;
@@ -144,6 +144,53 @@ foam.CLASS({
         }
 
         return false;
+      `
+    },
+    {
+      name: 'hasAccountByApproverLevel',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'childAccountId', class: 'Long' },
+        { name: 'level', javaType: 'Integer' }
+      ],
+      javaType: 'Boolean',
+      documentation: `
+      Check if a given account with approver level is in the map or implied by ay an account in the map through
+      cascading.
+      `,
+      code: async function hasAccountByApproverLevel(x, childAccountId, level) {
+        var map = this.accounts;
+        if ( map == null || map.size == 0 ) return false;
+        if ( map.has(parentId) && map[childAccountId].approverLevel.approverLevel === level ) return true;
+        
+        var childAccount = await this.localAccountDAO.find(childAccountId);
+        var parentId;
+        while ( childAccount ) {
+          parentId = childAccount.parent;
+          if ( map.has(parentId) && map[parentId].isCascading && (map[parentId].approverLevel.approverLevel === level) ) return true;
+          childAccount = await this.localAccountDAO.find(parentId);
+        }
+        return false;
+      },
+      javaCode: `
+      Map<Long, AccountData> map = getAccounts();
+    
+      if ( map == null && map.size() == 0 ) return false;
+      if ( map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel().getApproverLevel() == level ) return true;
+
+      DAO accountDAO = (DAO) x.get("accountDAO");
+
+      Account parentAccount = ((Account) accountDAO.find(childAccountId)).findParent(x);
+
+      AccountData temp;
+
+      while ( parentAccount != null ) {
+        temp = map.get(parentAccount.getId());
+        if ( temp == null ) parentAccount = (Account) parentAccount.findParent(x);
+        return temp.getIsCascading() && (temp.getApproverLevel().getApproverLevel() == level);
+      }
+
+      return false;
       `
     }
   ]

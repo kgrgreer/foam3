@@ -15,7 +15,13 @@ foam.CLASS({
   javaImports: [
     'java.util.ArrayList',
     'java.util.List',
-    'foam.core.FObject'
+    'foam.core.FObject',
+    'foam.dao.DAO',
+    'foam.mlang.MLang',
+    'foam.dao.ArraySink',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'net.nanopay.liquidity.crunch.AccountTemplate',
+
   ],
 
   properties: [
@@ -47,7 +53,21 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+
+      List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId)).select(new ArraySink())).getArray();
+      List rolesFilteredByAccount = new ArrayList();
+
+      for ( int i = 0; i < ucjsNotFilteredByAccount.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
+
+        AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
+
+        if ( accountId == 0 ) rolesFilteredByAccount.add(currentUCJ.getTargetId());
+        else if ( accountTemplate.hasAccount(getX(), accountId) ) rolesFilteredByAccount.add(currentUCJ.getTargetId());
+      }
+
+      return rolesFilteredByAccount;
       `,
     },
     {
@@ -66,7 +86,21 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+
+      List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
+      List usersFilteredByAccount = new ArrayList();
+
+      for ( int i = 0; i < ucjsNotFilteredByAccount.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
+
+        AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
+
+        if ( accountId == 0 ) usersFilteredByAccount.add(currentUCJ.getSourceId());
+        else if ( accountTemplate.hasAccount(getX(), accountId) ) usersFilteredByAccount.add(currentUCJ.getSourceId());
+      }
+
+      return usersFilteredByAccount;
       `,
     },
     {
@@ -85,7 +119,29 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      // TODO: Should probably rework this to cascade and find all accounts
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+      List allUCJs;
+      List accounts = new ArrayList();
+
+      if ( roleId == null ){
+        allUCJs = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId)).select(new ArraySink())).getArray();
+      } else {
+        allUCJs = ((ArraySink) ucjDAO.where(MLang.AND(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId),MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId))).select(new ArraySink())).getArray();
+      }
+
+      for ( int i = 0; i < allUCJs.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) allUCJs.get(i);
+
+        AccountTemplate currentAccountTemplate = (AccountTemplate) currentUCJ.getData();
+        Object[] accountArray = currentAccountTemplate.getAccounts().keySet().toArray();
+
+        for ( int j = 0; j < accountArray.length; j++ ){
+          if ( ! accounts.contains(accountArray[j]) ) accounts.add(accountArray[j]);
+        }
+      }
+
+      return accounts;
       `,
     },
     {
@@ -108,7 +164,21 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new ArrayList<>();
+      DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+
+      List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
+      List approversFilteredByAccountAndLevel = new ArrayList();
+
+      for ( int i = 0; i < ucjsNotFilteredByAccount.size(); i++ ){
+        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
+
+        AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
+
+        if ( accountId == 0 && level == 0 ) approversFilteredByAccountAndLevel.add(currentUCJ.getSourceId());
+        else if ( accountTemplate.hasAccountByApproverLevel(getX(), accountId, level) ) approversFilteredByAccountAndLevel.add(currentUCJ.getSourceId());
+      }
+
+      return approversFilteredByAccountAndLevel;
       `,
     }
   ],
