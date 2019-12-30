@@ -54,18 +54,16 @@ public class AccountHierarchyService
     // Check if parentId exists in map, if it doesn't fetch children and add them to map
     if ( ! map.containsKey(parentIdString) ) {
       Account parentAccount = (Account) accountDAO.find(parentId);
-      List<Account> childrenList = new ArrayList<Account>();
+      List<Account> children = new ArrayList<Account>();
       List<Long> childIdList = new ArrayList<Long>();
-      ArraySink childrenSink = (ArraySink) parentAccount.getChildren(x).select(new ArraySink());
 
-      childrenList = childrenSink.getArray();
+      children = getAllChildren(x, parentAccount);
 
-      // Add parentId to childIdList as the rule still needs to include restricting the parent account
-      childIdList.add(parentAccount.getId());
-
-      for ( int i = 0; i < childrenList.size(); i++ ) {
-        long childId = childrenList.get(i).getId();
-        childIdList.add(childId);
+      if ( children.size() > 0 ) {
+        for ( int i = 0; i < children.size(); i++ ) {
+          long childId = children.get(i).getId();
+          childIdList.add(childId);
+        }
       }
 
       HashSet<Long> childIdSet = new HashSet<>(childIdList);
@@ -73,5 +71,25 @@ public class AccountHierarchyService
     }
 
     return map.get(parentIdString);
+  }
+
+  @Override
+  public List<Account> getAllChildren(X x, Account account) {
+    List<Account> allChildren = new ArrayList<Account>();
+    List<Account> allChildrenList = new ArrayList<Account>();
+    ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
+    allChildrenList = allChildrenSink.getArray();
+    allChildren.add(account);
+
+    if ( allChildrenList.size() > 0 ) {
+      for ( int i = 0; i < allChildrenList.size(); i++ ) {
+        Account acc = (Account) allChildrenList.get(i);
+        List<Account> childChildren = new ArrayList<Account>();
+        childChildren = getAllChildren(x, acc);
+        allChildren.addAll(childChildren);
+      }
+    }
+
+    return allChildren;
   }
 }

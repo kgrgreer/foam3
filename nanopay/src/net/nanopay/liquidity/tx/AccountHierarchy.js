@@ -15,6 +15,20 @@ foam.INTERFACE({
           type: 'Long'
         }
       ]
+    },
+    {
+      name: 'getAllChildren',
+      type: 'java.util.List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'account',
+          type: 'net.nanopay.account.Account'
+        }
+      ]
     }
   ]
 });
