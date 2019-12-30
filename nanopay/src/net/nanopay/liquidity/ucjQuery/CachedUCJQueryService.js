@@ -11,6 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'java.util.ArrayList',
+    'java.util.List',
     'foam.core.FObject'
   ],
 
@@ -29,7 +30,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getRoles',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -39,12 +40,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new FObject[1];
+        return new ArrayList<>();
       `
     },
     {
       name: 'getUsers',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -54,12 +55,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new FObject[1];
+        return new ArrayList<>();
       `
     },
     {
       name: 'getApproversByLevel',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -73,7 +74,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return new FObject[1];
+        return new ArrayList<>();
       `
     }
   ],
