@@ -16,6 +16,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.fx.afex.AFEXBeneficiary',
+      targetDAOKey: 'afexBeneficiaryDAO',
       name: 'BeneficiaryId',
     }
   ]

@@ -8,11 +8,10 @@ package net.nanopay.bank;
 
 import foam.core.X;
 import foam.core.FObject;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.dao.Sink;
+import foam.dao.*;
+
 import static foam.mlang.MLang.EQ;
+
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 
@@ -30,35 +29,34 @@ import java.util.List;
  * is created requesting it be verified.
  */
 public class BankAccountInstitutionDAO
-  extends ProxyDAO
-{
+  extends ProxyDAO {
   public BankAccountInstitutionDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }
 
   public FObject put_(X x, FObject obj) {
-    if ( ! ( obj instanceof BankAccount ) ) {
+    if (!(obj instanceof BankAccount)) {
       return super.put_(x, obj);
     }
 
     BankAccount bankAccount = (BankAccount) obj;
     Institution institution = null;
     Branch branch = bankAccount.findBranch(x);
-    if ( branch != null ) {
+    if (branch != null) {
       institution = branch.findInstitution(x);
     } else {
       institution = bankAccount.findInstitution(x);
     }
-    if ( institution == null && ! foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+    if (institution == null && !foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber())) {
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       List institutions = ((ArraySink) institutionDAO
-                           .where(
-                                  EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber())
-                                  )
-                           .select(new ArraySink())).getArray();
+        .where(
+          EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber())
+        )
+        .select(new ArraySink())).getArray();
 
-      if ( institutions.size() == 0 ) {
+      if (institutions.size() == 0) {
         institution = new Institution();
         institution.setName(bankAccount.getInstitutionNumber());
         institution.setInstitutionNumber(bankAccount.getInstitutionNumber());
@@ -69,8 +67,8 @@ public class BankAccountInstitutionDAO
       bankAccount.setInstitution(institution.getId());
       bankAccount = (BankAccount) getDelegate().put_(x, bankAccount);
 
-      if ( institutions.size() == 0 ) {
-        String message = "Institution verification required on institution: "+institution.getId()+"\n Created from BankAccount: "+bankAccount.getId();
+      if (institutions.size() == 0) {
+        String message = "Institution verification required on institution: " + institution.getId() + "\n Created from BankAccount: " + bankAccount.getId();
         Notification notification = new Notification.Builder(x)
           .setTemplate("NOC")
           .setBody(message)
@@ -78,8 +76,8 @@ public class BankAccountInstitutionDAO
         new Transfer.Builder(x).build();
         ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
-     } else if ( institutions.size() > 1 ) {
-        String message = "Multiple Institutions found for institutionNumber: "+bankAccount.getInstitution()+". Using "+institution.getId()+" on BankAccount: "+bankAccount.getId();
+      } else if (institutions.size() > 1) {
+        String message = "Multiple Institutions found for institutionNumber: " + bankAccount.getInstitution() + ". Using " + institution.getId() + " on BankAccount: " + bankAccount.getId();
         Notification notification = new Notification.Builder(x)
           .setTemplate("NOC")
           .setBody(message)
@@ -92,5 +90,29 @@ public class BankAccountInstitutionDAO
     } else {
       return getDelegate().put_(x, obj);
     }
+  }
+
+
+  @Override
+  public FObject find_(X x, Object obj) {
+
+    FObject fObject = this.getDelegate().find_(x, obj);
+
+    if ( fObject == null ) {
+      return fObject;
+    }
+    fObject = fObject.fclone();
+
+    if (fObject instanceof CABankAccount) {
+      CABankAccount caBankAccount = (CABankAccount) fObject;
+      Branch branch =  caBankAccount.findBranch(x);
+      if ( branch != null ) {
+        Institution institution = branch.findInstitution(x);
+        if (institution != null)
+          caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
+        return caBankAccount;
+      }
+    }
+    return fObject;
   }
 }

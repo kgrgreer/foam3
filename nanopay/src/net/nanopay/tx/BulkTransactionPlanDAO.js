@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
-    A decorator in the localTransactionQuotePlanDAO that supports 
+    A decorator in the localTransactionQuotePlanDAO that supports
      the one to many transactions and one to one transactions.
   `,
 
@@ -18,7 +18,12 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.liquidity.LiquiditySettings',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -30,6 +35,8 @@ foam.CLASS({
         // Check whether it is bulkTransaction
         if ( parentQuote.getRequestTransaction() instanceof BulkTransaction) {
           BulkTransaction bulkTxn = (BulkTransaction) parentQuote.getRequestTransaction();
+          
+          PADType bulkTxnPADType = PADTypeLineItem.getPADTypeFrom(x, bulkTxn);
 
           DAO userDAO = (DAO) x.get("localUserDAO");
           DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
@@ -50,11 +57,21 @@ foam.CLASS({
           // payee then quote a single transaction, which is a one to one transaction.
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
-              bulkTxn.setSourceAccount(sourceAccount.getId());
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
+
+              // SourceAccount and DestinationAccount are required
+              bulkTxn.setSourceAccount(sourceAccount.getId());
               bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+
               parentQuote.setRequestTransaction(bulkTxn);
-              return getDelegate().put_(x, parentQuote);
+              parentQuote = (TransactionQuote) getDelegate().put_(x, parentQuote);
+              
+              // Update the child of the bulk transaction
+              bulkTxn.addNext(parentQuote.getPlan());
+              bulkTxn.setIsQuoted(true);
+
+              parentQuote.setPlan(bulkTxn);
+              return parentQuote;
             } else {
               throw new RuntimeException("BulkTransaction missing child transactions or a payee.");
             }
@@ -68,7 +85,7 @@ foam.CLASS({
           long sum = 0;
           Transaction[] childTransactions = bulkTxn.getNext();
           CompositeTransaction ct = new CompositeTransaction();
-          // Set the composite transaction as a quoted transaction so that 
+          // Set the composite transaction as a quoted transaction so that
           // it won't be quoted in the DigitalTransactionPlanDAO decorator.
           // In order to set the composite transaction as a quoted one, it requires
           // to have both source account and destination account setup.
@@ -81,13 +98,29 @@ foam.CLASS({
             sum += childTransaction.getAmount();
 
             TransactionQuote childQuote = new TransactionQuote();
+            childQuote.setParent(parentQuote);
 
             // Set the source of each child transaction to its parent destination digital account
             childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
-            // Set the destination of each child transaction to payee's default digital account
             User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
+            // Get the default digital account
+            DigitalAccount digitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
+
+            LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
+            Boolean explicitCO = bulkTxn.getExplicitCO();
+
+            // Check liquidity settings of the digital account associated to the digital transaction
+            if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
+              // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
+              explicitCO = false;
+            }
+
+            // Set the destination of each child transaction to payee's default digital account
+            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO).getId());
+
+            // set the pad type for each child transaction
+            if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(childTransaction, bulkTxnPADType.getId()); }
 
             // Quote each child transaction
             childQuote.setRequestTransaction(childTransaction);
@@ -115,6 +148,7 @@ foam.CLASS({
             cashInTransaction.setSourceAccount(payerDefaultBankAccount.getId());
             cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
             cashInTransaction.setAmount(bulkTxn.getAmount());
+            if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(cashInTransaction, bulkTxnPADType.getId()); }
             TransactionQuote cashInTransactionQuote = new TransactionQuote();
             cashInTransactionQuote.setRequestTransaction(cashInTransaction);
             cashInTransactionQuote = (TransactionQuote) planDAO.put(cashInTransactionQuote);
@@ -173,6 +207,47 @@ foam.CLASS({
           return DigitalAccount.findDefault(x, user, currency);
         }
       `
-    }
+    },
+    // {
+    //   name: 'setPADType',
+    //   args: [
+    //     {
+    //       name: 'transaction',
+    //       type: 'Transaction'
+    //     },
+    //     {
+    //       name: 'padType',
+    //       class: 'Int'
+    //     },
+    //   ],
+    //   javaCode: `
+    //     // only set the pad type if it's not provided by client
+    //     if ( getPADType(transaction) == 0 ) {
+    //       PADTypeLineItem lineItem = new PADTypeLineItem();
+    //       lineItem.setPadType(padType);
+    //       transaction.addLineItems(new TransactionLineItem[] { lineItem }, null);
+    //     }
+    //   `
+    // },
+    // {
+    //   name: 'getPADType',
+    //   javaType: 'int',
+    //   args: [
+    //     {
+    //       name: 'transaction',
+    //       type: 'Transaction'
+    //     }
+    //   ],
+    //   javaCode:`
+    //     PADTypeLineItem padTypeLineItem = null;
+    //     for (TransactionLineItem lineItem : transaction.getLineItems()) {
+    //       if ( lineItem instanceof PADTypeLineItem ) {
+    //         padTypeLineItem = (PADTypeLineItem) lineItem;
+    //       }
+    //     }
+    //
+    //     return padTypeLineItem == null ? 0 : padTypeLineItem.getPadType();
+    //   `
+    // }
   ]
 });

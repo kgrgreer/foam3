@@ -1,10 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
+  label: 'US Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
     'foam.util.SafetyUtil',
+    'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
   ],
 
@@ -26,15 +28,58 @@ foam.CLASS({
   properties: [
     {
       name: 'country',
-      value: 'US'
+      value: 'US',
+      createMode: 'HIDDEN'
     },
     {
       name: 'flagImage',
-      value: 'images/flags/us.png'
+      label: '',
+      value: 'images/flags/us.png',
+      createMode: 'HIDDEN'
+    },
+    {
+      name: 'denomination',
+      value: 'USD'
+    },
+    {
+      name: 'desc',
+    },
+    { // REVIEW: remove
+      class: 'String',
+      name: 'institutionNumber',
+      hidden: true
+    },
+    {
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/USA-Check.png',
+      section: 'accountDetails',
+      visibility: 'RO',
+      transient: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image'
+        };
+      }
+    },
+    {
+      // REVIEW - remove - currently called by
+      // AscendentFXReportsWebAgent
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'voidCheckImage',
+      documentation: 'void check image for this bank account',
+      view: {
+        class: 'foam.nanos.dig.DigFileUploadView',
+        data: this.voidCheckImage$,
+        acceptFormat: 'image/png'
+      },
+      hidden: true
     },
     {
       name: 'branchId',
-      label: 'Routing No.',
+      label: 'ACH Routing Number',
+      section: 'accountDetails',
       visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
@@ -42,6 +87,7 @@ foam.CLASS({
         maxLength: 9,
         onKey: true
       },
+      gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
@@ -59,6 +105,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
+      label: 'ACH Account Number',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
@@ -67,38 +114,66 @@ foam.CLASS({
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 6 and 17 digits long.';
         }
-      }
+      },
+      gridColumns: 6
     },
-    {
-      name: 'branch',
-      //visibility: 'HIDDEN'
-      label: 'Routing No.',
-    },
-    {
-      name: 'institution',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'institutionNumber',
-      visibility: 'HIDDEN',
-      value: 'US0000000'
-    },
-    {
-      name: 'denomination',
-      value: 'USD'
-    },
-    {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'voidCheckImage',
-      documentation: 'void check image for this bank account'
-    },
+    // {
+    //   name: 'branch',
+    //   //visibility: 'HIDDEN'
+    //   label: 'Routing No.',
+    // },
+    // {
+    //   name: 'institution',
+    //   visibility: 'HIDDEN'
+    // },
+    // {
+    //   name: 'institutionNumber',
+    //   visibility: 'HIDDEN',
+    //   value: 'US0000000'
+    // },
     {
       //REVIEW: Set by Plaid, not read
       class: 'String',
       name: 'wireRouting',
-      documentation: 'The ACH wire routing number for the account, if available.'
+      documentation: 'The ACH wire routing number for the account, if available.',
+      section: 'accountDetails',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of BankAccounts.
+      `,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
+                  .start('span').add(` ${result.branchId} |`).end();
+              }
+            });
+          }))
+        .end()
+
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+              }
+          }))
+        .end();
+      }
     }
   ],
+  
   methods: [
     {
       name: 'validate',
@@ -140,6 +215,18 @@ foam.CLASS({
       javaCode: `
         return "";
       `
-   },
+    },
+    {
+      name: 'getRoutingCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        return getBranchId();
+      `
+    },
  ]
 });

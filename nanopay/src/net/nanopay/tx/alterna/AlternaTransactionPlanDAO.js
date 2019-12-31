@@ -36,7 +36,9 @@ foam.CLASS({
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.payment.PaymentProvider',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
+    'net.nanopay.payment.PADType',
+    'net.nanopay.payment.PADTypeLineItem'
   ],
 
   properties: [
@@ -83,6 +85,9 @@ foam.CLASS({
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
       } else if ( sourceAccount instanceof DigitalAccount &&
@@ -99,6 +104,9 @@ foam.CLASS({
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
       }

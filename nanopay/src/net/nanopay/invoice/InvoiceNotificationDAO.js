@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'java.text.SimpleDateFormat',
     'java.util.*',
     'net.nanopay.invoice.model.BillingInvoice',
@@ -47,6 +47,7 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
         User agent = (User) x.get("agent");
+        User user = (User) x.get("user");
 
         String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
 
@@ -54,53 +55,56 @@ foam.CLASS({
         // thus confirm invoice put first.
         invoice = (Invoice) super.put_(x, invoice);
         if ( invoice == null ) return invoice;
-    
+
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
 
+        boolean isPayerABusiness = (invoice.findPayerId(x) instanceof Business);
+        boolean isPayeeABusiness = (invoice.findPayeeId(x) instanceof Business);
+
         String businessName = payeeUser instanceof Business ? payeeUser.getBusinessName() : payeeUser.getOrganization();
-    
+
         InvoiceStatus newInvoiceStatus = invoice.getStatus();
         InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
-    
+
         // Various condition checks
         boolean invoiceHasBeenMarkedComplete =
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
           &&
           invoice.getPaymentMethod() == PaymentStatus.CHEQUE; //PaymentStatus.CHEQUE is used when we 'Mark as Complete'
 
-        boolean isARecievable = invoice.getCreatedBy() == invoice.getPayeeId();
-        boolean invoiceIsBeingPaidButNotComplete = 
+        boolean isARecievable = user.getId() == invoice.getPayeeId();
+        boolean invoiceIsBeingPaidButNotComplete =
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PROCESSING )
-          && 
+          &&
           ( newInvoiceStatus == InvoiceStatus.PROCESSING )
-          && 
+          &&
           invoice.getPaymentDate() != null
           &&
           invoice.isPropertySet("paymentId");
-        boolean invoiceIsBeingPaidAndCompleted = 
+        boolean invoiceIsBeingPaidAndCompleted =
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
           &&
             newInvoiceStatus == InvoiceStatus.PAID
-          && 
+          &&
           invoice.getPaymentDate() != null
           &&
           invoice.getPaymentMethod() != PaymentStatus.CHEQUE; //PaymentStatus.CHEQUE is used when we 'Mark as Complete'
-        boolean invoiceNeedsApproval = 
+        boolean invoiceNeedsApproval =
             ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PENDING_APPROVAL )
           &&
             newInvoiceStatus == InvoiceStatus.PENDING_APPROVAL;
-        boolean invoiceIsARecievable = 
-          ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.UNPAID ) 
+        boolean invoiceIsARecievable =
+          ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.UNPAID )
           &&
             newInvoiceStatus == InvoiceStatus.UNPAID
           &&
           isARecievable;
-        boolean invoiceIsPartOfFeesScheduledInvoice = 
+        boolean invoiceIsPartOfFeesScheduledInvoice =
           oldInvoiceStatus == null
-          && 
+          &&
           newInvoiceStatus == InvoiceStatus.SCHEDULED;
-    
+
         // Performing Actions based on whats been set to true.
         if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete || invoiceIsPartOfFeesScheduledInvoice) {
           String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete", "scheduledEmail" };
@@ -110,17 +114,17 @@ foam.CLASS({
           TokenService externalInvoiceToken = (TokenService) x.get("externalInvoiceToken");
 
           // FIELD LIST FOR:
-          // populateArgsForEmail(args(Map), invoice, name, fromName, sendTo, dueDate(bool), currencyDAO)
-          // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
+          // populateArgsForEmail(args(Map), invoice, fromName, dueDate(bool), currencyDAO, agentName, invoiceType)
+          // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), externalInvoiceToken)
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
+              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getCreated(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getDueDate(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
               User tempApprover = null;
@@ -129,24 +133,24 @@ foam.CLASS({
               DAO userDAO = (DAO) x.get("userDAO");
               for ( UserUserJunction approver : approvers ) {
                 if ( args != null ) args.clear();
-                tempApprover = (User) userDAO.find(approver.getTargetId());
+                tempApprover = (User) userDAO.find(approver.getPartnerId());
                 if ( tempApprover == null ) continue;
-                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO, agentName, null);
-                args.put("paymentTo", currentUser.label());
-                sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
+                args = populateArgsForEmail(args, invoice, agent.getFirstName(), invoice.getDueDate(), currencyDAO, agentName, null);
+                args.put("paymentTo", payeeUser.label());
+                sendEmailFunction(x, false, emailTemplates[2], invoice.getId(), tempApprover, args, externalInvoiceToken);
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
+              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, businessName, "payable");
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+              args = populateArgsForEmail(args, invoice, agent.getFirstName(), invoice.getPaymentDate(), currencyDAO, agentName, "payable");
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName, null);
-              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
           } catch (Exception e) {
             e.printStackTrace();
@@ -184,10 +188,6 @@ foam.CLASS({
           javaType: 'java.util.HashMap<String, Object>',
         },
         {
-          name: 'sendTo',
-          class: 'String'
-        },
-        {
           name: 'externalInvoiceToken',
           type: 'TokenService'
         }
@@ -200,12 +200,19 @@ foam.CLASS({
         } else {
           Group group = (Group) userBeingSentEmail.findGroup(x);
           AppConfig appConfig = group.getAppConfig(x);
-    
           args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          EmailMessage message = new EmailMessage.Builder(x)
-            .setTo((new String[] { sendTo }))
+          args.put("name", User.FIRST_NAME);
+          args.put("sendTo", User.EMAIL);
+
+          Notification notification = new Notification.Builder(x)
+            .setBody("Invoice Notification.")
+            .setNotificationType(emailTemplateName + " email.")
+            .setEmailIsEnabled(true)
+            .setEmailArgs(args)
+            .setEmailName(emailTemplateName)
             .build();
-          EmailsUtility.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
+
+          userBeingSentEmail.doNotify(x, notification);
         }
       `
     },
@@ -223,15 +230,7 @@ foam.CLASS({
           type: 'Invoice'
         },
         {
-          name: 'name',
-          class: 'String'
-        },
-        {
           name: 'fromName',
-          class: 'String'
-        },
-        {
-          name: 'sendTo',
           class: 'String'
         },
         {
@@ -253,8 +252,6 @@ foam.CLASS({
       ],
       javaCode: `
         args = new HashMap<>();
-        args.put("sendTo", sendTo);
-        args.put("name", name);
         args.put("agentName", agentName);
         args.put("fromName", fromName);
         args.put("invoiceType", invoiceType);
@@ -264,10 +261,10 @@ foam.CLASS({
 
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
-    
+
         args.put("currency", invoice.getDestinationCurrency());
         args.put("amount", amount);
-    
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         args.put("date", date != null ? dateFormat.format(date) : "n/a");
 
@@ -298,7 +295,7 @@ foam.CLASS({
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
         }
-    
+
         // currently the only sme group that can not approve an invoice is employees
         return ((ArraySink) agentJunctionDAO
           .where(

@@ -388,7 +388,7 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+    export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
@@ -416,7 +416,10 @@ function setenv {
         mkdir -p "${JOURNAL_HOME}"
     fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
-        mkdir -p "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
+    elif [ ! -L "${DOCUMENT_HOME}" ]; then
+        rm -rf "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -446,7 +449,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
@@ -540,13 +543,22 @@ if [ $(date +%m) -eq 10 ] && [ $(date +%d) -gt 25 ]; then
   echo -e " |_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
   echo -e " (c) nanopay Corporation |_| @ @ @ @ @ @__/\033[0m"
   echo ""
-elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 3 ]; then
+elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 11 ]; then
   echo -e "\033[34;1m  _ __   __ _ _ __   \033[31;1m.-.\033[0m  _ __   __ _ _   _  \033[0m"
   echo -e "\033[34;1m | '_ \\ / _\` | '_ \\\\\033[31;1m.\\   /.\033[0m '_ \\ / _\` | | | | \033[0m"
   echo -e "\033[34;1m | | | | (_| | | |\033[31;1m:\033[0m  (O)  \033[31;1m:\033[0m|_) | (_| | |_| | \033[0m"
   echo -e "\033[34;1m |_| |_|\\__,_|_| |_\033[31;1m'/   \\'\033[0m .__/ \\__,_|\\__, | \033[0m"
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[0m|_|          |___/  \033[0m"
   echo ""
+elif [ $(date +%m) -eq 12 ]; then
+
+ echo -e "                         \033[32m#\033[0m"
+ echo -e "                        \033[32m###\033[0m"
+ echo -e "\033[38;5;46m _ __   __ _ _ __   ___\033[0m\033[32m##\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;46m_   __ _ _   _\033[0m"
+ echo -e "\033[38;5;34m| '_ \\ / _\` | '_ \\ / _\033[0m\033[32m#\033[0m\033[31;1;5mO\033[0m\033[32m##\033[0m\033[36;1;5mO\033[0m\033[32m##\033[0m\033[38;5;34m\\ / _\` | | | |\033[0m"
+ echo -e "\033[38;5;28m| | | | (_| | | | | (\033[0m\033[32m#\033[0m\033[36;1;5mO\033[0m\033[32m#\033[0m\033[38;5;94m| |\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;28m| (_| | |_| |\033[0m"
+ echo -e "\033[38;5;22m|_| |_|\\__,_|_| |_|\\\\\033[0m\033[32m##_#\033[0m\033[34;1;5mO\033[0m\033[32m#.#_\033[0m\033[31;1;5mO\033[0m\033[32m#\033[0m\033[38;5;22m\\__,_|\\__, |\033[0m"
+ echo -e "\033[33m(c) nanopay Corporation\033[0m \033[38;5;94m|_|\033[0m          \033[38;5;22m|___/\033[0m"
 else
   echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
   echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
@@ -559,6 +571,7 @@ fi
 ############################
 
 JOURNAL_CONFIG=default
+JOURNAL_SPECIFIED=0
 INSTANCE=
 HOST_NAME=`hostname -s`
 VERSION=
@@ -593,7 +606,7 @@ LIQUID_DEMO=0
 RUN_USER=
 INSTANCE_TYPE=standalone
 
-while getopts "bcC:dD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
+while getopts "bcC:dD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -604,11 +617,20 @@ while getopts "bcC:dD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
            ;;
+        e) warning "Skipping genJava task"
+           skipGenFlag="-Pfoamoptions.skipgenjava=true"
+           if [ "$GRADLE_FLAGS" == "" ]; then
+                GRADLE_FLAGS=$skipGenFlag
+           else
+                GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
+           fi
+           ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
-        J) JOURNAL_CONFIG=$OPTARG ;;
+        J) JOURNAL_CONFIG=$OPTARG
+           JOURNAL_SPECIFIED=1 ;;
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
@@ -627,6 +649,7 @@ while getopts "bcC:dD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
            ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
+           JOURNAL_SPECIFIED=1
 
            echo ""
            echo -e "\033[34;1m   (                       (     \033[0m"
@@ -671,8 +694,12 @@ while getopts "bcC:dD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
-    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
-    JOURNAL_CONFIG=test
+    if [ $JOURNAL_SPECIFIED -ne 1 ]; then
+        echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+        JOURNAL_CONFIG=test
+    else
+        echo "INFO :: Mode is TEST, but JOURNAL_CONFIG is ${JOURNAL_CONFIG}"
+    fi
 fi
 
 if [ ${CLEAN_BUILD} -eq 1 ]; then

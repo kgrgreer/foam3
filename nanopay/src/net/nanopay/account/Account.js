@@ -32,18 +32,19 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'name', 'id', 'denomination', 'type', 'isDefault'
+    'id',
+    'name',
+    'denomination',
+    'type',
+    'isDefault'
   ],
 
   tableColumns: [
     'id',
-    'deleted',
-    'name',
     'type',
-    'denomination',
+    'summary',
     'balance',
-    'homeBalance',
-    'isDefault'
+    'homeBalance'
   ],
 
   axioms: [
@@ -92,24 +93,61 @@ foam.CLASS({
   sections: [
     {
       name: 'accountType',
+      permissionRequired: true,
       isAvailable: function(id) { return !! id; },
       order: 1
     },
     {
       name: 'accountDetails',
+      title: '',
       order: 2
     },
     {
+      // liquid
+      name: 'parentSection',
+      permissionRequired: true,
+      order: 3
+    },
+    {
+      name: 'balanceDetails',
+      permissionRequired: true,
+      order: 4
+    },
+    {
+      name: 'administration',
+      permissionRequired: true,
+      order: 5
+    },
+    {
       name: '_defaultSection',
-      permissionRequired: true
-    }
+      title: 'Relationships',
+      permissionRequired: true,
+      order: 6
+     }
   ],
 
   properties: [
+    // TODO: access/scope: public, private
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'The type of the account.',
+      transient: true,
+      getter: function() {
+        return this.cls_.name;
+      },
+      javaGetter: `
+        return getClass().getSimpleName();
+      `,
+      tableWidth: 135,
+      section: 'accountType',
+      visibility: 'RO'
+    },
     {
       class: 'Long',
       name: 'id',
       documentation: 'The ID for the account.',
+      section: 'administration',
       visibility: 'RO',
       tableWidth: 50
     },
@@ -119,13 +157,15 @@ foam.CLASS({
       documentation: `Determines whether an account is disabled. Accounts
         on this platform are disabled rather than deleted.
       `,
-      value: true
+      value: true,
+      section: 'administration',
     },
     {
       class: 'Boolean',
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
+      section: 'administration',
       writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
@@ -133,6 +173,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      label: 'Account name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {
@@ -156,13 +197,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'transferIn',
       documentation: 'Determines whether an account can receive transfers.',
-      value: true
+      value: true,
+      section: 'administration'
     },
     {
       class: 'Boolean',
       name: 'transferOut',
       documentation: 'Determines whether an account can make transfers out.',
-      value: true
+      value: true,
+      section: 'administration'
     },
     {
       class: 'Reference',
@@ -172,6 +215,7 @@ foam.CLASS({
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
+      writePermissionRequired: true,
       tableWidth: 127,
       section: 'accountDetails',
       order: 3
@@ -182,6 +226,7 @@ foam.CLASS({
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
       value: false,
+      section: 'administration',
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
@@ -195,28 +240,13 @@ foam.CLASS({
           .end();
       },
     },
-    // TODO: access/scope: public, private
-    {
-      class: 'String',
-      name: 'type',
-      documentation: 'The type of the account.',
-      transient: true,
-      getter: function() {
-        return this.cls_.name;
-      },
-      javaGetter: `
-        return getClass().getSimpleName();
-      `,
-      tableWidth: 135,
-      section: 'accountType',
-      visibility: 'RO'
-    },
     {
       class: 'UnitValue',
       unitPropName: 'denomination',
       name: 'balance',
       label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
+      section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
       javaToCSV: `
@@ -227,7 +257,23 @@ foam.CLASS({
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
-      tableWidth: 145
+      tableWidth: 145,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+
+        // React to homeDenomination because it's used in the currency formatter.
+        this.add(obj.homeDenomination$.map(function(_) {
+          return obj.findBalance(self.__subSubContext__).then(
+            function(balance) {
+              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+                function(curr) {
+                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  self.tooltip = displayBalance;
+                  return displayBalance;
+                })
+            })
+        }));
+      }
     },
     {
       class: 'UnitValue',
@@ -238,14 +284,37 @@ foam.CLASS({
         A numeric value representing the available funds in the 
         bank account converted to home denomination.
       `,
+      section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
-      tableWidth: 145
+      tableWidth: 145,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+
+        this.add(
+          obj.slot(homeDenomination => {
+            return Promise.all([
+              obj.denomination == homeDenomination ?
+                Promise.resolve(1) :
+                obj.fxService.getFXRate(obj.denomination, homeDenomination,
+                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
+              obj.findBalance(self.__subSubContext__),
+              self.__subSubContext__.currencyDAO.find(homeDenomination)
+            ]).then(arr => {
+              let [r, b, c] = arr;
+              var displayBalance = c.format(Math.floor((b || 0) * r));
+              self.tooltip = displayBalance;
+              return displayBalance;
+            })
+          })
+        );
+      }
     },
     {
       class: 'DateTime',
       name: 'created',
       documentation: 'The date and time of when the account was created in the system.',
+      section: 'administration',
       visibility: 'RO',
     },
     {
@@ -253,12 +322,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: 'The ID of the User who created the account.',
+      section: 'administration',
       visibility: 'RO',
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
+      section: 'administration',
       visibility: 'RO',
     },
     {
@@ -267,28 +338,39 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
+      section: 'administration',
       visibility: 'RO',
-    }
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      visibility: 'RO',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table views`,
+      tableWidth: 500,
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.slot(function(
+          name,
+          desc
+        ) {
+          let output = '';
+          if ( name ) {
+            output += name;
+            if ( desc ) {
+              output += ' - ';
+            }
+          }
+          if ( desc ) {
+            output += desc;
+          }
+          return output;
+        }));
+      }
+    },
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-
-      var self = this;
-
-      Promise.all([
-        this.denomination == this.homeDenomination ?
-          Promise.resolve(1) :
-          this.fxService.getFXRate(this.denomination, this.homeDenomination,
-            0, 1, 'BUY', null, this.user.id, 'nanopay').then(r => r.rate),
-        this.findBalance(this.__subContext__),
-        this.__subContext__.currencyDAO.find(this.homeDenomination)
-      ]).then(arr => {
-        let [r, b, c] = arr;
-        self.homeBalance = Math.floor((b || 0) * r);
-      });
-    },
     {
       name: 'toSummary',
       documentation: `
@@ -297,7 +379,13 @@ foam.CLASS({
         case, we are using the account name.
       `,
       code: function() {
-        return this.name;
+        var output = '(' + this.id + ') ';
+        if ( this.name ) {
+          output += this.name;
+        } else if ( this.desc ) {
+          output += this.desc;
+        }
+        return output;
       },
     },
     {

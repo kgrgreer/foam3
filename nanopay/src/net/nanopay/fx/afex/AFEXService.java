@@ -49,6 +49,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   public AFEXService(X x) {
     setX(x);
+    logger = (Logger) x.get("logger");
+    logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
+    omLogger = (OMLogger) x.get("OMLogger");
+
     AFEXCredentials credentials = getCredentials();
     apiKey = credentials.getApiKey();
     apiPassword = credentials.getApiPassword();
@@ -58,9 +62,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     jsonParser = new JSONParser();
     jsonParser.setX(x);
-    logger = (Logger) x.get("logger");
-    logger = new PrefixLogger(new Object[]{this.getClass().getSimpleName()}, logger);
-    omLogger = (OMLogger) x.get("OMLogger");
   }
 
   protected AFEXCredentials getCredentials() {
@@ -952,6 +953,109 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( response != null ) {
         response.close();
       }
+    }
+
+    return null;
+  }
+
+  @Override
+  public String directDebitEnrollment(DirectDebitEnrollmentRequest directDebitRequest) {
+    try {
+      HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/DirectDebitEnroll");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/json");
+      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      String requestJson = jsonOutputter.stringify(directDebitRequest);
+      StringEntity params =new StringEntity(requestJson);
+
+      httpPost.setEntity(params);
+
+      logger.debug("{ apiKey: " + apiKey + ", name: directDebitEnrollment " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
+
+      omLogger.log("AFEX directDebitEnrollment starting");
+
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX directDebitEnrollment complete");
+
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String errorMsg = "AFEX directDebitEnrollment  failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
+
+          logger.error(errorMsg);
+          logger.debug("{ apiKey: " + apiKey + ", name: directDebitEnrollment " + "response : " + response);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logger.debug("{ apiKey: " + apiKey + ", name: directDebitEnrollment " + "response : " + response);
+        return response;
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX directDebitEnrollment timeout");
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public String directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitUnenrollmentRequest) {
+    try {
+      HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/DirectDebitUnequicnroll");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/json");
+      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      String requestJson = jsonOutputter.stringify(directDebitUnenrollmentRequest);
+      StringEntity params =new StringEntity(requestJson);
+
+      httpPost.setEntity(params);
+
+      logger.debug("{ apiKey: " + apiKey + ", name: directDebitUnenrollmentRequest " + "Request : " + EntityUtils.toString(httpPost.getEntity()));
+
+      omLogger.log("AFEX directDebitUnenrollmentRequest starting");
+
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX directDebitUnenrollmentRequest complete");
+
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String errorMsg = "AFEX directDebitEnrollment  failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
+
+          logger.error(errorMsg);
+          logger.debug("{ apiKey: " + apiKey + ", name: directDebitUnenrollmentRequest " + "response : " + response);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logger.debug("{ apiKey: " + apiKey + ", name: directDebitUnenrollmentRequest " + "response : " + response);
+        return response;
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException e) {
+      omLogger.log("AFEX directDebitUnenrollmentRequest timeout");
+      logger.error(e);
     }
 
     return null;
