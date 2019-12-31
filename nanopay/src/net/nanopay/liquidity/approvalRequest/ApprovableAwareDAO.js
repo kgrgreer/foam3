@@ -45,7 +45,7 @@ foam.CLASS({
       name: 'sendSingleRequest',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'req', type: 'RoleApprovalRequest' },
         { name: 'userId', type: 'long' }
       ],
@@ -60,7 +60,7 @@ foam.CLASS({
       name: 'fullSend',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'request', type: 'RoleApprovalRequest' },
         { name: 'obj', type: 'FObject' }
       ],
