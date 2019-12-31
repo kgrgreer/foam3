@@ -8,13 +8,13 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
-    'java.util.ArrayList',
     'java.util.Set',
-    'java.util.HashSet',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
+    'java.util.HashSet',
     'foam.dao.ArraySink',
+    'java.util.ArrayList',
     'foam.util.SafetyUtil',
     'foam.nanos.auth.User',
     'foam.core.Detachable',
@@ -28,12 +28,12 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
     'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
-    'net.nanopay.liquidity.ucjQuery.UCJQueryService'
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
 
   properties: [
@@ -73,7 +73,7 @@ foam.CLASS({
       ],
       javaCode:`
       DAO requestingDAO;
-      DAO capabilitiesDAO = (DAO) x.get("globalLiquidCapabilityDAO");
+      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
 
       if ( request.getDaoKey().equals("approvableDAO") ){
         DAO approvableDAO = (DAO) x.get("approvableDAO");
@@ -90,7 +90,7 @@ foam.CLASS({
       List<GlobalLiquidCapability> capabilitiesWithAbility;
 
       switch(modelName){
-        case "User":
+        case "Account":
           // there should be only one of each base role but we include this incase the id changes or duplicate names are used
           capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
             MLang.AND(
@@ -98,38 +98,6 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
           break;
-
-        case "LiquiditySettings":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTING, true)
-            )
-          ).select(new ArraySink())).getArray();
-          break;
-        case "Rule":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
-            )
-          ).select(new ArraySink())).getArray();
-          break;
-        case "LiquidCapability":
-          // see above
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
-            )
-          ).select(new ArraySink())).getArray();
-          break;
-        case "UserCapabilityJunction":
-          // see above
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USERCAPABILITYJUNCTION, true)
-              )
-          ).select(new ArraySink())).getArray();
-          break;
-
         default:
           capabilitiesWithAbility = null;
       }

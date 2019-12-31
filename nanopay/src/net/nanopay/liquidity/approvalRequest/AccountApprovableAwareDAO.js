@@ -8,10 +8,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
+    'java.util.Set',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
+    'java.util.HashSet',
     'foam.dao.ArraySink',
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil',
     'foam.nanos.auth.User',
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
@@ -24,9 +28,12 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
-    'foam.nanos.crunch.UserCapabilityJunction',
+    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
+    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
@@ -56,8 +63,6 @@ foam.CLASS({
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
-
-      // TODO: Basically in AccountApprovableAwareDAO cast RoleApprovalRequest
       // AccountRoleApprovalRequest and set the outgoing account
       AccountRoleApprovalRequest accountRequest = (AccountRoleApprovalRequest) request.fclone();
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
@@ -72,63 +77,61 @@ foam.CLASS({
         throw new RuntimeException("Using an invalid operation!");
       }
 
-      /**
-        TODO: REIMPLEMENT WITH CRUNCH
-        DAO requestingDAO;
+      DAO requestingDAO;
+      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
 
-        if ( liquidRequest.getDaoKey().equals("approvableDAO") ){
-          DAO approvableDAO = (DAO) x.get("approvableDAO");
+      if ( request.getDaoKey().equals("approvableDAO") ){
+        DAO approvableDAO = (DAO) x.get("approvableDAO");
 
-          Approvable approvable = (Approvable) approvableDAO.find(liquidRequest.getObjId());
+        Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
 
-          requestingDAO = (DAO) x.get(approvable.getDaoKey());
-        } else {
-          requestingDAO = (DAO) x.get(liquidRequest.getDaoKey());
+        requestingDAO = (DAO) x.get(approvable.getDaoKey());
+      } else {
+        requestingDAO = (DAO) x.get(request.getDaoKey());
+      }
+
+      String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
+
+      List<AccountBasedLiquidCapability> capabilitiesWithAbility;
+
+      switch(modelName){
+        case "Account":
+          // there should be only one of each base role but we include this incase the id changes or duplicate names are used
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
+            )
+          ).select(new ArraySink())).getArray();
+          break;
+        default:
+          capabilitiesWithAbility = null;
+      }
+
+      if ( capabilitiesWithAbility != null ){
+        // makers cannot approve their own requests even if they are an approver for the account
+        // however they will receive an approvalRequest which they can only view and not approve or reject
+        // so that they can keep track of the status of their requests
+        sendSingleRequest(x, request, request.getInitiatingUser());
+
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApprovers = new HashSet<>();
+
+        CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          AccountBasedLiquidCapability currentCapability = (AccountBasedLiquidCapability) capabilitiesWithAbility.get(i);
+          uniqueApprovers.addAll(ucjQueryService.getUsers(currentCapability.getId()));
         }
 
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        // Should be an array of Long
+        Object[] approversArray = uniqueApprovers.toArray();
 
-        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-        Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
-
-        Boolean isGlobalRole = true;
-        List<Role> baseRoles;
-        Role baseRole;
-        DAO approverDAO;
-
-        // TODO: REDO DAOS after configuring services and connecting with CRUNCH
-        switch(modelName){
-          case "Account":
-            approverDAO = outgoingAccount.getAccountApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          case "RoleAssignmentTemplate": // TODO: Reconfirm with RUBY
-            approverDAO = outgoingAccount.getRoleAssignmentApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          case "Transaction":
-            approverDAO = outgoingAccount.getTransactionApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          default:
-            approverDAO = null;
+        for ( int j = 0; j < approversArray.length; j++ ){
+          if ( ! SafetyUtil.equals(request.getInitiatingUser(), approversArray[j]) ){
+            sendSingleRequest(getX(), accountRequest, (Long) approversArray[j]);
+          }
         }
-        
-        if ( approverDAO != null ){
-          // makers cannot approve their own requests even if they are an approver for the account
-          // however they will receive an approvalRequest which they can only view and not approve or reject
-          // so that they can keep track of the status of their requests
-          sendSingleAccountRequest(x, accountRequest, request.getInitiatingUser());
-
-          // TODO: 
-          approverDAO.where(MLang.NEQ( UserCapabilityJunction.SOURCE_ID, request.getInitiatingUser() )).select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              sendSingleAccountRequest(x, accountRequest, ((UserCapabilityJunction) obj).getSourceId());
-            }
-          });
-        }
-       */
+      }
       `
     }
   ]
