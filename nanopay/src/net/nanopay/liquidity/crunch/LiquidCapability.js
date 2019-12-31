@@ -176,7 +176,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canMakerCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
     { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, //
+    { class: 'Boolean', name: 'canApproveUsercapabilityjunction' }, //
     {
       name: 'of',
       javaFactory: ` return net.nanopay.liquidity.crunch.ApproverLevel.getOwnClassInfo(); `,
