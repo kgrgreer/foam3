@@ -78,7 +78,6 @@ foam.CLASS({
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
           .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
             .add(this.slot(function(currency) {
-              debugger;
               return self.E()
                 .start(this.PieDAOChartView, {
                   // We only want to see data that has value.
@@ -92,7 +91,6 @@ foam.CLASS({
                         displayColors: false,
                         callbacks: {
                           label: function(tooltipItem, data) {
-                            debugger;
                             var dataset = data.datasets[tooltipItem.datasetIndex];
                             self.total = 0;
                             dataset.data.forEach(total => self.total += total);
