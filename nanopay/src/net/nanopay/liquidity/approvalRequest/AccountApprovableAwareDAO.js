@@ -28,10 +28,10 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
+    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
@@ -115,7 +115,7 @@ foam.CLASS({
         // using a set because we only care about unique approver ids
         Set<Long> uniqueApprovers = new HashSet<>();
 
-        CachedAccountUCJQueryService accountUCJQueryService = new CachedAccountUCJQueryService();
+        AccountUCJQueryService accountUCJQueryService = new CachedAccountUCJQueryService();
 
         for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
           AccountBasedLiquidCapability currentCapability = (AccountBasedLiquidCapability) capabilitiesWithAbility.get(i);
