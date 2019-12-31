@@ -15,7 +15,9 @@ foam.CLASS({
   javaImports: [
     'java.util.ArrayList',
     'java.util.List',
-    'foam.core.FObject',
+    'java.util.Map',
+    'java.util.HashMap',
+    'foam.core.FObject', 
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
@@ -27,7 +29,17 @@ foam.CLASS({
   properties: [
     {
       class: 'Map',
-      name: 'cache'
+      name: 'cache',
+      javaFactory: `
+        Map<String,Map> cache = new HashMap();
+
+        cache.put("getRolesCache", new HashMap<>());
+        cache.put("getUsersCache", new HashMap<>());
+        cache.put("getAccountsCache", new HashMap<>());
+        cache.put("getApproversByLevelCache", new HashMap<>());
+
+        return cache;
+      `
     }
   ],
 
@@ -48,6 +60,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
       DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
       List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId)).select(new ArraySink())).getArray();
@@ -81,6 +94,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
       // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf AccountTemplate
       DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
@@ -115,6 +129,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
       // TODO: Should probably rework this to cascade and find all accounts
       DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
       List allUCJs;
@@ -160,6 +175,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
       DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
       List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID,roleId)).select(new ArraySink())).getArray();
