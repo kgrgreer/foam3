@@ -96,7 +96,6 @@ foam.CLASS({
 
       switch(modelName){
         case "Account":
-          // there should be only one of each base role but we include this incase the id changes or duplicate names are used
           capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
             MLang.AND(
               MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
@@ -111,16 +110,16 @@ foam.CLASS({
         // makers cannot approve their own requests even if they are an approver for the account
         // however they will receive an approvalRequest which they can only view and not approve or reject
         // so that they can keep track of the status of their requests
-        sendSingleRequest(x, request, request.getInitiatingUser());
+        sendSingleRequest(x, accountRequest, request.getInitiatingUser());
 
         // using a set because we only care about unique approver ids
         Set<Long> uniqueApprovers = new HashSet<>();
 
-        CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+        CachedAccountUCJQueryService accountUCJQueryService = new CachedAccountUCJQueryService();
 
         for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
           AccountBasedLiquidCapability currentCapability = (AccountBasedLiquidCapability) capabilitiesWithAbility.get(i);
-          uniqueApprovers.addAll(ucjQueryService.getUsers(currentCapability.getId()));
+          uniqueApprovers.addAll(accountUCJQueryService.getApproversByLevel(currentCapability.getId(),accountRequest.getOutgoingAccount(),1));
         }
 
         // Should be an array of Long

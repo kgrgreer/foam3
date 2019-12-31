@@ -30,7 +30,7 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map cache = new HashMap<String,Map>();
+        Map<String,Map> cache = new HashMap<>();
 
         cache.put("getRolesCache", new HashMap<String,List>());
         cache.put("getUsersCache", new HashMap<String,List>());
@@ -177,7 +177,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      String cacheKey = roleId;
+      String cacheKey = 'r' + roleId + 'l' + level;
       String cache = "getApproversByLevelCache";
 
       Map<String, List> getApproversByLevelCache = (Map<String, List>) getCache().get(cache);

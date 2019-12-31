@@ -115,7 +115,7 @@ foam.CLASS({
 
         for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
           GlobalLiquidCapability currentCapability = (GlobalLiquidCapability) capabilitiesWithAbility.get(i);
-          uniqueApprovers.addAll(ucjQueryService.getUsers(currentCapability.getId()));
+          uniqueApprovers.addAll(ucjQueryService.getApproversByLevel(currentCapability.getId(),1));
         }
 
         // Should be an array of Long
