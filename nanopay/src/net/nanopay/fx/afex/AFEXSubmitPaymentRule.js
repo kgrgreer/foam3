@@ -35,7 +35,6 @@ foam.CLASS({
         public void execute(X x) {
 
           Logger logger = (Logger) x.get("logger");
-          System.out.println("Executing AFEXSubmitPaymentRule");
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }

@@ -14,7 +14,6 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      System.out.println("Evaluating AFEXCreateTradePredicate");
       return AND(
         EQ(DOT(NEW_OBJ, INSTANCE_OF(AFEXTransaction.class)), true),
         EQ(DOT(NEW_OBJ, AFEXTransaction.STATUS), TransactionStatus.PENDING_PARENT_COMPLETED),

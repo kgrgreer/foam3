@@ -29,23 +29,18 @@ foam.CLASS({
         public void execute(X x) {
 
           Logger logger = (Logger) getX().get("logger");
-          System.out.println("Executing AFEXCreateTradeRule");
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }
           
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
           AFEXServiceProvider afexService = (AFEXServiceProvider) getX().get("afexServiceProvider");
-          System.out.println("getAfexTradeResponseNumber is : " + transaction.getAfexTradeResponseNumber());
-          System.out.println("getStatus is : " + transaction.getStatus());
           if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED 
             && transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               int result = afexService.createTrade(transaction);
-              System.out.println("setAfexTradeResponseNumber is : " + result);
               transaction.setAfexTradeResponseNumber(result);
               // update transaction
-              System.out.println("getAfexTradeResponseNumber is : " + transaction.getAfexTradeResponseNumber());
               ((DAO) getX().get("localTransactionDAO")).put_(getX(), transaction);
             } catch (Throwable t) {
               logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
