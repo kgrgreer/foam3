@@ -11,6 +11,7 @@ NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
 RUN_USER=
+CLUSTER=
 
 export DEBUG=0
 
@@ -29,8 +30,9 @@ function usage {
     echo "  -Z <0/1>            : Daemonize."
 }
 
-while getopts "D:h:N:P:S:U:V:W:Z:" opt ; do
+while getopts "C:D:h:N:P:S:U:V:W:Z:" opt ; do
     case $opt in
+        C) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
@@ -56,6 +58,7 @@ JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
+JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
 
 # load instance specific deployment options
 if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then

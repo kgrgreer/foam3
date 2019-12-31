@@ -173,7 +173,7 @@ function clean {
             rm -rf *
             cd "$tmp"
         fi
-        
+
         gradle clean $GRADLE_FLAGS
     fi
 }
@@ -271,14 +271,14 @@ function status_nanos {
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
         OPT_ARGS=
-        
+
         OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
 
         if [ ! -z ${RUN_USER} ]; then
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -566,6 +566,7 @@ MODE=
 #MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
+CLUSTER=
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
@@ -592,10 +593,12 @@ LIQUID_DEMO=0
 RUN_USER=
 INSTANCE_TYPE=standalone
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
+while getopts "bcC:dD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
+           ;;
+        C) CLUSTER=$OPTARG
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
@@ -625,17 +628,17 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
 
-           echo ""                             
-           echo -e "\033[34;1m   (                       (     \033[0m"    
+           echo ""
+           echo -e "\033[34;1m   (                       (     \033[0m"
            echo -e "\033[34;1m   )\ (     (     (   (    )\ )  \033[0m"
            echo -e "\033[34;1m  ((_))\  ( )\   ))\  )\  (()/(  \033[0m"
            echo -e "\033[34;1m   \033[96;1m_\033[0m\033[34;1m ((_) )(( ) /((_)((_)  ((\033[96;1m_\033[0m\033[34;1m)) \033[0m\033[0m"
-           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m" 
-           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m" 
-           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m" 
+           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m"
+           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m"
+           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m"
            echo -e "\033[96;1m            |_|                  \033[0m"
            echo ""
-           echo "" 
+           echo ""
            echo -e "💧 Initializing Liquid Environment 💧"
            echo -e "\033[41;1m IMPORTANT: BE SURE TO SET ENABLED TO TRUE FOR BOTH: \033[0m"
            echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
