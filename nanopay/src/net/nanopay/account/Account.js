@@ -55,7 +55,13 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.AND(
           e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.OR(
+            e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+            e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+            e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+          )
         );
       }
     },
@@ -283,7 +289,7 @@ foam.CLASS({
             function(balance) {
               return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
                 function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  var displayBalance = curr ? curr.format(balance != null ? balance : 0) : 0;
                   self.tooltip = displayBalance;
                   return displayBalance;
                 })

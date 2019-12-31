@@ -102,13 +102,12 @@ foam.CLASS({
           parseExternal(getX(),getRow1());
 
         setTransaction(t);
-        checkTrusty(getX(), getTransaction());
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        checkTrusty(getX(), getTransaction()); // why are you checking the trustee twice?
+        checkTrusty(getX(), getTransaction());
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
