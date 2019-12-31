@@ -18,7 +18,10 @@ foam.CLASS({
       return AND(
         EQ(DOT(NEW_OBJ, INSTANCE_OF(AFEXTransaction.class)), true),
         EQ(DOT(NEW_OBJ, AFEXTransaction.STATUS), TransactionStatus.SENT),
-        EQ(DOT(NEW_OBJ, AFEXTransaction.REFERENCE_NUMBER), null)
+        OR(
+          EQ(DOT(NEW_OBJ, AFEXTransaction.REFERENCE_NUMBER), null),
+          EQ(DOT(NEW_OBJ, AFEXTransaction.REFERENCE_NUMBER), "")
+        )
       ).f(obj);
       `
     }

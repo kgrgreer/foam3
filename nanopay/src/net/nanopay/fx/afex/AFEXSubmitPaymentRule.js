@@ -43,7 +43,7 @@ foam.CLASS({
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          if (transaction.getStatus() == TransactionStatus.PENDING 
+          if (transaction.getStatus() == TransactionStatus.SENT 
             && SafetyUtil.isEmpty( transaction.getReferenceNumber() ) ) {
 
               try {
