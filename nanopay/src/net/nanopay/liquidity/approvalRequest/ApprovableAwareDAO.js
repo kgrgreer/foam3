@@ -8,10 +8,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Set',
+    'java.util.HashSet',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
     'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
     'foam.nanos.auth.User',
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
@@ -26,7 +30,10 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
+    'net.nanopay.liquidity.ucjQuery.UCJQueryService'
   ],
 
   properties: [
@@ -65,125 +72,93 @@ foam.CLASS({
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
-      /**
-        TODO: REIMPLEMENT WITH CRUNCH
-        DAO requestingDAO;
+      DAO requestingDAO;
+      DAO capabilitiesDAO = (DAO) x.get("globalLiquidCapabilityDAO");
 
-        if ( request.getDaoKey().equals("approvableDAO") ){
-          DAO approvableDAO = (DAO) x.get("approvableDAO");
+      if ( request.getDaoKey().equals("approvableDAO") ){
+        DAO approvableDAO = (DAO) x.get("approvableDAO");
 
-          Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
+        Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
 
-          requestingDAO = (DAO) x.get(approvable.getDaoKey());
-        } else {
-          requestingDAO = (DAO) x.get(request.getDaoKey());
+        requestingDAO = (DAO) x.get(approvable.getDaoKey());
+      } else {
+        requestingDAO = (DAO) x.get(request.getDaoKey());
+      }
+
+      String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
+
+      List<GlobalLiquidCapability> capabilitiesWithAbility;
+
+      switch(modelName){
+        case "User":
+          // there should be only one of each base role but we include this incase the id changes or duplicate names are used
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
+            )
+          ).select(new ArraySink())).getArray();
+          break;
+
+        case "LiquiditySettings":
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTING, true)
+            )
+          ).select(new ArraySink())).getArray();
+          break;
+        case "Rule":
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
+            )
+          ).select(new ArraySink())).getArray();
+          break;
+        case "LiquidCapability":
+          // see above
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
+            )
+          ).select(new ArraySink())).getArray();
+          break;
+        case "UserCapabilityJunction":
+          // see above
+          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+            MLang.AND(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USERCAPABILITYJUNCTION, true)
+              )
+          ).select(new ArraySink())).getArray();
+          break;
+
+        default:
+          capabilitiesWithAbility = null;
+      }
+
+      if ( capabilitiesWithAbility != null ){
+        // makers cannot approve their own requests even if they are an approver for the account
+        // however they will receive an approvalRequest which they can only view and not approve or reject
+        // so that they can keep track of the status of their requests
+        sendSingleRequest(x, request, request.getInitiatingUser());
+
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApprovers = new HashSet<>();
+
+        CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          GlobalLiquidCapability currentCapability = (GlobalLiquidCapability) capabilitiesWithAbility.get(i);
+          uniqueApprovers.addAll(ucjQueryService.getUsers(currentCapability.getId()));
         }
 
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        // Should be an array of Long
+        Object[] approversArray = uniqueApprovers.toArray();
 
-        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-        Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
-
-        Boolean isGlobalRole = true;
-        List<Role> baseRoles;
-        Role baseRole;
-        DAO approverDAO;
-
-        // TODO: REDO DAOS after configuring services and connecting with CRUNCH
-        switch(modelName){
-            case "User":
-              // there should be only one of each base role but we include this incase the id changes or duplicate names are used
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "userDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "LiquiditySettings":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "liquiditySettingsDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "Rule":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "ruleDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "RoleRequest":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "roleRequestDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            default:
-              approverDAO = null;
-          default:
-            approverDAO = null;
+        for ( int j = 0; j < approversArray.length; j++ ){
+          if ( ! SafetyUtil.equals(request.getInitiatingUser(), approversArray[j]) ){
+            sendSingleRequest(getX(), request, (Long) approversArray[j]);
+          }
         }
-        
-        if ( approverDAO != null ){
-          // makers cannot approve their own requests even if they are an approver for the account
-          // however they will receive an approvalRequest which they can only view and not approve or reject
-          // so that they can keep track of the status of their requests
-          sendSingleAccountRequest(x, accountRequest, request.getInitiatingUser());
-
-          // TODO: 
-          approverDAO.where(MLang.NEQ( UserCapabilityJunction.SOURCE_ID, request.getInitiatingUser() )).select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              sendSingleRequest(x, request, ((UserCapabilityJunction) obj).getSourceId());
-            }
-          });
-        }
-       */
+      }
       `
     },
     {
