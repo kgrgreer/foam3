@@ -7,7 +7,6 @@ p({
     dao = new foam.dao.NullDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .build();
-    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionQuotePlanDAO");
     dao = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
       .setDelegate(dao)
       .build();
@@ -52,6 +51,7 @@ p({
       .setDelegate(dao)
       .build();
     dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionQuotePlanDAO");
     dao = new net.nanopay.tx.RetailTransactionPlanDAO(x, dao);
     dao = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
       .setDelegate(dao)
@@ -461,4 +461,4 @@ p({
       .build();
   """
 })
->>>>>>> facec04b0dece79865829739f71b184a426b50c0
+
