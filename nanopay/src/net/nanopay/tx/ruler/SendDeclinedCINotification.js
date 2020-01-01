@@ -49,15 +49,16 @@ foam.CLASS({
 
               // CHECK IF ABLII-TRANSACTION FOUND
               long invoiceId = 0;
-              Business sender = null;
-              Business receiver = null;
-              if ( t == null || !(t instanceof net.nanopay.tx.AbliiTransaction) ) {
-                sender = (Business) tx.findSourceAccount(x).findOwner(x);
-                receiver = (Business) tx.findDestinationAccount(x).findOwner(x);
+              User sender = null;
+              User receiver = null;
+              if ( t == null ||
+                   ! ( t instanceof net.nanopay.tx.AbliiTransaction ) ) {
+                sender = (User) tx.findSourceAccount(x).findOwner(x);
+                receiver = (User) tx.findDestinationAccount(x).findOwner(x);
               } else {
                 invoiceId = t.getInvoiceId();
-                sender = (Business) t.findSourceAccount(x).findOwner(x);
-                receiver = (Business) t.findDestinationAccount(x).findOwner(x);
+                sender = (User) t.findSourceAccount(x).findOwner(x);
+                receiver = (User) t.findDestinationAccount(x).findOwner(x);
               }
 
               // DEPENDING ON ABOVE - send either 'pay-from-bank-account-reject' or 'cashin-reject' email
@@ -78,7 +79,10 @@ foam.CLASS({
                   args.put("invoiceNumber", invoice.getInvoiceNumber());
                 }
 
-                User signingOfficer = sender.findSigningOfficer(x);
+                User signingOfficer = null;
+                if ( sender instanceof Business ) {
+                  signingOfficer = ((Business)sender).findSigningOfficer(x);
+                }
 
                 args.put("amount", currency.format(t.getAmount()));
                 args.put("toName", (signingOfficer != null) ?
