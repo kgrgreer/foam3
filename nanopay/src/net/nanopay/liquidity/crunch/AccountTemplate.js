@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.account.Account',
     'java.util.Map'
@@ -126,21 +127,24 @@ foam.CLASS({
         return false;
       },
       javaCode: `
+        X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
         Map<Long, AccountData> map = getAccounts();
 
         if ( map == null && map.size() == 0 ) return false;
-        if ( map.containsKey(childAccountId) ) return true;
+        if ( map.containsKey(childAccountId) || map.containsKey(String.valueOf(childAccountId)) ) return true;
 
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(systemX);
 
-        Account parentAccount = ((Account) accountDAO.find(childAccountId)).findParent(x);
+        Account parentAccount = ((Account) accountDAO.find(childAccountId)).findParent(systemX);
 
         AccountData temp;
 
         while ( parentAccount != null ) {
-          temp = map.get(parentAccount.getId());
-          if ( temp == null ) parentAccount = (Account) parentAccount.findParent(x);
-          return temp.getIsCascading();
+          
+          temp = map.containsKey(parentAccount.getId()) ? map.get(parentAccount.getId()) : map.get(String.valueOf(parentAccount.getId()));
+          if ( temp != null ) return temp.getIsCascading();
+          parentAccount = (Account) parentAccount.findParent(systemX);
+          
         }
 
         return false;

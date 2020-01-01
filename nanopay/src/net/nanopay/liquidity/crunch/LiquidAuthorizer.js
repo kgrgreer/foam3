@@ -57,12 +57,13 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
 
+        AuthService authService = (AuthService) x.get("auth");
+
+        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
         String readPermission = createPermission("View", accountId);
         String approvePermission = createPermission("Approve", accountId);
         String makePermission = createPermission("Make", accountId);
-        AuthService authService = (AuthService) x.get("auth");
 
         if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
           throw new AuthorizationException();

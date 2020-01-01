@@ -16,6 +16,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.core.X',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -36,16 +37,21 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
+        
+        X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
 
         try {
-          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-          DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+          DAO capabilityDAO = ((DAO) x.get("liquidCapabilityDAO")).inX(systemX);
+          DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX);
 
-          LiquidCapability c;
+          Capability c;
           
-          List<UserCapabilityJunction> userCapabilityJunctions = ((ArraySink) user.getCapabilities(x).getJunctionDAO().select(new ArraySink())).getArray();
+          List<UserCapabilityJunction> userCapabilityJunctions = ((ArraySink) userCapabilityJunctionDAO
+            .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
+            .select(new ArraySink()))
+            .getArray();
           for ( UserCapabilityJunction ucj : userCapabilityJunctions ) {
-            c = (LiquidCapability) capabilityDAO.find(ucj.getTargetId());
+            c = (Capability) capabilityDAO.find(ucj.getTargetId());
             if ( c.implies(x, permission) ) return true;
           }
 
@@ -54,7 +60,7 @@ foam.CLASS({
           logger.error("check", permission, e);
         }
 
-        return getDelegate().checkUser(x, user, permission);
+        return false;
       `
     }
   ]
