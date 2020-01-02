@@ -89,7 +89,7 @@ foam.CLASS({
           .add('Select Account Template or Approver Level')
           .add(self.ACCOUNT_TEMPLATE)
           .add(self.APPROVER_LEVEL)
-          .add('Add Users To Be Assigned This Role Template')
+          .add('Add Users To Be Assigned This Capability')
           .add(self.ASSIGNED_USERS)
           .add(self.ASSIGN)
         .end();
