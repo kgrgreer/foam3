@@ -178,7 +178,7 @@ p({
   "priority":100,
   "ruleGroup":"AFEX",
   "daoKey":"localTransactionDAO",
-  "operation":1,
+  "operation":3,
   "after":true,
   "predicate":{
     "class":"net.nanopay.fx.afex.AFEXCreateTradePredicate",

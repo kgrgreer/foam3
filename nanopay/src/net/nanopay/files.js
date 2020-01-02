@@ -292,7 +292,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
-
+  
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
