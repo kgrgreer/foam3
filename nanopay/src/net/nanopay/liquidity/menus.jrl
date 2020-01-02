@@ -10,8 +10,21 @@ p({
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "userDAO",
-      "browseTitle": "Users"
+      "daoKey": "userUserDAO",
+      "browseTitle": "Users",
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
+      "predicate": {
+        "class": "foam.mlang.predicate.Eq",
+        "arg1": {
+          "class": "__Property__",
+          "forClass_": "foam.nanos.auth.User",
+          "name": "group"
+        },
+        "arg2": {
+          "class": "foam.mlang.Constant",
+          "value": "liquidBasic"
+        }
+      }
     }
   },
   "order": 400
