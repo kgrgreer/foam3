@@ -39,17 +39,20 @@ foam.CLASS({
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             if ( ! ( ucj.getData() instanceof AccountTemplate ) ) return;
 
-            Map<Long, AccountData> map = ((AccountTemplate) ucj.getData()).getAccounts();
-            Set<Long> accountIds = map.keySet();
-            // List<Long> accountIds = new ArrayList<Long>((template.getAccounts()).keySet());
+            Map<String, AccountData> map = ((AccountTemplate) ucj.getData()).getAccounts();
+            Set<String> accountIds = map.keySet();
 
-            for ( Long accountId : accountIds ) {
-              // map = addChildrenToTemplate(x, accountId, map);
+            for ( String accountId : accountIds ) {
+              map = addChildrenToTemplate(x, accountId, map);
             }
 
             AccountTemplate template = ((AccountTemplate) ucj.getData());
             template.setAccounts(map);
+
             ucj.setData(template);
+            DAO dao = (DAO) x.get("accountTemplateDAO");
+            template.setId(template.getId() + 1000);
+            dao.put(template);
           }
         }, "Add children to AccountTemplate on ucj create");
       `
@@ -58,17 +61,16 @@ foam.CLASS({
       name: 'addChildrenToTemplate',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'accountId', class: 'Long' },
-        { name: 'map', javaType: 'Map<Long, AccountData>' }
+        { name: 'accountId', class: 'String' },
+        { name: 'map', javaType: 'Map<String, AccountData>' }
       ],
-      javaType: 'Map<Long, AccountData>',
+      javaType: 'Map<String, AccountData>',
       javaCode: `
-        System.out.println("parent="+accountId);
-        AccountData data = map.get(String.valueOf(accountId));
+        AccountData data = map.get(accountId);
         if ( data == null ) throw new RuntimeException("Null AccountData provided in AccountTemplate map");
 
         DAO accountDAO = (DAO) x.get("accountDAO");
-        Account tempAccount = (Account) accountDAO.find(accountId);
+        Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
         List<Account> children = ((ArraySink) ((DAO) tempAccount.getChildren(x)).select(new ArraySink())).getArray();
 
         Set<Account> accountsSet = new HashSet<Account>(children); 
@@ -85,8 +87,7 @@ foam.CLASS({
         }
 
         for ( Account account : accountsSet ) {
-          if ( ! map.containsKey(String.valueOf(account.getId()))) //map.put(String.valueOf(account.getId()), data);
-            System.out.println(account.getId());
+          if ( ! map.containsKey(String.valueOf(account.getId()))) map.put(String.valueOf(account.getId()), data);
         }
         return map;
       `

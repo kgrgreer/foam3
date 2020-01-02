@@ -9,7 +9,7 @@ foam.CLASS({
   implements: [ 'foam.core.Validatable' ],
 
   imports: [
-    'localAccountDAO'
+    'accountDAO'
   ],
 
   javaImports: [
@@ -37,7 +37,7 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'Map',
-      javaType: 'java.util.Map<Long, AccountData>',
+      javaType: 'java.util.Map<String, AccountData>',
     }
   ],
 
@@ -76,7 +76,7 @@ foam.CLASS({
       code: async function isParentAccount(parent, child) {
         if ( parent === child ) return true;
 
-        childAccount = await this.localAccountDAO.find(child);
+        childAccount = await this.accountDAO.find(child);
         child = childAccount.parent;
         if ( child ) return isParentAccount(parent, child);
 
@@ -117,23 +117,23 @@ foam.CLASS({
         if ( map == null || map.size == 0 ) return false;
         if ( map.has(childAccountId) ) return true;
         
-        var childAccount = await this.localAccountDAO.find(childAccountId);
+        var childAccount = await this.accountDAO.find(childAccountId);
         var parentId;
         while ( childAccount ) {
           parentId = childAccount.parent;
-          if ( map.has(parentId) && map[parentId].isCascading ) return true;
-          childAccount = await this.localAccountDAO.find(parentId);
+          if ( map.has(parentId) && map.parentId.isCascading ) return true;
+          childAccount = await this.accountDAO.find(parentId);
         }
         return false;
       },
       javaCode: `
         X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
-        Map<Long, AccountData> map = getAccounts();
+        Map<String, AccountData> map = getAccounts();
 
         if ( map == null && map.size() == 0 ) return false;
         if ( map.containsKey(childAccountId) || map.containsKey(String.valueOf(childAccountId)) ) return true;
 
-        DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(systemX);
+        DAO accountDAO = ((DAO) x.get("accountDAO")).inX(systemX);
 
         Account parentAccount = ((Account) accountDAO.find(childAccountId)).findParent(systemX);
 
@@ -141,7 +141,7 @@ foam.CLASS({
 
         while ( parentAccount != null ) {
           
-          temp = map.containsKey(parentAccount.getId()) ? map.get(parentAccount.getId()) : map.get(String.valueOf(parentAccount.getId()));
+          temp = map.get(String.valueOf(parentAccount.getId()));
           if ( temp != null ) return temp.getIsCascading();
           parentAccount = (Account) parentAccount.findParent(systemX);
           
@@ -177,7 +177,7 @@ foam.CLASS({
         return false;
       },
       javaCode: `
-      Map<Long, AccountData> map = getAccounts();
+      Map<String, AccountData> map = getAccounts();
     
       if ( map == null && map.size() == 0 ) return false;
       if ( map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel().getApproverLevel() == level ) return true;

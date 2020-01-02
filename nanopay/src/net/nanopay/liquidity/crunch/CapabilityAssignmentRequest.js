@@ -9,7 +9,10 @@ foam.CLASS({
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'userCapabilityJunctionDAO'
+    'userCapabilityJunctionDAO',
+    'capabilityDAO',
+    'userDAO',
+    'accountTemplateDAO'
   ],
 
   requires: [
@@ -18,19 +21,39 @@ foam.CLASS({
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    'net.nanopay.liquidity.crunch.AccountTemplate',
+    // 'net.nanopay.liquidity.crunch.AccountTemplate',
     'net.nanopay.liquidity.crunch.AccountData',
   ],
 
   properties: [  
     {
-      name: 'userIds',
+      name: 'assignedUsers',
       class: 'List',
-      required: true
+      of: 'foam.nanos.auth.User',
+      required: true,
+      factory: function () {
+        return [];
+      },
+      view: () => {
+        return {
+          class: 'foam.u2.view.ReferenceArrayView',
+          daoKey: 'userDAO'
+        };
+      }
     },
     {
       name: 'accountTemplate',
-      class: 'AccountTemplate',
+      view: function(_, x) {
+        return {  
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Account Template to use as data for this Capability assignment',
+              dao: x.accountTemplateDAO
+            }
+          ]
+        };
+      }
     },
     {
       name: 'approverLevel',
@@ -39,18 +62,44 @@ foam.CLASS({
     },
     {
       name: 'capability',
-      class: 'LiquidCapability',
-      required: true
+      required: true,
+      view: function(_, x) {
+        return {  
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Capability to be Assigned',
+              dao: x.capabilityDAO
+            }
+          ]
+        };
+      }
     }
   ],
 
   methods: [
+    function initE() {
+      this.SUPER();
+      var self = this;
+
+      this
+        .start('h1')
+          .add('Select Capability')
+          .add(self.CAPABILITY)
+          .add('Select Account Template or Approver Level')
+          .add(self.ACCOUNT_TEMPLATE)
+          .add(self.APPROVER_LEVEL)
+          .add('Add Users To Be Assigned This Role Template')
+          .add(self.ASSIGNED_USERS)
+          .add(self.ASSIGN)
+        .end();
+    },
     {
       name: 'assignUserAccountBasedCapability',
       code: async function assignUserAccountBasedCapability(userId, capabilityId, accountTemplate) {
         if ( accountTemplate == null ) return;
         
-        var ucj = await this.userCapabilityJunctionDAO.find_(this.__subContext__, 
+        var ucj = await this.userCapabilityJunctionDAO.find(
           this.AND(
             this.EQ(this.UserCapabilityJunction.SOURCE_ID, userId), 
             this.EQ(this.UserCapabilityJunction.TARGET_ID, capabilityId)
@@ -59,9 +108,10 @@ foam.CLASS({
         // if ucj is not null, add new accounttemplate to old template of ucj
         if ( ucj != null ) {
           var oldTemplate = ucj.data;
+          console.log(accountTemplate, accountTemplate.accounts);
           var newMap = accountTemplate.accounts;
 
-          var keySetIterator = this.newMap.keys();
+          var keySetIterator = newMap.keys();
           var newAccountToAdd = keySetIterator.next().value;
           while ( newAccountToAdd ) {
             oldTemplate.addAccount(newAccountToAdd, newMap.get(newAccountToAdd));
@@ -99,25 +149,34 @@ foam.CLASS({
   
   actions: [
     {
-      name: 'submit',
-      code: function submit() {
-        var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(this.capability);
-        if ( isAccountBasedCapability && ( ! accounts || account.length == 0 )) {
+      name: 'assign',
+      code: async function assign() {
+        var cap = await this.capabilityDAO.find(this.capability);
+        var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(cap);
+
+        if ( isAccountBasedCapability && ! this.accountTemplate ) {
           console.err("account must must be supplied to assign account-based capability to user");
           return;
         }
 
+        console.log(this.assignedUsers, this.accountTemplate, this.approverLevel, this.capability);
+
         if ( isAccountBasedCapability ) {
-          this.userIds.forEach((userId) => {
-            assignUserAccountBasedCapability(userId, this.capability.id, this.accountTemplate);
+          accountTemplate = await this.accountTemplateDAO.find(this.accountTemplate);
+          if ( ! accountTemplate ) {
+            console.err("accountTemplate not found");
+            return;
+          }
+          this.assignedUsers.forEach((user) => {
+            this.assignUserAccountBasedCapability(user, this.capability, accountTemplate);
           });
         } else {
-          this.userIds.forEach((userId) => {
-            assignUserGlobalCapability(userId, this.capability.id, this.approverLevel);
+          this.assignedUsers.forEach((user) => {
+            this.assignUserGlobalCapability(user, this.capability, this.approverLevel);
           });
         }
 
-        
+        console.log("done");
       }
     },
   ]
