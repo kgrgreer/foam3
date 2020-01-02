@@ -169,6 +169,12 @@ foam.CLASS({
   name: 'GlobalLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
 
+  javaImports: [
+    'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Arrays'
+  ],
+
   tableColumns: [
     'id',
     'canViewRule',
@@ -212,6 +218,17 @@ foam.CLASS({
       an approver role.
       `
     },
+    {
+      name: 'permissionsGranted',
+      javaFactory: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add approver menu permission for approvers
+        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveUsercapabilityjunction() ) permissions.add("menu.read.liquid.approvals");
+
+        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
+      `
+    }
   ],
 
   methods: [

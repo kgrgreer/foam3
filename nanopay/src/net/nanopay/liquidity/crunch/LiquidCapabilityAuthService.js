@@ -41,7 +41,7 @@ foam.CLASS({
         X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
 
         try {
-          DAO capabilityDAO = ((DAO) x.get("liquidCapabilityDAO")).inX(systemX);
+          DAO capabilityDAO = ((DAO) x.get("capabilityDAO")).inX(systemX);
           DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX);
 
           Capability c;
@@ -52,7 +52,9 @@ foam.CLASS({
             .getArray();
           for ( UserCapabilityJunction ucj : userCapabilityJunctions ) {
             c = (Capability) capabilityDAO.find(ucj.getTargetId());
-            if ( c.implies(x, permission) ) return true;
+            if ( c.implies(x, permission) ) {
+              return true;
+            }
           }
 
         } catch (Exception e) {
