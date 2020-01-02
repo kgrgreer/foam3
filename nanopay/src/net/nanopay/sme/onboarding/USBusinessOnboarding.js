@@ -386,6 +386,7 @@ foam.CLASS({
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
+      createMode: 'RW',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -600,18 +601,7 @@ foam.CLASS({
       label: 'First Name',
       width: 100,
       gridColumns: 6,
-      validationPredicates: [
-      {
-        args: ['adminFirstName'],
-        predicateFactory: function(e) {
-          return e.GT(
-            foam.mlang.StringLength.create({
-              arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
-            }), 0);
-        },
-        errorString: 'Please enter first name with least 1 character.'
-      }
-    ]
+      minLength: 1
     },
     {
       class: 'String',
