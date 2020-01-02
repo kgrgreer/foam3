@@ -17,7 +17,21 @@ p({
   "order": 400
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"liquid.liquidity","label":"Liquidity Settings","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"liquiditySettingsDAO","browseTitle":"Liquidity Settings"}},"order":600})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.liquidity",
+  "label": "Liquidity Settings",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "liquiditySettingsDAO",
+      "browseTitle": "Liquidity Settings",
+      "createTitle": "Create a New Liquidity Setting"
+    }
+  },
+  "order": 600
+})
 
 p({
   "class": "foam.nanos.menu.Menu",
@@ -65,7 +79,7 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.restrictaccountsrules",
-  "label":"Restrict Accounts Rules",
+  "label":"Restrict Accounts",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{ 
@@ -76,7 +90,9 @@ p({
         "targetClass": "net.nanopay.liquidity.tx.RestrictAccountsRule"
       },
       "defaultColumns":["id","enabled","createdBy","sourceAccount","destinationAccount"],
-      "of":"net.nanopay.liquidity.tx.RestrictAccountsRule"
+      "of":"net.nanopay.liquidity.tx.RestrictAccountsRule",
+      "browseTitle": "Restrict Accounts",
+      "createTitle": "Create a New Rule to Restrict Accounts"
     }
   },
   "order":300,
@@ -86,7 +102,7 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.restrictusersrules",
-  "label":"Restrict Users Rules",
+  "label":"Restrict Users",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{ 
@@ -97,7 +113,9 @@ p({
         "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
       },
       "defaultColumns":["id","enabled","createdBy","sourceUser","destinationUser"],
-      "of":"net.nanopay.liquidity.tx.RestrictUsersRule"
+      "of":"net.nanopay.liquidity.tx.RestrictUsersRule",
+      "browseTitle": "Restrict Users",
+      "createTitle": "Create a New Rule to Restrict Users"
     }
   },
   "order":310,
@@ -120,7 +138,9 @@ p({
         "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
       },
       "defaultColumns":["id","enabled","applyLimitTo","send","limit","period"],
-      "of":"net.nanopay.liquidity.tx.TxLimitRule"
+      "of":"net.nanopay.liquidity.tx.TxLimitRule",
+      "browseTitle": "Transaction Limits",
+      "createTitle": "Create a New Transaction Limit"
     }
   },
   "order":330,
