@@ -72,6 +72,16 @@ public class RestrictAccountChildrenRuleTest
       )
     ).select(new ArraySink());
     sourceAccount_ = (Account) sourceAccountSink_.getArray().get(0);
+    
+    //create source child account
+    sourceChildAccount_ = new Account.Builder(x)
+      .setName("Source Child Test Account")
+      .setOwner(sourceUser_.getId())
+      .setParent(sourceAccount_.getId())
+      .setType("Digital Account")
+      .setDenomination("CAD")
+      .build();
+
 
     // fetch destination account
     destinationAccountSink_ = (ArraySink) destinationUser_.getAccounts(x_).where(
@@ -81,6 +91,15 @@ public class RestrictAccountChildrenRuleTest
       )
     ).select(new ArraySink());
     destinationAccount_ = (Account) destinationAccountSink_.getArray().get(0);
+
+    // create destination child account
+    destinationChildAccount_ = new Account.Builder(x)
+      .setName("Destination Child Test Account")
+      .setOwner(destinationUser_.getId())
+      .setParent(destinationAccount_.getId())
+      .setType("Digital Account")
+      .setDenomination("CAD")
+      .build();
 
     // create test rule to restrict source account & children from transacting with destination account and children
     rule_ = new RestrictAccountsRule();
@@ -94,7 +113,19 @@ public class RestrictAccountChildrenRuleTest
     rule_.setEnabled(true);
     ruleDAO_.put(rule_);
 
-    //TODO: Add child account to sourceAccount_ and destionationAccount_
+    transaction_ = new Transaction();
+    transaction_.setSourceAccount(sourceChildAccount_.getId());
+    transaction_.setDestinationAccount(destinationChildAccount_.getId());
+    transaction_.setAmount(50000);
+    transaction_.setStatus(TransactionStatus.COMPLETED);
 
+    test(
+      TestUtils.testThrows(
+        () -> transactionDAO_.put(transaction_),
+        rule_.getId() + " restricting operation. " + rule_.getDescription(),
+        RuntimeException.class
+      ),
+      "Send transaction between restricted child accounts throws RuntimeException."
+    );
   }
 }
