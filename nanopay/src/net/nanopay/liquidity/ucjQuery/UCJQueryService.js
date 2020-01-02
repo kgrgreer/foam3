@@ -10,7 +10,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRoles',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -22,7 +22,7 @@ foam.INTERFACE({
     },
     {
       name: 'getUsers',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -34,12 +34,12 @@ foam.INTERFACE({
     },
     {
       name: 'getApproversByLevel',
-      type: 'FObject[]',
+      type: 'List',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'roleId',
+          name: 'modelToApprove',
           type: 'String'
         },
         {

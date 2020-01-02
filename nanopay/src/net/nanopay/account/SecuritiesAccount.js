@@ -12,7 +12,7 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.SecurityAccount',
-    'static foam.mlang.MLang.CONTAINS_IC',
+    'static foam.mlang.MLang.EQ',
     'foam.mlang.sink.Count'
   ],
 
@@ -118,7 +118,7 @@ foam.CLASS({
 
       javaCode: `
         DAO accountDAO = (DAO) this.getSubAccounts(x);
-        SecurityAccount sa = (SecurityAccount) accountDAO.find(CONTAINS_IC( // very slow operation current bottle nexk.
+        SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
         if (sa == null || sa.getId() == 0)
           return createSecurityAccount_(x,unit);

@@ -8,10 +8,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
+    'java.util.Set',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
+    'java.util.HashSet',
     'foam.dao.ArraySink',
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil',
     'foam.nanos.auth.User',
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
@@ -24,7 +28,10 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
+    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
@@ -45,7 +52,7 @@ foam.CLASS({
       name: 'sendSingleRequest',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'req', type: 'RoleApprovalRequest' },
         { name: 'userId', type: 'long' }
       ],
@@ -60,136 +67,52 @@ foam.CLASS({
       name: 'fullSend',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'request', type: 'RoleApprovalRequest' },
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
-      /**
-        TODO: REIMPLEMENT WITH CRUNCH
-        DAO requestingDAO;
+      DAO requestingDAO;
+      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
+      Logger logger = (Logger) x.get("logger");
 
-        if ( request.getDaoKey().equals("approvableDAO") ){
-          DAO approvableDAO = (DAO) x.get("approvableDAO");
+      if ( request.getDaoKey().equals("approvableDAO") ){
+        DAO approvableDAO = (DAO) x.get("approvableDAO");
 
-          Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
+        Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
 
-          requestingDAO = (DAO) x.get(approvable.getDaoKey());
-        } else {
-          requestingDAO = (DAO) x.get(request.getDaoKey());
-        }
+        requestingDAO = (DAO) x.get(approvable.getDaoKey());
+      } else {
+        requestingDAO = (DAO) x.get(request.getDaoKey());
+      }
 
-        DAO accountDAO = (DAO) x.get("accountDAO");
+      String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
 
-        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-        Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
+      CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
 
-        Boolean isGlobalRole = true;
-        List<Role> baseRoles;
-        Role baseRole;
-        DAO approverDAO;
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1);
 
-        // TODO: REDO DAOS after configuring services and connecting with CRUNCH
-        switch(modelName){
-            case "User":
-              // there should be only one of each base role but we include this incase the id changes or duplicate names are used
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "userDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
+      if ( approverIds.size() <= 0 ) {
+        logger.error("No Approvers exist for the model: " + modelName);
+        throw new RuntimeException("No Approvers exist for the model: " + modelName);
+      }
 
-              baseRole = baseRoles.get(0);
+      // makers cannot approve their own requests even if they are an approver for the account
+      // however they will receive an approvalRequest which they can only view and not approve or reject
+      // so that they can keep track of the status of their requests
+      sendSingleRequest(x, request, request.getInitiatingUser());
+      approverIds.remove(request.getInitiatingUser());
 
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "LiquiditySettings":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "liquiditySettingsDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "Rule":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "ruleDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            case "RoleRequest":
-              // see above
-              baseRoles = ((ArraySink) roleDAO.where(
-                MLang.AND(
-                  MLang.EQ(GlobalRole.DAO_KEY, "roleRequestDAO"),
-                  MLang.EQ(Role.BASE_ROLE_TYPE, BaseRoleTypes.APPROVER)
-                )
-              ).select(new ArraySink())).getArray();
-
-              baseRole = baseRoles.get(0);
-
-              approverDAO = roleAssignmentTrunctionDAO.where(
-                MLang.AND(
-                  MLang.EQ(RoleAssignmentTrunction.ACCOUNT_ID, 0),
-                  MLang.EQ(RoleAssignmentTrunction.ROLE_ID, baseRole.getId())
-                )
-              );
-              break;
-            default:
-              approverDAO = null;
-          default:
-            approverDAO = null;
-        }
-        
-        if ( approverDAO != null ){
-          // makers cannot approve their own requests even if they are an approver for the account
-          // however they will receive an approvalRequest which they can only view and not approve or reject
-          // so that they can keep track of the status of their requests
-          sendSingleAccountRequest(x, accountRequest, request.getInitiatingUser());
-
-          // TODO: 
-          approverDAO.where(MLang.NEQ( UserCapabilityJunction.SOURCE_ID, request.getInitiatingUser() )).select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              sendSingleRequest(x, request, ((UserCapabilityJunction) obj).getSourceId());
-            }
-          });
-        }
-       */
+      for ( int i = 0; i < approverIds.size(); i++ ){
+        sendSingleRequest(getX(), request, approverIds.get(i));
+      }
       `
     },
     {
       name: 'remove_',
       javaCode: `
         User user = (User) x.get("user");
+        Logger logger = (Logger) x.get("logger");
 
         // system and admins override the approval process
         if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.remove_(x,obj);
@@ -221,7 +144,6 @@ foam.CLASS({
         } 
         
         if ( approvedObjRemoveRequests.size() > 1 ){
-          Logger logger = (Logger) x.get("logger");
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -246,6 +168,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       User user = (User) x.get("user");
+      Logger logger = (Logger) x.get("logger");
 
       // system and admins override the approval process
       if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
@@ -284,6 +207,7 @@ foam.CLASS({
         } 
         
         if ( approvedObjRemoveRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
@@ -329,13 +253,13 @@ foam.CLASS({
         } 
         
         if ( approvedObjCreateRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableAwareObj.getApprovableKey())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.CREATE)
           .setInitiatingUser(((User) x.get("user")).getId())
@@ -384,6 +308,7 @@ foam.CLASS({
         }
 
         if ( approvedObjUpdateRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         }
 
@@ -396,7 +321,6 @@ foam.CLASS({
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.UPDATE)
           .setInitiatingUser(((User) x.get("user")).getId())

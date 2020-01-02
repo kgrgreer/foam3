@@ -38,6 +38,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"businessRules"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictAccountsRules"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictUsersRules"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"SecurityPlanner","predicate":{"class":"net.nanopay.tx.ruler.IsSecurityQuote"},"enabled":true})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
 p({

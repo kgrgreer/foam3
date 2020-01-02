@@ -8,10 +8,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
+    'java.util.Set',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
+    'java.util.HashSet',
     'foam.dao.ArraySink',
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil',
     'foam.nanos.auth.User',
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
@@ -24,9 +28,12 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
-    'foam.nanos.crunch.UserCapabilityJunction',
+    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
+    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
@@ -36,7 +43,7 @@ foam.CLASS({
       name: 'sendSingleAccountRequest',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'req', type: 'AccountRoleApprovalRequest' },
         { name: 'userId', type: 'long' }
       ],
@@ -51,17 +58,17 @@ foam.CLASS({
       name: 'fullSend',
       type: 'void',
       args: [
-        { name: 'x', type: 'X' },
+        { name: 'x', type: 'Context' },
         { name: 'request', type: 'RoleApprovalRequest' },
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
+      Logger logger = (Logger) x.get("logger");
 
-      // TODO: Basically in AccountApprovableAwareDAO cast RoleApprovalRequest
       // AccountRoleApprovalRequest and set the outgoing account
       AccountRoleApprovalRequest accountRequest = (AccountRoleApprovalRequest) request.fclone();
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
-
+  
       if ( request.getOperation() == Operations.CREATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountCreate(x));
       } else if ( request.getOperation() == Operations.UPDATE ) {
@@ -69,66 +76,43 @@ foam.CLASS({
       } else if ( request.getOperation() == Operations.REMOVE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountDelete(x));
       } else {
+        logger.error("Using an invalid operation!");
         throw new RuntimeException("Using an invalid operation!");
       }
-
-      /**
-        TODO: REIMPLEMENT WITH CRUNCH
-        DAO requestingDAO;
-
-        if ( liquidRequest.getDaoKey().equals("approvableDAO") ){
-          DAO approvableDAO = (DAO) x.get("approvableDAO");
-
-          Approvable approvable = (Approvable) approvableDAO.find(liquidRequest.getObjId());
-
-          requestingDAO = (DAO) x.get(approvable.getDaoKey());
-        } else {
-          requestingDAO = (DAO) x.get(liquidRequest.getDaoKey());
-        }
-
-        DAO accountDAO = (DAO) x.get("accountDAO");
-
-        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-        Account outgoingAccount = (Account) accountDAO.find(outgoingAccountId);
-
-        Boolean isGlobalRole = true;
-        List<Role> baseRoles;
-        Role baseRole;
-        DAO approverDAO;
-
-        // TODO: REDO DAOS after configuring services and connecting with CRUNCH
-        switch(modelName){
-          case "Account":
-            approverDAO = outgoingAccount.getAccountApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          case "RoleAssignmentTemplate": // TODO: Reconfirm with RUBY
-            approverDAO = outgoingAccount.getRoleAssignmentApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          case "Transaction":
-            approverDAO = outgoingAccount.getTransactionApprovers(getX()).getDAO();
-            isGlobalRole = false;
-            break;
-          default:
-            approverDAO = null;
-        }
-        
-        if ( approverDAO != null ){
-          // makers cannot approve their own requests even if they are an approver for the account
-          // however they will receive an approvalRequest which they can only view and not approve or reject
-          // so that they can keep track of the status of their requests
-          sendSingleAccountRequest(x, accountRequest, request.getInitiatingUser());
-
-          // TODO: 
-          approverDAO.where(MLang.NEQ( UserCapabilityJunction.SOURCE_ID, request.getInitiatingUser() )).select(new AbstractSink() {
-            @Override
-            public void put(Object obj, Detachable sub) {
-              sendSingleAccountRequest(x, accountRequest, ((UserCapabilityJunction) obj).getSourceId());
-            }
-          });
-        }
-       */
+  
+      DAO requestingDAO;
+      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
+  
+      if ( request.getDaoKey().equals("approvableDAO") ){
+        DAO approvableDAO = (DAO) x.get("approvableDAO");
+  
+        Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
+  
+        requestingDAO = (DAO) x.get(approvable.getDaoKey());
+      } else {
+        requestingDAO = (DAO) x.get(request.getDaoKey());
+      }
+  
+      String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
+  
+      CachedAccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+  
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, accountRequest.getOutgoingAccount(),1);
+  
+      if ( approverIds.size() <= 0 ) {
+        logger.log("No Approvers exist for the model: " + modelName);
+        throw new RuntimeException("No Approvers exist for the model: " + modelName);
+      }
+  
+      // makers cannot approve their own requests even if they are an approver for the account
+      // however they will receive an approvalRequest which they can only view and not approve or reject
+      // so that they can keep track of the status of their requests
+      sendSingleRequest(x, request, request.getInitiatingUser());
+      approverIds.remove(request.getInitiatingUser());
+  
+      for ( int i = 0; i < approverIds.size(); i++ ){
+        sendSingleRequest(getX(), request, approverIds.get(i));
+      }
       `
     }
   ]
