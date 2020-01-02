@@ -28,7 +28,7 @@ foam.CLASS({
       javaCode: `
         // Use AccountHierarchyService to fetch child accounts of parentId then pass childIds into MLang.IN predicate
         AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
-        HashSet<Long> childIdSet = accountHierarchy.getChildAccounts(getX(), this.getParentId());
+        HashSet<Long> childIdSet = accountHierarchy.getChildAccountIds(getX(), this.getParentId());
         ArrayList<Long> childIds = new ArrayList<>(childIdSet);
         return
           IN(Account.ID, childIds)

@@ -46,7 +46,7 @@ public class AccountHierarchyService
   }
 
   @Override
-  public HashSet<Long> getChildAccounts(X x, long parentId) {
+  public HashSet<Long> getChildAccountIds(X x, long parentId) {
     Map <String, HashSet<Long>> map = getChildMap(x);
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     String parentIdString = Long.toString(parentId);
@@ -57,7 +57,7 @@ public class AccountHierarchyService
       List<Account> children = new ArrayList<Account>();
       List<Long> childIdList = new ArrayList<Long>();
 
-      children = getAllChildren(x, parentAccount);
+      children = getChildAccounts(x, parentAccount);
 
       if ( children.size() > 0 ) {
         for ( int i = 0; i < children.size(); i++ ) {
@@ -74,7 +74,7 @@ public class AccountHierarchyService
   }
 
   @Override
-  public List<Account> getAllChildren(X x, Account account) {
+  public List<Account> getChildAccounts(X x, Account account) {
      ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
      List<Account> allChildrenList = allChildrenSink.getArray();
     
@@ -84,7 +84,7 @@ public class AccountHierarchyService
     if ( allChildrenList.size() > 0 ) {
       for ( int i = 0; i < allChildrenList.size(); i++ ) {
         Account acc = (Account) allChildrenList.get(i);
-        List<Account> childChildren = getAllChildren(x, acc);
+        List<Account> childChildren = getChildAccounts(x, acc);
         allAccounts.addAll(childChildren);
       }
     }

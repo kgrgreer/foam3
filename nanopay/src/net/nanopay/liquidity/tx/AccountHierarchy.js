@@ -3,7 +3,7 @@ foam.INTERFACE({
   name: 'AccountHierarchy',
   methods: [
     {
-      name: 'getChildAccounts',
+      name: 'getChildAccountIds',
       type: 'java.util.HashSet',
       args: [
         {
@@ -17,7 +17,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'getAllChildren',
+      name: 'getChildAccounts',
       type: 'java.util.List',
       args: [
         {
