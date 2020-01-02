@@ -54,6 +54,9 @@ foam.CLASS({
               ]
             }
           }),
+          foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+            createMode: 'HIDDEN'
+          })
         ];
       }
     }
