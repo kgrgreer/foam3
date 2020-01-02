@@ -8,6 +8,7 @@ import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -74,13 +75,14 @@ public class RestrictAccountChildrenRuleTest
     sourceAccount_ = (Account) sourceAccountSink_.getArray().get(0);
     
     //create source child account
-    sourceChildAccount_ = new Account.Builder(x)
+    sourceChildAccount_ = new Account.Builder(x_)
       .setName("Source Child Test Account")
       .setOwner(sourceUser_.getId())
       .setParent(sourceAccount_.getId())
       .setType("Digital Account")
       .setDenomination("CAD")
       .build();
+    accountDAO_.put(sourceChildAccount_);
 
 
     // fetch destination account
@@ -93,13 +95,14 @@ public class RestrictAccountChildrenRuleTest
     destinationAccount_ = (Account) destinationAccountSink_.getArray().get(0);
 
     // create destination child account
-    destinationChildAccount_ = new Account.Builder(x)
+    destinationChildAccount_ = new Account.Builder(x_)
       .setName("Destination Child Test Account")
       .setOwner(destinationUser_.getId())
       .setParent(destinationAccount_.getId())
       .setType("Digital Account")
       .setDenomination("CAD")
       .build();
+    accountDAO_.put(destinationChildAccount_);
 
     // create test rule to restrict source account & children from transacting with destination account and children
     rule_ = new RestrictAccountsRule();
@@ -118,6 +121,7 @@ public class RestrictAccountChildrenRuleTest
     transaction_.setDestinationAccount(destinationChildAccount_.getId());
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
+    transaction_.setIsQuoted(true);
 
     test(
       TestUtils.testThrows(
