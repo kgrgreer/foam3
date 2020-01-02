@@ -33,7 +33,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO;
   Transaction txn, txn2, txn3, txn4, txn5, txn6, txn7;
   KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
@@ -45,6 +45,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     userDAO = ((DAO) x.get("localUserDAO"));
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
+    planDAO = ((DAO) x.get("localTransactionQuotePlanDAO"));
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     sender = addUserIfNotFound(x, senderEmail);
@@ -66,15 +67,19 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   public void testTxnChain(X x) {
     // test top level txn
     test( "".equals(txn.getParent()), "top level txn has no parent");
-    test(txn.getClass() == FXSummaryTransaction.class, "top level txn is a SummaryTransaction");
-    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED");
-    test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state PENDING");
-    test(SafetyUtil.equals(txn.getSourceCurrency(), "CAD"), "top level txn has source currency CAD");
-    test(SafetyUtil.equals(txn.getDestinationCurrency(), "INR"), "top level txn has destination currency INR");
+    test(txn.getClass() == FXSummaryTransaction.class, "top level txn is a FXSummaryTransaction. found: "+txn.getClass().getSimpleName());
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED. found: "+txn.getStatus());
+    test(txn.getState(x) == TransactionStatus.PENDING, "top level txn has state PENDING. found: "+txn.getState(x));
+    test(SafetyUtil.equals(txn.getSourceCurrency(), "CAD"), "top level txn has source currency CAD. found: "+txn.getSourceCurrency());
+    test(SafetyUtil.equals(txn.getDestinationCurrency(), "INR"), "top level txn has destination currency INR. found: "+txn.getDestinationCurrency());
 
     // test second txn in the chain
+    Transaction found = (Transaction) txnDAO.find(txn.getId());
+    test( found != null, "find of root successful. found: "+(found != null));
+    sink = (foam.dao.ArraySink) txnDAO.select(new foam.dao.ArraySink());
+    test( sink.getArray().size() > 0, "select all found at least one. found: "+sink.getArray().size());
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "txn2 is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn2 is parent to a single transaction. found: " +sink.getArray().size()+", parentId: "+txn.getId());
     txn2 = (Transaction) sink.getArray().get(0);
     test(txn2.getClass() == ComplianceTransaction.class, "txn2 is a ComplianceTransaction");
     test(txn2.getStatus() == TransactionStatus.PENDING, "txn2 has status PENDING");
@@ -226,6 +231,19 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setDestinationCurrency("INR");
     txn.setAmount(200);
-    txn = (Transaction) txnDAO.put_(x, txn);
+
+    // REVIEW: plan.next are not saved properly when going
+    // through transactionDAO directly.  Only saved when
+    // explicitly quoting and then submitting plan.
+    //    txn = (Transaction) txnDAO.put_(x, txn);
+    TransactionQuote quote = new TransactionQuote();
+    quote.setRequestTransaction(txn);
+    quote = (TransactionQuote) planDAO.put_(x, quote);
+    Transaction plan = quote.getPlan();
+    test( plan != null, "plan returned.");
+    test( plan.getNext().length > 0, "plan.hasNext. found: "+plan.getNext().length );
+    txn = (Transaction) txnDAO.put_(x, plan);
+
+    test( txn.getId() != null, "createTxn has id. found: "+txn.getId());
   }
 }
