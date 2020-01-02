@@ -94,12 +94,8 @@ foam.CLASS({
         2. if the account is not in the map, reject the operation
       `,
       code: function removeAccount(accountId) {
-        var map = this.accounts;
-        console.log(map);
-        if ( accountId.toString() in map ) {
-          console.log(this.accounts);
+        if ( accountId.toString() in this.accounts ) {
           delete this.accounts[accountId.toString()];
-          // map.delete(accountId.toString());
         } else {
           console.error('The account provided is not an entry in the accountTemplate.');
         }
@@ -119,13 +115,13 @@ foam.CLASS({
       code: async function hasAccount(x, childAccountId) {
         var map = this.accounts;
         if ( map == null || map.size == 0 ) return false;
-        if ( map.has(childAccountId) ) return true;
+        if ( childAccountId.toString() in map ) return true;
         
         var childAccount = await this.accountDAO.find(childAccountId);
         var parentId;
         while ( childAccount ) {
           parentId = childAccount.parent;
-          if ( map.has(parentId) && map.parentId.isCascading ) return true;
+          if ( parentId.toString() in map && map.parentId.isCascading ) return true;
           childAccount = await this.accountDAO.find(parentId);
         }
         return false;
@@ -169,13 +165,13 @@ foam.CLASS({
       code: async function hasAccountByApproverLevel(x, childAccountId, level) {
         var map = this.accounts;
         if ( map == null || map.size == 0 ) return false;
-        if ( map.has(parentId) && map[childAccountId].approverLevel.approverLevel === level ) return true;
+        if ( parentId.toString() in map && map[childAccountId].approverLevel.approverLevel === level ) return true;
         
         var childAccount = await this.localAccountDAO.find(childAccountId);
         var parentId;
         while ( childAccount ) {
           parentId = childAccount.parent;
-          if ( map.has(parentId) && map[parentId].isCascading && (map[parentId].approverLevel.approverLevel === level) ) return true;
+          if ( parentId.toString() in map && map[parentId].isCascading && (map[parentId].approverLevel.approverLevel === level) ) return true;
           childAccount = await this.localAccountDAO.find(parentId);
         }
         return false;

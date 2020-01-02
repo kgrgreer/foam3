@@ -108,7 +108,6 @@ foam.CLASS({
         // if ucj is not null, add new accounttemplate to old template of ucj
         if ( ucj != null ) {
           var oldTemplate = ucj.data;
-          console.log(accountTemplate, accountTemplate.accounts);
           var newMap = accountTemplate.accounts;
 
           var keySetIterator = newMap.keys();
@@ -158,8 +157,6 @@ foam.CLASS({
           console.err("account must must be supplied to assign account-based capability to user");
           return;
         }
-
-        console.log(this.assignedUsers, this.accountTemplate, this.approverLevel, this.capability);
 
         if ( isAccountBasedCapability ) {
           accountTemplate = await this.accountTemplateDAO.find(this.accountTemplate);
