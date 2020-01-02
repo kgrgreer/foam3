@@ -261,6 +261,9 @@ foam.CLASS({
 
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
+        if( invoice.getDestinationCurrency().equals("INR") ) {
+          amount = "&#8377;" + amount.substring(1);
+        }
 
         args.put("currency", invoice.getDestinationCurrency());
         args.put("amount", amount);
