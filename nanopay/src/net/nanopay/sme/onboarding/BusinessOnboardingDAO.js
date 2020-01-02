@@ -107,7 +107,11 @@ foam.CLASS({
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);

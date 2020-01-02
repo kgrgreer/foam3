@@ -9,6 +9,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"menu.read.sme.bank.matching"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"menu.read.sme.main.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"menu.read.sme.quickAction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"notificationsetting.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.acceptanceDocumentService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.accountDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.accountingReportDAO"})

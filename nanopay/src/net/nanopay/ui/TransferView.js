@@ -316,7 +316,7 @@ foam.CLASS({
           } else {
             this.subStack.push(this.views[this.subStack.pos + 1].view);
           }
-          
+
           if ( this.invoiceMode ) {
             transaction = this.Transaction.create({
               sourceCurrency: this.viewData.payerDenomination,
@@ -347,6 +347,7 @@ foam.CLASS({
           this.countdownView.stop();
           this.countdownView.hide();
           this.countdownView.reset();
+
 
           this.transactionDAO.put(self.viewData.transaction)
             .then(function(result) {

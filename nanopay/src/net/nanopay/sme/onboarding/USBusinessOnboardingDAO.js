@@ -45,6 +45,7 @@ foam.CLASS({
       ],
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
+
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
         user = (User) user.fclone();
@@ -105,11 +106,15 @@ foam.CLASS({
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);

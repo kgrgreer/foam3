@@ -7,3 +7,21 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"service.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"currency.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"rule.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"businessrule.*"})
+
+// Allowed predicates for Business Rules
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.1af7d5c6-5236-4165-8444-6d378574bc15"}) // Eq
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.35fa57a1-2189-fab3-bf8b-90176446e33c"}) // Neq
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.a33d1726-a0a2-472f-af61-c2e0b1b42474"}) // StartsWith
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.c2d58adc-4dba-4386-9762-c25ec408143e"}) // EndsWith
+
+// Allowed classes for Business Rules
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.b0d7bed9-a82e-478b-a0f8-a2d1d2d2d031"}) // User
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.30c2262e-4d0b-47a4-9389-b7e6867d894a"}) // Account
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.30c2262f-4d0b-47a4-9389-b7e6867d894a"}) // Transaction
+
+// Allowed expressions for Business Rules
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.904ae35f-5c4a-4361-8f0c-7b54a71d5b79"}) // PropertyExpr
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.2c1799d7-afa3-4768-92a0-8245b3cd5180"}) // Constant
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.7207bfd7-7cf4-4652-9cb9-f3f6feb9aa13"}) // CurrentTime
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"strategyreference.read.6383e97e-f0b3-4f7b-a995-e5ba79c35db8"}) // ArrayConstant
