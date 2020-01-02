@@ -22,8 +22,8 @@ foam.CLASS({
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.fx.FXQuote',
-    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
   ],
 
   methods: [
