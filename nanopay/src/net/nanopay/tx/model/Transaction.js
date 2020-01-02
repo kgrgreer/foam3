@@ -10,8 +10,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
@@ -1154,53 +1153,8 @@ foam.CLASS({
     `
   },
   {
-    name: 'getOutgoingAccountCreate',
+    name: 'getOutgoingAccount',
     type: 'Long',
-    args: [
-      {
-        type: 'X',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountRead',
-    type: 'Long',
-    args: [
-      {
-        type: 'X',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountUpdate',
-    type: 'Long',
-    args: [
-      {
-        type: 'X',
-        name: 'x',
-      }
-    ],
-    javaCode: `
-      return getSourceAccount();
-    `
-  },
-  {
-    name: 'getOutgoingAccountDelete',
-    type: 'Long',
-    args: [
-      {
-        type: 'X',
-        name: 'x',
-      }
-    ],
     javaCode: `
       return getSourceAccount();
     `
