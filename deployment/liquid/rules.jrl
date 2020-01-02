@@ -131,3 +131,31 @@ p({
   },
   "businessRuleAction":2
 })
+
+// Automatically verify emails for new Liquid users. Due to change once Goldman
+// gets back to us with requirements.
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Liquid Auto-Verify Email Rule",
+  "daoKey": "localUserDAO",
+  "predicate": {
+    "class": "foam.mlang.predicate.Eq",
+    "arg1": {
+      "class": "foam.mlang.expr.PropertyExpr",
+      "of": "foam.nanos.auth.User",
+      "property": {
+        "class": "__Property__",
+        "forClass_": "foam.nanos.auth.User",
+        "name": "group"
+      }
+    },
+    "arg2": {
+      "class": "foam.mlang.Constant",
+      "value": "liquidBasic"
+    }
+  },
+  "action": {
+    "class": "net.nanopay.admin.SkipUserEmailVerification"
+  },
+  "ruleGroup": "UserCreate"
+})

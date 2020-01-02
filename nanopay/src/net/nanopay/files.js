@@ -165,6 +165,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
+  { name: 'net/nanopay/auth/LiquidUserDAOCreateView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -899,6 +900,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/account/Overview' },
    { name: 'net/nanopay/liquidity/ui/account/Balance' },
    { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserCreationView' },
   
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

@@ -1,3 +1,4 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"group.update.liquidBasic"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"cabankaccount.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"account.ro.*"})

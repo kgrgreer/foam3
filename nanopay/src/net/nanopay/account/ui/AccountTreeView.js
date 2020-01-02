@@ -220,7 +220,7 @@ foam.CLASS({
             self.cview = self.ZoomMapView.create({
               view: v,
               height$: v.height$,
-              width: self.el().clientWidth,
+              width$: v.width$,
               viewBorder: '#d9170e',
               navBorder: 'black',
               handleHeight: '10',
