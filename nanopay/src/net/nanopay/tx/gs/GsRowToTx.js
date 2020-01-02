@@ -55,8 +55,11 @@ foam.CLASS({
         // Add index to MDAO
         ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
           .addIndex(new foam.core.PropertyInfo[] {
-              net.nanopay.tx.gs.GsTxCsvRow.CASH_USD,
-              net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY
+              net.nanopay.tx.gs.GsTxCsvRow.CASH_USD
+          });
+          ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
+          .addIndex(new foam.core.PropertyInfo[] {
+            net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY
           });
 
         CSVParser csvParser = new CSVParser(
@@ -72,7 +75,7 @@ foam.CLASS({
         pbd.setStatus("Parsing Transaction: 0 of " + am);
         progressBarDAO.put(pbd);
 
-        SyncAssemblyLine transactionProcessor = new SyncAssemblyLine();
+        AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
 
         List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
            .select(new ArraySink())).getArray();

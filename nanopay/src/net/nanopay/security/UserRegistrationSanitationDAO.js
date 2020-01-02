@@ -43,6 +43,7 @@ foam.CLASS({
           .setAddress(user.getAddress())
           .setPhone(user.getPhone())
           .setBirthday(user.getBirthday())
+          .setJobTitle(user.getJobTitle())
 
           // TODO: Remove the need for this property.
           .setWelcomeEmailSent(user.getWelcomeEmailSent())

@@ -113,9 +113,9 @@ foam.RELATIONSHIP({
 
 // A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.account.SecuritiesAccount',
-  targetModel: 'net.nanopay.account.SecurityAccount',
-  inverseName: 'SecuritiesAccount',
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  inverseName: 'securitiesAccount',
   forwardName: 'subAccounts',
   targetDAOKey: 'accountDAO',
   sourceDAOKey: 'accountDAO',

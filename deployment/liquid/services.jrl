@@ -112,7 +112,15 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
+
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER, net.nanopay.account.Account.IS_DEFAULT });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.NAME });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION,net.nanopay.account.Account.SECURITIES_ACCOUNT });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
+
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+
 
     /* TODO: Uncomment once new permissioning system gets in
     dao = new net.nanopay.liquidity.approvalRequest.ApprovableDecorator.Builder(x)
@@ -121,6 +129,7 @@ p({
       .setDelegate(dao)
       .build();
     */
+
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -133,14 +142,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setOf(Account.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {
-        net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
-        net.nanopay.account.Account.OWNER,
-        net.nanopay.account.Account.NAME,
-        net.nanopay.account.Account.ID,
-        net.nanopay.account.Account.ENABLED,
-        net.nanopay.account.Account.IS_DEFAULT,
-        net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
       .setAuthorize(false)
       .build();
@@ -156,7 +157,7 @@ p({
     import foam.dao.DAO;
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
-    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.auth.LifecycleAwareDAO;
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
@@ -172,6 +173,7 @@ p({
     MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.TYPE});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.PARENT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
@@ -185,12 +187,11 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    deletedAware = new DeletedAwareDAO.Builder(x)
-      .setName("transaction")
+    lifecycleAware = new LifecycleAwareDAO.Builder(x)
       .setDelegate(a)
       .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
-      .setDelegate(deletedAware)
+      .setDelegate(lifecycleAware)
       .build();
     // TODO: Will make our own liquid rules journal and then re-enable the rule engine
     ruler = new RulerDAO(x, ctx, "localTransactionDAO");

@@ -34,6 +34,14 @@ foam.CLASS({
     'net.nanopay.tx.DVPTransaction',
   ],
 
+  constants: [
+    {
+      name: 'BROKER_ID',
+      type: 'Long',
+      value: 20
+    }
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -94,13 +102,12 @@ foam.CLASS({
           parseExternal(getX(),getRow1());
 
         setTransaction(t);
-        checkTrusty(getX(), getTransaction());
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        checkTrusty(getX(), getTransaction()); // why are you checking the trustee twice?
+        checkTrusty(getX(), getTransaction());
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
@@ -204,7 +211,7 @@ foam.CLASS({
               }
 
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
-            t.setDestinationAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setDestinationAccount(BROKER_ID);
             t.setSourceCurrency(row1.getProductId());
             t.setDestinationCurrency(row1.getProductId());
             t.setAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
@@ -233,7 +240,7 @@ foam.CLASS({
               // add cash peice
             }
 
-            t.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            t.setSourceAccount(BROKER_ID);
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationCurrency(row1.getProductId());
             t.setSourceCurrency(row1.getProductId());
@@ -344,7 +351,7 @@ foam.CLASS({
             secCI.setAmount(Math.abs(remainder));
             secCI.setDestinationAmount(secCI.getAmount()); // no trading allowed during top ups.
             secCI.setDestinationAccount(source.getId());
-            secCI.setSourceAccount(((Account) accountDAO.find(MLang.INSTANCE_OF(BrokerAccount.class))).getId());
+            secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
             transactionDAO.put(secCI); // top up the sending security account

@@ -7,9 +7,9 @@ p({
     nd = new foam.dao.NullDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .build();
-    rd = new foam.nanos.ruler.RulerDAO(x, nd, "localTransactionQuotePlanDAO");
+
     stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
-      .setDelegate(rd)
+      .setDelegate(nd)
       .build();
     kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
       .setDelegate(stpd)
@@ -52,7 +52,8 @@ p({
       .setDelegate(cpd)
       .build();
     dtpd = new net.nanopay.tx.DigitalTransactionPlanDAO(x, tqd);
-    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, dtpd);
+    rd = new foam.nanos.ruler.RulerDAO(x, dtpd, "localTransactionQuotePlanDAO");
+    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, rd);
     atd = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
       .setDelegate(rtpd)
       .build();
@@ -87,7 +88,7 @@ p({
     import foam.dao.DAO;
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
-    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.auth.LifecycleAwareDAO;
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
@@ -119,12 +120,11 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    deletedAware = new DeletedAwareDAO.Builder(x)
-      .setName("transaction")
+    lifecycleAware = new LifecycleAwareDAO.Builder(x)
       .setDelegate(a)
       .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
-      .setDelegate(deletedAware)
+      .setDelegate(lifecycleAware)
       .build();
     ruler = new RulerDAO(x, ctx, "localTransactionDAO");
     foam.dao.ProxyDAO aware = new foam.nanos.auth.CreatedAwareDAO.Builder(x)

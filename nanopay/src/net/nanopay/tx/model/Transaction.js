@@ -8,7 +8,7 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -676,18 +677,25 @@ foam.CLASS({
       transient: true,
       hidden: true,
       searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
     }
   ],
 
   methods: [
-      {
-        name: 'doFolds',
-        javaCode: `
-          for ( Balance b : getBalances() ) {
-            fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
-          }
-        `
-      },
+    {
+      name: 'doFolds',
+      javaCode: `
+        for ( Balance b : getBalances() ) {
+          fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+        }
+      `
+    },
     {
       name: 'limitedClone',
       args: [
