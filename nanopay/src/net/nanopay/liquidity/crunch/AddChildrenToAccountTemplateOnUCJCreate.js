@@ -44,7 +44,7 @@ foam.CLASS({
             // List<Long> accountIds = new ArrayList<Long>((template.getAccounts()).keySet());
 
             for ( Long accountId : accountIds ) {
-              map = addChildrenToTemplate(x, accountId, map);
+              // map = addChildrenToTemplate(x, accountId, map);
             }
 
             AccountTemplate template = ((AccountTemplate) ucj.getData());
@@ -63,7 +63,8 @@ foam.CLASS({
       ],
       javaType: 'Map<Long, AccountData>',
       javaCode: `
-        AccountData data = map.get(accountId);
+        System.out.println("parent="+accountId);
+        AccountData data = map.get(String.valueOf(accountId));
         if ( data == null ) throw new RuntimeException("Null AccountData provided in AccountTemplate map");
 
         DAO accountDAO = (DAO) x.get("accountDAO");
@@ -84,7 +85,8 @@ foam.CLASS({
         }
 
         for ( Account account : accountsSet ) {
-          if ( ! map.containsKey(account.getId())) map.put(account.getId(), data);
+          if ( ! map.containsKey(String.valueOf(account.getId()))) //map.put(String.valueOf(account.getId()), data);
+            System.out.println(account.getId());
         }
         return map;
       `
