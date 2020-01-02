@@ -75,24 +75,20 @@ public class AccountHierarchyService
 
   @Override
   public List<Account> getAllChildren(X x, Account account) {
-    List<Account> allChildren = new ArrayList<Account>();
-    List<Account> allChildrenList = new ArrayList<Account>();
-    ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
-    allChildrenList = allChildrenSink.getArray();
+     ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
+     List<Account> allChildrenList = allChildrenSink.getArray();
     
-    if ( ! allChildren.contains(account) ) {
-      allChildren.add(account);
-    }
+    List<Account> allAccounts = new ArrayList<Account>();
+    allAccounts.add(account);
 
     if ( allChildrenList.size() > 0 ) {
       for ( int i = 0; i < allChildrenList.size(); i++ ) {
         Account acc = (Account) allChildrenList.get(i);
-        List<Account> childChildren = new ArrayList<Account>();
-        childChildren = getAllChildren(x, acc);
-        allChildren.addAll(childChildren);
+        List<Account> childChildren = getAllChildren(x, acc);
+        allAccounts.addAll(childChildren);
       }
     }
 
-    return allChildren;
+    return allAccounts;
   }
 }
