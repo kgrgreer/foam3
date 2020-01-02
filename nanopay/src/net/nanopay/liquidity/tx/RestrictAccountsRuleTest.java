@@ -97,6 +97,7 @@ public class RestrictAccountsRuleTest
     transaction_.setDestinationAccount(destinationAccount_.getId());
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
+    transaction_.setIsQuoted(true);
 
     // make sure transaction throws expected RuntimeException
     test(
