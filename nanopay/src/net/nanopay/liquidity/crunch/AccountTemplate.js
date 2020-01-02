@@ -94,8 +94,12 @@ foam.CLASS({
         2. if the account is not in the map, reject the operation
       `,
       code: function removeAccount(accountId) {
-        if ( this.accounts.has(accountId) ) {
-          this.accounts.delete(accountId);
+        var map = this.accounts;
+        console.log(map);
+        if ( accountId.toString() in map ) {
+          console.log(this.accounts);
+          delete this.accounts[accountId.toString()];
+          // map.delete(accountId.toString());
         } else {
           console.error('The account provided is not an entry in the accountTemplate.');
         }

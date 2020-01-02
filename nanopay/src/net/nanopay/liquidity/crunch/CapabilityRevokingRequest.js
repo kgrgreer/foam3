@@ -110,13 +110,14 @@ foam.CLASS({
         if ( isAccountBasedCapability ) {
           console.log("!");
           var accounttemplate = ucj.data;
-          accounttemplate = accounttemplate.removeAccount(account);
+          accounttemplate.removeAccount(account);
           if ( accounttemplate.accounts.size === 0 ) {
             console.log("!");
             await this.userCapabilityJunctionDAO.remove(this.__subContext__, ucj);
             console.log("!");
           } else {
             ucj.data = accounttemplate;
+            console.log(accounttemplate.accounts);
             console.log("!");
             await this.userCapabilityJunctionDAO.put_(this.__subContext, ucj);
             console.log("!");
