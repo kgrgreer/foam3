@@ -40,7 +40,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "Add child accounts of those in accounttemplate to the template when creating new ucj",
   "daoKey": "userCapabilityJunctionDAO",
-  "operation": 0,
+  "operation": 3, // todo ruby change to 0 after tested
   "after": false,
   "action" : {
     "class": "net.nanopay.liquidity.crunch.AddChildrenToAccountTemplateOnUCJCreate"
