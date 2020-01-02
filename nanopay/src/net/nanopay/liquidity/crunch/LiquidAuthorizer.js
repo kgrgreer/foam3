@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
   properties: [
@@ -45,6 +45,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode:  `
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : 0;
+        accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
@@ -57,12 +58,15 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
+
+        AuthService authService = (AuthService) x.get("auth");
+
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
+        accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         String readPermission = createPermission("View", accountId);
         String approvePermission = createPermission("Approve", accountId);
         String makePermission = createPermission("Make", accountId);
-        AuthService authService = (AuthService) x.get("auth");
 
         if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
           throw new AuthorizationException();
@@ -73,6 +77,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode:  `
         Long accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : 0;
+        accountId = oldObj instanceof Transaction ? ((Transaction) oldObj).getOutgoingAccount() : accountId;
 
         String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");
@@ -86,6 +91,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode:  `
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : 0;
+        accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         String permission = createPermission("Make", accountId);
         AuthService authService = (AuthService) x.get("auth");

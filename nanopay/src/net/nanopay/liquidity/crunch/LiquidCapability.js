@@ -66,9 +66,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*'
+    'foam.core.X',
+    'static foam.mlang.MLang.*',
+    'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Arrays'
   ],
 
   tableColumns: [
@@ -99,6 +103,20 @@ foam.CLASS({
       In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
       `
     },
+    {
+      name: 'permissionsGranted',
+      javaFactory: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add dashboard menu permission for account maker/approver
+        if ( getCanMakeAccount() && getCanApproveAccount() ) permissions.add("menu.read.liquid.dashboard");
+
+        // add approver menu permission for approvers
+        if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
+
+        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
+      `
+    }
   ],
 
   methods: [
@@ -111,25 +129,32 @@ foam.CLASS({
       an account in the accountTemplate map stored in the ucj.
       `,
       javaCode: `
-        String[] permissionComponents = permission.split(".");
-        if ( permissionComponents.length != 2 ) {
-          // the permission string was not generated properly, should never happen
+        if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
+
+        try {
+
+          X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
+          String[] permissionComponents = permission.split("\\\\.");
+          if ( permissionComponents.length != 2 ) {
+            // the permission string was not generated properly, should never happen
+            return false;
+          }
+          String permissionStr = permissionComponents[0];
+          Long outgoingAccountId = Long.parseLong(permissionComponents[1]);
+          if ( (Boolean) getProperty(permissionStr) ) {
+            UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX).find(AND(
+              EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
+              EQ(UserCapabilityJunction.TARGET_ID, getId())
+            ));
+            if ( ucj == null ) return false;
+
+            AccountTemplate template = (AccountTemplate) ucj.getData();
+            if ( template == null ) return false;
+
+            if ( template.hasAccount(x, outgoingAccountId) ) return true;
+          }
+        } catch ( java.lang.Exception e ) {
           return false;
-        }
-        String permissionStr = permissionComponents[0];
-        Long outgoingAccountId = Long.parseLong(permissionComponents[1]);
-
-        if ( (Boolean) getProperty(permissionStr) ) {
-          UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, getId())
-          ));
-          if ( ucj == null ) return false;
-
-          AccountTemplate template = (AccountTemplate) ucj.getData();
-          if ( template == null ) return false;
-
-          return template.hasAccount(x, outgoingAccountId);
         }
 
         return false;
@@ -144,6 +169,12 @@ foam.CLASS({
   name: 'GlobalLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
 
+  javaImports: [
+    'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Arrays'
+  ],
+
   tableColumns: [
     'id',
     'canViewRule',
@@ -156,10 +187,10 @@ foam.CLASS({
     'canMakeLiquiditysetting',
     'canApproveLiquiditysetting',
     'canViewCapability',
-    'canMakerCapability',
+    'canMakeCapability',
     'canApproveCapability',
     'canMakeUsercapabilityjunction',
-    'canApproverUsercapabilityjunction'
+    'canApproveUsercapabilityjunction'
   ],
 
   properties: [
@@ -173,7 +204,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canMakeLiquiditysetting' },
     { class: 'Boolean', name: 'canApproveLiquiditysetting' },
     { class: 'Boolean', name: 'canViewCapability' },
-    { class: 'Boolean', name: 'canMakerCapability' },
+    { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
     { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, // global role vs. account role maker/approver may be implied by whether there
     { class: 'Boolean', name: 'canApproveUsercapabilityjunction' }, //
@@ -187,6 +218,17 @@ foam.CLASS({
       an approver role.
       `
     },
+    {
+      name: 'permissionsGranted',
+      javaFactory: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add approver menu permission for approvers
+        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveUsercapabilityjunction() ) permissions.add("menu.read.liquid.approvals");
+
+        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
+      `
+    }
   ],
 
   methods: [
@@ -197,7 +239,11 @@ foam.CLASS({
       Returns true if that boolean is true.
       `,
       javaCode: `
-        return (Boolean) getProperty(permission);
+        try {
+          return (Boolean) getProperty(permission);
+        } catch ( java.lang.Exception e ) {
+          return false;
+        }
       `
     },
   ]

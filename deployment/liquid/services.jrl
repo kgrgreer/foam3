@@ -299,6 +299,7 @@ p({
         .setInnerDAO(x.get("localUserDAO"))
         // TODO: uncomment once new permissioning system gets implemented
         // .setDecorator(dao)
+        .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
         .setDeletedAware(false)
         .build();
   """,
@@ -414,6 +415,7 @@ p({
     .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")
+    .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("liquiditysetting").build())
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
     .build();
@@ -423,7 +425,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"liquidCapabilityDAO",
+  "name":"capabilityDAO",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
@@ -445,7 +447,7 @@ p({
   "serviceScript":"""
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.GlobalLiquidCapability.class);
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("liquidCapabilityDAO")).where(predicate))
+      .setInnerDAO((x.get("capabilityDAO")).where(predicate))
       .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .build();
@@ -460,7 +462,7 @@ p({
   "serviceScript":"""
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.class);
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("liquidCapabilityDAO")).where(predicate))
+      .setInnerDAO((x.get("capabilityDAO")).where(predicate))
       .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .build();
@@ -491,7 +493,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("userCapabilityJunction").build())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("usercapabilityjunction").build())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidUserCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
