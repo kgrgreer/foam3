@@ -5,6 +5,7 @@ foam.CLASS({
   implements: ['foam.core.Serializable'],
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -14,14 +15,10 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      return AND(
-        EQ(DOT(NEW_OBJ, INSTANCE_OF(AFEXTransaction.class)), true),
-        EQ(DOT(NEW_OBJ, AFEXTransaction.STATUS), TransactionStatus.SENT),
-        OR(
-          EQ(DOT(NEW_OBJ, AFEXTransaction.REFERENCE_NUMBER), null),
-          EQ(DOT(NEW_OBJ, AFEXTransaction.REFERENCE_NUMBER), "")
-        )
-      ).f(obj);
+      if ( ! (NEW_OBJ.f(obj) instanceof AFEXTransaction) ) return false;
+      AFEXTransaction afexTransaction = (AFEXTransaction) NEW_OBJ.f(obj);
+      return afexTransaction.getStatus() == TransactionStatus.SENT
+        && SafetyUtil.isEmpty( afexTransaction.getReferenceNumber() );
       `
     }
   ]
