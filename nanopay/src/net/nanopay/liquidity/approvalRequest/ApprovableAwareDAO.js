@@ -74,6 +74,7 @@ foam.CLASS({
       javaCode:`
       DAO requestingDAO;
       DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
+      Logger logger = (Logger) x.get("logger");
 
       if ( request.getDaoKey().equals("approvableDAO") ){
         DAO approvableDAO = (DAO) x.get("approvableDAO");
@@ -87,45 +88,23 @@ foam.CLASS({
 
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
 
-      List<GlobalLiquidCapability> capabilitiesWithAbility;
+      CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
 
-      switch(modelName){
-        case "Account":
-          // there should be only one of each base role but we include this incase the id changes or duplicate names are used
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
-            )
-          ).select(new ArraySink())).getArray();
-          break;
-        default:
-          capabilitiesWithAbility = null;
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1);
+
+      if ( approverIds.size() <= 0 ) {
+        logger.error("No Approvers exist for the model: " + modelName);
+        throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
 
-      if ( capabilitiesWithAbility != null ){
-        // makers cannot approve their own requests even if they are an approver for the account
-        // however they will receive an approvalRequest which they can only view and not approve or reject
-        // so that they can keep track of the status of their requests
-        sendSingleRequest(x, request, request.getInitiatingUser());
+      // makers cannot approve their own requests even if they are an approver for the account
+      // however they will receive an approvalRequest which they can only view and not approve or reject
+      // so that they can keep track of the status of their requests
+      sendSingleRequest(x, request, request.getInitiatingUser());
+      approverIds.remove(request.getInitiatingUser());
 
-        // using a set because we only care about unique approver ids
-        Set<Long> uniqueApprovers = new HashSet<>();
-
-        CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
-
-        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
-          GlobalLiquidCapability currentCapability = (GlobalLiquidCapability) capabilitiesWithAbility.get(i);
-          uniqueApprovers.addAll(ucjQueryService.getApproversByLevel(currentCapability.getId(),1));
-        }
-
-        // Should be an array of Long
-        Object[] approversArray = uniqueApprovers.toArray();
-
-        for ( int j = 0; j < approversArray.length; j++ ){
-          if ( ! SafetyUtil.equals(request.getInitiatingUser(), approversArray[j]) ){
-            sendSingleRequest(getX(), request, (Long) approversArray[j]);
-          }
-        }
+      for ( int i = 0; i < approverIds.size(); i++ ){
+        sendSingleRequest(getX(), request, approverIds.get(i));
       }
       `
     },
@@ -133,6 +112,7 @@ foam.CLASS({
       name: 'remove_',
       javaCode: `
         User user = (User) x.get("user");
+        Logger logger = (Logger) x.get("logger");
 
         // system and admins override the approval process
         if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.remove_(x,obj);
@@ -164,7 +144,6 @@ foam.CLASS({
         } 
         
         if ( approvedObjRemoveRequests.size() > 1 ){
-          Logger logger = (Logger) x.get("logger");
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -189,6 +168,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       User user = (User) x.get("user");
+      Logger logger = (Logger) x.get("logger");
 
       // system and admins override the approval process
       if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
@@ -227,6 +207,7 @@ foam.CLASS({
         } 
         
         if ( approvedObjRemoveRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
@@ -272,13 +253,13 @@ foam.CLASS({
         } 
         
         if ( approvedObjCreateRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
 
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableAwareObj.getApprovableKey())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.CREATE)
           .setInitiatingUser(((User) x.get("user")).getId())
@@ -327,6 +308,7 @@ foam.CLASS({
         }
 
         if ( approvedObjUpdateRequests.size() > 1 ){
+          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         }
 
@@ -339,7 +321,6 @@ foam.CLASS({
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.UPDATE)
           .setInitiatingUser(((User) x.get("user")).getId())

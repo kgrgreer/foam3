@@ -39,7 +39,7 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'roleId',
+          name: 'modelToApprove',
           type: 'String'
         },
         {

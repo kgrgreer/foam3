@@ -19,12 +19,15 @@ foam.CLASS({
     'foam.core.Detachable',
     'java.util.HashMap',
     'foam.core.FObject', 
+    'java.util.Set',
+    'java.util.HashSet',
     'foam.dao.Sink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.liquidity.crunch.AccountTemplate',
+    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability'
 
   ],
 
@@ -260,7 +263,7 @@ foam.CLASS({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'roleId',
+          name: 'modelToApprove',
           type: 'String'
         },
         {
@@ -273,7 +276,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      String cacheKey = 'r' + String.valueOf(accountId) + 'a' + String.valueOf(accountId) + 'l' + level;
+      String cacheKey = 'm' + String.valueOf(accountId) + 'a' + String.valueOf(accountId) + 'l' + level;
       String cache = "getApproversByLevelCache";
 
       Map<String,List> getApproversByLevelCache = (Map<String,List>) getCache().get(cache);
@@ -299,24 +302,44 @@ foam.CLASS({
           }
         };
 
-
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) getX().get("liquidCapabilityDAO");
 
-        List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
-        List approversFilteredByAccountAndLevel = new ArrayList();
+        modelToApprove = modelToApprove.toLowerCase();
 
-        for (int i = 0; i < ucjsNotFilteredByAccount.size(); i++) {
-          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
+        List<AccountBasedLiquidCapability> capabilitiesWithAbility;
 
-          AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
-
-          if (accountId == 0 && level == 0) approversFilteredByAccountAndLevel.add(currentUCJ.getSourceId());
-          else if (accountTemplate.hasAccountByApproverLevel(getX(), accountId, level))
-            approversFilteredByAccountAndLevel.add(currentUCJ.getSourceId());
+        switch(modelToApprove){
+          case "account":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "transaction":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_TRANSACTION, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          default:
+            capabilitiesWithAbility = null;
         }
 
-        return approversFilteredByAccountAndLevel;
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApproversForLevel = new HashSet<>();
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbility)).select(new ArraySink())).getArray();
+
+        for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+          AccountTemplate currentAccountTemplate = (AccountTemplate) currentUCJ.getData();
+
+          if (  currentAccountTemplate.hasAccountByApproverLevel(getX(), accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+        }
+
+        ucjDAO.listen(purgeSink, MLang.TRUE);
+
+        return new ArrayList(uniqueApproversForLevel);
 
       } else {
         return getApproversByLevelCache.get(cacheKey);

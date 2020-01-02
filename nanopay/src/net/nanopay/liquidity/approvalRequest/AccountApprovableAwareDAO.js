@@ -63,10 +63,12 @@ foam.CLASS({
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
+      Logger logger = (Logger) x.get("logger");
+
       // AccountRoleApprovalRequest and set the outgoing account
       AccountRoleApprovalRequest accountRequest = (AccountRoleApprovalRequest) request.fclone();
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
-
+  
       if ( request.getOperation() == Operations.CREATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountCreate(x));
       } else if ( request.getOperation() == Operations.UPDATE ) {
@@ -74,62 +76,42 @@ foam.CLASS({
       } else if ( request.getOperation() == Operations.REMOVE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountDelete(x));
       } else {
+        logger.error("Using an invalid operation!");
         throw new RuntimeException("Using an invalid operation!");
       }
-
+  
       DAO requestingDAO;
       DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
-
+  
       if ( request.getDaoKey().equals("approvableDAO") ){
         DAO approvableDAO = (DAO) x.get("approvableDAO");
-
+  
         Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
-
+  
         requestingDAO = (DAO) x.get(approvable.getDaoKey());
       } else {
         requestingDAO = (DAO) x.get(request.getDaoKey());
       }
-
+  
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-
-      List<AccountBasedLiquidCapability> capabilitiesWithAbility;
-
-      switch(modelName){
-        case "Account":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.AND(
-              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
-            )
-          ).select(new ArraySink())).getArray();
-          break;
-        default:
-          capabilitiesWithAbility = null;
+  
+      CachedAccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+  
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, accountRequest.getOutgoingAccount(),1);
+  
+      if ( approverIds.size() <= 0 ) {
+        logger.log("No Approvers exist for the model: " + modelName);
+        throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
-
-      if ( capabilitiesWithAbility != null ){
-        // makers cannot approve their own requests even if they are an approver for the account
-        // however they will receive an approvalRequest which they can only view and not approve or reject
-        // so that they can keep track of the status of their requests
-        sendSingleRequest(x, accountRequest, request.getInitiatingUser());
-
-        // using a set because we only care about unique approver ids
-        Set<Long> uniqueApprovers = new HashSet<>();
-
-        AccountUCJQueryService accountUCJQueryService = new CachedAccountUCJQueryService();
-
-        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
-          AccountBasedLiquidCapability currentCapability = (AccountBasedLiquidCapability) capabilitiesWithAbility.get(i);
-          uniqueApprovers.addAll(accountUCJQueryService.getApproversByLevel(currentCapability.getId(),accountRequest.getOutgoingAccount(),1));
-        }
-
-        // Should be an array of Long
-        Object[] approversArray = uniqueApprovers.toArray();
-
-        for ( int j = 0; j < approversArray.length; j++ ){
-          if ( ! SafetyUtil.equals(request.getInitiatingUser(), approversArray[j]) ){
-            sendSingleRequest(getX(), accountRequest, (Long) approversArray[j]);
-          }
-        }
+  
+      // makers cannot approve their own requests even if they are an approver for the account
+      // however they will receive an approvalRequest which they can only view and not approve or reject
+      // so that they can keep track of the status of their requests
+      sendSingleRequest(x, request, request.getInitiatingUser());
+      approverIds.remove(request.getInitiatingUser());
+  
+      for ( int i = 0; i < approverIds.size(); i++ ){
+        sendSingleRequest(getX(), request, approverIds.get(i));
       }
       `
     }

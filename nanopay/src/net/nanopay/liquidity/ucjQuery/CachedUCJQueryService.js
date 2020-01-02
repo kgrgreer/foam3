@@ -15,14 +15,16 @@ foam.CLASS({
     'java.util.Map',
     'foam.core.Detachable',
     'java.util.HashMap',
+    'java.util.Set',
+    'java.util.HashSet',
     'foam.core.FObject',
     'foam.dao.Sink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.liquidity.crunch.AccountTemplate',
-    'net.nanopay.liquidity.crunch.ApproverLevel'
+    'net.nanopay.liquidity.crunch.ApproverLevel',
+    'net.nanopay.liquidity.crunch.GlobalLiquidCapability'
   ],
 
   properties: [
@@ -168,7 +170,7 @@ foam.CLASS({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'roleId',
+          name: 'modelToApprove',
           type: 'String'
         },
         {
@@ -176,8 +178,8 @@ foam.CLASS({
           type: 'Integer'
         }
       ],
-      javaCode: `
-      String cacheKey = 'r' + roleId + 'l' + level;
+      javaCode: `  
+      String cacheKey = 'm' + modelToApprove + 'l' + level;
       String cache = "getApproversByLevelCache";
 
       Map<String, List> getApproversByLevelCache = (Map<String, List>) getCache().get(cache);
@@ -205,19 +207,57 @@ foam.CLASS({
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) getX().get("liquidCapabilityDAO");
 
-        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
-        List approverIdsForLevel = new ArrayList();
+        modelToApprove = modelToApprove.toLowerCase();
 
-        for (int i = 0; i < ucjsForApprovers.size(); i++) {
-          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+        List<GlobalLiquidCapability> capabilitiesWithAbility;
 
-          ApproverLevel approverLevel = (ApproverLevel) currentUCJ.getData();
-
-          if (approverLevel.getApproverLevel() == level) approverIdsForLevel.add(currentUCJ.getSourceId());
+        switch(modelToApprove){
+          case "capability":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "businessrule":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "liquiditysettings":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTING, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "user":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "usercapabilityjunction":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USERCAPABILITYJUNCTION, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          default:
+            capabilitiesWithAbility = null;
         }
 
-        return approverIdsForLevel;
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApproversForLevel = new HashSet<>();
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbility)).select(new ArraySink())).getArray();
+
+        for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+          ApproverLevel currentApproverLevel = (ApproverLevel) currentUCJ.getData();
+
+          if ( currentApproverLevel.getApproverLevel() == level ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+        }
+
+        ucjDAO.listen(purgeSink, MLang.TRUE);
+
+        return new ArrayList(uniqueApproversForLevel);
 
       } else {
         return getApproversByLevelCache.get(cacheKey);
