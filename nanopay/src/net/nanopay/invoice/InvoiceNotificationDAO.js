@@ -261,6 +261,8 @@ foam.CLASS({
 
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
+
+        //overwrite rupee symbol using ASCII code to prevent it from rendering as "?" in emails
         if( invoice.getDestinationCurrency().equals("INR") ) {
           amount = "&#8377;" + amount.substring(1);
         }
