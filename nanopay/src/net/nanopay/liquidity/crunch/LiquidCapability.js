@@ -66,10 +66,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
     'foam.core.X',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+    'java.util.List',
+    'java.util.ArrayList',
+    'java.util.Arrays'
   ],
 
   tableColumns: [
@@ -100,6 +103,20 @@ foam.CLASS({
       In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
       `
     },
+    {
+      name: 'permissionsGranted',
+      javaFactory: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add dashboard menu permission for account maker/approver
+        if ( getCanMakeAccount() && getCanApproveAccount() ) permissions.add("menu.read.liquid.dashboard");
+
+        // add approver menu permission for approvers
+        if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
+
+        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
+      `
+    }
   ],
 
   methods: [
@@ -112,6 +129,7 @@ foam.CLASS({
       an account in the accountTemplate map stored in the ucj.
       `,
       javaCode: `
+        if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
 
@@ -163,10 +181,10 @@ foam.CLASS({
     'canMakeLiquiditysetting',
     'canApproveLiquiditysetting',
     'canViewCapability',
-    'canMakerCapability',
+    'canMakeCapability',
     'canApproveCapability',
     'canMakeUsercapabilityjunction',
-    'canApproverUsercapabilityjunction'
+    'canApproveUsercapabilityjunction'
   ],
 
   properties: [
@@ -180,7 +198,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canMakeLiquiditysetting' },
     { class: 'Boolean', name: 'canApproveLiquiditysetting' },
     { class: 'Boolean', name: 'canViewCapability' },
-    { class: 'Boolean', name: 'canMakerCapability' },
+    { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
     { class: 'Boolean', name: 'canMakeUsercapabilityjunction' }, // global role vs. account role maker/approver may be implied by whether there
     { class: 'Boolean', name: 'canApproveUsercapabilityjunction' }, //
