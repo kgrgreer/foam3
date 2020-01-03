@@ -933,11 +933,11 @@ foam.CLASS({
       name: 'addLineItems',
       code: function addLineItems(forward, reverse) {
         if ( Array.isArray(forward) && forward.length > 0 ) {
-          this.lineItems = copyLineItems(forward, this.lineItems);
+          this.lineItems = this.copyLineItems(forward, this.lineItems);
         }
 
         if ( Array.isArray(reverse) && reverse.length > 0 ) {
-          this.reverseLineItems = copyLineItems(reverse, this.reverseLineItems);
+          this.reverseLineItems = this.copyLineItems(reverse, this.reverseLineItems);
         }
       },
       args: [
@@ -1125,7 +1125,7 @@ foam.CLASS({
     javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
+  }
 ],
   actions: [
     {

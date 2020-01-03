@@ -344,7 +344,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
           if(!userIds.contains(newUserId)) {
             ArraySink userAcceptanceDocuments = (ArraySink) userAcceptanceDocumentDAO.where(
-              EQ(UserAcceptanceDocument.USER, newUserId)
+              AND(
+                EQ(UserAcceptanceDocument.USER, newUserId),
+                EQ(UserAcceptanceDocument.BUSINESS, business.getId())
+              )
             ).select(new ArraySink());
             java.util.List<UserAcceptanceDocument> documents = userAcceptanceDocuments.getArray();
 
@@ -679,15 +682,16 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String businessName = (business.getBusinessName()).replace("/", "");
 
-    BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
-      .find(AND(
+    ArraySink bankAccountsSink = new ArraySink();
+    accountDAO.orderBy(DESC(BankAccount.CREATED))
+      .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-        EQ(Account.OWNER, business.getId())));
+        EQ(Account.OWNER, business.getId()),
+        NEQ(Account.DELETED, true))).select(bankAccountsSink);
 
-    if ( bankAccount == null ) {
-      return null;
-    }
+    java.util.List<BankAccount> bankAccounts =  bankAccountsSink.getArray();
+    if ( bankAccounts.size() < 1 ) return null;
 
     String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
@@ -695,6 +699,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       Document document = new Document();
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
       document.open();
+      SimpleDateFormat rgdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      String reportGeneratedDate = rgdf.format(new Date());
+      document.add(new Paragraph("Business ID: " + business.getId()));
+      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+      document.add(Chunk.NEWLINE);
+      for ( BankAccount bankAccount :  bankAccounts) {
       document.add(new Paragraph("Bank Information"));
 
       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
@@ -722,8 +732,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       long randomDepositAmount = bankAccount.getRandomDepositAmount();
       Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
-      SimpleDateFormat rgdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-      String reportGeneratedDate = rgdf.format(new Date());
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
@@ -792,9 +800,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         document.add(img);
       }
       document.add(Chunk.NEWLINE);
-      document.add(new Paragraph("Business ID: " + business.getId()));
-      document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-
+    }
       document.close();
       writer.close();
 
@@ -805,7 +811,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     return null;
   }
-
 
   private void getPlaidDetails(X x, USBankAccount bankAccount, List list) {
     DAO plaidReportDAO = (DAO) x.get("plaidResultReportDAO");

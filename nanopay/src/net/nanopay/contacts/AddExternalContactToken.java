@@ -27,7 +27,7 @@ public class AddExternalContactToken extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User externalContact = (User) obj;
+    User externalContact = (User) obj.fclone();
     if ( externalContact instanceof Contact ) {
       DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
 

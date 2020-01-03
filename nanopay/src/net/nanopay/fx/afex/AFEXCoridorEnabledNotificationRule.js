@@ -16,13 +16,13 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
     'javax.security.auth.AuthPermission',
     'net.nanopay.model.Business',
-    'static foam.mlang.MLang.EQ'    
+    'static foam.mlang.MLang.EQ'
 
   ],
 
@@ -37,15 +37,15 @@ foam.CLASS({
         public void execute(X x) {
 
           Logger logger = (Logger) x.get("logger");
-          
+
           if ( ! (obj instanceof AFEXBusiness) ) {
             return;
           }
-          
+
           AFEXBusiness afexBusiness = (AFEXBusiness) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-          
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
+
+          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
           if ( null != business ) {
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
@@ -82,10 +82,19 @@ foam.CLASS({
       String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
       args.put("business", business.getBusinessName());
       args.put("toCurrency", toCurrency);
-      args.put("toCountry", toCountry); 
-      args.put("link",   url + "#sme.main.dashboard");     
+      args.put("toCountry", toCountry);
+      args.put("link",   url + "#sme.main.dashboard");
       try {
-        EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
+        Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
+          .setBody("AFEX Business has been created and corridor has been enabled.")
+          .setNotificationType("AFEXBusinessCreatedCorridorEnabled")
+          .setEmailIsEnabled(true)
+          .setEmailArgs(args)
+          .setEmailName("international-payments-enabled-notification")
+          .build();
+
+        business.doNotify(x, internationalPaymentsEnabledNotification);
+
       } catch (Throwable t) {
         String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
         ((Logger) x.get("logger")).error(msg, t);
