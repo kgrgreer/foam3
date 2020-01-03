@@ -255,9 +255,13 @@ foam.CLASS({
           if ( currentApproverLevel.getApproverLevel() == level ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
         }
 
+        List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
+
+        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelList);
+
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
-        return new ArrayList(uniqueApproversForLevel);
+        return uniqueApproversForLevelList;
 
       } else {
         return getApproversByLevelCache.get(cacheKey);
