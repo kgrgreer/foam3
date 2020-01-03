@@ -136,8 +136,7 @@ p({
           .build())
         .build())
       .build();
-    AFEXTransactionDAO afex = new net.nanopay.fx.afex.AFEXTransactionDAO(x, aware);
-    AscendantFXTransactionDAO ascendant = new net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO(x, afex);
+    AscendantFXTransactionDAO ascendant = new net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO(x, aware);
     DAO saved = new net.nanopay.tx.SaveChainedTransactionDAO(x, ascendant);
     DAO child = new CompletedTransactionDAO.Builder(x)
       .setDelegate(saved)
