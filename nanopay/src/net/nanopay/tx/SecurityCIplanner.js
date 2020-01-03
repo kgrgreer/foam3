@@ -20,7 +20,13 @@ foam.CLASS({
     'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
-
+  constants: [
+    {
+      name: 'SECURITY_TRUST_ID',
+      type: 'Long',
+      value: 21
+    }
+  ],
   methods: [
     {
       name: 'applyAction',
@@ -36,7 +42,7 @@ foam.CLASS({
           SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
           plan.copyFrom(tx);
           DAO accountDAO = (DAO) x.get("accountDAO");
-          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount.class));
+          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(SECURITY_TRUST_ID);
           plan.setName("Security CI of "+txq.getSourceUnit());
           plan.setSourceCurrency(txq.getSourceUnit());
           plan.setDestinationCurrency(txq.getDestinationUnit());
@@ -61,7 +67,7 @@ foam.CLASS({
           SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
           plan.copyFrom(tx);
           DAO accountDAO = (DAO) x.get("accountDAO");
-          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(INSTANCE_OF(SecuritiesTrustAccount.class));
+          SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(SECURITY_TRUST_ID);
 
           plan.setSourceCurrency(txq.getSourceUnit());
           plan.setDestinationCurrency(txq.getDestinationUnit());
