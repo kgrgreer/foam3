@@ -26,7 +26,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.onboarding.model.Questionnaire'
+    'net.nanopay.onboarding.model.Questionnaire',
+    'net.nanopay.model.PersonalIdentification'
   ],
 
   constants: [
@@ -199,6 +200,9 @@ foam.CLASS({
       documentation: `A placeholder for the photo identification image, such as a
         passport, of the individual person, or real user.
       `,
+      factory: function() {
+        return this.PersonalIdentification.create();
+      },
       section: 'personal'
     },
     {

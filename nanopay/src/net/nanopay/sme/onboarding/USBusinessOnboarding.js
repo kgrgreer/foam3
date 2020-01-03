@@ -130,7 +130,7 @@ foam.CLASS({
       name: 'signingOfficerQuestionSection',
       title: 'Are you considered a signing officer at your company?',
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…',
-      permissionRequired: true
+      //permissionRequired: true
     },
     {
       name: 'personalInformationSection',
