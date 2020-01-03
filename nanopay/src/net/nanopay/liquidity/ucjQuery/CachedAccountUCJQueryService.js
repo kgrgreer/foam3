@@ -109,6 +109,8 @@ foam.CLASS({
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
+        getRolesCache.put(cacheKey, rolesFilteredByAccount);
+
         return rolesFilteredByAccount;
 
       } else {
@@ -176,6 +178,8 @@ foam.CLASS({
         }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
+
+        getUsersCache.put(cacheKey, usersFilteredByAccount);
 
         return usersFilteredByAccount;
 
@@ -248,6 +252,8 @@ foam.CLASS({
             if (!accounts.contains(accountArray[j])) accounts.add(accountArray[j]);
           }
         }
+
+        getAccountsCache.put(cacheKey, accounts);
 
         return accounts;
 
@@ -339,7 +345,11 @@ foam.CLASS({
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
-        return new ArrayList(uniqueApproversForLevel);
+        List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
+
+        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelList);
+
+        return uniqueApproversForLevelList;
 
       } else {
         return getApproversByLevelCache.get(cacheKey);
