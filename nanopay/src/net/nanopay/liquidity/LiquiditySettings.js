@@ -87,6 +87,9 @@ foam.CLASS({
           .setEnabled(false)
           .build();
       `,
+      tableCellFormatter: function(value, obj, id) {
+        this.add(value.threshold);
+      },
     },
     {
       class: 'FObjectProperty',
@@ -110,6 +113,9 @@ foam.CLASS({
           .setEnabled(false)
           .build();
       `,
+      tableCellFormatter: function(value, obj, id) {
+        this.add(value.threshold);
+      },
     },
     {
       class: 'DateTime',
