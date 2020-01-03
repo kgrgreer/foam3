@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.user',
-  name: 'LiquidUserCreationView',
+  name: 'LiquidUserDetailView',
   extends: 'foam.u2.detail.SectionedDetailView',
 
   // TODO: Remove this when CRUNCH is capable of handling this via capabilities.

@@ -885,7 +885,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOCreateView' },
-  { name: 'net/nanopay/liquidity/ui/user/LiquidUserCreationView' },
+  { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
