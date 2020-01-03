@@ -438,8 +438,9 @@ foam.CLASS({
           checkTrusty(x,ci);
 
           // Complete the cash in transaction
-          Transaction tx = (Transaction) transactionDAO.put(ci).fclone();
+          Transaction tx = (Transaction) transactionDAO.put(ci);
           if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
+            tx = (Transaction) tx.fclone();
             tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
             transactionDAO.put(tx);
           }
