@@ -478,7 +478,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localUserDAO",
   "lazy": false,
-  "description": "Server side userDAO wrapped in decorators.",
+  "description": "Stores instances of User. Since it is not served (it's accessible from the server side only) it doesn`t have authorization decorator",
   "serviceScript":
   """
     dao = new net.nanopay.contacts.AddExternalContactToken(x, null);
@@ -652,7 +652,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "paymentCodeDAO",
   "serve": true,
-  "serviceScript": 
+  "serviceScript":
   """
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
