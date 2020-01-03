@@ -6,10 +6,6 @@ foam.CLASS({
   // TODO: Remove this when CRUNCH is capable of handling this via capabilities.
   documentation: 'A view for creating a Liquid user.',
 
-  imports: [
-    'countryDAO'
-  ],
-
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User'
