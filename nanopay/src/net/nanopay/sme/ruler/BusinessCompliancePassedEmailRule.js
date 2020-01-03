@@ -9,6 +9,7 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
+      'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
       'foam.nanos.auth.User',
@@ -34,7 +35,8 @@ foam.CLASS({
             if( ! businessAddress.getCountryId().equals("US") ){
               Logger                  logger       = (Logger) x.get("logger");
               Group                   group        = business.findGroup(x);
-              String                  url          = group.getUrl().replaceAll("/$", "");
+              AppConfig               appConfig    = group.getAppConfig(x);
+              String                  url          = appConfig.getUrl().replaceAll("/$", "");
               EmailMessage            message      = new EmailMessage();
               Map<String, Object>     args         = new HashMap<>();
 
