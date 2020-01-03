@@ -1022,6 +1022,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
   { name: 'net/nanopay/meter/report/TransactionReport' },
   { name: 'net/nanopay/meter/report/TransactionReportView' },
+  { name: 'net/nanopay/meter/report/PaymentReport' },
+  { name: 'net/nanopay/meter/report/PaymentReportDAO' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
