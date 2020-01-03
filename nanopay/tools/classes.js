@@ -720,6 +720,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.NotifyIdentityMindResponseError',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
