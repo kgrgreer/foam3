@@ -573,18 +573,10 @@ foam.CLASS({
       section: 'homeAddressSection',
       label: '',
       autoValidate: false,
-      validationPredicates: [
-        {
-          args: ['adminPhone', 'signingOfficer'],
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false);
-            },
-          errorString: 'Please enter phone number'
-        }
-      ],
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       },
+      createMode: 'RW'
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
