@@ -649,7 +649,24 @@ foam.CLASS({
       label: 'First Name',
       width: 100,
       gridColumns: 6,
-      minLength: 1
+      validationPredicates: [
+        {
+          args: ['adminFirstName', 'signingOfficer'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+                e.GT(
+                  foam.mlang.StringLength.create({
+                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_FIRST_NAME
+                  }), 0)
+              ),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true)
+            );
+          },
+          errorString: 'Please enter first name with least 1 character.'
+        }
+      ]
     },
     {
       class: 'String',

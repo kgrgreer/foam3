@@ -286,7 +286,11 @@ foam.CLASS({
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
         `,
-      section: 'business'
+      section: 'business',
+      factory: function() {
+        return this.SuggestedUserTransactionInfo.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
     },
     {
       class: 'String',
