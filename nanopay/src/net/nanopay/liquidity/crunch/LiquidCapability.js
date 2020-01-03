@@ -147,9 +147,10 @@ foam.CLASS({
             ));
             if ( ucj == null ) return false;
 
-            AccountApproverMap map = (AccountApproverMap) ucj.getData();
-            if ( map == null ) return false;
+            foam.core.FObject ucjdata =  (foam.core.FObject) ucj.getData();
+            if ( ucjdata == null || ! ( ucjdata instanceof AccountApproverMap ) ) return false;
 
+            AccountApproverMap map = (AccountApproverMap) ucjdata;
             if ( map.hasAccount(x, outgoingAccountId) ) return true;
           }
         } catch ( java.lang.Exception e ) {

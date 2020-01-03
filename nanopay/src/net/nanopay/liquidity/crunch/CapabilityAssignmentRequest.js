@@ -102,27 +102,15 @@ foam.CLASS({
             this.EQ(this.UserCapabilityJunction.SOURCE_ID, userId), 
             this.EQ(this.UserCapabilityJunction.TARGET_ID, capabilityId)
           ));
-        
-        // if ucj is not null, add new capabilityAccountTemplate to old template of ucj
-        if ( ucj != null ) {
-          var oldTemplate = ucj.data;
-          var newMap = capabilityAccountTemplate.accounts;
-
-          var keySetIterator = newMap.keys();
-          var newAccountToAdd = keySetIterator.next().value;
-          while ( newAccountToAdd ) {
-            oldTemplate.addAccount(newAccountToAdd, newMap.get(newAccountToAdd));
-            newAccountToAdd = keySetIterator.next().value;
-          }
-
-          ucj.data = oldTemplate;
-        } else { // else make a new ucj
-          ucj = this.UserCapabilityJunction.create({
-            sourceId: userId, 
-            targetId: capabilityId,
-            data: capabilityAccountTemplate
-          })
-        }
+          
+        // todo ruby there should be a rule that calls mergeMaps if ucj is not null
+        // or do this on front-end, whichever
+        ucj = this.UserCapabilityJunction.create({
+          sourceId: userId, 
+          targetId: capabilityId,
+          data: capabilityAccountTemplate
+        });
+        // }
 
         // (re)put ucj into dao
         await this.userCapabilityJunctionDAO.put_(this.__subContext__, ucj);
@@ -130,8 +118,9 @@ foam.CLASS({
     },
     {
       name: 'assignUserGlobalCapability',
-      code: async function assignUserGlobalCapability(userId, capabilityId, approverLevel = 1) {
+      code: async function assignUserGlobalCapability(userId, capabilityId, approverLevel) {
 
+        approverLevel = approverLevel < 1 ? 1 : approverLevel;
         var approverLevelObj = this.ApproverLevel.create({ approverLevel: approverLevel });
 
         var ucj = this.UserCapabilityJunction.create({

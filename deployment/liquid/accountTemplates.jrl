@@ -7,7 +7,10 @@ p({
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
       "isCascading":true,
       "isIncluded":true,
-      "approverLevel":1
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
     }
   }
 });
