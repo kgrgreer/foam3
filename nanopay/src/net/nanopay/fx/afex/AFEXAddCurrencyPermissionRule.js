@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
@@ -108,7 +109,8 @@ foam.CLASS({
         Map<String, Object>  args           = new HashMap<>();
         DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
         Group                group          = business.findGroup(x);
-        String               url            = group.getUrl().replaceAll("/$", "");
+        AppConfig            appConfig      = group.getAppConfig(x);
+        String               url            = appConfig.getUrl().replaceAll("/$", "");
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
