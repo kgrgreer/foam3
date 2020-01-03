@@ -31,6 +31,11 @@ foam.CLASS({
           .setDelegate(new foam.dao.MDAO(net.nanopay.tx.model.Transaction.getOwnClassInfo()))
           .build();
 
+        x = x.put("localUserDAO", new foam.nanos.auth.AuthorizationDAO.Builder(x)
+          .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer(foam.nanos.auth.User.class.getSimpleName().toLowerCase()))
+          .setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()))
+          .build());
+
         // create user
         foam.nanos.auth.User user = new foam.nanos.auth.User.Builder(x)
           .setId(1000)
@@ -38,6 +43,15 @@ foam.CLASS({
           .setLastName("Eaton")
           .setEmail("kirk@nanopay.net")
           .build();
+        ((foam.dao.DAO) x.get("localUserDAO")).put(user);
+
+        user = new foam.nanos.auth.User.Builder(x)
+          .setId(1001)
+          .setFirstName("Kirk1")
+          .setLastName("Eaton1")
+          .setEmail("kirk1@nanopay.net")
+          .build();
+        ((foam.dao.DAO) x.get("localUserDAO")).put(user);
 
         net.nanopay.tx.model.Transaction tx = new net.nanopay.tx.model.Transaction.Builder(x)
           .setId(java.util.UUID.randomUUID().toString())
