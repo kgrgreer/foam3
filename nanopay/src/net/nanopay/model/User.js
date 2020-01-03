@@ -26,7 +26,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.onboarding.model.Questionnaire'
+    'net.nanopay.onboarding.model.Questionnaire',
+    'net.nanopay.model.PersonalIdentification'
   ],
 
   constants: [
@@ -36,7 +37,7 @@ foam.CLASS({
       value: 70
     }
   ],
-  
+
   tableColumns: [
     'id',
     'type',
@@ -149,13 +150,6 @@ foam.CLASS({
       section: 'business'
     },
     {
-      class: 'String',
-      name: 'jobTitle',
-      label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.',
-      section: 'business'
-    },
-    {
       class: 'Boolean',
       name: 'welcomeEmailSent',
       documentation: 'Determines whether a welcome email has been sent to the User.',
@@ -206,6 +200,10 @@ foam.CLASS({
       documentation: `A placeholder for the photo identification image, such as a
         passport, of the individual person, or real user.
       `,
+      factory: function() {
+        return this.PersonalIdentification.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
       section: 'personal'
     },
     {
