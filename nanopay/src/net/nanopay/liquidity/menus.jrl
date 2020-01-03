@@ -50,7 +50,18 @@ p({
   "order": 700
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"liquid.fileUpload","label":"File Upload","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.gs.GSFileUploadScreen"}},"order":800})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.fileUpload",
+  "label":"File Upload",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"net.nanopay.tx.gs.GSFileUploadScreen"
+    }
+  },
+  "order":800
+})
 
 // Business Rules
 p({"class":"foam.nanos.menu.Menu","id":"liquid.rules","label":"Business Rules","handler":{"class":"foam.nanos.menu.SubMenu"},"order":2000})

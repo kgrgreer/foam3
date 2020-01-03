@@ -83,8 +83,9 @@ foam.CLASS({
       },
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.script.CsvUploadScript',
       name: 'scriptToUse',
-      class: 'net.nanopay.script.CsvUploadScript'
     },
     {
       name: 'csv'
@@ -119,7 +120,7 @@ foam.CLASS({
       if ( this.csv ) this.scriptToUse.csv = this.csv;
     })
   },
-    function initE(){
+    function initE() {
       var self = this;
       var timeout = setInterval(() => {
         this.ProgressBarDAO.find(this.id_).then((data) => {
@@ -165,8 +166,7 @@ foam.CLASS({
                .end()
             .end()
           .end()
-        .end()
-
+        .end();
     }
   ],
 
@@ -174,7 +174,7 @@ foam.CLASS({
     {
       name: 'process',
       code: function() {
-        if (this.scriptToUse && this.csv){
+        if ( this.scriptToUse && this.csv ) {
           this.scriptToUse.progressId = foam.uuid.randomGUID();
           this.id_ = this.scriptToUse.progressId;
           console.log(this.id_+ " :lol look: "+ this.scriptToUse.progressId);
