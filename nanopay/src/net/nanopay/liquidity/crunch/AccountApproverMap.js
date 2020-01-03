@@ -109,11 +109,11 @@ foam.CLASS({
       javaType: 'Boolean',
       code: function hasAccountByApproverLevel(x, accountId, level) {
         var map = this.accounts;
-        return map && accountId.toString() in map && map[accountId.toString()].approverLevel.approverLevel === level;
+        return map && accountId.toString() in map && map[accountId.toString()].approverLevel === level;
       },
       javaCode: `
       Map<String, ApproverLevel> map = getAccounts();
-      return map != null && map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel().getApproverLevel() == level;
+      return map != null && map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel() == level;
       `
     }
   ]

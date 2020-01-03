@@ -139,7 +139,7 @@ foam.CLASS({
             return false;
           }
           String permissionStr = permissionComponents[0];
-          Long outgoingAccountId = Long.parseLong(permissionComponents[1]);
+          String outgoingAccountId = permissionComponents[1];
           if ( (Boolean) getProperty(permissionStr) ) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX).find(AND(
               EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),

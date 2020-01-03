@@ -19,13 +19,13 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  properties: [  
-    {
-      name: 'accounts',
-      class: 'Map',
-      javaType: 'java.util.Map<String, CapabilityAccountData>',
-    }
-  ],
+  // properties: [  
+  //   {
+  //     name: 'accounts',
+  //     class: 'Map',
+  //     javaType: 'java.util.Map<String, CapabilityAccountData>',
+  //   }
+  // ],
 
   methods: [
     // add logic from rule in here

@@ -23,7 +23,7 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'Map',
-      javaType: 'java.util.Map<String, AccountData>',
+      // javaType: 'java.util.Map<String, AccountData>',
     }
   ],
 });

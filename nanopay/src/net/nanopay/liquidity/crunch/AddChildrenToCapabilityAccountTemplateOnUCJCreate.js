@@ -46,7 +46,7 @@ foam.CLASS({
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             if ( ! ( ucj.getData() instanceof CapabilityAccountTemplate ) ) return;
 
-            Map<String, CapabilityAccountData> map = ((CapabilityAccountTemplate) ucj.getData()).getAccounts();oo
+            Map<String, CapabilityAccountData> map = ((CapabilityAccountTemplate) ucj.getData()).getAccounts();
             Set<String> accountIds = map.keySet();
 
             for ( String accountId : accountIds ) {
@@ -54,7 +54,7 @@ foam.CLASS({
             }
 
             CapabilityAccountTemplate template = ((CapabilityAccountTemplate) ucj.getData());
-            template.setAccounts(map);
+            template.setAccounts((Map<String, CapabilityAccountData>) map);
 
             ucj.setData(template);
             DAO dao = (DAO) x.get("capabilityAccountTemplateDAO");
