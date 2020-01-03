@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'AddChildrenToAccountTemplateOnUCJCreate',
+  name: 'AddChildrenToCapabilityAccountTemplateOnUCJCreate',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
 
@@ -27,6 +27,13 @@ foam.CLASS({
     'java.util.HashSet'
   ],
 
+  properties: [
+    {
+      name: 'accountsMap',
+      javaType: 'java.util.Map<String, >'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -37,24 +44,24 @@ foam.CLASS({
           public void execute(X x) {
 
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            if ( ! ( ucj.getData() instanceof AccountTemplate ) ) return;
+            if ( ! ( ucj.getData() instanceof CapabilityAccountTemplate ) ) return;
 
-            Map<String, AccountData> map = ((AccountTemplate) ucj.getData()).getAccounts();
+            Map<String, CapabilityAccountData> map = ((CapabilityAccountTemplate) ucj.getData()).getAccounts();oo
             Set<String> accountIds = map.keySet();
 
             for ( String accountId : accountIds ) {
               map = addChildrenToTemplate(x, accountId, map);
             }
 
-            AccountTemplate template = ((AccountTemplate) ucj.getData());
+            CapabilityAccountTemplate template = ((CapabilityAccountTemplate) ucj.getData());
             template.setAccounts(map);
 
             ucj.setData(template);
-            DAO dao = (DAO) x.get("accountTemplateDAO");
+            DAO dao = (DAO) x.get("capabilityAccountTemplateDAO");
             template.setId(template.getId() + 1000);
             dao.put(template);
           }
-        }, "Add children to AccountTemplate on ucj create");
+        }, "Add children to CapabilityAccountTemplate on ucj create");
       `
     },
     {
@@ -62,12 +69,12 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'accountId', class: 'String' },
-        { name: 'map', javaType: 'Map<String, AccountData>' }
+        { name: 'map', javaType: 'Map<String, CapabilityAccountData>' }
       ],
-      javaType: 'Map<String, AccountData>',
+      javaType: 'Map<String, CapabilityAccountData>',
       javaCode: `
-        AccountData data = map.get(accountId);
-        if ( data == null ) throw new RuntimeException("Null AccountData provided in AccountTemplate map");
+      CapabilityAccountData data = map.get(accountId);
+        if ( data == null ) throw new RuntimeException("Null CapabilityAccountData provided in CapabilityAccountTemplate map");
 
         DAO accountDAO = (DAO) x.get("accountDAO");
         Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));

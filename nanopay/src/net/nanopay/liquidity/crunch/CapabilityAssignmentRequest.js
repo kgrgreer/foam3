@@ -12,7 +12,7 @@ foam.CLASS({
     'userCapabilityJunctionDAO',
     'capabilityDAO',
     'userDAO',
-    'accountTemplateDAO'
+    'capabilityAccountTemplateDAO'
   ],
 
   requires: [
@@ -20,9 +20,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
-    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    // 'net.nanopay.liquidity.crunch.AccountTemplate',
-    'net.nanopay.liquidity.crunch.AccountData',
+    'net.nanopay.liquidity.crunch.GlobalLiquidCapability'
   ],
 
   properties: [  
@@ -42,14 +40,14 @@ foam.CLASS({
       }
     },
     {
-      name: 'accountTemplate',
+      name: 'capabilityAccountTemplate',
       view: function(_, x) {
         return {  
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
               heading: 'Account Template to use as data for this Capability assignment',
-              dao: x.accountTemplateDAO
+              dao: x.capabilityAccountTemplateDAO
             }
           ]
         };
@@ -96,8 +94,8 @@ foam.CLASS({
     },
     {
       name: 'assignUserAccountBasedCapability',
-      code: async function assignUserAccountBasedCapability(userId, capabilityId, accountTemplate) {
-        if ( accountTemplate == null ) return;
+      code: async function assignUserAccountBasedCapability(userId, capabilityId, capabilityAccountTemplate) {
+        if ( capabilityAccountTemplate == null ) return;
         
         var ucj = await this.userCapabilityJunctionDAO.find(
           this.AND(
@@ -105,10 +103,10 @@ foam.CLASS({
             this.EQ(this.UserCapabilityJunction.TARGET_ID, capabilityId)
           ));
         
-        // if ucj is not null, add new accounttemplate to old template of ucj
+        // if ucj is not null, add new capabilityAccountTemplate to old template of ucj
         if ( ucj != null ) {
           var oldTemplate = ucj.data;
-          var newMap = accountTemplate.accounts;
+          var newMap = capabilityAccountTemplate.accounts;
 
           var keySetIterator = newMap.keys();
           var newAccountToAdd = keySetIterator.next().value;
@@ -122,7 +120,7 @@ foam.CLASS({
           ucj = this.UserCapabilityJunction.create({
             sourceId: userId, 
             targetId: capabilityId,
-            data: accountTemplate
+            data: capabilityAccountTemplate
           })
         }
 
@@ -153,19 +151,19 @@ foam.CLASS({
         var cap = await this.capabilityDAO.find(this.capability);
         var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(cap);
 
-        if ( isAccountBasedCapability && ! this.accountTemplate ) {
+        if ( isAccountBasedCapability && ! this.capabilityAccountTemplate ) {
           console.err("account must must be supplied to assign account-based capability to user");
           return;
         }
 
         if ( isAccountBasedCapability ) {
-          accountTemplate = await this.accountTemplateDAO.find(this.accountTemplate);
-          if ( ! accountTemplate ) {
-            console.err("accountTemplate not found");
+          capabilityAccountTemplate = await this.capabilityAccountTemplateDAO.find(this.capabilityAccountTemplate);
+          if ( ! capabilityAccountTemplate ) {
+            console.err("capabilityAccountTemplate not found");
             return;
           }
           this.assignedUsers.forEach((user) => {
-            this.assignUserAccountBasedCapability(user, this.capability, accountTemplate);
+            this.assignUserAccountBasedCapability(user, this.capability, capabilityAccountTemplate);
           });
         } else {
           this.assignedUsers.forEach((user) => {

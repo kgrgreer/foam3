@@ -34,16 +34,16 @@ p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","e
 // TODO ruby make predicate for checking if is account-based cap in ucj target 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"Add Children To AccountTemplate On UCJ Create",
+  "id":"Add Children To CapabilityAccountTemplate On UCJ Create",
   "priority": 100,
   "enabled":true,
   "ruleGroup": "liquid",
-  "documentation": "Add child accounts of those in accounttemplate to the template when creating new ucj",
+  "documentation": "Add child accounts of those in capability accounttemplate to the template when creating new ucj",
   "daoKey": "userCapabilityJunctionDAO",
   "operation": 0,
   "after": false,
   "action" : {
-    "class": "net.nanopay.liquidity.crunch.AddChildrenToAccountTemplateOnUCJCreate"
+    "class": "net.nanopay.liquidity.crunch.AddChildrenToCapabilityAccountTemplateOnUCJCreate"
   },
   "saveHistory": true
 })             

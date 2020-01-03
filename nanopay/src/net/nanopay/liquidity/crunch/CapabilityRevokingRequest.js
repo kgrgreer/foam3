@@ -14,10 +14,8 @@ foam.CLASS({
   ],
 
   requires: [
-    // 'net.nanopay.liquidity.crunch.LiquidCapability',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-    // 'net.nanopay.liquidity.crunch.AccountTemplate',
   ],
 
   properties: [  
@@ -88,9 +86,9 @@ foam.CLASS({
       Revokes a capability from a user.
       If the capability selected is a globalLiquidCapability, remove the userCapabilityJunction
       Else if the capability selected is a accountBasedLiquidCapability, remove the chosen account from the 
-      accounttemplate in the ucj.
-        if the accounttemplate has no more accounts after the removal, remove the ucj
-        else, update the data of the ucj with the new accounttemplate
+      accountmap in the ucj.
+        if the accountmap has no more accounts after the removal, remove the ucj
+        else, update the data of the ucj with the new accountmap
       `,
       code: async function revokeFromUser(userId, capabilityId, account = null) {
         var isAccountBasedCapability = ( account != null );
@@ -105,13 +103,13 @@ foam.CLASS({
 
         
         if ( isAccountBasedCapability ) {
-          var accounttemplate = ucj.data;
-          accounttemplate.removeAccount(account);
-          if ( accounttemplate.accounts.size === 0 ) {
+          var accountmap = ucj.data;
+          accountmap.removeAccount(account);
+          if ( accountmap.accounts.size === 0 ) {
             await this.userCapabilityJunctionDAO.remove(this.__subContext__, ucj);
           } else {
-            ucj.data = accounttemplate;
-            console.log(accounttemplate.accounts);
+            ucj.data = accountmap;
+            console.log(accountmap.accounts);
             await this.userCapabilityJunctionDAO.put_(this.__subContext, ucj);
           }
         } else {

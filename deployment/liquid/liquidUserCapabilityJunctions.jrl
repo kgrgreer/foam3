@@ -3,12 +3,13 @@ p({
   "sourceId":8007,
   "targetId":"adminAccountBasedLiquidCapability",
   "data":{
-    "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+    "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
     "templateName":"rootAccountTemplate",
     "accounts": {
       "1103": {
-        "class":"net.nanopay.liquidity.crunch.AccountData",
+        "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
         "isCascading":true,
+        "isIncluded":true,
         "approverLevel":{
           "class":"net.nanopay.liquidity.crunch.ApproverLevel",
           "approverLevel":1,
