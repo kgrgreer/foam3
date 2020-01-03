@@ -16,7 +16,6 @@ foam.CLASS({
     {
       name: 'propertyWhitelist',
       factory: function() {
-        var self = this;
         return [
           this.User.FIRST_NAME.clone().copyFrom({
             gridColumns: 6
@@ -33,11 +32,6 @@ foam.CLASS({
             }
           }),
           this.User.PHONE_NUMBER,
-          this.Address.COUNTRY_ID.clone().copyFrom({
-            postSet: function(_, n) {
-              self.data.address.countryId = n;
-            }
-          }),
           this.User.ORGANIZATION.clone().copyFrom({
             label: 'Company Name'
           }),
