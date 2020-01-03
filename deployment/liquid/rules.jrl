@@ -27,6 +27,7 @@ p({"class":"foam.nanos.ruler.Rule","id":"Transaction Final Compliance Rule","ena
 p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind transfer transaction","enabled":false})              // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Clear transaction approval requests","enabled":false})            // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabled":false})                // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":false})                // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":true})    // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":true})             // Tx Processing
 
