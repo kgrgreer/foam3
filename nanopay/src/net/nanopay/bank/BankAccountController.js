@@ -109,6 +109,7 @@ foam.CLASS({
                 self.user.accounts.put(this).then(() =>{
                   self.notify(`${ this.name } ${ self.IS_DEFAULT }`);
                 }).catch((err) => {
+                  this.isDefault = false;
                   self.notify(self.UNABLE_TO_DEFAULT, 'error');
                 });
               }
