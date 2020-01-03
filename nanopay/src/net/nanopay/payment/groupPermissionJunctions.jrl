@@ -1,0 +1,3 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"paymentcode.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.paymentCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"paymentcode.create"})
