@@ -88,7 +88,12 @@ foam.CLASS({
           .build();
       `,
       tableCellFormatter: function(value, obj, id) {
-        this.add(value.threshold);
+        var self = this;
+        return self.__subSubContext__.currencyDAO.find(obj.lowLiquidity.denomination).then(
+          function(curr) {
+            var lowLiquidity = curr ? curr.format(obj.lowLiquidity.threshold != null ? obj.lowLiquidity.threshold : 0) : 0;
+            self.add(lowLiquidity);
+          })
       },
     },
     {
@@ -114,7 +119,12 @@ foam.CLASS({
           .build();
       `,
       tableCellFormatter: function(value, obj, id) {
-        this.add(value.threshold);
+        var self = this;
+        return self.__subSubContext__.currencyDAO.find(obj.highLiquidity.denomination).then(
+          function(curr) {
+            var highLiquidity = curr ? curr.format(obj.highLiquidity.threshold != null ? obj.highLiquidity.threshold : 0) : 0;
+            self.add(highLiquidity);
+          })
       },
     },
     {
