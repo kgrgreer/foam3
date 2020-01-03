@@ -91,7 +91,6 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                console.log(this);
                 if ( this.isDefault ) {
                   self.notify(self.DELETE_DEFAULT, 'error');
                   return;
