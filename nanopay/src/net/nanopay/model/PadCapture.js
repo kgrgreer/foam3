@@ -84,10 +84,10 @@ foam.CLASS({
       name: 'branchId',
       label: 'Transit No.',
       documentation: 'Transit/Branch associated with PAD capture.',
-      validateObj: function(transitNumber) {
+      validateObj: function(branchId) {
         var transNumRegex = /^[0-9]{5}$/;
 
-        if ( ! transNumRegex.test(transitNumber) ) {
+        if ( ! transNumRegex.test(branchId) ) {
           return 'Invalid transit number.';
         }
       }
