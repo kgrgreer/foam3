@@ -10,6 +10,11 @@ foam.CLASS({
     'countryDAO'
   ],
 
+  requires: [
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.User'
+  ],
+
   properties: [
     ['of', 'foam.nanos.auth.User'],
     {
@@ -17,37 +22,37 @@ foam.CLASS({
       factory: function() {
         var self = this;
         return [
-          foam.nanos.auth.User.FIRST_NAME.clone().copyFrom({
+          this.User.FIRST_NAME.clone().copyFrom({
             gridColumns: 6
           }),
-          foam.nanos.auth.User.LAST_NAME.clone().copyFrom({
+          this.User.LAST_NAME.clone().copyFrom({
             gridColumns: 6
           }),
-          foam.nanos.auth.User.EMAIL,
-          foam.nanos.auth.User.DESIRED_PASSWORD.clone().copyFrom({
+          this.User.EMAIL,
+          this.User.DESIRED_PASSWORD.clone().copyFrom({
             validateObj: function(desiredPassword) {
               if ( desiredPassword.length < 6 ) {
                 return 'Password must be at least 6 characters long.';
               }
             }
           }),
-          foam.nanos.auth.User.PHONE_NUMBER,
-          foam.nanos.auth.Address.COUNTRY_ID.clone().copyFrom({
+          this.User.PHONE_NUMBER,
+          this.Address.COUNTRY_ID.clone().copyFrom({
             postSet: function(_, n) {
               self.data.address.countryId = n;
             }
           }),
-          foam.nanos.auth.User.ORGANIZATION.clone().copyFrom({
+          this.User.ORGANIZATION.clone().copyFrom({
             label: 'Company Name'
           }),
-          foam.nanos.auth.User.JOB_TITLE,
-          foam.nanos.auth.User.ADDRESS.clone().copyFrom({
+          this.User.JOB_TITLE,
+          this.User.ADDRESS.clone().copyFrom({
             label: '',
             view: {
               class: 'foam.u2.detail.VerticalDetailView',
               of: 'foam.nanos.auth.Address',
               propertyWhitelist: [
-                foam.nanos.auth.Address.COUNTRY_ID.clone().copyFrom({
+                this.Address.COUNTRY_ID.clone().copyFrom({
                   validateObj: function() {},
                   gridColumns: 12
                 })
