@@ -26,7 +26,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.liquidity.crunch.AccountTemplate',
+    'net.nanopay.liquidity.crunch.AccountApproverMap',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability'
 
   ],
@@ -100,10 +100,10 @@ foam.CLASS({
         for (int i = 0; i < ucjsNotFilteredByAccount.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
 
-          AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
+          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) rolesFilteredByAccount.add(currentUCJ.getTargetId());
-          else if (accountTemplate.hasAccount(getX(), accountId))
+          else if (accountMap.hasAccount(getX(), String.valueOf(accountId)))
             rolesFilteredByAccount.add(currentUCJ.getTargetId());
         }
 
@@ -161,7 +161,7 @@ foam.CLASS({
         };
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf AccountTemplate
+        // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf ???
         DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
 
         List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
@@ -170,10 +170,10 @@ foam.CLASS({
         for (int i = 0; i < ucjsNotFilteredByAccount.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
 
-          AccountTemplate accountTemplate = (AccountTemplate) currentUCJ.getData();
+          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) usersFilteredByAccount.add(currentUCJ.getSourceId());
-          else if (accountTemplate.hasAccount(getX(), accountId))
+          else if (accountMap.hasAccount(getX(), String.valueOf(accountId)))
             usersFilteredByAccount.add(currentUCJ.getSourceId());
         }
 
@@ -245,8 +245,8 @@ foam.CLASS({
         for (int i = 0; i < allUCJs.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) allUCJs.get(i);
 
-          AccountTemplate currentAccountTemplate = (AccountTemplate) currentUCJ.getData();
-          Object[] accountArray = currentAccountTemplate.getAccounts().keySet().toArray();
+          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
+          Object[] accountArray = accountMap.getAccounts().keySet().toArray();
 
           for (int j = 0; j < accountArray.length; j++) {
             if (!accounts.contains(accountArray[j])) accounts.add(accountArray[j]);
@@ -338,9 +338,9 @@ foam.CLASS({
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-          AccountTemplate currentAccountTemplate = (AccountTemplate) currentUCJ.getData();
+          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
-          if (  currentAccountTemplate.hasAccountByApproverLevel(getX(), accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if (  accountMap.hasAccountByApproverLevel(getX(), String.valueOf(accountId), level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
         }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);

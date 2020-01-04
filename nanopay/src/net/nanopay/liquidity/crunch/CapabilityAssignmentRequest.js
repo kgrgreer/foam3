@@ -12,7 +12,7 @@ foam.CLASS({
     'userCapabilityJunctionDAO',
     'capabilityDAO',
     'userDAO',
-    'accountTemplateDAO'
+    'capabilityAccountTemplateDAO'
   ],
 
   requires: [
@@ -20,9 +20,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
-    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    // 'net.nanopay.liquidity.crunch.AccountTemplate',
-    'net.nanopay.liquidity.crunch.AccountData',
+    'net.nanopay.liquidity.crunch.GlobalLiquidCapability'
   ],
 
   properties: [  
@@ -42,14 +40,14 @@ foam.CLASS({
       }
     },
     {
-      name: 'accountTemplate',
+      name: 'capabilityAccountTemplate',
       view: function(_, x) {
         return {  
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
               heading: 'Account Template to use as data for this Capability assignment',
-              dao: x.accountTemplateDAO
+              dao: x.capabilityAccountTemplateDAO
             }
           ]
         };
@@ -89,43 +87,30 @@ foam.CLASS({
           .add('Select Account Template or Approver Level')
           .add(self.ACCOUNT_TEMPLATE)
           .add(self.APPROVER_LEVEL)
-          .add('Add Users To Be Assigned This Role Template')
+          .add('Add Users To Be Assigned This Capability')
           .add(self.ASSIGNED_USERS)
           .add(self.ASSIGN)
         .end();
     },
     {
       name: 'assignUserAccountBasedCapability',
-      code: async function assignUserAccountBasedCapability(userId, capabilityId, accountTemplate) {
-        if ( accountTemplate == null ) return;
+      code: async function assignUserAccountBasedCapability(userId, capabilityId, capabilityAccountTemplate) {
+        if ( capabilityAccountTemplate == null ) return;
         
         var ucj = await this.userCapabilityJunctionDAO.find(
           this.AND(
             this.EQ(this.UserCapabilityJunction.SOURCE_ID, userId), 
             this.EQ(this.UserCapabilityJunction.TARGET_ID, capabilityId)
           ));
-        
-        // if ucj is not null, add new accounttemplate to old template of ucj
-        if ( ucj != null ) {
-          var oldTemplate = ucj.data;
-          console.log(accountTemplate, accountTemplate.accounts);
-          var newMap = accountTemplate.accounts;
-
-          var keySetIterator = newMap.keys();
-          var newAccountToAdd = keySetIterator.next().value;
-          while ( newAccountToAdd ) {
-            oldTemplate.addAccount(newAccountToAdd, newMap.get(newAccountToAdd));
-            newAccountToAdd = keySetIterator.next().value;
-          }
-
-          ucj.data = oldTemplate;
-        } else { // else make a new ucj
-          ucj = this.UserCapabilityJunction.create({
-            sourceId: userId, 
-            targetId: capabilityId,
-            data: accountTemplate
-          })
-        }
+          
+        // todo ruby there should be a rule that calls mergeMaps if ucj is not null
+        // or do this on front-end, whichever
+        ucj = this.UserCapabilityJunction.create({
+          sourceId: userId, 
+          targetId: capabilityId,
+          data: capabilityAccountTemplate
+        });
+        // }
 
         // (re)put ucj into dao
         await this.userCapabilityJunctionDAO.put_(this.__subContext__, ucj);
@@ -133,8 +118,9 @@ foam.CLASS({
     },
     {
       name: 'assignUserGlobalCapability',
-      code: async function assignUserGlobalCapability(userId, capabilityId, approverLevel = 1) {
+      code: async function assignUserGlobalCapability(userId, capabilityId, approverLevel) {
 
+        approverLevel = approverLevel < 1 ? 1 : approverLevel;
         var approverLevelObj = this.ApproverLevel.create({ approverLevel: approverLevel });
 
         var ucj = this.UserCapabilityJunction.create({
@@ -154,21 +140,19 @@ foam.CLASS({
         var cap = await this.capabilityDAO.find(this.capability);
         var isAccountBasedCapability = this.AccountBasedLiquidCapability.isInstance(cap);
 
-        if ( isAccountBasedCapability && ! this.accountTemplate ) {
+        if ( isAccountBasedCapability && ! this.capabilityAccountTemplate ) {
           console.err("account must must be supplied to assign account-based capability to user");
           return;
         }
 
-        console.log(this.assignedUsers, this.accountTemplate, this.approverLevel, this.capability);
-
         if ( isAccountBasedCapability ) {
-          accountTemplate = await this.accountTemplateDAO.find(this.accountTemplate);
-          if ( ! accountTemplate ) {
-            console.err("accountTemplate not found");
+          capabilityAccountTemplate = await this.capabilityAccountTemplateDAO.find(this.capabilityAccountTemplate);
+          if ( ! capabilityAccountTemplate ) {
+            console.err("capabilityAccountTemplate not found");
             return;
           }
           this.assignedUsers.forEach((user) => {
-            this.assignUserAccountBasedCapability(user, this.capability, accountTemplate);
+            this.assignUserAccountBasedCapability(user, this.capability, capabilityAccountTemplate);
           });
         } else {
           this.assignedUsers.forEach((user) => {

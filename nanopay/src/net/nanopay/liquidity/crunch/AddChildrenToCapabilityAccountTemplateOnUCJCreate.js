@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'AddChildrenToAccountTemplateOnUCJCreate',
+  name: 'AddChildrenToCapabilityAccountTemplateOnUCJCreate',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
 
@@ -27,6 +27,14 @@ foam.CLASS({
     'java.util.HashSet'
   ],
 
+  properties: [
+    {
+      name: 'accountsMap',
+      class: 'Map',
+      javaType: 'java.util.Map<String, ApproverLevel>'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -37,37 +45,32 @@ foam.CLASS({
           public void execute(X x) {
 
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            if ( ! ( ucj.getData() instanceof AccountTemplate ) ) return;
+            if ( ! ( ucj.getData() instanceof CapabilityAccountTemplate ) ) return;
 
-            Map<String, AccountData> map = ((AccountTemplate) ucj.getData()).getAccounts();
+            Map<String, CapabilityAccountData> map = ((CapabilityAccountTemplate) ucj.getData()).getAccounts();
             Set<String> accountIds = map.keySet();
 
             for ( String accountId : accountIds ) {
-              map = addChildrenToTemplate(x, accountId, map);
+              ApproverLevel approverLevel = map.get(accountId).getApproverLevel() != null ? map.get(accountId).getApproverLevel() : new ApproverLevel.Builder(x).build();
+              getAccountsMap().put(accountId, approverLevel);
+              addChildrenToTemplate(x, accountId, approverLevel);
             }
 
-            AccountTemplate template = ((AccountTemplate) ucj.getData());
-            template.setAccounts(map);
+            AccountApproverMap ucjData = new AccountApproverMap.Builder(x).setAccounts(getAccountsMap()).build();
 
-            ucj.setData(template);
-            DAO dao = (DAO) x.get("accountTemplateDAO");
-            template.setId(template.getId() + 1000);
-            dao.put(template);
+            ucj.setData(ucjData);
           }
-        }, "Add children to AccountTemplate on ucj create");
+        }, "Add children to CapabilityAccountTemplate on ucj create");
       `
     },
     {
       name: 'addChildrenToTemplate',
-      args: [
+      args: [ 
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'accountId', class: 'String' },
-        { name: 'map', javaType: 'Map<String, AccountData>' }
+        { name: 'approverLevel', javaType: 'ApproverLevel' }
       ],
-      javaType: 'Map<String, AccountData>',
       javaCode: `
-        AccountData data = map.get(accountId);
-        if ( data == null ) throw new RuntimeException("Null AccountData provided in AccountTemplate map");
 
         DAO accountDAO = (DAO) x.get("accountDAO");
         Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
@@ -87,9 +90,8 @@ foam.CLASS({
         }
 
         for ( Account account : accountsSet ) {
-          if ( ! map.containsKey(String.valueOf(account.getId()))) map.put(String.valueOf(account.getId()), data);
+          if ( ! getAccountsMap().containsKey(String.valueOf(account.getId()))) getAccountsMap().put(String.valueOf(account.getId()), approverLevel);
         }
-        return map;
       `
     }
   ]

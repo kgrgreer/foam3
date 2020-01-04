@@ -877,13 +877,15 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/LiquidCapabilityAuthService' },
    { name: 'net/nanopay/liquidity/crunch/ApproverLevel' },
    { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/AccountApproverMap' },
    { name: 'net/nanopay/liquidity/crunch/AccountData' },
    { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidApprovalRequestAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityAssignmentRequest' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityRevokingRequest' },
-   { name: 'net/nanopay/liquidity/crunch/AddChildrenToAccountTemplateOnUCJCreate' },
+   { name: 'net/nanopay/liquidity/crunch/AddChildrenToCapabilityAccountTemplateOnUCJCreate' },
 
    
    // liquidity ui

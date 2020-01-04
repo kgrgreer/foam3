@@ -21,8 +21,8 @@ foam.CLASS({
       {
         name: 'validate',
         javaCode: `
-          if ( getApproverLevel() <= 0 ) 
-            throw new RuntimeException("Approver level must be greater than 0");
+          if ( getApproverLevel() < 0 ) 
+            throw new RuntimeException("Approver level must be greater than or equal to 0");
         `,
       }
     ]

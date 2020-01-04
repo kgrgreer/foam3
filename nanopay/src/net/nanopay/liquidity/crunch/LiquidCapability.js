@@ -96,7 +96,6 @@ foam.CLASS({
     // { class: 'Boolean', name: 'canApproverUsercapabilityjunction' }, // UserCapabilityJunctions are now global roles ONLY
     {
       name: 'of',
-      javaFactory: ` return net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo(); `,
       hidden: true,
       documentation: `
       Class of the information stored in data field of UserCapabilityJunctions, if there is any.
@@ -140,7 +139,7 @@ foam.CLASS({
             return false;
           }
           String permissionStr = permissionComponents[0];
-          Long outgoingAccountId = Long.parseLong(permissionComponents[1]);
+          String outgoingAccountId = permissionComponents[1];
           if ( (Boolean) getProperty(permissionStr) ) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX).find(AND(
               EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
@@ -148,10 +147,11 @@ foam.CLASS({
             ));
             if ( ucj == null ) return false;
 
-            AccountTemplate template = (AccountTemplate) ucj.getData();
-            if ( template == null ) return false;
+            foam.core.FObject ucjdata =  (foam.core.FObject) ucj.getData();
+            if ( ucjdata == null || ! ( ucjdata instanceof AccountApproverMap ) ) return false;
 
-            if ( template.hasAccount(x, outgoingAccountId) ) return true;
+            AccountApproverMap map = (AccountApproverMap) ucjdata;
+            if ( map.hasAccount(x, outgoingAccountId) ) return true;
           }
         } catch ( java.lang.Exception e ) {
           return false;
