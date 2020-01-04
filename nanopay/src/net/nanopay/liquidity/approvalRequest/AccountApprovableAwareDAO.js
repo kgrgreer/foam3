@@ -66,14 +66,21 @@ foam.CLASS({
       Logger logger = (Logger) x.get("logger");
 
       // AccountRoleApprovalRequest and set the outgoing account
-      AccountRoleApprovalRequest accountRequest = (AccountRoleApprovalRequest) request.fclone();
+      AccountRoleApprovalRequest accountRequest = new AccountRoleApprovalRequest.Builder(getX())
+        .setDaoKey(request.getDaoKey())
+        .setObjId(request.getObjId())
+        .setClassification(request.getClassification())
+        .setOperation(request.getOperation())
+        .setInitiatingUser(request.getInitiatingUser())
+        .setStatus(request.getStatus()).build();
+
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
   
-      if ( request.getOperation() == Operations.CREATE ) {
+      if ( accountRequest.getOperation() == Operations.CREATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountCreate(x));
-      } else if ( request.getOperation() == Operations.UPDATE ) {
+      } else if ( accountRequest.getOperation() == Operations.UPDATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountUpdate(x));
-      } else if ( request.getOperation() == Operations.REMOVE ) {
+      } else if ( accountRequest.getOperation() == Operations.REMOVE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountDelete(x));
       } else {
         logger.error("Using an invalid operation!");
@@ -83,10 +90,10 @@ foam.CLASS({
       DAO requestingDAO;
       DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
   
-      if ( request.getDaoKey().equals("approvableDAO") ){
+      if ( accountRequest.getDaoKey().equals("approvableDAO") ){
         DAO approvableDAO = (DAO) x.get("approvableDAO");
   
-        Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
+        Approvable approvable = (Approvable) approvableDAO.find(accountRequest.getObjId());
   
         requestingDAO = (DAO) x.get(approvable.getDaoKey());
       } else {
@@ -107,11 +114,11 @@ foam.CLASS({
       // makers cannot approve their own requests even if they are an approver for the account
       // however they will receive an approvalRequest which they can only view and not approve or reject
       // so that they can keep track of the status of their requests
-      sendSingleRequest(x, request, request.getInitiatingUser());
-      approverIds.remove(request.getInitiatingUser());
+      sendSingleRequest(x, accountRequest, accountRequest.getInitiatingUser());
+      approverIds.remove(accountRequest.getInitiatingUser());
   
       for ( int i = 0; i < approverIds.size(); i++ ){
-        sendSingleRequest(getX(), request, approverIds.get(i));
+        sendSingleRequest(getX(), accountRequest, approverIds.get(i));
       }
       `
     }

@@ -111,6 +111,8 @@ p({
   """
     import net.nanopay.account.Account;
     import foam.dao.DAO;
+    import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
+
     DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER, net.nanopay.account.Account.IS_DEFAULT });
@@ -120,14 +122,11 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
-    /* TODO: Uncomment once ready to test and implement
-    accountApprovableAware = new AccountApprovableAwareDAO.Builder(x)
+    dao = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
       .setDelegate(dao)
       .build();
-    */
-
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
