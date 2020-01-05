@@ -73,7 +73,6 @@ foam.CLASS({
       ],
       javaCode:`
       DAO requestingDAO;
-      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
       Logger logger = (Logger) x.get("logger");
 
       if ( request.getDaoKey().equals("approvableDAO") ){
@@ -90,11 +89,16 @@ foam.CLASS({
 
       CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
 
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1);
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1, getX());
 
       if ( approverIds.size() <= 0 ) {
         logger.error("No Approvers exist for the model: " + modelName);
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
+      }
+
+      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getInitiatingUser() ){
+        logger.log("The only approver of " + modelName + " is the maker of this request!");
+        throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
 
       // makers cannot approve their own requests even if they are an approver for the account

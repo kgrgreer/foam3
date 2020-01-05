@@ -9,7 +9,12 @@ foam.CLASS({
   name: 'CachedUCJQueryService',
   documentation: 'A cached implementation of the UCJQueryService interface.',
 
+  implements: [
+    'net.nanopay.liquidity.ucjQuery.UCJQueryService'
+  ],
+
   javaImports: [
+    'foam.core.X',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.Map',
@@ -53,6 +58,10 @@ foam.CLASS({
         {
           name: 'userId',
           type: 'Long'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -80,7 +89,7 @@ foam.CLASS({
         };
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
         List ucjsForUser = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID,userId)).select(new ArraySink())).getArray();
         List roleIdsForUser = new ArrayList();
@@ -110,6 +119,10 @@ foam.CLASS({
         {
           name: 'roleId',
           type: 'String'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -141,7 +154,7 @@ foam.CLASS({
 
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
         List ucjsForRole = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
         List userIdsForRole = new ArrayList();
@@ -176,6 +189,10 @@ foam.CLASS({
         {
           name: 'level',
           type: 'Integer'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `  
@@ -206,8 +223,8 @@ foam.CLASS({
         };
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
-        DAO capabilitiesDAO = (DAO) getX().get("liquidCapabilityDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
 
         modelToApprove = modelToApprove.toLowerCase();
 
@@ -245,8 +262,13 @@ foam.CLASS({
 
         // using a set because we only care about unique approver ids
         Set<Long> uniqueApproversForLevel = new HashSet<>();
+        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
 
-        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbility)).select(new ArraySink())).getArray();
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        }
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);

@@ -88,7 +88,6 @@ foam.CLASS({
       }
   
       DAO requestingDAO;
-      DAO capabilitiesDAO = (DAO) x.get("liquidCapabilityDAO");
   
       if ( accountRequest.getDaoKey().equals("approvableDAO") ){
         DAO approvableDAO = (DAO) x.get("approvableDAO");
@@ -104,21 +103,26 @@ foam.CLASS({
   
       CachedAccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
   
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, accountRequest.getOutgoingAccount(),1);
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, accountRequest.getOutgoingAccount(),1,getX());
   
       if ( approverIds.size() <= 0 ) {
         logger.log("No Approvers exist for the model: " + modelName);
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
+
+      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getInitiatingUser() ){
+        logger.log("The only approver of " + modelName + " is the maker of this request!");
+        throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
+      }
   
       // makers cannot approve their own requests even if they are an approver for the account
       // however they will receive an approvalRequest which they can only view and not approve or reject
       // so that they can keep track of the status of their requests
-      sendSingleRequest(x, accountRequest, accountRequest.getInitiatingUser());
+      sendSingleAccountRequest(x, accountRequest, accountRequest.getInitiatingUser());
       approverIds.remove(accountRequest.getInitiatingUser());
   
       for ( int i = 0; i < approverIds.size(); i++ ){
-        sendSingleRequest(getX(), accountRequest, approverIds.get(i));
+        sendSingleAccountRequest(getX(), accountRequest, approverIds.get(i));
       }
       `
     }

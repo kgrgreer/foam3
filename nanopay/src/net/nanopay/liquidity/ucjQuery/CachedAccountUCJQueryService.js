@@ -92,7 +92,7 @@ foam.CLASS({
         };
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
         List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID, userId)).select(new ArraySink())).getArray();
         List rolesFilteredByAccount = new ArrayList();
@@ -103,7 +103,7 @@ foam.CLASS({
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) rolesFilteredByAccount.add(currentUCJ.getTargetId());
-          else if (accountMap.hasAccount(getX(), String.valueOf(accountId)))
+          else if (accountMap.hasAccount(x, String.valueOf(accountId)))
             rolesFilteredByAccount.add(currentUCJ.getTargetId());
         }
 
@@ -162,7 +162,7 @@ foam.CLASS({
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf ???
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
         List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
         List usersFilteredByAccount = new ArrayList();
@@ -173,7 +173,7 @@ foam.CLASS({
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) usersFilteredByAccount.add(currentUCJ.getSourceId());
-          else if (accountMap.hasAccount(getX(), String.valueOf(accountId)))
+          else if (accountMap.hasAccount(x, String.valueOf(accountId)))
             usersFilteredByAccount.add(currentUCJ.getSourceId());
         }
 
@@ -232,7 +232,7 @@ foam.CLASS({
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         // TODO: Should probably rework this to cascade and find all accounts
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
         List allUCJs;
         List accounts = new ArrayList();
 
@@ -279,6 +279,10 @@ foam.CLASS({
         {
           name: 'level',
           type: 'Integer'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -309,8 +313,8 @@ foam.CLASS({
         };
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        DAO ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
-        DAO capabilitiesDAO = (DAO) getX().get("liquidCapabilityDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
 
         modelToApprove = modelToApprove.toLowerCase();
 
@@ -333,14 +337,19 @@ foam.CLASS({
 
         // using a set because we only care about unique approver ids
         Set<Long> uniqueApproversForLevel = new HashSet<>();
+        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
 
-        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbility)).select(new ArraySink())).getArray();
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        }
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
-          if (  accountMap.hasAccountByApproverLevel(getX(), String.valueOf(accountId), level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if (  accountMap.hasAccountByApproverLevel(x, String.valueOf(accountId), level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
         }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);

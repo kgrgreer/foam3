@@ -21,6 +21,10 @@ foam.INTERFACE({
         {
           name: 'accountId',
           type: 'Long'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ]
     },
@@ -37,6 +41,10 @@ foam.INTERFACE({
         {
           name: 'accountId',
           type: 'Long'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ]
     },
@@ -53,6 +61,10 @@ foam.INTERFACE({
         {
           name: 'roleId',
           type: 'String'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ]
     },
@@ -73,6 +85,10 @@ foam.INTERFACE({
         {
           name: 'level',
           type: 'Integer'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ]
     }
