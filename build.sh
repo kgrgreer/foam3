@@ -7,7 +7,7 @@
 
 # Exit on first failure
 set -e
-
+echo $NANOPAY_HOME
 function warning {
     echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
 }
@@ -356,7 +356,9 @@ function instance_journals {
 
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
-        NANOPAY_ROOT="/opt"
+        if [ -z "$NANOPAY_ROOT" ]; then
+            NANOPAY_ROOT="/opt"
+        fi
         if [ "$TEST" -eq 1 ]; then
             NANOPAY_ROOT="/tmp"
         fi
