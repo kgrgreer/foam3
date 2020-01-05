@@ -21,7 +21,6 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.nanos.logger.Logger',
     'foam.lib.PropertyPredicate',
-    'net.nanopay.account.Account',
     'foam.nanos.ruler.Operations',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.LifecycleAware',
@@ -96,12 +95,12 @@ foam.CLASS({
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
 
-      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getInitiatingUser() ){
+      if ( approverIds.size() == 1 && approverIds.get(0) == request.getInitiatingUser() ){
         logger.log("The only approver of " + modelName + " is the maker of this request!");
         throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
 
-      // makers cannot approve their own requests even if they are an approver for the account
+      // makers cannot approve their own requests even if they are an approver for the model
       // however they will receive an approvalRequest which they can only view and not approve or reject
       // so that they can keep track of the status of their requests
       sendSingleRequest(x, request, request.getInitiatingUser());
@@ -155,7 +154,6 @@ foam.CLASS({
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableAwareObj.getApprovableKey())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
           .setInitiatingUser(((User) x.get("user")).getId())
@@ -218,7 +216,6 @@ foam.CLASS({
         RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
           .setDaoKey(getDaoKey())
           .setObjId(approvableAwareObj.getApprovableKey())
-          // .setOutgoingAccount(approvableAwareObj.getOutgoingAccount(getX()))
           .setClassification(getOf().getObjClass().getSimpleName())
           .setOperation(Operations.REMOVE)
           .setInitiatingUser(((User) x.get("user")).getId())
@@ -251,7 +248,7 @@ foam.CLASS({
             return super.put_(x,obj);
           } 
           
-          // create request has been rejected is only where we mark the account as REJECTED
+          // create request has been rejected is only where we mark the object as REJECTED
           lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
           return super.put_(x,obj); 
         } 

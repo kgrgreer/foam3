@@ -282,12 +282,10 @@ p({
     import foam.nanos.auth.User;
     import foam.dao.DAO;
 
-    /* TODO: Uncomment once new permissioning system gets implemented
     DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
     .setDaoKey("userDAO")
     .setOf(User.getOwnClassInfo())
     .build();
-    */
 
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
@@ -296,8 +294,7 @@ p({
         .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
-        // TODO: uncomment once new permissioning system gets implemented
-        // .setDecorator(dao)
+        .setDecorator(dao)
         .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
         .setDeletedAware(false)
         .build();
