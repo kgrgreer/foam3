@@ -30,6 +30,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'send'
+    },
+    {
+      class: 'Boolean',
+      name: 'includeChildAccounts',
+      documentation: 'Whether to include child accounts when the entity type is ACCOUNT.'
     }
   ],
   methods: [
@@ -57,6 +62,15 @@ foam.CLASS({
         // Retrieve the account
         Account account = getSend() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
         if (this.getEntityType() == TxLimitEntityType.ACCOUNT) {
+          // When including children, use the custom predicate
+          if (this.getIncludeChildAccounts()) {
+            IsChildAccountPredicate isChildAccountPredicate = new IsChildAccountPredicate.Builder((X) obj)
+              .setParentId(this.getId())
+              .build();
+            return isChildAccountPredicate.f(account);
+          }
+
+          // Check if account IDs match exactly
           return account.getId() == this.getId();
         }
 

@@ -51,6 +51,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeSourceChildAccounts',
+      documentation: 'Whether to include the children of the source account.',
       section: 'basicInfo'
     },
     {
@@ -73,6 +74,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeDestinationChildAccounts',
+      documentation: 'Whether to include the children of the destination account.',
       section: 'basicInfo'
     },
     {

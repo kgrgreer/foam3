@@ -68,6 +68,15 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      documentation: 'Whether to include the children of the account.',
+      name: 'includeChildAccounts',
+      section: 'basicInfo',
+      visibilityExpression: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       targetDAOKey: 'businessDAO',
@@ -157,6 +166,7 @@ foam.CLASS({
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
           .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? this.getAccountToLimit() :
+                 this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
           .setSend(this.getSend())
           .build();
