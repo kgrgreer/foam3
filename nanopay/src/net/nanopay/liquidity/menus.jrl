@@ -292,29 +292,19 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.assigncapability",
-  "label": "Assign Capability",
+  "label": "Assign/Revoke Capability",
   "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.liquidity.crunch.CapabilityAssignmentRequest"
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "capabilityAssignmentRequestDAO",
+      "browseTitle": "Capability Assignment Request"
     }
   },
   "order": 540,
   "parent": "liquid.roles"
 })
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "liquid.revokecapability",
-  "label": "Revoke Capability",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.liquidity.crunch.CapabilityRevokingRequest"
-    }
-  },
-  "order": 550,
-  "parent": "liquid.roles"
-})
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.rolequeryview",

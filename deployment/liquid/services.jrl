@@ -546,12 +546,28 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("usercapabilityjunction").build())
+      .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidUserCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"capabilityAssignmentRequestDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer("capabilityassignmentrequest"))
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("capabilityAssignmentRequests")
+      .setSeqNo(true)
+      .setOf(net.nanopay.liquidity.crunch.CapabilityAssignmentRequest.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityAssignmentRequest\", \"remoteListenerSupport\": false}"
 })
 
