@@ -8,9 +8,9 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.LifecycleAware'
   ],
 
   imports: [
@@ -294,7 +294,7 @@ foam.CLASS({
           }
         }.bind(this));
       }
-   },
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
