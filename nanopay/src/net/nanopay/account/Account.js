@@ -54,7 +54,7 @@ foam.CLASS({
       label: 'All',
       predicateFactory: function(e) {
         return e.AND(
-          // e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
           e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
           e.OR(
             e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
@@ -395,8 +395,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      section: 'administration'
-      // visibility: 'RO'
+      section: 'administration',
+      visibility: 'RO'
     }
   ],
 
