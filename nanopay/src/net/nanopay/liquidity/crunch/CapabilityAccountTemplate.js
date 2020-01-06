@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'CapabilityAccountTemplate',
   extends: 'net.nanopay.liquidity.crunch.AccountTemplate',
 
-  imports: [
-    'accountDAO'
-  ],
-
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',

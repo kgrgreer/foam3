@@ -2,10 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'AccountTemplate', 
 
-  imports: [
-    'accountDAO'
-  ],
-
   properties: [  
     {
       name: 'id',
