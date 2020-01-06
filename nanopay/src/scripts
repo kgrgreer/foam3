@@ -1307,10 +1307,14 @@ p({
       .build();
 
     // create account submenu
-    accountDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("accountDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    accountMenuConfig = new DAOControllerConfig();
+    accountMenuConfig.setDaoKey("accountDAO");
+    accountMenuConfig.setCreateEnabled(false);
+    accountMenuConfig.setEditEnabled(false);
+    accountMenuConfig.setDeleteEnabled(false);
+
+    accountDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(accountMenuConfig)
       .build();
     accountMenu = new Menu.Builder(x)
       .setEnabled(true)
@@ -1321,10 +1325,14 @@ p({
       .build();
 
     // create Businesses submenu
-    businessDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("businessDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    businessMenuConfig = new DAOControllerConfig();
+    businessMenuConfig.setDaoKey("businessDAO");
+    businessMenuConfig.setCreateEnabled(false);
+    businessMenuConfig.setEditEnabled(false);
+    businessMenuConfig.setDeleteEnabled(false);
+
+    businessDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(businessMenuConfig)
       .build();
     businessMenu = new Menu.Builder(x)
       .setEnabled(true)
@@ -1335,10 +1343,14 @@ p({
       .build();
 
     // create Transactions submenu
-    txnDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("transactionDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    txnMenuConfig = new DAOControllerConfig();
+    txnMenuConfig.setDaoKey("transactionDAO");
+    txnMenuConfig.setCreateEnabled(false);
+    txnMenuConfig.setEditEnabled(false);
+    txnMenuConfig.setDeleteEnabled(false);
+
+    txnDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(txnMenuConfig)
       .build();
     txnMenu = new Menu.Builder(x)
       .setEnabled(true)
@@ -1349,10 +1361,14 @@ p({
       .build();
 
     // create user submenu
-    userDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("userDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    userMenuConfig = new DAOControllerConfig();
+    userMenuConfig.setDaoKey("userDAO");
+    userMenuConfig.setCreateEnabled(false);
+    userMenuConfig.setEditEnabled(false);
+    userMenuConfig.setDeleteEnabled(false);
+
+    userDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(userMenuConfig)
       .build();
     userMenu = new Menu.Builder(x)
       .setEnabled(true)
