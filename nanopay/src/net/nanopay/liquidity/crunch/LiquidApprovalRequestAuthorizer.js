@@ -5,11 +5,11 @@ foam.CLASS({
   implements: [ 'foam.nanos.auth.Authorizer' ],
 
   javaImports: [
-      'foam.nanos.auth.AuthorizationException',
-      'foam.nanos.auth.AuthService',
-      'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
-      'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
-    ],
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+  ],
 
   methods: [
     {
