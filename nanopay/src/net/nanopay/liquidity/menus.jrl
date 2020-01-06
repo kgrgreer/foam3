@@ -1,14 +1,6 @@
 p({"class":"foam.nanos.menu.Menu","id":"liquid.dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.ui.dashboard.Dashboard"}},"order":100})
 p({"class":"foam.nanos.menu.Menu","id":"liquid.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountDAO","defaultColumns":["name","balance","homeBalance"]}},"order":200})
 p({"class":"foam.nanos.menu.Menu","id":"liquid.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"transactionDAO","defaultColumns":["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"]}},"order":300})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.globalliquidcapabilities","label":"Global Capabilities","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"globalLiquidCapabilityDAO","browseTitle":"Global Liquid Capabilities"}},"order":500})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accountbasedliquidcapabilities","label":"Account-Based Capabilities","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountBasedLiquidCapabilityDAO","browseTitle":"Account-Based Liquid Capabilities"}},"order":510})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.usercapabilityjunctions","label":"UserCapabilityJunctions","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"userCapabilityJunctionDAO","browseTitle":"UserCapabilityJunctions"}},"order":520})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.accounttemplates","label":"Account Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"accountTemplateDAO","browseTitle":"Account Templates"}},"order":530})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.capabilityaccounttemplates","label":"Capability Account Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"capabilityAccountTemplateDAO","browseTitle":"Capability Account Templates"}},"order":535})
-
-p({"class":"foam.nanos.menu.Menu","id":"liquid.assigncapability","label":"Assign Capability","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.crunch.CapabilityAssignmentRequest"}},"order":540})
-p({"class":"foam.nanos.menu.Menu","id":"liquid.revokecapability","label":"Revoke Capability","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.liquidity.crunch.CapabilityRevokingRequest"}},"order":550})
 
 p({
   "class": "foam.nanos.menu.Menu",
@@ -48,6 +40,21 @@ p({"class":"foam.nanos.menu.Menu","id":"liquid.fileUpload","label":"File Upload"
 
 // Business Rules
 p({"class":"foam.nanos.menu.Menu","id":"liquid.rules","label":"Business Rules","handler":{"class":"foam.nanos.menu.SubMenu"},"order":2000})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.accounttemplates",
+  "label":"Rule Account Templates",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"accountTemplateDAO",
+      "browseTitle":"Rule Account Templates"
+    
+    }},
+  "order":3000,
+  "parent": "liquid.rules"
+})
 
 p({
   "class":"foam.nanos.menu.Menu",
@@ -156,3 +163,87 @@ r({"class":"foam.nanos.menu.Menu","id":"set-bus"})
 r({"class":"foam.nanos.menu.Menu","id":"set-bank"})
 r({"class":"foam.nanos.menu.Menu","id":"set-multi-user"})
 r({"class":"foam.nanos.menu.Menu","id":"set-integrate"})
+
+// Roles and Capabilities
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.roles",
+  "label": "Role Management",
+  "handler": {
+    "class": "foam.nanos.menu.SubMenu"
+  },
+  "order": 3000
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.globalliquidcapabilities",
+  "label": "Global Capabilities",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "globalLiquidCapabilityDAO",
+      "browseTitle": "Global Liquid Capabilities"
+    }
+  },
+  "order": 500,
+  "parent": "liquid.roles"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.accountbasedliquidcapabilities",
+  "label": "Account-Based Capabilities",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "accountBasedLiquidCapabilityDAO",
+      "browseTitle": "Account-Based Liquid Capabilities"
+    }
+  },
+  "order": 510,
+  "parent": "liquid.roles"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.capabilityaccounttemplates",
+  "label": "Capability Account Templates",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "capabilityAccountTemplateDAO",
+      "browseTitle": "Capability Account Templates"
+    }
+  },
+  "order": 535,
+  "parent": "liquid.roles"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.assigncapability",
+  "label": "Assign Capability",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.liquidity.crunch.CapabilityAssignmentRequest"
+    }
+  },
+  "order": 540,
+  "parent": "liquid.roles"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.revokecapability",
+  "label": "Revoke Capability",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.liquidity.crunch.CapabilityRevokingRequest"
+    }
+  },
+  "order": 550,
+  "parent": "liquid.roles"
+})
