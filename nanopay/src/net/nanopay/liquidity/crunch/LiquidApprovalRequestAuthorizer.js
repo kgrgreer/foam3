@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'LiquidApprovalRequestAuthorizer',
@@ -11,11 +5,11 @@ foam.CLASS({
   implements: [ 'foam.nanos.auth.Authorizer' ],
 
   javaImports: [
-      'foam.nanos.auth.AuthorizationException',
-      'foam.nanos.auth.AuthService',
-      'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
-      'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
-    ],
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+  ],
 
   methods: [
     {
