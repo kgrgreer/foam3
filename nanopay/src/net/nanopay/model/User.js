@@ -27,7 +27,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.onboarding.model.Questionnaire'
+    'net.nanopay.onboarding.model.Questionnaire',
+    'net.nanopay.model.PersonalIdentification'
   ],
 
   constants: [
@@ -37,7 +38,7 @@ foam.CLASS({
       value: 70
     }
   ],
-  
+
   tableColumns: [
     'id',
     'type',
@@ -217,6 +218,10 @@ foam.CLASS({
         passport, of the individual person, or real user.
       `,
       createMode: 'HIDDEN',
+      factory: function() {
+        return this.PersonalIdentification.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
       section: 'personal'
     },
     {

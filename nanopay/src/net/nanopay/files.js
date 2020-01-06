@@ -1152,6 +1152,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveFXProvisionPayerPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/NotifyIdentityMindResponseError' },
 
 
   // canadian sanction

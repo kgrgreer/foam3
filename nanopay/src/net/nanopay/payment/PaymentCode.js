@@ -62,7 +62,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! auth.check(x, "paymentcode.create." + getId()) ) {
+      if ( ! auth.check(x, "paymentcode.create") ) {
         throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       }
       `
