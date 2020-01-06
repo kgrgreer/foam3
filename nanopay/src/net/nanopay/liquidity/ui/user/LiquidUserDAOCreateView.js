@@ -23,7 +23,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'data'
     },
-    ['viewView', { class: 'net.nanopay.liquidity.ui.user.LiquidUserCreationView' }]
+    ['viewView', { class: 'net.nanopay.liquidity.ui.user.LiquidUserDetailView' }]
   ],
 
   messages: [

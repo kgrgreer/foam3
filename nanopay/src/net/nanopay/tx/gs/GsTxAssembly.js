@@ -31,7 +31,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
-    'net.nanopay.tx.DVPTransaction',
+    'net.nanopay.tx.DVPTransaction'
   ],
 
   constants: [
@@ -107,7 +107,6 @@ foam.CLASS({
     {
       name: 'endJob',
       javaCode: `
-        checkTrusty(getX(), getTransaction());
         verifyBalance(getX(),getTransaction());
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
@@ -171,9 +170,28 @@ foam.CLASS({
           t.setDestinationAmount(toLong(x,destRow.getProductId(),destRow.getSecQty()));
         }
         t = assembleIFLs(t,sourceRow,destRow);
-
-        t.setProperty("lastStatusChange", cleanTimeStamp(row1.getTimeStamp()));
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(t);
+        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+        t = walk_(t,cleanTimeStamp(row1.getTimeStamp()));
         return t;
+      `
+    },
+    {
+      name: 'walk_',
+      documentation: 'recursively walk chain and add time stamps',
+      args: [
+        { name: 'tx', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'stamp', type: 'Long' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+      tx = addStatusHistory(tx,stamp);
+      Transaction [] ts = tx.getNext();
+      if (ts != null)
+        for (int i = 0; i < ts.length;i++ )
+          ts[i] = walk_(ts[i],stamp);
+      return tx;
       `
     },
     {
@@ -237,7 +255,7 @@ foam.CLASS({
               tx.setPaymentAmount(toLong(x,"USD",row1.getCashUSD()));
               tx.setDestinationPaymentAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
               t = tx;
-              // add cash peice
+              // add cash piece
             }
 
             t.setSourceAccount(BROKER_ID);
@@ -248,9 +266,11 @@ foam.CLASS({
             t.setDestinationAmount(toLong(x,row1.getProductId(),row1.getSecQty()));
           }
 
-          t = assembleIFLs(t,row1,row1);
-          t.setProperty("lastStatusChange",cleanTimeStamp(row1.getTimeStamp()));
-
+        t = assembleIFLs(t,row1,row1);
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(t);
+        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+        t = walk_(t,cleanTimeStamp(row1.getTimeStamp()));
         return t;
       `
     },
@@ -328,6 +348,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
+
           verifyBalance(x,txn2);
         }  
 
@@ -438,8 +459,9 @@ foam.CLASS({
           checkTrusty(x,ci);
 
           // Complete the cash in transaction
-          Transaction tx = (Transaction) transactionDAO.put(ci).fclone();
+          Transaction tx = (Transaction) transactionDAO.put(ci);
           if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
+            tx = (Transaction) tx.fclone();
             tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
             transactionDAO.put(tx);
           }
@@ -627,6 +649,23 @@ foam.CLASS({
           return (long) Math.floor(Math.abs(amount * (Math.pow(10,precision))));
         }
         return (long) Math.floor((Math.abs(amount)));
+      `
+    },
+    {
+      name: 'addStatusHistory',
+      args: [
+        { name: 'tx', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'date', type: 'Long' },
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+      tx.setProperty("lastStatusChange",date);
+       net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
+          h[0] = new net.nanopay.tx.HistoricStatus();
+          h[0].setStatus(tx.getStatus());
+          h[0].setTimeStamp(new java.util.Date(date));
+        tx.setStatusHistory(h);
+        return tx;
       `
     }
   ]

@@ -198,6 +198,8 @@ p({
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liquidityService",                   "serviceScript":"return new net.nanopay.liquidity.LiquidityService();"})
 
+p({"class":"foam.nanos.boot.NSpec", "name":"accountHierarchy", "lazy":true, "serviceScript":"return new net.nanopay.liquidity.tx.AccountHierarchyService();"})
+
 p({
   "class": "foam.nanos.boot.NSpec", 
   "name": "transactionPurposeDAO",              

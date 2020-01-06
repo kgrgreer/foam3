@@ -20,5 +20,11 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status'
     },
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.timeStamp + ' → ' + this.status.label;
+    }
   ]
- });
+});

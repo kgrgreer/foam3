@@ -46,16 +46,19 @@ foam.CLASS({
       ],
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+        user = (User) user.fclone();
 
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          if ( businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null
+                && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail()) ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
             Invitation existingInvite = (Invitation) businessInvitationDAO.find(
               AND(
-                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail()),
-                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId()),
-                NEQ(Invitation.STATUS, net.nanopay.model.InvitationStatus.COMPLETED)
+                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail().toLowerCase()),
+                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId())
               )
             );
 
@@ -93,6 +96,7 @@ foam.CLASS({
             }
           }
 
+          businessOnboarding.setSendInvitation(false);
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -118,12 +122,9 @@ foam.CLASS({
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
-        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
-        user = (User) user.fclone();
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
@@ -188,7 +189,8 @@ foam.CLASS({
             business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
           }
 
-          business.setOnboarded(true);
+          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
+            business.setOnboarded(true);
 
           if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
             business.setCompliance(ComplianceStatus.REQUESTED);

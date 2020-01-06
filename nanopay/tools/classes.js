@@ -338,7 +338,9 @@ var classes = [
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
    'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
    'net.nanopay.liquidity.tx.ExceptionRuleAction',
+   'net.nanopay.liquidity.tx.AccountHierarchy',
    'net.nanopay.liquidity.tx.GenericBusinessRule',
+   'net.nanopay.liquidity.tx.IsChildAccountPredicate',
    'net.nanopay.liquidity.tx.TxLimitAction',
    'net.nanopay.liquidity.tx.TxLimitEntityType',
    'net.nanopay.liquidity.tx.TxLimitPredicate',
@@ -763,6 +765,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.NotifyIdentityMindResponseError',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',

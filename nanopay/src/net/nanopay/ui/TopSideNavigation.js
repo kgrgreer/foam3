@@ -178,6 +178,7 @@ foam.CLASS({
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
+              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
               return this.E()
                 .start()
                   .attrs({ name: menu.label })
@@ -210,14 +211,12 @@ foam.CLASS({
                     .start('span')
                       .add(menu.label)
                     .end()
-                    .start().enableClass('up-arrow', slot.map((slot) => {
-                      return slot && hasChildren;
-                    })).end()
+                    .start().enableClass('up-arrow', visibilitySlot).end()
                   .end()
 
                   .start()
                     .addClass('submenu')
-                    .show(slot)
+                    .show(visibilitySlot)
                     .select(self.dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
                       hasChildren.set(true);
                       var e = this.E()

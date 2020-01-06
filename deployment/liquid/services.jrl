@@ -227,10 +227,9 @@ p({
       .setDelegate(e)
       .build();
     quoted = new CheckQuotedTransactionDAO(x, exec);
-    RealexTransactionDAO real = new net.nanopay.tx.realex.RealexTransactionDAO(x, quoted);
-    DAO stripe = new StripeTransactionDAO(x, real);
-    DAO auth = new foam.nanos.auth.AuthorizationDAO(x, stripe, new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer.Builder(x).setPermissionPrefix("transaction").build());
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,auth));
+    //RealexTransactionDAO real = new net.nanopay.tx.realex.RealexTransactionDAO(x, quoted);
+    //DAO stripe = new StripeTransactionDAO(x, real);
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,quoted));
     """
 })
 p({

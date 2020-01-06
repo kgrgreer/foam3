@@ -118,11 +118,15 @@ foam.CLASS({
 
       javaCode: `
         DAO accountDAO = (DAO) this.getSubAccounts(x);
-        SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
+        // TODO: switch to StripedLock when available, KGR
+        Object lock = (getId() + ":" + unit).intern();
+        synchronized ( lock ) {
+          SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-        if (sa == null || sa.getId() == 0)
-          return createSecurityAccount_(x,unit);
-        return sa;
+          if (sa == null || sa.getId() == 0)
+            return createSecurityAccount_(x,unit);
+          return sa;
+        }
       `
     },
     {
@@ -150,5 +154,6 @@ foam.CLASS({
         return sa;
       `
     },
+
   ]
 });
