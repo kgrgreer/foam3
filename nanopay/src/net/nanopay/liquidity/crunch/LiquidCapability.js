@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'LiquidCapability',
   extends: 'foam.nanos.crunch.Capability',
 
+  implements: [
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+  ],
+
   tableColumns: [ 'id' ],
 
   properties: [
@@ -49,7 +53,24 @@ foam.CLASS({
       name: 'daoKey',
       hidden: true,
     },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
+    }
   ],
+
+  methods: [
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        return getId();
+      `
+    }
+  ]
 });
 
 
