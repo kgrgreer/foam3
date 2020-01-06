@@ -549,3 +549,5 @@ p({"class":"foam.nanos.auth.Permission","id":"service.purposeCodeDAO","descripti
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.4b5d8b34-a3bf-487a-a451-a9e68a91df7f","description":"Permission to see AggregateAccount account type in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.eca7cf8e-82d7-42a7-9061-26a01cce4dc7","description":"Permission to see DigitalAccount account type in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.dfce5b83-3861-4fcd-9196-93da05f9a931","description":"Permission to see ShadowAccount account type in strategizer view."})
+p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.businessonboarding.section.signingOfficerQuestionSection","description":"Permission to access businessOnboarding signing officer section"})
+p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.usbusinessonboarding.section.signingOfficerQuestionSection","description":"Permission to access usBusinessOnboarding signing officer section"})
