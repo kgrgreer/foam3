@@ -9,7 +9,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'java.util.Map'
+    'java.util.Map',
+    'net.nanopay.account.Account',
+    'foam.nanos.auth.User',
+    'foam.dao.DAO',
   ],
 
   properties: [  
@@ -24,47 +27,55 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'Map',
-      javaType: 'java.util.Map<String, ApproverLevel>',
+      javaType: 'java.util.Map<String, CapabilityAccountData>',
     }
   ],
 
   methods: [
-    // {
-    //   name: 'addAccount',
-    //   args: [
-    //     { name: 'account', class: 'Long' },
-    //     { name: 'data', class: 'net.nanopay.liquidity.crunch.AccountData' }
-    //   ],
-    //   documentation: `
-    //   `,
-    //   code: function addAccount(account, data) {
-    //     // check if the new account is parent of any entries in the map, if it is, remove the entry
-    //     var keySetIterator = this.accounts.keys();
-    //     var existingAccount = keySetIterator.next().value;
-    //     while ( existingAccount ) {
-    //       if ( existingAcconut ===  account || isParentAccount(account, existingAccount) ) this.accounts.delete(existingAccount);
-    //       existingAccount = keySetIterator.next().value;
-    //     }
-    //     this.accounts.set(account, data);
-    //   }
-    // },
-    // {
-    //   name: 'isParentAccount',
-    //   args: [
-    //     { name: 'parent', class: 'Long' },
-    //     { name: 'child', class: 'Long' },
-    //   ],
-    //   type: 'Boolean',
-    //   code: async function isParentAccount(parent, child) {
-    //     if ( parent === child ) return true;
+    {
+      name: 'addAccount',
+      args: [
+        { name: 'accountId', class: 'Long' },
+        { name: 'data', javaType: 'net.nanopay.liquidity.crunch.CapabilityAccountData' }
+      ],
+      documentation: `
+      Adds a single account to the map 
+      `,
+      code: function addAccount(account, data) {
+        return;
+      },
+      javaCode: `
+        getAccounts().put(String.valueOf(accountId), data);
+      `
+    },
+    {
+      name: 'impliesChildAccount',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'childId', class: 'Long' },
+      ],
+      type: 'Long',
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("accountDAO");
+        X systemX = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
+        Account child = (Account) accountDAO.find_(systemX, childId);
+        CapabilityAccountData data;
 
-    //     childAccount = await this.accountDAO.find(child);
-    //     child = childAccount.parent;
-    //     if ( child ) return isParentAccount(parent, child);
+        while ( child != null ) {
+          if ( getAccounts().containsKey(String.valueOf(child.getId())) ) {
+            data = getAccounts().get(String.valueOf(child.getId()));
+            if ( data != null && data.getIsIncluded() && data.getIsCascading() ) {
+              return child.getId();
+            } 
+            return 0L;
+          } 
+          child = child.findParent(systemX);
+        }
 
-    //     return false;
-    //   }
-    // },
+        return 0L;
+        
+      `
+    },
     {
       name: 'removeAccount',
       args: [
@@ -87,7 +98,7 @@ foam.CLASS({
       name: 'hasAccount',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'String' }
+        { name: 'childAccountId', class: 'Long' }
       ],
       javaType: 'Boolean',
       code: function hasAccount(x, childAccountId) {
@@ -95,15 +106,15 @@ foam.CLASS({
         return map && accountId.toString() in map;
       },
       javaCode: `
-        Map<String, ApproverLevel> map = getAccounts();
-        return map != null && map.containsKey(childAccountId);
+        Map<String, CapabilityAccountData> map = getAccounts();
+        return map != null && map.containsKey(String.valueOf(childAccountId));
       `
     },
     {
       name: 'hasAccountByApproverLevel',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'String' },
+        { name: 'childAccountId', class: 'Long' },
         { name: 'level', javaType: 'Integer' }
       ],
       javaType: 'Boolean',
@@ -112,8 +123,8 @@ foam.CLASS({
         return map && accountId.toString() in map && map[accountId.toString()].approverLevel === level;
       },
       javaCode: `
-      Map<String, ApproverLevel> map = getAccounts();
-      return map != null && map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel() == level;
+      Map<String, CapabilityAccountData> map = getAccounts();
+      return map != null && map.containsKey(String.valueOf(childAccountId)) && map.get(String.valueOf(childAccountId)).getApproverLevel().getApproverLevel() == level;
       `
     }
   ]
