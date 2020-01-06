@@ -71,7 +71,7 @@ VOLUME ["/tmp/app"]
 # COPY . /opt/app
 WORKDIR /tmp/app
 
-# ENTRYPOINT ["./build.sh"]
+ENTRYPOINT ["./build.sh"]
 # CMD["ic"]
 EXPOSE 80
 
@@ -81,4 +81,5 @@ EXPOSE 80
 # docker run --name nanopay -p 127.0.0.1:80:80
 # docker rm ${contain_name}
 # -v ${mechine_folder}:${container_foler}:${status: ro | rw}
-# # docker run -v ${PWD}:/opt/app:rw --name nanopay -it nanopay
+# docker run -v ${PWD}:/opt/app:rw --name nanopay -it nanopay
+# docker run -v ${PWD}:/tmp/app:rw -v /tmp/nanopay_root:/tmp/nanopay_root:rw --name nanopay -it nanopay -c -uJdevelopment -Nmm1 -C1 -W8001 -Amn
