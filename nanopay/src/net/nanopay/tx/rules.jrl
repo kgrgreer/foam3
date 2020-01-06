@@ -212,7 +212,7 @@ p({
   "ruleGroup":"StatusHistory",
   "documentation":"When transaction status changes update the status history array with a timestamped entry.",
   "daoKey":"localTransactionDAO",
-  "operation":3,
+  "operation":1,
   "predicate":{"class":"net.nanopay.tx.ruler.PropertyChangePredicate","propName":"status"},
   "action":{"class":"net.nanopay.tx.ruler.AddStatusHistoryAction"}
 })
@@ -385,7 +385,6 @@ p({
     "enabled":false,
     "saveHistory":true
 })
-
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"Send email when the micro deposit sent",
@@ -408,4 +407,25 @@ p({
     },
     "enabled":true,
     "saveHistory":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set transaction lifecycleState to PENDING",
+  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
+  "ruleGroup":"(Default)",
+  "daoKey":"localTransactionDAO",
+  "priority":1000,
+  "after":false,
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"lifecycleState",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.nanos.auth.LifecycleState",
+        "ordinal":0
+      }
+    }
+  },
+  "enabled":false
 })

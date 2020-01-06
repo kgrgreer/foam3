@@ -94,7 +94,7 @@ foam.CLASS({
         if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
           return new BusinessRuleNotificationAction.Builder(getX())
             .setBusinessRuleId(this.getId())
-            .setGroupId("liquidDev")
+            .setGroupId("liquidBasic")
             .build();
 
         // ALLOW

@@ -165,7 +165,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
-  { name: 'net/nanopay/auth/LiquidUserDAOCreateView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -861,12 +860,17 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
    { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
+   { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
+   { name: 'net/nanopay/liquidity/tx/AccountHierarchy' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
+   { name: 'net/nanopay/liquidity/tx/IsChildAccountPredicate' },
+   { name: 'net/nanopay/liquidity/tx/L2TransactionApprovalRule' },
+   { name: 'net/nanopay/liquidity/tx/LiquidTransactionLifecycleDAO' },
    { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
    { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
    { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
@@ -906,8 +910,11 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/account/Overview' },
    { name: 'net/nanopay/liquidity/ui/account/Balance' },
    { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserCreationView' },
-  
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOCreateView' },
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
+ 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
@@ -1171,6 +1178,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveFXProvisionPayerPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/NotifyIdentityMindResponseError' },
 
 
   // canadian sanction

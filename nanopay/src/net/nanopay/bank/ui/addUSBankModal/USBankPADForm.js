@@ -233,6 +233,7 @@ foam.CLASS({
             }
           } catch (e) {
             this.ctrl.add(this.NotificationMessage.create({ message: e.message, type: 'error' }));
+            return;
           }
           this.closeDialog();
         } else {

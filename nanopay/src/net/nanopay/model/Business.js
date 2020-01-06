@@ -272,7 +272,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'targetCustomers',
-      label: 'Who do you market your products and services to?',
+      label: 'Who do you market the products and services to?',
       documentation: `The type of clients that the business markets its products and
         services.`,
       section: 'business'
@@ -286,7 +286,11 @@ foam.CLASS({
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
         `,
-      section: 'business'
+      section: 'business',
+      factory: function() {
+        return this.SuggestedUserTransactionInfo.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
     },
     {
       class: 'String',
@@ -586,7 +590,7 @@ foam.CLASS({
       javaCode: `
         DAO userDAO = (DAO) x.get("userDAO");
         DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
-        
+
         List signingOfficers = ((ArraySink) signingOfficerJunctionDAO.where(
             EQ(BusinessUserJunction.SOURCE_ID, this.getId())
           ).select(new ArraySink())).getArray();

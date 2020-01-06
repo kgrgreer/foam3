@@ -3,20 +3,23 @@ foam.CLASS({
   name: 'GsRowToTx',
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.EasyDAO',
     'foam.dao.MDAO',
-    'foam.lib.parse.CSVParser',
+    'java.util.List',
+    'foam.dao.EasyDAO',
     'foam.mlang.MLang',
+    'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
     'foam.mlang.sink.Count',
+    'foam.lib.parse.CSVParser',
     'foam.nanos.logger.Logger',
+    'net.nanopay.tx.gs.GsTxCsvRow',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.tx.gs.ProgressBarData',
     'foam.util.concurrent.SyncAssemblyLine',
     'foam.util.concurrent.AsyncAssemblyLine',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'net.nanopay.tx.gs.GsTxCsvRow',
-    'net.nanopay.tx.gs.ProgressBarData'
   ],
 
   methods: [
@@ -83,7 +86,7 @@ foam.CLASS({
         // -- begin Job creation and execution
         logger.info(" ** Processing: " + rows.size() + " rows ...");
         int i = 0;
-        int modulus = 21;
+        int modulus = 1000;
         for ( GsTxCsvRow row1 : rows ) {
           // logger.info(" ** On iteration: " + i + " of: " + am);
           i++;
@@ -109,9 +112,11 @@ foam.CLASS({
           
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(), "0") ) {
+            checkTrustee(x,row1.getCurrency());
             transactionProcessor.enqueue(job);
             continue;
           }
+          checkTrustee(x,row1.getCurrency());
           job.setIsInternal(true);
 
           //-- Cash txns.
@@ -128,6 +133,7 @@ foam.CLASS({
               logger.error("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
               continue;
             }
+            checkTrustee(x,((GsTxCsvRow) arr[0]).getCurrency());
             job.setRow2( (GsTxCsvRow) arr[0] );
           }
           else {
@@ -150,9 +156,8 @@ foam.CLASS({
         }
 
         pbd.setValue(am);
-        pbd.setStatus("💰🤑💸 Congratualtions File Has  Been Ingested 💸🤑💰");
+        pbd.setStatus("File Has  Been Ingested");
         progressBarDAO.put(pbd);
-        logger.info(" ** " + pbd.getStatus());
       `
     },
     {
@@ -166,6 +171,43 @@ foam.CLASS({
           return true;
         return false;
       `
-    }
+    },
+    {
+      name: 'checkTrustee',
+      args: [
+        { name: 'x', type: 'foam.core.X'},
+        { name: 'denomination', type: 'String'}
+      ],
+      javaCode: `
+        Logger logger = (Logger) x.get("logger");
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+
+        // Skip trustee for securities
+        if( currencyDAO.find(denomination) == null )
+          return;
+
+        // Create the source trustee account
+        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,denomination +" Trust Account"));
+        if( sourceTrust == null ) {
+          logger.info("trustee not found for " + denomination + " ... Generating...");
+          sourceTrust = new TrustAccount.Builder(x)
+            .setOwner(101) // nanopay.trust@nanopay.net
+            .setDenomination(denomination)
+            .setName(denomination +" Trust Account")
+            .build();
+          BankAccount sourceBank = new BankAccount.Builder(x)
+            .setOwner(8005) // liquiddev@nanopay.net
+            .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setDenomination(denomination)
+            .setName(denomination +" Bank Account")
+            .setAccountNumber("000000")
+            .build();
+          accountDAO.put(sourceTrust);
+          accountDAO.put(sourceBank);
+        }
+      `
+
+    },
   ]
 });
