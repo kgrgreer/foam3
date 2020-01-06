@@ -29,7 +29,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "net.nanopay.liquidity.RoleApprovalRequest",
+      "of": "net.nanopay.liquidity.approvalRequest.RoleApprovalRequest",
       "createEnabled": false
     }
   },

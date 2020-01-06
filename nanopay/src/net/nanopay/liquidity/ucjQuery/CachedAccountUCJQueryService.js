@@ -62,6 +62,10 @@ foam.CLASS({
         {
           name: 'accountId',
           type: 'Long'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -131,6 +135,10 @@ foam.CLASS({
         {
           name: 'accountId',
           type: 'Long'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -201,6 +209,10 @@ foam.CLASS({
         {
           name: 'roleId',
           type: 'String'
+        },
+        {
+          name: 'x',
+          type: 'Context'
         }
       ],
       javaCode: `
