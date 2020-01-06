@@ -199,6 +199,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -1221,6 +1224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
+  { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
