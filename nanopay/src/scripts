@@ -1110,7 +1110,7 @@ p({
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
 
-    DRY_RUN = false;
+    DRY_RUN = true;
     // Set to true to undo the permission and theme changes made to the "SME" group by this script
     fixSME = false;
     
@@ -1170,7 +1170,8 @@ p({
     permissionArray.add("menu.read."+NAME+"-operation.transactions");
     permissionArray.add("menu.read."+NAME+"-operation.users");
     permissionArray.add("menu.read.notifications");
-    permissionArray.add("menu.read.txnReport");
+    permissionArray.add("menu.read.report");
+    permissionArray.add("menu.read.report.txnReport");
     permissionArray.add("service.accountDAO");
     permissionArray.add("service.balanceDAO");
     permissionArray.add("service.branchDAO");
