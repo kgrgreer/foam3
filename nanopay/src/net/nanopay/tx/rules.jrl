@@ -212,7 +212,7 @@ p({
   "ruleGroup":"StatusHistory",
   "documentation":"When transaction status changes update the status history array with a timestamped entry.",
   "daoKey":"localTransactionDAO",
-  "operation":3,
+  "operation":1,
   "predicate":{"class":"net.nanopay.tx.ruler.PropertyChangePredicate","propName":"status"},
   "action":{"class":"net.nanopay.tx.ruler.AddStatusHistoryAction"}
 })
