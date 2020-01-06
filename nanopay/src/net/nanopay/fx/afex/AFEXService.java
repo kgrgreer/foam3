@@ -23,6 +23,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -59,7 +60,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     partnerAPI = credentials.getPartnerApi();
     AFEXAPI = credentials.getAFEXApi();
     RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).build();
-    httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+    httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
+      .setConnectionReuseStrategy(new NoConnectionReuseStrategy()).build(); // Untill we figure out how to handle stale connections
     jsonParser = new JSONParser();
     jsonParser.setX(x);
   }
