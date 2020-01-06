@@ -445,7 +445,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("capabilityDAO")))
+      .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .setDecorator(new foam.dao.FilteredDAO(
@@ -466,7 +466,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("capabilityDAO")))
+      .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .setDecorator(new foam.dao.FilteredDAO(
@@ -487,7 +487,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("accountTemplateAndCapabilityAccountTemplateDAO")))
+      .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
       .setAuthorize(false)
       .setDecorator(new foam.dao.FilteredDAO(
@@ -508,7 +508,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO((x.get("accountTemplateAndCapabilityAccountTemplateDAO")))
+      .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
       .setOf(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.getOwnClassInfo())
       .setAuthorize(false)
       .setDecorator(new foam.dao.FilteredDAO(
