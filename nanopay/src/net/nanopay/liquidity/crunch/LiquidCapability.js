@@ -151,7 +151,7 @@ foam.CLASS({
             if ( ucjdata == null || ! ( ucjdata instanceof AccountApproverMap ) ) return false;
 
             AccountApproverMap map = (AccountApproverMap) ucjdata;
-            if ( map.hasAccount(x, outgoingAccountId) ) return true;
+            if ( map.hasAccount(x, Long.parseLong(outgoingAccountId)) ) return true;
           }
         } catch ( java.lang.Exception e ) {
           return false;
