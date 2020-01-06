@@ -1103,7 +1103,7 @@ foam.CLASS({
           this.owner1.jobTitle = this.adminJobTitle;
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
-          this.owner1.ownershipPercent = this.ownershipPercent;;
+          this.owner1.ownershipPercent = this.ownershipPercent;
         } else if ( ! this.userOwnsPercent ) {
           this.clearProperty('owner1');
         }
@@ -1261,16 +1261,20 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       label: '',
       label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, amountOfOwners) {
+        return signingOfficer && amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
           args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
           predicateFactory: function(e) {
             return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+              ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
             );
           },
           errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
@@ -1284,16 +1288,20 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'dualPartyAgreementCAD',
       label: '',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, amountOfOwners) {
+        return signingOfficer && amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
           args: ['signingOfficer', 'dualPartyAgreement'],
           predicateFactory: function(e) {
             return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
+              ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
