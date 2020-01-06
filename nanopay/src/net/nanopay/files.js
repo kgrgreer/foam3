@@ -888,6 +888,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityAssignmentRequest' },
    { name: 'net/nanopay/liquidity/crunch/AddChildrenToCapabilityAccountTemplateOnUCJCreate' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
 
    
    // liquidity ui
