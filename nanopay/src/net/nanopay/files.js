@@ -11,11 +11,15 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/payment/CreatePaymentCode' },
   { name: 'net/nanopay/tx/test/BulkTransactionTest' },
   { name: 'net/nanopay/payment/Institution' },
+  { name: 'net/nanopay/payment/PaymentCode' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
   { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
+  { name: 'net/nanopay/payment/PADType' },
+  { name: 'net/nanopay/payment/PADTypeLineItem' },
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -1107,6 +1111,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveFXProvisionPayerPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/NotifyIdentityMindResponseError' },
 
 
   // canadian sanction

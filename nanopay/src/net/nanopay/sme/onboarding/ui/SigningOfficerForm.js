@@ -605,7 +605,7 @@ foam.CLASS({
     async function updateUserAcceptance(id, val) {
       try {
         this.acceptanceDocumentService
-          .updateUserAcceptanceDocument(this.__context__, this.user.id, id, val);
+          .updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, id, val);
       } catch (error) {
         console.warn('Error updating user accepted document: ', error);
       }

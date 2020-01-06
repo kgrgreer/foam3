@@ -46,18 +46,20 @@ foam.CLASS({
       javaCode: `
         USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
 
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+        user = (User) user.fclone();
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && old.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          if ( businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail())) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
             Invitation existingInvite = (Invitation) businessInvitationDAO.find(
               AND(
-                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail()),
-                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId()),
-                NEQ(Invitation.STATUS, net.nanopay.model.InvitationStatus.COMPLETED)
+                EQ(Invitation.EMAIL, businessOnboarding.getSigningOfficerEmail().toLowerCase()),
+                EQ(Invitation.CREATED_BY, businessOnboarding.getBusinessId())
               )
             );
 
@@ -95,6 +97,7 @@ foam.CLASS({
             }
           }
 
+          businessOnboarding.setSendInvitation(false);
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -103,11 +106,15 @@ foam.CLASS({
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldDualPartyAgreement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(), (businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0));
         }
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);
@@ -119,11 +126,8 @@ foam.CLASS({
         }
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
-        user = (User) user.fclone();
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());

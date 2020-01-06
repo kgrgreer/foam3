@@ -226,7 +226,7 @@ p({
   "documentation": "Plans compliance transaction before money changes hands. Currently only used on the children transactions of a BulkTransaction to check each beneficiary compliance.",
   "daoKey": "localTransactionQuotePlanDAO",
   "operation": 0,
-  "after": false,
+  "after": true,
   "priority": 100,
   "predicate": {
     "class":"foam.mlang.predicate.And",
@@ -384,7 +384,6 @@ p({
     "enabled":true,
     "saveHistory":true
 })
-
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"Send email when the micro deposit sent",

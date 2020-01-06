@@ -61,9 +61,9 @@ foam.CLASS({
       Logger logger = (Logger) getLogger();
 
       try {
-        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) ) 
+        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) )
           throw new RuntimeException("Required hash map parameters: template");
-        
+
         String template = (String) parameters.get("template");
 
         DAO tokenDAO = (DAO) getTokenDAO();
@@ -100,6 +100,8 @@ foam.CLASS({
         urlStringB.append("#sign-up");
 
         parameters.put("link", urlStringB.toString());
+        parameters.put("name", user.getFirstName());
+        parameters.put("sendTo", user.getEmail());
         EmailsUtility.sendEmailFromTemplate(x, user, message, template, parameters);
 
         return true;
@@ -181,7 +183,7 @@ foam.CLASS({
           // Set token processed to true.
           clone.setProcessed(true);
           tokenDAO.put(clone);
-          
+
           return true;
         } catch (Throwable t) {
           logger.error("Error processing contact token", t);
