@@ -20,6 +20,11 @@ foam.CLASS({
 
   properties: [  
     {
+      name: 'id',
+      class: 'Long',
+      hidden: true
+    },
+    {
       name: 'requestType',
       javaType: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
       class: 'Enum',

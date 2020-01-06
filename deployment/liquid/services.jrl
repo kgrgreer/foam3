@@ -558,13 +558,13 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"capabilityAssignmentRequestDAO",
-  "lazy":true,
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer("capabilityassignmentrequest"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityAssignmentRequests")
+      .setSeqNo(true)
       .setOf(net.nanopay.liquidity.crunch.CapabilityAssignmentRequest.getOwnClassInfo())
       .build();
   """,
