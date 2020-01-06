@@ -247,3 +247,16 @@ p({
   "order": 550,
   "parent": "liquid.roles"
 })
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "liquid.rolequeryview",
+  "label": "Role Query",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.liquidity.ucjQuery.RoleQueryView"
+    }
+  },
+  "order": 600,
+  "parent": "liquid.roles"
+})

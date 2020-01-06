@@ -236,7 +236,7 @@ foam.CLASS({
               MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
             ).select(new ArraySink())).getArray();
             break;
-          case "businessrule":
+          case "rule":
             capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
               MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
             ).select(new ArraySink())).getArray();
