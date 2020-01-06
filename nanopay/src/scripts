@@ -1170,6 +1170,7 @@ p({
     permissionArray.add("menu.read."+NAME+"-operation.transactions");
     permissionArray.add("menu.read."+NAME+"-operation.users");
     permissionArray.add("menu.read.notifications");
+    permissionArray.add("menu.read.report");
     permissionArray.add("menu.read.report.txnReport");
     permissionArray.add("service.accountDAO");
     permissionArray.add("service.balanceDAO");
