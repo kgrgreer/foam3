@@ -19,7 +19,6 @@ foam.CLASS({
   tableColumns: [
     'classification',
     'operation',
-    'outgoingAccount',
     'initiatingUser',
     'approver',
     'status'
