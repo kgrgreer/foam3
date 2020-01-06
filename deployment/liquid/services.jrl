@@ -331,14 +331,11 @@ p({
       .setDelegate(null)
       .build();
 
-    /* TODO: Uncomment once new permissioning system is implemented
-    dao = new net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO.Builder(x)
+    dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
     .setDaoKey("ruleDAO")
     .setOf(BusinessRule.getOwnClassInfo())
     .setDelegate(dao)
     .build();
-    */
-
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -397,13 +394,11 @@ p({
     )
     .build();
   
-  /* TODO: Uncomment once new permissioning system is implemented
   dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
     .setDaoKey("liquiditySettingsDAO")
     .setOf(LiquiditySettings.getOwnClassInfo())
     .setDelegate(dao)
     .build();
-  */
 
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
