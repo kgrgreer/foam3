@@ -3,10 +3,10 @@ p({"class":"foam.nanos.ruler.Rule","id":"Pending FX Rate Transactions","enabled"
 p({"class":"foam.nanos.ruler.Rule","id":"Getting FX Rate for Transactions","enabled":false})               // Kotak
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule1","enabled":false})                               // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule2","enabled":false})                               // Compliance
-p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","enabled":false})                                   // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","enabled":false})                                  // Ablii FastPay
 p({"class":"foam.nanos.ruler.Rule","id":"Proper Status after Pause, Rule","enabled":true})                 // Parent Pending Complete
 p({"class":"foam.nanos.ruler.Rule","id":"Set Approved By","enabled":true})                                 // Invoice rule
-p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","enabled":false})                                 // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","enabled":false})                                // Ablii FastPay
 p({"class":"foam.nanos.ruler.Rule","id":"Modify Cico Status","enabled":true})                              // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":true})                 // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Prune Cico Approval Cleanup","enabled":false})                    // Compliance
@@ -130,7 +130,8 @@ p({
       "value":"liquiddev@nanopay.net"
     }
   },
-  "businessRuleAction":2
+  "businessRuleAction":2,
+  "enabled": false
 })
 
 // Automatically verify emails for new Liquid users. Due to change once Goldman
