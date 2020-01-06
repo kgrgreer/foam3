@@ -30,7 +30,6 @@ p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabl
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":true})    // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":true})             // Tx Processing
 
-// ucjDAO rule
 // TODO ruby make predicate for checking if is account-based cap in ucj target 
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -46,7 +45,23 @@ p({
     "class": "net.nanopay.liquidity.crunch.AddChildrenToCapabilityAccountTemplateOnUCJCreate"
   },
   "saveHistory": true
-})             
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Update account-based ucj data on account create",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "set up newly created account in each ucj where the parent account is in the map and is cascading",
+  "daoKey": "accountDAO",
+  "operation": 0,
+  "after": true,
+  "action" : {
+    "class": "net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate"
+  },
+  "saveHistory": true
+})
 
 // Add approval request rules
 p({

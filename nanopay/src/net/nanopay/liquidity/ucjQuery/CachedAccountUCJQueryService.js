@@ -103,7 +103,7 @@ foam.CLASS({
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) rolesFilteredByAccount.add(currentUCJ.getTargetId());
-          else if (accountMap.hasAccount(x, String.valueOf(accountId)))
+          else if (accountMap.hasAccount(x, accountId))
             rolesFilteredByAccount.add(currentUCJ.getTargetId());
         }
 
@@ -173,7 +173,7 @@ foam.CLASS({
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
           if (accountId == 0) usersFilteredByAccount.add(currentUCJ.getSourceId());
-          else if (accountMap.hasAccount(x, String.valueOf(accountId)))
+          else if (accountMap.hasAccount(x, accountId))
             usersFilteredByAccount.add(currentUCJ.getSourceId());
         }
 
@@ -349,7 +349,7 @@ foam.CLASS({
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
           AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
-          if (  accountMap.hasAccountByApproverLevel(x, String.valueOf(accountId), level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if (  accountMap.hasAccountByApproverLevel(x, accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
         }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);

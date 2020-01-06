@@ -31,7 +31,7 @@ foam.CLASS({
     {
       name: 'accountsMap',
       class: 'Map',
-      javaType: 'java.util.Map<String, ApproverLevel>'
+      javaType: 'java.util.Map<String, CapabilityAccountData>'
     }
   ],
 
@@ -51,9 +51,8 @@ foam.CLASS({
             Set<String> accountIds = map.keySet();
 
             for ( String accountId : accountIds ) {
-              ApproverLevel approverLevel = map.get(accountId).getApproverLevel() != null ? map.get(accountId).getApproverLevel() : new ApproverLevel.Builder(x).build();
-              getAccountsMap().put(accountId, approverLevel);
-              addChildrenToTemplate(x, accountId, approverLevel);
+              getAccountsMap().put(accountId, map.get(accountId));
+              addChildrenToTemplate(x, accountId, map.get(accountId));
             }
 
             AccountApproverMap ucjData = new AccountApproverMap.Builder(x).setAccounts(getAccountsMap()).build();
@@ -68,7 +67,7 @@ foam.CLASS({
       args: [ 
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'accountId', class: 'String' },
-        { name: 'approverLevel', javaType: 'ApproverLevel' }
+        { name: 'data', javaType: 'CapabilityAccountData' }
       ],
       javaCode: `
 
@@ -90,7 +89,7 @@ foam.CLASS({
         }
 
         for ( Account account : accountsSet ) {
-          if ( ! getAccountsMap().containsKey(String.valueOf(account.getId()))) getAccountsMap().put(String.valueOf(account.getId()), approverLevel);
+          if ( ! getAccountsMap().containsKey(String.valueOf(account.getId()))) getAccountsMap().put(String.valueOf(account.getId()), data);
         }
       `
     }
