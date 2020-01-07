@@ -929,6 +929,8 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+  'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
 ];
 
 var proxies = [

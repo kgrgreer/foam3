@@ -857,6 +857,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
    { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
