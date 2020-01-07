@@ -136,12 +136,13 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.txapprovaltrules",
-  "label":"L2 Transaction Approval Rules",
+  "label":"Transaction Approval By Level",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "browseTitle":"L2 Transaction Approval Rules",
+      "browseTitle":"Transaction Approval By Level",
+      "createTitle": "Create a New Transaction Approval By Level"
       "daoKey":"ruleDAO",
       "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
