@@ -6,13 +6,6 @@ foam.CLASS({
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
-  imports: [
-    'userCapabilityJunctionDAO',
-    'capabilityDAO',
-    'userDAO',
-    'capabilityAccountTemplateDAO'
-  ],
-
   javaImports: [
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -38,7 +31,6 @@ foam.CLASS({
       class: 'List',
       of: 'foam.nanos.auth.User',
       javaType: 'java.util.List<foam.nanos.auth.User>',
-      required: true,
       factory: function () {
         return [];
       },
@@ -51,9 +43,8 @@ foam.CLASS({
     },
     {
       name: 'capability',
-      required: true,
       class: 'FObjectProperty',
-      of: 'net.nanopay.liquidity.crunch.Capability',
+      of: 'net.nanopay.liquidity.crunch.LiquidCapability',
       javaType: 'net.nanopay.liquidity.crunch.LiquidCapability',
       view: function(_, x) {
         return {  
