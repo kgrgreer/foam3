@@ -14,6 +14,10 @@ foam.CLASS({
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
   ],
 
+  imports: [
+    ''
+  ],
+
   properties: [  
     {
       name: 'id',
@@ -42,42 +46,50 @@ foam.CLASS({
       }
     },
     {
-      name: 'capability',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.liquidity.crunch.LiquidCapability',
-      javaType: 'net.nanopay.liquidity.crunch.LiquidCapability',
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
-      },
+      class: 'Reference',
+      name: 'accountBasedCapability',
+      of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+      visibilityExpression: function(requestType) {
+        if ( 
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+        ) {
+          return foam.u2.Visibility.RW;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      }
     },
     {
+      class: 'Reference',
+      name: 'globalCapability',
+      of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+      visibilityExpression: function(requestType) {
+        if ( 
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ||
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
+        ) {
+          return foam.u2.Visibility.RW;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
       name: 'capabilityAccountTemplate',
-      class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
-      javaType: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
-      },
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
-      },
+      }
     },
     {
+      class: 'Reference',
       name: 'account',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.account.Account',
-      javaType: 'net.nanopay.account.Account',
+      of : 'net.nanopay.account.Account',
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
-      },
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
-      },
+      }
     },
     {
       name: 'approverLevel',
@@ -92,8 +104,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: 'RO'
+      value: foam.nanos.auth.LifecycleState.PENDING,
+      visibility: foam.u2.Visibility.HIDDEN
     },
   ],
 
