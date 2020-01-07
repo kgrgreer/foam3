@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'CapabilityAssignmentRequest', 
+  name: 'CapabilityRequest', 
 
   implements: [
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'

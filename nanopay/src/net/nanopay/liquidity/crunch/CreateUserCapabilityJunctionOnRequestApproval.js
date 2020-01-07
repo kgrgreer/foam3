@@ -28,7 +28,7 @@ foam.CLASS({
             DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
             DAO capabilityAccountTemplateDAO = (DAO) getX().get("capabilityAccountTemplateDAO");
 
-            CapabilityAssignmentRequest req = (CapabilityAssignmentRequest) obj;
+            CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
             
             List<Long> users = req.getUsers();
@@ -101,10 +101,10 @@ foam.CLASS({
                 )));
               }
             } else {
-              throw new RuntimeException("Invalid CapabilityAssignmentRequest type");
+              throw new RuntimeException("Invalid CapabilityRequest type");
             }
           }
-        }, "Create UserCapabilityJunction on CapabilityAssignmentRequest Approval");
+        }, "Create UserCapabilityJunction on CapabilityRequest Approval");
       `
     }
   ]
@@ -114,7 +114,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'ApprovedCapabilityAssignmentRequestPredicate',
+  name: 'ApprovedCapabilityRequestPredicate',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
@@ -129,7 +129,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         return
-          EQ(DOT(NEW_OBJ, CapabilityAssignmentRequest.LIFECYCLE_STATE), LifecycleState.ACTIVE)
+          EQ(DOT(NEW_OBJ, CapabilityRequest.LIFECYCLE_STATE), LifecycleState.ACTIVE)
         .f(obj);
       `
     } 

@@ -546,24 +546,24 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityAssignmentRequestDAO",
+  "name":"capabilityRequestDAO",
   "serve":true,
   "serviceScript":"""
     foam.dao.DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
-      .setDaoKey("capabilityAssignmentRequestDAO")
-      .setOf(net.nanopay.liquidity.crunch.CapabilityAssignmentRequest.getOwnClassInfo())
+      .setDaoKey("capabilityRequestDAO")
+      .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
       .build();
       
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer("capabilityassignmentrequest"))
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer("capabilityrequest"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("capabilityAssignmentRequests")
+      .setJournalName("capabilityRequests")
       .setSeqNo(true)
       .setDecorator(dao)
-      .setOf(net.nanopay.liquidity.crunch.CapabilityAssignmentRequest.getOwnClassInfo())
+      .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityAssignmentRequest\", \"remoteListenerSupport\": false}"
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityRequest\", \"remoteListenerSupport\": false}"
 })
 
 p({

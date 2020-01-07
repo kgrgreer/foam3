@@ -1,7 +1,7 @@
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":1,
-  "templateName":"rootAccountTemplate",
+  "templateName":"globalAccountTemplate",
   "accounts": {
     "1103": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
@@ -13,4 +13,4 @@ p({
       }
     }
   }
-});
+})

@@ -396,7 +396,7 @@ p({
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "capabilityAssignmentRequestDAO",
+      "daoKey": "capabilityRequestDAO",
       "browseTitle": "Capability Assignment Request",
       "predicate":{
         "class":"foam.mlang.predicate.Eq",

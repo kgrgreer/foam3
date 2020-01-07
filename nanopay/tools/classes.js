@@ -331,9 +331,9 @@ var classes = [
    'net.nanopay.liquidity.crunch.AddChildrenToCapabilityAccountTemplateOnUCJCreate',
    'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
    'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
-   'net.nanopay.liquidity.crunch.CapabilityAssignmentRequest',
+   'net.nanopay.liquidity.crunch.CapabilityRequest',
    'net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval',
-   'net.nanopay.liquidity.crunch.ApprovedCapabilityAssignmentRequestPredicate',
+   'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',

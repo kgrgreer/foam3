@@ -251,9 +251,9 @@ foam.CLASS({
               MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
             ).select(new ArraySink())).getArray();
             break;
-          case "capabilityassignmentrequest":
+          case "capabilityrequest":
             capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITYASSIGNMENTREQUEST, true)
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITYREQUEST, true)
             ).select(new ArraySink())).getArray();
             break;
           default:
