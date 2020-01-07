@@ -33,8 +33,7 @@ foam.CLASS({
     {
       name: 'users',
       class: 'List',
-      of: 'foam.nanos.auth.User',
-      javaType: 'java.util.List<foam.nanos.auth.User>',
+      javaType: 'java.util.List<Long>',
       factory: function () {
         return [];
       },

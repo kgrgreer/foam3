@@ -31,14 +31,13 @@ foam.CLASS({
             CapabilityAssignmentRequest req = (CapabilityAssignmentRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
             
-            List<User> users = req.getUsers();
+            List<Long> users = req.getUsers();
             LiquidCapability capability;
 
             if ( requestType == CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
               CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
-
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
               AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
@@ -47,8 +46,8 @@ foam.CLASS({
 
               ucj.setData(fullAccountMap);
 
-              for ( User user : users ) {
-                ucj.setSourceId(user.getId());
+              for ( Long userId : users ) {
+                ucj.setSourceId(userId);
                 ucj.setTargetId(capability.getId());
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
@@ -60,8 +59,8 @@ foam.CLASS({
 
               ucj.setData(approverLevel);
 
-              for ( User user : users ) {
-                ucj.setSourceId(user.getId());
+              for ( Long userId : users ) {
+                ucj.setSourceId(userId);
                 ucj.setTargetId(capability.getId());
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
@@ -70,9 +69,9 @@ foam.CLASS({
 
               UserCapabilityJunction ucj;
 
-              for ( User user : users ) {
+              for ( Long userId : users ) {
                 ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-                  EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
                   EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
                 ));
 
@@ -94,10 +93,10 @@ foam.CLASS({
             } else if ( requestType == CapabilityRequestOperations.REVOKE_GLOBAL ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getGlobalCapability());
 
-              for ( User user : users ) {
+              for ( Long userId : users ) {
 
                 userCapabilityJunctionDAO.remove((UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-                  EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
                   EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
                 )));
               }
