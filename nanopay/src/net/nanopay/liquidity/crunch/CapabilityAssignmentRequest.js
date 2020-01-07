@@ -46,17 +46,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.LiquidCapability',
       javaType: 'net.nanopay.liquidity.crunch.LiquidCapability',
-      view: function(_, x) {
-        return {  
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: 'Capability to be Assigned/Revoked',
-              dao: x.capabilityDAO
-            }
-          ]
-        };
-      }
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        placeholder: '--'
+      },
     },
     {
       name: 'capabilityAccountTemplate',
@@ -67,17 +60,10 @@ foam.CLASS({
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
       },
-      view: function(_, x) {
-        return {  
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: 'Account Template to use as data for this Capability assignment',
-              dao: x.capabilityAccountTemplateDAO
-            }
-          ]
-        };
-      }
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        placeholder: '--'
+      },
     },
     {
       name: 'account',
@@ -88,17 +74,10 @@ foam.CLASS({
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
       },
-      view: function(_, x) {
-        return {  
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: 'Account for which this capability should be revoked from',
-              dao: x.accountDAO
-            }
-          ]
-        };
-      }
+      view: {
+        class: 'foam.u2.view.ReferenceView',
+        placeholder: '--'
+      },
     },
     {
       name: 'approverLevel',
