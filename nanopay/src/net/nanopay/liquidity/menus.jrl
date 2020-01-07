@@ -16,7 +16,7 @@ p({
         "class":"foam.mlang.predicate.Eq",
         "arg1":{
           "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "forClass_":"net.nanopay.model.User",
           "name":"lifecycleState"
         },
         "arg2":{
@@ -44,7 +44,7 @@ p({
         "class":"foam.mlang.predicate.Eq",
         "arg1":{
           "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "forClass_":"net.nanopay.liquidity.LiquiditySettings",
           "name":"lifecycleState"
         },
         "arg2":{
@@ -332,7 +332,7 @@ p({
         "class":"foam.mlang.predicate.Eq",
         "arg1":{
           "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "forClass_":"net.nanopay.liquidity.LiquidCapability",
           "name":"lifecycleState"
         },
         "arg2":{
@@ -359,7 +359,7 @@ p({
         "class":"foam.mlang.predicate.Eq",
         "arg1":{
           "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "forClass_":"net.nanopay.liquidity.LiquidCapability",
           "name":"lifecycleState"
         },
         "arg2":{
@@ -402,7 +402,7 @@ p({
         "class":"foam.mlang.predicate.Eq",
         "arg1":{
           "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "forClass_":"net.nanopay.liquidity.crunch.CapabilityRequest",
           "name":"lifecycleState"
         },
         "arg2":{
