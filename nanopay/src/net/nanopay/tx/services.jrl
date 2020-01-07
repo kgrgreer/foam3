@@ -168,7 +168,7 @@ p({
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localTransactionDAO"))
-      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x,null)
+      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
         .orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED)))
       .build());
   """,
@@ -188,7 +188,7 @@ p({
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setAuthorize(false)
-      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
+      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
       .setInnerDAO(x.get("transactionDAO"))
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.tx.model.Transaction.CREATED).build() })
       .build();
