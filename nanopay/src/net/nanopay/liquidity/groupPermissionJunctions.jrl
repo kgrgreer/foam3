@@ -49,6 +49,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.accounttemplates"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.txlimitrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.restrictaccountsrules"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.txapprovaltrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.restrictusersrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.4b5d8b34-a3bf-487a-a451-a9e68a91df7f"}) // AggregateAccount
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.eca7cf8e-82d7-42a7-9061-26a01cce4dc7"}) // DigitalAccount

@@ -333,6 +333,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.CapabilityAssignmentRequest',
 
    'net.nanopay.util.Frequency',
+   'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
@@ -341,6 +342,8 @@ var classes = [
    'net.nanopay.liquidity.tx.AccountHierarchy',
    'net.nanopay.liquidity.tx.GenericBusinessRule',
    'net.nanopay.liquidity.tx.IsChildAccountPredicate',
+   'net.nanopay.liquidity.tx.L2TransactionApprovalRule',
+   'net.nanopay.liquidity.tx.LiquidTransactionLifecycleDAO',
    'net.nanopay.liquidity.tx.TxLimitAction',
    'net.nanopay.liquidity.tx.TxLimitEntityType',
    'net.nanopay.liquidity.tx.TxLimitPredicate',

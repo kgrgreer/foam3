@@ -223,7 +223,27 @@ p({
   "parent": "liquid.rules"
 })
 
-// TODO: add multi-level approval rules  - order 2nd
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.txapprovaltrules",
+  "label":"L2 Transaction Approval Rules",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "browseTitle":"L2 Transaction Approval Rules",
+      "daoKey":"ruleDAO",
+      "predicate":{
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
+      },
+      "defaultColumns":["id","enabled","startAmount"],
+      "of":"net.nanopay.liquidity.tx.L2TransactionApprovalRule"
+    }
+  },
+  "order":320,
+  "parent": "liquid.rules"
+})
 
 p({
   "class":"foam.nanos.menu.Menu",

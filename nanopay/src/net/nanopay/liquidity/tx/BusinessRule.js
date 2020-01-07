@@ -35,6 +35,7 @@ foam.CLASS({
     },
     {
       name: 'enabled',
+      readPermissionRequired: false,
       tableWidth: 125,
       tableHeaderFormatter: function(axiom) {
         this.add('Current status');

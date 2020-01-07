@@ -64,6 +64,98 @@ p({
   "saveHistory": true
 })
 
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set transaction lifecycleState to PENDING",
+  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
+  "ruleGroup":"(Default)",
+  "priority":1000,
+  "daoKey":"liquidTransactionDAO",
+  "operation":0,
+  "after":false,
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"lifecycleState",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.nanos.auth.LifecycleState",
+        "ordinal":0
+      }
+    }
+  },
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Reset transaction lastModified/By properties on re-put",
+  "ruleGroup":"(Default)",
+  "priority":1000,
+  "daoKey":"liquidTransactionDAO",
+  "operation":1,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.NewEqOld"
+  },
+  "action":{
+    "class":"net.nanopay.meter.compliance.ruler.ResetLastModified"
+  },
+  "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"L1 approval for all transactions",
+  "documentation":"Add L1 approval to all liquid transactions created.",
+  "ruleGroup":"txapprovals",
+  "priority":100,
+  "daoKey":"liquidTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":0
+    }
+  },
+  "asyncAction":{
+    "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
+    "classification":"L1 approval - Transaction"
+  },
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Final transaction approval",
+  "ruleGroup":"txapprovals",
+  "daoKey":"liquidTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":0
+    }
+  },
+  "asyncAction":{
+    "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
+    "updateOnApproved":true
+  },
+  "enabled":true
+})
+
+// Multi-level (L2) transaction approval rules
+p({
+  "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
+  "id": "L2 approval for transactions >= $85,000",
+  "sourceAccount": 1053,
+  "startAmount": 8500000,
+  "enabled": false
+})
+
 // Add approval request rules
 p({
   "class":"foam.nanos.ruler.Rule",
