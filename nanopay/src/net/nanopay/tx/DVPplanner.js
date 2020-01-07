@@ -26,13 +26,10 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       agency.submit(x, new ContextAgent() {
-                                  @Override
-                                  public void execute(X x) {
+        @Override
+        public void execute(X x) {
         TransactionQuote txq = (TransactionQuote) obj;
         DVPTransaction tx = (DVPTransaction) txq.getRequestTransaction();
-        CompositeTransaction ct = new CompositeTransaction.Builder(x).build();
-        ct.copyFrom(tx);
-        ct.setIsQuoted(true);
         SecurityTransaction fop = new SecurityTransaction.Builder(x).build();
         Transaction dt = new Transaction.Builder(x).build();
         DAO quoter = ((DAO) x.get("localTransactionQuotePlanDAO"));
@@ -45,7 +42,7 @@ foam.CLASS({
         fop.setAmount(tx.getAmount());
         TransactionQuote tq1 = new TransactionQuote.Builder(x).setRequestTransaction(fop).build();
         tq1 = (TransactionQuote) quoter.put(tq1);
-        ct.addNext(tq1.getPlan());
+        tx.addNext(tq1.getPlan());
 
         //create the Payment digital transaction
         dt.setSourceAccount(tx.getSourcePaymentAccount());
@@ -57,10 +54,9 @@ foam.CLASS({
 
         TransactionQuote tq2 = new TransactionQuote.Builder(x).setRequestTransaction(dt).build();
         tq2 = (TransactionQuote) quoter.put(tq2);
-        ct.addNext(tq2.getPlan());
+        tx.addNext(tq2.getPlan());
 
 
-        tx.addNext(ct);
         tx.setIsQuoted(true);
         tx.setTransfers(new Transfer[0]);
         txq.setPlan(tx);
