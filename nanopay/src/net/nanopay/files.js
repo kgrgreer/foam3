@@ -887,6 +887,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/ApproverLevel' },
    { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/AccountMap' },
    { name: 'net/nanopay/liquidity/crunch/AccountApproverMap' },
    { name: 'net/nanopay/liquidity/crunch/AccountData' },
    { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },

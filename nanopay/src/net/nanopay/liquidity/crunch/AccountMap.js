@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'AccountApproverMap',
+  name: 'AccountMap',
 
   javaImports: [
     'foam.core.X',
@@ -19,7 +19,7 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'Map',
-      javaType: 'java.util.Map<String, CapabilityAccountData>',
+      javaType: 'java.util.Map<String, AccountData>',
     }
   ],
 
@@ -28,7 +28,7 @@ foam.CLASS({
       name: 'addAccount',
       args: [
         { name: 'accountId', class: 'Long' },
-        { name: 'data', javaType: 'net.nanopay.liquidity.crunch.CapabilityAccountData' }
+        { name: 'data', javaType: 'net.nanopay.liquidity.crunch.AccountData' }
       ],
       documentation: `
       Adds a single account to the map 
@@ -98,25 +98,8 @@ foam.CLASS({
         return map && accountId.toString() in map;
       },
       javaCode: `
-        Map<String, CapabilityAccountData> map = getAccounts();
+        Map<String, AccountData> map = getAccounts();
         return map != null && map.containsKey(String.valueOf(childAccountId));
-      `
-    },
-    {
-      name: 'hasAccountByApproverLevel',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'Long' },
-        { name: 'level', javaType: 'Integer' }
-      ],
-      javaType: 'Boolean',
-      code: function hasAccountByApproverLevel(x, accountId, level) {
-        var map = this.accounts;
-        return map && accountId.toString() in map && map[accountId.toString()].approverLevel === level;
-      },
-      javaCode: `
-      Map<String, CapabilityAccountData> map = getAccounts();
-      return map != null && map.containsKey(String.valueOf(childAccountId)) && map.get(String.valueOf(childAccountId)).getApproverLevel().getApproverLevel() == level;
       `
     }
   ]
