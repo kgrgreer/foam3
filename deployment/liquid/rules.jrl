@@ -66,48 +66,40 @@ p({
 
 // Add approval request rules
 p({
-  "class": "foam.nanos.ruler.Rule",
-  "id": "Account Create Approvals",
-  "priority": 100,
-  "ruleGroup": "liquid",
-  "documentation": "To create approval requests on puts to the accountDAO",
-  "daoKey": "localAccountDAO",
-  "operation": 0,
-  "after": true,
-  "predicate": {
-    "class": "foam.mlang.predicate.Eq",
-    "arg1":{
-      "class":"__Property__",
-      "forClass_":"net.nanopay.account.Account",
-      "name":"enabled"
-    },
-    "arg2":{
-      "class":"foam.mlang.Constant",
-      "value":false
-    }
+  "class":"foam.nanos.ruler.Rule",
+  "id":"approvalRequestDAO Approve or Reject on Update",
+  "priority":110,
+  "ruleGroup":"approvables",
+  "documentation":"Handle an approved or rejected approval request that relates to the approvableDAO",
+  "daoKey":"approvalRequestDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsPredicate"
   },
-  "action": {
-    "class": "net.nanopay.liquidity.rules.account.AccountCreateApproval"
+  "action":{
+    "class":"net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule"
   },
-  "enabled": false,
-  "saveHistory": true
+  "enabled":true,
+  "saveHistory":true
 })
-
 p({
-  "class": "foam.nanos.ruler.Rule",
-  "id": "Fulfilled Account Approvals",
-  "priority": 200,
-  "ruleGroup": "liquid",
-  "documentation": "To handle Approved Approval Requests",
-  "daoKey": "approvalRequestDAO",
-  "operation": 1,
-  "after": true,
-  "predicate": {"class":"net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovalsPredicate"},
-  "action": {
-    "class": "net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovals"
+  "class":"foam.nanos.ruler.Rule",
+  "id":"approvableDAO Approve or Reject",
+  "priority":110,
+  "ruleGroup":"approvables",
+  "documentation":"Handle an approved or rejected update request",
+  "daoKey":"approvableDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate",
   },
-  "enabled": false,
-  "saveHistory": true
+  "action":{
+    "class":"net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule"
+  },
+  "enabled":true,
+  "saveHistory":true
 })
 
 // Transaction limit business rule example for 200,000.00 EUR
