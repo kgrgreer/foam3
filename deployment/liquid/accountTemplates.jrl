@@ -1,7 +1,7 @@
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":1,
-  "templateName":"rootAccountTemplate",
+  "templateName":"globalAccountTemplate",
   "accounts": {
     "1103": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
@@ -18,7 +18,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.AccountTemplate",
   "id":2,
-  "templateName":"rootAccountTemplate",
+  "templateName":"globalAccountTemplate",
   "accounts": {
     "1103": {
       "class":"net.nanopay.liquidity.crunch.AccountData",

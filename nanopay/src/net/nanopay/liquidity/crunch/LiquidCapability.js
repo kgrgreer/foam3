@@ -202,8 +202,8 @@ foam.CLASS({
     'canViewCapability',
     'canMakeCapability',
     'canApproveCapability',
-    'canMakeCapabilityassignmentrequest',
-    'canApproveCapabilityassignmentrequest'
+    'canMakeCapabilityrequest',
+    'canApproveCapabilityrequest'
   ],
 
   properties: [
@@ -219,8 +219,8 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewCapability' },
     { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
-    { class: 'Boolean', name: 'canMakeCapabilityassignmentrequest' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproveCapabilityassignmentrequest' }, //
+    { class: 'Boolean', name: 'canMakeCapabilityrequest' }, // global role vs. account role maker/approver may be implied by whether there
+    { class: 'Boolean', name: 'canApproveCapabilityrequest' }, //
     {
       name: 'of',
       javaFactory: ` return net.nanopay.liquidity.crunch.ApproverLevel.getOwnClassInfo(); `,
@@ -237,7 +237,7 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add approver menu permission for approvers
-        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveCapabilityassignmentrequest() ) permissions.add("menu.read.liquid.approvals");
+        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
 
         return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
       `
