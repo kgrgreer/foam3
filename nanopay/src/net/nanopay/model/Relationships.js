@@ -274,9 +274,11 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   sourceProperty: {
     visibility: 'FINAL',
+    createMode: 'HIDDEN'
   },
   targetProperty: {
     visibility: 'FINAL',
+    createMode: 'HIDDEN'
   }
 });
 
@@ -287,10 +289,12 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
+    createMode: 'HIDDEN',
     visibility: 'FINAL',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
+    createMode: 'HIDDEN',
     visibility: 'FINAL',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   }
@@ -716,8 +720,26 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
+    required: true,
+    view: function(_, X) {
+      let ccs = X.data.slot(function(sourceCurrency) {
+        let e = foam.mlang.Expressions.create();
+        return X.accountDAO.where(e.AND(
+          e.EQ(net.nanopay.account.Account.DENOMINATION, sourceCurrency),
+          e.EQ(net.nanopay.account.Account.DELETED, false),
+          e.EQ(net.nanopay.account.Account.ENABLED, true)
+        )).orderBy(net.nanopay.account.Account.NAME);
+      });
+      return foam.u2.view.ChoiceView.create({
+          dao$: ccs,
+          objToChoice: function(account) {
+            return [account.id, account.summary];
+          }
+        });
+    },
+    createMode: 'RW',
     visibility: 'FINAL',
-    section: 'paymentInfo',
+    section: 'paymentInfoSource',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
         .then((account) => account.name ? account.name : value));
@@ -749,8 +771,11 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
+    required: true,
+    createMode: 'RW',
+    view: { class: 'foam.u2.view.IntView' },
     visibility: 'FINAL',
-    section: 'paymentInfo',
+    section: 'paymentInfoDestination',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
         .then((account) => account.name ? account.name : value));
@@ -860,7 +885,8 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: { visibility: 'RO' },
+  sourceProperty: { createMode: 'HIDDEN' }
 });
 
 foam.RELATIONSHIP({
@@ -882,6 +908,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
+  sourceProperty: { createMode: 'HIDDEN' }
 });
 
 foam.RELATIONSHIP({
