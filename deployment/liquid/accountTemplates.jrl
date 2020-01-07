@@ -14,3 +14,16 @@ p({
     }
   }
 })
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":2,
+  "templateName":"globalAccountTemplate",
+  "accounts": {
+    "1103": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
