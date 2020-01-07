@@ -10,10 +10,15 @@ foam.CLASS({
     'java.util.Map'
   ],
 
-  methods: [
-    // add logic from rule in here
+  properties: [
+    {
+      name: 'accounts',
+      view: function(_, x) {
+        return {
+          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView'
+        };
+      }
+    }
   ]
 
 });
-  
-    
