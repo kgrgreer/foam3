@@ -122,17 +122,26 @@ foam.CLASS({
         args.put("name", User.FIRST_NAME);
 
         try {
+          
+          Notification notification = business.getAddress().getCountryId().equals("CA") ?
+            new Notification.Builder(x)
+              .setBody("AFEX Business can make international payments.")
+              .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setEmailName("international-payments-enabled-notification")
+              .build() :
+            new Notification.Builder(x)
+              .setBody("Business Passed Compliance")
+              .setNotificationType("BusinessCompliancePassed")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setEmailName("compliance-notification-to-user")
+              .build();
 
-          Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
-            .setBody("AFEX Business can make international payments.")
-            .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
-            .setGroupId(group.toString())
-            .setEmailIsEnabled(true)
-            .setEmailArgs(args)
-            .setEmailName("international-payments-enabled-notification")
-            .build();
-
-          business.doNotify(x, internationalPaymentsEnabledNotification);
+          business.doNotify(x, notification);
 
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
