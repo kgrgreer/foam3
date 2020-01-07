@@ -50,6 +50,25 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"Create UserCapabilityJunction on CapabilityAssignmentRequest Approval",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "Create ucj on capabilityassignmentrequest approval",
+  "daoKey": "capabilityAssignmentRequestDAO",
+  "operation": 1,
+  "after": true,
+  "predicate":{
+    "class":"net.nanopay.liquidity.crunch.ApprovedCapabilityAssignmentRequestPredicate",
+  },
+  "action" : {
+    "class": "net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval"
+  },
+  "saveHistory": true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"Update account-based ucj data on account create",
   "priority": 100,
   "enabled":true,

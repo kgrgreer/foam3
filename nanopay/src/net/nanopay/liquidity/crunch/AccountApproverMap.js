@@ -87,7 +87,14 @@ foam.CLASS({
         } else {
           console.error('The account provided is not an entry in the accountTemplate.');
         }
-      }
+      },
+      javaCode: `
+        if ( getAccounts().containsKey(String.valueOf(accountId))) {
+          getAccounts().remove(String.valueOf(accountId));
+        } else {
+          throw new RuntimeException("Account provided is not an entry in the account map");
+        }
+      `
     },
     {
       name: 'hasAccount',
