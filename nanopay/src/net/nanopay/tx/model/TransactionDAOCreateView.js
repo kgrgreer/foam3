@@ -19,7 +19,8 @@ foam.CLASS({
       name: 'viewView',
       expression: function() {
         return {
-          class: 'net.nanopay.ui.TransferView'
+          class: 'foam.u2.view.FObjectView',
+          of: 'net.nanopay.tx.model.Transaction'
         };
       }
     }
@@ -28,9 +29,22 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
-      isAvailable: function() {
-        return false;
+      isAvailable: function(data$errors_) {
+        return data$errors_;
       },
-    },
+      code: function(x) {
+        x.transactionDAO.put(this) // TODO switch to put on the liquidTransactionDAO
+        .then(
+          (_) => {
+            x.notify('Transaction Created Successfully!');
+            x.stack.back();
+          }
+        ).catch(
+          (e) => {
+            x.notify('Transaction Creation Error: ', e.message || e);
+          }
+        );
+      }
+    }
   ],
 });
