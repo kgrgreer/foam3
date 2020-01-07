@@ -11,7 +11,19 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "userDAO",
-      "browseTitle": "Users"
+      "browseTitle": "Users",
+      "predicate":{
+        "class":"foam.mlang.predicate.Eq",
+        "arg1":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "name":"lifecycleState"
+        },
+        "arg2":{
+          "class":"foam.mlang.Constant",
+          "value":"ACTIVE"
+        }
+      },
     }
   },
   "order": 400
@@ -27,7 +39,19 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "liquiditySettingsDAO",
       "browseTitle": "Liquidity Settings",
-      "createTitle": "Create a New Liquidity Setting"
+      "createTitle": "Create a New Liquidity Setting",
+      "predicate":{
+        "class":"foam.mlang.predicate.Eq",
+        "arg1":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "name":"lifecycleState"
+        },
+        "arg2":{
+          "class":"foam.mlang.Constant",
+          "value":"ACTIVE"
+        }
+      },
     }
   },
   "order": 600
@@ -283,7 +307,19 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "globalLiquidCapabilityDAO",
-      "browseTitle": "Global Liquid Capabilities"
+      "browseTitle": "Global Liquid Capabilities",
+      "predicate":{
+        "class":"foam.mlang.predicate.Eq",
+        "arg1":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "name":"lifecycleState"
+        },
+        "arg2":{
+          "class":"foam.mlang.Constant",
+          "value":"ACTIVE"
+        }
+      },
     }
   },
   "order": 500,
@@ -298,7 +334,19 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountBasedLiquidCapabilityDAO",
-      "browseTitle": "Account-Based Liquid Capabilities"
+      "browseTitle": "Account-Based Liquid Capabilities",
+      "predicate":{
+        "class":"foam.mlang.predicate.Eq",
+        "arg1":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "name":"lifecycleState"
+        },
+        "arg2":{
+          "class":"foam.mlang.Constant",
+          "value":"ACTIVE"
+        }
+      },
     }
   },
   "order": 510,
@@ -329,7 +377,19 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityAssignmentRequestDAO",
-      "browseTitle": "Capability Assignment Request"
+      "browseTitle": "Capability Assignment Request",
+      "predicate":{
+        "class":"foam.mlang.predicate.Eq",
+        "arg1":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.liquidity.tx.BusinessRule",
+          "name":"lifecycleState"
+        },
+        "arg2":{
+          "class":"foam.mlang.Constant",
+          "value":"ACTIVE"
+        }
+      },
     }
   },
   "order": 540,

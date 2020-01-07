@@ -25,4 +25,13 @@ foam.CLASS({
       }
     }
   ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function() {
+        return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
+      }
+    }
+  ]
 });

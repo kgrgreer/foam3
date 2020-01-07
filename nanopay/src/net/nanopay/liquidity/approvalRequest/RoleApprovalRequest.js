@@ -73,7 +73,7 @@ foam.CLASS({
     {
       name: 'toSummary',
       code: function() {
-        return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
+        return `(${this.classification} ${this.operation}`;
       }
     },
     {
