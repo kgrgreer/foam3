@@ -320,6 +320,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
    'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
    'net.nanopay.liquidity.crunch.AccountTemplate',
+   'net.nanopay.liquidity.crunch.AccountMap',
    'net.nanopay.liquidity.crunch.AccountApproverMap',
    'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
    'net.nanopay.liquidity.crunch.AccountData',
