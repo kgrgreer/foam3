@@ -9,11 +9,22 @@ foam.CLASS({
 
   tableColumns: [ 'id' ],
 
+  sections: [
+    {
+      name: 'uiSettings',
+      isAvailable: () => false
+    },
+    {
+      name: 'capabilityRelationships',
+      isAvailable: () => false
+    }
+  ],
+
   properties: [
     {
       name: 'id',
       class: 'String',
-      updateMode: 'RO'
+      visibility: foam.u2.Visibility.FINAL
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
@@ -58,7 +69,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: 'RO'
+      hidden: true
     }
   ],
 
@@ -91,13 +102,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
-    'canViewAccount',
-    'canMakeAccount',
-    'canApproveAccount',
-    'canViewTransaction',
-    'canMakeTransaction',
-    'canApproveTransaction'
+    'id'
   ],
 
   properties: [
@@ -189,21 +194,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
-    'canViewRule',
-    'canMakeRule',
-    'canApproveRule',
-    'canViewUser',
-    'canMakeUser',
-    'canApproveUser',
-    'canViewLiquiditysetting',
-    'canMakeLiquiditysetting',
-    'canApproveLiquiditysetting',
-    'canViewCapability',
-    'canMakeCapability',
-    'canApproveCapability',
-    'canMakeCapabilityrequest',
-    'canApproveCapabilityrequest'
+    'id'
   ],
 
   properties: [
@@ -219,9 +210,9 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewCapability' },
     { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
-    { class: 'Boolean', name: 'canViewCapabilityrequest' }, 
     { class: 'Boolean', name: 'canMakeCapabilityrequest' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproveCapabilityrequest' }, //
+    { class: 'Boolean', name: 'canApproveCapabilityrequest' },
+    { class: 'Boolean', name: 'canIngestFile' },
     {
       name: 'of',
       javaFactory: ` return net.nanopay.liquidity.crunch.ApproverLevel.getOwnClassInfo(); `,
@@ -240,6 +231,9 @@ foam.CLASS({
         // add approver menu permission for approvers
         if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
 
+        // add file upload permission for file ingesters
+        if ( getCanIngestFile() ) permissions.add("menu.read.liquid.fileupload");
+
         return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
       `
     }
@@ -253,6 +247,8 @@ foam.CLASS({
       Returns true if that boolean is true.
       `,
       javaCode: `
+        if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
+
         try {
           return (Boolean) getProperty(permission);
         } catch ( java.lang.Exception e ) {

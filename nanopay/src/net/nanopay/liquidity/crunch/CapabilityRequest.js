@@ -14,8 +14,10 @@ foam.CLASS({
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
   ],
 
-  imports: [
-    ''
+  tableColumns: [
+    'id',
+    'requestType',
+    'users'
   ],
 
   properties: [  
