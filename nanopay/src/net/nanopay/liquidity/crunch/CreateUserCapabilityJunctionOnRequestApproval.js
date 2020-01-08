@@ -26,7 +26,6 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
             DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
-            DAO capabilityAccountTemplateDAO = (DAO) getX().get("capabilityAccountTemplateDAO");
 
             CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
@@ -37,7 +36,7 @@ foam.CLASS({
             if ( requestType == CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              CapabilityAccountTemplate template = req.getCapabilityAccountTemplate();
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
               AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
@@ -67,7 +66,7 @@ foam.CLASS({
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              CapabilityAccountTemplate template = req.getCapabilityAccountTemplate();
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
               AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
