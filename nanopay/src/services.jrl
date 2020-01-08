@@ -1951,7 +1951,7 @@ p({
   "serve": true,
   "serviceScript": """
     prDAO =  new net.nanopay.meter.report.PaymentReportDAO.Builder(x)
-      .setDelegate(null)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.meter.report.PaymentReport.getOwnClassInfo()).build())
       .build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.meter.report.PaymentReport.getOwnClassInfo())
