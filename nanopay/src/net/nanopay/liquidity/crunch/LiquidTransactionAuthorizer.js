@@ -20,10 +20,8 @@ foam.CLASS({
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, readPermission) ) {
-          throw new AuthorizationException();
-        }
-        
-        super.authorizeOnRead(x, obj);
+          super.authorizeOnRead(x, obj);
+        }        
       `
     }
   ]
