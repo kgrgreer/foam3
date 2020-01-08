@@ -219,6 +219,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewCapability' },
     { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
+    { class: 'Boolean', name: 'canViewCapabilityrequest' }, 
     { class: 'Boolean', name: 'canMakeCapabilityrequest' }, // global role vs. account role maker/approver may be implied by whether there
     { class: 'Boolean', name: 'canApproveCapabilityrequest' }, //
     {

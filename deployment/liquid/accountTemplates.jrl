@@ -27,3 +27,94 @@ p({
     }
   }
 })
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":3,
+  "templateName":"asiaAccountTemplate",
+  "accounts": {
+    "1105": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":4,
+  "templateName":"asiaAccountTemplate",
+  "accounts": {
+    "1105": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":5,
+  "templateName":"americasAccountTemplate",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":6,
+  "templateName":"americasAccountTemplate",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":5,
+  "templateName":"europeAccountTemplate",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":6,
+  "templateName":"europeAccountTemplate",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+

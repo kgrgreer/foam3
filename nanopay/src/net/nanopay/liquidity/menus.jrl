@@ -397,19 +397,7 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityRequestDAO",
-      "browseTitle": "Capability Assignment Request",
-      "predicate":{
-        "class":"foam.mlang.predicate.Eq",
-        "arg1":{
-          "class":"__Property__",
-          "forClass_":"net.nanopay.liquidity.crunch.CapabilityRequest",
-          "name":"lifecycleState"
-        },
-        "arg2":{
-          "class":"foam.mlang.Constant",
-          "value":"ACTIVE"
-        }
-      },
+      "browseTitle": "Capability Request",
     }
   },
   "order": 540,
