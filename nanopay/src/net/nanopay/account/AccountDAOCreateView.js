@@ -23,6 +23,13 @@ foam.CLASS({
     A configurable view to create an instance of a specified model
   `,
 
+  messages: [
+    {
+      name: 'SUCCESS_MESSAGE',
+      message: 'An approval request has been created.'
+    }
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpecWithJava',
