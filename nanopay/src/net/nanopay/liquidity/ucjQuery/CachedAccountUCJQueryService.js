@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
+    'foam.nanos.logger.Logger',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.liquidity.crunch.AccountApproverMap',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability'
@@ -328,6 +329,8 @@ foam.CLASS({
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
         DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
 
+        Logger logger = (Logger) x.get("logger");
+
         modelToApprove = modelToApprove.toLowerCase();
 
         List<AccountBasedLiquidCapability> capabilitiesWithAbility;
@@ -345,6 +348,8 @@ foam.CLASS({
             break;
           default:
             capabilitiesWithAbility = null;
+            logger.error("Something went wrong with the requested model: " + modelToApprove);
+            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
         }
 
         // using a set because we only care about unique approver ids
