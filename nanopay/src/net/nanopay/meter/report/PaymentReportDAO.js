@@ -20,7 +20,6 @@ foam.CLASS({
     'net.nanopay.meter.report.PaymentReport',
     'net.nanopay.tx.model.Transaction',
 
-    'java.util.*',
     'static foam.mlang.MLang.*',
   ],
 
