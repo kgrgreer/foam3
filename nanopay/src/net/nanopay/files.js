@@ -892,6 +892,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/AccountData' },
    { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidApprovalRequestAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequest' },
    { name: 'net/nanopay/liquidity/crunch/AddChildrenToCapabilityAccountTemplateOnUCJCreate' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
