@@ -23,6 +23,7 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
+      label: 'Name',
       class: 'String',
       visibility: foam.u2.Visibility.FINAL
     },
