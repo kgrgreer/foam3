@@ -552,9 +552,11 @@ foam.CLASS({
         }
 
         // Process auth token
-        if ( searchParams.get('token') !== null && searchParams.get('token') !== '' && ! self.loginSuccess ){
+        if ( ! self.loginSuccess && !! searchParams.get('token') ) {
           self.client.authenticationTokenService.processToken(null, null,
-            searchParams.get('token')).then(() => location = '/' + locHash);
+            searchParams.get('token')).then(() => {
+              location = locHash == '#onboarding' ? '/' : '/' + locHash;
+            });
         }
       }
 
