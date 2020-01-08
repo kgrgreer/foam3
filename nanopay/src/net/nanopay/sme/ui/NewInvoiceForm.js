@@ -69,7 +69,6 @@ foam.CLASS({
       height: 40px;
       border-radius: 0 4px 4px 0;
       outline: none;
-      padding-right: 5px;
     }
     ^ .invoice-amount-input {
       width: calc(100% - 86px);
