@@ -569,14 +569,14 @@ foam.CLASS({
                 )).select().then((result) => {
                   if ( sourceCurrency === destinationCurrency ) return `${dstC.format(amount)} @Rate: ${1.00}`;
                   if ( result.array.length > 0 ) {
-                    return `${dstC.format(amount*result.array[0].rate)} @Rate: ${result.array[0].rate}`;
+                    return `${dstC.format(amount*result.array[0].rate)} @Rate: ${(result.array[0].rate).toFixed(7)}`;
                   } else {
                     return X.exchangeRateDAO.where(e.AND(
                       e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, destinationCurrency),
                       e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, sourceCurrency)
                     )).select().then((result) => {
                       if ( result.array.length > 0 ) {
-                        return `${dstC.format(amount/result.array[0].rate)} @Rate: ${1/result.array[0].rate}`;
+                        return `${dstC.format(amount/result.array[0].rate)} @Rate: ${(1/result.array[0].rate).toFixed(7)}`;
                       }
                       return `Rate not found`;
                   });
