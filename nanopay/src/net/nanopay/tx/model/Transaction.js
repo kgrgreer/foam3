@@ -109,7 +109,6 @@ foam.CLASS({
     },
     {
       name: 'amountSelection',
-      title: 'Select the amount of this transfer.',
       help: 'The amount inputted will be refelective of the source currency account.',
       index: 2
     },
@@ -458,6 +457,7 @@ foam.CLASS({
       class: 'Long',
       name: 'payerId',
       section: 'paymentInfoSource',
+      createMode: 'HIDDEN',
       visibility: 'RO',
       storageTransient: true,
       factory: function() {
@@ -557,14 +557,41 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      createMode: 'HIDDEN',
+      createMode: 'RO',
+      view: function(_, X) {
+        let asdm = X.data.slot(function(amount, sourceCurrency, destinationCurrency, mode) {
+          if ( mode === 'create' && sourceCurrency && destinationCurrency ) {
+            let e = foam.mlang.Expressions.create();
+            return X.currencyDAO.find(destinationCurrency).then((dstC) => {
+              return X.exchangeRateDAO.where(e.AND(
+                e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, sourceCurrency),
+                e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, destinationCurrency)
+                )).select().then((result) => {
+                  if ( sourceCurrency === destinationCurrency ) return `${dstC.format(amount)} @Rate: ${1.00}`;
+                  if ( result.array.length > 0 ) {
+                    return `${dstC.format(amount*result.array[0].rate)} @Rate: ${result.array[0].rate}`;
+                  } else {
+                    return X.exchangeRateDAO.where(e.AND(
+                      e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, destinationCurrency),
+                      e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, sourceCurrency)
+                    )).select().then((result) => {
+                      if ( result.array.length > 0 ) {
+                        return `${dstC.format(amount/result.array[0].rate)} @Rate: ${1/result.array[0].rate}`;
+                      }
+                      return `Rate not found`;
+                  });
+                }
+              });
+            });
+          }
+        });
+        return {
+          class: 'foam.u2.TextField',
+          data$: asdm
+        };
+      },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
-      visibilityExpression: function(sourceCurrency, destinationCurrency) {
-        return sourceCurrency == destinationCurrency ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
-      },
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;
         this
@@ -613,10 +640,8 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
-      label: 'Currency',
       section: 'paymentInfoSource',
       createMode: 'RW',
-      value: 'CAD',
       factory: function() {
         return this.ctrl.homeDenomination ? this.ctrl.homeDenomination : 'CAD';
       },
@@ -642,15 +667,19 @@ foam.CLASS({
       class: 'String',
       name: 'destinationCurrency',
       aliases: ['destinationDenomination'],
-      label: 'Destination Currency',
-      visibilityExpression: function(sourceCurrency, destinationCurrency) {
-        return sourceCurrency == destinationCurrency ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
-      },
+      updateMode: 'RO',
+      editMode: 'RO',
       section: 'paymentInfoDestination',
-      createMode: 'HIDDEN',
-      value: 'CAD'
+      createMode: 'RW',
+      value: 'CAD',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.currencyDAO,
+          objToChoice: function(unit) {
+            return [unit.id, unit.id];
+          }
+        });
+      }
     },
     {
       name: 'next',

@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'TransactionDAOCreateView',
   extends: 'foam.comics.v2.DAOCreateView',
-  
+
   documentation: `
     A configurable view to create a Transaction instance
   `,
@@ -29,11 +29,11 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
-      isAvailable: function(data$errors_) {
-        return data$errors_;
+      isEnabled: function(data$errors_) {
+        return ! data$errors_;
       },
       code: function(x) {
-        x.transactionDAO.put(this) // TODO switch to put on the liquidTransactionDAO
+        x.transactionDAO.put(this.data) // TODO switch to put on the liquidTransactionDAO
         .then(
           (_) => {
             x.notify('Transaction Created Successfully!');

@@ -727,15 +727,17 @@ foam.RELATIONSHIP({
         return X.accountDAO.where(e.AND(
           e.EQ(net.nanopay.account.Account.DENOMINATION, sourceCurrency),
           e.EQ(net.nanopay.account.Account.DELETED, false),
-          e.EQ(net.nanopay.account.Account.ENABLED, true)
+          e.EQ(net.nanopay.account.Account.ENABLED, true),
+          e.NOT(e.INSTANCE_OF(net.nanopay.account.AggregateAccount))
         )).orderBy(net.nanopay.account.Account.NAME);
       });
       return foam.u2.view.ChoiceView.create({
-          dao$: ccs,
-          objToChoice: function(account) {
-            return [account.id, account.summary];
-          }
-        });
+        dao$: ccs,
+        placeholder: 'Select an Account to withdraw funds',
+        objToChoice: function(account) {
+          return [account.id, account.summary];
+        }
+      });
     },
     createMode: 'RW',
     visibility: 'FINAL',
