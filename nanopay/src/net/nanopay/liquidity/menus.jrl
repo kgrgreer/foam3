@@ -142,7 +142,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "browseTitle":"Transaction Approval By Level",
-      "createTitle": "Create a New Transaction Approval By Level"
+      "createTitle": "Create a New Transaction Approval By Level",
       "daoKey":"ruleDAO",
       "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
