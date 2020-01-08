@@ -66,6 +66,10 @@ foam.CLASS({
           self.add(user.toSummary());
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isFulfilled'
     }
   ],
 
