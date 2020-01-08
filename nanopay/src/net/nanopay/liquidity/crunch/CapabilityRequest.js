@@ -77,16 +77,12 @@ foam.CLASS({
       name: 'capabilityAccountTemplate',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
       visibilityExpression: function(requestType) {
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
-        return foam.u2.Visibility.HIDDEN;
-      }
-    },
-    {
-      class: 'Reference',
-      name: 'account',
-      of : 'net.nanopay.account.Account',
-      visibilityExpression: function(requestType) {
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
+        if ( 
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+          ) {
+          return foam.u2.Visibility.RW;
+        }
         return foam.u2.Visibility.HIDDEN;
       }
     },
