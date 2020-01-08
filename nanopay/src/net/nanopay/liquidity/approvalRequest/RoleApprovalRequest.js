@@ -37,11 +37,22 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
+    {
+      name: 'requestDetails'
+    }
+  ],
+
   properties: [
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approver',
+      section: 'requestDetails',
       visibility: 'RO',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
@@ -54,7 +65,8 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
-      name: 'operation'
+      name: 'operation',
+      section: 'requestDetails'
     },
     {
       class: 'Reference',
@@ -65,7 +77,8 @@ foam.CLASS({
         this.__subSubContext__.userDAO.find(initiatingUser).then((user)=> {
           self.add(user.toSummary());
         });
-      }
+      },
+      section: 'requestDetails',
     },
     {
       class: 'Boolean',
@@ -110,6 +123,7 @@ foam.CLASS({
   actions: [
     {
       name: 'approve',
+      section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
           if ( 
             status === net.nanopay.approval.ApprovalStatus.REJECTED || 
@@ -138,6 +152,7 @@ foam.CLASS({
     },
     {
       name: 'reject',
+      section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
         if ( 
             status === net.nanopay.approval.ApprovalStatus.REJECTED || 
