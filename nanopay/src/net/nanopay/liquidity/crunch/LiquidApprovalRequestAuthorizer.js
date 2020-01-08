@@ -57,7 +57,11 @@ foam.CLASS({
         RoleApprovalRequest request = (RoleApprovalRequest) oldObj;
 
         if ( ! (user.getId() == request.getApprover()) ) {
-            throw new AuthorizationException("You are not the approver of this request");
+          throw new AuthorizationException("You are not the approver of this request");
+        }
+
+        if ( user.getId() == request.getInitiatingUser() ){
+          throw new AuthorizationException("You cannot approve your own request");
         }
       `
     },
