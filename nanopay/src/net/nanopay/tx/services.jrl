@@ -170,6 +170,24 @@ p({
       .setInnerDAO(x.get("localTransactionDAO"))
       .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
         .orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED)))
+      .setServiceProviderAware(true)
+      .setServiceProviderAwarePropertyInfos(
+        new java.util.HashMap() {{
+          put(
+            net.nanopay.account.Account.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.account.Account.OWNER
+            }
+          );
+          put(
+            net.nanopay.tx.model.Transaction.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT,
+              net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT,
+            }
+          );
+        }}
+      ) 
       .build());
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"

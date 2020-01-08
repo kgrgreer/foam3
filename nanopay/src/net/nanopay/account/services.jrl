@@ -62,14 +62,18 @@ p({
       .setInnerDAO(AAD)
       .setAuthorize(false)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
-
-      // These decorators are present on localAccountDAO.
-      .setDeletedAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
-
+      .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(true)
+      .setServiceProviderAwarePropertyInfos(
+        new java.util.HashMap() {{
+          put(
+            net.nanopay.account.Account.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.account.Account.OWNER
+            }
+          );
+        }}
+      ) 
       .build();
   """,
   "client":

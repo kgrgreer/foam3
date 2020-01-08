@@ -526,6 +526,7 @@ p({
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
         .setEnableInterfaceDecorators(false)
+        .setServiceProviderAware(true)
         .build();
   """,
   "client":
