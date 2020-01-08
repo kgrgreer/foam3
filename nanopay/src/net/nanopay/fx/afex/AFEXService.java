@@ -33,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -927,7 +928,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
 
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client = new OkHttpClient.Builder()
+      .connectTimeout(15, TimeUnit.SECONDS)
+      .writeTimeout(15, TimeUnit.SECONDS)
+      .readTimeout(30, TimeUnit.SECONDS)
+    .build();
     Response response = null;
 
     Request request = new Request.Builder()
