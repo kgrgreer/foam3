@@ -194,7 +194,7 @@ foam.CLASS({
           await this.ctrl.fetchGroup();
           this.user = business;
           this.agent = result;
-          this.onboardingUtil.initOnboardingView();
+          if (! this.isIframe() ) this.onboardingUtil.initOnboardingView();
           this.pushMenu('sme.main.dashboard');
           return;
         }
@@ -205,6 +205,14 @@ foam.CLASS({
         this.notify(msg, 'error');
       }
     },
+
+    function isIframe () {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+     },
 
     function init() {
       this.enabledBusinesses_
