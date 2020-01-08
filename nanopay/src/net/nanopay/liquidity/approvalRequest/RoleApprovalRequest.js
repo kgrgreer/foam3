@@ -30,7 +30,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'ctrl'
   ],
 
   requires: [
@@ -120,6 +121,17 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    {
+      name: 'SUCCESS_APPROVED',
+      message: 'You have successfully approved the approval request.'
+    },
+    {
+      name: 'SUCCESS_REJECTED',
+      message: 'You have successfully rejected the approval request.'
+    }
+  ],
+
   actions: [
     {
       name: 'approve',
@@ -140,6 +152,9 @@ foam.CLASS({
         this.approvalRequestDAO.put(approvedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_APPROVED
+          }));
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
@@ -169,6 +184,9 @@ foam.CLASS({
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_REJECTED
+          }));
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
