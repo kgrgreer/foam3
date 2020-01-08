@@ -167,7 +167,6 @@ foam.CLASS({
       class: 'String',
       name: 'memo',
       label: 'Notes',
-      section: 'requestDetails',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
       documentation: 'Meant to be used for explanation on why request was approved/rejected'
     },
