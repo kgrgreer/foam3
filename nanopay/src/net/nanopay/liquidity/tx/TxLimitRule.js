@@ -134,6 +134,15 @@ foam.CLASS({
         }
       },
       tableWidth: 200,
+      validationPredicates: [
+        {
+          args: ['limit'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.TxLimitRule.LIMIT, 0);
+          },
+          errorString: 'Limit amount must be greater than 0.'
+        }
+      ]
     },
     {
       class: 'Reference',
@@ -142,6 +151,7 @@ foam.CLASS({
       targetDAOKey: 'currencyDAO',
       documentation: 'The unit of measure of the transaction limit.',
       section: 'basicInfo',
+      required: true,
     },
     {
       class: 'foam.core.Enum',
@@ -189,6 +199,37 @@ foam.CLASS({
         return new java.util.HashMap<String, TransactionLimitState>();
       `,
       documentation: 'Stores map of objects and current running limits.'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        // make sure all validation from super class passes
+        super.validate(x);
+
+        // Check that the proper ID is set
+        if (this.getApplyLimitTo() == TxLimitEntityType.USER &&
+            this.getUserToLimit() == 0) {
+              throw new IllegalStateException("User to limit must be set");
+        }
+        else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
+                 this.getAccountToLimit() == 0) {
+              throw new IllegalStateException("Account to limit must be set");
+        }
+        else if (this.getApplyLimitTo() == TxLimitEntityType.BUSINESS &&
+                 this.getBusinessToLimit() == 0) {
+              throw new IllegalStateException("Business to limit must be set");
+        }
+      `
     }
   ]
 });

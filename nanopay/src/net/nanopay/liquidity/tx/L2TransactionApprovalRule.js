@@ -65,8 +65,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'startAmount',
-      label: 'Apply To Transaction Value Starting From',
-      section: 'basicInfo'
+      label: 'Apply to Transactions More Than',
+      section: 'basicInfo',
+      validationPredicates: [
+        {
+          args: ['startAmount'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.L2TransactionApprovalRule.START_AMOUNT, 0);
+          },
+          errorString: 'Amount must be greater than 0.'
+        }
+      ]
     },
     {
       name: 'predicate',
