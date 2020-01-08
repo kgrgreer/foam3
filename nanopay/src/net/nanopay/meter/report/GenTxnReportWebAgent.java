@@ -28,7 +28,6 @@ import static foam.mlang.MLang.*;
 public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
   private final static long MIN_MONTHLY_PAYMENT = 250000;
-  private final static long FEE_PER_TRANSACTION = 150;
 
   @Override
   public void execute(X x) {
@@ -137,15 +136,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
         currencyCAD.getId()
       );
 
-      String sumFee = totalCount +
-        " * " +
-        currencyCAD.format(FEE_PER_TRANSACTION) +
-        " = " +
-        currencyCAD.format(totalFee);
-
       String sumFeeString = this.customCSVLine(
         "Total Transaction Fee",
-        StringEscapeUtils.escapeCsv(sumFee),
+        StringEscapeUtils.escapeCsv(currencyCAD.format(totalFee)),
         currencyCAD.getId()
       );
 
