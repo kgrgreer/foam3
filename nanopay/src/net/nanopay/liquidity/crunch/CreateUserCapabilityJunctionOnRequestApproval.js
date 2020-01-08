@@ -67,6 +67,11 @@ foam.CLASS({
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
+              CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
+
+              AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
+
               UserCapabilityJunction ucj;
 
               for ( Long userId : users ) {
@@ -76,11 +81,14 @@ foam.CLASS({
                 ));
 
                 AccountApproverMap map = (AccountApproverMap) ucj.getData();
-                if ( map == null || map.getAccounts() == null || ! map.hasAccount(getX(), req.getAccount()) ) {
+
+                if ( map == null || map.getAccounts() == null ) {
                   throw new RuntimeException("map does not contain account to revoke from");
                 }
 
-                map.removeAccount(req.getAccount());
+                for ( String accountId : fullAccountMap.getAccounts().keySet() ){
+                  map.removeAccount(Long.parseLong(accountId));
+                }
 
                 if ( map.getAccounts().size() == 0 ) {
                   userCapabilityJunctionDAO.remove_(getX(), ucj);
@@ -89,7 +97,6 @@ foam.CLASS({
                   userCapabilityJunctionDAO.put_(getX(), ucj);
                 }
               }
-
             } else if ( requestType == CapabilityRequestOperations.REVOKE_GLOBAL ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getGlobalCapability());
 
@@ -135,4 +142,3 @@ foam.CLASS({
     } 
   ]
 });
-  

@@ -129,6 +129,7 @@ foam.CLASS({
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -137,7 +138,10 @@ foam.CLASS({
           ).select(new ArraySink())).getArray();
 
         if ( approvedObjRemoveRequests.size() == 1 ){
-          ApprovalRequest fulfilledRequest = (ApprovalRequest) approvedObjRemoveRequests.get(0);
+          RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
+          fulfilledRequest.setIsFulfilled(true);
+
+          approvalRequestDAO.put_(getX(), fulfilledRequest);
 
           if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
             return super.put_(x,obj);
@@ -191,6 +195,7 @@ foam.CLASS({
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.REMOVE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -199,7 +204,10 @@ foam.CLASS({
           ).select(new ArraySink())).getArray();
 
         if ( approvedObjRemoveRequests.size() == 1 ){
-          ApprovalRequest fulfilledRequest = (ApprovalRequest) approvedObjRemoveRequests.get(0);
+          RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
+          fulfilledRequest.setIsFulfilled(true);
+
+          approvalRequestDAO.put_(getX(), fulfilledRequest);
 
           if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
             return super.put_(x,obj);
@@ -233,6 +241,7 @@ foam.CLASS({
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -241,7 +250,10 @@ foam.CLASS({
           ).select(new ArraySink())).getArray();
 
         if ( approvedObjCreateRequests.size() == 1 ){
-          ApprovalRequest fulfilledRequest = (ApprovalRequest) approvedObjCreateRequests.get(0);
+          RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjCreateRequests.get(0);
+          fulfilledRequest.setIsFulfilled(true);
+
+          approvalRequestDAO.put_(getX(), fulfilledRequest);
 
           if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
             lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
@@ -291,6 +303,7 @@ foam.CLASS({
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "approvableDAO"),
               foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableId),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.UPDATE),
+              foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
                 foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
@@ -299,7 +312,10 @@ foam.CLASS({
           ).select(new ArraySink())).getArray();
 
         if ( approvedObjUpdateRequests.size() == 1 ){
-          ApprovalRequest fulfilledRequest = (ApprovalRequest) approvedObjUpdateRequests.get(0);
+          RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjUpdateRequests.get(0);
+          fulfilledRequest.setIsFulfilled(true);
+
+          approvalRequestDAO.put_(getX(), fulfilledRequest);
 
           if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
             return super.put_(x,obj);

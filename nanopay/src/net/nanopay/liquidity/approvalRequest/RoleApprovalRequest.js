@@ -30,11 +30,22 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack',
+    'ctrl'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage'
+  ],
+
+  sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
+    {
+      name: 'requestDetails'
+    }
   ],
 
   properties: [
@@ -42,6 +53,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approver',
+      section: 'requestDetails',
       visibility: 'RO',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
@@ -54,7 +66,8 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
-      name: 'operation'
+      name: 'operation',
+      section: 'requestDetails'
     },
     {
       class: 'Reference',
@@ -65,7 +78,12 @@ foam.CLASS({
         this.__subSubContext__.userDAO.find(initiatingUser).then((user)=> {
           self.add(user.toSummary());
         });
-      }
+      },
+      section: 'requestDetails',
+    },
+    {
+      class: 'Boolean',
+      name: 'isFulfilled'
     }
   ],
 
@@ -103,9 +121,21 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    {
+      name: 'SUCCESS_APPROVED',
+      message: 'You have successfully approved the approval request.'
+    },
+    {
+      name: 'SUCCESS_REJECTED',
+      message: 'You have successfully rejected the approval request.'
+    }
+  ],
+
   actions: [
     {
       name: 'approve',
+      section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
           if ( 
             status === net.nanopay.approval.ApprovalStatus.REJECTED || 
@@ -122,6 +152,9 @@ foam.CLASS({
         this.approvalRequestDAO.put(approvedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_APPROVED
+          }));
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
@@ -134,6 +167,7 @@ foam.CLASS({
     },
     {
       name: 'reject',
+      section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
         if ( 
             status === net.nanopay.approval.ApprovalStatus.REJECTED || 
@@ -150,6 +184,9 @@ foam.CLASS({
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_REJECTED
+          }));
           this.stack.back();
         }, e => {
           this.throwError.pub(e);

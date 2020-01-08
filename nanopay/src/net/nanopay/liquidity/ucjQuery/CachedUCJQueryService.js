@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.Sink',
     'foam.dao.ArraySink',
+    'foam.nanos.logger.Logger',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -226,12 +227,14 @@ foam.CLASS({
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
         DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
 
+        Logger logger = (Logger) x.get("logger");
+
         modelToApprove = modelToApprove.toLowerCase();
 
         List<GlobalLiquidCapability> capabilitiesWithAbility;
 
         switch(modelToApprove){
-          case "capability":
+          case "liquidcapability":
             capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
               MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
             ).select(new ArraySink())).getArray();
@@ -258,6 +261,8 @@ foam.CLASS({
             break;
           default:
             capabilitiesWithAbility = null;
+            logger.error("Something went wrong with the requested model: " + modelToApprove);
+            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
         }
 
         // using a set because we only care about unique approver ids

@@ -17,7 +17,13 @@ foam.CLASS({
     'net.nanopay.liquidity.crunch.ApproverLevel',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
   ],
-  
+
+  tableColumns: [
+    'id',
+    'requestType',
+    'users'
+  ],
+
   properties: [  
     {
       name: 'id',

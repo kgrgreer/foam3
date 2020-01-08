@@ -2,6 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'AccountTemplate', 
 
+  tableColumns: [
+    'id',
+    'templateName'
+  ],
+
   properties: [  
     {
       name: 'id',
