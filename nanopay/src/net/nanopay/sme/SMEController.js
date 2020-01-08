@@ -472,7 +472,7 @@ foam.CLASS({
           if ( this.loginSuccess ) {
             this.findBalance();
           }
-          if (! this.isIframe() ){
+          if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
             .start()
               .tag(this.topNavigation_)
@@ -514,7 +514,7 @@ foam.CLASS({
       });
     },
 
-    function isIframe () {
+    function isIframe() {
       try {
         return window.self !== window.top;
       } catch (e) {
