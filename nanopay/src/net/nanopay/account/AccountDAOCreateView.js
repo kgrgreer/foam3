@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'AccountDAOCreateView',
   extends: 'foam.comics.v2.DAOCreateView',
 
+  imports: [
+    'stack',
+    'ctrl'
+  ],
+
   requires: [
     'net.nanopay.account.DigitalAccount',
     'foam.u2.dialog.NotificationMessage'
