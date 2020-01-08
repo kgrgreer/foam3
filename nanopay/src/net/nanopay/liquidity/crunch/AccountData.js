@@ -29,12 +29,20 @@ foam.CLASS({
   A model for the data stored in the value of the map of CapabilityAccountTemplate. 
   `,
 
-properties: [  
+  properties: [  
     {
       name: 'approverLevel',
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.ApproverLevel',
       javaType: 'net.nanopay.liquidity.crunch.ApproverLevel',
+      factory: function() {
+        return net.nanopay.liquidity.crunch.ApproverLevel.create({ approverLevel: 1 });
+      },
+      view: function(_, x) {
+        return {  
+          class: 'foam.u2.view.FObjectView',
+        };
+      }
     }
   ],
 });

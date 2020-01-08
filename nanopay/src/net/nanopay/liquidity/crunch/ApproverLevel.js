@@ -7,7 +7,7 @@ foam.CLASS({
       {
         name: 'approverLevel',
         class: 'Int',
-        javaType: 'java.lang.Integer',
+        javaType: 'java.lang.Integer'
       }
     ],
   

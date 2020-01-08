@@ -6,6 +6,10 @@ foam.CLASS({
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
+  imports: [
+    'capabilityAccountTemplateDAO'
+  ],
+
   javaImports: [
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -13,11 +17,7 @@ foam.CLASS({
     'net.nanopay.liquidity.crunch.ApproverLevel',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
   ],
-
-  imports: [
-    ''
-  ],
-
+  
   properties: [  
     {
       name: 'id',
@@ -73,12 +73,39 @@ foam.CLASS({
       }
     },
     {
+      name: 'capabilityAccountTemplateChoice',
+      flags: ['js'],
       class: 'Reference',
-      name: 'capabilityAccountTemplate',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
+      label: 'Choose Capability Account Template',
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
+      },
+      view: function(_, x) {
+        return {  
+          class: 'foam.u2.view.ReferenceView',
+        };
+      },
+      postSet: function(_, data) {
+        this.capabilityAccountTemplateDAO.find(data).then((template) => {
+          this.capabilityAccountTemplate = template;
+        });
+      }
+    },
+    {
+      name: 'capabilityAccountTemplate',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
+      label: 'Customize Chosen Capability Account Template ', 
+      visibilityExpression: function(requestType) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
+        return foam.u2.Visibility.HIDDEN;
+      },
+      view: function(_, x) {
+        return {  
+          class: 'foam.u2.view.FObjectView',
+        };
       }
     },
     {
