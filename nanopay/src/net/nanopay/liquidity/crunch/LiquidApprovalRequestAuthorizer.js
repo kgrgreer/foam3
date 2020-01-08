@@ -7,7 +7,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
   ],
 
@@ -32,17 +33,18 @@ foam.CLASS({
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
-        // TODO: Yoyo fix this after
-        AccountRoleApprovalRequest ar = (AccountRoleApprovalRequest) obj;
+        RoleApprovalRequest request = (RoleApprovalRequest) obj;
 
-        Long accountId = ( obj instanceof AccountApprovableAware ) ? ((AccountApprovableAware) ar).getOutgoingAccountRead(x) : 0L;
-        String className = ((foam.dao.DAO) x.get(ar.getDaoKey())).getOf().getClass().getSimpleName();
+        // TODO: make this less ugly
+        if ( ! (user.getId() == request.getApprover()) ) {
 
-        String permission = createApprovePermission(className, accountId);
-        AuthService authService = (AuthService) x.get("auth");
-
-        if ( ! authService.check(x, permission) ) {
-          throw new AuthorizationException();
+          if ( request.getStatus() == ApprovalStatus.APPROVED || request.getStatus() == ApprovalStatus.REJECTED ){
+            if ( ! (request.getInitiatingUser() == user.getId()) ){
+              throw new AuthorizationException();
+            }
+          } else {
+            throw new AuthorizationException();
+          }
         }
       `
     },
@@ -52,17 +54,10 @@ foam.CLASS({
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
-        // TODO: Yoyo fix this after
-        AccountRoleApprovalRequest ar = (AccountRoleApprovalRequest) oldObj;
+        RoleApprovalRequest request = (RoleApprovalRequest) oldObj;
 
-        Long accountId = ( oldObj instanceof AccountApprovableAware ) ? ((AccountApprovableAware) ar).getOutgoingAccountUpdate(x) : 0L;
-        String className = ((foam.dao.DAO) x.get(ar.getDaoKey())).getOf().getClass().getSimpleName();
-
-        String permission = createApprovePermission(className, accountId);
-        AuthService authService = (AuthService) x.get("auth");
-
-        if ( ! authService.check(x, permission) ) {
-          throw new AuthorizationException();
+        if ( ! (user.getId() == request.getApprover()) ) {
+            throw new AuthorizationException("You are not the approver of this request");
         }
       `
     },

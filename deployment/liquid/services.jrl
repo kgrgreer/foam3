@@ -587,3 +587,29 @@ p({
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/liquidTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/liquidTransactionDAO\"}}}}",
   "documentation":"A client-side enabled (serve:true), authenticated transaction DAO for Liquid that enforces transactions to go through approval flow."
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "approvalRequestDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.approval.ApprovalRequest.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer.Builder(x).setPermissionPrefix("approve").build())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("approvalRequests")
+      .setValidated(true)
+      .setRulerDaoKey("approvalRequestDAO")
+      .setDecorator(
+         new net.nanopay.approval.SendGroupRequestApprovalDAO(x,
+            new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
+              new net.nanopay.approval.ApprovalDAO(x, null))))
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.approval.ApprovalRequest.CREATED})
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
+  """,
+  "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
+})

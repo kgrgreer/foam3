@@ -124,11 +124,11 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_APPROVED',
-      message: 'You have successfully approved the approval request.'
+      message: 'You have successfully approved this request.'
     },
     {
       name: 'SUCCESS_REJECTED',
-      message: 'You have successfully rejected the approval request.'
+      message: 'You have successfully rejected this request.'
     }
   ],
 
