@@ -88,11 +88,6 @@ foam.CLASS({
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
       },
-      view: function(_, x) {
-        return {  
-          class: 'foam.u2.view.ReferenceView',
-        };
-      },
       postSet: function(_, data) {
         this.capabilityAccountTemplateDAO.find(data).then((template) => {
           this.capabilityAccountTemplate = template;
@@ -103,11 +98,14 @@ foam.CLASS({
       name: 'capabilityAccountTemplate',
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
-      label: 'Customize Chosen Capability Account Template ', 
+      label: 'Create New Template Or Customize Chosen Capability Account Template ', 
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
       },
+      factory: function() {
+        return this.capabilityAccountTemplate || net.nanopay.liquidity.crunch.CapabilityAccountTemplate.create();
+      }, 
       view: function(_, x) {
         return {  
           class: 'foam.u2.view.FObjectView',
