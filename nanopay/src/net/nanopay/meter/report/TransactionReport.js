@@ -8,22 +8,26 @@ foam.CLASS({
 
   properties: [
     net.nanopay.tx.model.Transaction.ID.clone().copyFrom({
-      label: 'Txn ID'
+      label: 'Txn ID',
+      tableWidth: 300
     }),
     net.nanopay.tx.model.Transaction.PARENT.clone().copyFrom({
-      label: 'Parent Txn'
+      label: 'Parent Txn',
+      tableWidth: 300
     }),
     {
       class: 'DateTime',
       name: 'created',
-      label: 'Created Time'
+      label: 'Created Time',
+      tableWidth: 130
     },
     {
       class: 'String',
-      name: 'type'
+      name: 'type',
+      tableWidth: 140
     },
     net.nanopay.tx.model.Transaction.PAYEE_ID.clone().copyFrom({
-      label: 'Payee ID'
+      label: 'Payee ID',
     }),
     net.nanopay.tx.model.Transaction.PAYER_ID.clone().copyFrom({
       label: 'Payer ID'
@@ -37,6 +41,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      tableWidth: 160
     },
     {
       class: 'String',
@@ -45,7 +50,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'statusUpdateTime',
-      label: 'Status Update Time'
+      label: 'Status Update Time',
+      tableWidth: 180
     }
   ]
 });
