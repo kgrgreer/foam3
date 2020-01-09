@@ -164,7 +164,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be a past date.'
+          errorString: 'Cannot be future dated.'
         }
       ]
     },
