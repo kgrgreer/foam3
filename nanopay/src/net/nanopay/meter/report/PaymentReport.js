@@ -22,6 +22,13 @@ foam.CLASS({
     * Destination Currency
   `,
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.User',
+    'net.nanopay.account.Account',
+    'net.nanopay.tx.model.Transaction'
+  ],
+
   tableColumns: [
     'invoiceId',
     'status',
@@ -134,20 +141,44 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
       visibility: 'RO',
-      toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Source Account");
-      }
+      tableCellFormatter: function(value) {
+        if ( value ) this.start().add(value.id).end();
+      },
+      javaToCSVLabel: `
+        outputter.outputValue("Sender User Id");
+        outputter.outputValue("Sender Name");
+        outputter.outputValue("Sender Email");
+      `,
+      javaToCSV: `
+        User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
+        outputter.outputValue(sender.getId());
+        outputter.outputValue(sender.label());
+        outputter.outputValue(sender.getEmail());
+      `,
     },
     {
-      class: 'Long',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
       visibility: 'RO',
-      toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Destination Account");
-      }
+      tableCellFormatter: function(value) {
+        if ( value ) this.start().add(value.id).end();
+      },
+      javaToCSVLabel: `
+        outputter.outputValue("Receiver User Id");
+        outputter.outputValue("Receiver Name");
+        outputter.outputValue("Receiver Email");
+      `,
+      javaToCSV: `
+        User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
+        outputter.outputValue(receiver.getId());
+        outputter.outputValue(receiver.label());
+        outputter.outputValue(receiver.getEmail());
+      `,
     },
     {
       class: 'UnitValue',
