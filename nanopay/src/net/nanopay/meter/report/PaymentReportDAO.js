@@ -17,6 +17,8 @@ foam.CLASS({
     'foam.mlang.predicate.Lt',
     'foam.mlang.predicate.Nary',
     'foam.mlang.predicate.Predicate',
+    'foam.nanos.auth.User',
+    'net.nanopay.account.Account',
     'net.nanopay.meter.report.PaymentReport',
     'net.nanopay.tx.model.Transaction',
 
@@ -86,6 +88,9 @@ foam.CLASS({
           public void put(Object obj, Detachable sub) {
             Transaction transaction = (Transaction) obj;
 
+            User sender = ((Account) transaction.findSourceAccount(x)).findOwner(x);
+            User receiver = ((Account) transaction.findDestinationAccount(x)).findOwner(x);
+
             PaymentReport pr = new PaymentReport.Builder(x)
               .setInvoiceId(transaction.getInvoiceId())
               .setStatus(transaction.getStatus())
@@ -97,8 +102,12 @@ foam.CLASS({
               .setProcessDate(transaction.getProcessDate())
               .setCompletionDate(transaction.getCompletionDate())
               .setType(transaction.getType())
-              .setSourceAccount(transaction.findSourceAccount(x))
-              .setDestinationAccount(transaction.findDestinationAccount(x))
+              .setSenderUserId(sender.getId())
+              .setSenderName(sender.label())
+              .setSenderEmail(sender.getEmail())
+              .setReceiverUserId(receiver.getId())
+              .setReceiverName(receiver.label())
+              .setReceiverEmail(receiver.getEmail())
               .setSourceAmount(transaction.getAmount())
               .setSourceCurrency(transaction.getSourceCurrency())
               .setDestinationAmount(transaction.getDestinationAmount())

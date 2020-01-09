@@ -22,13 +22,6 @@ foam.CLASS({
     * Destination Currency
   `,
 
-  javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'net.nanopay.account.Account',
-    'net.nanopay.tx.model.Transaction'
-  ],
-
   tableColumns: [
     'invoiceId',
     'status',
@@ -40,8 +33,8 @@ foam.CLASS({
     'processDate',
     'completionDate',
     'type',
-    'sourceAccount',
-    'destinationAccount',
+    'senderUserId',
+    'receiverUserId',
     'sourceAmount',
     'sourceCurrency',
     'destinationAmount',
@@ -141,44 +134,52 @@ foam.CLASS({
       }
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.account.Account',
-      name: 'sourceAccount',
+      class: 'Long',
+      name: 'senderUserId',
       visibility: 'RO',
-      tableCellFormatter: function(value) {
-        if ( value ) this.start().add(value.id).end();
-      },
-      javaToCSVLabel: `
-        outputter.outputValue("Sender User Id");
-        outputter.outputValue("Sender Name");
-        outputter.outputValue("Sender Email");
-      `,
-      javaToCSV: `
-        User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
-        outputter.outputValue(sender.getId());
-        outputter.outputValue(sender.label());
-        outputter.outputValue(sender.getEmail());
-      `,
+      toCSVLabel: function (x, outputter) {
+        outputter.outputValue("Sender User ID");
+      }
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.account.Account',
-      name: 'destinationAccount',
+      class: 'String',
+      name: 'senderName',
       visibility: 'RO',
-      tableCellFormatter: function(value) {
-        if ( value ) this.start().add(value.id).end();
-      },
-      javaToCSVLabel: `
-        outputter.outputValue("Receiver User Id");
+      toCSVLabel: function (x, outputter) {
+        outputter.outputValue("Sender Name");
+      }
+    },
+    {
+      class: 'String',
+      name: 'senderEmail',
+      visibility: 'RO',
+      toCSVLabel: function (x, outputter) {
+        outputter.outputValue("Sender Email");
+      }
+    },
+    {
+      class: 'Long',
+      name: 'receiverUserId',
+      visibility: 'RO',
+      toCSVLabel: function (x, outputter) {
+        outputter.outputValue("Receiver User ID");
+      }
+    },
+    {
+      class: 'String',
+      name: 'receiverName',
+      visibility: 'RO',
+      toCSVLabel: function (x, outputter) {
         outputter.outputValue("Receiver Name");
+      }
+    },
+    {
+      class: 'String',
+      name: 'receiverEmail',
+      visibility: 'RO',
+      toCSVLabel: function (x, outputter) {
         outputter.outputValue("Receiver Email");
-      `,
-      javaToCSV: `
-        User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
-        outputter.outputValue(receiver.getId());
-        outputter.outputValue(receiver.label());
-        outputter.outputValue(receiver.getEmail());
-      `,
+      }
     },
     {
       class: 'UnitValue',
