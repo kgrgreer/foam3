@@ -118,7 +118,7 @@ p({
       .setFm(inner)
       .build();
     inner = new net.nanopay.tx.TransactionDAO(x, inner);
-    inner = new  net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
+    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
     inner = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
       .setDelegate(inner)
       .build();
@@ -142,11 +142,12 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(inner)
+      .setDecorator(dao)
       .setPm(true)
       .setPipelinePm(true)
       .setGuid(true)
       .setContextualize(true)
-      .setDecorator(dao)
+      .setRuler(false)
       .build();
     
     """
@@ -162,13 +163,14 @@ p({
     return new net.nanopay.tx.AuthenticatedTransactionDAO(x,
       new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("localTransactionDAO"))
+      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
       .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("transaction"))
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
-      .setInnerDAO(x.get("localTransactionDAO"))
-      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
-        .orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED)))
+      .setRuler(false)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.tx.model.Transaction.CREATED).build() })
       .setServiceProviderAware(true)
       .setServiceProviderAwarePropertyInfos(
         new java.util.HashMap() {{
@@ -251,8 +253,8 @@ p({
   "client": "{\"of\":\"net.nanopay.tx.model.TransactionLimit\"}"
 })
 
-p({"
-  class":"foam.nanos.boot.NSpec",
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"userTransactionLimit",
   "serve":true,
   "boxClass":"net.nanopay.tx.UserTransactionLimitSkeleton",
