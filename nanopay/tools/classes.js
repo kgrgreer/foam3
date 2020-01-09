@@ -358,7 +358,6 @@ var classes = [
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
-   'net.nanopay.liquidity.ucjQuery.RoleQueryView',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -940,6 +939,8 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+  'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
 ];
 
 var proxies = [
