@@ -41,7 +41,7 @@ foam.CLASS({
           }
         ).catch(
           (e) => {
-            x.notify('Transaction Creation Error: ', e.message || e);
+            x.notify('Transaction Creation Error: ' + e.message || e, 'error');
           }
         );
       }
