@@ -30,6 +30,7 @@ foam.CLASS({
           public void execute(X x) {
             DAO userDAO = (DAO) x.get("userDAO");
             BankAccount account = (BankAccount) obj;
+            if( account.getRandomDepositAmount() != 0) return;
             User owner = (User) userDAO.find(account.getOwner());
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
@@ -37,6 +38,7 @@ foam.CLASS({
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("name",    User.FIRST_NAME);
+            args.put("sendTo",  User.EMAIL);
             args.put("account", accountNumber);
             args.put("link",    config.getUrl());
             args.put("business", owner.getOrganization());
