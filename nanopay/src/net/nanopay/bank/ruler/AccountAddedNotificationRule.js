@@ -30,6 +30,7 @@ foam.CLASS({
           public void execute(X x) {
             DAO userDAO = (DAO) x.get("userDAO");
             BankAccount account = (BankAccount) obj;
+            //If bank account added using void check, don't send (micro-deposit-sent email gets sent instead).
             if( account.getRandomDepositAmount() != 0) return;
             User owner = (User) userDAO.find(account.getOwner());
             Group       group      = owner.findGroup(x);
