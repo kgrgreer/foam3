@@ -79,7 +79,7 @@ foam.CLASS({
     Account destinationAccount = quote.getDestinationAccount();
 
     if ( sourceAccount instanceof CABankAccount &&
-      destinationAccount instanceof DigitalAccount ) {
+      destinationAccount instanceof DigitalAccount  && sourceAccount.getOwner() == destinationAccount.getOwner() ) {
       
       if ( ! useBmoAsPaymentProvider(x, (BankAccount) sourceAccount) ) return this.getDelegate().put_(x, obj);
 

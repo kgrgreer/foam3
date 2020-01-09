@@ -73,7 +73,7 @@ foam.CLASS({
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof CABankAccount &&
-        destinationAccount instanceof DigitalAccount ) {
+        destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == destinationAccount.getOwner() ) {
         
         if ( ! useAlternaAsPaymentProvider(x, (BankAccount) sourceAccount) ) return getDelegate().put_(x, obj);
         
