@@ -472,9 +472,28 @@ foam.CLASS({
           if ( this.loginSuccess ) {
             this.findBalance();
           }
+          if ( ! this.isIframe() ) {
+            this.addClass(this.myClass())
+            .start()
+              .tag(this.topNavigation_)
+              .show(this.slot((loginSuccess) => loginSuccess))
+            .end()
+            .start()
+              .addClass('stack-wrapper')
+              .start({
+                class: 'net.nanopay.ui.banner.Banner',
+                data$: this.bannerData$
+              })
+              .end()
+              .tag({
+                class: 'foam.u2.stack.StackView',
+                data: this.stack,
+                showActions: false
+              })
+            .end();
+          } else {
           this.addClass(this.myClass())
           .start()
-            .tag(this.topNavigation_)
             .show(this.slot((loginSuccess) => loginSuccess))
           .end()
           .start()
@@ -490,8 +509,17 @@ foam.CLASS({
               showActions: false
             })
           .end();
+          }
         });
       });
+    },
+
+    function isIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
     },
 
     function requestLogin() {
@@ -524,9 +552,11 @@ foam.CLASS({
         }
 
         // Process auth token
-        if ( locHash === '#auth' && ! self.loginSuccess ) {
+        if ( ! self.loginSuccess && !! searchParams.get('token') ) {
           self.client.authenticationTokenService.processToken(null, null,
-            searchParams.get('token')).then(() => location = '/');
+            searchParams.get('token')).then(() => {
+              location = locHash == '#onboarding' ? '/' : '/' + locHash;
+            });
         }
       }
 

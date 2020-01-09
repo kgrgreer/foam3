@@ -76,6 +76,9 @@ foam.CLASS({
     ^ .inner-card {
       padding: 15px 0px;
     }
+    ^ .contents-grow {
+      flex-grow: 1;
+    }
   `,
   properties: [
     {
@@ -150,7 +153,7 @@ foam.CLASS({
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
-              });
+              }).addClass('contents-grow');
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
             .start(self.Cols)

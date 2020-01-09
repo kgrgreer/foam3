@@ -796,6 +796,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.add(list);
       if ( img != null ) {
+        img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
+        - document.rightMargin(), 200);
         document.add(new ListItem("Bank void check:"));
         document.add(img);
       }

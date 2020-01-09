@@ -183,8 +183,11 @@ foam.CLASS({
         if ( ! model.validateInputs() ) return;
         model.capturePADAndPutBankAccounts().then(() => {
           this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
-          this.ctrl.stack.back();
+
           X.closeDialog();
+
+          location.hash = 'sme.main.banking';
+          this.ctrl.stack.back();
         });
       }
     }
