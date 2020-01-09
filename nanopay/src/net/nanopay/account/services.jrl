@@ -35,6 +35,7 @@ p({
       .setPm(true)
       .setSeqNo(true)
       .setDeletedAware(true)
+      .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
      .build();
