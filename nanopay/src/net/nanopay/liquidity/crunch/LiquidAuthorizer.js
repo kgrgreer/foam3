@@ -27,7 +27,7 @@ foam.CLASS({
       ],
       type: 'String',
       documentation: `
-      Return a liquid specific permission string in the form of "{ClassName}.{Operation}.{outgoingAccountId}"ß
+      Return a liquid specific permission string in the form of "{ClassName}.{Operation}.{outgoingAccountId}"
       `,
       javaCode: `
         String permission = getPermissionPrefix() + "." + op;
