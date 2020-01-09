@@ -63,7 +63,7 @@ foam.CLASS({
           this.stack.back();
         }, (e) => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: e.message,
             type: 'error'
           }));

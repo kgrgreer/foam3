@@ -91,7 +91,7 @@ foam.CLASS({
     {
       name: 'toSummary',
       code: function() {
-        return `(${this.classification} ${this.operation}`;
+        return `(${this.classification}) ${this.operation}`;
       }
     },
     {
@@ -158,7 +158,7 @@ foam.CLASS({
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: e.message,
             type: 'error'
           }));
@@ -190,7 +190,7 @@ foam.CLASS({
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: e.message,
             type: 'error'
           }));
