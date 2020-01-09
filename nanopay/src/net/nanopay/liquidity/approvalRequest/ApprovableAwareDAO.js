@@ -179,11 +179,14 @@ foam.CLASS({
       // system and admins override the approval process
       if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
 
+      LifecycleAware lifecycleObj = (LifecycleAware) obj;
+
+      if ( lifecycleObj.getLifecycleState() == LifecycleState.ACTIVE ) return super.put_(x,obj);
+
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
 
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
-      LifecycleAware lifecycleObj = (LifecycleAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
       if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
