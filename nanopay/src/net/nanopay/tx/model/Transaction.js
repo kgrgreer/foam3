@@ -645,6 +645,9 @@ foam.CLASS({
       factory: function() {
         return this.ctrl.homeDenomination ? this.ctrl.homeDenomination : 'CAD';
       },
+      javaFactory: `
+        return "CAD";
+      `,
       includeInDigest: true,
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
