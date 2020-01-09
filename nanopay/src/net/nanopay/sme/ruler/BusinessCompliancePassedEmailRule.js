@@ -9,6 +9,7 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
+      'foam.dao.DAO',
       'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
@@ -33,15 +34,14 @@ foam.CLASS({
             Address businessAddress = business.getAddress();
 
             if( ! businessAddress.getCountryId().equals("US") ){
-              Logger                  logger       = (Logger) x.get("logger");
-              Group                   group        = business.findGroup(x);
-              AppConfig               appConfig    = group.getAppConfig(x);
-              String                  url          = appConfig.getUrl().replaceAll("/$", "");
-              EmailMessage            message      = new EmailMessage();
-              Map<String, Object>     args         = new HashMap<>();
+              Logger                  logger         = (Logger) x.get("logger");
+              Group                   group          = business.findGroup(x);
+              AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
+              EmailMessage            message        = new EmailMessage();
+              Map<String, Object>     args           = new HashMap<>();
 
               message.setTo(new String[]{business.getEmail()});
-              args.put("link",   url + "#sme.main.dashboard");
+              args.put("link",   config.getUrl() + "#sme.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
 
