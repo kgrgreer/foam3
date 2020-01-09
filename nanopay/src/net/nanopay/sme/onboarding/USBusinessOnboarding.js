@@ -849,7 +849,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Must be at least one day in the past.'
+          errorString: 'Must be a past date.'
         }
       ]
     },
