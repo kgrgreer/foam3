@@ -787,8 +787,8 @@ p({
   "id":108,
   "name":"addBank",
   "group":"sme",
-  "displayName":"{{business}} (via Ablii)",
-  "subject":"A bank account was added",
+  "displayName":"Ablii",
+  "subject":"Your bank account has been added",
   "body": "{% extends 'ablii-email-base_2'%}\n\n{% block content %}\n<p style=\"font-family: 'Lato', sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Bank account added</p>\n<p style=\"font-family: 'Lato', sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n<br>\n<p style=\"font-family: 'Lato', sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">A bank account ending in {{account}} was added to your company {{business}} on Ablii.</p>\n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: 'Lato', sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Go to Ablii</p>\n</div></a>\n{% endblock content %}"
 })
 p({
