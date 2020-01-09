@@ -104,37 +104,14 @@ foam.CLASS({
           of: 'foam.nanos.crunch.Capability'
         });
       },
-      documentation: `
-      `,
-      postSet: function(_, nu) {
-        console.log('updated the searchResults prop');
-        console.log(nu);
-      }
     }
   ],
 
   methods: [
-    function init() {
-      var self = this;
-      /*
-      self.onDetach(self.searchChoice$.sub(function (searchChoice) {
-        var self = this;
-        console.log('SEARCH CHOICE');
-        console.log(searchChoice);
-        console.log(self.searchOption);
-      }));
-      */
-    },
     function initE() {
       // this.SUPER();
-      console.log('updated');
-      window.lastRQV = this;
       var self = this;
-      
 
-      console.log('insideinitE');
-      console.log(self.searchResults);
-      console.log("^^");
       self
         .start()
           .addClass(self.myClass('query-container'))
@@ -146,8 +123,6 @@ foam.CLASS({
             .add(self.SEARCH_OPTION)
           .end()
           .add(self.slot(function (searchOption) {
-            console.log('SLOT');
-            console.log(searchOption);
             switch (searchOption) {
               case 'user': return self.E().tag(self.REFERENCE_TO_USER);
               case 'role': return self.E().tag(self.REFERENCE_TO_CAPABILITY);
@@ -156,8 +131,6 @@ foam.CLASS({
           }))
         .end()
         .add(self.slot(function(searchResults) {
-          console.log('ELEMENT SLOT');
-          console.log(searchResults);
           return self.E()
            .tag(foam.u2.view.ScrollTableView.create({
              data: searchResults,
@@ -168,7 +141,6 @@ foam.CLASS({
     },
     function updateSearchForUser(userId) {
       var self = this;
-      console.log('updating search');
       self.ucjQueryService.getRoles(userId).then(function (arry) {
         self.searchResults = self.capabilityDAO.where(
           self.IN(foam.nanos.crunch.Capability.ID, arry)
@@ -177,7 +149,6 @@ foam.CLASS({
     },
     function updateSearchForRole(roleId) {
       var self = this;
-      console.log('updating search');
       self.ucjQueryService.getUsers(roleId).then(function (arry) {
         self.searchResults = self.userDAO.where(
           self.IN(foam.nanos.auth.User.ID, arry)
