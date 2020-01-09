@@ -71,7 +71,7 @@ foam.CLASS({
       outline: none;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 86px);
+      width: calc(100% - 87px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
@@ -81,10 +81,8 @@ foam.CLASS({
       display: inline-block;
       height: 38px;
       vertical-align: top;
-      border-style: solid;
-      border-width: 1px 0 1px 1px;
-      border-color: /*%GREY3%*/ #cbcfd4;
-      border-radius: 4px 0 0 4px;
+      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border-radius: 3px;
     }
     ^ .validation-failure-container {
       font-size: 10px;
