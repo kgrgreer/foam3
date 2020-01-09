@@ -9,7 +9,6 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
-      'foam.dao.DAO',
       'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
