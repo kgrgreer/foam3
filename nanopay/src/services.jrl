@@ -443,7 +443,7 @@ p({
   "class": "foam.nanos.boot.NSpec", 
   "name": "push",        
   "description": "Connects to google's firebase API and sends a message and notification pair to be processed by the interface.",
-  "documentation": "Pushes a message to google's firebase API. See https://firebase.google.com/docs/reference for information on how to use google's firebase API."                     
+  "documentation": "Pushes a message to google's firebase API. See https://firebase.google.com/docs/reference for information on how to use google's firebase API.", 
   "serviceClass": "foam.nanos.notification.push.FirebasePushService",
   "service": {"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}
 })
@@ -481,7 +481,8 @@ p({
   "description": "Stores instances of User. Since it is not served (it's accessible from the server side only) it doesn`t have authorization decorator",
   "serviceScript":
   """
-    dao = new net.nanopay.contacts.AddExternalContactToken(x, null);
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
+    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
     dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
@@ -498,12 +499,12 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(x.get("bareUserDAO"))
+      .setDecorator(dao)
       .setEnableInterfaceDecorators(false)
       .setRuler(true)
       .setAuthorize(false)
       .setValidated(true)
-      .setInnerDAO(x.get("bareUserDAO"))
-      .setDecorator(dao)
       .build();
   """
 })
@@ -636,7 +637,7 @@ p({
   "serviceScript":
   """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
-    inner = (new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get(\"localUserDAO\"))).where(predicate);
+    inner = (new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get("localUserDAO"))).where(predicate);
     nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(inner).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
@@ -1282,9 +1283,10 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO")))
       .setPm(true)
       .setPipelinePm(true)
-      .setInnerDAO(new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO")))
       .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
       .build()
@@ -1335,7 +1337,6 @@ p({
   """
     return new net.nanopay.retail.AuthenticatedP2PTxnRequestDAO(x, new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
-      .setInnerDAO(hashingJDAO)
       .setSeqNo(true)
       .setDecorator(new net.nanopay.retail.P2PTxnRequestUserInfoDAO(x,
         new net.nanopay.retail.NewP2PTxnRequestDAO(x,
@@ -1352,34 +1353,6 @@ p({
 p({"class":"foam.nanos.boot.NSpec", "name":"SPSCredentials",                   "lazy":false, "serve":true, "authenticate":false, "service":{"class":"net.nanopay.sps.SPSCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"bankHolidayDAO",                   "description":"DAO to store bank holidays for EFT processing.","serve":true,"serviceScript":"return new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"bankHolidays\").setSeqNo(true).setOf(net.nanopay.bank.BankHoliday.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.bank.BankHoliday\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"externalInvoiceToken",             "description":"Generate and process tokens pertaining to external user registration.", "serve":true, "authenticate":false, "serviceClass":"net.nanopay.auth.ExternalInvoiceTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localDocumentDAO",
-
-  "serviceScript":
-  """
-  return new foam.EasyDAO.Builder(x)
-    .setOf(foam.flow.Document.getOwnClassInfo())
-    .setInnerDAO(new foam.flow.DocumentationFolderDAO.Builder(x).build())
-    .build();
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "documentDAO",
-  "serve": true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.flow.Document.getOwnClassInfo())
-      .setPermissionPrefix("flow")
-      .setInnerDAO(x.get("localDocumentDAO"))
-      .build();
-  """,
-  "client": "{\"of\":\"foam.flow.Document\"\}"
-})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -1568,7 +1541,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setGuid(true)
-      .setDecorator(foam.nanos.script.ScriptRunnerDAO(null))
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
       .setJournalName("reports")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
