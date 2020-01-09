@@ -274,7 +274,7 @@ p({
     dao = new PublicUserInfoDAO(x, false, "payerId", "payer", dao);
     dao = new PublicUserInfoDAO(x, false, "payeeId", "payee", dao);
     dao = new InvoiceToContactDAO(x, dao);
-    dao = new HistoryDAO(x, \"invoiceHistoryDAO\", dao);
+    dao = new HistoryDAO(x, "invoiceHistoryDAO", dao);
     dao = new AuthenticatedInvoiceDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
@@ -285,6 +285,19 @@ p({
       .setJournalName("invoices")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
+      .setEnableInterfaceDecorators(true)
+      .setServiceProviderAware(true)
+      .setServiceProviderAwarePropertyInfos(
+        new java.util.HashMap() {{
+          put(
+            net.nanopay.invoice.model.Invoice.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.invoice.model.Invoice.PAYER_ID,
+              net.nanopay.invoice.model.Invoice.PAYEE_ID,
+            }
+          );
+        }}
+      ) 
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\",\"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}",
