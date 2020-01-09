@@ -22,7 +22,7 @@ p({
       .setDecorator(new net.nanopay.security.pii.AuthenticatedPIIRequestDAO(x, 
         new net.nanopay.security.pii.FreezeApprovedPIIRequestsDAO.Builder(x).setDelegate( 
         new net.nanopay.security.pii.PreventDuplicatePIIRequestsDAO.Builder(x).setDelegate(
-        new net.nanopay.security.pii.ApprovedPIIRequestDAO.Builder(x).setDelegate(null).build()).build()).build()))
+        new net.nanopay.security.pii.ApprovedPIIRequestDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.security.pii.ViewPIIRequest.getOwnClassInfo()).build()).build()).build()).build()))
       .build();
   """, 
   "client": "{\"of\":\"net.nanopay.security.pii.ViewPIIRequest\"}"

@@ -149,7 +149,6 @@ p({
       .setContextualize(true)
       .setRuler(false)
       .build();
-    
     """
 })
 
@@ -204,7 +203,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("transactionDAO"))
-      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
+      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
@@ -228,7 +227,7 @@ p({
       .setOf(net.nanopay.tx.TransactionPurpose.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
-      .setJournalName("ttransactionPurposes")
+      .setJournalName("transactionPurposes")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """, 
