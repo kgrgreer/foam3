@@ -2,8 +2,25 @@ p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                  "serv
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":false,  "serve":true, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                  "serviceScript":"return new net.nanopay.fx.localfx.NanopayFXService.Builder(x).build();"})
 
-p({"class":"foam.nanos.boot.NSpec", "name":"afexService",                 "lazy":true,  "serve":false, "serviceScript":"return new net.nanopay.fx.afex.AFEXService(x);"})
-p({"class":"foam.nanos.boot.NSpec", "name":"afexServiceProvider",                 "lazy":false,  "serve":true, "serviceScript":"return new net.nanopay.fx.afex.AFEXServiceProvider(x, x.get(\"afexService\"));"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexServiceProvider",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXServiceProvider(x, x.get("afexService"));
+  """
+})
 
 p({
   "class": "foam.nanos.boot.NSpec", 
