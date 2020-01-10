@@ -6,7 +6,6 @@ foam.CLASS({
   css: `
     ^ {
       width: 456px;
-      height: 56px;
       border: 1px solid /*%GREY5%*/ #f5f7fa;
       border-radius: 3px;
       background-color: white;

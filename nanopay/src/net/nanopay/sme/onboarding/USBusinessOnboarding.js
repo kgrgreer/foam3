@@ -514,7 +514,10 @@ foam.CLASS({
           },
           errorString: 'Please select job title.'
         }
-      ]
+      ],
+      postSet: function(_, n) {
+        this.owner1.jobTitle = this.adminJobTitle;
+      }
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       name: 'adminPhone',
@@ -1170,7 +1173,6 @@ foam.CLASS({
     },
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership',
       postSet: function(o, n) {
         this.owner1.ownershipPercent = n;
       },
@@ -1495,8 +1497,10 @@ foam.CLASS({
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
           } else {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
       }
