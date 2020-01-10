@@ -845,10 +845,7 @@ foam.CLASS({
           args: ['businessFormationDate', 'signingOfficer'],
           predicateFactory: function(e) {
             return e.OR(
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
-                timeMs: 0
-              }),
+              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE, new Date()),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
