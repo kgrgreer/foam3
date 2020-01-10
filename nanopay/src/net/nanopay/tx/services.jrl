@@ -22,9 +22,6 @@ p({
     dao = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
     dao = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
       .setEnabled(false)
       .setDelegate(dao)

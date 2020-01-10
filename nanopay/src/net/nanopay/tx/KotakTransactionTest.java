@@ -107,21 +107,21 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test fifth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn4.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "txn5 is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn6 is parent to a single transaction");
     txn5 = (Transaction) sink.getArray().get(0);
-    test(txn5 instanceof COTransaction, "txn5 is a COTransaction");
-    test(txn5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn5 has status PENDING_PARENT_COMPLETED");
-    test(SafetyUtil.equals(txn5.getSourceCurrency(), "CAD"), "txn5 has source currency CAD");
-    test(SafetyUtil.equals(txn5.getDestinationCurrency(), "CAD"), "txn5 has destination currency CAD");
+    test(txn5 instanceof  KotakFxTransaction, "txn6 is a KotakFxTransaction");
+    test(txn5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn6 has status PENDING_PARENT_COMPLETED");
+    test(SafetyUtil.equals(txn5.getSourceCurrency(), "CAD"), "txn6 has source currency CAD");
+    test(SafetyUtil.equals(txn5.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
 
     // test sixth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn5.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "txn6 is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn5 is parent to a single transaction");
     txn6 = (Transaction) sink.getArray().get(0);
-    test(txn6 instanceof  KotakFxTransaction, "txn6 is a KotakFxTransaction");
-    test(txn6.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn6 has status PENDING_PARENT_COMPLETED");
-    test(SafetyUtil.equals(txn6.getSourceCurrency(), "CAD"), "txn6 has source currency CAD");
-    test(SafetyUtil.equals(txn6.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
+    test(txn6 instanceof COTransaction, "txn5 is a COTransaction");
+    test(txn6.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn5 has status PENDING_PARENT_COMPLETED");
+    test(SafetyUtil.equals(txn6.getSourceCurrency(), "CAD"), "txn5 has source currency CAD");
+    test(SafetyUtil.equals(txn6.getDestinationCurrency(), "CAD"), "txn5 has destination currency CAD");
 
     // test last txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn6.getId())).select(new foam.dao.ArraySink());
@@ -143,15 +143,15 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
       ));
     test( approval == null, "Approval request for fx rate should not exist before fx transaction becomes PENDING.");
 
-    txn6 = (KotakFxTransaction) txn6.fclone();
-    txn6.setStatus(TransactionStatus.PENDING);
-    txn6 = (Transaction) txnDAO.put_(x, txn6);
-    test(! SafetyUtil.isEmpty(txn6.getId()), "Txn6 id not empty");
+    txn5 = (KotakFxTransaction) txn5.fclone();
+    txn5.setStatus(TransactionStatus.PENDING);
+    txn5 = (Transaction) txnDAO.put_(x, txn5);
+    test(! SafetyUtil.isEmpty(txn5.getId()), "Txn5 id not empty");
     approval = (ManualFxApprovalRequest) approvalDAO.find(
       AND(
         INSTANCE_OF(ManualFxApprovalRequest.class),
         EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
-        EQ(ApprovalRequest.OBJ_ID, txn6.getId()),
+        EQ(ApprovalRequest.OBJ_ID, txn5.getId()),
         EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
       )).fclone();
     test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
@@ -167,7 +167,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     approval.setStatus(ApprovalStatus.APPROVED);
     approvalDAO.put_(x, approval);
 
-    kotakTxn = (KotakFxTransaction) txnDAO.find(txn6.getId());
+    kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
     test(kotakTxn.getFxRate() != 0, "Fx rate is successfully added through approval request");
     test(kotakTxn.getStatus().equals(TransactionStatus.COMPLETED), "Transaction updated to completed after fetching fx rate.");
   }
