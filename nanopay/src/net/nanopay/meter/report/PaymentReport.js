@@ -35,10 +35,8 @@ foam.CLASS({
     'type',
     'senderUserId',
     'senderName',
-    'senderEmail',
     'receiverUserId',
     'receiverName',
-    'receiverEmail',
     'sourceAmount',
     'sourceCurrency',
     'destinationAmount',
@@ -167,15 +165,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'senderEmail',
-      visibility: 'RO',
-      tableWidth: 100,
-      toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Sender Email");
-      }
-    },
-    {
       class: 'Long',
       name: 'receiverUserId',
       visibility: 'RO',
@@ -191,15 +180,6 @@ foam.CLASS({
       tableWidth: 100,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Receiver Name");
-      }
-    },
-    {
-      class: 'String',
-      name: 'receiverEmail',
-      visibility: 'RO',
-      tableWidth: 100,
-      toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Receiver Email");
       }
     },
     {
