@@ -15,7 +15,6 @@ foam.CLASS({
       'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
-      'foam.nanos.notification.email.EmailMessage',
       'net.nanopay.model.Business',
       'java.util.HashMap',
       'java.util.Map',
@@ -36,14 +35,12 @@ foam.CLASS({
               Logger                  logger         = (Logger) x.get("logger");
               Group                   group          = business.findGroup(x);
               AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-              EmailMessage            message        = new EmailMessage();
               Map<String, Object>     args           = new HashMap<>();
 
-              message.setTo(new String[]{business.getEmail()});
               args.put("link",   config.getUrl() + "#sme.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
-
+              
               try {
 
                 Notification businessCompliancePassedNotification = new Notification.Builder(x)
