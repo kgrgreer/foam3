@@ -107,22 +107,20 @@ foam.CLASS({
       ],
       javaCode:`
         Map<String, Object>  args           = new HashMap<>();
-        DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
         Group                group          = business.findGroup(x);
-        AppConfig            appConfig      = group.getAppConfig(x);
-        String               url            = appConfig.getUrl().replaceAll("/$", "");
+        AppConfig            config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
         args.put("business", business.getBusinessName());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
-        args.put("link",   url + "#sme.main.dashboard");
+        args.put("link",   config.getUrl() + "#sme.main.dashboard");
         args.put("sendTo", User.EMAIL);
         args.put("name", User.FIRST_NAME);
 
         try {
-          
+
           Notification notification = business.getAddress().getCountryId().equals("CA") ?
             new Notification.Builder(x)
               .setBody("AFEX Business can make international payments.")
