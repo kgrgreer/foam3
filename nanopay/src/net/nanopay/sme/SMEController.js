@@ -43,9 +43,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'currentAccount',
+    'isIframe',
+    'onboardingUtil',
     'privacyUrl',
-    'termsUrl',
-    'onboardingUtil'
+    'termsUrl'
   ],
 
   imports: [
