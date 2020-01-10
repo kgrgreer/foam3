@@ -100,7 +100,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(SafetyUtil.equals(txn4.getSourceCurrency(), "CAD"), "txn4 has source currency CAD");
     test(SafetyUtil.equals(txn4.getDestinationCurrency(), "CAD"), "txn4 has destination currency CAD");
 
-    // test sixth txn in the chain
+    // test fifth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn4.getId())).select(new foam.dao.ArraySink());
     test(sink.getArray().size() == 1, "txn6 is parent to a single transaction");
     txn5 = (Transaction) sink.getArray().get(0);
@@ -109,7 +109,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(SafetyUtil.equals(txn5.getSourceCurrency(), "CAD"), "txn6 has source currency CAD");
     test(SafetyUtil.equals(txn5.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
 
-    // test fifth txn in the chain
+    // test sixth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn5.getId())).select(new foam.dao.ArraySink());
     test(sink.getArray().size() == 1, "txn5 is parent to a single transaction");
     txn6 = (Transaction) sink.getArray().get(0);
