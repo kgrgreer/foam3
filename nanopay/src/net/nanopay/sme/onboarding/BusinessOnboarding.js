@@ -1266,12 +1266,17 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.GT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+              ),
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
               ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
@@ -1293,7 +1298,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'dualPartyAgreement'],
+          args: ['signingOfficer', 'dualPartyAgreement', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(

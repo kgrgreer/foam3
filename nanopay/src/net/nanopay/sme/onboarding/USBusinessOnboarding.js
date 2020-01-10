@@ -1295,12 +1295,17 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
+                e.GT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+              ),
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0)
               ),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0)
@@ -1322,7 +1327,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'agreementAFEX'],
+          args: ['signingOfficer', 'agreementAFEX', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
@@ -1349,7 +1354,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'nanopayInternationalPaymentsCustomerAgreement'],
+          args: ['signingOfficer', 'nanopayInternationalPaymentsCustomerAgreement', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
