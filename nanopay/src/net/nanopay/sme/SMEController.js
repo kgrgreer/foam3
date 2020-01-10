@@ -546,7 +546,11 @@ foam.CLASS({
                 ? searchParams.get('companyName')
                 : '',
               disableCompanyName_: searchParams.has('companyName'),
-              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US']
+              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
+              firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
+              lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
+              jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
+              phone: searchParams.has('phone') ? searchParams.get('phone') : '',
             }
           };
         }

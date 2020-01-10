@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Phone',
     'foam.nanos.notification.Notification',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
@@ -90,6 +91,11 @@ foam.CLASS({
               invitation.setGroup("admin");
               invitation.setCreatedBy(businessOnboarding.getBusinessId());
               invitation.setEmail(businessOnboarding.getSigningOfficerEmail());
+
+              invitation.setFirstName(businessOnboarding.getAdminFirstName());
+              invitation.setLastName(businessOnboarding.getAdminLastName());
+              invitation.setJobTitle(businessOnboarding.getAdminJobTitle());
+              invitation.setPhoneNumber(((Phone)businessOnboarding.getAdminPhone()).getNumber());
 
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
