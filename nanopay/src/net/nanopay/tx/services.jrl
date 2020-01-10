@@ -23,12 +23,9 @@ p({
     nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
       .setDelegate(ktpd)
       .build();
-    nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(nlifd)
-      .build();
     atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
       .setEnabled(false)
-      .setDelegate(nlitd)
+      .setDelegate(nlifd)
       .build();
     bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
       .setEnabled(true)
