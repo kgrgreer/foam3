@@ -49,7 +49,7 @@ foam.CLASS({
       type: 'Long',
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
-        Account child = (Account) accountDAO.find(x, childId);
+        Account child = (Account) accountDAO.find(childId);
         AccountData data;
 
         while ( child != null ) {

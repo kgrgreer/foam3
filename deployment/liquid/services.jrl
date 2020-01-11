@@ -113,7 +113,7 @@ p({
     import foam.dao.DAO;
     import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
 
-    DAO dao = new foam.dao.MDAO(Account.getOwnClassInfo());
+    dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER, net.nanopay.account.Account.IS_DEFAULT });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.NAME });
@@ -337,10 +337,9 @@ p({
   "lazy": false,
   "serviceScript":
   """
-
-    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
     .setDaoKey("userDAO")
-    .setOf(User.getOwnClassInfo())
+    .setOf(foam.nanos.auth.User.getOwnClassInfo())
     .build();
     
     dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
@@ -362,6 +361,7 @@ p({
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
       .setRuler(true)
+      .setSeqNo(true)
       .setAuthorize(false)
       .setDeletedAware(false)
       .setValidated(true)
@@ -501,6 +501,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
       .build();
