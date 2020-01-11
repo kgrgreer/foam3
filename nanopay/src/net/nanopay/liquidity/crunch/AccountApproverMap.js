@@ -48,9 +48,8 @@ foam.CLASS({
       ],
       type: 'Long',
       javaCode: `
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        X systemX = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
-        Account child = (Account) accountDAO.find_(systemX, childId);
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        Account child = (Account) accountDAO.find(x, childId);
         AccountData data;
 
         while ( child != null ) {
@@ -61,7 +60,8 @@ foam.CLASS({
             } 
             return 0L;
           } 
-          child = child.findParent(systemX);
+          Long parentId = child.getParent();
+          child = (Account) accountDAO.find(parentId);
         }
 
         return 0L;
