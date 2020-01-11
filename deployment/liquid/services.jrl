@@ -138,8 +138,8 @@ p({
       .setDeletedAware(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
+      .setAuthorize(false)
       .setOf(Account.getOwnClassInfo())
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("account").build())
       .setIndex(new foam.core.PropertyInfo[] {
         net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
         net.nanopay.account.Account.OWNER,
@@ -152,6 +152,42 @@ p({
       .build();
   """
 })
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"accountDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setInnerDAO(new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO"))))
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("account").build())
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+
+      // These decorators are present on localAccountDAO.
+      .setDeletedAware(false)
+      .setCreatedAware(false)
+      .setCreatedByAware(false)
+      .setLastModifiedAware(false)
+      .setLastModifiedByAware(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.account.Account",
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      }
+    ],
+    "cache": false
+  }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
 
@@ -256,41 +292,6 @@ p({
       .build();
   """
 })
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"accountDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setInnerDAO(new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO"))))
-      .setAuthorize(false)
-      .setOf(net.nanopay.account.Account.getOwnClassInfo())
-
-      // These decorators are present on localAccountDAO.
-      .setDeletedAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
-      .build();
-  """,
-  "client":
-  """
-  {
-    "of":"net.nanopay.account.Account",
-    "decorators": [
-      {
-        "class":"foam.nanos.fs.FileDAODecorator"
-      }
-    ],
-    "cache": false
-  }
-  """
-})
 
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
@@ -303,14 +304,6 @@ p({
   "authenticate": false,
   "serviceScript":
   """
-    import foam.nanos.auth.User;
-    import foam.dao.DAO;
-
-    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("userDAO")
-    .setOf(User.getOwnClassInfo())
-    .build();
-
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
@@ -318,7 +311,6 @@ p({
         .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
-        .setDecorator(dao)
         .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
         .setDeletedAware(false)
         .build();
@@ -337,6 +329,45 @@ p({
       }
     ]
   }
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localUserDAO",
+  "lazy": false,
+  "serviceScript":
+  """
+
+    DAO dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    .setDaoKey("userDAO")
+    .setOf(User.getOwnClassInfo())
+    .build();
+    
+    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
+    dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
+    dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
+    dao = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, dao);
+    dao = new net.nanopay.onboarding.CreateBusinessDAO(x, dao);
+    dao = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
+    dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
+    dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
+    dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
+    dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setEnableInterfaceDecorators(false)
+      .setRuler(true)
+      .setAuthorize(false)
+      .setDeletedAware(false)
+      .setValidated(true)
+      .setInnerDAO(x.get("bareUserDAO"))
+      .setDecorator(dao)
+      .build();
   """
 })
 
@@ -440,7 +471,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityDAO",
+  "name":"localCapabilityDAO",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
@@ -455,6 +486,21 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidCapabilities")
       .setDecorator(dao)
+      .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
+})
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"capabilityDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
       .build();
