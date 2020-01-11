@@ -52,10 +52,12 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
-        setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
-        setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
-        setSettled( ((BmoCOTransaction) other).getSettled() );
+        if ( other instanceof BmoCOTransaction ) {
+          setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
+          setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
+          setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
+          setSettled( ((BmoCOTransaction) other).getSettled() );
+        }
       `
     }
   ]

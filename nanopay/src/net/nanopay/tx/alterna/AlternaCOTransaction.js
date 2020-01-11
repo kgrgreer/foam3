@@ -64,13 +64,15 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setConfirmationLineNumber(((AlternaCOTransaction)other).getConfirmationLineNumber());
-        setReturnCode(((AlternaCOTransaction)other).getReturnCode());
-        setReturnDate(((AlternaCOTransaction)other).getReturnDate());
-        setReturnType(((AlternaCOTransaction)other).getReturnType());
-        setPadType(((AlternaCOTransaction)other).getPadType());
-        setTxnCode(((AlternaCOTransaction)other).getTxnCode());
-        setDescription(((AlternaCOTransaction)other).getDescription());
+        if ( other instanceof AlternaCOTransaction ) {
+          setConfirmationLineNumber(((AlternaCOTransaction)other).getConfirmationLineNumber());
+          setReturnCode(((AlternaCOTransaction)other).getReturnCode());
+          setReturnDate(((AlternaCOTransaction)other).getReturnDate());
+          setReturnType(((AlternaCOTransaction)other).getReturnType());
+          setPadType(((AlternaCOTransaction)other).getPadType());
+          setTxnCode(((AlternaCOTransaction)other).getTxnCode());
+          setDescription(((AlternaCOTransaction)other).getDescription());
+       }
       `
     },
     {

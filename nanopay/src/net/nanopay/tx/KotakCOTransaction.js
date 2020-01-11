@@ -92,19 +92,21 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
-      setAmount(((KotakCOTransaction) other).getAmount());
-      setLineItems(((KotakCOTransaction) other).getLineItems());
-      setFxRate(((KotakCOTransaction) other).getFxRate());
-      setSettlementAmount(((KotakCOTransaction) other).getSettlementAmount());
-      setKotakMsgId(((KotakCOTransaction) other).getKotakMsgId());
-      setIFSCCode(((KotakCOTransaction) other).getIFSCCode());
-      setChargeBorneBy(((KotakCOTransaction) other).getChargeBorneBy());
-      setSentDate(((KotakCOTransaction) other).getSentDate());
-      setPaymentStatusCode(((KotakCOTransaction) other).getPaymentStatusCode());
-      setQueryReqId(((KotakCOTransaction) other).getQueryReqId());
-      setQueryStatusCode(((KotakCOTransaction) other).getQueryStatusCode());
-      setQueryStatusDesc(((KotakCOTransaction) other).getQueryStatusDesc());
-      setUTRNumber(((KotakCOTransaction) other).getUTRNumber());
+      if ( other instanceof KotakCOTransaction ) {
+        setAmount(((KotakCOTransaction) other).getAmount());
+        setLineItems(((KotakCOTransaction) other).getLineItems());
+        setFxRate(((KotakCOTransaction) other).getFxRate());
+        setSettlementAmount(((KotakCOTransaction) other).getSettlementAmount());
+        setKotakMsgId(((KotakCOTransaction) other).getKotakMsgId());
+        setIFSCCode(((KotakCOTransaction) other).getIFSCCode());
+        setChargeBorneBy(((KotakCOTransaction) other).getChargeBorneBy());
+        setSentDate(((KotakCOTransaction) other).getSentDate());
+        setPaymentStatusCode(((KotakCOTransaction) other).getPaymentStatusCode());
+        setQueryReqId(((KotakCOTransaction) other).getQueryReqId());
+        setQueryStatusCode(((KotakCOTransaction) other).getQueryStatusCode());
+        setQueryStatusDesc(((KotakCOTransaction) other).getQueryStatusDesc());
+        setUTRNumber(((KotakCOTransaction) other).getUTRNumber());
+      }
       `
     },
     {
