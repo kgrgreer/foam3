@@ -55,7 +55,6 @@ foam.CLASS({
             });
 
         } catch (Exception e) {
-          logger.info("userCapabilityJunction found : ", "check", permission);
           return true;
         }
         logger.error("userCapabilityJunction not found : ", "check", permission);
