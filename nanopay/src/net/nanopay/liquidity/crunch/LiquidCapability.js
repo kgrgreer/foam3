@@ -153,8 +153,6 @@ foam.CLASS({
         if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
-
-          X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
           String[] permissionComponents = permission.split("\\\\.");
           if ( permissionComponents.length != 3 ) {
             // the permission string was not generated properly, should never happen
@@ -167,7 +165,7 @@ foam.CLASS({
           String permToProperty = "can" + permOperation.substring(0, 1).toUpperCase() + permOperation.substring(1) + permObj.substring(0, 1).toUpperCase() + permObj.substring(1);
 
           if ( (Boolean) getProperty(permToProperty) ) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX).find(AND(
+            UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(AND(
               EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
               EQ(UserCapabilityJunction.TARGET_ID, getId())
             ));
