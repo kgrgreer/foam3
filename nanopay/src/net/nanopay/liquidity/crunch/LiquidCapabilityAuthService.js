@@ -9,7 +9,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.ArraySink',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
+    'foam.core.Detachable',
     'foam.core.X',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.crunch.Capability',
@@ -31,6 +33,7 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
+        Logger logger = (Logger) x.get("logger");
         
         X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
 
@@ -38,24 +41,25 @@ foam.CLASS({
           DAO capabilityDAO = ((DAO) x.get("capabilityDAO")).inX(systemX);
           DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX);
 
-          Capability c;
-          
-          List<UserCapabilityJunction> userCapabilityJunctions = ((ArraySink) userCapabilityJunctionDAO
+          userCapabilityJunctionDAO
             .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
-            .select(new ArraySink()))
-            .getArray();
-          for ( UserCapabilityJunction ucj : userCapabilityJunctions ) {
-            c = (Capability) capabilityDAO.find(ucj.getTargetId());
-            if ( c.implies(x, permission) ) {
-              return true;
-            }
-          }
+            .select(new AbstractSink() {
+              @Override
+              public void put(Object o, Detachable sub) {
+                UserCapabilityJunction ucj = (UserCapabilityJunction) ((UserCapabilityJunction) o).deepClone();
+                Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
+                if ( c.implies(x, permission) ) {
+                  sub.detach();
+                  throw new RuntimeException("userCapabilityJunction found");
+                }
+              }
+            });
 
         } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error("check", permission, e);
+          logger.info("userCapabilityJunction found : ", "check", permission);
+          return true;
         }
-
+        logger.error("userCapabilityJunction not found : ", "check", permission);
         return false;
       `
     }
