@@ -16,7 +16,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'ucjQueryService'
+    'ucjQueryService',
+    'userDAO',
+    'capabilityDAO'
   ],
 
   messages: [
@@ -63,94 +65,51 @@ foam.CLASS({
         ],
       },
       value: 'user',
-      postSet: function(ol, nu) {
-        console.log({
-          ol: ol,
-          nu: nu,
-        });
-      }
-    },
-    {
-      name: 'searchChoices',
-      class: 'foam.dao.DAOProperty',
-      documentation: `
-        DAO containing either roles or users depending on the value of
-        searchOption
-      `,
-      expression: function(searchOption) {
-        if ( searchOption === 'user' ) {
-          return this.ArrayDAO.create({array: [1,2,3,4,5]});
-        } else {
-          return this.ArrayDAO.create({array: [6,7,8,9,0]});
+      postSet: function(_, nu) {
+        if ( nu === 'user' ) {
+          this.updateSearchForUser(this.referenceToUser);
         }
-      }
+        if ( nu === 'role' ) {
+          this.updateSearchForRole(this.referenceToCapability);
+        }
+      },
     },
     {
       name: 'referenceToUser',
       class: 'Reference',
-      of: 'foam.nanos.auth.User'
+      of: 'foam.nanos.auth.User',
+      postSet: function(_, nu) {
+        if ( this.searchOption === 'user' ) {
+          this.updateSearchForUser(nu);
+        }
+      }
     },
     {
       name: 'referenceToCapability',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      // of: 'net.nanopay.liquidity.crunch.LiquidCapability'
-    },
-    {
-      name: 'searchChoice',
-      expression: function(searchOption, referenceToUser, referenceToCapability) {
-        if ( searchOption === 'user' ) {
-          return referenceToUser;
-        } else {
-          return referenceToCapability;
+      postSet: function(_, nu) {
+        if ( this.searchOption === 'role' ) {
+          this.updateSearchForRole(nu);
         }
       }
+      // of: 'net.nanopay.liquidity.crunch.LiquidCapability'
     },
     {
       name: 'searchResults',
       class: 'foam.dao.DAOProperty',
-      documentation: `
-      `,
-      expression: function(searchChoice) {
-        var self = this;
-        console.log('SEARCH CHOICE');
-        console.log(this);
-        console.log(searchChoice);
-        switch ( self.searchOption ) {
-          case 'user':
-            console.log('---user');
-            return self.ucjQueryService.getRoles(searchChoice)
-              .then(function (arry) {
-                return self.ArrayDAO.create({
-                  array: arry,
-                  of: 'net.nanopay.liquidity.crunch.LiquidCapability'
-                });
-              });
-          case 'role':
-            console.log('---role');
-            return self.ucjQueryService.getUsers(searchChoice)
-              .then(function (arry) {
-                return self.ArrayDAO.create({
-                  array: arry,
-                  of: 'foam.nanos.auth.User'
-                });
-              });
-        }
-        return this.ArrayDAO.create({
-          array: [],
+      factory: function () {
+        return foam.dao.NullDAO.create({
+          // of: 'net.nanopay.liquidity.crunch.LiquidCapability'
+          of: 'foam.nanos.crunch.Capability'
         });
-      }
+      },
     }
   ],
 
   methods: [
-    function init() {
-      console.log(this);
-    },
     function initE() {
-      console.log('updated');
-      window.lastRQV = this;
-      this.SUPER();
+      // this.SUPER();
       var self = this;
 
       self
@@ -164,8 +123,6 @@ foam.CLASS({
             .add(self.SEARCH_OPTION)
           .end()
           .add(self.slot(function (searchOption) {
-            console.log('SLOT');
-            console.log(searchOption);
             switch (searchOption) {
               case 'user': return self.E().tag(self.REFERENCE_TO_USER);
               case 'role': return self.E().tag(self.REFERENCE_TO_CAPABILITY);
@@ -173,11 +130,30 @@ foam.CLASS({
             return self.E().add('ERROR');
           }))
         .end()
-        .tag(self.ScrollTableView, {
-          data$: self.searchResults$,
-          columns: ['id']
-        });
+        .add(self.slot(function(searchResults) {
+          return self.E()
+           .tag(foam.u2.view.ScrollTableView.create({
+             data: searchResults,
+            //  columns: ['id']
+           }))
+        }))
         ;
+    },
+    function updateSearchForUser(userId) {
+      var self = this;
+      self.ucjQueryService.getRoles(userId).then(function (arry) {
+        self.searchResults = self.capabilityDAO.where(
+          self.IN(foam.nanos.crunch.Capability.ID, arry)
+        );
+      });
+    },
+    function updateSearchForRole(roleId) {
+      var self = this;
+      self.ucjQueryService.getUsers(roleId).then(function (arry) {
+        self.searchResults = self.userDAO.where(
+          self.IN(foam.nanos.auth.User.ID, arry)
+        );
+      });
     }
   ]
 });
