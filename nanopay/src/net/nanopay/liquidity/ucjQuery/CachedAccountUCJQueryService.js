@@ -327,7 +327,7 @@ foam.CLASS({
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
+        DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
 
         Logger logger = (Logger) x.get("logger");
 

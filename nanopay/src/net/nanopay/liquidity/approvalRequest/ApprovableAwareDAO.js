@@ -235,10 +235,10 @@ foam.CLASS({
         return null;  // we aren't updating the object to deleted just yet
       }
 
-      if ( currentObjectInDAO == null ){
+      if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ){
         if ( lifecycleObj.getLifecycleState() == LifecycleState.ACTIVE ) { 
           return super.put_(x,obj);
-        } else if ( ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ){
+        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
           List approvedObjCreateRequests = ((ArraySink) approvalRequestDAO
             .where(
               foam.mlang.MLang.AND(
