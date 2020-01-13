@@ -152,7 +152,7 @@ public class AccountHierarchyService
   }
 
   @Override
-  public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template){
+  public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template) {
     Map<String, CapabilityAccountData> templateMap = template.getAccounts();
     Set<String> accountIds = templateMap.keySet();
 
@@ -169,7 +169,7 @@ public class AccountHierarchyService
   }
 
   @Override
-  public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){
+  public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template) {
     Map<String, AccountData> templateMap = template.getAccounts();
     Set<String> accountIds = templateMap.keySet();
 
@@ -183,10 +183,9 @@ public class AccountHierarchyService
     }
 
     return new AccountMap.Builder(x).setAccounts(finalMap).build();
-
   }
 
-  private void addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Map<String, CapabilityAccountData> accountMap){
+  private void addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Map<String, CapabilityAccountData> accountMap) {
     DAO accountDAO = (DAO) x.get("accountDAO");
     Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
     List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
@@ -209,7 +208,7 @@ public class AccountHierarchyService
     }
   }
 
-  private void addChildrenToAccountTemplate(X x, String accountId, AccountData data, Map<String, AccountData> accountMap){
+  private void addChildrenToAccountTemplate(X x, String accountId, AccountData data, Map<String, AccountData> accountMap) {
     DAO accountDAO = (DAO) x.get("accountDAO");
     Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
     List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
