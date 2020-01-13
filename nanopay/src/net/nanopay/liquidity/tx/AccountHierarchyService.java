@@ -16,6 +16,8 @@ public class AccountHierarchyService
   implements AccountHierarchy
 {
   protected Map<String, HashSet<Long>> map_;
+  protected Map<String, CapabilityAccountData> capabilityAccountTemplateMap_;
+  protected Map<String, AccountData> accountTemplateMap_;
 
   protected Map<String, HashSet<Long>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -44,6 +46,64 @@ public class AccountHierarchyService
     accountDAO.listen(purgeSink, TRUE);
 
     return map_;
+  }
+
+  protected Map<String, CapabilityAccountData> getCapabilityAccountTemplateMap(X x) {
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+
+    if ( capabilityAccountTemplateMap_ == null ) {
+      capabilityAccountTemplateMap_ = new ConcurrentHashMap<String, CapabilityAccountData>();
+    }
+
+    Sink purgeSink = new Sink() {
+      public void put(Object obj, Detachable sub) {
+        capabilityAccountTemplateMap_.clear();
+        sub.detach();
+      }
+      public void remove(Object obj, Detachable sub) {
+        capabilityAccountTemplateMap_.clear();
+        sub.detach();
+      }
+      public void eof() {
+      }
+      public void reset(Detachable sub) {
+        capabilityAccountTemplateMap_.clear();
+        sub.detach();
+      }
+    };
+
+    accountDAO.listen(purgeSink, TRUE);
+
+    return capabilityAccountTemplateMap_;
+  }
+
+  protected Map<String, AccountData> getAccountTemplateMap(X x) {
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+
+    if ( accountTemplateMap_ == null ) {
+      accountTemplateMap_ = new ConcurrentHashMap<String, AccountData>();
+    }
+
+    Sink purgeSink = new Sink() {
+      public void put(Object obj, Detachable sub) {
+        accountTemplateMap_.clear();
+        sub.detach();
+      }
+      public void remove(Object obj, Detachable sub) {
+        accountTemplateMap_.clear();
+        sub.detach();
+      }
+      public void eof() {
+      }
+      public void reset(Detachable sub) {
+        accountTemplateMap_.clear();
+        sub.detach();
+      }
+    };
+
+    accountDAO.listen(purgeSink, TRUE);
+
+    return accountTemplateMap_;
   }
 
   @Override
@@ -95,15 +155,16 @@ public class AccountHierarchyService
 
   @Override
   public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template){
-    // TODO: Wire up caching
     Map<String, CapabilityAccountData> templateMap = template.getAccounts();
     Set<String> accountIds = templateMap.keySet();
 
-    Map<String, CapabilityAccountData> finalMap = new HashMap<>();
+    Map<String, CapabilityAccountData> finalMap = getCapabilityAccountTemplateMap(x);
 
     for ( String accountId : accountIds ) {
-      finalMap.put(accountId, templateMap.get(accountId));
-      addChildrenToCapabilityAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
+      if ( ! finalMap.containsKey(accountId) ) {
+        finalMap.put(accountId, templateMap.get(accountId));
+        addChildrenToCapabilityAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
+      }
     }
 
     return new AccountApproverMap.Builder(x).setAccounts(finalMap).build();
@@ -111,15 +172,16 @@ public class AccountHierarchyService
 
   @Override
   public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){
-    // TODO: Wire up caching
     Map<String, AccountData> templateMap = template.getAccounts();
     Set<String> accountIds = templateMap.keySet();
 
-    Map<String, AccountData> finalMap = new HashMap<>();
+    Map<String, AccountData> finalMap = getAccountTemplateMap(x);
 
     for ( String accountId : accountIds ) {
-      finalMap.put(accountId, templateMap.get(accountId));
-      addChildrenToAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
+      if ( ! finalMap.containsKey(accountId) ) {
+        finalMap.put(accountId, templateMap.get(accountId));
+        addChildrenToAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
+      }
     }
 
     return new AccountMap.Builder(x).setAccounts(finalMap).build();
