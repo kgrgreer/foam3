@@ -30,6 +30,11 @@ foam.CLASS({
       type: 'Long',
       name: 'KOTAK_PARTNER_IN_ID',
       value: 1021
+    },
+    {
+      type: 'Long',
+      name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
+      value: 9
     }
   ],
 
@@ -66,7 +71,7 @@ foam.CLASS({
         KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
         kotakCO.setAmount(request.getAmount());
         kotakCO.setSourceAccount(request.getSourceAccount());
-        kotakCO.setDestinationAccount(9);
+        kotakCO.setDestinationAccount(this.KOTAK_CO_DESTINATION_ACCOUNT_ID);
         kotakCO.setIsQuoted(true);
         txn.addNext(kotakCO);
 
