@@ -61,6 +61,15 @@ foam.CLASS({
       value: false,
     },
     {
+      class: 'Long',
+      name: 'txnCount',
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.GSReportAssembly',
+      name: 'trackingJob'
+    },
+    {
       class: 'Boolean',
       name: 'concurrentPuts',
       value: false,
@@ -111,6 +120,7 @@ foam.CLASS({
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
           ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
+        getTrackingJob().incrementTxnCounter(getTxnCount());
       `
     },
     {
@@ -187,6 +197,8 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       tx = addStatusHistory(tx,stamp);
+      setTxnCount(getTxnCount()+1);
+      tx.setReferenceNumber("IngestedTransaction");
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -348,7 +360,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-
+          txn2.setReferenceNumber("TopUp");
           verifyBalance(x,txn2);
         }  
 
@@ -375,7 +387,9 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
+            secCI.setReferenceNumber("TopUp");
             transactionDAO.put(secCI); // top up the sending security account
+            getTrackingJob().incrementTopUpCounter(1);
           }
           return true;
         }
@@ -412,6 +426,7 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
+            .setReferenceNumber("TopUp")
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
@@ -464,6 +479,7 @@ foam.CLASS({
             tx = (Transaction) tx.fclone();
             tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
             transactionDAO.put(tx);
+            getTrackingJob().incrementTopUpCounter(1);
           }
           return false;
         }

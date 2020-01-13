@@ -699,6 +699,8 @@ var classes = [
   'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
   'net.nanopay.meter.report.TransactionReport',
+  'net.nanopay.meter.report.PaymentReport',
+  'net.nanopay.meter.report.PaymentReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -773,8 +775,6 @@ var classes = [
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
-
-  'net.nanopay.tx.gs.ProgressBarData',
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
@@ -912,6 +912,9 @@ var classes = [
   'net.nanopay.script.CsvUploadScript',
   'net.nanopay.tx.gs.GsTxAssembly',
   'net.nanopay.tx.QuoteFillerDAO',
+  'net.nanopay.tx.gs.ProgressBarData',
+  'net.nanopay.tx.gs.IngestionReport',
+  'net.nanopay.tx.gs.GSReportAssembly',
 
   // Ticket
   'net.nanopay.ticket.SudoTicket',

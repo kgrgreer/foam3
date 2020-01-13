@@ -23,12 +23,9 @@ p({
     nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
       .setDelegate(ktpd)
       .build();
-    nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(nlifd)
-      .build();
     atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
       .setEnabled(false)
-      .setDelegate(nlitd)
+      .setDelegate(nlifd)
       .build();
     bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
       .setEnabled(true)
@@ -157,7 +154,11 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"transactionDAO",                   "lazy":false,  "serve":true,  "serviceScript":
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
   """
     return new foam.dao.PMDAO(x,
         new foam.dao.PipelinePMDAO(x,
@@ -185,12 +186,12 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("transactionDAO"))
+      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
+      .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
-      .setAuthorize(false)
-      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
-      .setInnerDAO(x.get("transactionDAO"))
-      .setDeletedAware(false)
+      .setRuler(false)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"

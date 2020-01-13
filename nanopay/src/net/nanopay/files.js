@@ -212,6 +212,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -1114,6 +1117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
   { name: 'net/nanopay/meter/report/TransactionReport' },
   { name: 'net/nanopay/meter/report/TransactionReportView' },
+  { name: 'net/nanopay/meter/report/PaymentReport' },
+  { name: 'net/nanopay/meter/report/PaymentReportDAO' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1281,6 +1286,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
+  { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
@@ -1324,6 +1330,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GSFileUploadScreen' },
   { name: 'net/nanopay/script/CsvUploadScript' },
   { name: 'net/nanopay/tx/QuoteFillerDAO' },
+  { name: 'net/nanopay/tx/gs/IngestionReport' },
+  { name: 'net/nanopay/tx/gs/GSReportAssembly' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },

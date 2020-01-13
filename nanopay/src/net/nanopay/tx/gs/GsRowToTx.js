@@ -29,20 +29,27 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'foam.core.X' },
         { name: 'blob', type: 'foam.blob.Blob' },
-        { name: 'progId', type: 'String' }
+        { name: 'progId', type: 'String' },
+        { name: 'filename', type: 'String' }
       ],
       javaCode: `
         Logger logger = (Logger) x.get("logger");
         logger.info(" ** Reading file ... " + blob.getSize());
-        
+
         // ---- parse file into GsTxCsvRow Objects ...
+        GSReportAssembly finalJob = new GSReportAssembly(x);
+        finalJob.setFilename(filename);
+        IngestionReport report = new IngestionReport();
         ProgressBarData pbd = new ProgressBarData ();
         pbd.setId(progId);
-        pbd.setName(progId);
+        report.setId(progId+"report");
+        pbd.setName("Ingestion Of: " + filename);
+        report.setName(progId+"report");
+        finalJob.setStartTime(System.currentTimeMillis());
         pbd.setStatus("Reading CSV...");
         DAO progressBarDAO = (DAO) x.get("ProgressBarDAO");
         progressBarDAO.put(pbd);
-
+        finalJob.setReport(report);
         java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
         blob.read(os, 0, blob.getSize());
         foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());
@@ -86,12 +93,13 @@ foam.CLASS({
         // -- begin Job creation and execution
         logger.info(" ** Processing: " + rows.size() + " rows ...");
         int i = 0;
-        int modulus = 1000;
+        int modulus = 21;
         for ( GsTxCsvRow row1 : rows ) {
           // logger.info(" ** On iteration: " + i + " of: " + am);
           i++;
           GsTxAssembly job = new GsTxAssembly.Builder(x)
             .setOutputDAO( (DAO) x.get("localTransactionDAO") )
+            .setTrackingJob(finalJob)
             .setRow1(row1)
             .build();
           if ( i % modulus == 0 || i == rows.size() ) {
@@ -103,13 +111,13 @@ foam.CLASS({
 
             //logger.info(" ** " + pbd.getStatus());
           }
-          
+
           /*
           long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
           if ( count == 0 )
-            break; 
+            break;
             */
-          
+
           //---- handle external jobs
           if ( SafetyUtil.equals(row1.getIsInternal(), "0") ) {
             checkTrustee(x,row1.getCurrency());
@@ -130,6 +138,7 @@ foam.CLASS({
               .limit(1)
               .select(new ArraySink())).getArray().toArray();
             if ( arr.length == 0 ) {
+              finalJob.addToFailed(row1.getTransactionId()+", ");
               logger.error("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
               continue;
             }
@@ -146,6 +155,7 @@ foam.CLASS({
               .limit(1)
               .select(new ArraySink())).getArray().toArray();
             if ( arr.length == 0 ) {
+              finalJob.addToFailed(row1.getTransactionId()+", ");
               logger.error("Unmatched internal securities transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
               continue;
             }
@@ -157,7 +167,7 @@ foam.CLASS({
 
         pbd.setValue(am);
         pbd.setStatus("File Has  Been Ingested");
-        progressBarDAO.put(pbd);
+        transactionProcessor.enqueue(finalJob);
       `
     },
     {

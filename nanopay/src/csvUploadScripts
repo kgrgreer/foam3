@@ -9,7 +9,7 @@ p({
   """
     import foam.lib.parse.*;
     hello = new net.nanopay.tx.gs.GsRowToTx();
-    hello.process(x,currentScript.getCsv().getData(),currentScript.getProgressId());
+    hello.process(x,currentScript.getCsv().getData(),currentScript.getProgressId(),currentScript.getFilename());
   """,
   "output":"nothing outputted.."
 })

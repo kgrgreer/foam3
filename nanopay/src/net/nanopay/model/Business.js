@@ -288,7 +288,7 @@ foam.CLASS({
         `,
       section: 'business',
       factory: function() {
-        return this.SuggestedUserTransactionInfo.create();
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' },
     },

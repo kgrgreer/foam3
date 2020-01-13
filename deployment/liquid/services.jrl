@@ -201,6 +201,7 @@ p({
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.TYPE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.PARENT});
