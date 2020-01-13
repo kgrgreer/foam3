@@ -35,7 +35,6 @@ p({
       .setSeqNo(true)
       .setDeletedAware(false)
       .setOf(Account.getOwnClassInfo())
-      .setAuthorize(false)
       .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
