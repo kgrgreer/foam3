@@ -86,6 +86,7 @@ foam.CLASS({
       documentation: 'update user accepted terms and condition here. Need to login because we need CreatedByDAO',
       code: function(x) {
         let userId = this.user.id;
+        let agentId = this.agent && this.agent.id || 0;
         let accDoc = this.acceptanceDoc;
         let accDoc2 = this.acceptanceDoc2;
 
@@ -101,9 +102,9 @@ foam.CLASS({
             if ( !! user ) {
               Promise.all([
                 this.acceptanceDocumentService.
-                updateUserAcceptanceDocument(x, userId, accDoc, (accDoc != 0)),
+                  updateUserAcceptanceDocument(x, agentId, userId, accDoc, (accDoc != 0)),
                 this.acceptanceDocumentService.
-                updateUserAcceptanceDocument(x, userId, accDoc2, (accDoc2 != 0))
+                  updateUserAcceptanceDocument(x, agentId, userId, accDoc2, (accDoc2 != 0))
               ])
               .finally(() => {
                 this.finalRedirectionCall();
