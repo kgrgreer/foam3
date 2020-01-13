@@ -990,11 +990,11 @@ foam.CLASS({
       if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getDestinationCurrency()) == null ) { //TODO switch to just unitDAO
         throw new RuntimeException("Destination denomination is not supported");
       }
-
+/* //We currently dont have or use schedueled txns
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
         throw new RuntimeException("Only new transaction can be scheduled");
-      }
+      }*/
       `
     },
     {
@@ -1176,22 +1176,18 @@ foam.CLASS({
       {
         name: 'x',
         type: 'Context'
-      },
-      {
-        name: 'oldTxn',
-        type: 'net.nanopay.tx.model.Transaction'
       }
     ],
     type: 'net.nanopay.tx.model.Transaction',
     javaCode: `
-    Transaction ret = limitedClone(x, oldTxn);
-    ret.validate(x);
-    return ret;
+    this.validate(x);
+    return this;
     `
   },
   {
     documentation: `Method to execute additional logic for each transaction after it was written to journals`,
     name: 'executeAfterPut',
+    //TODO: delete this.
     args: [
       {
         name: 'x',

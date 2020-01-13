@@ -162,6 +162,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      //TODO: this should be moved into a rule before dev merge.
         super.executeAfterPut(x, oldTxn);
         if ( oldTxn == null ) {
           // Generate the HTML.

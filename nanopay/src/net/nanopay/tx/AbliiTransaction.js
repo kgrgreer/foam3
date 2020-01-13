@@ -57,15 +57,11 @@ foam.CLASS({
         {
           name: 'x',
           type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-      Transaction tx = super.executeBeforePut(x, oldTxn);
+      Transaction tx = super.executeBeforePut(x);
 
       // An invoice is required to create an ablii transaction
       if( tx.findInvoiceId(x) == null ) {

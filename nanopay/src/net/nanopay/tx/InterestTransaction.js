@@ -37,15 +37,11 @@ foam.CLASS({
         {
           name: 'x',
           type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-      Transaction tx = super.executeBeforePut(x, oldTxn);
+      Transaction tx = super.executeBeforePut(x);
       if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a Loan Account as a Source Account");
         throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
