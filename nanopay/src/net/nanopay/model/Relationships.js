@@ -165,7 +165,7 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.ui.UserRowView' },
         sections: [
           {
-            dao: X.userDAO,
+            dao: X.userDAO
           }
         ],
       });
@@ -720,24 +720,32 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
+    help: `Set this to the account you would like to withdraw funds from.
+    Filtered by your source currency choice.`,
+    gridColumns: 7,
     required: true,
     view: function(_, X) {
       let ccs = X.data.slot(function(sourceCurrency) {
         let e = foam.mlang.Expressions.create();
-        return X.accountDAO.where(e.AND(
+        let dao = X.accountDAO.where(e.AND(
           e.EQ(net.nanopay.account.Account.DENOMINATION, sourceCurrency),
           e.EQ(net.nanopay.account.Account.DELETED, false),
           e.EQ(net.nanopay.account.Account.ENABLED, true),
           e.NOT(e.INSTANCE_OF(net.nanopay.account.AggregateAccount))
         )).orderBy(net.nanopay.account.Account.NAME);
+
+        return [
+          {
+            dao: dao
+          }
+        ];
       });
-      return foam.u2.view.ChoiceView.create({
-        dao$: ccs,
-        placeholder: 'Select an Account to withdraw funds',
-        objToChoice: function(account) {
-          return [account.id, account.summary];
-        }
-      });
+
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections$: ccs
+      };
     },
     createMode: 'RW',
     visibility: 'FINAL',
@@ -773,6 +781,10 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
+    help: `Set this to the account you would like to transfer funds to.
+    Manual entry, please contact the individual you would like to transfer funds to,
+    and get the account id from said contact.`,
+    gridColumns: 7,
     required: true,
     createMode: 'RW',
     view: { class: 'foam.u2.view.IntView' },
