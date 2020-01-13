@@ -23,7 +23,6 @@ foam.CLASS({
     'net.nanopay.fx.KotakFxTransaction',
     'net.nanopay.fx.ManualFxApprovalRequest',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.KotakCOTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
