@@ -97,7 +97,7 @@ p({
     }
   },
   "order":5000,
-  "parent": "liquid.rules"
+  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
 })
 
 p({
@@ -143,7 +143,7 @@ p({
     }
   },
   "order":310,
-  "parent": "liquid.rules"
+  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
 })
 
 p({

@@ -174,7 +174,7 @@ p({
   "class":"net.nanopay.liquidity.tx.TxLimitRule",
   "id":"GS09 Securities €200,000.00 EUR Account Limit",
   "applyLimitTo":1,
-  "accountToLimit":1651,
+  "accountToLimit":1613,
   "limit":20000000,
   "denomination":"EUR",
   "currentLimits":{},

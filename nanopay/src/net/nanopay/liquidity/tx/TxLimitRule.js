@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'currencyDAO',
+    'accountDAO',
   ],
 
   javaImports: [
@@ -65,6 +66,15 @@ foam.CLASS({
       section: 'basicInfo',
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      postSet: function(o, n) {
+        if ( this.applyLimitTo == 'ACCOUNT' ) {
+          this.accountDAO.find(n).then((account)=>{
+            if ( account ) {
+              this.denomination = account.denomination;
+            }
+          }); 
+        }
       }
     },
     {
@@ -73,21 +83,9 @@ foam.CLASS({
       name: 'includeChildAccounts',
       section: 'basicInfo',
       visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      targetDAOKey: 'businessDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
-      documentation: 'The business to limit.',
-      name: 'businessToLimit',
-      section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'BUSINESS') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        // We do not want this for GS R2 demo, so hiding it for now
+        // return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        return foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -152,12 +150,15 @@ foam.CLASS({
       documentation: 'The unit of measure of the transaction limit.',
       section: 'basicInfo',
       required: true,
+      visibilityExpression: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
-      value: 'DAILY',
+      value: 'PER_TRANSACTION',
       section: 'basicInfo',
       label: 'Over Timeframe',
       tableHeaderFormatter: function(axiom) {
@@ -176,7 +177,6 @@ foam.CLASS({
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
           .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? this.getAccountToLimit() :
-                 this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
           .setSend(this.getSend())
           .build();
@@ -224,10 +224,6 @@ foam.CLASS({
         else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
                  this.getAccountToLimit() == 0) {
               throw new IllegalStateException("Account to limit must be set");
-        }
-        else if (this.getApplyLimitTo() == TxLimitEntityType.BUSINESS &&
-                 this.getBusinessToLimit() == 0) {
-              throw new IllegalStateException("Business to limit must be set");
         }
       `
     }

@@ -50,9 +50,9 @@ foam.CLASS({
         }    
 
         // Always matches for transactions
-        if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
-          return true;
-        }
+        // if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
+        //   return true;
+        // }
 
         // When there is no ID to match, always return false
         if (this.getId() == 0) {
@@ -78,13 +78,6 @@ foam.CLASS({
         User user = account.findOwner((X) obj);
         if (this.getEntityType() == TxLimitEntityType.USER) {
           return user.getId() == this.getId();
-        }
-
-        // Check business
-        if (this.getEntityType() == TxLimitEntityType.BUSINESS &&
-            user instanceof Business) {
-          Business business = (Business) user;
-          return business.getId() == this.getId();
         }
 
         // otherwise this is an unknown entity type
