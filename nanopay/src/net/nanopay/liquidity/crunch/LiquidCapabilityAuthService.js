@@ -10,6 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ProxySink',
     'foam.dao.ArraySink',
+    'foam.dao.LimitedSink',
     'foam.dao.DAO',
     'foam.core.Detachable',
     'foam.core.X',
@@ -35,12 +36,14 @@ foam.CLASS({
         if ( user == null || ! user.getEnabled() ) return false;
         
         Logger logger = (Logger) x.get("logger");
+        logger.info(permission);
 
         try {
           DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-          ProxySink proxy = new ProxySink(x, new ArraySink()) {
+          ProxySink proxy = new ProxySink(x, new LimitedSink(x, 1, 0, new ArraySink())) {
+            int count = 0;
             @Override
             public void put(Object o, Detachable sub) {
               UserCapabilityJunction ucj = (UserCapabilityJunction) ((UserCapabilityJunction) o).deepClone();
