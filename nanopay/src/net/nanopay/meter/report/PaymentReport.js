@@ -47,6 +47,11 @@ foam.CLASS({
     'dateRange'
   ],
 
+  css: `
+    .foam-comics-DAOControllerView .foam-u2-view-TableView
+      { width: 1469; }
+  `,
+
   properties: [
     {
       class: 'DateTime',
