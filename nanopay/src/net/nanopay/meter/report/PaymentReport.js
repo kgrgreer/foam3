@@ -48,8 +48,9 @@ foam.CLASS({
   ],
 
   css: `
-    .foam-comics-DAOControllerView .foam-u2-view-TableView
-      { width: 1469; }
+    .foam-u2-view-TableView-net-nanopay-meter-report-PaymentReport {
+      width: 1469px !important;
+    }
   `,
 
   properties: [
