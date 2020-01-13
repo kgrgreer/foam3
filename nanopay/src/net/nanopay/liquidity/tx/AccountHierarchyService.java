@@ -16,6 +16,12 @@ public class AccountHierarchyService
   implements AccountHierarchy
 {
   protected Map<String, HashSet<Long>> map_;
+  protected Map<Long, HashSet<String>> userToViewableRootAccountsMap_; // getViewableAccountRoots(x, Long userId) {  }
+
+  public AccountHierarchyService() { 
+    userToViewableRootAccountsMap_ = new HashMap<Long, HashSet<String>>();
+    map_ = new HashMap<String, HashSet<Long>>();
+  }
 
   protected Map<String, HashSet<Long>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -93,21 +99,73 @@ public class AccountHierarchyService
     return allAccounts;
   }
 
+// need to find ucj and pass in existing ucj data, if any . call this method from ucj rule
   @Override
-  public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template){
-    // TODO: Wire up caching
-    Map<String, CapabilityAccountData> templateMap = template.getAccounts();
-    Set<String> accountIds = templateMap.keySet();
+  public net.nanopay.liquidity.crunch.AccountApproverMap getAssignedAccountMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+    Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
+    Map<String, CapabilityAccountData> newMap = template.getAccounts();
 
-    Map<String, CapabilityAccountData> finalMap = new HashMap<>();
+    if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
+    Set<String> accountIds = newMap.keySet();
 
+    Set<String> roots = trackRootAccounts ? ( userToViewableRootAccountsMap_.containsKey(user) ? userToViewableRootAccountsMap_.get(user) : new HashSet<String>() ) : null;
+    // Set<String> newRoots = trackRootAccounts ? new HashSet<String>() : null;
+
+    CapabilityAccountData data;
     for ( String accountId : accountIds ) {
-      finalMap.put(accountId, templateMap.get(accountId));
-      addChildrenToCapabilityAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
+      data = (CapabilityAccountData) newMap.get(accountId);
+      if ( data.getIsIncluded() ) {
+        if ( ( ! newMap.containsKey(accountId) ) && ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
+        newMap.put(accountId, data);
+        if ( data.getIsCascading() ) {
+          addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, newMap, oldMap);
+        }
+      } 
     }
 
-    return new AccountApproverMap.Builder(x).setAccounts(finalMap).build();
+
+    return new AccountApproverMap.Builder(x).setAccounts(newMap).build();
   }
+
+
+
+  private void addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Set<String> roots, Map<String, CapabilityAccountData> accountMap, Map<String, CapabilityAccountData> oldMap){
+    DAO accountDAO = (DAO) x.get("accountDAO");
+    Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
+    // System.out.println(accountId + ": " + tempAccount);
+    List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
+
+    Set<Account> accountsSet = new HashSet<Account>();
+    // accountsSet.addAll(children);
+
+    while ( children.size() > 0 ) {
+      if ( ! accountMap.containsKey(String.valueOf(children.get(0))) ) {
+        tempAccount = children.get(0);
+        accountsSet.add(tempAccount);
+        List<Account> tempChildren = ((ArraySink) (tempAccount.getChildren(x)).select(new ArraySink())).getArray();
+        for ( Account tempChild : tempChildren ) {
+          if ( ! children.contains(tempChild) ) children.add(tempChild);
+          accountsSet.add(tempChild);
+        }
+      }
+      children.remove(0);
+    }
+
+    String aid;
+    for ( Account account : accountsSet ) {
+      aid = String.valueOf(account.getId());
+      if ( ! accountMap.containsKey(aid) ) accountMap.put(aid, data);
+      else if ( (oldMap.containsKey(aid) && accountMap.containsKey(aid)) && roots.contains(aid) ) {
+        roots.remove(aid);
+      }
+    }
+  }
+
+  @Override
+  public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template) {
+    return null;
+  }
+
 
   @Override
   public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){
@@ -122,31 +180,10 @@ public class AccountHierarchyService
       addChildrenToAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
     }
 
+
+
     return new AccountMap.Builder(x).setAccounts(finalMap).build();
 
-  }
-
-  private void addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Map<String, CapabilityAccountData> accountMap){
-    DAO accountDAO = (DAO) x.get("accountDAO");
-    Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
-    List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-
-    Set<Account> accountsSet = new HashSet<>(children);
-    accountsSet.addAll(children);
-
-    while ( children.size() > 0 ) {
-      tempAccount = children.get(0);
-      List<Account> tempChildren = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-      for ( Account tempChild : tempChildren ) {
-        if ( ! children.contains(tempChild) ) children.add(tempChild);
-        accountsSet.add(tempChild);
-      }
-      children.remove(0);
-    }
-
-    for ( Account account : accountsSet ) {
-      if ( ! accountMap.containsKey(String.valueOf(account.getId()))) accountMap.put(String.valueOf(account.getId()), data);
-    }
   }
 
   private void addChildrenToAccountTemplate(X x, String accountId, AccountData data, Map<String, AccountData> accountMap){

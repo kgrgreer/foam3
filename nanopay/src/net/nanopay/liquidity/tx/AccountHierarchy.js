@@ -57,6 +57,32 @@ foam.INTERFACE({
           type: 'net.nanopay.liquidity.crunch.AccountTemplate'
         }
       ]
+    },
+    {
+      name: 'getAssignedAccountMap',
+      type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'trackRootAccounts',
+          type: 'Boolean'
+        },
+        {
+          name: 'user',
+          type: 'Long'
+        },
+        {
+          name: 'oldTemplate',
+          type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
+        },
+        {
+          name: 'template',
+          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+        }
+      ]
     }
   ]
 });
