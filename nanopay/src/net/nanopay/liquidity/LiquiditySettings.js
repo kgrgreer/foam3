@@ -71,9 +71,12 @@ foam.CLASS({
       name: 'lowLiquidity',
       section: 'thresholds',
       gridColumns: 6,
-      view: {
-        class: 'foam.u2.detail.VerticalDetailView',
-        of: 'net.nanopay.liquidity.Liquidity'
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.liquidity.ui.liquidity.LiquidityDetailView',
+          of: 'net.nanopay.liquidity.Liquidity',
+          denominationToFilterBySlot: X.data.denomination$
+        };
       },
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
@@ -97,9 +100,12 @@ foam.CLASS({
       name: 'highLiquidity',
       section: 'thresholds',
       gridColumns: 6,
-      view: {
-        class: 'foam.u2.detail.VerticalDetailView',
-        of: 'net.nanopay.liquidity.Liquidity'
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.liquidity.ui.liquidity.LiquidityDetailView',
+          of: 'net.nanopay.liquidity.Liquidity',
+          denominationToFilterBySlot: X.data.denomination$
+        };
       },
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
@@ -129,6 +135,16 @@ foam.CLASS({
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       visibility: 'RO'
+    },
+    {	
+      class: 'Reference',	
+      of: 'foam.core.Unit',	
+      name: 'denomination',	
+      required: true,
+      targetDAOKey: 'currencyDAO',	
+      section: 'basicInfo',
+      help: 'Push/Pull accounts for your thresholds will be filtered by this.',
+      updateMode: 'RO'
     }
   ],
   methods: [
