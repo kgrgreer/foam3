@@ -678,10 +678,10 @@ p({
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
-      .setPermissioned(true)
+      // .setPermissioned(true)
       // ? .orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED)
-      .setInnerDAO(x.get("localTransactionDAO")).
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
+      .setInnerDAO(x.get("localTransactionDAO"))
+      // .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
@@ -711,4 +711,65 @@ p({
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "csvUploadScriptDAO",
+  "lazy": true,
+  "serve": true,
+  "serviceScript": "
+    return new foam.dao.EasyDAO.Builder(x) 
+      .setPm(true)
+      .setGuid(true)
+      .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"csvUploadScripts\")
+      .setAuthorize(false)
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
+      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .build();",
+  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+})
+
+// Progress bar service
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ProgressBarDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(false)
+      .setPipelinePm(false)
+      .setRuler(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ProgressBarDAO")
+      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ucjQueryService",
+  "serve": true,
+  "serviceClass": "net.nanopay.liquidity.ucjQuery.CachedUCJQueryService",
+  "boxClass": "net.nanopay.liquidity.ucjQuery.UCJQueryServiceSkeleton",
+  "client":
+  """
+    {
+      "class":"net.nanopay.liquidity.ucjQuery.ClientUCJQueryService",
+      "delegate": { 
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":
+          "service/ucjQueryService"
+        }
+      }
+    }
+  """
 })
