@@ -23,7 +23,7 @@ foam.CLASS({
     {
       name: 'enabled',
       class: 'Boolean',
-      value: false
+      value: true
     }
   ],
 
@@ -38,7 +38,7 @@ foam.CLASS({
 
             // has source and destination but no rate or has all 3.
             if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
-              quote.setPlan(buildFxTransaction_(x,txn));
+              quote.setPlan(buildFxTransaction_(getX(),txn));
               return quote;//super.put_(x,quote);
             }
           }
@@ -71,21 +71,21 @@ foam.CLASS({
         f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
+            .setDescription(TrustAccount.find(getX(), txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
+            .setAccount(TrustAccount.find(getX(), txn.findSourceAccount(x)).getId())
             .setAmount(txn.getAmount())
             .build());
-        all.add( new Transfer.Builder(getX())
+        all.add( new Transfer.Builder(x)
             .setDescription("Source FX transfer")
             .setAccount(txn.getSourceAccount())
             .setAmount(-txn.getAmount())
             .build());
         all.add( new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, txn.findDestinationAccount(x)).getName()+" FX Transfer COMPLETED")
-            .setAccount(TrustAccount.find(x, txn.findDestinationAccount(x)).getId())
+            .setDescription(TrustAccount.find(getX(), txn.findDestinationAccount(x)).getName()+" FX Transfer COMPLETED")
+            .setAccount(TrustAccount.find(getX(), txn.findDestinationAccount(x)).getId())
             .setAmount(-txn.getDestinationAmount())
             .build());
-        all.add( new Transfer.Builder(getX())
+        all.add( new Transfer.Builder(x)
             .setDescription("Destination FX transfer")
             .setAccount(txn.getDestinationAccount())
             .setAmount(txn.getDestinationAmount())

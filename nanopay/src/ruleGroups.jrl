@@ -34,7 +34,11 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"ClearingTime"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"transactionLimits"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"txlimits"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"liquid"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"approvalRequests"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"businessRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictAccountsRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictUsersRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"txapprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"SecurityPlanner","predicate":{"class":"net.nanopay.tx.ruler.IsSecurityQuote"},"enabled":true})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
@@ -66,4 +70,3 @@ p({
     ]
   }
 })
-p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})

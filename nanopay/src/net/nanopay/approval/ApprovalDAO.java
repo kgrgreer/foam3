@@ -5,6 +5,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
+import foam.nanos.ruler.Operations;
+import net.nanopay.liquidity.approvalRequest.RoleApprovalRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -33,7 +35,8 @@ public class ApprovalDAO
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getClassification());
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
-      getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+           getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
 
@@ -47,7 +50,12 @@ public class ApprovalDAO
   private void rePutObject(X x, ApprovalRequest request) {
     DAO dao = (DAO) x.get(request.getDaoKey());
     FObject found = dao.inX(x).find(request.getObjId()).fclone();
-    dao.inX(x).put(found);
+
+    if ( request instanceof RoleApprovalRequest && ((RoleApprovalRequest) request).getOperation() == Operations.REMOVE ){
+      dao.inX(x).remove(found);
+    } else {
+      dao.inX(x).put(found);
+    }
   }
 
   private void removeUnusedRequests(DAO dao) {

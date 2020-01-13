@@ -4,20 +4,14 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.TransactionLineItem',
-    'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'java.util.ArrayList',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.account.Account'
+    'foam.util.SafetyUtil'
   ],
   properties: [
     {
@@ -42,6 +36,11 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      visibility: 'Hidden'
     },
     {
       name: 'statusChoices',
@@ -85,13 +84,7 @@ foam.CLASS({
         }
         return ['No status to choose'];
       }
-    },
-    {
-      name: 'institutionNumber',
-      class: 'String',
-      value: "",
-      visibility: 'Hidden'
-    },
+    }
   ],
 
   methods: [
@@ -120,7 +113,8 @@ foam.CLASS({
       super.validate(x);
       Logger logger = (Logger) x.get("logger");
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+      Account account = findDestinationAccount(x);
+      if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
         logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
@@ -152,11 +146,9 @@ foam.CLASS({
            oldTxn == null ) {
         return true;
       }
-
       if ( getStatus() != TransactionStatus.PENDING ) {
         return false;
       }
-
       if ( oldTxn == null ) {
         if ( SafetyUtil.isEmpty(getParent()) ) {
           return true;
@@ -164,97 +156,14 @@ foam.CLASS({
           Transaction parent = (Transaction) ((DAO) x.get("transactionDAO")).find(getParent());
           return parent.getStatus() == TransactionStatus.COMPLETED;
         }
-      } else if ( oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
+      }
+      else if ( oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED ||
                   oldTxn.getStatus() == TransactionStatus.PAUSED ||
                   oldTxn.getStatus() == TransactionStatus.SCHEDULED ) {
         return true;
       }
-
-      return false;
-      `
-    },
-    // {
-    //   documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
-    //   name: 'canReverseTransfer',
-    //   args: [
-    //     {
-    //       name: 'x',
-    //       type: 'Context'
-    //     },
-    //     {
-    //       name: 'oldTxn',
-    //       type: 'net.nanopay.tx.model.Transaction'
-    //     }
-    //   ],
-    //   type: 'Boolean',
-    //   javaCode: `
-    //   if ( getStatus() == TransactionStatus.REVERSE && oldTxn != null && oldTxn.getStatus() != TransactionStatus.REVERSE ||
-    //     getStatus() == TransactionStatus.DECLINED &&
-    //     ( oldTxn != null &&
-    //        ( oldTxn.getStatus() == TransactionStatus.SENT ||
-    //          oldTxn.getStatus() == TransactionStatus.COMPLETED ||
-    //          oldTxn.getStatus() == TransactionStatus.PENDING )
-    //     ) ||
-    //     getStatus() == TransactionStatus.PAUSED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING ||
-    //     getStatus() == TransactionStatus.CANCELLED && oldTxn != null && oldTxn.getStatus() == TransactionStatus.PENDING )  {
-    //     return true;
-    //   }
-    //   return false;
-    //   `
-    // },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-      List all = new ArrayList();
-      TransactionLineItem[] lineItems = getLineItems();
-
-        if ( canTransfer(x, oldTxn) ) {
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
-            for ( int j = 0; j < transfers.length; j++ ) {
-              all.add(transfers[j]);
-            }
-          }
-
-          BankAccount bankAccount = (BankAccount) findDestinationAccount(x);
-          if ( bankAccount == null ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.warning(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (findDestinationAccount).", this);
-            bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(getDestinationAccount());
-            if ( bankAccount == null ) {
-              logger.error(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (localAccountDAO)", this);
-            }
-          }
-          TrustAccount trustAccount = TrustAccount.find(x, bankAccount, getInstitutionNumber());
-          all.add(new Transfer.Builder(x)
-            .setDescription(trustAccount.getName()+" Cash-Out")
-            .setAccount(trustAccount.getId())
-            .setAmount(getTotal())
-            .build());
-          all.add(new Transfer.Builder(x)
-            .setDescription("Cash-Out")
-            .setAccount(getSourceAccount())
-            .setAmount(-getTotal())
-            .build());
-          Transfer[] transfers = getTransfers();
-          for ( int i = 0; i < transfers.length; i++ ) {
-            all.add(transfers[i]);
-          }
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    }
-  ]
+    return false;
+    `
+   }
+ ]
 });

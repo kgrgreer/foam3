@@ -12,7 +12,8 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Balance',
     'net.nanopay.account.SecurityAccount',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.mlang.sink.Count'
   ],
 
   searchColumns: [
@@ -48,7 +49,10 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
+            tableCellFormatter: function(value, obj, id) {
+              return this.balance;
+            },
+      /*tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
         this.add(obj.homeDenomination$.map(function(_) {
@@ -62,7 +66,7 @@ foam.CLASS({
                 })
             })
         }));
-      },
+      },*/
       tableWidth: 145
     },
 
@@ -113,13 +117,16 @@ foam.CLASS({
       ],
 
       javaCode: `
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        SecurityAccount sa = (SecurityAccount) accountDAO.where(EQ(
-          SecurityAccount.SECURITIES_ACCOUNT, getId())).find(EQ(
+        DAO accountDAO = (DAO) this.getSubAccounts(x);
+        // TODO: switch to StripedLock when available, KGR
+        Object lock = (getId() + ":" + unit).intern();
+        synchronized ( lock ) {
+          SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-        if (sa == null || sa.getId() == 0)
-          return createSecurityAccount_(x,unit);
-        return sa;
+          if (sa == null || sa.getId() == 0)
+            return createSecurityAccount_(x,unit);
+          return sa;
+        }
       `
     },
     {
@@ -140,12 +147,13 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.setName(unit+ " subAccount for "+this.getId());
+        sa.setName(unit+ " subAccount for "+getId());
         sa.setSecuritiesAccount(this.getId());
         DAO accountDAO = (DAO) x.get("accountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
         return sa;
       `
     },
+
   ]
 });

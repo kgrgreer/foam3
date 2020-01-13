@@ -7,9 +7,9 @@ p({
     nd = new foam.dao.NullDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .build();
-    rd = new foam.nanos.ruler.RulerDAO(x, nd, "localTransactionQuotePlanDAO");
+
     stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
-      .setDelegate(rd)
+      .setDelegate(nd)
       .build();
     kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
       .setDelegate(stpd)
@@ -23,12 +23,9 @@ p({
     nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
       .setDelegate(ktpd)
       .build();
-    nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
-      .setDelegate(nlifd)
-      .build();
     atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
       .setEnabled(false)
-      .setDelegate(nlitd)
+      .setDelegate(nlifd)
       .build();
     bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
       .setEnabled(true)
@@ -52,7 +49,8 @@ p({
       .setDelegate(cpd)
       .build();
     dtpd = new net.nanopay.tx.DigitalTransactionPlanDAO(x, tqd);
-    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, dtpd);
+    rd = new foam.nanos.ruler.RulerDAO(x, dtpd, "localTransactionQuotePlanDAO");
+    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, rd);
     atd = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
       .setDelegate(rtpd)
       .build();
@@ -87,7 +85,7 @@ p({
     import foam.dao.DAO;
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
-    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.auth.LifecycleAwareDAO;
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
@@ -119,12 +117,11 @@ p({
       .build();
     TransactionDAO aa = new TransactionDAO(x, foldingDAO);
     HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
-    deletedAware = new DeletedAwareDAO.Builder(x)
-      .setName("transaction")
+    lifecycleAware = new LifecycleAwareDAO.Builder(x)
       .setDelegate(a)
       .build();
     ctx = new foam.dao.ContextualizingDAO.Builder(x)
-      .setDelegate(deletedAware)
+      .setDelegate(lifecycleAware)
       .build();
     ruler = new RulerDAO(x, ctx, "localTransactionDAO");
     foam.dao.ProxyDAO aware = new foam.nanos.auth.CreatedAwareDAO.Builder(x)
@@ -157,7 +154,11 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"transactionDAO",                   "lazy":false,  "serve":true,  "serviceScript":
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
   """
     return new foam.dao.PMDAO(x,
         new foam.dao.PipelinePMDAO(x,
@@ -185,17 +186,20 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("transactionDAO"))
+      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
+      .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
-      .setAuthorize(false)
-      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
-      .setInnerDAO(x.get("transactionDAO"))
+      .setRuler(false)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liquidityService",                   "serviceScript":"return new net.nanopay.liquidity.LiquidityService();"})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"accountHierarchy", "lazy":true, "serviceScript":"return new net.nanopay.liquidity.tx.AccountHierarchyService();"})
 
 p({
   "class": "foam.nanos.boot.NSpec", 
@@ -450,4 +454,3 @@ p({
       .build();
   """
 })
->>>>>>> facec04b0dece79865829739f71b184a426b50c0

@@ -66,7 +66,7 @@ foam.CLASS({
             count = (Count) accounts.select(count);
             if ( count.getValue() == 0 ) {
               logger.error("No TrustAccounts found for ", user.getId());
-              throw new RuntimeException("No TrustAccounts found for "+user.getId());
+              throw new RuntimeException("No TrustAccounts found for "+user.getId()+ " currency: "+ currency);
             }
             return accounts;
           }

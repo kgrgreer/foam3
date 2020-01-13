@@ -19,7 +19,6 @@ p({"class":"foam.nanos.script.Script","id":"emailVerified","description":"Verifi
 p({"class":"foam.nanos.script.Script","id":"fixUserServiceProviders","enabled":true,"description":"Fixes the users service providers based on their group","lastDuration":0,"server":true,"status":1,"code":"userDAO = x.get(\"localUserDAO\");\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\n  user = users.get(i);\n  if ( \"ccShopper\".equals(user.getGroup()) || \"ccMerchant\".equals(user.getGroup()) || \"ccAdmin\".equals(user.getGroup()) ) {\n    user.setSpid(\"connected-city\");\n  } else {\n    user.setSpid(\"nanopay\");\n  }\n  userDAO.put(user);\n}\n\nprint(\"done\");","output":"","notes":""})
 p({"class":"foam.nanos.script.Script","id":"onboardUsers","enabled":false,"description":"Updates all users so that it appears they have gone through onboarding process","lastDuration":0,"server":true,"status":1,"code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser.setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE);\nuser.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);\nuser.setOnboarded(true);\nuser.setCreatedPwd(true);\nuserDAO.put(user);\n}\n\nprint(\"done\");","output":"","notes":"To be run once on Production"})
 p({"class":"foam.nanos.script.Script","id":"statusUpdate","description":"Updates the account status and compliance status to active and passed","code":"userDAO = x.get(\"localUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\nuser.setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE);\nuser.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);\nuser.setOnboarded(true);\nuserDAO.put(user);\n}\n\nprint(\"done\");"})
-p({"class":"foam.nanos.script.Script","id":"Test Email","lastRun":"2018-05-09T18:01:51.784Z","lastDuration":33,"scheduled":false,"code":"import foam.util.Emails.EmailsUtility;\n\n\nuser = x.get(\"user\");\n\nmessage = new foam.nanos.notification.email.EmailMessage();\nmessage.setTo(new String[] { user.getEmail() });\nmap = new java.util.HashMap();\n\nmap.put(\"content\", user.getFirstName());\ntest(EmailsUtility.sendEmailFromTemplate(user, message, \"testEmail\", map), \"email template test\");\nprint(\"DONE\");"})
 p({"class":"foam.nanos.script.Script","id":"encryptUsers","description":"Puts all existing users into the encrypted user dao","lastDuration":0,"server":true,"status":1,"code":"userDAO = x.get(\"localUserDAO\");\nencryptedUserDAO = x.get(\"encryptedUserDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nencryptedUserDAO.put(users.get(i));\n}\n\nprint(\"done\");","output":"","notes":""})
 p({"class":"foam.nanos.script.Script","id":"encryptBankAccounts","description":"Puts all existing bank accounts into the encrypted bank account dao","lastDuration":0,"server":true,"status":1,"code":"bankAccountDAO= x.get(\"localAccountDAO\");\nencryptedBankAccountDAO = x.get(\"encryptedBankAccountDAO\");\n\nbanks = accountDAO.select().getArray();\n\nfor ( int i = 0 ; i < banks.size() ; i++ ) {\nencryptedBankAccountDAO.put(banks.get(i));\n}\n\nprint(\"done\");","output":"","notes":""})
 //p({"class":"foam.nanos.script.Script","id":"encryptBankAccounts","description":"Puts all existing bank accounts into the encrypted bank account dao","lastDuration":0,"server":true,"status":1,"code":"bankAccountDAO= x.get(\"localBankAccountDAO\");\nencryptedBankAccountDAO = x.get(\"encryptedBankAccountDAO\");\n\nbanks = bankAccountDAO.select().getArray();\n\nfor ( int i = 0 ; i < banks.size() ; i++ ) {\nencryptedBankAccountDAO.put(banks.get(i));\n}\n\nprint(\"done\");","output":"","notes":""})
@@ -1098,7 +1097,8 @@ p({"class":"foam.nanos.script.Script","id":"Set-base-currency-on-suggested-trans
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "Set up groups and permissions for API (GD)",
+  "id": "APIGroupPermissions",
+  "description": "Set up groups and permissions for API",
   "code": """
 
     import foam.nanos.auth.Group;
@@ -1109,11 +1109,14 @@ p({
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
 
-    // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
     // Set to true to undo the permission and theme changes made to the "SME" group by this script
     fixSME = false;
-
+    
+    // group/spid prefix
+    NAME      = "gd";
+    NAME_LONG = "Grain Discovery";
+    
     if ( DRY_RUN ) {
       print("--------------------");
       print("In DRY_RUN mode");
@@ -1123,13 +1126,13 @@ p({
 
     groupDAO = x.get("groupDAO");
 
-    // Create new gd-ops group
+    // Create new group
     opsGroup = new Group();
-    opsGroup.setId("gd-ops");
+    opsGroup.setId(NAME+"-ops");
     opsGroup.setParent("basicUser");
-    opsGroup.setDefaultMenu("gd-operation");
-    opsGroup.setRootMenu("gd-operation");
-    opsGroup.setDescription("Grain Discovery Operations");
+    opsGroup.setDefaultMenu(NAME+"-operation");
+    opsGroup.setRootMenu(NAME+"-operation");
+    opsGroup.setDescription(NAME_LONG+" Operations");
     
     if ( DRY_RUN ) {
       print("Payment ops group is created.");
@@ -1137,10 +1140,10 @@ p({
       groupDAO.put(opsGroup);
     }
 
-    // Create new gd-api group
+    // Create new api group
     apiGroup = new Group();
-    apiGroup.setId("gd-api");
-    apiGroup.setParent("gd-ops");
+    apiGroup.setId(NAME+"-api");
+    apiGroup.setParent(NAME+"-ops");
     apiGroup.setDescription("API Access");
 
     if ( DRY_RUN ) {
@@ -1149,7 +1152,7 @@ p({
       groupDAO.put(apiGroup);
     }
 
-    // Add permissions to the gd-ops group
+    // Add permissions to the ops group
     ArrayList permissionArray = new ArrayList();
     permissionArray.add("AccountWithDetailModel.read.AccountNumber");
     permissionArray.add("AccountWithDetailModel.read.Holder");
@@ -1160,14 +1163,11 @@ p({
     permissionArray.add("currency.read.*");
     permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
     permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
-    permissionArray.add("menu.read.doc");
-    permissionArray.add("menu.read.doc.dig");
-    permissionArray.add("menu.read.doc.dug");
-    permissionArray.add("menu.read.gd-operation");
-    permissionArray.add("menu.read.gd-operation.accounts");
-    permissionArray.add("menu.read.gd-operation.businesses");
-    permissionArray.add("menu.read.gd-operation.transactions");
-    permissionArray.add("menu.read.gd-operation.users");
+    permissionArray.add("menu.read."+NAME+"-operation");
+    permissionArray.add("menu.read."+NAME+"-operation.accounts");
+    permissionArray.add("menu.read."+NAME+"-operation.businesses");
+    permissionArray.add("menu.read."+NAME+"-operation.transactions");
+    permissionArray.add("menu.read."+NAME+"-operation.users");
     permissionArray.add("menu.read.notifications");
     permissionArray.add("menu.read.report");
     permissionArray.add("menu.read.report.txnReport");
@@ -1185,27 +1185,26 @@ p({
     permissionArray.add("service.menuDAO");
     permissionArray.add("service.nSpecDAO");
     permissionArray.add("service.notificationDAO");
-    permissionArray.add("service.sessionService");
     permissionArray.add("service.run.dig");
-    permissionArray.add("service.run.sugar");
     permissionArray.add("service.transactionDAO");
     permissionArray.add("service.twofactor");
-    permissionArray.add("session.create.gd");
     permissionArray.add("session.read.*");
     permissionArray.add("transaction.read.*");
     permissionArray.add("user.read.*");
     permissionArray.add("service.businessRegistrationDAO");
     permissionArray.add("service.run.authenticationToken");
-    permissionArray.add("spid.create.gd");
+    permissionArray.add("spid.create."+NAME);
+    permissionArray.add("spid.read."+NAME);
+
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
 
     for ( int i = 0; i < permissionArray.size(); i++ ) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
-      junction.setSourceId("gd-ops");
+      junction.setSourceId(NAME+"-ops");
       junction.setTargetId(permissionArray.get(i));
       if ( DRY_RUN ) {
-        print(permissionArray.get(i) + " permissions are added in gd-ops group.");
+        print(permissionArray.get(i) + " permissions are added in ops group.");
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
@@ -1269,102 +1268,118 @@ p({
     }
 
     themeDAO = x.get("themeDAO");
-    gdTheme = themeDAO.find(3);
-    gdTheme.setPriority(3);
-    gdTheme.setLogo("images/nanopay_logo_blue.png");
+    theme = themeDAO.find(3);
+    theme.setPriority(3);
+    theme.setLogo("images/nanopay_logo_blue.png");
     if ( DRY_RUN ) {
-      print("GD Theme is created.");
+      print("Theme is created.");
     } else if ( fixSME ) {
-      gdTheme.setPriority(2);
-      gdTheme.setLogo("images/ablii-logo.svg");
-      themeDAO.put(gdTheme);
+      theme.setPriority(2);
+      theme.setLogo("images/ablii-logo.svg");
+      themeDAO.put(theme);
     } else {
-      themeDAO.put(gdTheme);
+      themeDAO.put(theme);
     }
 
-    // Create GD SPID
+    // Create SPID
     spidDAO = x.get("serviceProviderDAO");
     ServiceProvider spid = new ServiceProvider.Builder(x)
       .setEnabled(true)
-      .setId("gd")
-      .setDescription("Grain Discovery")
+      .setId(NAME)
+      .setDescription(NAME_LONG)
       .build();
     if ( DRY_RUN ) {
-      print("Grain Discovery SPID created");
+      print(NAME_LONG+" SPID created");
     } else {
       spidDAO.put(spid);
     }
 
-    // Create the Grain Discovery menu
+    // Create the menu
     menuDAO = x.get("menuDAO");
 
     // create parent menu
     menu = new Menu.Builder(x)
       .setEnabled(true)
-      .setDescription("Grain Discovery")
+      .setDescription(NAME_LONG)
       .setHandler(new SubMenu())
       .setLabel("Operations")
-      .setId("gd-operation")
+      .setId(NAME+"-operation")
       .build();
 
     // create account submenu
-    accountDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("accountDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    accountMenuConfig = new DAOControllerConfig();
+    accountMenuConfig.setDaoKey("accountDAO");
+    accountMenuConfig.setCreateEnabled(false);
+    accountMenuConfig.setEditEnabled(false);
+    accountMenuConfig.setDeleteEnabled(false);
+
+    accountDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(accountMenuConfig)
       .build();
     accountMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(accountDaoMenu)
       .setLabel("Accounts")
-      .setId("gd-operation.accounts")
+      .setId(NAME+"-operation.accounts")
       .build();
 
     // create Businesses submenu
-    businessDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("businessDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    businessMenuConfig = new DAOControllerConfig();
+    businessMenuConfig.setDaoKey("businessDAO");
+    businessMenuConfig.setCreateEnabled(false);
+    businessMenuConfig.setEditEnabled(false);
+    businessMenuConfig.setDeleteEnabled(false);
+
+    businessDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(businessMenuConfig)
       .build();
     businessMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(businessDaoMenu)
       .setLabel("Businesses")
-      .setId("gd-operation.businesses")
+      .setId(NAME+"-operation.businesses")
       .build();
 
     // create Transactions submenu
-    txnDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("transactionDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    txnMenuConfig = new DAOControllerConfig();
+    txnMenuConfig.setDaoKey("transactionDAO");
+    txnMenuConfig.setCreateEnabled(false);
+    txnMenuConfig.setEditEnabled(false);
+    txnMenuConfig.setDeleteEnabled(false);
+
+    txnDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(txnMenuConfig)
       .build();
     txnMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(txnDaoMenu)
       .setLabel("Transactions")
-      .setId("gd-operation.transactions")
+      .setId(NAME+"-operation.transactions")
       .build();
 
     // create user submenu
-    userDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("userDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    userMenuConfig = new DAOControllerConfig();
+    userMenuConfig.setDaoKey("userDAO");
+    userMenuConfig.setCreateEnabled(false);
+    userMenuConfig.setEditEnabled(false);
+    userMenuConfig.setDeleteEnabled(false);
+
+    userDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(userMenuConfig)
       .build();
     userMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(userDaoMenu)
       .setLabel("Users")
-      .setId("gd-operation.users")
+      .setId(NAME+"-operation.users")
       .build();
 
     if ( DRY_RUN ) {
-      print("GD Menu's Created: Operations, Accounts, Businesses, Transactions, User");
+      print(NAME_LONG+" Menu's Created: Operations, Accounts, Businesses, Transactions, User");
     } else {
       menuDAO.put(menu);
       menuDAO.put(accountMenu);
@@ -1376,7 +1391,7 @@ p({
     print("Done");
   """,
   "output": "",
-  "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
+  "notes": "This script is for our clients who use our API. In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
 })
 
 

@@ -1,0 +1,48 @@
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Test Email Service",
+  "code":"""
+    import foam.nanos.notification.email.SMTPEmailService;
+    import foam.nanos.notification.email.EmailMessage
+    
+    toAddress = "test@address.com"
+    fromAddress = "info@nanopay.net"
+    message = new EmailMessage();
+    message.setTo(new String[] { toAddress });
+    message.setFrom(fromAddress);
+    message.setSubject("Test Email");
+    message.setBody("This is a test");
+    
+    emailService = x.get("email");
+
+    // Uncomment and configure to use a network email service
+    // emailService = new SMTPEmailService.Builder(x)
+    //  .setHost("<smtp-host>")
+    //  .setPort("587")
+    //  .setAuthenticate(true)
+    //  .setStarttls(true)
+    //  .setUsername("<smtp-username>")
+    //  .setPassword("<smtp-password>")
+    //  .build();
+
+    emailService.sendEmail(x, message);
+
+    print("Done");
+  """
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Test Email Utility",
+  "code":"""
+    import foam.util.Emails.EmailsUtility;
+    
+    user = x.get(\"user\");
+    message = new foam.nanos.notification.email.EmailMessage();
+    message.setTo(new String[] { user.getEmail() });
+    map = new java.util.HashMap();
+    map.put("content", user.getFirstName());
+    EmailsUtility.sendEmailFromTemplate(user, message, "testEmail", map);
+    print("Done");
+  """
+})

@@ -126,7 +126,7 @@ p({
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true 
 })
 
 p({

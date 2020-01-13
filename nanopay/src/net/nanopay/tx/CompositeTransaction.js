@@ -18,14 +18,9 @@ foam.CLASS({
         Transaction [] t = tx.getNext();
         txn.setInitialStatus(txn.getStatus());
         txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-        int size = 0;
-        if ( t != null ) {
-          size = t.length;
-        }
+        int size = (t != null) ? t.length : 0;
         Transaction [] t2 = new Transaction [size+1];
-        for ( int i = 0; i < tx.getNext().length; i++ ) {
-          t2[i] = t[i];
-        }
+        System.arraycopy(t,0,t2,0,t.length);
         t2[t2.length-1] = txn;
         tx.setNext(t2);
       `

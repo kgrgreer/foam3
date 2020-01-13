@@ -30,12 +30,6 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'institutionNumber',
-      class: 'String',
-      value: '001',
-      visibility: 'Hidden'
-    },
-    {
       name: 'settled',
       class: 'Boolean'
     }

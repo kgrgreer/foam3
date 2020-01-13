@@ -108,22 +108,5 @@ Stores all Exchange Rate info.`,
 /* nop */
 `
 },
-{
-  name: 'createTransfers',
-  args: [
-    {
-      name: 'x',
-      type: 'Context'
-    },
-    {
-      name: 'oldTxn',
-      type: 'net.nanopay.tx.model.Transaction'
-    }
-  ],
-  type: 'net.nanopay.tx.Transfer[]',
-  javaCode: `
-    return getTransfers();
-  `
-}
   ]
 });

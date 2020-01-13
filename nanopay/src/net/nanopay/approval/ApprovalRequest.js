@@ -253,6 +253,7 @@ if ( obj == null ) {
     },
     {
       name: 'referenceObj',
+      isDefault: true,
       label: 'View Ref',
       code: function(approvalRequest) {
         var key = approvalRequest.data.daoKey;

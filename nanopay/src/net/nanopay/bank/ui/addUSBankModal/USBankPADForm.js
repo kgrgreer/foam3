@@ -33,7 +33,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: overlay;
     }
     ^content {
       position: relative;
@@ -233,6 +233,7 @@ foam.CLASS({
             }
           } catch (e) {
             this.ctrl.add(this.NotificationMessage.create({ message: e.message, type: 'error' }));
+            return;
           }
           this.closeDialog();
         } else {
@@ -273,7 +274,22 @@ foam.CLASS({
         if ( model.isConnecting ) return;
 
         if ( ! model.validateInputs() ) return;
-        model.capturePADAndPutBankAccounts();
+
+        model.capturePADAndPutBankAccounts().then(() => {
+          this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
+
+          X.closeDialog();
+
+          location.hash = 'sme.main.banking';
+
+          if ( this.plaidResponseItem != null ) {
+            this.ctrl.stack.back();
+          } else {
+            this.stack.push({
+              class: 'net.nanopay.bank.BankAccountController'
+            })
+          }
+        });
       }
     }
   ]

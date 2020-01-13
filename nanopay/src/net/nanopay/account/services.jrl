@@ -8,39 +8,37 @@ p({
   "serviceScript":
   """
     import net.nanopay.account.Account;
-    foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
+    mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
-    foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
+    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
     
-    r = new foam.nanos.ruler.RulerDAO(x, hashingJDAO, "localAccountDAO");
-    nbaae = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x)
-      .setDelegate(r)
-      .build();
-    afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, nbaae);
-    rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
-    rdba.setUseBMO(true);
-    pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, rdba);
-    bab = new net.nanopay.bank.BankAccountBranchDAO(x, pdba);
-    bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);
-    eoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
+    dao = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x).build();
+    dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
+    dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);
+    dao.setUseBMO(true);
+    dao = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, dao);
+    dao = new net.nanopay.bank.BankAccountBranchDAO(x, dao);
+    dao = new net.nanopay.bank.BankAccountInstitutionDAO(x, dao);
+    dao = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(Account.getOwnClassInfo())
+      .setInnerDAO(inner)
+      .setDecorator(dao)
+      .setAuthorize(false)
       .setPm(true)
       .setSeqNo(true)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
-      .setLastModifiedByAware(true)
-      .setDeletedAware(true)
+      .setDeletedAware(false)
       .setOf(Account.getOwnClassInfo())
-      .setInnerDAO(eoddapc)
-      .setAuthorize(false)
-      .build();
+      .setRuler(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("accounts")
+     .build();
   """
 })
 
@@ -51,25 +49,19 @@ p({
   "serve":true,
   "serviceScript":
   """
-    foam.dao.DAO AAD = new net.nanopay.account.AuthenticatedAccountDAO(x, 
+    foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x, 
       new foam.nanos.auth.PermissionedPropertyDAO(x, 
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
-          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
+          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")),
             new net.nanopay.bank.BankAccountValidator()))));
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
-      .setInnerDAO(AAD)
-      .setAuthorize(false)
-      .setOf(net.nanopay.account.Account.getOwnClassInfo())
-
-      // These decorators are present on localAccountDAO.
-      .setDeletedAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
-
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
       .build();
   """,
   "client":

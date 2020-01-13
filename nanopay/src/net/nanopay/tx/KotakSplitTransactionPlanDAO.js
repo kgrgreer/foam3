@@ -107,7 +107,8 @@ foam.CLASS({
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.setIsQuoted(true);
       ((FXSummaryTransaction) txn).setFxRate(fxQuote.getRate());
-      txn.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(500).setCurrency(request.getSourceCurrency()).build()}, null);  
+      KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
+      txn.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(credentials.getTransactionFee()).setCurrency(request.getSourceCurrency()).build()}, null);  
       ((FXSummaryTransaction) txn).collectLineItems();
       quote.addPlan(txn);
       return super.put_(x, quote);`

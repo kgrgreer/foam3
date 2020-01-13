@@ -9,10 +9,10 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
-    'foam.nanos.auth.EnabledAware',
+    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
   imports: [
@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -52,28 +53,49 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'All',
       predicateFactory: function(e) {
-        return e.TRUE;
+        return e.AND(
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.OR(
+            e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+            e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+            e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+          )
+        );
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Aggregate Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
-        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
+        return e.AND(
+          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
@@ -267,7 +289,7 @@ foam.CLASS({
             function(balance) {
               return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
                 function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
+                  var displayBalance = curr ? curr.format(balance != null ? balance : 0) : 0;
                   self.tooltip = displayBalance;
                   return displayBalance;
                 })
@@ -349,6 +371,9 @@ foam.CLASS({
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
       tableWidth: 500,
+      expression: function() {
+        return this.toSummary() + ` - ${this.cls_.name}`;
+      },
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,
@@ -368,6 +393,13 @@ foam.CLASS({
         }));
       }
     },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: 'RO'
+    }
   ],
 
   methods: [
@@ -399,16 +431,18 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
+        return x.balanceDAO 
+          ? x.balanceDAO.find(this.id).then(b => b ? b.balance : 0) 
+          : 0;
       },
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
+          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
           return balance.getBalance();
         } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
+          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
       `
@@ -441,6 +475,66 @@ foam.CLASS({
           logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
+      `
+    },
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        Long key = getId();
+        return (String) key.toString();
+      `
+    },
+    {
+      name: 'getOutgoingAccountCreate',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getParent();
+      `
+    },
+    {
+      name: 'getOutgoingAccountRead',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountUpdate',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountDelete',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
       `
     }
   ]

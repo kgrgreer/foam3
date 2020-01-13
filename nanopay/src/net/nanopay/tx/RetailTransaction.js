@@ -101,6 +101,7 @@ foam.CLASS({
    {
      name: 'executeAfterPut',
      javaCode: `
+     //TODO: this should be turned to rules and method deleted before dev merge
        super.executeAfterPut(x, oldTxn);
        try {
          sendCompletedNotification(x, oldTxn);

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'US Bank Account',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -64,17 +64,9 @@ foam.CLASS({
       }
     },
     {
-      // REVIEW - remove - currently called by
-      // AscendentFXReportsWebAgent
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
-      view: {
-        class: 'foam.nanos.dig.DigFileUploadView',
-        data: this.voidCheckImage$,
-        acceptFormat: 'image/png'
-      },
-      hidden: true
     },
     {
       name: 'branchId',

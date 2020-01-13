@@ -86,15 +86,15 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaGetter: `
-        // PREVENT
-        if (this.getBusinessRuleAction() == BusinessRuleAction.PREVENT)
-          return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " preventing operation. " + this.getDescription()).build();
+        // RESTRICT
+        if (this.getBusinessRuleAction() == BusinessRuleAction.RESTRICT)
+          return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " restricting operation. " + this.getDescription()).build();
 
         // NOTIFY
         if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
           return new BusinessRuleNotificationAction.Builder(getX())
             .setBusinessRuleId(this.getId())
-            .setGroupId("liquidDev")
+            .setGroupId("liquidBasic")
             .build();
 
         // ALLOW

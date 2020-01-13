@@ -90,7 +90,6 @@ foam.CLASS({
             .setMessage(
               "Remaining limit for " + txLimitRule.getApplyLimitTo().getLabel() + " " +
               (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? user.label() :
                txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? account.getName() : "") 
               + " is " + availableLimit )
             .build());
@@ -100,13 +99,12 @@ foam.CLASS({
       if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
         throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
           + " transaction limit was exceeded with a " + txAmount + " transaction " 
-          + (txLimitRule.getApplyLimitTo() != TxLimitEntityType.TRANSACTION ? (txLimitRule.getSend() ? "from " : "to ") : "on ")
+          + (txLimitRule.getSend() ? "from " : "to ")
           + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? " " + user.label() :
+          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
              txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
           + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact us.");
+          + ". If you require further assistance, please contact your administrator.");
       }
 
       // Note: there is a race condition here between the check call above and the updateSpent call below
@@ -140,8 +138,7 @@ foam.CLASS({
           .append(rule.getApplyLimitTo())
           .append(":")
           .append(rule.getApplyLimitTo() == TxLimitEntityType.USER ? rule.getUserToLimit() :
-                  rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() :
-                  rule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? rule.getBusinessToLimit() : 0)
+                  rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() : 0)
           .append(":")
           .append(rule.getDenomination())
           .append(":")

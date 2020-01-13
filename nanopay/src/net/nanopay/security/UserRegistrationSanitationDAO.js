@@ -33,21 +33,9 @@ foam.CLASS({
       args: [{ type: 'User', name: 'user' }],
       documentation: `Return a sanitized copy of the given user.`,
       javaCode: `
-        return new User.Builder(getX())
-          .setFirstName(user.getFirstName())
-          .setLastName(user.getLastName())
-          .setEmail(user.getEmail())
-          .setDesiredPassword(user.getDesiredPassword())
-          .setOrganization(user.getOrganization())
-          .setSignUpToken(user.getSignUpToken())
-          .setAddress(user.getAddress())
-          .setPhone(user.getPhone())
-          .setBirthday(user.getBirthday())
-
-          // TODO: Remove the need for this property.
-          .setWelcomeEmailSent(user.getWelcomeEmailSent())
-
-          .build();
+          User userClone = new User();
+          userClone = (User) user.fclone();
+          return userClone;
       `
     }
   ],

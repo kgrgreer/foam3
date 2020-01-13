@@ -3,42 +3,178 @@ p({"class":"foam.nanos.ruler.Rule","id":"Pending FX Rate Transactions","enabled"
 p({"class":"foam.nanos.ruler.Rule","id":"Getting FX Rate for Transactions","enabled":false})               // Kotak
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule1","enabled":false})                               // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"The Jackie Rule2","enabled":false})                               // Compliance
-p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","enabled":true})                                   // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"DebtDestroyer","enabled":false})                                  // Ablii FastPay
 p({"class":"foam.nanos.ruler.Rule","id":"Proper Status after Pause, Rule","enabled":true})                 // Parent Pending Complete
 p({"class":"foam.nanos.ruler.Rule","id":"Set Approved By","enabled":true})                                 // Invoice rule
-p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","enabled":true})                                 // Ablii FastPay
+p({"class":"foam.nanos.ruler.Rule","id":"SwitchToSlowPay","enabled":false})                                // Ablii FastPay
 p({"class":"foam.nanos.ruler.Rule","id":"Modify Cico Status","enabled":true})                              // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":true})                 // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Prune Cico Approval Cleanup","enabled":false})                    // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Account Liquification","enabled":true})                           // Liquidity Settings
-p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashIn","enabled":true})                                   // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashOut","enabled":true})                                  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashIn","enabled":false})                                  // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"ReverseCashOut","enabled":false})                                 // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"observeStatus","enabled":true})                                   // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"Quote Transaction Based on Status","enabled":true})               // Tx Processing
+p({"class":"foam.nanos.ruler.Rule","id":"Quote Transaction Based on Status","enabled":false})              // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Ablii Completed Transaction Notification","enabled":false})       // Ablii Transaction
 p({"class":"foam.nanos.ruler.Rule","id":"Ablii FX Completed Transaction Notification","enabled":false})    // Ablii Transaction
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Cash In Transaction Notification","enabled":true})       // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Verification Transaction Notification","enabled":true})  // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Declined Compliance Transaction Notification","enabled":false})   // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"statusHistory Update Rule","enabled":true})                       // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","id":"FOP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"DVP Transaction Planner","enabled":false})                        // Tx Planning
-p({"class":"foam.nanos.ruler.Rule","id":"Bucket Transaction Planner","enabled":false})                     // Tx Planning
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance Transaction Planner","enabled":false})                 // Tx Planning / Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"AFEX Beneficiary Compliance Transaction","enabled":false})        // AFEX
 p({"class":"foam.nanos.ruler.Rule","id":"Transaction Final Compliance Rule","enabled":false})              // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"IdentityMind transfer transaction","enabled":false})              // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Clear transaction approval requests","enabled":false})            // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Compliance transaction approval","enabled":false})                // Compliance
+p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabled":false})                // Compliance
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":true})    // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":true})             // Tx Processing
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Set transaction lifecycleState to PENDING",
+  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
+  "ruleGroup":"(Default)",
+  "priority":1000,
+  "daoKey":"liquidTransactionDAO",
+  "operation":0,
+  "after":false,
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"lifecycleState",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.nanos.auth.LifecycleState",
+        "ordinal":0
+      }
+    }
+  },
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Reset transaction lastModified/By properties on re-put",
+  "ruleGroup":"(Default)",
+  "priority":1000,
+  "daoKey":"liquidTransactionDAO",
+  "operation":1,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.NewEqOld"
+  },
+  "action":{
+    "class":"net.nanopay.meter.compliance.ruler.ResetLastModified"
+  },
+  "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"L1 approval for all transactions",
+  "documentation":"Add L1 approval to all liquid transactions created.",
+  "ruleGroup":"txapprovals",
+  "priority":100,
+  "daoKey":"liquidTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":0
+    }
+  },
+  "asyncAction":{
+    "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
+    "classification":"L1 approval - Transaction"
+  },
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Final transaction approval",
+  "ruleGroup":"txapprovals",
+  "daoKey":"liquidTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":0
+    }
+  },
+  "asyncAction":{
+    "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
+    "updateOnApproved":true
+  },
+  "enabled":true
+})
+
+// Multi-level (L2) transaction approval rules
+p({
+  "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
+  "id": "L2 approval for transactions >= $85,000",
+  "sourceAccount": 1053,
+  "startAmount": 8500000,
+  "enabled": false
+})
+
+// Add approval request rules
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Account Create Approvals",
+  "priority": 100,
+  "ruleGroup": "liquid",
+  "documentation": "To create approval requests on puts to the accountDAO",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.Eq",
+    "arg1":{
+      "class":"__Property__",
+      "forClass_":"net.nanopay.account.Account",
+      "name":"enabled"
+    },
+    "arg2":{
+      "class":"foam.mlang.Constant",
+      "value":false
+    }
+  },
+  "action": {
+    "class": "net.nanopay.liquidity.rules.account.AccountCreateApproval"
+  },
+  "enabled": false,
+  "saveHistory": true
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Fulfilled Account Approvals",
+  "priority": 200,
+  "ruleGroup": "liquid",
+  "documentation": "To handle Approved Approval Requests",
+  "daoKey": "approvalRequestDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {"class":"net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovalsPredicate"},
+  "action": {
+    "class": "net.nanopay.liquidity.rules.approvalRequest.FulfilledAccountApprovals"
+  },
+  "enabled": false,
+  "saveHistory": true
+})
 
 // Transaction limit business rule example for 200,000.00 EUR
 p({
   "class":"net.nanopay.liquidity.tx.TxLimitRule",
   "id":"GS09 Securities €200,000.00 EUR Account Limit",
   "applyLimitTo":1,
-  "accountToLimit":1651,
+  "accountToLimit":1613,
   "limit":20000000,
   "denomination":"EUR",
   "currentLimits":{},
@@ -86,4 +222,34 @@ p({
       "value":"liquiddev@nanopay.net"
     }
   },
-  "businessRuleAction":2})
+  "businessRuleAction":2,
+  "enabled": false
+})
+
+// Automatically verify emails for new Liquid users. Due to change once Goldman
+// gets back to us with requirements.
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Liquid Auto-Verify Email Rule",
+  "daoKey": "localUserDAO",
+  "predicate": {
+    "class": "foam.mlang.predicate.Eq",
+    "arg1": {
+      "class": "foam.mlang.expr.PropertyExpr",
+      "of": "foam.nanos.auth.User",
+      "property": {
+        "class": "__Property__",
+        "forClass_": "foam.nanos.auth.User",
+        "name": "group"
+      }
+    },
+    "arg2": {
+      "class": "foam.mlang.Constant",
+      "value": "liquidBasic"
+    }
+  },
+  "action": {
+    "class": "net.nanopay.admin.SkipUserEmailVerification"
+  },
+  "ruleGroup": "UserCreate"
+})
