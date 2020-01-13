@@ -187,6 +187,7 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       tx = addStatusHistory(tx,stamp);
+      tx.setReferenceNumber("IngestedTransaction");
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -348,7 +349,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-
+          txn2.setReferenceNumber("TopUp");
           verifyBalance(x,txn2);
         }  
 
@@ -375,6 +376,7 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
+            secCI.setReferenceNumber("TopUp");
             transactionDAO.put(secCI); // top up the sending security account
           }
           return true;
@@ -412,6 +414,7 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
+            .setReferenceNumber("TopUp")
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {

@@ -221,6 +221,7 @@ public class LiquidityService
   {
     Transaction transaction = new Transaction.Builder(x_)
         .setAmount(amount)
+        .setReferenceNumber("Liquidity Transaction")
         .setDestinationAccount(destination)
         .setSourceAccount(source)
         .build();
