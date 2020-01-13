@@ -8,8 +8,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.ProxySink',
     'foam.dao.ArraySink',
-    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.core.Detachable',
     'foam.core.X',
@@ -40,24 +40,30 @@ foam.CLASS({
           DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-          userCapabilityJunctionDAO
-            .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
-            .select(new AbstractSink() {
-              @Override
-              public void put(Object o, Detachable sub) {
-                UserCapabilityJunction ucj = (UserCapabilityJunction) ((UserCapabilityJunction) o).deepClone();
-                Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
-                if ( c.implies(x, permission) ) {
-                  sub.detach();
-                  throw new RuntimeException("userCapabilityJunction found");
-                }
+          ProxySink proxy = new ProxySink(x, new ArraySink()) {
+            @Override
+            public void put(Object o, Detachable sub) {
+              UserCapabilityJunction ucj = (UserCapabilityJunction) ((UserCapabilityJunction) o).deepClone();
+              Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
+              if ( c.implies(x, permission) ) {
+                getDelegate().put(o, sub);
               }
-            });
+            }
+          };
 
+          List<UserCapabilityJunction> ucjs = ((ArraySink) ((ProxySink) userCapabilityJunctionDAO
+            .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
+            .limit(1)
+            .select(proxy))
+            .getDelegate())
+            .getArray();
+            
+          if ( ucjs.size() > 0) {
+            return true;
+          }
         } catch (Exception e) {
-          return true;
+          logger.error("check", permission, e);
         }
-        logger.error("userCapabilityJunction not found : ", "check", permission);
         return false;
       `
     }
