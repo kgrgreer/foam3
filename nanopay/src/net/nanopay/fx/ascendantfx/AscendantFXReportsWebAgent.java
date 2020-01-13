@@ -517,7 +517,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
 
-      if ( null != signingOfficer.getIdentification() 
+      if ( null != signingOfficer.getIdentification()
         && signingOfficer.getIdentification().getIdentificationTypeId() != 0 ) {
         IdentificationType idType = (IdentificationType) identificationTypeDAO
           .find(signingOfficer.getIdentification().getIdentificationTypeId());
@@ -538,7 +538,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Identification number: " + identificationNumber));
         list.add(new ListItem("Issue date: " + issueDate));
         list.add(new ListItem("Expiration date: " + expirationDate));
-        
+
       }
 
       document.add(list);
@@ -596,12 +596,23 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-          String suiteNumber = beneficialOwner.getAddress().getSuite();
-          String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
-          String city = beneficialOwner.getAddress().getCity();
-          String province = beneficialOwner.getAddress().getRegionId();
-          String country = beneficialOwner.getAddress().getCountryId();
-          String postalCode = beneficialOwner.getAddress().getPostalCode();
+
+          String suiteNumber = null;
+          String streetAddress = null;
+          String city = null;
+          String province = null;
+          String country = null;
+          String postalCode = null;
+
+          if ( beneficialOwner.getAddress() != null ) {
+            suiteNumber = beneficialOwner.getAddress().getSuite();
+            streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
+            city = beneficialOwner.getAddress().getCity();
+            province = beneficialOwner.getAddress().getRegionId();
+            country = beneficialOwner.getAddress().getCountryId();
+            postalCode = beneficialOwner.getAddress().getPostalCode();
+          }
+
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
           dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
           String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
