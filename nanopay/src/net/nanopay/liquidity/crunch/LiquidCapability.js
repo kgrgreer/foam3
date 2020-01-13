@@ -132,6 +132,9 @@ foam.CLASS({
         // add approver menu permission for approvers
         if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
 
+        if ( getCanMakeAccount() ) permissions.add("account.make");
+        if ( getCanMakeTransaction() ) permissions.add("transaction.make");
+
         return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
       `
     }
@@ -150,17 +153,19 @@ foam.CLASS({
         if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
-
-          X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
           String[] permissionComponents = permission.split("\\\\.");
-          if ( permissionComponents.length != 2 ) {
+          if ( permissionComponents.length != 3 ) {
             // the permission string was not generated properly, should never happen
             return false;
           }
-          String permissionStr = permissionComponents[0];
-          String outgoingAccountId = permissionComponents[1];
-          if ( (Boolean) getProperty(permissionStr) ) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX).find(AND(
+          String permObj = permissionComponents[0];
+          String permOperation = permissionComponents[1];
+          String outgoingAccountId = permissionComponents[2];
+
+          String permToProperty = "can" + permOperation.substring(0, 1).toUpperCase() + permOperation.substring(1) + permObj.substring(0, 1).toUpperCase() + permObj.substring(1);
+
+          if ( (Boolean) getProperty(permToProperty) ) {
+            UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(AND(
               EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
               EQ(UserCapabilityJunction.TARGET_ID, getId())
             ));
@@ -205,9 +210,9 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewUser' },
     { class: 'Boolean', name: 'canMakeUser' },
     { class: 'Boolean', name: 'canApproveUser' },
-    { class: 'Boolean', name: 'canViewLiquiditysetting' },
-    { class: 'Boolean', name: 'canMakeLiquiditysetting' },
-    { class: 'Boolean', name: 'canApproveLiquiditysetting' },
+    { class: 'Boolean', name: 'canViewLiquiditysettings' },
+    { class: 'Boolean', name: 'canMakeLiquiditysettings' },
+    { class: 'Boolean', name: 'canApproveLiquiditysettings' },
     { class: 'Boolean', name: 'canViewCapability' },
     { class: 'Boolean', name: 'canMakeCapability' },
     { class: 'Boolean', name: 'canApproveCapability' },
@@ -230,10 +235,15 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add approver menu permission for approvers
-        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysetting() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
+        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysettings() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
 
         // add file upload permission for file ingesters
         if ( getCanIngestFile() ) permissions.add("menu.read.liquid.fileupload");
+
+        if ( getCanMakeRule() ) permissions.add("rule.make");
+        if ( getCanMakeUser() ) permissions.add("user.make");
+        if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
+        if ( getCanMakeCapability() ) permissions.add("capability.make");
 
         return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
       `
@@ -251,7 +261,17 @@ foam.CLASS({
         if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
-          return (Boolean) getProperty(permission);
+          String[] permissionComponents = permission.split("\\\\.");
+          if ( permissionComponents.length != 2 ) {
+            // the permission string was not generated properly, should never happen
+            return false;
+          }
+          String permObj = permissionComponents[0];
+          String permOperation = permissionComponents[1];
+
+          String permToProperty = "can" + permOperation.substring(0, 1).toUpperCase() + permOperation.substring(1) + permObj.substring(0, 1).toUpperCase() + permObj.substring(1);
+
+          return (Boolean) getProperty(permToProperty);
         } catch ( java.lang.Exception e ) {
           return false;
         }

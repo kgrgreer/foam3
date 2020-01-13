@@ -31,12 +31,10 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
-        
-        X systemX = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
 
         try {
-          DAO capabilityDAO = ((DAO) x.get("capabilityDAO")).inX(systemX);
-          DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX);
+          DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
+          DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
           Capability c;
           

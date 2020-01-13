@@ -1997,3 +1997,25 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ucjQueryService",
+  "serve": true,
+  "serviceClass": "net.nanopay.liquidity.ucjQuery.CachedUCJQueryService",
+  "boxClass": "net.nanopay.liquidity.ucjQuery.UCJQueryServiceSkeleton",
+  "client":
+  """
+    {
+      "class":"net.nanopay.liquidity.ucjQuery.ClientUCJQueryService",
+      "delegate": { 
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":
+          "service/ucjQueryService"
+        }
+      }
+    }
+  """
+})

@@ -182,8 +182,8 @@ foam.CLASS({
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
 
-      ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       LifecycleAware lifecycleObj = (LifecycleAware) obj;
+      ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
       if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
@@ -231,58 +231,66 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
+        // TODO: Add UserFeedbackException here
         return null;  // we aren't updating the object to deleted just yet
       }
 
       if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ){
-        List approvedObjCreateRequests = ((ArraySink) approvalRequestDAO
-          .where(
-            foam.mlang.MLang.AND(
-              foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
-              foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
-              foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
-              foam.mlang.MLang.OR(
-                foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
-                foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.ACTIVE ) { 
+          return super.put_(x,obj);
+        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+          List approvedObjCreateRequests = ((ArraySink) approvalRequestDAO
+            .where(
+              foam.mlang.MLang.AND(
+                foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, getDaoKey()),
+                foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableAwareObj.getApprovableKey()),
+                foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.CREATE),
+                foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
+                foam.mlang.MLang.OR(
+                  foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED),
+                  foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
+                )
               )
-            )
-          ).select(new ArraySink())).getArray();
+            ).select(new ArraySink())).getArray();
 
-        if ( approvedObjCreateRequests.size() == 1 ){
-          RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjCreateRequests.get(0);
-          fulfilledRequest.setIsFulfilled(true);
+          if ( approvedObjCreateRequests.size() == 1 ){
+            RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjCreateRequests.get(0);
+            fulfilledRequest.setIsFulfilled(true);
 
-          approvalRequestDAO.put_(getX(), fulfilledRequest);
+            approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
-            lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
-            return super.put_(x,obj);
+            if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+              lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
+              return super.put_(x,obj);
+            } 
+            
+            // create request has been rejected is only where we mark the object as REJECTED
+            lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
+            return super.put_(x,obj); 
           } 
           
-          // create request has been rejected is only where we mark the object as REJECTED
-          lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
-          return super.put_(x,obj); 
-        } 
-        
-        if ( approvedObjCreateRequests.size() > 1 ){
-          logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
-          throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
-        } 
+          if ( approvedObjCreateRequests.size() > 1 ){
+            logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
+            throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
+          } 
 
-        RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
-          .setDaoKey(getDaoKey())
-          .setObjId(approvableAwareObj.getApprovableKey())
-          .setClassification(getOf().getObjClass().getSimpleName())
-          .setOperation(Operations.CREATE)
-          .setInitiatingUser(((User) x.get("user")).getId())
-          .setStatus(ApprovalStatus.REQUESTED).build();
+          RoleApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(getX())
+            .setDaoKey(getDaoKey())
+            .setObjId(approvableAwareObj.getApprovableKey())
+            .setClassification(getOf().getObjClass().getSimpleName())
+            .setOperation(Operations.CREATE)
+            .setInitiatingUser(((User) x.get("user")).getId())
+            .setStatus(ApprovalStatus.REQUESTED).build();
 
-        fullSend(getX(), approvalRequest, obj);
+          fullSend(getX(), approvalRequest, obj);
 
-        // we are storing the object in it's related dao with a lifecycle state of PENDING
-        return super.put_(x,obj);
-
+          // we are storing the object in it's related dao with a lifecycle state of PENDING
+                  // TODO: Add UserFeedback to obj here
+          return super.put_(x,obj);
+        } else {
+          logger.error("Something went wrong used an invalid lifecycle status for create!");
+          throw new RuntimeException("Something went wrong used an invalid lifecycle status for create!");
+        }
       } else {
         // then handle the diff here and attach it into the approval request
         Map updatedProperties = currentObjectInDAO.diff(obj);
@@ -345,7 +353,8 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
-        return null; // we aren't updating the object just yet
+        // TODO: Grab feedback from obj, update it with approval request and add to CurrentObjectInDAO
+        return currentObjectInDAO; // we aren't updating the object just yet
       }
       `
     }

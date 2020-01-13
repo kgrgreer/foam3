@@ -25,7 +25,7 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
-            DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
+            DAO capabilityDAO = (DAO) getX().get("localCapabilityDAO");
 
             CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();

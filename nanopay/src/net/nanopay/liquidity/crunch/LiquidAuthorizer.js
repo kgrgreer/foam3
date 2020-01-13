@@ -27,10 +27,10 @@ foam.CLASS({
       ],
       type: 'String',
       documentation: `
-      Return a liquid specific permission string in the form of "can{Operation}{ClassName}.{outgoingAccountId}"
+      Return a liquid specific permission string in the form of "{ClassName}.{Operation}.{outgoingAccountId}"
       `,
       javaCode: `
-        String permission = "can" + op + getPermissionPrefix().substring(0, 1).toUpperCase() + getPermissionPrefix().substring(1);
+        String permission = getPermissionPrefix() + "." + op;
         if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
         return permission;
       `
@@ -41,7 +41,7 @@ foam.CLASS({
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : 0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("Make", accountId);
+        String permission = createPermission("make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {
@@ -58,9 +58,9 @@ foam.CLASS({
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String readPermission = createPermission("View", accountId);
-        String approvePermission = createPermission("Approve", accountId);
-        String makePermission = createPermission("Make", accountId);
+        String readPermission = createPermission("view", accountId);
+        String approvePermission = createPermission("approve", accountId);
+        String makePermission = createPermission("make", accountId);
 
         if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
           throw new AuthorizationException();
@@ -73,7 +73,7 @@ foam.CLASS({
         Long accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : 0;
         accountId = oldObj instanceof Transaction ? ((Transaction) oldObj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("Make", accountId);
+        String permission = createPermission("make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {
@@ -87,7 +87,7 @@ foam.CLASS({
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : 0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("Make", accountId);
+        String permission = createPermission("make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {

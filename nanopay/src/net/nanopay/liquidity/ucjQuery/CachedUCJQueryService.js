@@ -225,7 +225,7 @@ foam.CLASS({
 
         // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        DAO capabilitiesDAO = (DAO) x.get("capabilityDAO");
+        DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
 
         Logger logger = (Logger) x.get("logger");
 
@@ -246,7 +246,7 @@ foam.CLASS({
             break;
           case "liquiditysettings":
             capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTING, true)
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTINGS, true)
             ).select(new ArraySink())).getArray();
             break;
           case "user":

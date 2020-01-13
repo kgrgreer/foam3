@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'AccountDAOCreateView',
   extends: 'foam.comics.v2.DAOCreateView',
 
+  imports: [
+    'stack',
+    'ctrl'
+  ],
+
   requires: [
     'net.nanopay.account.DigitalAccount',
     'foam.u2.dialog.NotificationMessage'
@@ -17,6 +22,13 @@ foam.CLASS({
   documentation: `
     A configurable view to create an instance of a specified model
   `,
+
+  messages: [
+    {
+      name: 'SUCCESS_MESSAGE',
+      message: 'An approval request has been created.'
+    }
+  ],
 
   properties: [
     {
@@ -51,7 +63,7 @@ foam.CLASS({
           this.stack.back();
         }, (e) => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: e.message,
             type: 'error'
           }));

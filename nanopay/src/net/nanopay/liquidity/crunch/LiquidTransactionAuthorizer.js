@@ -5,25 +5,22 @@ foam.CLASS({
   implements: [ 'foam.nanos.auth.Authorizer' ],
 
   javaImports: [
-      'foam.nanos.auth.AuthorizationException',
-      'foam.nanos.auth.AuthService',
-      'net.nanopay.tx.model.Transaction'
-    ],
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'net.nanopay.tx.model.Transaction'
+  ],
 
   methods: [
     {
       name: 'authorizeOnRead',
       javaCode:  `
-
         Long accountId = ((Transaction) obj).getDestinationAccount();
         String readPermission = createPermission("View", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, readPermission) ) {
-          throw new AuthorizationException();
-        }
-        
-        super.authorizeOnRead(x, obj);
+          super.authorizeOnRead(x, obj);
+        }        
       `
     }
   ]

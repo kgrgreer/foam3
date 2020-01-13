@@ -14,7 +14,6 @@ foam.ENUM({
     {
       name: 'REVOKE_ACCOUNT_BASED',
       label: 'Revoke Account Based Capability',
-  
     },
     {
       name: 'REVOKE_GLOBAL',
