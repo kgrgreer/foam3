@@ -429,6 +429,7 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakPaymentTransaction',
   'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.KotakSplitTransactionPlanDAO',
