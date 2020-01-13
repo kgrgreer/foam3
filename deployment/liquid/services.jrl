@@ -252,10 +252,6 @@ p({
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
     // dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
     // dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
-    dao = new foam.nanos.auth.AuthorizationDAO(x, dao,
-      new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer.Builder(x)
-        .setPermissionPrefix("transaction")
-        .build());
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
     """
 })
@@ -669,6 +665,26 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/liquidTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/liquidTransactionDAO\"}}}}",
   "documentation":"A client-side enabled (serve:true), authenticated transaction DAO for Liquid that enforces transactions to go through approval flow."
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setPermissioned(true)
+      // ? .orderBy(new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED)
+      .setInnerDAO(x.get("localTransactionDAO")).
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
 })
 
 p({
