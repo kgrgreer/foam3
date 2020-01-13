@@ -8,8 +8,11 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.ProxySink',
     'foam.dao.ArraySink',
+    'foam.dao.LimitedSink',
     'foam.dao.DAO',
+    'foam.core.Detachable',
     'foam.core.X',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.crunch.Capability',
@@ -31,29 +34,38 @@ foam.CLASS({
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
         if ( user == null || ! user.getEnabled() ) return false;
+        
+        Logger logger = (Logger) x.get("logger");
 
         try {
           DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-          Capability c;
-          
-          List<UserCapabilityJunction> userCapabilityJunctions = ((ArraySink) userCapabilityJunctionDAO
-            .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
-            .select(new ArraySink()))
-            .getArray();
-          for ( UserCapabilityJunction ucj : userCapabilityJunctions ) {
-            c = (Capability) capabilityDAO.find(ucj.getTargetId());
-            if ( c.implies(x, permission) ) {
-              return true;
+          ProxySink proxy = new ProxySink(x, new LimitedSink(x, 1, 0, new ArraySink())) {
+            int count = 0;
+            @Override
+            public void put(Object o, Detachable sub) {
+              UserCapabilityJunction ucj = (UserCapabilityJunction) ((UserCapabilityJunction) o).deepClone();
+              Capability c = (Capability) capabilityDAO.find(ucj.getTargetId());
+              if ( c.implies(x, permission) ) {
+                getDelegate().put(o, sub);
+              }
             }
-          }
+          };
 
+          List<UserCapabilityJunction> ucjs = ((ArraySink) ((ProxySink) ((ProxySink) userCapabilityJunctionDAO
+            .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
+            .select(proxy))
+            .getDelegate())
+            .getDelegate())
+            .getArray();
+            
+          if ( ucjs.size() > 0) {
+            return true;
+          }
         } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
           logger.error("check", permission, e);
         }
-
         return false;
       `
     }
