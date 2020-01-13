@@ -674,6 +674,8 @@ var classes = [
   'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
   'net.nanopay.meter.report.TransactionReport',
+  'net.nanopay.meter.report.PaymentReport',
+  'net.nanopay.meter.report.PaymentReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
