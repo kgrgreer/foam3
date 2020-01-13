@@ -115,10 +115,8 @@ public class AccountHierarchyService
     // Check if parentId exists in map, if it doesn't fetch children and add them to map
     if ( ! map.containsKey(parentIdString) ) {
       Account parentAccount = (Account) accountDAO.find(parentId);
-      List<Account> children = new ArrayList<Account>();
-      List<Long> childIdList = new ArrayList<Long>();
-
-      children = getChildAccounts(x, parentAccount);
+      List<Account> children = getChildAccounts(x, parentAccount);
+      List<Long> childIdList = new ArrayList<>();
 
       if ( children.size() > 0 ) {
         for ( int i = 0; i < children.size(); i++ ) {
@@ -138,13 +136,13 @@ public class AccountHierarchyService
   public List<Account> getChildAccounts(X x, Account account) {
      ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
      List<Account> allChildrenList = allChildrenSink.getArray();
-    
-    List<Account> allAccounts = new ArrayList<Account>();
+
+    List<Account> allAccounts = new ArrayList<>();
     allAccounts.add(account);
 
     if ( allChildrenList.size() > 0 ) {
       for ( int i = 0; i < allChildrenList.size(); i++ ) {
-        Account acc = (Account) allChildrenList.get(i);
+        Account acc = allChildrenList.get(i);
         List<Account> childChildren = getChildAccounts(x, acc);
         allAccounts.addAll(childChildren);
       }
