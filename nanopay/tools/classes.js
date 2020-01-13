@@ -328,7 +328,6 @@ var classes = [
    'net.nanopay.liquidity.crunch.LiquidAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer',
-   'net.nanopay.liquidity.crunch.AddChildrenToCapabilityAccountTemplateOnUCJCreate',
    'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
    'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
    'net.nanopay.liquidity.crunch.CapabilityRequest',
