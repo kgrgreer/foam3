@@ -597,20 +597,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
 
-          String suiteNumber = null;
-          String streetAddress = null;
-          String city = null;
-          String province = null;
-          String country = null;
-          String postalCode = null;
-
           if ( beneficialOwner.getAddress() != null ) {
-            suiteNumber = beneficialOwner.getAddress().getSuite();
-            streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
-            city = beneficialOwner.getAddress().getCity();
-            province = beneficialOwner.getAddress().getRegionId();
-            country = beneficialOwner.getAddress().getCountryId();
-            postalCode = beneficialOwner.getAddress().getPostalCode();
+            list.add(new ListItem("Suite No: " + beneficialOwner.getAddress().getSuite()));
+            list.add(new ListItem("Residential street address: " + beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName()));
+            list.add(new ListItem("City: " + beneficialOwner.getAddress().getCity()));
+            list.add(new ListItem("State/Province: " + beneficialOwner.getAddress().getRegionId()));
+            list.add(new ListItem("Country: " + beneficialOwner.getAddress().getCountryId()));
+            list.add(new ListItem("ZIP/Postal Code: " + beneficialOwner.getAddress().getPostalCode()));
           }
 
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -623,12 +616,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-          list.add(new ListItem("Suite No: " + suiteNumber));
-          list.add(new ListItem("Residential street address: " + streetAddress));
-          list.add(new ListItem("City: " + city));
-          list.add(new ListItem("State/Province: " + province));
-          list.add(new ListItem("Country: " + country));
-          list.add(new ListItem("ZIP/Postal Code: " + postalCode));
           list.add(new ListItem("Date of birth: " + dateOfBirth));
           document.add(list);
           document.add(Chunk.NEWLINE);
