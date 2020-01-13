@@ -517,7 +517,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
 
-      if ( null != signingOfficer.getIdentification() 
+      if ( null != signingOfficer.getIdentification()
         && signingOfficer.getIdentification().getIdentificationTypeId() != 0 ) {
         IdentificationType idType = (IdentificationType) identificationTypeDAO
           .find(signingOfficer.getIdentification().getIdentificationTypeId());
@@ -538,7 +538,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Identification number: " + identificationNumber));
         list.add(new ListItem("Issue date: " + issueDate));
         list.add(new ListItem("Expiration date: " + expirationDate));
-        
+
       }
 
       document.add(list);
@@ -596,29 +596,28 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-          String suiteNumber = beneficialOwner.getAddress().getSuite();
-          String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
-          String city = beneficialOwner.getAddress().getCity();
-          String province = beneficialOwner.getAddress().getRegionId();
-          String country = beneficialOwner.getAddress().getCountryId();
-          String postalCode = beneficialOwner.getAddress().getPostalCode();
+
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
           dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
           String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
-          document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           list.add(new ListItem("First name: " + firstName));
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-          list.add(new ListItem("Suite No: " + suiteNumber));
-          list.add(new ListItem("Residential street address: " + streetAddress));
-          list.add(new ListItem("City: " + city));
-          list.add(new ListItem("State/Province: " + province));
-          list.add(new ListItem("Country: " + country));
-          list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-          list.add(new ListItem("Date of birth: " + dateOfBirth));
+
+          if ( beneficialOwner.getAddress() != null ) {
+            list.add(new ListItem("Suite No: " + beneficialOwner.getAddress().getSuite()));
+            list.add(new ListItem("Residential street address: " + beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName()));
+            list.add(new ListItem("City: " + beneficialOwner.getAddress().getCity()));
+            list.add(new ListItem("State/Province: " + beneficialOwner.getAddress().getRegionId()));
+            list.add(new ListItem("Country: " + beneficialOwner.getAddress().getCountryId()));
+            list.add(new ListItem("ZIP/Postal Code: " + beneficialOwner.getAddress().getPostalCode()));
+            list.add(new ListItem("Date of birth: " + dateOfBirth));
+          }
+
+          document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
