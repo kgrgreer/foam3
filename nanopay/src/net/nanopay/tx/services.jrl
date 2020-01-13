@@ -48,7 +48,7 @@ p({
       .setDelegate(dao)
       .build();
     dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
-//    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionQuotePlanDAO");
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionQuotePlanDAO");
     dao = new net.nanopay.tx.RetailTransactionPlanDAO(x, dao);
     dao = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
       .setDelegate(dao)
