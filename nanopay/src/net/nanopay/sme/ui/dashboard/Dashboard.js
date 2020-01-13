@@ -40,6 +40,7 @@ foam.CLASS({
     'ctrl',
     'group',
     'invoiceDAO',
+    'isIframe',
     'notificationDAO',
     'onboardingUtil',
     'pushMenu',
@@ -424,11 +425,16 @@ foam.CLASS({
           .end();
 
         split.topButtons.add(top);
-        split.line.add(line);
-        split.leftTopPanel.add(topL);
-        split.leftBottomPanel.add(botL);
-        split.rightTopPanel.add(topR);
-        split.rightBottomPanel.add(botR);
+        split.line.add(line)
+          .hide(this.isIframe());
+        split.leftTopPanel.add(topL)
+          .hide(this.isIframe());
+        split.leftBottomPanel.add(botL)
+          .hide(this.isIframe());
+        split.rightTopPanel.add(topR)
+          .hide(this.isIframe());
+        split.rightBottomPanel.add(botR)
+          .hide(this.isIframe());
 
         this.addClass(this.myClass()).add(split);
       });

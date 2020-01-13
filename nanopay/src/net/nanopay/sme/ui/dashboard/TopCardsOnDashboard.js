@@ -138,7 +138,7 @@ foam.CLASS({
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-              .start('span')
+              .start('span').hide(this.isIframe())
                 .add(this.slot((onboardingStatus, internationalPaymentEnabled, businessOnboarding) => {
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && internationalPaymentEnabled, businessOnboarding: businessOnboarding }).end();
                 }))
@@ -158,7 +158,7 @@ foam.CLASS({
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-              .start('span')
+              .start('span').hide(this.isIframe())
                 .add(this.slot((internationalPaymentEnabled, businessOnboarding) => {
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled, isEmployee: true, businessOnboarding: businessOnboarding }).end();
                 }))
