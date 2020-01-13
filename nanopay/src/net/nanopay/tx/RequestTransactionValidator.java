@@ -34,5 +34,11 @@ public class RequestTransactionValidator implements Validator {
       throw new RuntimeException("sourceAccount must be set");
     }
 
+    Transaction request = quote.getRequestTransaction();
+    if ( request != null &&
+         ! foam.util.SafetyUtil.isEmpty(request.getId()) ) {
+      logger.error("Request has ID", request.getId());
+      throw new RuntimeException("Request Transaction ID must not be set.");
+    }
   }
 }
