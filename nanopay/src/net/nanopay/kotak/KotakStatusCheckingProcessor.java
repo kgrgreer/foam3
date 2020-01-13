@@ -104,14 +104,17 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
           case "Txn_Hold": // Transaction kept on hold by bank
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Hold.").build());
+            sendNotification(x, "Kotak payment on hold. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
           case "Txn_Not_Found": // Transaction Not Found
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Not_Found.").build());
+            sendNotification(x, "Kotak payment not found. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
           case "System Error": // Some exceptions in processing
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("System Error.").build());
+            sendNotification(x, "System error has occurred for a Kotak payment. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
         }
       }
@@ -125,8 +128,9 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
 
   private void sendNotification(X x, String body) {
     Notification notification = new Notification.Builder(x)
-      .setTemplate("KotakStatusChecking")
-      .setBody(body)
+      .setNotificationType(body)
+      .setGroupId("payment-ops")
+      .setEmailIsEnabled(true)
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);

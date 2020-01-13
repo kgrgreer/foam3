@@ -566,7 +566,10 @@ foam.CLASS({
           errorString: 'Please select job title.'
         }
       ],
-      validationTextVisible: true
+      validationTextVisible: true,
+      postSet: function(_, n) {
+        this.owner1.jobTitle = this.adminJobTitle;
+      }
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       name: 'adminPhone',
@@ -1141,7 +1144,6 @@ foam.CLASS({
     },
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership',
       postSet: function(o, n) {
         this.owner1.ownershipPercent = n;
       },
@@ -1266,12 +1268,17 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.GT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+              ),
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
               ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
@@ -1293,7 +1300,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'dualPartyAgreement'],
+          args: ['signingOfficer', 'dualPartyAgreement', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
@@ -1439,8 +1446,10 @@ foam.CLASS({
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
           } else {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
       }
