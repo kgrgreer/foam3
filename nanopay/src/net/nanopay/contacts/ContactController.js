@@ -70,6 +70,13 @@ foam.CLASS({
                     .end();
                 }
               }
+            }),
+            this.Action.create({
+              name: 'upgrade',
+              label: 'Upgrade Contact',
+              code: function(X) {
+                console.log("open modal");
+              }
             })
           ],
           contextMenuActions: [
