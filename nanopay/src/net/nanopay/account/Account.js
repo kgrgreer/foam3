@@ -176,6 +176,7 @@ foam.CLASS({
       label: 'Account name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
+      tableWidth: 168,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
@@ -215,6 +216,7 @@ foam.CLASS({
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
+      tableWidth: 130,
       writePermissionRequired: true,
       tableWidth: 127,
       section: 'accountDetails',
@@ -224,6 +226,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isDefault',
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
+      tableWidth: 87,
       label: 'Set As Default',
       value: false,
       section: 'administration',
@@ -348,7 +351,6 @@ foam.CLASS({
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
-      tableWidth: 500,
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,
