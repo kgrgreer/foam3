@@ -65,6 +65,18 @@ foam.CLASS({
       documentation: 'Determines how often an automatic cash out can occur.',
       section: 'basicInfo'
     },
+    {	
+      class: 'Reference',	
+      of: 'foam.core.Unit',	
+      name: 'denomination',	
+      required: true,
+      targetDAOKey: 'currencyDAO',	
+      documentation: `The unit of measure of the payment type. The payment system can handle	
+        denominations of any type, from mobile minutes to stocks.	
+      `	,
+      section: 'basicInfo',
+      updateMode: 'RO',
+    },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
@@ -82,6 +94,7 @@ foam.CLASS({
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
+          denomination$: this.denomination$
         });
       },
       javaFactory: `
@@ -91,8 +104,24 @@ foam.CLASS({
           .build();
       `,
       tableCellFormatter: function(value, obj, id) {
-        this.add(value.threshold);
+        var self = this;
+        return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+          function(curr) {
+            var lowLiquidity = curr ? curr.format(obj.lowLiquidity.threshold != null ? obj.lowLiquidity.threshold : 0) : obj.lowLiquidity.threshold;
+            self.add(lowLiquidity);
+          })
       },
+      validationTextVisible: true,
+      validationStyleEnabled: true,
+      validateObj: function(lowLiquidity$resetBalance, lowLiquidity$threshold, highLiquidity$resetBalance, highLiquidity$threshold) {
+        if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
+          return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
+        }
+
+        if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+          return 'High Liquidity threshold should be greater than Low liquidity values.';
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -111,6 +140,7 @@ foam.CLASS({
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
+          denomination$: this.denomination$
         });
       },
       javaFactory: `
@@ -120,8 +150,24 @@ foam.CLASS({
           .build();
       `,
       tableCellFormatter: function(value, obj, id) {
-        this.add(value.threshold);
+        var self = this;
+        return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
+          function(curr) {
+            var highLiquidity = curr ? curr.format(obj.highLiquidity.threshold != null ? obj.highLiquidity.threshold : 0) : obj.highLiquidity.threshold;
+            self.add(highLiquidity);
+          })
       },
+      validationTextVisible: true,
+      validationStyleEnabled: true,
+      validateObj: function(lowLiquidity$resetBalance, lowLiquidity$threshold, highLiquidity$resetBalance, highLiquidity$threshold) {
+        if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
+          return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
+        }
+
+        if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+          return 'High Liquidity threshold should be greater than Low liquidity values.';
+        }
+      }
     },
     {
       class: 'DateTime',
@@ -135,16 +181,6 @@ foam.CLASS({
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       visibility: 'RO'
-    },
-    {	
-      class: 'Reference',	
-      of: 'foam.core.Unit',	
-      name: 'denomination',	
-      required: true,
-      targetDAOKey: 'currencyDAO',	
-      section: 'basicInfo',
-      help: 'Push/Pull accounts for your thresholds will be filtered by this.',
-      updateMode: 'RO'
     }
   ],
   methods: [
