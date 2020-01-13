@@ -569,14 +569,14 @@ foam.CLASS({
                 )).select().then((result) => {
                   if ( sourceCurrency === destinationCurrency ) return amount;
                   if ( result.array.length > 0 ) {
-                    return amount*result.array[0].rate;
+                    return (amount*result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
                   } else {
                     return X.exchangeRateDAO.where(e.AND(
                       e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, destinationCurrency),
                       e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, sourceCurrency)
                     )).select().then((result) => {
                       if ( result.array.length > 0 ) {
-                        return amount/result.array[0].rate;
+                        return (amount/result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
                       }
                       return 0;
                   });

@@ -33,7 +33,8 @@ foam.CLASS({
         return ! data$errors_;
       },
       code: function(x) {
-        x.transactionDAO.put(this.data) // TODO switch to put on the liquidTransactionDAO
+        this.data.referenceNumber = 'ManuallyCreated';
+        x.liquidTransactionDAO.put(this.data)
         .then(
           (_) => {
             x.notify('Transaction Created Successfully!');
