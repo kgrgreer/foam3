@@ -36,7 +36,6 @@ foam.CLASS({
         if ( user == null || ! user.getEnabled() ) return false;
         
         Logger logger = (Logger) x.get("logger");
-        logger.info(permission);
 
         try {
           DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
@@ -54,10 +53,10 @@ foam.CLASS({
             }
           };
 
-          List<UserCapabilityJunction> ucjs = ((ArraySink) ((ProxySink) userCapabilityJunctionDAO
+          List<UserCapabilityJunction> ucjs = ((ArraySink) ((ProxySink) ((ProxySink) userCapabilityJunctionDAO
             .where(EQ(UserCapabilityJunction.SOURCE_ID, user.getId()))
-            .limit(1)
             .select(proxy))
+            .getDelegate())
             .getDelegate())
             .getArray();
             
