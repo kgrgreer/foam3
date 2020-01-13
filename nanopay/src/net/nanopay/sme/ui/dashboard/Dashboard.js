@@ -232,8 +232,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.CABankAccount.name),
               this.EQ(this.Account.TYPE, this.USBankAccount.name)
             ),
-            this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
-            this.EQ(this.Account.IS_DEFAULT, true)
+            this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED)
           )
         ).select()
         .then((sink) => {
