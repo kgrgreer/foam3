@@ -1302,6 +1302,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GSFileUploadScreen' },
   { name: 'net/nanopay/script/CsvUploadScript' },
   { name: 'net/nanopay/tx/QuoteFillerDAO' },
+  { name: 'net/nanopay/tx/gs/IngestionReport' },
+  { name: 'net/nanopay/tx/gs/GSReportAssembly' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },

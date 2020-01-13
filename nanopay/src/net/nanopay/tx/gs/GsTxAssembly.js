@@ -61,6 +61,15 @@ foam.CLASS({
       value: false,
     },
     {
+      class: 'Long',
+      name: 'txnCount',
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.GSReportAssembly',
+      name: 'trackingJob'
+    },
+    {
       class: 'Boolean',
       name: 'concurrentPuts',
       value: false,
@@ -111,6 +120,7 @@ foam.CLASS({
         getOutputDAO().put(getTransaction());
         if ( getPbd() != null )
           ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
+        getTrackingJob().incrementTxnCounter(getTxnCount());
       `
     },
     {
@@ -187,6 +197,7 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       tx = addStatusHistory(tx,stamp);
+      setTxnCount(getTxnCount()+1);
       tx.setReferenceNumber("IngestedTransaction");
       Transaction [] ts = tx.getNext();
       if (ts != null)
@@ -378,6 +389,7 @@ foam.CLASS({
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
             secCI.setReferenceNumber("TopUp");
             transactionDAO.put(secCI); // top up the sending security account
+            getTrackingJob().incrementTopUpCounter(1);
           }
           return true;
         }
@@ -467,6 +479,7 @@ foam.CLASS({
             tx = (Transaction) tx.fclone();
             tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
             transactionDAO.put(tx);
+            getTrackingJob().incrementTopUpCounter(1);
           }
           return false;
         }

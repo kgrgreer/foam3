@@ -751,8 +751,6 @@ var classes = [
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
 
-  'net.nanopay.tx.gs.ProgressBarData',
-
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
@@ -889,6 +887,9 @@ var classes = [
   'net.nanopay.script.CsvUploadScript',
   'net.nanopay.tx.gs.GsTxAssembly',
   'net.nanopay.tx.QuoteFillerDAO',
+  'net.nanopay.tx.gs.ProgressBarData',
+  'net.nanopay.tx.gs.IngestionReport',
+  'net.nanopay.tx.gs.GSReportAssembly',
 
   // Ticket
   'net.nanopay.ticket.SudoTicket',

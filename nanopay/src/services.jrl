@@ -1982,7 +1982,8 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setPipelinePm(true)
+      .setPipelinePm(false)
+      .setRuler(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("ProgressBarDAO")
       .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
