@@ -7,10 +7,12 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'auth'
+    'auth',
+    'notify'
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
     'net.nanopay.settings.business.UserManagementView',
@@ -60,13 +62,14 @@ foam.CLASS({
   ],
 
   properties: [
-    'preSelectedTab'
+    'preSelectedTab',
+    'hasPermission'
   ],
 
   methods: [
     async function initE() {
       this.SUPER();
-      showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
+      var showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
       this.auth
         .check(null, 'menu.read.sme.userManagement')
         .then((hasPermission) => {
@@ -93,14 +96,27 @@ foam.CLASS({
             .end();
           }
           this.addClass(this.myClass())
+            .startContext({ data: this })
+              .tag(this.CREATE_BUSINESS)
+            .endContext()
             .start('h1').add(this.TITLE).end()
             .start().addClass('section-line').end()
             .tag(tabs);
         })
         .catch((err) => {
           console.error(err);
-          this.ctrl.notify(err.message || this.GENERIC_ERROR, 'error');
+          this.notify(err.message || this.GENERIC_ERROR, 'error');
         });
+    }
+  ],
+  actions: [
+    {
+      name: 'createBusiness',
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag({
+          class: 'net.nanopay.sme.ui.CreateBusinessModal',
+        }));
+      }
     }
   ]
 
