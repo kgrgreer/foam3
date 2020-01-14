@@ -379,6 +379,8 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.fx.SecurityPrice',
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.fx.FXTransaction',
@@ -945,6 +947,7 @@ var skeletons = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+  'net.nanopay.fx.ExchangeRateServiceInterface'
 ];
 
 var proxies = [

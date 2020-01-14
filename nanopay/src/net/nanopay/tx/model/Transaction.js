@@ -20,7 +20,8 @@ foam.CLASS({
     'currencyDAO',
     'homeDenomination',
     'stack?',
-    'user'
+    'user',
+    'exchangeRateService'
   ],
 
   javaImports: [

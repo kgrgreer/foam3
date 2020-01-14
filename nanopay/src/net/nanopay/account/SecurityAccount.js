@@ -15,8 +15,15 @@ foam.CLASS({
     'foam.core.Currency'
   ],
 
+  imports: [
+    'exchangeRateService'
+  ],
+
   searchColumns: [
-    'name', 'id', 'denomination', 'type'
+    'name',
+    'id',
+    'denomination',
+    'type'
   ],
 
   tableColumns: [
@@ -42,51 +49,45 @@ foam.CLASS({
       class: 'Long',
       name: 'balance',
       label: 'Balance (local)',
+      section: 'balanceDetails',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-            tableCellFormatter: function(value, obj, id) {
-              return this.balance;
-            },
-      /*
       tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.securitiesDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
-            })
-        }));
-      },*/
+        return obj.denomination.format(value);
+      },
       tableWidth: 145
-    },
-    {
-      class: 'Long',
-      name: 'marketValue',
-      documentation: 'the current market value of this security account',
-      storageTransient: true,
-      visibility: 'RO',
-      tableWidth: 145
-      //TODO: display the market value.. balance * unit value in some home currency.
     },
     {
       class: 'Long',
       name: 'homeBalance',
       label: 'Balance (home)',
+      section: 'balanceDetails',
       documentation: `
-        replace the table cell formatter to return just regular balance. since we dont use this for securities.
+        replace the table cell formatter to return the market value in home currency.
       `,
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return this.balance;
-      },
+      tableCellFormatter: function(value, obj, axiom) {
+              var self = this;
+
+              this.add(
+                obj.slot(homeDenomination => {
+                  return Promise.all([
+                    obj.denomination == homeDenomination ?
+                      Promise.resolve(1) :
+                      obj.exchangeRateService.exchange(obj.denomination, homeDenomination,
+                         obj.findBalance(self.__subSubContext__)),
+                    self.__subSubContext__.currencyDAO.find(homeDenomination)
+                  ]).then(arr => {
+                    let [b, c] = arr;
+                    var displayBalance = c.format(Math.floor((b || 0) ));
+                    self.tooltip = displayBalance;
+                    return displayBalance;
+                  })
+                })
+              );
+            },
       tableWidth: 145
     },
   ],

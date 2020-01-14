@@ -666,6 +666,28 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "exchangeRateService",
+  "serve": true,
+  "serviceClass": "net.nanopay.fx.ExchangeRateService",
+  "boxClass": "net.nanopay.fx.ExchangeRateServiceInterfaceSkeleton",
+  "client":
+    """
+      {
+        "class":"net.nanopay.fx.ClientExchangeRateService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/exchangeRateService"
+          }
+        }
+      }
+    """
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"transactionDAO",
   "lazy":false,

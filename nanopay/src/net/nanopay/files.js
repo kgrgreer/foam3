@@ -219,12 +219,15 @@ FOAM_FILES([
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
+  { name: 'net/nanopay/fx/SecurityPrice' },
   { name: 'net/nanopay/fx/DeliveryTimeFields' },
   { name: 'net/nanopay/fx/ExchangeRateFields' },
   { name: 'net/nanopay/fx/FeesFields' },
   { name: 'net/nanopay/fx/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/FixerIOExchangeRate' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
+  { name: 'net/nanopay/fx/ExchangeRateServiceInterface' },
+  { name: 'net/nanopay/fx/ClientExchangeRateService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
