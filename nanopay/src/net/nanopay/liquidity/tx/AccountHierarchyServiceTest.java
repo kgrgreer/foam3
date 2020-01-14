@@ -75,6 +75,7 @@ public class AccountHierarchyServiceTest extends Test {
     updateUcj(system, result);
 
     map.clear();
+    cad1.setIsCascading(true);
     map.put("1755", cad1);
     template = new CapabilityAccountTemplate.Builder(system).setId(3).setTemplateName("test3").setAccounts(map).build();
     result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
