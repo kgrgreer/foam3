@@ -71,7 +71,10 @@ p({
     bulk = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
       .setDelegate(payertd)
       .build();
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, bulk));
+    guid = new net.nanopay.tx.GuidTransactionDAO.Builder(x)
+      .setDelegate(bulk)
+      .build();
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, guid));
   """
 })
 

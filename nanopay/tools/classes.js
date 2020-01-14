@@ -452,6 +452,7 @@ var classes = [
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
+  'net.nanopay.tx.GuidTransactionDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
