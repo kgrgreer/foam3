@@ -16,7 +16,7 @@ public class AccountHierarchyService
   implements AccountHierarchy
 {
   protected Map<String, HashSet<Long>> map_;
-  protected Map<Long, HashSet<String>> userToViewableRootAccountsMap_; // getViewableAccountRoots(x, Long userId) {  }
+  public Map<Long, HashSet<String>> userToViewableRootAccountsMap_; // getViewableAccountRoots(x, Long userId) {  }
 
   public AccountHierarchyService() { 
     userToViewableRootAccountsMap_ = new HashMap<Long, HashSet<String>>();
@@ -112,7 +112,7 @@ public class AccountHierarchyService
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     for ( String accountId : accountIds ) {
-      if ( ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
+      if ( ( ! oldMap.containsKey(accountId) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
     }
 
     for ( String accountId : accountIds ) {
@@ -128,9 +128,7 @@ public class AccountHierarchyService
             roots.remove(String.valueOf(child.getId()));
           }
         }
-      } else {
-        roots.remove(accountId);
-      }
+      } 
     }
     oldMap.putAll(newMap);
 
@@ -156,7 +154,6 @@ public class AccountHierarchyService
           accountsSet.add(tempChild);
         }
       }
-      roots.remove(String.valueOf(children.get(0)));
       children.remove(0);
     }
 
