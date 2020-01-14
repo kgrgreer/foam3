@@ -18,6 +18,7 @@ public class AccountHierarchyServiceTest extends Test {
   public CapabilityAccountData cad1, cad2, cad3;
   public AccountApproverMap result;
   public CapabilityAccountTemplate template;
+  public String a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
 
   // test method - public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template)
 
@@ -28,7 +29,7 @@ public class AccountHierarchyServiceTest extends Test {
     al1 = new ApproverLevel.Builder(x).setApproverLevel(1).build();
     al2 = new ApproverLevel.Builder(x).setApproverLevel(2).build();
     al3 = new ApproverLevel.Builder(x).setApproverLevel(3).build();
-    cad1 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al1).build();
+    cad1 = new CapabilityAccountData.Builder(x).setIsCascading(false).setIsIncluded(true).setApproverLevel(al1).build();
     cad2 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al2).build();
     cad3 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al3).build();
 
@@ -37,14 +38,19 @@ public class AccountHierarchyServiceTest extends Test {
 
   public void testAccountTemplate(X x) {
     Map<String, CapabilityAccountData> map = new HashMap<String, CapabilityAccountData>();
-    map.put("1105", cad1);
-    map.put("1107", cad2);
-    map.put("1109", cad3);
+
+    a0 = "1757";
+    a1 = "1763";
+    a2 = "1791";
+
+    map.put(a0, cad1);
+    map.put(a1, cad2);
+    map.put(a2, cad3);
     template = new CapabilityAccountTemplate.Builder(x).setId(1).setTemplateName("test").setAccounts(map).build();
     result = foo(x, true, 1, null, template);
-    System.out.println("1105 : " + result.getAccounts().get("1105")+"\n\n");
-    System.out.println("1107 : " + result.getAccounts().get("1107")+"\n\n");
-    System.out.println("1109 : " + result.getAccounts().get("1109")+"\n\n");
+    System.out.println(a0 + " : " + result.getAccounts().get(a0)+"\n\n");
+    System.out.println(a1 + " : " + result.getAccounts().get(a1)+"\n\n");
+    System.out.println(a2 + " : " + result.getAccounts().get(a2)+"\n\n");
 
     printRoots((long) 1);
     printAccounts(result);

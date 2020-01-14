@@ -121,8 +121,16 @@ public class AccountHierarchyService
         newMap.put(accountId, data);
         if ( data.getIsCascading() ) {
           newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
+        } else {
+          // since this account is not going thru addchildren, need to go thru its immediate children to make sure that they are not in the roots set
+          List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
+          for ( Account child : immediateChildren ) {
+            roots.remove(String.valueOf(child.getId()));
+          }
         }
-      } 
+      } else {
+        roots.remove(accountId);
+      }
     }
     oldMap.putAll(newMap);
 
@@ -155,6 +163,7 @@ public class AccountHierarchyService
           accountsSet.add(tempChild);
         }
       }
+      roots.remove(String.valueOf(children.get(0)));
       children.remove(0);
     }
 
