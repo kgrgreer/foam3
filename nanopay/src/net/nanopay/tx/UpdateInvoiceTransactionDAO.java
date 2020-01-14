@@ -42,15 +42,14 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
 
     Transaction transaction = (Transaction) obj;
 
-    if ( SafetyUtil.isEmpty(transaction.getId()) &&
-      ( transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
-    ) {
+    if ( (transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 )) &&
+      ((DAO) x.get("localTransactionDAO")).find(transaction.getId()) == null ) {
       transaction = (Transaction) super.put_(x, obj);
 
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
-        // Invoice status should be processing as default when the trasaction is created
+        // Invoice status should be processing as default when the transaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         // AscendantFXTransaction has its own completion date
         if ( transaction instanceof AscendantFXTransaction ) {
@@ -70,6 +69,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       && ( transaction instanceof CITransaction ||
            transaction instanceof COTransaction ||
            transaction instanceof FXTransaction ||
+           transaction instanceof KotakPaymentTransaction ||
            transaction instanceof ComplianceTransaction )
     ) {
       transaction.setInvoiceId(getRoot(x, transaction).getInvoiceId());
@@ -82,6 +82,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
          ! ( transaction instanceof CITransaction ||
              transaction instanceof COTransaction ||
              transaction instanceof FXTransaction ||
+             transaction instanceof KotakPaymentTransaction ||
              transaction instanceof ComplianceTransaction ) ) {
       return getDelegate().put_(x, obj);
     }
