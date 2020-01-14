@@ -109,11 +109,15 @@ public class AccountHierarchyService
     Set<String> accountIds = newMap.keySet();
 
     Set<String> roots = trackRootAccounts ? ( userToViewableRootAccountsMap_.containsKey(user) ? userToViewableRootAccountsMap_.get(user) : new HashSet<String>() ) : null;
+    
+    // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
+    for ( String accountId : accountIds ) {
+      if ( ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
+    }
 
     for ( String accountId : accountIds ) {
       CapabilityAccountData data = (CapabilityAccountData) newMap.get(accountId);
       if ( data.getIsIncluded() ) {
-        if ( ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
         newMap.put(accountId, data);
         if ( data.getIsCascading() ) {
           newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
@@ -158,9 +162,11 @@ public class AccountHierarchyService
     for ( Account account : accountsSet ) {
       aid = String.valueOf(account.getId());
       if ( ! accountMap.containsKey(aid) ) accountMap.put(aid, data);
-      else if ( (oldMap.containsKey(aid) && accountMap.containsKey(aid)) && roots.contains(aid) ) {
-        roots.remove(aid);
-      }
+      // else if ( (oldMap.containsKey(aid) && accountMap.containsKey(aid)) && roots.contains(aid) ) {
+      //   roots.remove(aid);
+      // }
+      // child accounts cannot be root accounts 
+      if ( roots.contains(aid) ) roots.remove(aid);
     }
     return accountMap;
   }
