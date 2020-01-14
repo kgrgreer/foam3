@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.Map',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.AccountHierarchy',
@@ -42,14 +43,30 @@ foam.CLASS({
 
               AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
 
-              UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).build();
-
-              ucj.setData(fullAccountMap);
-
               for ( Long userId : users ) {
-                ucj.setSourceId(userId);
-                ucj.setTargetId(capability.getId());
-                userCapabilityJunctionDAO.put_(getX(), ucj);
+                UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
+                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
+                  EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
+                ));
+
+                if ( ucj == null ){
+                  ucj = new UserCapabilityJunction.Builder(x).setData(fullAccountMap).setSourceId(userId).setTargetId(capability.getId()).build();
+                  userCapabilityJunctionDAO.put_(getX(), ucj);
+                } else {
+                  AccountApproverMap ucjMapToUpdate = (AccountApproverMap) ucj.getData();
+                  
+                  if ( ucjMapToUpdate == null || ucjMapToUpdate.getAccounts() == null ) {
+                    ucj.setData(fullAccountMap);
+                    userCapabilityJunctionDAO.put_(getX(), ucj);
+                  } else {
+                    for ( String accountId : fullAccountMap.getAccounts().keySet() ){
+                      ucjMapToUpdate.addAccount(Long.parseLong(accountId), fullAccountMap.getAccounts().get(accountId));
+                    }
+
+                    ucj.setData(ucjMapToUpdate);
+                    userCapabilityJunctionDAO.put_(getX(), ucj);
+                  }
+                }
               }
             } else if ( requestType == CapabilityRequestOperations.ASSIGN_GLOBAL ) {
               capability = (LiquidCapability) capabilityDAO.find(req.getGlobalCapability());
@@ -79,6 +96,10 @@ foam.CLASS({
                   EQ(UserCapabilityJunction.SOURCE_ID, userId),
                   EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
                 ));
+
+                if ( ucj == null ){
+                  throw new RuntimeException("User does not have this capability");
+                }
 
                 AccountApproverMap map = (AccountApproverMap) ucj.getData();
 
