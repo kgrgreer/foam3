@@ -3,7 +3,9 @@ package net.nanopay.liquidity.tx;
 import foam.core.*;
 import foam.dao.*;
 import foam.nanos.test.Test;
+import foam.nanos.auth.*;
 import foam.test.TestUtils;
+import foam.nanos.crunch.*;
 import net.nanopay.liquidity.crunch.*;
 
 import java.util.*;
@@ -13,25 +15,31 @@ import static foam.mlang.MLang.*;
 public class AccountHierarchyServiceTest extends Test {
   public X system;
   public AccountHierarchyService service;
-  public DAO accountDAO;
+  public DAO accountDAO, ucjDAO, capabilityDAO;
   public ApproverLevel al1, al2, al3;
   public CapabilityAccountData cad1, cad2, cad3;
   public AccountApproverMap result;
   public CapabilityAccountTemplate template;
   public String a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
-
+  public User user;
+  public Capability c;
   // test method - public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template)
 
   public void runTest(X x) {
     system = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
     service = new AccountHierarchyService();
     accountDAO = (DAO) x.get("accountDAO");
+    ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+    capabilityDAO = (DAO) x.get("accountBasedLiquidCapabilityDAO");
     al1 = new ApproverLevel.Builder(x).setApproverLevel(1).build();
     al2 = new ApproverLevel.Builder(x).setApproverLevel(2).build();
     al3 = new ApproverLevel.Builder(x).setApproverLevel(3).build();
     cad1 = new CapabilityAccountData.Builder(x).setIsCascading(false).setIsIncluded(true).setApproverLevel(al1).build();
     cad2 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al2).build();
     cad3 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al3).build();
+
+    user = new foam.nanos.auth.User.Builder(x).setId(88).build();
+    c = (AccountBasedLiquidCapability) capabilityDAO.find("corporateAdminAccountBased");
 
     testAccountTemplate(system);
   }
@@ -47,13 +55,26 @@ public class AccountHierarchyServiceTest extends Test {
     map.put(a1, cad2);
     map.put(a2, cad3);
     template = new CapabilityAccountTemplate.Builder(x).setId(1).setTemplateName("test").setAccounts(map).build();
-    result = foo(x, true, 1, null, template);
+    result = foo(x, true, user.getId(), null, template);
     System.out.println(a0 + " : " + result.getAccounts().get(a0)+"\n\n");
     System.out.println(a1 + " : " + result.getAccounts().get(a1)+"\n\n");
     System.out.println(a2 + " : " + result.getAccounts().get(a2)+"\n\n");
 
-    printRoots((long) 1);
+    printRoots(user.getId());
     printAccounts(result);
+
+    UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(c.getId()).setData(result).build();
+    ucj = (UserCapabilityJunction) ucjDAO.put_(x, ucj);
+    System.out.println("added capability to user.");
+
+    map.clear();
+    map.put("1103", cad3);
+    template = new CapabilityAccountTemplate.Builder(x).setId(2).setTemplateName("test2").setAccounts(map).build();
+    result = foo(x, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
+
+    printRoots(user.getId());
+    printAccounts(result);
+
   }
 
   // for easier to type name
