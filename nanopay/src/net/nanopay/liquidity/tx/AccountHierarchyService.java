@@ -109,34 +109,37 @@ public class AccountHierarchyService
     Set<String> accountIds = newMap.keySet();
 
     Set<String> roots = trackRootAccounts ? ( userToViewableRootAccountsMap_.containsKey(user) ? userToViewableRootAccountsMap_.get(user) : new HashSet<String>() ) : null;
-    // Set<String> newRoots = trackRootAccounts ? new HashSet<String>() : null;
 
-    CapabilityAccountData data;
     for ( String accountId : accountIds ) {
-      data = (CapabilityAccountData) newMap.get(accountId);
+      CapabilityAccountData data = (CapabilityAccountData) newMap.get(accountId);
       if ( data.getIsIncluded() ) {
-        if ( ( ! newMap.containsKey(accountId) ) && ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
+        if ( ( ! oldMap.containsKey(accountId) ) ) roots.add(accountId);
         newMap.put(accountId, data);
         if ( data.getIsCascading() ) {
-          addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, newMap, oldMap);
+          newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
         }
       } 
     }
+    oldMap.putAll(newMap);
 
+    if ( trackRootAccounts ) userToViewableRootAccountsMap_.put(user, ((HashSet<String>) roots));
 
     return new AccountApproverMap.Builder(x).setAccounts(newMap).build();
   }
 
+  // private void mergeMaps(Map<String, CapabilityAccountData> oldMap, Map<String, CapabilityAccountData> newMap) {
+  //   for ( Map.Entry<String, CapabilityAccountData> account : newMap.entrySet() ) {
+  //     if ( o)
+  //   }
+  // }
 
 
-  private void addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Set<String> roots, Map<String, CapabilityAccountData> accountMap, Map<String, CapabilityAccountData> oldMap){
+  private Map<String, CapabilityAccountData> addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Set<String> roots, Map<String, CapabilityAccountData> accountMap, Map<String, CapabilityAccountData> oldMap){
     DAO accountDAO = (DAO) x.get("accountDAO");
     Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
-    // System.out.println(accountId + ": " + tempAccount);
     List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
 
     Set<Account> accountsSet = new HashSet<Account>();
-    // accountsSet.addAll(children);
 
     while ( children.size() > 0 ) {
       if ( ! accountMap.containsKey(String.valueOf(children.get(0))) ) {
@@ -159,6 +162,7 @@ public class AccountHierarchyService
         roots.remove(aid);
       }
     }
+    return accountMap;
   }
 
   @Override
