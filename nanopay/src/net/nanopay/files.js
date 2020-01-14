@@ -900,7 +900,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequest' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
-
+   { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
    
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
