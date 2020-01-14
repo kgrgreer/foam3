@@ -1,2 +1,2 @@
-p({"class":"foam.nanos.auth.Group","id":"liquidBasic","parent":"basicUser","defaultMenu":"liquid.dashboard"}})
+p({"class":"foam.nanos.auth.Group","id":"liquidBasic","parent":"basicUser","defaultMenu":"liquid.accounts"}})
 p({"class":"foam.nanos.auth.Group","id":"liquidBasic","rootMenu":"liquid.root"})

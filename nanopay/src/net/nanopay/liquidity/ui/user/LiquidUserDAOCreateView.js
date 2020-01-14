@@ -43,17 +43,13 @@ foam.CLASS({
         return ! data$errors_ && data$desiredPassword.length >= 6;
       },
       code: function() {
-        var cData = this.data;
-
-        if ( this.LifecycleAware.isInstance(cData) ) {
-          cData = cData.clone();
-          cData.lifecycleState = this.LifecycleState.PENDING;
-        }
+        var cData = this.data.clone();
+        cData.lifecycleState = this.LifecycleState.PENDING;
 
         // Set Liquid-specific property values here.
-        this.data.group = 'liquidBasic';
+        cData.group = 'liquidBasic';
 
-        this.config.dao.put(this.data).then((o) => {
+        this.config.dao.put(cData).then((o) => {
           this.data = o;
           this.finished.pub();
           this.ctrl.add(this.NotificationMessage.create({

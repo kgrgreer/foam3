@@ -46,13 +46,30 @@ foam.CLASS({
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       documentation: 'Account associated to setting.',
+      updateMode: 'RO',
       view: function(_, X) {
+        var dao = foam.dao.ProxyDAO.create({
+          delegate: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
+        });
+
+        if ( foam.core.Slot.isInstance(X.denominationToFilterBySlot) ) {
+          this.onDetach(X.denominationToFilterBySlot.sub(function() {
+            dao.delegate = X.accountDAO.where(
+              X.data.AND(
+                X.data.EQ(
+                  net.nanopay.account.Account.DENOMINATION,
+                  X.denominationToFilterBySlot.get()
+                ),
+                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount))
+              )
+            );
+          }));
+        }
+
         return foam.u2.view.RichChoiceView.create({
           search: true,
           sections: [
-            {
-              dao: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
-            }
+            { dao: dao }
           ]
         }, X);
       }

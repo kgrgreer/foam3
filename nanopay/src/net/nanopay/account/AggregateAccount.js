@@ -30,6 +30,7 @@ foam.CLASS({
     {
       name: 'findBalance',
       code: async function(x) {
+        // TODO: need to wire up more efficient way of calculating
         var balance = 0;
         var sink = await x.accountDAO.where(
           this.EQ(net.nanopay.account.AggregateAccount.PARENT, this.id)
@@ -71,6 +72,7 @@ foam.CLASS({
         return balance;
       },
       javaCode: `
+        // TODO: need to wire up more efficient way of calculating
         List<Account> childrenList = new ArrayList();
         ArraySink childrenSink = (ArraySink) getChildren(x).select(new ArraySink());
         List<Account> list1 = childrenSink.getArray();
