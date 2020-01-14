@@ -23,6 +23,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -32,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +61,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     partnerAPI = credentials.getPartnerApi();
     AFEXAPI = credentials.getAFEXApi();
     RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).build();
-    httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+    httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
+      .setConnectionReuseStrategy(new NoConnectionReuseStrategy()).build(); // Untill we figure out how to handle stale connections
     jsonParser = new JSONParser();
     jsonParser.setX(x);
   }
@@ -925,7 +928,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
 
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client = new OkHttpClient.Builder()
+      .connectTimeout(15, TimeUnit.SECONDS)
+      .writeTimeout(15, TimeUnit.SECONDS)
+      .readTimeout(30, TimeUnit.SECONDS)
+    .build();
     Response response = null;
 
     Request request = new Request.Builder()

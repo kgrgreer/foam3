@@ -429,6 +429,7 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakPaymentTransaction',
   'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.KotakSplitTransactionPlanDAO',
@@ -451,6 +452,7 @@ var classes = [
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
+  'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
@@ -650,6 +652,8 @@ var classes = [
   'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
   'net.nanopay.meter.report.TransactionReport',
+  'net.nanopay.meter.report.PaymentReport',
+  'net.nanopay.meter.report.PaymentReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -720,6 +724,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.NotifyIdentityMindResponseError',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',

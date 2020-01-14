@@ -129,7 +129,7 @@ foam.CLASS({
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
           ))
           .select(this.COUNT()).then((c) => {
-            this.countOverdueAndUpcoming = c.value; 
+            this.countOverdueAndUpcoming = c.value;
           });
         return 0;
       }

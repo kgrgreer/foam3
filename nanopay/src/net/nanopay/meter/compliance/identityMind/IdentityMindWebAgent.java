@@ -48,7 +48,7 @@ public class IdentityMindWebAgent implements WebAgent {
       List<IdentityMindResponse> list = sink.getArray();
 
       if ( list.size() == 0 ) {
-        // Added check for TID field within TAD field if webhook 
+        // Added check for TID field within TAD field if webhook
         // TID does not match any IdentityMindResponses
         JSONObject jsonObject = new JSONObject(data);
         JSONObject tad = jsonObject.getJSONObject("tad");
@@ -101,7 +101,8 @@ public class IdentityMindWebAgent implements WebAgent {
             notification.setNotificationType("Approval request already updated.");
             notification.setGroupId("fraud-ops");
             notificationDAO.put(notification);
-            logger.error("Illegal transition approval request has already been rejected or approved.");
+            logger.error("Illegal transition approval request has already been rejected or approved. ",
+              "Approval Request ID: ", approvalRequest.getId(), " Response Data: ", data);
           }
         }
       }

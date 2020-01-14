@@ -123,7 +123,8 @@ public class ExchangeRatesCron
           exchangeRate.setExpirationDate(calendar.getTime());
           exchangeRate.setValueDate(new Date());
           exchangeRate.setFxProvider(fxProvider.getId());
-          exchangeRateDAO_.put(exchangeRate);
+          if ( ! (targetCurrency.equals("INR") && sourceCurrency.equals("CAD")) ) 
+            exchangeRateDAO_.put(exchangeRate);
 
         }
       } catch (Throwable t) {

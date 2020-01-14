@@ -70,6 +70,11 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn    = (Transaction) obj;
+
+    if ( SafetyUtil.isEmpty(txn.getId()) || ! txn.getIsQuoted() ) {
+      throw new RuntimeException("Transaction must be quoted and have id set.");
+    }
+
     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
     if ( canExecute(x, txn, oldTxn) ) {
