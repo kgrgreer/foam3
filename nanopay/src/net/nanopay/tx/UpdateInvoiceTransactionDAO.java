@@ -70,6 +70,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       && ( transaction instanceof CITransaction ||
            transaction instanceof COTransaction ||
            transaction instanceof FXTransaction ||
+           transaction instanceof KotakPaymentTransaction ||
            transaction instanceof ComplianceTransaction )
     ) {
       transaction.setInvoiceId(getRoot(x, transaction).getInvoiceId());
@@ -82,6 +83,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
          ! ( transaction instanceof CITransaction ||
              transaction instanceof COTransaction ||
              transaction instanceof FXTransaction ||
+             transaction instanceof  KotakPaymentTransaction ||
              transaction instanceof ComplianceTransaction ) ) {
       return getDelegate().put_(x, obj);
     }

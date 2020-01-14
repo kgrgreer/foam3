@@ -42,7 +42,7 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        return true;
+        return getStatus() == TransactionStatus.COMPLETED;
       `
     }
   ]
