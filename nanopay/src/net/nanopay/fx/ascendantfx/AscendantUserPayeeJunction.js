@@ -16,6 +16,7 @@ foam.CLASS({
     'user',
     'created',
     'createdBy',
+    'createdByAgent',
     'orgId',
   ],
 
@@ -50,6 +51,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: 'User who created the entry'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: 'Agent who created the entry'
     },
     {
       class: 'DateTime',

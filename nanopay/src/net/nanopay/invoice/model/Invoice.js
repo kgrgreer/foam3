@@ -161,6 +161,25 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The ID of the Agent who created the Invoice.`,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date and time that the Invoice was last modified.`,
