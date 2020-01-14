@@ -56,12 +56,6 @@ foam.CLASS({
         }`
     },
     {
-      name: 'login',
-      javaCode: `
-        return login_(x, userId, password);
-      `
-    },
-    {
       name: 'loginByEmail',
       javaCode: `
         return login_(x, email, password);
@@ -78,7 +72,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
         {
           name: 'password',
@@ -87,8 +81,7 @@ foam.CLASS({
       ],
       javaCode: `
         // check login attempts
-        foam.nanos.auth.User user = ( id instanceof String ) ?
-          getUserByEmail(x, (String) id) : getUserById(x, (long) id);
+        foam.nanos.auth.User user = getUserByEmail(x, id);
 
         if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
@@ -102,9 +95,7 @@ foam.CLASS({
 
         try {
           // attempt to login in, on success reset the login attempts
-          return resetLoginAttempts(x, ( id instanceof String ) ?
-            super.loginByEmail(x, (String) id, password) :
-            super.login(x, (long) id, password));
+          return resetLoginAttempts(x, super.loginByEmail(x, id, password));
         } catch ( Throwable t ) {
           if ( user == null ) {
             /*

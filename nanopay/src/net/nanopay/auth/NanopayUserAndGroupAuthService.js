@@ -106,12 +106,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'login',
-      javaCode: `
-        return login_(x, userId, password);
-      `
-    },
-    {
       name: 'loginByEmail',
       javaCode: `
         return login_(x, email, password);
@@ -128,7 +122,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
         {
           name: 'password',
@@ -136,8 +130,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        User user = ( id instanceof String ) ?
-          getUserByEmail(x, (String) id) : getUserById(x, (long) id);
+        User user = getUserByEmail(x, id);
 
         if ( user == null ) {
           throw new AuthenticationException("User not found.");
@@ -155,27 +148,7 @@ foam.CLASS({
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
-        return id instanceof String ?
-          super.loginByEmail(x, (String) id, password) :
-          super.login(x, (long) id, password);
-      `
-    },
-    {
-      name: 'getUserById',
-      documentation: 'Convenience method to get a user by id',
-      type: 'foam.nanos.auth.User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'id',
-          type: 'Long'
-        }
-      ],
-      javaCode: `
-        return (User) ((DAO) getLocalUserDAO()).inX(x).find(id);
+        return super.loginByEmail(x, id, password);
       `
     },
     {

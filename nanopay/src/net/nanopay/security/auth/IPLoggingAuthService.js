@@ -29,29 +29,6 @@ foam.CLASS({
         }`
     },
     {
-      name: 'login',
-      javaCode: `
-        LoginAttempt loginAttempt = new LoginAttempt();
-        HttpServletRequest request = x.get(HttpServletRequest.class);
-        String ipAddress = request.getRemoteAddr();
-        loginAttempt.setIpAddress(ipAddress);
-        loginAttempt.setLoginAttemptedFor(userId);
-
-        try {
-          User user = super.login(x, userId, password);
-          loginAttempt.setEmail(user.getEmail());
-          loginAttempt.setGroup(user.getGroup());
-          loginAttempt.setLoginSuccessful(true);
-          ((DAO) getLoginAttemptDAO()).inX(x).put(loginAttempt);
-          return user;
-        } catch (Throwable t) {
-          loginAttempt.setLoginSuccessful(false);
-          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
-          throw t;
-        }
-      `
-    },
-    {
       name: 'loginByEmail',
       javaCode: `
         LoginAttempt loginAttempt = new LoginAttempt();

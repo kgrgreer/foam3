@@ -41,16 +41,8 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        // test login attempts reset by id
-        Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, 1000, "login by id");
-        ResetLoginCount(x, userDAO);
-
         // test login attempts reset by email
         Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
-        ResetLoginCount(x, userDAO);
-
-        // test login by id
-        Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, 1000, "login by id");
         ResetLoginCount(x, userDAO);
 
         // test login by email
@@ -77,7 +69,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
         {
           name: 'method',
@@ -119,7 +111,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
         {
           name: 'method',
@@ -163,15 +155,11 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
       ],
       javaCode: `
-        if ( id instanceof Number ) {
-          auth.login(x, ((Number) id).longValue(), "Test123");
-        } else if ( id instanceof String ) {
-          auth.loginByEmail(x, (String) id, "Test123");
-        }
+        auth.loginByEmail(x, id, "Test123");
       `
     },
     {
@@ -188,15 +176,11 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
       ],
       javaCode: `
-        if (id instanceof Number) {
-          auth.login(x, ((Number) id).longValue(), "Test124");
-        } else if (id instanceof String) {
-          auth.loginByEmail(x, (String) id, "Test124");
-        }
+        auth.loginByEmail(x, id, "Test124");
       `
     },
     {
@@ -214,7 +198,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         },
         {
           name: 'attempts',
@@ -222,10 +206,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) ((id instanceof String) ?
-          userDAO.inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, id)) :
-          userDAO.inX(x).find(id));
-        return user != null && user.getLoginAttempts() == attempts;
+        foam.nanos.auth.User user = (foam.nanos.auth.User)
+          userDAO.inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, id));
+          return user != null && user.getLoginAttempts() == attempts;
       `
     },
     {
@@ -265,13 +248,12 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'Any'
+          type: 'String'
         }
       ],
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) ((id instanceof String) ?
-          userDAO.inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, id)) :
-          userDAO.inX(x).find(id));
+        foam.nanos.auth.User user = (foam.nanos.auth.User)
+          userDAO.inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, id));
           java.text.SimpleDateFormat df =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
           df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
           return user == null ? "" : "Account temporarily locked. You can attempt to login after " + df.format(user.getNextLoginAttemptAllowedAt());
