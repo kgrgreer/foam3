@@ -68,7 +68,7 @@ foam.CLASS({
     {	
       class: 'Reference',	
       of: 'foam.core.Unit',	
-      name: 'denomination',	
+      name: 'denomination',
       required: true,
       targetDAOKey: 'currencyDAO',	
       documentation: `The unit of measure of the payment type. The payment system can handle	
@@ -76,6 +76,16 @@ foam.CLASS({
       `	,
       section: 'basicInfo',
       updateMode: 'RO',
+      postSet: function(o, n) {
+        if ( this.lowLiquidity ) this.lowLiquidity.denomation = n;
+        if ( this.highLiquidity ) this.highLiquidity.denomation = n;
+      },
+      javaPostSet: `
+            Liquidity high = this.getHighLiquidity();
+            if ( high != null ) high.denomination_ = (String) val;
+            Liquidity low = this.getLowLiquidity();
+            if ( low != null ) low.denomination_ = (String) val;
+      `
     },
     {
       class: 'FObjectProperty',
@@ -83,6 +93,10 @@ foam.CLASS({
       name: 'lowLiquidity',
       section: 'thresholds',
       gridColumns: 6,
+      postSet: function(o, n) { n.denomation = this.denomination; },
+      javaPostSet: `
+        lowLiquidity_.denomination_ = this.denomination_;
+      `,
       view: function(_, X) {
         return {
           class: 'net.nanopay.liquidity.ui.liquidity.LiquidityDetailView',
@@ -94,7 +108,7 @@ foam.CLASS({
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
-          denomination$: this.denomination$
+          denomination: this.denomination
         });
       },
       javaFactory: `
@@ -129,6 +143,10 @@ foam.CLASS({
       name: 'highLiquidity',
       section: 'thresholds',
       gridColumns: 6,
+      postSet: function(o, n) { n.denomation = this.denomination; },
+      javaPostSet: `
+        highLiquidity_.denomination_ = this.denomination_;
+      `,
       view: function(_, X) {
         return {
           class: 'net.nanopay.liquidity.ui.liquidity.LiquidityDetailView',
@@ -140,7 +158,7 @@ foam.CLASS({
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
-          denomination$: this.denomination$
+          denomination: this.denomination
         });
       },
       javaFactory: `

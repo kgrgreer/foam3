@@ -32,8 +32,9 @@ foam.CLASS({
       class: 'Reference',	
       of: 'foam.core.Unit',	
       name: 'denomination',
-      required: true,
-      targetDAOKey: 'currencyDAO'
+//      required: true,
+      targetDAOKey: 'currencyDAO',
+      storageTransient: true
     },
     {
       class: 'UnitValue',
@@ -51,6 +52,7 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
+      unitPropName: 'denomination',
       name: 'resetBalance',
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
