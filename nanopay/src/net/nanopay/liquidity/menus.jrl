@@ -393,7 +393,7 @@ p({
         "args": [
           {
             "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
+            "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
           },
           {
             "class": "foam.mlang.predicate.Eq",

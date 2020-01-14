@@ -155,7 +155,8 @@ p({
   "id": "L2 approval for transactions >= $85,000",
   "sourceAccount": 1053,
   "startAmount": 8500000,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Add approval request rules
@@ -209,7 +210,8 @@ p({
   "createdBy":8006,
   "lastModified":"2019-11-30T12:30:00.000Z",
   "lastModifiedBy":8006,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Generic business rule example
@@ -250,7 +252,8 @@ p({
     }
   },
   "businessRuleAction":2,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Automatically verify emails for new Liquid users. Due to change once Goldman

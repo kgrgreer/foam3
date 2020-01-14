@@ -105,7 +105,8 @@ p({
   }
 })
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"localAccountDAO",
   "lazy":false,
   "serviceScript":
   """
@@ -131,10 +132,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
-      .setLastModifiedByAware(true)
       .setDeletedAware(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
@@ -168,10 +165,6 @@ p({
 
       // These decorators are present on localAccountDAO.
       .setDeletedAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
       .build();
   """,
   "client":
