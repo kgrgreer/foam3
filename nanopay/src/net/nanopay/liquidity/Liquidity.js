@@ -3,6 +3,9 @@ foam.CLASS({
   name: 'Liquidity',
 
   requires: [
+    'foam.core.Currency',
+    'foam.u2.TextField',
+    'foam.u2.view.ValueView',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount'
   ],
@@ -24,24 +27,51 @@ foam.CLASS({
       name: 'rebalancingEnabled',
       documentation: 'Triggeres automatic transaction on accounts.'
     },
-    {
-      class: 'UnitValue',
-      name: 'threshold',
-      documentation: 'The balance when liquidity should be triggered.'
+    {	
+      visibility: 'hidden',
+      class: 'Reference',	
+      of: 'foam.core.Unit',	
+      name: 'denomination',
+      targetDAOKey: 'currencyDAO',
+      storageTransient: true
     },
     {
       class: 'UnitValue',
+      unitPropName: 'denomination',
+      name: 'threshold',
+      documentation: 'The balance when liquidity should be triggered.',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.IntView',
+          readView: {
+            class: 'foam.u2.view.TableCellFormatterReadView' ,
+          }
+        };
+      }
+    },
+    {
+      class: 'UnitValue',
+      unitPropName: 'denomination',
       name: 'resetBalance',
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
-      documentation: 'Account balance must match reset amount after liquidity transaction was generated.'
+      documentation: 'Account balance must match reset amount after liquidity transaction was generated.',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.IntView',
+          readView: {
+            class: 'foam.u2.view.TableCellFormatterReadView' ,
+          }
+        };
+      }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
       label: 'push/pull account',
+      required: true,
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
