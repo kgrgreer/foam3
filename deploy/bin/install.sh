@@ -47,6 +47,11 @@ NANOPAY_CURRENT_VERSION=$(readlink -f ${NANOPAY_ROOT} | awk -F- '{print $NF}')
 NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 
 function backupFiles {
+    # skip on first install
+    if [ ! -d ${MNT_HOME} ]; then
+        return;
+    fi
+    
     if [ ! -d ${BACKUP_HOME} ]; then
         mkdir -p ${BACKUP_HOME} 
         chgrp nanopay ${BACKUP_HOME}
