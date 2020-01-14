@@ -180,13 +180,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounttemplates",
-  "label": "Rule Account Templates",
+  "label": "Account Templates for Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
-      "browseTitle": "Rule Account Templates"
+      "browseTitle": "Account Templates for Rules",
+      "createTitle": "Create a New Account Template for Rules",
     }
   },
   "order": 3000,
@@ -375,7 +376,7 @@ p({
       }
     }
   },
-  "order": 320,
+  "order": 340,
   "parent": "liquid.rules"
 })
 
