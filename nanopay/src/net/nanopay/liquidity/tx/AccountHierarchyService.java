@@ -139,13 +139,6 @@ public class AccountHierarchyService
     return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }
 
-  // private void mergeMaps(Map<String, CapabilityAccountData> oldMap, Map<String, CapabilityAccountData> newMap) {
-  //   for ( Map.Entry<String, CapabilityAccountData> account : newMap.entrySet() ) {
-  //     if ( o)
-  //   }
-  // }
-
-
   private Map<String, CapabilityAccountData> addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, Set<String> roots, Map<String, CapabilityAccountData> accountMap, Map<String, CapabilityAccountData> oldMap){
     DAO accountDAO = (DAO) x.get("accountDAO");
     Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
@@ -171,10 +164,6 @@ public class AccountHierarchyService
     for ( Account account : accountsSet ) {
       aid = String.valueOf(account.getId());
       if ( ! accountMap.containsKey(aid) ) accountMap.put(aid, data);
-      // else if ( (oldMap.containsKey(aid) && accountMap.containsKey(aid)) && roots.contains(aid) ) {
-      //   roots.remove(aid);
-      // }
-      // child accounts cannot be root accounts 
       if ( roots.contains(aid) ) roots.remove(aid);
     }
     return accountMap;
