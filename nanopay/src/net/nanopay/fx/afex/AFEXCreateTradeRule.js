@@ -44,8 +44,7 @@ foam.CLASS({
           
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
           AFEXServiceProvider afexService = (AFEXServiceProvider) getX().get("afexServiceProvider");
-          if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED 
-            && transaction.getAfexTradeResponseNumber() == 0 ) {
+          if ( transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               int result = afexService.createTrade(transaction);
               transaction.setAfexTradeResponseNumber(result);
