@@ -131,7 +131,7 @@ foam.CLASS({
 
     async function checkDefaultAccount() {
       await this.user.accounts
-        .where(
+        .find(
           this.AND(
             this.OR(
               this.EQ(this.Account.TYPE, this.BankAccount.name),
@@ -141,10 +141,8 @@ foam.CLASS({
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
             this.EQ(this.Account.IS_DEFAULT, true)
           )
-        ).select()
-        .then((sink) => {
-          console.log(sink.array);
-          if ( sink.array.length !== 0 ) this.account = sink.array[0];
+        ).then((defaultAccount) => {
+          if ( defaultAccount !== null ) this.account = defaultAccount;
         });
     },
 
