@@ -377,10 +377,15 @@ p({
       .build();
 
     dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("ruleDAO")
-    .setOf(BusinessRule.getOwnClassInfo())
-    .setDelegate(dao)
-    .build();
+      .setDaoKey("ruleDAO")
+      .setOf(BusinessRule.getOwnClassInfo())
+      .setDelegate(dao)
+      .build();
+      
+    dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
+      .setDelegate(dao)
+      .setName("rule")
+      .build();
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
