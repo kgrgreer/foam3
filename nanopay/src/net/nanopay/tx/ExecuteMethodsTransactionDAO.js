@@ -33,7 +33,7 @@ foam.CLASS({
     Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(obj);
     PM pm = PM.create(x, obj, "executeBeforePut");
     try {
-      transaction = transaction.executeBeforePut(x, oldTxn);
+      transaction = transaction.executeBeforePut(x);
     } finally {
       pm.log(x);
     }
