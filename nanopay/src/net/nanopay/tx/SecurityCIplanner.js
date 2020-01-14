@@ -46,7 +46,7 @@ foam.CLASS({
           plan.setName("Security CI of "+txq.getSourceUnit());
           plan.setSourceCurrency(txq.getSourceUnit());
           plan.setDestinationCurrency(txq.getDestinationUnit());
-
+          plan.setDestinationAmount(plan.getAmount());
           plan.setSourceAccount(txq.getSourceAccount().getId());
           plan.setDestinationAccount(txq.getDestinationAccount().getId());
 
@@ -68,7 +68,7 @@ foam.CLASS({
           plan.copyFrom(tx);
           DAO accountDAO = (DAO) x.get("accountDAO");
           SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(SECURITY_TRUST_ID);
-
+          plan.setDestinationAmount(plan.getAmount());
           plan.setSourceCurrency(txq.getSourceUnit());
           plan.setDestinationCurrency(txq.getDestinationUnit());
           plan.setName("Security CO of "+txq.getSourceUnit());

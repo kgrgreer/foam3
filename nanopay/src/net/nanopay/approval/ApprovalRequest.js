@@ -40,6 +40,15 @@ foam.CLASS({
     'reject'
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+    },
+    {
+      name: 'requestDetails'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -51,6 +60,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approver',
+      section: 'requestDetails',
       visibility: 'RO',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
@@ -104,6 +114,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'classification',
+      section: 'requestDetails',
       tableWidth: 150,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
       For example "IdentityMind Business approval".
@@ -149,6 +160,7 @@ foam.CLASS({
       of: 'net.nanopay.approval.ApprovalStatus',
       name: 'status',
       value: 'REQUESTED',
+      section: 'requestDetails',
       javaFactory: 'return net.nanopay.approval.ApprovalStatus.REQUESTED;',
     },
     {
@@ -173,12 +185,19 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
+      section: 'requestDetails',
       visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
       visibility: 'RO'
     },
     {
@@ -254,7 +273,7 @@ if ( obj == null ) {
     {
       name: 'referenceObj',
       isDefault: true,
-      label: 'View Ref',
+      label: 'View Reference',
       code: function(approvalRequest) {
         var key = approvalRequest.data.daoKey;
         if(!this.__context__[approvalRequest.data.daoKey]) {

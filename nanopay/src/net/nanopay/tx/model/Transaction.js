@@ -20,7 +20,8 @@ foam.CLASS({
     'currencyDAO',
     'homeDenomination',
     'stack?',
-    'user'
+    'user',
+    'exchangeRateService'
   ],
 
   javaImports: [
@@ -304,6 +305,23 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The id of the agent who created the transaction.`,
+      visibility: 'RO',
+      section: 'basicInfo',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       createMode: 'HIDDEN',
@@ -460,9 +478,6 @@ foam.CLASS({
       createMode: 'HIDDEN',
       visibility: 'RO',
       storageTransient: true,
-      factory: function() {
-        return this.user.id;
-      },
     },
     {
       class: 'UnitValue',
@@ -471,6 +486,9 @@ foam.CLASS({
       section: 'amountSelection',
       createMode: 'RW',
       required: true,
+      gridColumns: 6,
+      help: `This is the amount to be withdrawn from your chosen source account.
+      When property looses focus, calulations done for destination Amount`,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String srcCurrency = ((Transaction)obj).getSourceCurrency();
@@ -558,6 +576,8 @@ foam.CLASS({
       name: 'destinationAmount',
       label: 'Destination Amount',
       createMode: 'RO',
+      gridColumns: 6,
+      help: `This is the amount to be transfered to your chosen destination account.`,
       view: function(_, X) {
         let asdm = X.data.slot(function(amount, sourceCurrency, destinationCurrency, mode) {
           if ( mode === 'create' && sourceCurrency && destinationCurrency ) {
@@ -641,6 +661,9 @@ foam.CLASS({
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
       section: 'paymentInfoSource',
+      gridColumns: 5,
+      help: `Currency choice will filter your list of source accounts - by there base denomination.
+      This property will toggle the displayed amounts to show rate conversions.`,
       createMode: 'RW',
       factory: function() {
         return this.ctrl.homeDenomination ? this.ctrl.homeDenomination : 'CAD';
@@ -673,6 +696,9 @@ foam.CLASS({
       updateMode: 'RO',
       editMode: 'RO',
       section: 'paymentInfoDestination',
+      gridColumns: 5,
+      help: `Manual entry, please confirm currency and account id with contact externally.
+      This property will toggle the displayed amounts to show rate conversions.`,
       createMode: 'RW',
       value: 'CAD',
       view: function(_, X) {
@@ -1240,6 +1266,20 @@ foam.CLASS({
     javaThrows: ['AuthorizationException'],
     javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
+    `
+  },
+  {
+    name: 'getApprovableKey',
+    type: 'String',
+    javaCode: `
+      return getId();
+    `
+  },
+  {
+    name: 'getOutgoingAccount',
+    type: 'Long',
+    javaCode: `
+      return getSourceAccount();
     `
   }
 ],

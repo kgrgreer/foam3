@@ -73,9 +73,7 @@ foam.CLASS({
   ],
 
   methods: [
-  /*
     {
-     WIP. Get balance of all subaccounts, but not their subaccounts.
       name: 'findBalance',
       type: 'Any',
       async: true,
@@ -86,9 +84,14 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
+        // TODO: properly wire up findBalance
+        return Promise.resolve(0);
+        // return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
       },
       javaCode: `
+        // TODO: properly wire up findBalance
+        return 0L;
+        /*
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
@@ -98,10 +101,10 @@ foam.CLASS({
           ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
+        */
       `
 
-
-    },*/
+    },
     {
       name: 'getSecurityAccount',
       type: 'net.nanopay.account.SecurityAccount',

@@ -252,6 +252,15 @@ foam.CLASS({
 
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
+      location.hash = 'sme.main.banking';
+
+      if ( this.plaidResponseItem != null ) {
+        this.ctrl.stack.back();
+      } else {
+        this.ctrl.stack.push({
+          class: 'net.nanopay.bank.BankAccountController'
+        });
+      }
     }
   ],
 
@@ -275,21 +284,7 @@ foam.CLASS({
 
         if ( ! model.validateInputs() ) return;
 
-        model.capturePADAndPutBankAccounts().then(() => {
-          this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
-
-          X.closeDialog();
-
-          location.hash = 'sme.main.banking';
-
-          if ( this.plaidResponseItem != null ) {
-            this.ctrl.stack.back();
-          } else {
-            this.stack.push({
-              class: 'net.nanopay.bank.BankAccountController'
-            })
-          }
-        });
+        model.capturePADAndPutBankAccounts();
       }
     }
   ]
