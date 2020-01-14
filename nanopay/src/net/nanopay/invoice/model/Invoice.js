@@ -90,9 +90,9 @@ foam.CLASS({
       ]
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'issueDate',
-      documentation: `The date and time that the invoice was issued (created).`,
+      documentation: `The date that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
       view: { class: 'foam.u2.DateView' },
