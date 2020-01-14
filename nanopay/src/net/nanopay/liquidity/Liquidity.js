@@ -3,11 +3,11 @@ foam.CLASS({
   name: 'Liquidity',
 
   requires: [
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
+    'foam.core.Currency',
     'foam.u2.TextField',
     'foam.u2.view.ValueView',
-    'foam.core.Currency'
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount'
   ],
 
   implements: [
@@ -32,7 +32,6 @@ foam.CLASS({
       class: 'Reference',	
       of: 'foam.core.Unit',	
       name: 'denomination',
-//      required: true,
       targetDAOKey: 'currencyDAO',
       storageTransient: true
     },
