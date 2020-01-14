@@ -19,15 +19,49 @@ foam.CLASS({
       Transaction [] next = txn.getNext();
       if ( next != null ) {
         txn.setNext(null);
+      } else {
+        return getDelegate().put_(x, txn);
       }
       txn = (Transaction) getDelegate().put_(x, txn);
       if ( next != null && next.length > 0 ) {
         for ( Transaction nextTransaction : next ) {
-          nextTransaction.setParent(txn.getId());
-          ((DAO) x.get("localTransactionDAO")).put_(x, nextTransaction);
+          if ( ((DAO) x.get("localTransactionDAO")).find(nextTransaction.getId()) != null ) {
+            checkAndSaveNextTransaction(x, nextTransaction, txn);
+          } else { 
+            nextTransaction.setParent(txn.getId());
+            ((DAO) x.get("localTransactionDAO")).put_(x, nextTransaction);
+          }
         }
       }
       return txn;
+      `
+    },
+    {
+      name: 'checkAndSaveNextTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+        type: 'net.nanopay.tx.model.Transaction',
+          name: 'transaction'
+        },
+        {
+          type: 'net.nanopay.tx.model.Transaction',
+          name: 'parent'
+        },
+      ],
+      javaCode: `
+        for ( Transaction txn: transaction.getNext() ) {
+          Transaction existing = (Transaction) ((DAO) x.get("localTransactionDAO")).find(txn.getId());
+          if ( existing != null ) {
+            checkAndSaveNextTransaction(x, txn, txn);
+          } else {
+            txn.setParent(parent.getId());
+            ((DAO) x.get("localTransactionDAO")).put_(x, txn);
+          }
+        }
       `
     }
   ],

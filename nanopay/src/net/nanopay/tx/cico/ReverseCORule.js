@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.KotakCOTransaction',
+    'net.nanopay.tx.KotakPaymentTransaction',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -25,7 +25,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( ! (obj instanceof COTransaction ) || obj instanceof KotakCOTransaction )
+        if ( ! (obj instanceof COTransaction ) || obj instanceof KotakPaymentTransaction )
           return;
         Transaction oldTxn = (Transaction) oldObj;
         COTransaction txn = (COTransaction) obj;

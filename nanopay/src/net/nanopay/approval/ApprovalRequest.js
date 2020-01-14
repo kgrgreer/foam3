@@ -195,6 +195,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      visibility: 'RO'
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       visibility: 'RO'

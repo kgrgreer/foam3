@@ -316,6 +316,7 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
@@ -419,6 +420,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/GuidTransactionPlanDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
