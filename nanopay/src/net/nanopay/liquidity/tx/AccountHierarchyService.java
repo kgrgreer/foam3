@@ -136,7 +136,7 @@ public class AccountHierarchyService
 
     if ( trackRootAccounts ) userToViewableRootAccountsMap_.put(user, ((HashSet<String>) roots));
 
-    return new AccountApproverMap.Builder(x).setAccounts(newMap).build();
+    return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }
 
   // private void mergeMaps(Map<String, CapabilityAccountData> oldMap, Map<String, CapabilityAccountData> newMap) {

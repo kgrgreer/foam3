@@ -68,7 +68,7 @@ public class AccountHierarchyServiceTest extends Test {
     System.out.println("added capability to user.");
 
     map.clear();
-    map.put("1103", cad3);
+    map.put("1103", cad1);
     template = new CapabilityAccountTemplate.Builder(x).setId(2).setTemplateName("test2").setAccounts(map).build();
     result = foo(x, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
 
