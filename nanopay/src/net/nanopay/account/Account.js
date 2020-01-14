@@ -328,6 +328,14 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: 'The ID of the Agent who created the account.',
+      section: 'administration',
+      visibility: 'RO',
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
