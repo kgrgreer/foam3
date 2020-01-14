@@ -23,6 +23,7 @@ public class AccountHierarchyServiceTest extends Test {
   public String a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
   public User user;
   public Capability c;
+  public UserCapabilityJunction ucj;
   // test method - public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template)
 
   public void runTest(X x) {
@@ -62,18 +63,25 @@ public class AccountHierarchyServiceTest extends Test {
 
     printRoots(user.getId());
     printAccounts(result);
-
-    UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(c.getId()).setData(result).build();
-    ucj = (UserCapabilityJunction) ucjDAO.put_(x, ucj);
-    System.out.println("added capability to user.");
+    updateUcj(system, result);
 
     map.clear();
-    map.put("1103", cad1);
-    template = new CapabilityAccountTemplate.Builder(x).setId(2).setTemplateName("test2").setAccounts(map).build();
-    result = foo(x, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
+    map.put("1103", cad3);
+    template = new CapabilityAccountTemplate.Builder(system).setId(2).setTemplateName("test2").setAccounts(map).build();
+    result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
 
     printRoots(user.getId());
     printAccounts(result);
+    updateUcj(system, result);
+
+    map.clear();
+    map.put("1755", cad1);
+    template = new CapabilityAccountTemplate.Builder(system).setId(3).setTemplateName("test3").setAccounts(map).build();
+    result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
+
+    printRoots(user.getId());
+    printAccounts(result);
+    updateUcj(system, result);
 
   }
 
@@ -96,6 +104,12 @@ public class AccountHierarchyServiceTest extends Test {
     for ( Map.Entry<String, CapabilityAccountData> account : map.entrySet() ) {
       System.out.println(account.getKey() + " --- " + account.getValue()+ "\n");
     }
+  }
+
+  public void updateUcj(X x, AccountApproverMap result) {
+    ucj = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId(c.getId()).setData(result).build();
+    ucj = (UserCapabilityJunction) ucjDAO.put_(x, ucj);
+    System.out.println("added capability to user.");
   }
 
 }
