@@ -47,13 +47,19 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'isUsingTemplate',
+      label: 'Assign to multiple accounts using a template',
+      value: false
+    },
+    {
       class: 'Reference',
       name: 'accountBasedCapability',
       of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
       visibilityExpression: function(requestType) {
         if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+            requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+            requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
         ) {
           return foam.u2.Visibility.RW;
         }
@@ -78,10 +84,30 @@ foam.CLASS({
       class: 'Reference',
       name: 'capabilityAccountTemplate',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
-      visibilityExpression: function(requestType) {
+      visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+            isUsingTemplate &&
+            (
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+            )
+          ) {
+          return foam.u2.Visibility.RW;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'accountToAssignTo',
+      of : 'net.nanopay.account.Account',
+      visibilityExpression: function(requestType, isUsingTemplate) {
+        if ( 
+            ! isUsingTemplate &&
+            (
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+            )
           ) {
           return foam.u2.Visibility.RW;
         }
