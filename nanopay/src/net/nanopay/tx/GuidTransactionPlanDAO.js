@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'GuidTransactionDAO',
+  name: 'GuidTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `Give each transaction an UID`,

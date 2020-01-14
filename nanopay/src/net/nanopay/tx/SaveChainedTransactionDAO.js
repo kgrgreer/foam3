@@ -21,6 +21,8 @@ foam.CLASS({
       Transaction [] next = txn.getNext();
       if ( next != null ) {
         txn.setNext(null);
+      } else {
+        return getDelegate().put_(x, txn);
       }
       txn = (Transaction) getDelegate().put_(x, txn);
       if ( next != null && next.length > 0 ) {
