@@ -314,6 +314,26 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+   'net.nanopay.liquidity.crunch.ApproverLevel',
+   'net.nanopay.liquidity.crunch.LiquidCapability',
+   'net.nanopay.liquidity.crunch.LiquidCapabilityAuthService',
+   'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+   'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+   'net.nanopay.liquidity.crunch.AccountTemplate',
+   'net.nanopay.liquidity.crunch.AccountMap',
+   'net.nanopay.liquidity.crunch.AccountApproverMap',
+   'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
+   'net.nanopay.liquidity.crunch.AccountData',
+   'net.nanopay.liquidity.crunch.CapabilityAccountData',
+   'net.nanopay.liquidity.crunch.LiquidAuthorizer',
+   'net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer',
+   'net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer',
+   'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
+   'net.nanopay.liquidity.crunch.CapabilityRequest',
+   'net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval',
+   'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
+   'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
+
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.tx.BusinessRule',
@@ -332,6 +352,11 @@ var classes = [
    'net.nanopay.liquidity.tx.TxLimitRule',
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
+
+   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -916,6 +941,8 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.liquidity.ucjQuery.UCJQueryService',
+  'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
 ];
 
 var proxies = [

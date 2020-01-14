@@ -237,7 +237,7 @@ foam.CLASS({
 
       if ( ! treeNode ) {
         var self = this;
-        this.cview.view.onSizeChange.sub(function(sub) {
+        this.cview.view.onSizeChangeComplete.sub(function(sub) {
           sub.detach();
           self.scrollToAccount(accountId);
         })
@@ -245,21 +245,21 @@ foam.CLASS({
         this.getAncestry(accountId).then(ancestry => {
           this.expandAncestors(ancestry);
         });
+
       } else {
         var n = treeNode.parent;
-        while ( n.data.id !== this.cview.view.root.data.id && n.expanded ) {
+        while ( n ) {
+          if ( ! n.expanded ){
+            var self = this;
+            this.cview.view.onSizeChangeComplete.sub(function(sub) {
+              sub.detach();
+              self.scrollToAccount(accountId);
+            })
+            n.expanded = true;
+          }
           n = n.parent;
         }
-        if ( n.data.id != this.cview.view.root.data.id && ! n.expanded ) {
-          var self = this;
-          this.cview.view.onSizeChange.sub(function(sub) {
-            sub.detach();
-            self.scrollToAccount(accountId);
-          })
-          n.expanded = true;
-        } else {
-          this.scrollToNode(treeNode);
-        }
+        this.scrollToNode(treeNode);
       }
     },
 
@@ -324,8 +324,8 @@ foam.CLASS({
     function expandAncestors(ancestry){
       var curr = this.cview.view.root;
 
-      while ( ancestry.length ){
-        if ( ! curr.expanded ) {
+      while ( ancestry.length > 0 ){
+        if ( ! curr.expanded ){
           curr.expanded = true;
         }
 

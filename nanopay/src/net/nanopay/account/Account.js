@@ -398,6 +398,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
+      section: 'administration',
       visibility: 'RO'
     }
   ],

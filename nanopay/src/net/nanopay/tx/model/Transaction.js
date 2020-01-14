@@ -1249,6 +1249,20 @@ foam.CLASS({
     javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
+  },
+  {
+    name: 'getApprovableKey',
+    type: 'String',
+    javaCode: `
+      return getId();
+    `
+  },
+  {
+    name: 'getOutgoingAccount',
+    type: 'Long',
+    javaCode: `
+      return getSourceAccount();
+    `
   }
 ],
   actions: [

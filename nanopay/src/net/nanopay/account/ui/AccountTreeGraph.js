@@ -82,19 +82,19 @@ foam.CLASS({
         this.add(this.Label.create({ color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif' }));
 
         // Balance and Denomination Indicator
+        // TODO: wire up securities findBalance
         this.data.findBalance(this.__subContext__).then(balance => {
           this.__subContext__.currencyDAO.find(this.data.denomination).then(denom => {
-
             // securities and cash colouring are for the liquid accounts
             let color;
-            if (this.data.name.toLowerCase().includes('securities')) {
+            if ( type === 'Securities' ) {
               color = '#406dea';
-            } else if (this.data.name.toLowerCase().includes('cash')) {
+            } else if (type === 'Digital') {
               color = '#d9170e';
             } else if (type === 'Aggregate') {
               color = '#9ba1a6';
-            } else {
-              color = denom ? denom.colour : '#ffffff';
+             } else {
+              color = denom != null ? denom.colour : '#ffffff';
             }
 
             this.add(this.Line.create({
@@ -111,7 +111,7 @@ foam.CLASS({
 
             // Account Type
             if (type == 'Digital') type = 'Virtual';
-            this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type + ' (' + denom ? denom.id : 'N/A' + ')' }));
+            this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type }));
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
             const balanceFont = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
@@ -120,7 +120,7 @@ foam.CLASS({
               font: balanceFont,
               x: leftPos,
               y: this.height - 21,
-              text$: this.__subContext__.homeDenomination$.map(_ => denom ? denom.format(balance) : 'N/A')
+              text$: this.__subContext__.homeDenomination$.map(_ => denom !== null ? denom.format(balance) : 'N/A')
             }))
           });
         });
