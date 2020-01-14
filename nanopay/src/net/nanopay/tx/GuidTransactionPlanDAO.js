@@ -19,7 +19,7 @@ foam.CLASS({
       TransactionQuote quote = (TransactionQuote) obj;
       Transaction[] txnArray = quote.getPlans();
       for ( int i=0; i<txnArray.length; i++ ) {
-        txnArray[i] = guidForTransactions(x,txnArray[i]);
+        txnArray[i] = guidForTransactions(x, txnArray[i]);
       }
       return quote;
       `

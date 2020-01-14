@@ -58,7 +58,7 @@ foam.CLASS({
         for ( Transaction txn: transaction.getNext() ) {
           Transaction existing = (Transaction) ((DAO) x.get("localTransactionDAO")).find(txn.getId());
           if ( existing != null ) {
-            checkAndSaveNextTransaction(x,txn,txn);
+            checkAndSaveNextTransaction(x, txn, txn);
           } else {
             txn.setParent(parent.getId());
             ((DAO) x.get("localTransactionDAO")).put_(x, txn);
