@@ -177,10 +177,14 @@ public class BusinessInvitationDAO
     args.put("sendTo", invite.getEmail());
 
     // Encoding business name and email to handle special characters.
-    String encodedBusinessName, encodedEmail;
+    String encodedBusinessName, encodedEmail, encodedFirstName, encodedLastName, encodedJobTitle, encodedPhoneNumber;
     try {
       encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
       encodedBusinessName = URLEncoder.encode(business.getBusinessName(), "UTF-8");
+      encodedFirstName =  URLEncoder.encode(invite.getFirstName(), "UTF-8");
+      encodedLastName = URLEncoder.encode(invite.getLastName(), "UTF-8");
+      encodedJobTitle = URLEncoder.encode(invite.getJobTitle(), "UTF-8");
+      encodedPhoneNumber = URLEncoder.encode(invite.getPhoneNumber(), "UTF-8");
     } catch(Exception e) {
       logger.error("Error encoding the email or business name.", e);
       throw new RuntimeException(e);
@@ -190,7 +194,9 @@ public class BusinessInvitationDAO
 
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
-    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "&businessId=" + business.getId() + "#sign-up";
+    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "&firstName=" + encodedFirstName
+      + "&lastName=" + encodedLastName + "&jobTitle=" + encodedJobTitle + "&phone=" + encodedPhoneNumber
+      + "&businessId=" + business.getId() + "#sign-up";
     args.put("link", url);
     EmailsUtility.sendEmailFromTemplate(x, business, message, "join-business-external", args);
   }

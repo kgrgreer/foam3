@@ -112,6 +112,7 @@ foam.CLASS({
 
       for ( var account of this.viewData.bankAccounts ) {
         try {
+
           await this.padCaptureDAO.put(this.PadCapture.create({
             firstName: user.firstName,
             lastName: user.lastName,
@@ -147,7 +148,16 @@ foam.CLASS({
       },
       code: function(X) {
         if ( this.validateInputs() ) {
-          this.capturePADAndPutBankAccounts();
+          this.capturePADAndPutBankAccounts().then(() => {
+            this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
+
+            X.closeDialog();
+
+            location.hash = 'sme.main.banking';
+            this.stack.push({
+              class: 'net.nanopay.bank.BankAccountController'
+            })
+          });
         }
       }
     },

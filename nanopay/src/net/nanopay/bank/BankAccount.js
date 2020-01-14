@@ -118,6 +118,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
+      tableWidth: 82,
       section: 'administration',
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
@@ -219,6 +220,7 @@ foam.CLASS({
       documentation: `A URL link to an image of the country's flag. Used for 
         display purposes. This should be set by the child class.
       `,
+      tableWidth: 91,
       section: 'accountDetails',
       visibility: 'RO',
       view: function(_, X) {

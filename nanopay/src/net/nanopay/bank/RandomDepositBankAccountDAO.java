@@ -47,14 +47,13 @@ public class RandomDepositBankAccountDAO
     boolean newAccount = ( getDelegate().find(account.getId()) == null );
 
     // if new account and status is unverified make micro deposit
+
     // TODO: prevent a user from submitting their own status
     // generate random deposit amount and set in bank account model
-
-    long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
-    account.setRandomDepositAmount(randomDepositAmount);
-
     FObject ret = super.put_(x, account);
     if ( newAccount && BankAccountStatus.UNVERIFIED.equals(account.getStatus()) ) {
+      long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
+      account.setRandomDepositAmount(randomDepositAmount);
       User user = (User) x.get("user");
 
       // create new transaction and store

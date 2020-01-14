@@ -20,7 +20,7 @@ import net.nanopay.kotak.model.paymentRequest.*;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.model.Business;
-import net.nanopay.tx.KotakCOTransaction;
+import net.nanopay.tx.KotakPaymentTransaction;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.model.Transaction;
@@ -42,15 +42,15 @@ public class KotakPaymentProcessor implements ContextAgent {
 
     transactionDAO
       .where(AND(
-        INSTANCE_OF(KotakCOTransaction.class),
+        INSTANCE_OF(KotakPaymentTransaction.class),
         EQ(Transaction.STATUS, TransactionStatus.PENDING)
       )).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         try {
-          KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
-          kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
-          INBankAccount destinationBankAccount = getAccountById(x, kotakCOTxn.getDestinationAccount());
+          KotakPaymentTransaction kotakTransaction = (KotakPaymentTransaction) ((KotakPaymentTransaction) obj).fclone();
+          kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
+          INBankAccount destinationBankAccount = getAccountById(x, kotakTransaction.getDestinationAccount());
           User payee = destinationBankAccount.findOwner(x);
 
           /**
@@ -58,7 +58,7 @@ public class KotakPaymentProcessor implements ContextAgent {
            */
           RequestHeaderType paymentHeader = new RequestHeaderType();
           String paymentMessageId = KotakUtils.getUniqueId();
-          kotakCOTxn.setKotakMsgId(paymentMessageId);
+          kotakTransaction.setKotakMsgId(paymentMessageId);
           paymentHeader.setMessageId(paymentMessageId);
           paymentHeader.setBatchRefNmbr(paymentMessageId);
           paymentHeader.setMsgSource(credentials.getMsgSource());
@@ -71,11 +71,11 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setMyProdCode(credentials.getMyProdCode());
           requestInstrument.setPaymentDt(KotakUtils.getCurrentIndianDate());
           Date sentDate = new Date();
-          kotakCOTxn.setSentDate(sentDate);
+          kotakTransaction.setSentDate(sentDate);
           requestInstrument.setRecBrCd(destinationBankAccount.getIfscCode());
           requestInstrument.setInstRefNo(paymentMessageId);
           requestInstrument.setAccountNo(credentials.getRemitterAcNo());
-          requestInstrument.setTxnAmnt( ((double) kotakCOTxn.getAmount()) / 100.0);
+          requestInstrument.setTxnAmnt( ((double) kotakTransaction.getAmount()) / 100.0);
 
           Address payeeAdd = getAddress(payee);
 
@@ -85,7 +85,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setBeneAddr1(payeeAdd.getAddress());
           requestInstrument.setCountry(credentials.getRemitterCountry()); // this is the remitter country, it should be us.
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
-          requestInstrument.setChgBorneBy(kotakCOTxn.getChargeBorneBy());
+          requestInstrument.setChgBorneBy(kotakTransaction.getChargeBorneBy());
 
           String remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
           String beneACType   = destinationBankAccount.getBeneAccountType();
@@ -113,7 +113,7 @@ public class KotakPaymentProcessor implements ContextAgent {
 
           KotakXMLOutputter xmlOutputter = new KotakXMLOutputter(OutputterMode.NETWORK);
           xmlOutputter.output(paymentRequest);
-          kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak Xml Request: " + xmlOutputter.toString()).build());
+          kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak Xml Request: " + xmlOutputter.toString()).build());
 
           /**
            * Send request and parse the response
@@ -124,25 +124,25 @@ public class KotakPaymentProcessor implements ContextAgent {
             Acknowledgement ackHeader = response.getAckHeader();
 
             String paymentResponseStatusCode = ackHeader.getStatusCd();
-            kotakCOTxn.setPaymentStatusCode(paymentResponseStatusCode);
-            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusCode: " + paymentResponseStatusCode).build());
+            kotakTransaction.setPaymentStatusCode(paymentResponseStatusCode);
+            kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusCode: " + paymentResponseStatusCode).build());
 
             String paymentResponseStatusRem = ackHeader.getStatusRem();
-            kotakCOTxn.setPaymentStatusRem(paymentResponseStatusRem);
-            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusRem: " + paymentResponseStatusRem).build());
+            kotakTransaction.setPaymentStatusRem(paymentResponseStatusRem);
+            kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("paymentResponseStatusRem: " + paymentResponseStatusRem).build());
 
             if ( paymentResponseStatusCode.equals("00") ) {
-              kotakCOTxn.setStatus(TransactionStatus.SENT);
+              kotakTransaction.setStatus(TransactionStatus.SENT);
             } else if ( paymentResponseStatusCode.equals("VAL_ERR") ) {
-              kotakCOTxn.setStatus(TransactionStatus.FAILED);
-              kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction Failed.").build());
-              sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakCOTxn.getId() +
-                ". Reason: " + kotakCOTxn.getPaymentStatusRem() + ".");
+              kotakTransaction.setStatus(TransactionStatus.FAILED);
+              kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction Failed.").build());
+              sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakTransaction.getId() +
+                ". Reason: " + kotakTransaction.getPaymentStatusRem() + ".");
             }
 
-            transactionDAO.put(kotakCOTxn);
+            transactionDAO.put(kotakTransaction);
           } else {
-            kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak is not enabled.").build());
+            kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Kotak is not enabled.").build());
           }
 
         } catch (Exception e) {
@@ -154,8 +154,9 @@ public class KotakPaymentProcessor implements ContextAgent {
 
   private void sendNotification(X x, String body) {
     Notification notification = new Notification.Builder(x)
-      .setTemplate("KotakPayment")
-      .setBody(body)
+      .setNotificationType(body)
+      .setGroupId("payment-ops")
+      .setEmailIsEnabled(true)
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);

@@ -73,7 +73,9 @@ foam.CLASS({
       tableWidth: 150,
       tableCellFormatter: function(objId) {
         let self = this;
-        this.__subSubContext__.userDAO.find(parseInt(objId)).then(function(a) {
+        var userId = parseInt(objId);
+        if ( !! userId ) {
+          this.__subSubContext__.userDAO.find(userId).then(function(a) {
           if ( a != undefined ) {
             if ( a.summary ) {
               self.add(a.summary);
@@ -85,9 +87,10 @@ foam.CLASS({
           } else {
             self.add(objId);
           }
-        }).catch(function(err) {
-          self.add(objId);
-        });
+          }).catch(function(err) {
+            self.add(objId);
+          });
+        }
       }
     },
     {
@@ -176,6 +179,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
       visibility: 'RO'
     },
     {

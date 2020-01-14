@@ -10,11 +10,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.fx.KotakFxTransaction',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.cico.COTransaction',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   constants: [
@@ -27,6 +30,11 @@ foam.CLASS({
       type: 'Long',
       name: 'KOTAK_PARTNER_IN_ID',
       value: 1021
+    },
+    {
+      type: 'Long',
+      name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
+      value: 9
     }
   ],
 
@@ -48,32 +56,27 @@ foam.CLASS({
         if (kotakCAbank == null || ! ( kotakCAbank instanceof CABankAccount ) ||
           kotakINbank == null || ! ( kotakINbank instanceof INBankAccount ) ) return getDelegate().put_(x, quote);
         Transaction request = quote.getRequestTransaction();
-        Transaction txn;
-        // txn 1: CA digital -> Kotak CA bank
-        TransactionQuote q1 = new TransactionQuote.Builder(x).build();
-        q1.copyFrom(quote);
-        Transaction t1 = new Transaction.Builder(x).build();
-        t1.copyFrom(request);
-        t1.setDestinationAccount(kotakCAbank.getId());
-        t1.setDestinationCurrency(request.getSourceCurrency());
-        q1.setRequestTransaction(t1);
-        TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-        Transaction cashOutPlan = c1.getPlan();
-        if ( cashOutPlan != null ) {
-          txn = (Transaction) cashOutPlan.fclone();
-        } else {
-          return super.put_(x, quote);
-        }
-        // txn 2: Kotak CA bank -> Kotak IN bank (manual FX rate)
-        KotakFxTransaction t2 = new KotakFxTransaction.Builder(x).build();
-        t2.copyFrom(request);
-        t2.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
-        t2.setIsQuoted(true);
-        t2.setSourceAccount(kotakCAbank.getId());
-        t2.setDestinationAccount(kotakINbank.getId());
-        txn.addNext(t2);
+
+        // txn 1: Kotak CA bank -> Kotak IN bank (manual FX rate)
+        KotakFxTransaction txn = new KotakFxTransaction.Builder(x).build();
+        txn.copyFrom(request);
+        txn.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        txn.setIsQuoted(true);
+        txn.setSourceAccount(kotakCAbank.getId());
+        txn.setDestinationAccount(kotakINbank.getId());
+
+        // txn 2: CO transaction to move funds out of system.
+        // funds will be manualy moved by ops team and approve the KotakFXTransaction once they are complete
+        TrustAccount trustAccount = TrustAccount.find(getX(), request.findSourceAccount(x));
+        KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
+        kotakCO.setAmount(request.getAmount());
+        kotakCO.setSourceAccount(request.getSourceAccount());
+        kotakCO.setDestinationAccount(this.KOTAK_CO_DESTINATION_ACCOUNT_ID);
+        kotakCO.setIsQuoted(true);
+        txn.addNext(kotakCO);
+
         // txn 3: Kotak IN bank -> destination IN bank
-        KotakCOTransaction t3 = new KotakCOTransaction.Builder(x).build();
+        KotakPaymentTransaction t3 = new KotakPaymentTransaction.Builder(x).build();
         t3.copyFrom(request);
         t3.setAmount(request.getDestinationAmount());
         t3.addLineItems(

@@ -18,8 +18,7 @@ foam.CLASS({
     'foam.nanos.auth.Permission',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
@@ -108,25 +107,40 @@ foam.CLASS({
         }
       ],
       javaCode:`
-        EmailMessage         message        = new EmailMessage();
         Map<String, Object>  args           = new HashMap<>();
-        DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
         Group                group          = business.findGroup(x);
-        String               url            = group.getUrl().replaceAll("/$", "");
+        AppConfig            config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
 
-        message.setTo(new String[]{business.getEmail()});
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-        User signingOfficer = business.findSigningOfficer(x);
         args.put("business", business.getBusinessName());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
-        args.put("link",   url + "#sme.main.dashboard");
+        args.put("link",   config.getUrl() + "#sme.main.dashboard");
         args.put("sendTo", User.EMAIL);
-        args.put("name", signingOfficer.getFirstName());
+        args.put("name", User.FIRST_NAME);
 
         try {
-          EmailsUtility.sendEmailFromTemplate(x, business, message, "international-payments-enabled-notification", args);
+
+          Notification notification = business.getAddress().getCountryId().equals("CA") ?
+            new Notification.Builder(x)
+              .setBody("AFEX Business can make international payments.")
+              .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setEmailName("international-payments-enabled-notification")
+              .build() :
+            new Notification.Builder(x)
+              .setBody("Business Passed Compliance")
+              .setNotificationType("BusinessCompliancePassed")
+              .setGroupId(group.toString())
+              .setEmailIsEnabled(true)
+              .setEmailArgs(args)
+              .setEmailName("compliance-notification-to-user")
+              .build();
+
+          business.doNotify(x, notification);
 
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
