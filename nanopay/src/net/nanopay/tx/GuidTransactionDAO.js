@@ -39,8 +39,10 @@ foam.CLASS({
       ],
       javaCode: `   
         transaction.setId(UUID.randomUUID().toString());
-        for ( Transaction txn: transaction.getNext() ) {
-          txn = guidForTransactions(x, txn);
+        if ( transaction.getNext() != null ) {
+          for ( Transaction txn: transaction.getNext() ) {
+            txn = guidForTransactions(x, txn);
+          }
         }
         return transaction;
       `
