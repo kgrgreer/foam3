@@ -111,7 +111,7 @@ foam.CLASS({
           long accountId = ((Long) method.call(x, obj, null)).longValue();
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
-            modelName, accountId, getApproverLevel(), x);
+            x, modelName, accountId, getApproverLevel());
           if ( ! approvers.isEmpty() ) {
             User user = (User) x.get("user");
             User agent = (User) x.get("agent");
