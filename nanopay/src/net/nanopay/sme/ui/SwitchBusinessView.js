@@ -327,7 +327,7 @@ foam.CLASS({
 
   listeners: [
     function goBack() {
-      if ( this.user.cls_ != this.Business ) {
+      if ( this.user.cls_ != net.nanopay.model.Business ) {
         this.notify('Please select a business', 'error');
         return;
       }

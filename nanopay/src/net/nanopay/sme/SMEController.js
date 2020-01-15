@@ -449,11 +449,10 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-
       // Prevent action within platform if user is not a business. Redirect regular users to
       // switch business menu screen to select a business.
       this.stack$.dot('pos').sub(function() {
-        if ( self.user.cls_ == self.Business && self.loginSuccess ) {
+        if ( self.user.cls_ == net.nanopay.model.Business && self.loginSuccess ) {
           return;
         } else if (
           self.user.cls_ != self.Business &&
