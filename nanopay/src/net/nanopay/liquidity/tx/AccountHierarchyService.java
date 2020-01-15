@@ -20,8 +20,6 @@ public class AccountHierarchyService
 
   public AccountHierarchyService() { }
 
-
-  // public java.util.List getViewableRootAccounts(foam.core.X x, long userId);
   @Override
   public List<Account> getViewableRootAccounts(X x, long userId) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
