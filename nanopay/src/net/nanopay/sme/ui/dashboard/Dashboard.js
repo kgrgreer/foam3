@@ -57,10 +57,6 @@ foam.CLASS({
     'myDaoNotification'
   ],
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   messages: [
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
