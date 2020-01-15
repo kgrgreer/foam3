@@ -199,7 +199,8 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   } catch ( Exception e) {
 
   }
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
+  if ( date != null )
+    afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
   
   // add invoice fee
   Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());

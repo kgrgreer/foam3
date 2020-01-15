@@ -35,6 +35,8 @@ foam.CLASS({
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
             Branch currBranch = (Branch) account.findBranch(x);
             String institutionStr = " - ";
+            if ( config == null ) return;
+
             if ( currBranch != null ) {
               Institution currInstitution = (Institution) currBranch.findInstitution(x);
               institutionStr = currInstitution == null ? " - " : ((currInstitution.getAbbreviation() == null  || currInstitution.getAbbreviation().isEmpty()) ? currInstitution.getName() : currInstitution.getAbbreviation());

@@ -121,6 +121,8 @@ foam.CLASS({
 
         try {
 
+          if ( config == null ) throw new RuntimeException("Group is null");
+
           Notification notification = business.getAddress().getCountryId().equals("CA") ?
             new Notification.Builder(x)
               .setBody("AFEX Business can make international payments.")

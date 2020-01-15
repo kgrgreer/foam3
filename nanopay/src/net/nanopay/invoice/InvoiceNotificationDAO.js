@@ -265,7 +265,7 @@ foam.CLASS({
         args.put("currency", invoice.getDestinationCurrency());
         args.put("amount", amount);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
         args.put("date", date != null ? dateFormat.format(date) : "n/a");
 
         if ( invoice instanceof BillingInvoice ) {
@@ -294,6 +294,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
+          return null;
         }
 
         // currently the only sme group that can not approve an invoice is employees

@@ -834,7 +834,7 @@ foam.CLASS({
               }
             }
 
-            test(line.contains("signature"), "Signature is being appended to the image.");
+            test( line != null && line.contains("signature"), "Signature is being appended to the image.");
 
             Pattern pattern = Pattern.compile("signature\\\\(\\"(.*?)\\"\\\\)");
             Matcher matcher = pattern.matcher(line);

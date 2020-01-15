@@ -515,8 +515,6 @@ foam.CLASS({
             throw new AuthorizationException("You cannot change your own group.");
           } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
             throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
-          } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
-            throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           }
         }
       `
