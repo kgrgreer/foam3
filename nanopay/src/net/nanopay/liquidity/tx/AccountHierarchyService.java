@@ -64,12 +64,12 @@ public class AccountHierarchyService
   }
 
   protected Map<Long, ArrayList<String>> getUserToViewableRootAccountsMap() {
-    if ( map_ != null ) {
-      return map_;
+    if ( userToViewableRootAccountsMap_ != null ) {
+      return userToViewableRootAccountsMap_;
     }
 
-    map_ = new ConcurrentHashMap<Long, ArrayList<String>>();
-    return map_;
+    userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
+    return userToViewableRootAccountsMap_;
   }
 
   @Override
