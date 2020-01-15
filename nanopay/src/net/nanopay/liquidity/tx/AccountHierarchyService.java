@@ -18,16 +18,13 @@ public class AccountHierarchyService
   protected Map<String, HashSet<Long>> map_;
   public Map<Long, ArrayList<String>> userToViewableRootAccountsMap_; // getViewableAccountRoots(x, Long userId) {  }
 
-  public AccountHierarchyService() { 
-    userToViewableRootAccountsMap_ = new HashMap<Long, ArrayList<String>>();
-    map_ = new HashMap<String, HashSet<Long>>();
-  }
+  public AccountHierarchyService() { }
 
   public List<Account> getViewableRootAccounts(X x, Long userId) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     List<Account> ret = new ArrayList<Account>();
-    Set<String> roots = new HashSet<String>(userToViewableRootAccountsMap_.get(userId));
+    Set<String> roots = new HashSet<String>(getUserToViewableRootAccountsMap().get(userId));
     if ( roots == null ) return null;
 
     for ( String root : roots ) {
@@ -63,6 +60,15 @@ public class AccountHierarchyService
 
     accountDAO.listen(purgeSink, TRUE);
     map_ = new ConcurrentHashMap<String, HashSet<Long>>();
+    return map_;
+  }
+
+  protected Map<Long, ArrayList<String>> getUserToViewableRootAccountsMap() {
+    if ( map_ != null ) {
+      return map_;
+    }
+
+    map_ = new ConcurrentHashMap<Long, ArrayList<String>>();
     return map_;
   }
 
@@ -114,18 +120,21 @@ public class AccountHierarchyService
   }
 
   @Override
-  public net.nanopay.liquidity.crunch.AccountApproverMap getAssignedAccountMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template.getAccounts();
+    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
 
-    ArrayList<String> roots = trackRootAccounts ? ( userToViewableRootAccountsMap_.containsKey(user) ? userToViewableRootAccountsMap_.get(user) : new ArrayList<String>() ) : null;
+    ArrayList<String> roots = trackRootAccounts ? ( getUserToViewableRootAccountsMap().containsKey(user) ? getUserToViewableRootAccountsMap().get(user) : new ArrayList<String>() ) : null;
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
-    for ( String accountId : accountIds ) {
-      if ( ( ! oldMap.containsKey(accountId) || (oldMap.containsKey(accountId) && roots.contains(accountId) ) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+    if ( trackRootAccounts ) {
+      for ( String accountId : accountIds ) {
+        if ( ( ! oldMap.containsKey(accountId) || 
+          ( oldMap.containsKey(accountId) && roots.contains(accountId) ) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+      }
     }
 
     for ( String accountId : accountIds ) {
@@ -136,16 +145,18 @@ public class AccountHierarchyService
           newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
         } else {
           // since this account is not going thru addchildren, need to go thru its immediate children to make sure that they are not in the roots set
-          List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
-          for ( Account child : immediateChildren ) {
-            roots.remove(String.valueOf(child.getId()));
+          if ( trackRootAccounts ) {
+            List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
+            for ( Account child : immediateChildren ) {
+              roots.remove(String.valueOf(child.getId()));
+            }
           }
         }
       } 
     }
     oldMap.putAll(newMap);
 
-    if ( trackRootAccounts ) userToViewableRootAccountsMap_.put(user, ((ArrayList<String>) roots));
+    if ( trackRootAccounts ) getUserToViewableRootAccountsMap().put(user, ((ArrayList<String>) roots));
 
     return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }
@@ -174,7 +185,7 @@ public class AccountHierarchyService
     for ( Account account : accountsSet ) {
       aid = String.valueOf(account.getId());
       if ( ! accountMap.containsKey(aid) ) accountMap.put(aid, data);
-      if ( roots.contains(aid) ) roots.remove(aid);
+      if ( roots != null && roots.contains(aid) ) roots.remove(aid);
     }
     return accountMap;
   }
@@ -227,18 +238,20 @@ public class AccountHierarchyService
 
 
   @Override
-  public net.nanopay.liquidity.crunch.AccountApproverMap getRevokedAccountsMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template.getAccounts();
+    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
 
-    ArrayList<String> roots = new ArrayList<String>();
+    ArrayList<String> roots = trackRootAccounts ? new ArrayList<String>() : null;
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
-    for ( String accountId : accountIds ) {
-      if ( newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+    if ( trackRootAccounts ) {
+      for ( String accountId : accountIds ) {
+        if ( newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+      }
     }
 
     for ( String accountId : accountIds ) {
@@ -249,16 +262,18 @@ public class AccountHierarchyService
           newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
         } else {
           // since this account is not going thru addchildren, need to go thru its immediate children to make sure that they are not in the roots set
-          List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
-          for ( Account child : immediateChildren ) {
-            roots.remove(String.valueOf(child.getId()));
+          if ( trackRootAccounts ) {
+            List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
+            for ( Account child : immediateChildren ) {
+              roots.remove(String.valueOf(child.getId()));
+            }
           }
         }
       } 
     }
 
     if ( trackRootAccounts ) {
-      ArrayList<String> currentRoots = new ArrayList<String>(userToViewableRootAccountsMap_.get(user));
+      ArrayList<String> currentRoots = new ArrayList<String>(getUserToViewableRootAccountsMap().get(user));
       if ( currentRoots == null || currentRoots.size() == 0 ) throw new RuntimeException("Revoke cannot be performed since user does not have any accounts authorized for this capability."); 
       for ( String root : roots ) {
         if ( oldMap.containsKey(root) ) {
@@ -269,7 +284,7 @@ public class AccountHierarchyService
           currentRoots.remove(root);
         }
       }
-      userToViewableRootAccountsMap_.put(user, currentRoots);
+      getUserToViewableRootAccountsMap().put(user, currentRoots);
     }
 
     oldMap.keySet().removeAll(newMap.keySet());
