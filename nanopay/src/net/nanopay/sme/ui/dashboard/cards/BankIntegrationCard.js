@@ -19,10 +19,6 @@ foam.CLASS({
     'foam.u2.dialog.Popup'
   ],
 
-  implements: [
-    'foam.mlang.Expressions',
-  ],
-
   imports: [
     'branchDAO',
     'institutionDAO',

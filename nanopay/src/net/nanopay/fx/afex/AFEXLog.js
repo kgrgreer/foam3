@@ -39,7 +39,7 @@ foam.CLASS({
     }
   ],
 
-  methods: [
+    methods: [
     {
       name: 'logRequest',
       args: [

@@ -5,12 +5,14 @@ foam.CLASS({
   documentation: `
     This action of rule is for adding the fee line item of the trasaction
     for Grain Discovery.
+    A custom action for the associated rule which can add fee
+    to the cashout transactions.
   `,
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
-  
+
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
