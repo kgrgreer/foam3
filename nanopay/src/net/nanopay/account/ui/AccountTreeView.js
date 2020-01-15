@@ -203,15 +203,15 @@ foam.CLASS({
         .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
           .startContext({data: this})
             .start().addClass(this.myClass('selector'))
+              .add(this.SELECTED_ROOT)
+            .end()
+            .start().addClass(this.myClass('selector'))
               .start({
                 class: 'foam.u2.view.ChoiceView',
                 choices$: this.accounts$,
                 data$: this.highlightedAccount$,
-                placeholder: '--'
+                placeholder: 'Search For An Account'
               }).end()
-            .end()
-            .start().addClass(this.myClass('selector'))
-              .add(this.SELECTED_ROOT)
             .end()
           .endContext()
           .start().addClass(this.myClass('title'))
@@ -240,6 +240,14 @@ foam.CLASS({
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
           .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
+            console.log(a);
+            
+            if ( ! a ){
+              return self.E()
+              .start()
+                .add("test")
+              .end()
+            } 
             var v = this.AccountTreeGraph.create({
               data: a,
             });
@@ -390,7 +398,7 @@ foam.CLASS({
         // recursive function that takes an account and context (for getChildren)
         async function getChildData(account, context) {
           // at node, push id and name in format for choice view
-          accounts.push([account.id, account.name]);
+          accounts.push([account.id, account.toSummary()]);
 
           // at node, get its children
           var children = await account.getChildren(context).select();
