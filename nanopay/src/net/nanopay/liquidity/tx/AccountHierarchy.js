@@ -31,20 +31,6 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'getAccountsFromCapabilityAccountTemplate',
-      type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'template',
-          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
-        }
-      ]
-    },
-    {
       name: 'getAccountsFromAccountTemplate',
       type: 'net.nanopay.liquidity.crunch.AccountMap',
       args: [
@@ -55,6 +41,58 @@ foam.INTERFACE({
         {
           name: 'template',
           type: 'net.nanopay.liquidity.crunch.AccountTemplate'
+        }
+      ]
+    },
+    {
+      name: 'getAssignedAccountMap',
+      type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'trackRootAccounts',
+          type: 'Boolean'
+        },
+        {
+          name: 'user',
+          type: 'Long'
+        },
+        {
+          name: 'oldTemplate',
+          type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
+        },
+        {
+          name: 'template',
+          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+        }
+      ]
+    },
+    {
+      name: 'getRevokedAccountsMap',
+      type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'trackRootAccounts',
+          type: 'Boolean'
+        },
+        {
+          name: 'user',
+          type: 'Long'
+        },
+        {
+          name: 'oldTemplate',
+          type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
+        },
+        {
+          name: 'template',
+          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
         }
       ]
     }
