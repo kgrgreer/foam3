@@ -49,7 +49,7 @@ foam.CLASS({
       name: 'selectedColor',
       value: 'rgb(135,206,250,0.15)'
     },
-    {
+     {
       name: 'selectedNode',
       postSet: function(o, n) {
         if (o) {

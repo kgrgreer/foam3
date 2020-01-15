@@ -116,16 +116,25 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
       name: 'accounts',
-      of: 'net.nanopay.account.Account',
-      visibilityExpression: function(canvasContainer) {
-        return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
-      },
-      postSet: function(_, n){
+      documentation: 'array for ChoiceView choices',
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'highlightedAccount',
+      documentation: 'account id that has been selected through ChoiceView',
+      postSet: function(o, n) {
+        if ( ! n ) return;
         this.scrollToAccount(n);
-      },
-      view: function(_, x) {
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'selectedRoot',
+      of :'net.nanopay.account.Account',
+      view: function(_,x){
         var self = x.data;
         var prop = this;
         var v = foam.u2.view.ReferenceView.create(null, x);
@@ -186,12 +195,23 @@ foam.CLASS({
     function initE(){
       var self = this;
 
+      // sub to selected root
+      this.onDetach(this.selectedRoot$.sub(this.rootChanged));
+
       this.addClass(this.myClass());
       this
         .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
           .startContext({data: this})
             .start().addClass(this.myClass('selector'))
-              .add(this.ACCOUNTS)
+              .start({
+                class: 'foam.u2.view.ChoiceView',
+                choices$: this.accounts$,
+                data$: this.highlightedAccount$,
+                placeholder: '--'
+              }).end()
+            .end()
+            .start().addClass(this.myClass('selector'))
+              .add(this.SELECTED_ROOT)
             .end()
           .endContext()
           .start().addClass(this.myClass('title'))
@@ -219,20 +239,24 @@ foam.CLASS({
           .end()
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-          .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
-            var v = self.AccountTreeGraph.create({ data: a.array[0] });
-            self.cview = self.ZoomMapView.create({
+          .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
+            var v = this.AccountTreeGraph.create({
+              data: a,
+            });
+
+            this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
-              width: self.el().clientWidth,
+              width: this.el().clientWidth,
               viewBorder: '#d9170e',
               navBorder: 'black',
               handleHeight: '10',
-              handleColor: '#406dea'
+              handleColor: '#406dea',
             });
-            return self.cview;
-          })
+            return this.cview;
+          }))
         )
+
         .end()
     },
 
@@ -346,4 +370,47 @@ foam.CLASS({
       }
     }
   ],
+
+  listeners: [
+    {
+      name: 'rootChanged',
+      code: async function() {
+        // return if no root selected
+        if ( ! this.selectedRoot ) return;
+
+        // get actual root
+        var rootAccount = await this.accountDAO.find(this.selectedRoot);
+
+        // return if no account found for id
+        if ( ! rootAccount ) return;
+
+        // temp array
+        var accounts = [];
+
+        // recursive function that takes an account and context (for getChildren)
+        async function getChildData(account, context) {
+          // at node, push id and name in format for choice view
+          accounts.push([account.id, account.name]);
+
+          // at node, get its children
+          var children = await account.getChildren(context).select();
+
+          // return if no children
+          if ( ! children.array ) return;
+
+          // for each child, recursively call this function.
+          // putting this logic in forEach gives a weird side effect when using
+          // await
+          for ( var i = 0 ; i < children.array.length ; i++ ) {
+            await getChildData(children.array[i], context);
+          }
+        };
+
+        // get all child data before proceeding
+        await getChildData(rootAccount, this.__subContext__);
+
+        this.accounts = accounts;
+      }
+    }
+  ]
 });
