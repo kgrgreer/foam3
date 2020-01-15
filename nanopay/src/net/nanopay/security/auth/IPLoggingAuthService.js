@@ -29,7 +29,7 @@ foam.CLASS({
         }`
     },
     {
-      name: 'loginByEmail',
+      name: 'login',
       javaCode: `
         LoginAttempt loginAttempt = new LoginAttempt();
         HttpServletRequest request = x.get(HttpServletRequest.class);
@@ -38,7 +38,7 @@ foam.CLASS({
         loginAttempt.setEmail(email);
 
         try {
-          User user = super.loginByEmail(x, email, password);
+          User user = super.login(x, email, password);
           loginAttempt.setLoginAttemptedFor(user.getId());
           loginAttempt.setGroup(user.getGroup());
           loginAttempt.setLoginSuccessful(true);

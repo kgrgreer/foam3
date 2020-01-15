@@ -96,7 +96,7 @@ foam.CLASS({
         }
         this.isLoading_ = true;
         this.auth
-          .loginByEmail(null, this.email, this.desiredPassword)
+          .login(null, this.email, this.desiredPassword)
           .then((user) => {
             this.user.copyFrom(user);
             if ( !! user ) {

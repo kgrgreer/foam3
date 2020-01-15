@@ -425,7 +425,7 @@ return ClientBankAccountVerifierService_create([
       returns: 'foam.nanos.auth.User',
       swiftCode: `
 clearProperty("currentUser")
-let u = try clientAuthService.loginByEmail(__context__, email, password)
+let u = try clientAuthService.login(__context__, email, password)
 currentUser = u
 return u
       `,

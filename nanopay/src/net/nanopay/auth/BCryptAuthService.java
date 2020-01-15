@@ -40,36 +40,9 @@ public class BCryptAuthService
   }
 
   @Override
-  public User login(X x, long userId, String password) throws AuthenticationException {
+  public User login(X x, String email, String password) throws AuthenticationException {
     try {
-      return super.login(x, userId, password);
-    } catch (Throwable t) {
-      User user = (User) userDAO_.inX(x).find(userId);
-      if ( user == null ) {
-        throw new AuthenticationException("User not found");
-      }
-
-      if ( ! BCrypt.checkpw(password, user.getPassword()) ) {
-        throw new AuthenticationException("Incorrect password");
-      }
-
-      // hash using new method and update
-      user.setPassword(Password.hash(password));
-      user = (User) userDAO_.put(user);
-
-      // create session
-      Session session = x.get(Session.class);
-      session.setUserId(user.getId());
-      session.setContext(session.getContext().put("user", user));
-      sessionDAO_.put(session);
-      return user;
-    }
-  }
-
-  @Override
-  public User loginByEmail(X x, String email, String password) throws AuthenticationException {
-    try {
-      return super.loginByEmail(x, email, password);
+      return super.login(x, email, password);
     } catch (Throwable t) {
       User user = (User) userDAO_.inX(x).find(EQ(User.EMAIL, email.toLowerCase()));
       if ( user == null ) {

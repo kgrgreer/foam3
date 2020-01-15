@@ -38,9 +38,9 @@ public class DeviceAuthService
   }
 
   @Override
-  public User loginByEmail(X x, String email, String password) throws AuthenticationException {
+  public User login(X x, String email, String password) throws AuthenticationException {
     if ( ! email.startsWith("device-") ) {
-      return super.loginByEmail(x, email, password);
+      return super.login(x, email, password);
     }
 
     String serialNumber = email.split("device-")[1];

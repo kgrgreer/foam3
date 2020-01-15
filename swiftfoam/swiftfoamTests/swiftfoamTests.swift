@@ -17,7 +17,7 @@ class swiftfoamTests: XCTestCase {
 
   func testLogin() {
     do {
-      let user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
+      let user = try client.clientAuthService.login(client.__context__, username, password)
       XCTAssert(user.email == username, "Email must match")
       XCTAssert(user.password != password, "Password MUST NOT match as it should be encrypted")
     } catch let e {
@@ -43,10 +43,10 @@ class swiftfoamTests: XCTestCase {
   func testChangePassword() {
     do {
       if let _ = try client.clientAuthService.getCurrentUser(client.__context__) {}
-      else { let _ = try client.clientAuthService.loginByEmail(client.__context__, username, password) }
+      else { let _ = try client.clientAuthService.login(client.__context__, username, password) }
 
       try client.clientAuthService.updatePassword(client.__context__, password, "A_new_p4ss")
-      let _ = try client.clientAuthService.loginByEmail(client.__context__, username, "A_new_p4ss")
+      let _ = try client.clientAuthService.login(client.__context__, username, "A_new_p4ss")
 
       //reset user back to correct password
       try client.clientAuthService.updatePassword(client.__context__, "A_new_p4ss", password)
@@ -58,7 +58,7 @@ class swiftfoamTests: XCTestCase {
   func testFailedChangePassword() {
     do {
       if let _ = try client.clientAuthService.getCurrentUser(client.__context__) { }
-      else { let _ = try client.clientAuthService.loginByEmail(client.__context__, username, password) }
+      else { let _ = try client.clientAuthService.login(client.__context__, username, password) }
 
       try client.clientAuthService.updatePassword(client.__context__, "SomeIncorrectPassword", "Mintchip123")
       XCTFail("Old password was incorrect and should have failed.")
@@ -99,7 +99,7 @@ class swiftfoamTests: XCTestCase {
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
-        user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
+        user = try client.clientAuthService.login(client.__context__, username, password)
       }
 
       let pred = client.__context__.create(foam_mlang_predicate_Eq.self, args: [
@@ -122,7 +122,7 @@ class swiftfoamTests: XCTestCase {
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
-        user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
+        user = try client.clientAuthService.login(client.__context__, username, password)
       }
 
       let pred = client.__context__.create(foam_mlang_predicate_Or.self, args: [
@@ -152,7 +152,7 @@ class swiftfoamTests: XCTestCase {
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
-        user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
+        user = try client.clientAuthService.login(client.__context__, username, password)
       }
 
       let newTransaction = client.__context__.create(net_nanopay_tx_model_Transaction.self)!
@@ -181,7 +181,7 @@ class swiftfoamTests: XCTestCase {
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
-        user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
+        user = try client.clientAuthService.login(client.__context__, username, password)
       }
 
       let service = client.userTransactionLimitService!

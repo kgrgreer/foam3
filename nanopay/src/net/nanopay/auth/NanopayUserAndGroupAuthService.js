@@ -106,7 +106,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'loginByEmail',
+      name: 'login',
       javaCode: `
         return login_(x, email, password);
       `
@@ -148,7 +148,7 @@ foam.CLASS({
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
-        return super.loginByEmail(x, id, password);
+        return super.login(x, id, password);
       `
     },
     {

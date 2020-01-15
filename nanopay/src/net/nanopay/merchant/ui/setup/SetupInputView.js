@@ -195,7 +195,7 @@ foam.CLASS({
         this.tag(this.ErrorMessage.create({ message: 'Please enter a password' }));
         return;
       }
-      this.deviceAuth.loginByEmail(null, 'device-' + this.serialNumber, this.password)
+      this.deviceAuth.login(null, 'device-' + this.serialNumber, this.password)
       .then(function (result) {
         if ( ! result ) {
           throw new Error('Device activation failed');

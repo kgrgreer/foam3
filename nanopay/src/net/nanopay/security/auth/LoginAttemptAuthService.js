@@ -56,7 +56,7 @@ foam.CLASS({
         }`
     },
     {
-      name: 'loginByEmail',
+      name: 'login',
       javaCode: `
         return login_(x, email, password);
       `
@@ -95,7 +95,7 @@ foam.CLASS({
 
         try {
           // attempt to login in, on success reset the login attempts
-          return resetLoginAttempts(x, super.loginByEmail(x, id, password));
+          return resetLoginAttempts(x, super.login(x, id, password));
         } catch ( Throwable t ) {
           if ( user == null ) {
             /*

@@ -159,7 +159,7 @@ foam.CLASS({
         },
       ],
       javaCode: `
-        auth.loginByEmail(x, id, "Test123");
+        auth.login(x, id, "Test123");
       `
     },
     {
@@ -180,7 +180,7 @@ foam.CLASS({
         },
       ],
       javaCode: `
-        auth.loginByEmail(x, id, "Test124");
+        auth.login(x, id, "Test124");
       `
     },
     {
