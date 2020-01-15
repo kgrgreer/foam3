@@ -32,7 +32,7 @@ foam.CLASS({
 
               DAO businessDAO = (DAO) x.get("businessDAO");
               Business bs = (Business) businessDAO.find(EQ(Business.EMAIL, user.getEmail()));
-              if (user == null && user.getId() <= 0) return;
+              if (user == null || user.getId() <= 0) return;
               EmailMessage message = new EmailMessage();
               Map<String, Object>  args = new HashMap<>();
               args.put("userId", user.getId());

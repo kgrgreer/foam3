@@ -58,10 +58,10 @@ foam.CLASS({
             .limit(1).select(new ArraySink())).getArray();
 
           Boolean doesAccExist = (accountsArray != null && accountsArray.size() != 0);
-          Account acc = (Account)(doesAccExist ? accountsArray.get(0) : null);
 
           // checking if account has been added
           if ( doesAccExist ) {
+            Account acc = (Account) accountsArray.get(0);
             // User also has bankAccount, thus add bank fields to email
             args.put("title", "User has Onboarded & previously added an Account");
             args.put("subTitle2", "BankAccount Information:");
