@@ -10,11 +10,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
-
-  documentation: `A custom action for the associated rule which can add fee
-    to the cashout transactions.
-  `,
-
+  
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
