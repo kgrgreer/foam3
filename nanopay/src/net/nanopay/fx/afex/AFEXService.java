@@ -57,9 +57,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   protected AFEXCredentials getCredentials() {
-    if ( ! isCredientialsValid() ) {
-      logger.error(this.getClass().getSimpleName(), "invalid credentials");
+    if ( credentials == null ) {
       credentials = (AFEXCredentials) getX().get("AFEXCredentials");
+      if ( ! isCredientialsValid() ) { 
+        credentials = null;
+        logger.error(this.getClass().getSimpleName(), "invalid credentials");
+      }
     }
     return credentials;
   }
