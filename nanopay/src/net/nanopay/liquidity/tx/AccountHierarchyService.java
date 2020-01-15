@@ -127,13 +127,21 @@ public class AccountHierarchyService
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
 
-    ArrayList<String> roots = trackRootAccounts ? ( getUserToViewableRootAccountsMap().containsKey(user) ? getUserToViewableRootAccountsMap().get(user) : new ArrayList<String>() ) : null;
+    ArrayList<String> roots = trackRootAccounts ? 
+    ( getUserToViewableRootAccountsMap().containsKey(user) ? 
+      getUserToViewableRootAccountsMap().get(user) : 
+      new ArrayList<String>() ) : 
+    null;
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     if ( trackRootAccounts ) {
       for ( String accountId : accountIds ) {
         if ( ( ! oldMap.containsKey(accountId) || 
-          ( oldMap.containsKey(accountId) && roots.contains(accountId) ) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+                ( oldMap.containsKey(accountId) && 
+                  roots.contains(accountId) ) ) &&
+                newMap.get(accountId).getIsIncluded() ) {
+              roots.add(accountId);
+            }
       }
     }
 
