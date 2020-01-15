@@ -48,125 +48,126 @@ foam.CLASS({
         finalJob.setStartTime(System.currentTimeMillis());
         pbd.setStatus("Reading CSV...");
         DAO progressBarDAO = (DAO) x.get("ProgressBarDAO");
-        progressBarDAO.put(pbd);
         finalJob.setReport(report);
-        java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
-        blob.read(os, 0, blob.getSize());
-        foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());
-        logger.info(" ** Blob read into stream: " + blob.getSize());
-
-        foam.lib.parse.ParserContextImpl px = new foam.lib.parse.ParserContextImpl();
-        px.set("X", x);
-
-        // Create DAO to store rows from file
-        DAO gsTxCsvRowDAO = new foam.dao.SequenceNumberDAO.Builder(x)
-          .setDelegate(new foam.dao.MDAO(GsTxCsvRow.getOwnClassInfo()))
-          .build();
-        // Add index to MDAO
-        ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
-          .addIndex(new foam.core.PropertyInfo[] {
-              net.nanopay.tx.gs.GsTxCsvRow.CASH_USD
-          });
-          ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
-          .addIndex(new foam.core.PropertyInfo[] {
-            net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY
-          });
-
-        CSVParser csvParser = new CSVParser(
-          net.nanopay.tx.gs.GsTxCsvRow.getOwnClassInfo(),
-          new foam.dao.DAOSink.Builder(x)
-            .setDao(gsTxCsvRowDAO)
-            .build());
-        csvParser.parse(ps, px);
-        long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
-        logger.info(" ** Read and parsed " + am + " rows ...");
-
-        pbd.setMaxValue(am);
-        pbd.setStatus("Parsing Transaction: 0 of " + am);
-        progressBarDAO.put(pbd);
-
         AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
+        if ( ! filename.contains(".csv") ){
+          logger.info(" ** Non CSV file uploaded... ");
+          finalJob.setFailed(true);
+          finalJob.setFailText("Unable to Process File.\\nFile is not a csv. ");
+        }
+        else {
+          java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
+          blob.read(os, 0, blob.getSize());
+          foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());
+          logger.info(" ** Blob read into stream: " + blob.getSize());
 
-        List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
-           .select(new ArraySink())).getArray();
+          foam.lib.parse.ParserContextImpl px = new foam.lib.parse.ParserContextImpl();
+          px.set("X", x);
 
-        // -- begin Job creation and execution
-        logger.info(" ** Processing: " + rows.size() + " rows ...");
-        int i = 0;
-        int modulus = 21;
-        for ( GsTxCsvRow row1 : rows ) {
-          // logger.info(" ** On iteration: " + i + " of: " + am);
-          i++;
-          GsTxAssembly job = new GsTxAssembly.Builder(x)
-            .setOutputDAO( (DAO) x.get("localTransactionDAO") )
-            .setTrackingJob(finalJob)
-            .setRow1(row1)
+          // Create DAO to store rows from file
+          DAO gsTxCsvRowDAO = new foam.dao.SequenceNumberDAO.Builder(x)
+            .setDelegate(new foam.dao.MDAO(GsTxCsvRow.getOwnClassInfo()))
             .build();
-          if ( i % modulus == 0 || i == rows.size() ) {
-            pbd = (ProgressBarData) pbd.fclone();
-            pbd.setValue(i);
-            pbd.setStatus("Parsing Transaction: " + pbd.getValue() + " of " + rows.size());
-            job.setPbd(pbd);
-            //progressBarDAO.put(pbd);
+          // Add index to MDAO
+          ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
+            .addIndex(new foam.core.PropertyInfo[] {
+                net.nanopay.tx.gs.GsTxCsvRow.CASH_USD
+            });
+            ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
+            .addIndex(new foam.core.PropertyInfo[] {
+              net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY
+            });
 
-            //logger.info(" ** " + pbd.getStatus());
-          }
+          CSVParser csvParser = new CSVParser(
+            net.nanopay.tx.gs.GsTxCsvRow.getOwnClassInfo(),
+            new foam.dao.DAOSink.Builder(x)
+              .setDao(gsTxCsvRowDAO)
+              .build());
+          csvParser.parse(ps, px);
+          long am = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
+          logger.info(" ** Read and parsed " + am + " rows ...");
 
-          /*
-          long count = ((Count) gsTxCsvRowDAO.select(MLang.COUNT())).getValue();
-          if ( count == 0 )
-            break;
-            */
+          pbd.setMaxValue(am);
+          pbd.setStatus("Parsing Transaction: 0 of " + am);
+          progressBarDAO.put(pbd);
 
-          //---- handle external jobs
-          if ( SafetyUtil.equals(row1.getIsInternal(), "0") ) {
-            checkTrustee(x,row1.getCurrency());
-            transactionProcessor.enqueue(job);
-            continue;
-          }
-          checkTrustee(x,row1.getCurrency());
-          job.setIsInternal(true);
 
-          //-- Cash txns.
-          if ( isCash(row1) ) {
-            // Make sure the amount is positive
-            if ( row1.getCashUSD() < 0 ) continue;
+          List <GsTxCsvRow> rows = ( (ArraySink) gsTxCsvRowDAO
+             .select(new ArraySink())).getArray();
 
-            // Find the matching cash transaction from the original row
-            Object [] arr = ( (ArraySink) gsTxCsvRowDAO
-              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
-              .limit(1)
-              .select(new ArraySink())).getArray().toArray();
-            if ( arr.length == 0 ) {
-              finalJob.addToFailed(row1.getTransactionId()+", ");
-              logger.error("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
-              continue;
+          // -- begin Job creation and execution
+          logger.info(" ** Processing: " + rows.size() + " rows ...");
+          int i = 0;
+          int modulus = 21;
+          for ( GsTxCsvRow row1 : rows ) {
+            if ( ! finalJob.getFailed() ) {
+              i++;
+              GsTxAssembly job = new GsTxAssembly.Builder(x)
+                .setOutputDAO( (DAO) x.get("localTransactionDAO") )
+                .setTrackingJob(finalJob)
+                .setRow1(row1)
+                .build();
+              if ( i % modulus == 0 || i == rows.size() ) {
+                pbd = (ProgressBarData) pbd.fclone();
+                pbd.setValue(i);
+                pbd.setStatus("Parsing Transaction: " + pbd.getValue() + " of " + rows.size());
+                job.setPbd(pbd);
+              }
+
+              //---- handle external jobs
+              if ( SafetyUtil.equals(row1.getIsInternal(), "0") ) {
+                checkTrustee(x,row1.getCurrency());
+                transactionProcessor.enqueue(job);
+                continue;
+              }
+              checkTrustee(x,row1.getCurrency());
+              job.setIsInternal(true);
+
+              //-- Cash txns.
+              if ( isCash(row1) ) {
+                // Make sure the amount is positive
+                if ( row1.getCashUSD() < 0 ) continue;
+
+                // Find the matching cash transaction from the original row
+                Object [] arr = ( (ArraySink) gsTxCsvRowDAO
+                  .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.CASH_USD, -row1.getCashUSD()))
+                  .limit(1)
+                  .select(new ArraySink())).getArray().toArray();
+                if ( arr.length == 0 ) {
+                  finalJob.addToFailed(row1.getTransactionId()+", ");
+                  logger.error("Unmatched internal cash transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
+                  continue;
+                }
+                checkTrustee(x,((GsTxCsvRow) arr[0]).getCurrency());
+                job.setRow2( (GsTxCsvRow) arr[0] );
+              }
+              else {
+                // Make sure the quantity is positive
+                if ( row1.getSecQty() < 0 ) continue;
+
+                // Find the matching securities transaction from the original row
+                Object [] arr = ( (ArraySink) gsTxCsvRowDAO
+                  .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY, -row1.getSecQty()))
+                  .limit(1)
+                  .select(new ArraySink())).getArray().toArray();
+                if ( arr.length == 0 ) {
+                  finalJob.addToFailed(row1.getTransactionId()+", ");
+                  logger.error("Unmatched internal securities transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
+                  continue;
+                }
+                job.setRow2( (GsTxCsvRow) arr[0] );
+              }
+
+              transactionProcessor.enqueue(job);
             }
-            checkTrustee(x,((GsTxCsvRow) arr[0]).getCurrency());
-            job.setRow2( (GsTxCsvRow) arr[0] );
           }
-          else {
-            // Make sure the quantity is positive
-            if ( row1.getSecQty() < 0 ) continue;
-
-            // Find the matching securities transaction from the original row
-            Object [] arr = ( (ArraySink) gsTxCsvRowDAO
-              .where(MLang.EQ(net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY, -row1.getSecQty()))
-              .limit(1)
-              .select(new ArraySink())).getArray().toArray();
-            if ( arr.length == 0 ) {
-              finalJob.addToFailed(row1.getTransactionId()+", ");
-              logger.error("Unmatched internal securities transaction, no transaction made for " + row1.getTransactionId() + " - row: " + i);
-              continue;
-            }
-            job.setRow2( (GsTxCsvRow) arr[0] );
-          }
-
-          transactionProcessor.enqueue(job);
+          pbd.setValue(am);
+          pbd.setStatus("File Has Been Ingested");
         }
 
-        pbd.setValue(am);
-        pbd.setStatus("File Has  Been Ingested");
+        if ( finalJob.getFailed() ) {
+          pbd.setStatus("File Upload Failed");
+        }
         transactionProcessor.enqueue(finalJob);
       `
     },

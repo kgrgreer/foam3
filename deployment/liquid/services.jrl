@@ -89,7 +89,6 @@ p({
           default-src 'none';
           child-src 'self';
           worker-src 'self';
-          manifest-src 'self' /favicon/manifest.json;
           connect-src 'self' data: blob: filesystem: ws:;
           script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
           style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
@@ -334,7 +333,6 @@ p({
     
     dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
-    dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, dao);

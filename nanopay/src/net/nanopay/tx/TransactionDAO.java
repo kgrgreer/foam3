@@ -179,10 +179,10 @@ public class TransactionDAO
       hm.put(tr.getAccount(), tr);
     }
     Transfer [] newTs = hm.values().toArray(new Transfer[0]);
-
     //sort the transfer array
     java.util.Arrays.sort(newTs);
-
+    //persist the new condensed transfer array
+    txn.setTransfers(newTs);
     // lock accounts in transfers
     return lockAndExecute_(x, txn, newTs, 0);
   }

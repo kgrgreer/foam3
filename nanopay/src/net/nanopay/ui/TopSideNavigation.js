@@ -256,12 +256,16 @@ foam.CLASS({
       this.pushMenu(this.menuSearch);
       this.menuListener(menu);
       // Scroll to submenu selected from search.
-      document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'end' });
+      if ( document.getElementsByName(this.menuSearch)[0] ) {
+        document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'end' });
+      }
     },
     function scrollToCurrentSub() {
       // When submenu element is loaded, scroll element into parent view TODO: Fix to align to middle of parent div.
       if ( this.subMenu.state === this.subMenu.LOADED ) {
-        this.subMenu.el().scrollIntoView({ block: 'end' });
+        if ( this.subMenu.el() ) {
+          this.subMenu.el().scrollIntoView({ block: 'end' });
+        }
       }
     }
   ]

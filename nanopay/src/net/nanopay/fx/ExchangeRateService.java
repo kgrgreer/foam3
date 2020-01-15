@@ -10,6 +10,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.Currency;
 import foam.core.Unit;
 import foam.dao.DAO;
+import foam.util.SafetyUtil;
 import net.nanopay.exchangeable.Security;
 
 
@@ -60,7 +61,8 @@ implements  ExchangeRateServiceInterface {
       }
       catch(Exception e2) {
         try {
-          double r1 = getRate(u1, "USD"); // maybe call getRate? would then search inverses..
+          if (SafetyUtil.equals(u1,"USD") || SafetyUtil.equals(u2,"USD")) throw new RuntimeException("No rate found");
+          double r1 = getRate(u1, "USD");
           double r2 = getRate("USD", u2);
           rate = r1 * r2;
         }

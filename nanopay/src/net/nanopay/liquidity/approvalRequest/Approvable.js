@@ -7,13 +7,16 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'Approvable',
 
-  ids: [
-    'daoKey',
-    'objId',
-    'propertiesToUpdate'
-  ],
-
   properties: [  
+    {
+      class: 'String',
+      name: 'id',
+      documentation: `
+        A function of daoKey, objId and a hashed properties to update, to be used
+        to distinguish update requests on the same object
+      `,
+      required: true
+    },
     {
       class: 'String',
       name: 'daoKey'
@@ -34,6 +37,6 @@ foam.CLASS({
       factory: function(){
         return {};
       }
-    }
+    },
   ],
 });

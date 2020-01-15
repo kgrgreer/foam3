@@ -1,11 +1,34 @@
-//Medusa Mediate
+//Medusa Mediator
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"nSpecDAO",
+  "name":"tcpServer",
+  "lazy":false,
+  "serviceClass":"foam.nanos.mrac.TCPNioServer"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"quorumService",
+  "lazy":false,
+  "serviceClass":"foam.nanos.mrac.quorum.QuorumService"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec", "name":"clusterNodeDAO",
+  "lazy":false,
   "serve":true,
-  "authenticate": false,
-  "serviceClass":"foam.dao.ProxyDAO",
-  "client":"{\"of\":\"foam.nanos.boot.NSpec\",\"cache\":true}"
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.mrac.ClusterNode.getOwnClassInfo())
+      .setAuthorize(false)
+      .setGuid(true)
+      .setRuler(false)
+      .setCluster(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("clusterNodes")
+      .build();
+    """,
+  "client":"{\"of\":\"foam.nanos.demo.DemoObject\", \"remoteListenerSupport\": false}"
 })
 
 //p({"class":"foam.nanos.boot.NSpec", "name":"tcpServer",                        "lazy":false,  "serviceClass":"foam.nanos.mrac.TCPNioServer"})
