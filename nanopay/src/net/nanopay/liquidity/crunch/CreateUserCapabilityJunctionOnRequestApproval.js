@@ -44,12 +44,13 @@ foam.CLASS({
                 template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
-                .setIsCascading(false)
-                .setIsIncluded(true)
-                .setApproverLevel(new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build())
-                .build();
+                  .setIsCascading(false)
+                  .setIsIncluded(true)
+                  .setApproverLevel(new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build())
+                  .build();
                 Map<String, CapabilityAccountData> map = new HashMap<String, CapabilityAccountData>();
                 map.put(String.valueOf(req.getAccountToAssignTo()), data);
+
                 template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
               }
 
@@ -84,11 +85,12 @@ foam.CLASS({
                 template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
-                .setIsCascading(false)
-                .setIsIncluded(true)
-                .build();
+                  .setIsCascading(false)
+                  .setIsIncluded(true)
+                  .build();
                 Map<String, CapabilityAccountData> map = new HashMap<String, CapabilityAccountData>();
                 map.put(String.valueOf(req.getAccountToAssignTo()), data);
+                
                 template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
               }
 
