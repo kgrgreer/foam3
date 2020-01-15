@@ -198,11 +198,6 @@ public class AccountHierarchyService
     return accountMap;
   }
 
-  @Override
-  public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template) {
-    return null;
-  }
-
 
   @Override
   public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){

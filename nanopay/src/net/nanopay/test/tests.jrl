@@ -12,6 +12,3 @@ p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOS
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})
 
-
-// test
-p({"class":"net.nanopay.liquidity.tx.AccountHierarchyServiceTest","id":"RootAccountTest"})
