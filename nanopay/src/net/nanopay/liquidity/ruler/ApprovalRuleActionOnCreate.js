@@ -34,7 +34,6 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
-    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
     'static foam.mlang.MLang.*'
   ],
 
@@ -107,7 +106,7 @@ foam.CLASS({
         if ( approval == null ) {
           if ( getIsFinal() ) return false;
 
-          AccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+          AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
           MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
           long accountId = ((Long) method.call(x, obj, null)).longValue();
 

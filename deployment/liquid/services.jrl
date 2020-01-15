@@ -798,3 +798,25 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accountUcjQueryService",
+  "serve": true,
+  "serviceClass": "net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService",
+  "boxClass": "net.nanopay.liquidity.ucjQuery.AccountUCJQueryServiceSkeleton",
+  "client":
+  """
+    {
+      "class":"net.nanopay.liquidity.ucjQuery.ClientAccountUCJQueryService",
+      "delegate": { 
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":
+          "service/accountUcjQueryService"
+        }
+      }
+    }
+  """
+})

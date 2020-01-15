@@ -29,7 +29,6 @@ foam.CLASS({
     'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
@@ -85,7 +84,7 @@ foam.CLASS({
 
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
 
-      CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+      UCJQueryService ucjQueryService = (UCJQueryService) x.get("ucjQueryService");
 
       List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1, getX());
 
