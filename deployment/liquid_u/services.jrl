@@ -14,7 +14,7 @@ p({
       "servletObject":{
         "class":"foam.nanos.servlet.VirtualHostRoutingServlet",
         "hostMapping":{
-          "ablii":"/ablii.html",
+          "mm.demo.nanopay.net":"/index.html",
           "localhost":"/index.html"
         },
         "defaultHost":"localhost"
