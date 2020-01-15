@@ -598,7 +598,7 @@ foam.CLASS({
 
           byte[][] level1 = getParentHashes(testNodes);
 
-          byte[][] level2 = new byte[(int) Math.ceil(level1.length / 2) + 1][getHashArrayLength()];
+          byte[][] level2 = new byte[(int) Math.ceil((double)level1.length / 2.0) + 1][getHashArrayLength()];
           int count = 0;
           for ( byte[] hash : getParentHashes(level1) ) {
             level2[count] = hash;
@@ -606,7 +606,7 @@ foam.CLASS({
           }
           level2[count] = level2[count - 1];
 
-          byte[][] level3 = new byte[(int) Math.ceil(level2.length / 2) + 1][getHashArrayLength()];
+          byte[][] level3 = new byte[(int) Math.ceil((double)level2.length / 2.0) + 1][getHashArrayLength()];
           count = 0;
           for ( byte[] hash : getParentHashes(level2) ) {
             level3[count] = hash;
@@ -614,7 +614,7 @@ foam.CLASS({
           }
           level3[count] = level3[count - 1];
 
-          byte[][] level4 = new byte[(int) Math.ceil(level3.length / 2) + 1][getHashArrayLength()];
+          byte[][] level4 = new byte[(int) Math.ceil((double)level3.length / 2.0) + 1][getHashArrayLength()];
           count = 0;
           for ( byte[] hash : getParentHashes(level3) ) {
             level4[count] = hash;

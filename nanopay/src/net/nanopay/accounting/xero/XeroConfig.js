@@ -136,7 +136,6 @@ foam.CLASS({
     {
       name: 'isUsingAppFirewall',
       type: 'Boolean',
-      type: 'Boolean',
       code: function () {
         return this.usingAppFirewall;
       },

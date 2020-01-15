@@ -32,7 +32,7 @@ foam.CLASS({
             id.append(currency);
             ZeroAccountUserAssociation assoc = (ZeroAccountUserAssociation)((DAO) x.get("localZeroAccountUserAssociationDAO")).find_(x, id.toString());
             if ( assoc == null ) {
-              if ( currency.equals("*") ) {
+              if ( "*".equals(currency) ) {
                 logger.error("Trust account user not found for ServiceProvider", sp, currency);
                 throw new RuntimeException("Trust account not found for ServiceProvider "+sp.getId());
               }
