@@ -129,7 +129,12 @@ public class AccountHierarchyService
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     for ( String accountId : accountIds ) {
-      if ( ( ! oldMap.containsKey(accountId) || (oldMap.containsKey(accountId) && roots.contains(accountId) ) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+      if ( ( ! oldMap.containsKey(accountId) || 
+              ( oldMap.containsKey(accountId) && 
+                 roots.contains(accountId) ) ) &&
+              newMap.get(accountId).getIsIncluded() ) {
+             roots.add(accountId);
+          }
     }
 
     for ( String accountId : accountIds ) {
