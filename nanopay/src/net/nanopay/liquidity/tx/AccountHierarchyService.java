@@ -198,8 +198,6 @@ public class AccountHierarchyService
       addChildrenToAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
     }
 
-
-
     return new AccountMap.Builder(x).setAccounts(finalMap).build();
 
   }

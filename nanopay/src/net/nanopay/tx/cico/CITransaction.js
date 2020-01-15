@@ -5,6 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -108,19 +109,27 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      super.validate(x);
-      Logger logger = (Logger) x.get("logger");
+        super.validate(x);
+        Logger logger = (Logger) x.get("logger");
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-        logger.error("Bank account must be verified");
-        throw new RuntimeException("Bank account must be verified");
-      }
-      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
-        oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
-        logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-        throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-      }
+        // Check source account
+        if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+          logger.error("Bank account must be verified");
+          throw new RuntimeException("Bank account must be verified");
+        }
+
+        // Check transaction status and lifecycleState
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        if ( oldTxn != null
+          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
+            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
+          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && ! ( oldTxn.getLifecycleState() == LifecycleState.PENDING
+            && getLifecycleState() == LifecycleState.ACTIVE )
+        ) {
+          logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+        }
       `
     }
   ]

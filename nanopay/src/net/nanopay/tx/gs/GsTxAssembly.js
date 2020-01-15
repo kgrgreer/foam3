@@ -31,7 +31,10 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
-    'net.nanopay.tx.DVPTransaction'
+    'net.nanopay.tx.DVPTransaction',
+    'net.nanopay.fx.SecurityPrice',
+    'net.nanopay.fx.ExchangeRateService',
+    'foam.core.Currency'
   ],
 
   constants: [
@@ -106,21 +109,42 @@ foam.CLASS({
     {
       name: 'executeJob',
       javaCode: `
-        Transaction t = getIsInternal() ?
-          parseInternal(getX(),getRow1(),getRow2()) :
-          parseExternal(getX(),getRow1());
+      if ( ! getTrackingJob().getFailed() ) {
+        try {
+          Transaction t = getIsInternal() ?
+            parseInternal(getX(),getRow1(),getRow2()) :
+            parseExternal(getX(),getRow1());
 
-        setTransaction(t);
+          setTransaction(t);
+        }
+        catch( Exception e ){
+          getTrackingJob().setFailed(true);
+          if ( getRow1() != null && getRow1().getTransactionId() != null ) {
+             getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing. \\nOn row "+ getRow1().getTransactionId());
+          }
+          else {
+            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing.");
+          }
+        }
+      }
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        verifyBalance(getX(),getTransaction());
-        getOutputDAO().put(getTransaction());
-        if ( getPbd() != null )
-          ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
-        getTrackingJob().incrementTxnCounter(getTxnCount());
+        if (! getTrackingJob().getFailed() ){
+          try {
+            verifyBalance(getX(),getTransaction());
+            getOutputDAO().put(getTransaction());
+            if ( getPbd() != null )
+              ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
+            getTrackingJob().incrementTxnCounter(getTxnCount());
+          }
+          catch( Exception e ){
+            getTrackingJob().setFailed(true);
+            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction save.");
+          }
+        }
       `
     },
     {
@@ -156,13 +180,13 @@ foam.CLASS({
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getCurrency());
           t.setDestinationCurrency(destRow.getCurrency());
-
           t.setAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
           t.setDestinationAmount(toLong(x,destRow.getCurrency(),destRow.getCashQty()));
+          if ( !( t.getSourceCurrency().equals(t.getDestinationCurrency())) )
+            addExchangeRate(x,t.getSourceCurrency(),t.getDestinationCurrency(),sourceRow.getCashQty(),destRow.getCashQty());
         }
         else { // securities
           verifySecurity(x, sourceRow.getProductId());
-          //if ( ! SafetyUtil.equals(sourceRow.getProductId(), destRow.getProductId()) ) {
             if( isDVP(sourceRow) ) {
               DVPTransaction tx = new DVPTransaction();
               tx.setSourcePaymentAccount(findAcc(x,destRow,true));
@@ -171,7 +195,7 @@ foam.CLASS({
               tx.setDestinationPaymentAmount(toLong(x,sourceRow.getCurrency(),sourceRow.getCashQty()));
               t = tx;
             }
-          //}
+          populateSecurityPriceDAO(x, destRow);
           t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getProductId());
@@ -226,11 +250,12 @@ foam.CLASS({
             t.setDestinationCurrency("USD");
             t.setAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
             t.setDestinationAmount(toLong(x,"USD", row1.getCashUSD()));
+            if ( ! ( t.getSourceCurrency().equals(t.getDestinationCurrency())) )
+              addExchangeRate(x, t.getSourceCurrency(), t.getDestinationCurrency(), row1.getCashQty(), row1.getCashUSD());
           }
           if (! isCash(row1) && ( row1.getSecQty() < 0 )){ //sending some securities
             verifySecurity(x,row1.getProductId());
             if( isDVP(row1) ) {
-
               DVPTransaction tx = new DVPTransaction();
               tx.setPaymentAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
               tx.setDestinationPaymentAmount(toLong(x,"USD",row1.getCashUSD()));
@@ -239,7 +264,7 @@ foam.CLASS({
               t = tx;
               // add cash peice
               }
-
+            populateSecurityPriceDAO(x, row1);
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationAccount(BROKER_ID);
             t.setSourceCurrency(row1.getProductId());
@@ -257,6 +282,8 @@ foam.CLASS({
             t.setDestinationCurrency(row1.getCurrency());
             t.setAmount(toLong(x,"USD",row1.getCashUSD()));
             t.setDestinationAmount(toLong(x,row1.getCurrency(),row1.getCashQty()));
+            if ( !( t.getSourceCurrency().equals(t.getDestinationCurrency())) )
+              addExchangeRate(x, t.getSourceCurrency(), t.getDestinationCurrency(), row1.getCashUSD(), row1.getCashQty());
           }
           if ( ! isCash(row1) && ( row1.getSecQty() > 0 )) {
           verifySecurity(x,row1.getProductId());
@@ -432,37 +459,7 @@ foam.CLASS({
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
             ci.setAmount(ci.getDestinationAmount());
           } else {
-            double w = 1.0;
-
-            // Why are we getting an exchange rate from destination to source currency?
-            ArraySink ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
-              MLang.AND(
-                MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getDestinationCurrency()),
-                MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getSourceCurrency())
-              )).select(new ArraySink());
-            
-            if ( ((ex.getArray().toArray())).length == 0 ){
-              
-              // Attempt a reverse exchange with a defined exchange rate when one exists
-              ex = (ArraySink) ((DAO) x.get("exchangeRateDAO")).where(
-                MLang.AND(
-                  MLang.EQ(ExchangeRate.FROM_CURRENCY, ci.getSourceCurrency()),
-                  MLang.EQ(ExchangeRate.TO_CURRENCY, ci.getDestinationCurrency())
-                )
-              ).select(new ArraySink());
-              if ((ex.getArray().toArray()).length == 0) 
-                w = 0; // No reverse exchange rate exists either
-              else 
-                w = (double) ((1/(((ExchangeRate)(ex.getArray().toArray())[0]).getRate())));
-            } else {
-              w = (double) ((((ExchangeRate)(ex.getArray().toArray())[0]).getRate()));
-            }
-            if ( w == 0) {
-              logger.warning("No exchange rate exists for " + ci.getSourceCurrency() + " -> " + ci.getDestinationCurrency());
-            }
-            ci.setAmount(toLong(x, ci.getSourceCurrency(), ( (double) ci.getDestinationAmount() * w)));
-            //logger.debug("Calculated a w of " + ci.getAmount() + " in currency " + ci.getSourceCurrency() +
-            //             " -> " + ci.getDestinationAmount() + " for " + ci.getDestinationCurrency() + ": " + w);
+            ci.setAmount(((ExchangeRateService)x.get("exchangeRateService")).exchange(ci.getDestinationCurrency(), ci.getSourceCurrency(), ci.getDestinationAmount()));
           }
 
           // Ensure the bank account has a sufficient balance too
@@ -513,6 +510,48 @@ foam.CLASS({
           createInfoLineItem("Liquidity Hierarchy 4",row1.getProto_Liquidity_Hierarchy4()),
         }, null);
         return txn;
+      `
+    },
+    {
+      name: 'populateSecurityPriceDAO',
+      args: [
+        { name: 'x', type: 'foam.core.X'},
+        { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow'}
+      ],
+      javaCode: `
+        DAO priceDAO = (DAO) x.get("securityPriceDAO");
+        SecurityPrice price = new SecurityPrice.Builder(x)
+          .setSecurity(row.getProductId())
+          .setCurrency(row.getMarketValueCCy())
+          .setPrice(Math.abs(row.getMarketValueLocal()/row.getSecQty()))
+          .build();
+        SecurityPrice priceUSD = new SecurityPrice.Builder(x)
+          .setSecurity(row.getProductId())
+          .setCurrency("USD")
+          .setPrice(Math.abs(row.getMarketValue()/row.getSecQty()))
+          .build();
+        addExchangeRate(x, row.getMarketValueCCy(), "USD", row.getMarketValueLocal(), row.getMarketValue());
+        priceDAO.put(price);
+        priceDAO.put(priceUSD);
+      `
+    },
+    {
+      name: 'addExchangeRate',
+      args: [
+        { name: 'x', type: 'foam.core.X'},
+        { name: 'curr1', type: 'String'},
+        { name: 'curr2', type: 'String'},
+        { name: 'amnt1', type: 'Double'},
+        { name: 'amnt2', type: 'Double'}
+      ],
+      javaCode: `
+        DAO exchangeRateDAO = (DAO) x.get("exchangeRateDAO");
+        ExchangeRate er = new ExchangeRate.Builder(x)
+          .setFromCurrency(curr1)
+          .setToCurrency(curr2)
+          .setRate(Math.abs(amnt2/amnt1))
+          .build();
+        exchangeRateDAO.put(er);
       `
     },
     {

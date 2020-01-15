@@ -90,22 +90,6 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"Reset transaction lastModified/By properties on re-put",
-  "ruleGroup":"(Default)",
-  "priority":1000,
-  "daoKey":"liquidTransactionDAO",
-  "operation":1,
-  "after":false,
-  "predicate":{
-    "class":"foam.nanos.ruler.predicate.NewEqOld"
-  },
-  "action":{
-    "class":"net.nanopay.meter.compliance.ruler.ResetLastModified"
-  },
-  "enabled": true
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"L1 approval for all transactions",
   "documentation":"Add L1 approval to all liquid transactions created.",
   "ruleGroup":"txapprovals",
@@ -123,7 +107,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
-    "classification":"L1 approval - Transaction"
+    "approverLevel": 1
   },
   "enabled":true
 })
@@ -144,7 +128,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate",
-    "updateOnApproved":true
+    "isFinal":true
   },
   "enabled":true
 })
@@ -152,11 +136,20 @@ p({
 // Multi-level (L2) transaction approval rules
 p({
   "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-  "id": "L2 approval for transactions >= $85,000",
-  "sourceAccount": 1053,
+  "id": "L2 approval for transaction >= $85,000 USD - globalAccountTemplate",
+  "useAccountTemplate": true,
+  "accountTemplate": 2,
+  "denomination": "USD",
   "startAmount": 8500000,
   "enabled": false,
   "lifecycleState":1
+})
+p({
+  "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
+  "id": "L2 approval for transaction >= $50,000 - GS03 Bank Account",
+  "sourceAccount": 1449,
+  "startAmount": 5000000,
+  "enabled": false
 })
 
 // Add approval request rules

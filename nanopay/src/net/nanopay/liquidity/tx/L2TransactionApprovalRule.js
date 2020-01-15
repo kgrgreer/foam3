@@ -6,7 +6,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.ruler.predicate.PropertyEQValue',
+    'net.nanopay.liquidity.ruler.AccountTemplateContains',
     'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*',
@@ -28,7 +31,10 @@ foam.CLASS({
     },
     {
       name: 'priority',
-      value: 90
+      documentation: 'Prioritize account-based rules over accountTemplate-based rules.',
+      javaGetter: `
+        return getUseAccountTemplate() ? 80 : 90;
+      `
     },
     {
       name: 'daoKey',
@@ -46,9 +52,16 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'Boolean',
+      name: 'useAccountTemplate',
+      documentation: 'Use account template instead of source account if set to true.',
+      section: 'basicInfo'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'sourceAccount',
+      label: 'Apply To Account',
       section: 'basicInfo',
       targetDAOKey: 'accountDAO',
       view: {
@@ -60,6 +73,31 @@ foam.CLASS({
         this.__subSubContext__.accountDAO.find(value).then((account)=> {
           account.name ? self.add(account.name) : self.add(account.id);
         });
+      },
+      visibilityExpression: function(useAccountTemplate) {
+        return ! useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.liquidity.crunch.AccountTemplate',
+      name: 'accountTemplate',
+      label: 'Apply To Account Template',
+      section: 'basicInfo',
+      visibilityExpression: function(useAccountTemplate) {
+        return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'denomination',
+      targetDAOKey: 'currencyDAO',
+      documentation: 'The denomination to apply to when using accountTemplate.',
+      label: 'Apply To Denomination',
+      section: 'basicInfo',
+      visibilityExpression: function(useAccountTemplate) {
+        return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -81,12 +119,23 @@ foam.CLASS({
       name: 'predicate',
       transient: true,
       javaGetter: `
+        Predicate accountPredicate = EQ(DOT(NEW_OBJ, Transaction.SOURCE_ACCOUNT), getSourceAccount());
+        Predicate denominationPredicate = TRUE;
+        if ( getUseAccountTemplate() ) {
+          accountPredicate = new AccountTemplateContains.Builder(getX())
+            .setAccountProperty(Transaction.SOURCE_ACCOUNT)
+            .setAccountTemplate(getAccountTemplate())
+            .build();
+          denominationPredicate = EQ(DOT(NEW_OBJ, Transaction.SOURCE_CURRENCY), getDenomination());
+        }
+
         return AND(
-          new foam.nanos.ruler.predicate.PropertyEQValue.Builder(getX())
+          new PropertyEQValue.Builder(getX())
             .setPropName("lifecycleState")
             .setPropValue(LifecycleState.PENDING)
             .build(),
-          EQ( DOT(NEW_OBJ, Transaction.SOURCE_ACCOUNT), getSourceAccount() ),
+          denominationPredicate,
+          accountPredicate,
           GTE( DOT(NEW_OBJ, Transaction.AMOUNT), getStartAmount() )
         );
       `
@@ -96,7 +145,7 @@ foam.CLASS({
       transient: true,
       javaGetter: `
         return new ApprovalRuleActionOnCreate.Builder(getX())
-          .setClassification("L2 Approval - Transaction")
+          .setApproverLevel(2)
           .build();
       `,
     }

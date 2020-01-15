@@ -530,9 +530,9 @@ foam.CLASS({
       try {
         var className = '.full-invoice';
         var downloadContent = ctrl.document.querySelector(className);
-        var doc = new jsPDF('l', 'mm', ['350', '700']);
         downloadContent.style.backgroundColor = '#fff';
         downloadContent.style.padding = '20px';
+        var doc = new jsPDF('l', 'mm', [downloadContent.clientHeight, downloadContent.clientWidth]);
         doc.addHTML(downloadContent, () => {
           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
         });

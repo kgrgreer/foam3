@@ -32,8 +32,8 @@ foam.CLASS({
     'accountDAO',
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
+    'liquidityFilteredAccountDAO'
   ],
-  
 
   css: `
     ^ {
@@ -82,29 +82,20 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'filteredAccountDAO',
+      targetDAOKey: 'liquidityFilteredAccountDAO',
       name: 'account',
       factory: function() {
-        this.filteredAccountDAO.limit(1).select().then(a => {
+        this.liquidityFilteredAccountDAO.limit(1).select().then(a => {
           if ( a.array.length ) this.account = a.array[0].id;
         });
         return net.nanopay.account.Account.ID.value;
       }
     },
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'filteredAccountDAO',
-      factory: function() {
-        return this.accountDAO.where(this.IsClassOf.create({
-          targetClass: this.DigitalAccount
-        }));
-      }
-    },
-    {
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
-      value: 'WEEKLY'
+      value: 'DAILY'
     },
     {
       class: 'Date',
@@ -145,16 +136,26 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
+        // WIP
         return {
           type: 'line',
           options: {
             scales: {
               xAxes: [{
                 type: 'time',
+                bounds: 'ticks',
                 time: {
+                  round: true,
                   displayFormats: {
-                    hour: 'MMM D',
-                    quarter: 'MMM YYYY'
+                    millisecond: 'll',
+                    second: 'll',
+                    minute: 'll',
+                    hour: 'll',
+                    day: 'll',
+                    week: 'll',
+                    month: 'll',
+                    quarter: 'll',
+                    year: 'll'
                   }
                 },
                 distribution: 'linear'
@@ -340,7 +341,32 @@ foam.CLASS({
               return `${c.format(v.yLabel)}`;
             }
           }
+        };
+
+        var unit = 'day';
+        switch ( this.timeFrame ) {
+          case 'WEEKLY':
+            unit = 'week';
+            break;
+          case 'MONTHLY':
+            unit = 'month';
+            break;
+          case 'QUARTERLY':
+            unit = 'quarter';
+            break;
+          case 'ANNUALLY':
+            unit = 'year';
+            break;
+          default:
+            unit = 'day';
         }
+
+        var xAxesMap = this.config.options.scales.xAxes[0];
+        xAxesMap.time.unit = unit;
+        xAxesMap.bounds = 'ticks';
+        // WIP
+        // xAxesMap.ticks.min = this.startDate;
+        // xAxesMap.ticks.max = this.endDate;
 
         var style = {};
         style[a.id] = {
@@ -351,12 +377,14 @@ foam.CLASS({
         }
         style[a.liquiditySetting+':low'] = {
           steppedLine: true,
+          spanGaps: true,
           borderColor: ['#a61414'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
           label: this.LABEL_LOW_THRESHOLD
         }
         style[a.liquiditySetting+':high'] = {
           steppedLine: true,
+          spanGaps: true,
           borderColor: ['#32bf5e'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
           label: this.LABEL_HIGH_THRESHOLD,

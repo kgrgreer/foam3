@@ -44,6 +44,8 @@ foam.CLASS({
             args.put("name",    User.FIRST_NAME);
             args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
             args.put("institution", institutionStr);
+            args.put("userEmail", User.EMAIL);
+            args.put("accountType", account.getType());
         
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")

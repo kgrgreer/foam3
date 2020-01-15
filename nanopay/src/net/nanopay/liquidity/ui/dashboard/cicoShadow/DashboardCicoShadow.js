@@ -257,6 +257,8 @@ foam.CLASS({
                   config = foam.Object.clone(config);
                   config.options.scales.xAxes = [{
                     ticks: {
+                      beginAtZero:true,
+                      // min: 0,
                       callback: function (value) {
                         return `${c.format(value)}`;
                       }
