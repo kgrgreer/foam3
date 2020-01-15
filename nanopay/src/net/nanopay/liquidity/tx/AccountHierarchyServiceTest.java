@@ -7,6 +7,7 @@ import foam.nanos.auth.*;
 import foam.test.TestUtils;
 import foam.nanos.crunch.*;
 import net.nanopay.liquidity.crunch.*;
+import net.nanopay.account.Account;
 
 import java.util.*;
 
@@ -61,7 +62,7 @@ public class AccountHierarchyServiceTest extends Test {
     System.out.println(a1 + " : " + result.getAccounts().get(a1)+"\n\n");
     System.out.println(a2 + " : " + result.getAccounts().get(a2)+"\n\n");
 
-    printRoots(user.getId());
+    printRoots(system, user.getId());
     printAccounts(result);
     updateUcj(system, result);
 
@@ -70,7 +71,7 @@ public class AccountHierarchyServiceTest extends Test {
     template = new CapabilityAccountTemplate.Builder(system).setId(2).setTemplateName("test2").setAccounts(map).build();
     result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
 
-    printRoots(user.getId());
+    printRoots(system, user.getId());
     printAccounts(result);
     updateUcj(system, result);
 
@@ -80,7 +81,7 @@ public class AccountHierarchyServiceTest extends Test {
     template = new CapabilityAccountTemplate.Builder(system).setId(3).setTemplateName("test3").setAccounts(map).build();
     result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
 
-    printRoots(user.getId());
+    printRoots(system, user.getId());
     printAccounts(result);
     updateUcj(system, result);
 
@@ -92,11 +93,11 @@ public class AccountHierarchyServiceTest extends Test {
   }
   public void newline() { System.out.println(); }
 
-  public void printRoots(Long user) {
-    HashSet<String> roots = service.userToViewableRootAccountsMap_.get(user);
+  public void printRoots(X x, Long user) {
+    List<Account> roots = service.getViewableRootAccounts(x, user);
     System.out.println("\n\nuser has root accounts : \n");
-    for ( String root : roots ) {
-      System.out.println("root --- " + root + "\n");
+    for ( Account root : roots ) {
+      System.out.println("root --- " + root.getId() + "\n");
     }
   }
   public void printAccounts(AccountApproverMap result) {
