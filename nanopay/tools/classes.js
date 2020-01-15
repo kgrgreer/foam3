@@ -335,6 +335,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
 
    'net.nanopay.util.Frequency',
+   'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',

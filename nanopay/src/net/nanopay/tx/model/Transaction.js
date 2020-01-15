@@ -857,6 +857,7 @@ foam.CLASS({
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
+      setLifecycleState(other.getLifecycleState());
       `
     },
     {
