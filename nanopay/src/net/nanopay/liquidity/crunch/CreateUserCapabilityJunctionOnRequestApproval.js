@@ -28,7 +28,6 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
             DAO capabilityDAO = (DAO) getX().get("localCapabilityDAO");
-            DAO capabilityAccountTemplateDAO = (DAO) getX().get("capabilityAccountTemplateDAO");
 
             CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
