@@ -14,4 +14,4 @@ p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":
 
 
 // test
-p({"class":"net.nanopay.liquidity.tx.AccountHierarchyServiceTest","id":"aht"})
+p({"class":"net.nanopay.liquidity.tx.AccountHierarchyServiceTest","id":"RootAccountTest"})
