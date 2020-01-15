@@ -33,13 +33,24 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'failedRows'
+      name: 'failedRows',
     },
     {
       class: 'Long',
       name: 'topUpCounter',
       synchronized: true
     },
+    {
+      class: 'Boolean',
+      name: 'failed',
+      value: false,
+      synchronized: true
+    },
+    {
+      class: 'String',
+      name: 'failText',
+      synchronized: true
+    }
   ],
   methods: [
     {
@@ -57,9 +68,14 @@ foam.CLASS({
       name: 'endJob',
       javaCode: `
         Long elapsed = System.currentTimeMillis() - getStartTime();
-        getReport().setReport(
-        "Ingestion took: "+ (elapsed/60000)+ " minutes and "+((elapsed%60000)/1000)+ " seconds\\n"+"Top up transactions created: "+ getTopUpCounter()+"\\nTransactions Created from file: "+getTxnCounter()+"\\nFailed rows: "+ getFailedRows()
-        );
+        if (getFailed()){
+          getReport().setReport(getFailText());
+        }
+        else {
+          getReport().setReport(
+          "Ingestion took: "+ (elapsed/60000)+ " minutes and "+((elapsed%60000)/1000)+ " seconds\\n"+"Top up transactions created: "+ getTopUpCounter()+"\\nTransactions Created from file: "+getTxnCounter()+"\\nFailed rows: "+ getFailedRows()
+          );
+        }
         foam.dao.DAO dao = (foam.dao.DAO) getX().get("ProgressBarDAO");
         dao.put(getReport());
       `
