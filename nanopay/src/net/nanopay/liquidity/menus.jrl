@@ -566,7 +566,7 @@ p({
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
           "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.LiquidCapability",
+          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
           "name": "lifecycleState"
         },
         "arg2": {
@@ -600,7 +600,7 @@ p({
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
           "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.LiquidCapability",
+          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
           "name": "lifecycleState"
         },
         "arg2": {
