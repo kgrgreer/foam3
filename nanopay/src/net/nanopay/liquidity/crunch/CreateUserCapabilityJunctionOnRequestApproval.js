@@ -9,11 +9,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
-    'java.util.ArrayList',
-    'java.util.HashSet',
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.AccountHierarchy',
-    'net.nanopay.liquidity.tx.AccountHierarchyService',
     'static foam.mlang.MLang.*'
   ],
 
@@ -41,6 +38,9 @@ foam.CLASS({
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
               CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
               for ( Long user : users )  {
@@ -68,6 +68,9 @@ foam.CLASS({
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
               CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
               for ( Long user : users )  {
