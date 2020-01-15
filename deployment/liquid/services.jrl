@@ -105,7 +105,8 @@ p({
   }
 })
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"localAccountDAO",
   "lazy":false,
   "serviceScript":
   """
@@ -131,10 +132,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setSeqNo(true)
-      .setCreatedAware(true)
-      .setCreatedByAware(true)
-      .setLastModifiedAware(true)
-      .setLastModifiedByAware(true)
       .setDeletedAware(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
@@ -168,10 +165,6 @@ p({
 
       // These decorators are present on localAccountDAO.
       .setDeletedAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
       .build();
   """,
   "client":
@@ -201,6 +194,7 @@ p({
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.TYPE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.PARENT});
@@ -251,10 +245,6 @@ p({
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
     // dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
     // dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
-    dao = new foam.nanos.auth.AuthorizationDAO(x, dao,
-      new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer.Builder(x)
-        .setPermissionPrefix("transaction")
-        .build());
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
     """
 })
@@ -671,6 +661,33 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    import foam.mlang.order.Comparator;
+
+    Comparator[] cArray = new Comparator[1];
+
+    // TODO: should we change this LastModified not Created
+    cArray[0] = new foam.mlang.order.Desc(net.nanopay.tx.model.Transaction.CREATED);
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setPermissioned(true)
+      .setOrder(cArray)
+      .setInnerDAO(x.get("localTransactionDAO"))
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "approvalRequestDAO",
   "serve": true,
@@ -694,4 +711,65 @@ p({
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "csvUploadScriptDAO",
+  "lazy": true,
+  "serve": true,
+  "serviceScript": "
+    return new foam.dao.EasyDAO.Builder(x) 
+      .setPm(true)
+      .setGuid(true)
+      .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"csvUploadScripts\")
+      .setAuthorize(false)
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
+      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .build();",
+  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+})
+
+// Progress bar service
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ProgressBarDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(false)
+      .setPipelinePm(false)
+      .setRuler(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ProgressBarDAO")
+      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ucjQueryService",
+  "serve": true,
+  "serviceClass": "net.nanopay.liquidity.ucjQuery.CachedUCJQueryService",
+  "boxClass": "net.nanopay.liquidity.ucjQuery.UCJQueryServiceSkeleton",
+  "client":
+  """
+    {
+      "class":"net.nanopay.liquidity.ucjQuery.ClientUCJQueryService",
+      "delegate": { 
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":
+          "service/ucjQueryService"
+        }
+      }
+    }
+  """
 })

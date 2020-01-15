@@ -48,6 +48,52 @@ foam.CLASS({
     }
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Requested',
+      predicateFactory: function(e) {
+        return e.EQ(
+          net.nanopay.approval.ApprovalRequest.STATUS,
+          net.nanopay.approval.ApprovalStatus.REQUESTED
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Approved',
+      predicateFactory: function(e) {
+        return  e.EQ(
+          net.nanopay.approval.ApprovalRequest.STATUS,
+          net.nanopay.approval.ApprovalStatus.APPROVED
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Rejected',
+      predicateFactory: function(e) {
+        return  e.EQ(
+          net.nanopay.approval.ApprovalRequest.STATUS,
+          net.nanopay.approval.ApprovalStatus.REJECTED
+        );
+      }
+    },
+    {
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
+      name: 'Table',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
+      icon: 'images/list-view.svg',
+    }
+  ],
+
   properties: [
     {
       class: 'Reference',

@@ -15,8 +15,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Boolean nu = "".equals(((Transaction) obj).getId());
-
       Transaction txn = (Transaction)obj;
       Transaction [] next = txn.getNext();
       if ( next != null ) {

@@ -9,11 +9,6 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'java.util.Map'
   ],
-
-  methods: [
-    // add logic from rule in here
-  ]
-
 });
   
     

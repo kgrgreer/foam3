@@ -566,7 +566,10 @@ foam.CLASS({
           errorString: 'Please select job title.'
         }
       ],
-      validationTextVisible: true
+      validationTextVisible: true,
+      postSet: function(_, n) {
+        this.owner1.jobTitle = this.adminJobTitle;
+      }
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       name: 'adminPhone',
@@ -1103,7 +1106,7 @@ foam.CLASS({
           this.owner1.jobTitle = this.adminJobTitle;
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
-          this.owner1.ownershipPercent = this.ownershipPercent;;
+          this.owner1.ownershipPercent = this.ownershipPercent;
         } else if ( ! this.userOwnsPercent ) {
           this.clearProperty('owner1');
         }
@@ -1141,7 +1144,6 @@ foam.CLASS({
     },
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership',
       postSet: function(o, n) {
         this.owner1.ownershipPercent = n;
       },
@@ -1261,16 +1263,25 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       label: '',
       label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, amountOfOwners) {
+        return signingOfficer && amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.GT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+              ),
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
+              ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
             );
           },
           errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
@@ -1284,16 +1295,20 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'dualPartyAgreementCAD',
       label: '',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, amountOfOwners) {
+        return signingOfficer && amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'dualPartyAgreement'],
+          args: ['signingOfficer', 'dualPartyAgreement', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+                e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
+              ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
@@ -1431,8 +1446,10 @@ foam.CLASS({
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
           } else {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
       }

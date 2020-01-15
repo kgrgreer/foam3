@@ -46,7 +46,16 @@ foam.CLASS({
         this.__subSubContext__.userDAO.find(value).then((user)=> {
           user.firstName && user.lastName ? self.add(user.firstName + ' ' + user.lastName) : self.add(user.email);
         });
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['sourceUser'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.RestrictUsersRule.SOURCE_USER, 0);
+          },
+          errorString: 'Source user must be set.'
+        }
+      ]
     },
     {
       class: 'Reference',
@@ -63,7 +72,16 @@ foam.CLASS({
         this.__subSubContext__.userDAO.find(value).then((user)=> {
           user.firstName && user.lastName ? self.add(user.firstName + ' ' + user.lastName) : self.add(user.email);
         });
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['destinationUser'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.RestrictUsersRule.DESTINATION_USER, 0);
+          },
+          errorString: 'Destination user must be set.'
+        }
+      ]
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',

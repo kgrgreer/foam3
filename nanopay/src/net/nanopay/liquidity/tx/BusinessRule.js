@@ -164,6 +164,22 @@ foam.CLASS({
       code: function(x) {
         return this.id;
       }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        if (this.getRuleGroup() == null ||
+            this.getRuleGroup() == "") {
+              throw new IllegalStateException("Rule group must be set");
+        }
+      `
     }
   ]
 });

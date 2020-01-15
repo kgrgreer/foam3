@@ -46,11 +46,21 @@ foam.CLASS({
         this.__subSubContext__.accountDAO.find(value).then((account)=> {
           account.name ? self.add(account.name) : self.add(account.id);
         });
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['sourceAccount'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.RestrictAccountsRule.SOURCE_ACCOUNT, 0);
+          },
+          errorString: 'Source account must be set.'
+        }
+      ]
     },
     {
       class: 'Boolean',
       name: 'includeSourceChildAccounts',
+      documentation: 'Whether to include the children of the source account.',
       section: 'basicInfo'
     },
     {
@@ -68,11 +78,21 @@ foam.CLASS({
         this.__subSubContext__.accountDAO.find(value).then((account)=> {
           account.name ? self.add(account.name) : self.add(account.id);
         });
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['destinationAccount'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.RestrictAccountsRule.DESTINATION_ACCOUNT, 0);
+          },
+          errorString: 'Destination account must be set.'
+        }
+      ]
     },
     {
       class: 'Boolean',
       name: 'includeDestinationChildAccounts',
+      documentation: 'Whether to include the children of the destination account.',
       section: 'basicInfo'
     },
     {

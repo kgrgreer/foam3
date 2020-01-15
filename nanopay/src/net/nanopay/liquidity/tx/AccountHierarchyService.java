@@ -40,8 +40,8 @@ public class AccountHierarchyService
   protected Map<String, HashSet<Long>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
-    if ( map_ == null ) {
-      map_ = new ConcurrentHashMap<String, HashSet<Long>>();
+    if ( map_ != null ) {
+      return map_;
     }
 
     Sink purgeSink = new Sink() {
@@ -62,7 +62,7 @@ public class AccountHierarchyService
     };
 
     accountDAO.listen(purgeSink, TRUE);
-
+    map_ = new ConcurrentHashMap<String, HashSet<Long>>();
     return map_;
   }
 
@@ -191,7 +191,7 @@ public class AccountHierarchyService
     Map<String, AccountData> templateMap = template.getAccounts();
     Set<String> accountIds = templateMap.keySet();
 
-    Map<String, AccountData> finalMap = new HashMap<>();
+    Map<String, AccountData> finalMap = new ConcurrentHashMap<>();
 
     for ( String accountId : accountIds ) {
       finalMap.put(accountId, templateMap.get(accountId));

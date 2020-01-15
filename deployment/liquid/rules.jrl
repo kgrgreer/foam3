@@ -31,23 +31,6 @@ p({"class":"foam.nanos.ruler.Rule","id":"Create Expedite Aproval Request","enabl
 p({"class":"foam.nanos.ruler.Rule","id":"Reset transaction lastModified/By properties","enabled":true})    // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","id":"Estimate Transaction completionDate","enabled":true})             // Tx Processing
 
-// TODO ruby make predicate for checking if is account-based cap in ucj target 
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"Add Children To CapabilityAccountTemplate On UCJ Create",
-  "priority": 100,
-  "enabled":true,
-  "ruleGroup": "liquid",
-  "documentation": "Add child accounts of those in capability accounttemplate to the template when creating new ucj",
-  "daoKey": "userCapabilityJunctionDAO",
-  "operation": 0,
-  "after": false,
-  "action" : {
-    "class": "net.nanopay.liquidity.crunch.AddChildrenToCapabilityAccountTemplateOnUCJCreate"
-  },
-  "saveHistory": true
-})
-
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Create UserCapabilityJunction on CapabilityRequest Approval",
@@ -172,7 +155,8 @@ p({
   "id": "L2 approval for transactions >= $85,000",
   "sourceAccount": 1053,
   "startAmount": 8500000,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Add approval request rules
@@ -218,7 +202,7 @@ p({
   "class":"net.nanopay.liquidity.tx.TxLimitRule",
   "id":"GS09 Securities €200,000.00 EUR Account Limit",
   "applyLimitTo":1,
-  "accountToLimit":1651,
+  "accountToLimit":1613,
   "limit":20000000,
   "denomination":"EUR",
   "currentLimits":{},
@@ -226,7 +210,8 @@ p({
   "createdBy":8006,
   "lastModified":"2019-11-30T12:30:00.000Z",
   "lastModifiedBy":8006,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Generic business rule example
@@ -267,7 +252,8 @@ p({
     }
   },
   "businessRuleAction":2,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })
 
 // Automatically verify emails for new Liquid users. Due to change once Goldman

@@ -212,6 +212,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -895,11 +898,9 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/LiquidApprovalRequestAuthorizer' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequest' },
-   { name: 'net/nanopay/liquidity/crunch/AddChildrenToCapabilityAccountTemplateOnUCJCreate' },
-   { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
-
+   { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
    
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
@@ -920,7 +921,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
-  
+   { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
+ 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
@@ -1115,6 +1117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
   { name: 'net/nanopay/meter/report/TransactionReport' },
   { name: 'net/nanopay/meter/report/TransactionReportView' },
+  { name: 'net/nanopay/meter/report/PaymentReport' },
+  { name: 'net/nanopay/meter/report/PaymentReportDAO' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1282,6 +1286,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
+  { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
@@ -1325,6 +1330,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/gs/GSFileUploadScreen' },
   { name: 'net/nanopay/script/CsvUploadScript' },
   { name: 'net/nanopay/tx/QuoteFillerDAO' },
+  { name: 'net/nanopay/tx/gs/IngestionReport' },
+  { name: 'net/nanopay/tx/gs/GSReportAssembly' },
 
   // tickets
   { name: 'net/nanopay/ticket/SudoTicket' },

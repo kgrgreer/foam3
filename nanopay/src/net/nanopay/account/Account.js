@@ -371,6 +371,9 @@ foam.CLASS({
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
       tableWidth: 500,
+      expression: function() {
+        return this.toSummary() + ` - ${this.cls_.name}`;
+      },
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,

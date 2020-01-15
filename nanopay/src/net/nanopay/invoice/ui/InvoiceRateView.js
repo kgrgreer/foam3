@@ -464,7 +464,7 @@ foam.CLASS({
           if ( sourceCurrency == null ) {
             return false;
           }
-          return isFx && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') );
+          return isFx && (! (sourceCurrency.id === 'USD' && invoice$destinationCurrency === 'USD') ) && ! (invoice$destinationCurrency === 'INR');
         }))
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();

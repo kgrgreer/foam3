@@ -33,6 +33,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"liquiditysettings.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"approvable.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"lifecyclestate.pending.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.accounts"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.liquidity"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.users"})

@@ -12,5 +12,9 @@ foam.CLASS({
       class: 'String',
       name: 'progressId'
     },
+    {
+      class: 'String',
+      name: 'filename'
+    }
   ],
 });

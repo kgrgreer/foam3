@@ -6,6 +6,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
@@ -112,7 +113,8 @@ foam.CLASS({
       super.validate(x);
       Logger logger = (Logger) x.get("logger");
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+      Account account = findDestinationAccount(x);
+      if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
         logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }

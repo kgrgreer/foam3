@@ -73,17 +73,35 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "userDAO",
       "browseTitle": "Users",
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
       "predicate": {
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "foam.nanos.auth.User",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
+        "class":"foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "group"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "liquidBasic"
+            }
+          }
+      ]
       },
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
@@ -162,13 +180,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounttemplates",
-  "label": "Rule Account Templates",
+  "label": "Account Templates for Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
-      "browseTitle": "Rule Account Templates"
+      "browseTitle": "Account Templates for Rules",
+      "createTitle": "Create a New Account Template for Rules",
     }
   },
   "order": 3000,
@@ -220,8 +239,8 @@ p({
       }
     }
   },
-  "order": 5000,
-  "parent": "liquid.rules"
+  "order":5000,
+  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
 })
 
 p({
@@ -324,21 +343,22 @@ p({
       }
     }
   },
-  "order": 310,
-  "parent": "liquid.rules"
+  "order":310,
+  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
 })
 
 p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "liquid.txapprovaltrules",
-  "label": "L2 Transaction Approval Rules",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "browseTitle": "L2 Transaction Approval Rules",
-      "daoKey": "ruleDAO",
-      "predicate": {
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquid.txapprovaltrules",
+  "label":"Transaction Approval By Level",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "browseTitle":"Transaction Approval By Level",
+      "createTitle": "Create a New Transaction Approval By Level",
+      "daoKey":"ruleDAO",
+      "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
         "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
       },
@@ -356,7 +376,7 @@ p({
       }
     }
   },
-  "order": 320,
+  "order": 340,
   "parent": "liquid.rules"
 })
 
@@ -374,7 +394,7 @@ p({
         "args": [
           {
             "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
+            "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
           },
           {
             "class": "foam.mlang.predicate.Eq",

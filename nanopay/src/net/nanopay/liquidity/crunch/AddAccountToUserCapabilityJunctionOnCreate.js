@@ -31,11 +31,12 @@ foam.CLASS({
           @Override
           public void execute(X x) {
 
+            X systemX = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
             Account account = (Account) obj;
             Long accountId = account.getId();
 
             // get all ucjs where it is account-based
-            DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+            DAO ucjDAO = ((DAO) x.get("userCapabilityJunctionDAO")).inX(systemX);
             
             // todo ruby faster to make a predicate instead?
             List<UserCapabilityJunction> ucjs = ((ArraySink) ucjDAO.select(new ArraySink())).getArray();
