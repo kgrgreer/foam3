@@ -60,7 +60,8 @@ public class AccountHierarchyServiceTest extends Test {
 
     map.clear();
     cad1.setIsCascading(true);
-    map.put("1755", cad1);
+    cad1.setApproverLevel(al3);
+    map.put("1765", cad1);
     assign(x, ucj, map);
     
     map.clear();
