@@ -64,7 +64,7 @@ public class AccountHierarchyServiceTest extends Test {
     assign(x, ucj, map);
     
     map.clear();
-    cad1.setIsCascading(true);
+    cad1.setIsCascading(false);
     cad1.setIsIncluded(true);
     map.put("1757", cad1);
     revoke(x, ucj, map);

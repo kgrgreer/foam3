@@ -266,7 +266,7 @@ public class AccountHierarchyService
         if ( oldMap.containsKey(root) ) {
           List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(root)).getChildren(x).select(new ArraySink())).getArray();
           for ( Account child : immediateChildren ) {
-            if (oldMap.containsKey(String.valueOf(child.getId())) && newMap.containsKey(String.valueOf(child.getId())) ) currentRoots.add(String.valueOf(child.getId()));
+            if (oldMap.containsKey(String.valueOf(child.getId())) && ! newMap.containsKey(String.valueOf(child.getId())) ) currentRoots.add(String.valueOf(child.getId()));
           }
           currentRoots.remove(root);
         }
