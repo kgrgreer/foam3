@@ -75,4 +75,5 @@ p({
     }]
   }
 })
+p({"class":"foam.nanos.boot.NSpec", "name":"clusterNodeDAO",                  "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setCluster(false).setRuler(false).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"clusterNodes\").setGuid(true).setOf(foam.nanos.mrac.ClusterNode.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.mrac.ClusterNode\", \"remoteListenerSupport\": false}"})
 r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
