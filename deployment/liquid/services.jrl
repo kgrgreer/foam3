@@ -180,11 +180,17 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+// set caching false -> TTL
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "id":"balanceDAO",
+  "client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":"TTL",\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+})
+
 p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"bareTransactionDAO",
+  "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",
   "lazy":false,
   "serviceScript":
   """
@@ -199,15 +205,15 @@ p({
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.PARENT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
-    fm = new foam.nanos.analytics.DAOFoldManager.Builder(x)
+    dao = new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao(x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)
       .build();
-    foldingDAO = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
+    dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
-      .setFm(fm)
+      .setFm(dao)
       .build();
-    dao = new net.nanopay.tx.TransactionDAO(x, foldingDAO);
+    dao = new net.nanopay.tx.TransactionDAO(x, dao);
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
     dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
       .setDelegate(dao)
@@ -224,15 +230,7 @@ p({
           .build())
         .build())
       .build();
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
-  """,
-  "documentation":"An authenticated base transaction DAO with bare minimal decorators. Used by localTransactionDAO."
-})
-p({
-  "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",              "lazy":false,  "serviceScript":
-  """
-    // TODO: Will make our own liquid rules journal and then re-enable the rule engine
-    dao = new foam.nanos.ruler.RulerDAO(x, x.get("bareTransactionDAO"), "localTransactionDAO");
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new net.nanopay.tx.SaveChainedTransactionDAO(x, dao);
     dao = new net.nanopay.tx.CompletedTransactionDAO.Builder(x)
       .setDelegate(dao)
@@ -241,12 +239,17 @@ p({
     dao = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
-    // dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
-    // dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
+    dao = new foam.nanos.mrac.ClusterClientDAO.Builder(x)
+      .setServiceName("transactionDAO")
+      .setDelegate(dao)
+      .setMdao(transactionMDao)
+      .build();
+    dao = new foam.nanos.mrac.VotingDAO(x, dao);
+    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);    
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
-    """
+  """
 })
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTransactionQuotePlanDAO",
@@ -274,6 +277,7 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setNullify(true)
@@ -283,7 +287,12 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
-p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
+p({
+  "class":
+  "foam.nanos.boot.NSpec",
+  "id":"exchangeRateDAO",
+  "client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
