@@ -12,7 +12,7 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       visibilityExpression: function(isIncluded) {
-        return isIncluded ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+        return ! isIncluded ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
     },
     {
