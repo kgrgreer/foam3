@@ -17,6 +17,20 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getViewableRootAccounts',
+      type: 'java.util.List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'userId',
+          type: 'Long'
+        }
+      ]
+    },
+    {
       name: 'getChildAccounts',
       type: 'java.util.List',
       args: [
@@ -93,20 +107,6 @@ foam.INTERFACE({
         {
           name: 'template',
           type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
-        }
-      ]
-    },
-    {
-      name: 'getViewableRootAccounts',
-      javaType: 'java.util.List<net.nanopay.account.Account>',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'userId',
-          type: 'Long'
         }
       ]
     }
