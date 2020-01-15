@@ -207,7 +207,7 @@ foam.CLASS({
         String    email       = "";
         Token     token       = null;
         Date      today       = new Date();
-        long      oneWeek     = 1000*60*60*24*7;
+        long      oneWeek     = (long)1000*60*60*24*7;
         Date      expiryDate  = new Date(today.getTime() + oneWeek);
         DAO       tokenDAO    = (DAO) x.get("tokenDAO");
 
