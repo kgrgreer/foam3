@@ -513,8 +513,8 @@ foam.CLASS({
           boolean hasNewGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
           if ( isUpdatingSelf ) {
             throw new AuthorizationException("You cannot change your own group.");
-          } else if ( ! hasUserEditPermission ) {
-            throw new AuthorizationException("You do not have permission to change that business's group.");
+          } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
+            throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
             throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           }
