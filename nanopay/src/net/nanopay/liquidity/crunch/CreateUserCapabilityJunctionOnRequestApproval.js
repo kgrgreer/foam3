@@ -66,39 +66,17 @@ foam.CLASS({
               }
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
-              boolean trackViewableRoots = ((AccountBasedLiquidCapability) capability).getCanViewAccount();
 
               CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
-              AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
-
-              UserCapabilityJunction ucj;
-
-              for ( Long userId : users ) {
-                ArrayList<String> roots = trackViewableRoots ? ( ((AccountHierarchyService) accountHierarchy).userToViewableRootAccountsMap_.containsKey(userId) ? ((AccountHierarchyService) accountHierarchy).userToViewableRootAccountsMap_.get(userId) : new ArrayList<String>() ) : null;
-
-                ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
-                  EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
-                ));
-
-                AccountApproverMap map = (AccountApproverMap) ucj.getData();
-
-                if ( map == null || map.getAccounts() == null ) {
-                  throw new RuntimeException("map does not contain account to revoke from");
-                }
-
-                for ( String accountId : fullAccountMap.getAccounts().keySet() ){
-                  map.removeAccount(Long.parseLong(accountId));
-                }
-
-                if ( map.getAccounts().size() == 0 ) {
-                  userCapabilityJunctionDAO.remove_(getX(), ucj);
-                } else {
-                  ucj.setData(map);
-                  userCapabilityJunctionDAO.put_(getX(), ucj);
-                }
+              for ( Long user : users )  {
+                UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
+                UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
+                AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
+                AccountApproverMap fullAccountMap = accountHierarchy.getRevokedAccountsMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, template);
+                ucj.setData(fullAccountMap);
+                userCapabilityJunctionDAO.put(ucj);
               }
             } else if ( requestType == CapabilityRequestOperations.REVOKE_GLOBAL ) {
               capability = (GlobalLiquidCapability) capabilityDAO.find(req.getGlobalCapability());

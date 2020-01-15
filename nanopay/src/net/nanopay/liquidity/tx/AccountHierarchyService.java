@@ -113,7 +113,6 @@ public class AccountHierarchyService
     return allAccounts;
   }
 
-// need to find ucj and pass in existing ucj data, if any . call this method from ucj rule
   @Override
   public net.nanopay.liquidity.crunch.AccountApproverMap getAssignedAccountMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
@@ -126,7 +125,7 @@ public class AccountHierarchyService
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     for ( String accountId : accountIds ) {
-      if ( ( ! oldMap.containsKey(accountId) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+      if ( ( ! oldMap.containsKey(accountId) || (oldMap.containsKey(accountId) && roots.contains(accountId) ) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
     }
 
     for ( String accountId : accountIds ) {
@@ -229,19 +228,19 @@ public class AccountHierarchyService
   }
 
 
-  // @Override
-  public net.nanopay.liquidity.crunch.AccountApproverMap getRevokedAccountMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+  @Override
+  public net.nanopay.liquidity.crunch.AccountApproverMap getRevokedAccountsMap(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
     Map<String, CapabilityAccountData> newMap = template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
 
-    ArrayList<String> roots = trackRootAccounts ? ( userToViewableRootAccountsMap_.containsKey(user) ? userToViewableRootAccountsMap_.get(user) : new ArrayList<String>() ) : null;
+    ArrayList<String> roots = new ArrayList<String>();
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     for ( String accountId : accountIds ) {
-      if ( ( ! oldMap.containsKey(accountId) ) && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+      if ( newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
     }
 
     for ( String accountId : accountIds ) {
@@ -259,9 +258,23 @@ public class AccountHierarchyService
         }
       } 
     }
-    oldMap.putAll(newMap);
 
-    if ( trackRootAccounts ) userToViewableRootAccountsMap_.put(user, ((ArrayList<String>) roots));
+    if ( trackRootAccounts ) {
+      ArrayList<String> currentRoots = new ArrayList<String>(userToViewableRootAccountsMap_.get(user));
+      if ( currentRoots == null || currentRoots.size() == 0 ) throw new RuntimeException("Revoke cannot be performed since user does not have any accounts authorized for this capability."); 
+      for ( String root : roots ) {
+        if ( oldMap.containsKey(root) ) {
+          List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(root)).getChildren(x).select(new ArraySink())).getArray();
+          for ( Account child : immediateChildren ) {
+            if (oldMap.containsKey(String.valueOf(child.getId())) && newMap.containsKey(String.valueOf(child.getId())) ) currentRoots.add(String.valueOf(child.getId()));
+          }
+          currentRoots.remove(root);
+        }
+      }
+      userToViewableRootAccountsMap_.put(user, currentRoots);
+    }
+
+    oldMap.keySet().removeAll(newMap.keySet());
 
     return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }

@@ -56,55 +56,76 @@ public class AccountHierarchyServiceTest extends Test {
     map.put(a0, cad1);
     map.put(a1, cad2);
     map.put(a2, cad3);
-    template = new CapabilityAccountTemplate.Builder(x).setId(1).setTemplateName("test").setAccounts(map).build();
-    result = foo(x, true, user.getId(), null, template);
-    System.out.println(a0 + " : " + result.getAccounts().get(a0)+"\n\n");
-    System.out.println(a1 + " : " + result.getAccounts().get(a1)+"\n\n");
-    System.out.println(a2 + " : " + result.getAccounts().get(a2)+"\n\n");
-
-    printRoots(system, user.getId());
-    printAccounts(result);
-    updateUcj(system, result);
-
-    map.clear();
-    map.put("1103", cad3);
-    template = new CapabilityAccountTemplate.Builder(system).setId(2).setTemplateName("test2").setAccounts(map).build();
-    result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
-
-    printRoots(system, user.getId());
-    printAccounts(result);
-    updateUcj(system, result);
+    assign(x, ucj, map);
 
     map.clear();
     cad1.setIsCascading(true);
     map.put("1755", cad1);
-    template = new CapabilityAccountTemplate.Builder(system).setId(3).setTemplateName("test3").setAccounts(map).build();
-    result = foo(system, true, user.getId(), (AccountApproverMap) ucj.getData(), template);
+    assign(x, ucj, map);
+    
+    map.clear();
+    cad1.setIsCascading(true);
+    cad1.setIsIncluded(true);
+    map.put("1757", cad1);
+    revoke(x, ucj, map);
 
-    printRoots(system, user.getId());
+  }
+
+  public void assign(X x, UserCapabilityJunction ucj, Map<String, CapabilityAccountData> map) {
+    System.out.println("\n\nAssigning ------------------------------------------------------------------------");
+    Set<String> assigned = map.keySet();
+    for ( String id : assigned ) {
+      System.out.println("id : " + id + "\t\tApproverLevel=" + map.get(id).getApproverLevel().getApproverLevel() + "\t\tIsCascading=" + map.get(id).getIsCascading() + "\t\tIsIncluded=" + map.get(id).getIsIncluded());
+    }
+
+    template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
+    AccountApproverMap oldtemplate = ucj == null ? null : (AccountApproverMap) ucj.getData();
+    result = foo(x, true, user.getId(), (AccountApproverMap) oldtemplate, template);
+
+    printRoots(x, user.getId());
     printAccounts(result);
-    updateUcj(system, result);
+    updateUcj(x, result);
+  }
 
+  public void revoke(X x, UserCapabilityJunction ucj, Map<String, CapabilityAccountData> map) {
+    System.out.println("\n\nRevoking ------------------------------------------------------------------------");
+    Set<String> revoked = map.keySet();
+    for ( String id : revoked ) {
+      System.out.println("id : " + id + "\t\tApproverLevel=" + map.get(id).getApproverLevel().getApproverLevel() + "\t\tIsCascading=" + map.get(id).getIsCascading() + "\t\tIsIncluded=" + map.get(id).getIsIncluded());
+    }
+
+    template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
+    AccountApproverMap oldtemplate = ucj == null ? null : (AccountApproverMap) ucj.getData();
+    result = bar(x, true, user.getId(), (AccountApproverMap) oldtemplate, template);
+
+    printRoots(x, user.getId());
+    printAccounts(result);
+    updateUcj(x, result);
   }
 
   // for easier to type name
   public AccountApproverMap foo(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
     return service.getAssignedAccountMap(x, trackRootAccounts, user, oldTemplate, template);
   }
+
+  public AccountApproverMap bar(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+    return service.getRevokedAccountsMap(x, trackRootAccounts, user, oldTemplate, template);
+  }
+
   public void newline() { System.out.println(); }
 
   public void printRoots(X x, Long user) {
     List<Account> roots = service.getViewableRootAccounts(x, user);
-    System.out.println("\n\nuser has root accounts : \n");
+    System.out.println("\n\nuser has root accounts : ");
     for ( Account root : roots ) {
-      System.out.println("root --- " + root.getId() + "\n");
+      System.out.println("root --- " + root.getId());
     }
   }
   public void printAccounts(AccountApproverMap result) {
     Map<String, CapabilityAccountData> map = result.getAccounts();
-    System.out.println("\n\nuser has the map : \n");
+    System.out.println("\n\nuser has the map : ");
     for ( Map.Entry<String, CapabilityAccountData> account : map.entrySet() ) {
-      System.out.println(account.getKey() + " --- " + account.getValue()+ "\n");
+      System.out.println(account.getKey() + " --- " + account.getValue());
     }
   }
 
