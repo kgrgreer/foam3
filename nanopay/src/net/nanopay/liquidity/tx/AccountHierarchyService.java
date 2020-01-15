@@ -121,9 +121,8 @@ public class AccountHierarchyService
   }
 
   @Override
-  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
+  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
@@ -241,9 +240,8 @@ public class AccountHierarchyService
 
 
   @Override
-  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
+  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();

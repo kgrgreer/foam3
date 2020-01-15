@@ -99,20 +99,28 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
       label: 'Choose Capability Account Template',
-      visibilityExpression: function(requestType) {
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) return foam.u2.Visibility.RW;
+      visibilityExpression: function(requestType, isUsingTemplate) {
+        if ( 
+            isUsingTemplate &&
+            (
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+            )
+          ) {
+          return foam.u2.Visibility.RW;
+        }
         return foam.u2.Visibility.HIDDEN;
       },
       postSet: function(_, data) {
         this.capabilityAccountTemplateDAO.find(data).then((template) => {
-          this.capabilityAccountTemplate = template;
+          this.capabilityAccountTemplateMap = template.accounts;
         });
       }
     },
     {
-      name: 'capabilityAccountTemplate',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
+      name: 'capabilityAccountTemplateMap',
+      class: 'Map',
+      javaType: 'java.util.Map<String, CapabilityAccountData>',
       label: 'Create New Template Or Customize Chosen Capability Account Template ', 
       visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
@@ -126,12 +134,9 @@ foam.CLASS({
         }
         return foam.u2.Visibility.HIDDEN;
       },
-      factory: function() {
-        return this.capabilityAccountTemplate || net.nanopay.liquidity.crunch.CapabilityAccountTemplate.create();
-      }, 
       view: function(_, x) {
-        return {  
-          class: 'foam.u2.view.FObjectView',
+        return {
+          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView'
         };
       }
     },
