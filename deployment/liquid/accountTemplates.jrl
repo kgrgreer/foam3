@@ -1,7 +1,7 @@
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":1,
-  "templateName":"globalAccountTemplate",
+  "templateName":"Global Account Template",
   "accounts": {
     "1103": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
@@ -18,7 +18,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.AccountTemplate",
   "id":2,
-  "templateName":"globalAccountTemplate",
+  "templateName":"Global Account Template",
   "accounts": {
     "1103": {
       "class":"net.nanopay.liquidity.crunch.AccountData",
@@ -31,7 +31,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":3,
-  "templateName":"asiaAccountTemplate",
+  "templateName":"Asia Account Template",
   "accounts": {
     "1105": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
@@ -48,7 +48,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.AccountTemplate",
   "id":4,
-  "templateName":"asiaAccountTemplate",
+  "templateName":"Asia Account Template",
   "accounts": {
     "1105": {
       "class":"net.nanopay.liquidity.crunch.AccountData",
@@ -61,7 +61,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":5,
-  "templateName":"americasAccountTemplate",
+  "templateName":"Americas Account Template",
   "accounts": {
     "1755": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
@@ -78,7 +78,7 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.AccountTemplate",
   "id":6,
-  "templateName":"americasAccountTemplate",
+  "templateName":"Americas Account Template",
   "accounts": {
     "1755": {
       "class":"net.nanopay.liquidity.crunch.AccountData",
@@ -91,9 +91,9 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id":5,
-  "templateName":"europeAccountTemplate",
+  "templateName":"Europe Account Template",
   "accounts": {
-    "1755": {
+    "1311": {
       "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
       "isCascading":true,
       "isIncluded":true,
@@ -108,9 +108,9 @@ p({
 p({
   "class":"net.nanopay.liquidity.crunch.AccountTemplate",
   "id":6,
-  "templateName":"europeAccountTemplate",
+  "templateName":"Europe Account Template",
   "accounts": {
-    "1755": {
+    "1311": {
       "class":"net.nanopay.liquidity.crunch.AccountData",
       "isCascading":true,
       "isIncluded":true,

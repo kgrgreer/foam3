@@ -16,7 +16,7 @@ p({
   "canApproveCapabilityrequest": true,
   "canIngestFile": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "corporateAdminGlobal"
+  "id": "Corporate Admin (Global)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -27,7 +27,7 @@ p({
   "canMakeTransaction": true,
   "canApproveTransaction": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "corporateAdminAccountBased"
+  "id": "Corporate Admin (Account-Based)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -36,7 +36,7 @@ p({
   "canApproveAccount": true,
   "canViewTransaction": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "bankAdminAccountBased"
+  "id": "Bank Admin (Account-Based)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -53,7 +53,7 @@ p({
   "canMakeCapabilityrequest": true,
   "canApproveCapabilityrequest": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "bankAdminGlobal"
+  "id": "Bank Admin (Global)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -62,7 +62,7 @@ p({
   "canMakeTransaction": true,
   "canApproveTransaction": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "corporateUserAccountBased"
+  "id": "Corporate User (Account-Based)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -71,5 +71,5 @@ p({
   "canViewLiquiditysettings": true,
   "canViewCapability": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "corporateUserGlobal"
+  "id": "Corporate User (Global)"
 })
