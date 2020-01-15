@@ -74,7 +74,7 @@ foam.CLASS({
       DAO requestingDAO;
       Logger logger = (Logger) x.get("logger");
 
-      if ( request.getDaoKey().equals("approvableDAO") ){
+      if ( request.getDaoKey().equals("approvableDAO") ) {
         DAO approvableDAO = (DAO) x.get("approvableDAO");
 
         Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
@@ -95,7 +95,7 @@ foam.CLASS({
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
 
-      if ( approverIds.size() == 1 && approverIds.get(0) == request.getInitiatingUser() ){
+      if ( approverIds.size() == 1 && approverIds.get(0) == request.getInitiatingUser() ) {
         logger.log("The only approver of " + modelName + " is the maker of this request!");
         throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
@@ -106,7 +106,7 @@ foam.CLASS({
       sendSingleRequest(x, request, request.getInitiatingUser());
       approverIds.remove(request.getInitiatingUser());
 
-      for ( int i = 0; i < approverIds.size(); i++ ){
+      for ( int i = 0; i < approverIds.size(); i++ ) {
         sendSingleRequest(getX(), request, approverIds.get(i));
       }
       `
@@ -137,20 +137,20 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjRemoveRequests.size() == 1 ){
+        if ( approvedObjRemoveRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           } 
           
           return null;  // as request has been REJECTED
         } 
         
-        if ( approvedObjRemoveRequests.size() > 1 ){
+        if ( approvedObjRemoveRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -186,9 +186,9 @@ foam.CLASS({
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
-      if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
+      if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ) {
         approvableAwareObj = (ApprovableAware) currentObjectInDAO;
-          
+
         List approvedObjRemoveRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
@@ -203,20 +203,20 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjRemoveRequests.size() == 1 ){
+        if ( approvedObjRemoveRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           } 
-          
+
           return null;  // as request has been REJECTED
         } 
-        
-        if ( approvedObjRemoveRequests.size() > 1 ){
+
+        if ( approvedObjRemoveRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -235,10 +235,10 @@ foam.CLASS({
         return null;  // we aren't updating the object to deleted just yet
       }
 
-      if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ){
+      if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ) {
         if ( lifecycleObj.getLifecycleState() == LifecycleState.ACTIVE ) { 
           return super.put_(x,obj);
-        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ) {
           List approvedObjCreateRequests = ((ArraySink) approvalRequestDAO
             .where(
               foam.mlang.MLang.AND(
@@ -253,23 +253,23 @@ foam.CLASS({
               )
             ).select(new ArraySink())).getArray();
 
-          if ( approvedObjCreateRequests.size() == 1 ){
+          if ( approvedObjCreateRequests.size() == 1 ) {
             RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjCreateRequests.get(0);
             fulfilledRequest.setIsFulfilled(true);
 
             approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-            if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+            if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
               lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
               return super.put_(x,obj);
             } 
-            
+
             // create request has been rejected is only where we mark the object as REJECTED
             lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
             return super.put_(x,obj); 
           } 
-          
-          if ( approvedObjCreateRequests.size() > 1 ){
+
+          if ( approvedObjCreateRequests.size() > 1 ) {
             logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
             throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           } 
@@ -319,20 +319,20 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjUpdateRequests.size() == 1 ){
+        if ( approvedObjUpdateRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjUpdateRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           }
 
           return null; // as request has been REJECTED
         }
 
-        if ( approvedObjUpdateRequests.size() > 1 ){
+        if ( approvedObjUpdateRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         }
