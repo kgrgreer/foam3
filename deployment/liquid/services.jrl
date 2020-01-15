@@ -333,7 +333,6 @@ p({
     
     dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
-    dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, dao);
@@ -794,6 +793,28 @@ p({
           "class":"foam.box.HTTPBox",
           "url":
           "service/ucjQueryService"
+        }
+      }
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accountUcjQueryService",
+  "serve": true,
+  "serviceClass": "net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService",
+  "boxClass": "net.nanopay.liquidity.ucjQuery.AccountUCJQueryServiceSkeleton",
+  "client":
+  """
+    {
+      "class":"net.nanopay.liquidity.ucjQuery.ClientAccountUCJQueryService",
+      "delegate": { 
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":
+          "service/accountUcjQueryService"
         }
       }
     }

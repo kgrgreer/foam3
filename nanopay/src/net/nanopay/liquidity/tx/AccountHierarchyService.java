@@ -104,7 +104,7 @@ public class AccountHierarchyService
   public List<Account> getChildAccounts(X x, Account account) {
      ArraySink allChildrenSink = (ArraySink) account.getChildren(x).select(new ArraySink());
      List<Account> allChildrenList = allChildrenSink.getArray();
-    
+
     List<Account> allAccounts = new ArrayList<Account>();
     allAccounts.add(account);
 
@@ -137,11 +137,11 @@ public class AccountHierarchyService
     if ( trackRootAccounts ) {
       for ( String accountId : accountIds ) {
         if ( ( ! oldMap.containsKey(accountId) || 
-                ( oldMap.containsKey(accountId) && 
-                  roots.contains(accountId) ) ) &&
-                newMap.get(accountId).getIsIncluded() ) {
-              roots.add(accountId);
-            }
+               ( oldMap.containsKey(accountId) && 
+                 roots.contains(accountId) ) ) &&
+             newMap.get(accountId).getIsIncluded() ) {
+          roots.add(accountId);
+        }
       }
     }
 

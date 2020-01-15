@@ -13,6 +13,7 @@ import java.util.*;
 
 import static foam.mlang.MLang.*;
 
+// needs to be built in liquid
 public class AccountHierarchyServiceTest extends Test {
   public X system;
   public AccountHierarchyService service;
@@ -25,14 +26,13 @@ public class AccountHierarchyServiceTest extends Test {
   public User user;
   public Capability c;
   public UserCapabilityJunction ucj;
-  // test method - public AccountApproverMap getAccountsFromCapabilityAccountTemplate(X x, CapabilityAccountTemplate template)
 
   public void runTest(X x) {
-    system = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
     service = new AccountHierarchyService();
     accountDAO = (DAO) x.get("accountDAO");
+    x = TestUtils.mockDAO(x, "userCapabilityJunctionDAO");
     ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-    capabilityDAO = (DAO) x.get("accountBasedLiquidCapabilityDAO");
+    system = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
     al1 = new ApproverLevel.Builder(x).setApproverLevel(1).build();
     al2 = new ApproverLevel.Builder(x).setApproverLevel(2).build();
     al3 = new ApproverLevel.Builder(x).setApproverLevel(3).build();
@@ -41,7 +41,7 @@ public class AccountHierarchyServiceTest extends Test {
     cad3 = new CapabilityAccountData.Builder(x).setIsCascading(true).setIsIncluded(true).setApproverLevel(al3).build();
 
     user = new foam.nanos.auth.User.Builder(x).setId(88).build();
-    c = (AccountBasedLiquidCapability) capabilityDAO.find("corporateAdminAccountBased");
+    c = new AccountBasedLiquidCapability.Builder(x).setId("test").setCanViewAccount(true).build();
 
     testAccountTemplate(system);
   }

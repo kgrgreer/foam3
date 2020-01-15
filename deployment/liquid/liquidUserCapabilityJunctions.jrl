@@ -1,7 +1,7 @@
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8007,
-  "targetId": "corporateAdminGlobal",
+  "targetId": "Corporate Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -11,7 +11,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8007,
-  "targetId": "corporateAdminAccountBased",
+  "targetId": "Corporate Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -1642,7 +1642,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8018,
-  "targetId": "corporateAdminGlobal",
+  "targetId": "Corporate Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -1652,7 +1652,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8018,
-  "targetId": "corporateAdminAccountBased",
+  "targetId": "Corporate Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -3283,7 +3283,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8017,
-  "targetId": "bankAdminGlobal",
+  "targetId": "Bank Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -3293,7 +3293,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8017,
-  "targetId": "bankAdminAccountBased",
+  "targetId": "Bank Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -4924,7 +4924,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8006,
-  "targetId": "bankAdminGlobal",
+  "targetId": "Bank Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -4934,7 +4934,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8006,
-  "targetId": "bankAdminAccountBased",
+  "targetId": "Bank Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -6565,7 +6565,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8015,
-  "targetId": "bankAdminGlobal",
+  "targetId": "Bank Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -6575,7 +6575,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8015,
-  "targetId": "bankAdminAccountBased",
+  "targetId": "Bank Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -8206,7 +8206,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8019,
-  "targetId": "bankAdminGlobal",
+  "targetId": "Bank Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -8216,7 +8216,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8019,
-  "targetId": "bankAdminAccountBased",
+  "targetId": "Bank Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -9847,7 +9847,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8016,
-  "targetId": "corporateAdminGlobal",
+  "targetId": "Corporate Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -9857,7 +9857,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8016,
-  "targetId": "corporateAdminAccountBased",
+  "targetId": "Corporate Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -11487,7 +11487,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8020,
-  "targetId": "corporateAdminGlobal",
+  "targetId": "Corporate Admin (Global)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -11497,7 +11497,7 @@ p({
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8020,
-  "targetId": "corporateAdminAccountBased",
+  "targetId": "Corporate Admin (Account-Based)",
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {

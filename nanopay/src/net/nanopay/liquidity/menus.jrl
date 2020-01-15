@@ -141,7 +141,14 @@ p({
         "create": ["user.make"],
         "update": ["user.make.%"],
         "delete": ["user.make.%"]
-      }
+      },
+      "browseViews": [
+        {
+          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+          "name": "Users",
+          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
+        }
+      ]
     }
   },
   "order": 400
@@ -566,7 +573,7 @@ p({
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
           "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.LiquidCapability",
+          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
           "name": "lifecycleState"
         },
         "arg2": {
@@ -600,7 +607,7 @@ p({
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
           "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.LiquidCapability",
+          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
           "name": "lifecycleState"
         },
         "arg2": {
