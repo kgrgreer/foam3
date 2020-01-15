@@ -12,7 +12,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.Popup',
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
     'net.nanopay.settings.business.UserManagementView',
@@ -108,16 +107,5 @@ foam.CLASS({
           this.notify(err.message || this.GENERIC_ERROR, 'error');
         });
     }
-  ],
-  actions: [
-    {
-      name: 'createBusiness',
-      code: function(X) {
-        this.add(this.Popup.create(null, X).tag({
-          class: 'net.nanopay.sme.ui.CreateBusinessModal',
-        }));
-      }
-    }
   ]
-
 });

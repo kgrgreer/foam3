@@ -200,6 +200,10 @@ foam.CLASS({
       name: 'QUERY_SIGNING_OFFICERS_ERROR',
       message: 'An unexpected error occurred while querying signing officers: '
     },
+    {
+      name: 'SELECT_BUSINESS_WARNING',
+      message: 'Please select a business before proceeding'
+    }
   ],
 
   properties: [
@@ -444,6 +448,23 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
+
+      // Prevent action within platform if user is not a business. Redirect regular users to
+      // switch business menu screen to select a business.
+      this.stack$.dot('pos').sub(function() {
+        if ( self.user.cls_ == self.Business && self.loginSuccess ) {
+          return;
+        } else if (
+          self.user.cls_ != self.Business &&
+          self.loginSuccess &&
+          location.hash != '#sme.accountProfile.switch-business'
+        ) {
+          self.pushMenu('sme.accountProfile.switch-business');
+          self.notify(self.SELECT_BUSINESS_WARNING, 'warning');
+        }
+      });
+
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {

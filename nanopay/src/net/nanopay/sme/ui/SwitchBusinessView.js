@@ -8,6 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
@@ -119,6 +120,18 @@ foam.CLASS({
     ^ .disabled .net-nanopay-sme-ui-BusinessJunctionRowView-oval {
       background-color: #e2e2e3 !important;
     }
+    ^ .net-nanopay-sme-ui-AbliiActionView-createBusiness {
+      background: none;
+      border: none;
+      color: cornflowerblue;
+      font-style: italic;
+      margin-top: 10px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-createBusiness:hover:not(:disabled) {
+      background: none;
+      border: none;
+      color: grey;
+    }
   `,
 
   messages: [
@@ -137,7 +150,7 @@ foam.CLASS({
       documentation: `
         The DAO used to populate the enabled businesses in the list.
       `,
-      expression: function(user, agent) {
+      expression: function(user, agent, businessDAO) {
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
@@ -160,7 +173,7 @@ foam.CLASS({
       documentation: `
         The DAO used to populate the disabled businesses in the list.
       `,
-      expression: function(user, agent) {
+      expression: function(user, agent, businessDAO) {
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
@@ -207,19 +220,21 @@ foam.CLASS({
     },
 
     function init() {
-      this.enabledBusinesses_
-        .select()
-        .then((sink) => {
-          if ( sink.array.length === 1 ) {
-            var junction = sink.array[0];
+      if ( this.user.cls_ != this.Business ) {
+        this.enabledBusinesses_
+          .select()
+          .then((sink) => {
+            if ( sink.array.length === 1 ) {
+              var junction = sink.array[0];
 
-            // If the user is only in one business but that business has
-            // disabled them, then don't immediately switch to that business.
-            if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-            this.assignBusinessAndLogIn(junction);
-            this.removeAllChildren();
-          }
-        });
+              // If the user is only in one business but that business has
+              // disabled them, then don't immediately switch to that business.
+              if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+              this.assignBusinessAndLogIn(junction);
+              this.removeAllChildren();
+            }
+          });
+      }
     },
 
     function initE() {
@@ -289,6 +304,9 @@ foam.CLASS({
                 .end();
             })
           .end()
+          .startContext({ data: this })
+            .start(this.CREATE_BUSINESS).end()
+          .endContext()
         .end()
 
         .start().addClass(this.myClass('sme-right-side-block'))
@@ -309,11 +327,26 @@ foam.CLASS({
 
   listeners: [
     function goBack() {
+      if ( this.user.cls_ != this.Business ) {
+        this.notify('Please select a business', 'error');
+        return;
+      }
       if ( this.stack.pos > 1 ) {
         this.stack.back();
         return;
       }
       this.pushMenu('sme.main.dashboard');
+    }
+  ],
+  actions: [
+    {
+      name: 'createBusiness',
+      label: 'Click here to create a new business...',
+      code: function(X) {
+        this.add(this.Popup.create(null, X).tag({
+          class: 'net.nanopay.sme.ui.CreateBusinessModal',
+        }));
+      }
     }
   ]
 });

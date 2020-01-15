@@ -1937,3 +1937,34 @@ p({
   """,
   "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "auth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
+  "serviceScript": """
+    auth = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
+    // Uncomment the line below when CRUNCH is mature enough to replace our current system.
+    // auth  = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.CachingAuthService(auth, new String[]{ "signingOfficerJunctionDAO", "blacklistDAO" });
+    auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(auth).build();
+    return auth;
+  """,
+  "client": """
+    {
+      "class": "foam.nanos.auth.CachedAuthServiceProxy",
+      "delegate": {
+        "class": "foam.nanos.auth.ClientLoginAuthService"
+      }
+    }
+  """
+})
