@@ -19,7 +19,9 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
+    echo "  -C 0 or 1           : enable cluster"
     echo "  -D 0 or 1           : Debug mode."
+    echo "  -H <hostname>     : hostname"
     echo "  -h                  : Display help."
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -P <debug port>     : Port to run debugger on."
@@ -30,10 +32,11 @@ function usage {
     echo "  -Z <0/1>            : Daemonize."
 }
 
-while getopts "C:D:h:N:P:S:U:V:W:Z:" opt ; do
+while getopts "C:D:H:hN:P:S:U:V:W:Z:" opt ; do
     case $opt in
         C) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
+        H) HOST_NAME=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
         P) DEBUG_PORT=$OPTARG;;
