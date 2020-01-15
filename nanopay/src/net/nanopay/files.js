@@ -219,12 +219,15 @@ FOAM_FILES([
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
+  { name: 'net/nanopay/fx/SecurityPrice' },
   { name: 'net/nanopay/fx/DeliveryTimeFields' },
   { name: 'net/nanopay/fx/ExchangeRateFields' },
   { name: 'net/nanopay/fx/FeesFields' },
   { name: 'net/nanopay/fx/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/FixerIOExchangeRate' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
+  { name: 'net/nanopay/fx/ExchangeRateServiceInterface' },
+  { name: 'net/nanopay/fx/ClientExchangeRateService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
@@ -316,6 +319,7 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
@@ -419,6 +423,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/GuidTransactionPlanDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -856,7 +861,15 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
+   { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
+   { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
@@ -875,6 +888,24 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
 
+
+   // liquidity crunches
+   { name: 'net/nanopay/liquidity/crunch/LiquidCapability' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidCapabilityAuthService' },
+   { name: 'net/nanopay/liquidity/crunch/ApproverLevel' },
+   { name: 'net/nanopay/liquidity/crunch/AccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/AccountMap' },
+   { name: 'net/nanopay/liquidity/crunch/AccountApproverMap' },
+   { name: 'net/nanopay/liquidity/crunch/AccountData' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidAuthorizer' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidTransactionAuthorizer' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidApprovalRequestAuthorizer' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityRequest' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
+   { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
+   { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
+   
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
@@ -894,6 +925,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
+   { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
  
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

@@ -1,0 +1,75 @@
+p({
+  "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
+  "canViewRule": true,
+  "canMakeRule": true,
+  "canApproveRule": true,
+  "canViewUser": true,
+  "canMakeUser": true,
+  "canApproveUser": true,
+  "canViewLiquiditysettings": true,
+  "canMakeLiquiditysettings": true,
+  "canApproveLiquiditysettings": true,
+  "canViewCapability": true,
+  "canMakeCapability": true,
+  "canApproveCapability": true,
+  "canMakeCapabilityrequest": true,
+  "canApproveCapabilityrequest": true,
+  "canIngestFile": true,
+  "of": "net.nanopay.liquidity.crunch.ApproverLevel",
+  "id": "Corporate Admin (Global)"
+})
+p({
+  "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
+  "canViewAccount": true,
+  "canMakeAccount": true,
+  "canApproveAccount": true,
+  "canViewTransaction": true,
+  "canMakeTransaction": true,
+  "canApproveTransaction": true,
+  "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id": "Corporate Admin (Account-Based)"
+})
+p({
+  "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
+  "canViewAccount": true,
+  "canMakeAccount": true,
+  "canApproveAccount": true,
+  "canViewTransaction": true,
+  "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id": "Bank Admin (Account-Based)"
+})
+p({
+  "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
+  "canViewRule": true,
+  "canMakeRule": true,
+  "canApproveRule": true,
+  "canViewUser": true,
+  "canMakeUser": true,
+  "canApproveUser": true,
+  "canViewLiquiditysettings": true,
+  "canViewCapability": true,
+  "canMakeCapability": true,
+  "canApproveCapability": true,
+  "canMakeCapabilityrequest": true,
+  "canApproveCapabilityrequest": true,
+  "of": "net.nanopay.liquidity.crunch.ApproverLevel",
+  "id": "Bank Admin (Global)"
+})
+p({
+  "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
+  "canViewAccount": true,
+  "canViewTransaction": true,
+  "canMakeTransaction": true,
+  "canApproveTransaction": true,
+  "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id": "Corporate User (Account-Based)"
+})
+p({
+  "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
+  "canViewRule": true,
+  "canViewUser": true,
+  "canViewLiquiditysettings": true,
+  "canViewCapability": true,
+  "of": "net.nanopay.liquidity.crunch.ApproverLevel",
+  "id": "Corporate User (Global)"
+})

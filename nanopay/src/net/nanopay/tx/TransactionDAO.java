@@ -70,6 +70,11 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn    = (Transaction) obj;
+
+    if ( SafetyUtil.isEmpty(txn.getId()) || ! txn.getIsQuoted() ) {
+      throw new RuntimeException("Transaction must be quoted and have id set.");
+    }
+
     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
     if ( canExecute(x, txn, oldTxn) ) {
@@ -174,10 +179,10 @@ public class TransactionDAO
       hm.put(tr.getAccount(), tr);
     }
     Transfer [] newTs = hm.values().toArray(new Transfer[0]);
-
     //sort the transfer array
     java.util.Arrays.sort(newTs);
-
+    //persist the new condensed transfer array
+    txn.setTransfers(newTs);
     // lock accounts in transfers
     return lockAndExecute_(x, txn, newTs, 0);
   }

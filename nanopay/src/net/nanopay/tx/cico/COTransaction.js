@@ -5,6 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccountStatus',
@@ -110,21 +111,28 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      super.validate(x);
-      Logger logger = (Logger) x.get("logger");
+        super.validate(x);
+        Logger logger = (Logger) x.get("logger");
 
-      Account account = findDestinationAccount(x);
-      if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
-        logger.error("Bank account must be verified");
-        throw new RuntimeException("Bank account must be verified");
-      }
-      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
-            oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) &&
-            ! getStatus().equals(TransactionStatus.DECLINED) ) {
-        logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-        throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-      }
+        // Check destination account
+        Account account = findDestinationAccount(x);
+        if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+          logger.error("Bank account must be verified");
+          throw new RuntimeException("Bank account must be verified");
+        }
+
+        // Check transaction status and lifecycleState
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        if ( oldTxn != null
+          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
+            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
+          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && ! ( oldTxn.getLifecycleState() == LifecycleState.PENDING
+            && getLifecycleState() == LifecycleState.ACTIVE )
+        ) {
+          logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+        }
       `
     },
     {

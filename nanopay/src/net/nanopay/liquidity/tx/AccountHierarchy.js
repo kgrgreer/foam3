@@ -29,6 +29,34 @@ foam.INTERFACE({
           type: 'net.nanopay.account.Account'
         }
       ]
+    },
+    {
+      name: 'getAccountsFromCapabilityAccountTemplate',
+      type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'template',
+          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+        }
+      ]
+    },
+    {
+      name: 'getAccountsFromAccountTemplate',
+      type: 'net.nanopay.liquidity.crunch.AccountMap',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'template',
+          type: 'net.nanopay.liquidity.crunch.AccountTemplate'
+        }
+      ]
     }
   ]
 });

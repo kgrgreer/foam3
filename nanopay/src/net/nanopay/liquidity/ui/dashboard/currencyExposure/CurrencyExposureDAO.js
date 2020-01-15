@@ -77,7 +77,7 @@ foam.CLASS({
           var buckets = Object.keys(accountDenominationMap).reduce((buckets, accountId) => {
             var d = accountDenominationMap[accountId];
             buckets[d] = buckets[d] || 0;
-            buckets[d] += balanceMap[accountId] || 0;
+            buckets[d] += balanceMap[accountId] > 0 ? balanceMap[accountId] || 0 : 0;
             return buckets;
           }, {});
 

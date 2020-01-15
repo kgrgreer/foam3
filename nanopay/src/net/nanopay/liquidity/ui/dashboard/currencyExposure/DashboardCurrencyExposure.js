@@ -21,12 +21,22 @@ foam.CLASS({
   css: `
     ^ {
       padding: 32px 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     ^card-header {
       font-size: 12px;
       font-weight: 600;
       line-height: 1.5;
+    }
+
+    ^fill {
+      flex-grow: 1;
+      display: flex;
+      height: 100%;
     }
 
     ^pie-chart {
@@ -48,6 +58,10 @@ foam.CLASS({
     },
     {
       class: 'Int',
+      name: 'relevantDataCount'
+    },
+    {
+      class: 'Int',
       name: 'total'
     }
   ],
@@ -64,6 +78,10 @@ foam.CLASS({
     {
       name: 'TOOLTIP_VALUE',
       message: 'Value in'
+    },
+    {
+      name: 'LABEL_NO_DATA',
+      message: 'Not enough data to graph'
     }
   ],
 
@@ -71,13 +89,22 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.onDetach(this.homeDenomination$.sub(this.currencyUpdate));
-      this.currencyUpdate();
+      this.onDetach(this.homeDenomination$.sub(this.dataUpdate));
+      this.dataUpdate();
       this
         .addClass(this.myClass())
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
           .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
-            .add(this.slot(function(currency) {
+            // fill css class breaks pie chart
+            // TODO: find better solution to center text for no data
+            .enableClass(self.myClass('fill'), this.relevantDataCount$.map(count => { return count <= 0; }))
+            .add(this.slot(function(currency, relevantDataCount) {
+              if ( ! currency || ! relevantDataCount || relevantDataCount <= 0 ) {
+                return self.E()
+                  .start('p')
+                    .add(self.LABEL_NO_DATA)
+                  .end();
+              }
               return self.E()
                 .start(this.PieDAOChartView, {
                   // We only want to see data that has value.
@@ -152,11 +179,14 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'currencyUpdate',
+      name: 'dataUpdate',
       isFramed: true,
       code: function() {
         this.currencyDAO.find(this.homeDenomination).then(currency => {
-          this.currency = currency
+          this.currency = currency;
+        });
+        this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)).select(this.COUNT()).then(count => {
+          this.relevantDataCount = count.value;
         });
       }
     }

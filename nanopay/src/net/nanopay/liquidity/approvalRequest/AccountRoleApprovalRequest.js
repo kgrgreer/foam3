@@ -3,6 +3,15 @@ foam.CLASS({
   name: 'AccountRoleApprovalRequest',
   extends: 'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
 
+  tableColumns: [
+    'classification',
+    'operation',
+    'outgoingAccount',
+    'initiatingUser',
+    'approver',
+    'status'
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -16,4 +25,13 @@ foam.CLASS({
       }
     }
   ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function() {
+        return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
+      }
+    }
+  ]
 });

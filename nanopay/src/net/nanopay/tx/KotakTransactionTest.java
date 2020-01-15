@@ -122,7 +122,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn6.getId())).select(new foam.dao.ArraySink());
     test(sink.getArray().size() == 1, "txn7 is parent to a single transaction");
     txn7 = (Transaction) sink.getArray().get(0);
-    test(txn7 instanceof KotakCOTransaction, "txn7 is a KotakCOTransaction");
+    test(txn7 instanceof KotakPaymentTransaction, "txn7 is a KotakPaymentTransaction");
     test(txn7.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn7 has status PENDING_PARENT_COMPLETED");
     test(SafetyUtil.equals(txn7.getSourceCurrency(), "INR"), "txn7 has source currency INR");
     test(SafetyUtil.equals(txn7.getDestinationCurrency(), "INR"), "txn7 has destination currency INR");
