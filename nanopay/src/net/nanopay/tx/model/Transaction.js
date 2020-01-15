@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -963,7 +964,8 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
+      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) &&
+      getLifecycleState() == LifecycleState.ACTIVE ) {
         return true;
       }
       return false;
