@@ -11,4 +11,3 @@ p({"class":"net.nanopay.test.api.PostMethodTest","id":"PostMethodTest"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOSecurityTestFind"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})
-

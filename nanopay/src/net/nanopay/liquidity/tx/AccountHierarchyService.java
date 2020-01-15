@@ -198,7 +198,6 @@ public class AccountHierarchyService
     return accountMap;
   }
 
-
   @Override
   public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){
     // TODO: Wire up caching
