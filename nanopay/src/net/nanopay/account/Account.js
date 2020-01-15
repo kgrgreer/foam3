@@ -237,8 +237,8 @@ foam.CLASS({
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
-      writePermissionRequired: true,
       tableWidth: 127,
+      writePermissionRequired: true,
       section: 'accountDetails',
       order: 3
     },
@@ -246,6 +246,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isDefault',
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
+      tableWidth: 87,
       label: 'Set As Default',
       value: false,
       section: 'administration',
@@ -344,6 +345,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: 'The ID of the User who created the account.',
+      section: 'administration',
+      visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
       visibility: 'RO',
     },

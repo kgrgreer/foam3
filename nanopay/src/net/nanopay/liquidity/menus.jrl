@@ -14,53 +14,86 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounts",
   "label": "Accounts",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "accountDAO",
-      "defaultColumns": [
-        "name",
-        "balance",
-        "homeBalance"
-      ],
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["account.make"],
-        "update": ["account.make.%"],
-        "delete": ["account.make.%"]
-      }
-    }
-  },
+  "handler": 
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config": 
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "accountDAO",
+          "defaultColumns": [
+            "name",
+            "balance",
+            "homeBalance"
+          ],
+          "CRUDActionsAuth": {
+            "class": "foam.comics.v2.CRUDActionsAuth",
+            "create": ["account.make"],
+            "update": ["account.make.%"],
+            "delete": ["account.make.%"]
+          },
+          "filterExportPredicate":
+            {
+              "class": "foam.mlang.predicate.Neq",
+              "arg1": {
+                "class": "__Property__",
+                "forClass_": "foam.nanos.export.ExportDriverRegistry",
+                "name": "id"
+              },
+              "arg2": {
+                "class": "foam.mlang.Constant",
+                "value": "CSV"
+              }
+            }
+        }
+    },
   "order": 200
 })
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.transactions",
   "label": "Transactions",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "transactionDAO",
-      "defaultColumns": [
-        "id",
-        "summary",
-        "lastModified",
-        "sourceAccount",
-        "destinationAccount",
-        "destinationCurrency",
-        "destinationAmount"
-      ],
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["transaction.make"],
-        "update": ["transaction.make.%"],
-        "delete": ["transaction.make.%"]
-      }
-    }
-  },
-  "order": 300
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "transactionDAO",
+          "editEnabled": false,
+          "deleteEnabled": false, 
+          "defaultColumns": [
+            "id",
+            "summary",
+            "lastModified",
+            "sourceAccount",
+            "destinationAccount",
+            "destinationCurrency",
+            "destinationAmount"
+          ],
+          "CRUDActionsAuth": {
+            "class": "foam.comics.v2.CRUDActionsAuth",
+            "create": ["transaction.make"],
+            "update": ["transaction.make.%"],
+            "delete": ["transaction.make.%"]
+          },
+          "filterExportPredicate":
+            {
+              "class": "foam.mlang.predicate.Neq",
+              "arg1": {
+                "class": "__Property__",
+                "forClass_": "foam.nanos.export.ExportDriverRegistry",
+                "name": "id"
+              },
+              "arg2": {
+                "class": "foam.mlang.Constant",
+                "value": "CSV"
+              }
+            }
+        }
+    },
+  "order":300
 })
 
 p({
@@ -180,13 +213,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounttemplates",
-  "label": "Rule Account Templates",
+  "label": "Account Templates for Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
-      "browseTitle": "Rule Account Templates"
+      "browseTitle": "Account Templates for Rules",
+      "createTitle": "Create a New Account Template for Rules",
     }
   },
   "order": 3000,
@@ -239,7 +273,7 @@ p({
     }
   },
   "order":5000,
-  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
+  "parent": "hidden"
 })
 
 p({
@@ -343,7 +377,7 @@ p({
     }
   },
   "order":310,
-  "parent": "hidden" // this is not necessary for the R2 GS demo, so hiding it for now
+  "parent": "hidden"
 })
 
 p({
@@ -375,7 +409,7 @@ p({
       }
     }
   },
-  "order": 320,
+  "order": 340,
   "parent": "liquid.rules"
 })
 
@@ -393,7 +427,7 @@ p({
         "args": [
           {
             "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
+            "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
           },
           {
             "class": "foam.mlang.predicate.Eq",
@@ -520,13 +554,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.globalliquidcapabilities",
-  "label": "Global Capabilities",
+  "label": "Capabilities - Global",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "globalLiquidCapabilityDAO",
       "browseTitle": "Global Liquid Capabilities",
+      "createTitle": "Create a New Global Capability",
       "predicate": {
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
@@ -553,13 +588,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accountbasedliquidcapabilities",
-  "label": "Account-Based Capabilities",
+  "label": "Capabilities for Accounts",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountBasedLiquidCapabilityDAO",
-      "browseTitle": "Account-Based Liquid Capabilities",
+      "browseTitle": "Liquid Capabilities for Accounts",
+      "createTitle": "Create a New Capability for Accounts",
       "predicate": {
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
@@ -586,13 +622,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.capabilityaccounttemplates",
-  "label": "Capability Account Templates",
+  "label": "Account Templates for Capabilities",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityAccountTemplateDAO",
-      "browseTitle": "Capability Account Templates"
+      "browseTitle": "Account Templates for Capabilities",
+      "createTitle": "Create a New Account Template for Capabilities",
     }
   },
   "order": 535,
@@ -609,6 +646,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityRequestDAO",
       "browseTitle": "Capability Request",
+      "createTitle": "Execute a Capability Request",
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capabilityrequest.make"],

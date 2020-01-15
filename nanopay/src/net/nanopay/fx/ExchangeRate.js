@@ -16,14 +16,15 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'fromCurrency', 'toCurrency', 'rate', 'expirationDate'
+    'fromCurrency',
+    'toCurrency',
+    'rate',
+    'expirationDate'
   ],
 
+  ids: [ 'fromCurrency', 'toCurrency' ],
+
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'Reference',
       of: 'foam.core.Currency',

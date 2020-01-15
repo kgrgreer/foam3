@@ -219,12 +219,15 @@ FOAM_FILES([
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
+  { name: 'net/nanopay/fx/SecurityPrice' },
   { name: 'net/nanopay/fx/DeliveryTimeFields' },
   { name: 'net/nanopay/fx/ExchangeRateFields' },
   { name: 'net/nanopay/fx/FeesFields' },
   { name: 'net/nanopay/fx/ExchangeRateQuote' },
   { name: 'net/nanopay/fx/FixerIOExchangeRate' },
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
+  { name: 'net/nanopay/fx/ExchangeRateServiceInterface' },
+  { name: 'net/nanopay/fx/ClientExchangeRateService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
@@ -316,6 +319,7 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
@@ -419,6 +423,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/GuidTransactionPlanDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -864,6 +869,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
    { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
+   { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
@@ -881,8 +887,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
-   { name: 'net/nanopay/liquidity/tx/AccountHierarchy' },
-   { name: 'net/nanopay/liquidity/tx/IsChildAccountPredicate' },
 
 
    // liquidity crunches
@@ -921,7 +925,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
-  
+   { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
+ 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },

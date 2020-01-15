@@ -29,7 +29,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'filteredAccountDAO'
+    'filteredAccountDAO',
+    'liquidityFilteredAccountDAO'
   ],
 
   css: `
@@ -77,6 +78,18 @@ foam.CLASS({
             )
           )
         )
+      }
+    },
+    {
+      name: 'liquidityFilteredAccountDAO',
+      expression: function(accountDAO){
+        return accountDAO.where(
+          this.AND(
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+            this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+            this.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+          )
+        );
       }
     },
     {
@@ -132,9 +145,7 @@ foam.CLASS({
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                .tag(this.DashboardLiquidity, {
-                  filteredAccountDAO: this.filteredAccountDAO
-                })
+                .tag(this.DashboardLiquidity)
               .end()
               .start(this.Card, { columns: 4 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO$proxy })

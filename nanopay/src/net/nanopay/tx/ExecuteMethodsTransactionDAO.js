@@ -4,12 +4,13 @@ foam.CLASS({
   name: 'ExecuteMethodsTransactionDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Decorator calls two methods on transaction: 
+  documentation: `Decorator calls two methods on transaction:
   executeBeforePut() - for additional logic on each transaction that needs to be executed before transaction is written to journals,
   executeAfterPut() - for additional logic that needs to be executed after transaction was written to journals.`,
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.pm.PM',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -29,9 +30,21 @@ foam.CLASS({
       type: 'foam.core.FObject',
       javaCode: `
     Transaction transaction = (Transaction) obj;
-    transaction.executeBeforePut(x);
+    Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(obj);
+    PM pm = PM.create(x, obj, "executeBeforePut");
+    try {
+      transaction = transaction.executeBeforePut(x);
+    } finally {
+      pm.log(x);
+    }
     Transaction returnTxn = (Transaction) getDelegate().put_(x, transaction);
-    //returnTxn.executeAfterPut(x,transaction);
+    pm = PM.create(x, obj, "executeAfterPut");
+    try {
+      returnTxn.executeAfterPut(x, oldTxn);
+    } finally {
+      pm.log(x);
+    }
+
     return returnTxn;
     `
     },
