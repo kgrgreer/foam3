@@ -79,7 +79,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       }
       `
@@ -109,7 +108,6 @@ foam.CLASS({
     }
     return false;
   } catch ( Throwable t ) {
-    t.printStackTrace();
     return false;
   } finally {
     if ( clonedAccount != null ) accountDAO.remove_(user1Context, clonedAccount);
@@ -146,7 +144,6 @@ foam.CLASS({
         test(accountDAO.inX(user1Context).find(account2.getId()) == null, "A user cannot find an account that they do not own.");
       } catch (Throwable t) {
         test(false, "Tests for 'find' failed due to an unexpected exception.");
-        t.printStackTrace();
       } finally {
         accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
       }
@@ -176,7 +173,6 @@ foam.CLASS({
         FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
         return updatedPutAccount.getProperty("denomination").equals("USD");
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (clonedAccount != null) accountDAO.remove_(user1Context, clonedAccount);
@@ -203,7 +199,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       }
       `
@@ -245,7 +240,6 @@ foam.CLASS({
         }
         return true;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (account1 != null) accountDAO.remove_(user1Context, account1);
@@ -276,7 +270,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (account != null) accountDAO.remove_(user1Context, account);
@@ -315,7 +308,6 @@ foam.CLASS({
         test(accountDAO.find_(user1Context, account1.getId()) != null, "When a user calls 'removeAll', accounts owned by other users are not deleted.");
       } catch (Throwable t) {
         test(false, "The 'removeAll' tests failed due to an unexpected exception.");
-        t.printStackTrace();
       }
       `
     }

@@ -8,7 +8,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.DAO',
-
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.FileReader',
@@ -847,7 +846,6 @@ foam.CLASS({
               test(false, "Signature should be included in signed journals.");
             }
           } catch ( Throwable t ) {
-            t.printStackTrace();
             test(false, "Images are incorrectly being written to. " + t);
           }
         `

@@ -152,9 +152,7 @@ foam.CLASS({
               args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+          } catch (Exception e) {}
         }
         return invoice;
       `
