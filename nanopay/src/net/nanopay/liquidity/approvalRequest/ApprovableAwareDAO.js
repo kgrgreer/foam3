@@ -12,7 +12,6 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
-    'java.util.HashSet',
     'foam.dao.ArraySink',
     'java.util.ArrayList',
     'foam.util.SafetyUtil',
@@ -299,17 +298,18 @@ foam.CLASS({
         updatedProperties.put("lastModifiedBy", ((User) x.get("user")).getId());
         DAO approvableDAO = (DAO) getX().get("approvableDAO");
 
-        ApprovableId approvableId = new ApprovableId.Builder(getX())
-          .setDaoKey(getDaoKey())
-          .setPropertiesToUpdate(updatedProperties)
-          .setObjId(approvableAwareObj.getApprovableKey())
-          .build();
+        String daoKey = "d" + getDaoKey();
+        String objId = ":o" + approvableAwareObj.getApprovableKey();
+        String hashedMap = ":m" + String.valueOf(updatedProperties.hashCode());
+  
+        String hashedId = daoKey + objId + hashedMap;
+
 
         List approvedObjUpdateRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "approvableDAO"),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableId),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, hashedId),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.UPDATE),
               foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
@@ -338,6 +338,7 @@ foam.CLASS({
         }
 
         Approvable approvable = (Approvable) approvableDAO.put_(getX(), new Approvable.Builder(getX())
+          .setId(hashedId)
           .setDaoKey(getDaoKey())
           .setStatus(ApprovalStatus.REQUESTED)
           .setObjId(approvableAwareObj.getApprovableKey())

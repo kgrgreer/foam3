@@ -24,8 +24,7 @@ foam.CLASS({
     {
       name: 'id',
       label: 'Name',
-      class: 'String',
-      visibility: foam.u2.Visibility.FINAL
+      class: 'String'
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 

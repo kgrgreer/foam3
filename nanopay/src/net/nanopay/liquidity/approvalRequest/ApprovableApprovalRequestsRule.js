@@ -17,8 +17,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.Approvable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableId'
+    'net.nanopay.liquidity.approvalRequest.Approvable'
   ],
 
   implements: ['foam.nanos.ruler.RuleAction'],
@@ -35,9 +34,7 @@ foam.CLASS({
           public void execute(X x) {
             DAO approvableDAO = (DAO) getX().get("approvableDAO");
 
-            ApprovableId approvableId = (ApprovableId) request.getObjId();
-
-            Approvable updatedApprovable = (Approvable) (approvableDAO.find(approvableId)).fclone();
+            Approvable updatedApprovable = (Approvable) (approvableDAO.find(request.getObjId())).fclone();
 
             updatedApprovable.setStatus(request.getStatus());
 
