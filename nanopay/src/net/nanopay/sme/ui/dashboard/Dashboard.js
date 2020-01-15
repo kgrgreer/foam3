@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'Dashboard',
   extends: 'foam.u2.Controller',
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',

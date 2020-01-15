@@ -66,5 +66,5 @@ foam.CLASS({
       setResponseTime(new Date());
       `
     }
-  ],
+  ]
 });
