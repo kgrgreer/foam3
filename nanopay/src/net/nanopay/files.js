@@ -869,6 +869,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
    { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
+   { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
@@ -886,8 +887,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
-   { name: 'net/nanopay/liquidity/tx/AccountHierarchy' },
-   { name: 'net/nanopay/liquidity/tx/IsChildAccountPredicate' },
 
 
    // liquidity crunches

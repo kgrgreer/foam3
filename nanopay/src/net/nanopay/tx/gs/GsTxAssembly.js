@@ -109,21 +109,42 @@ foam.CLASS({
     {
       name: 'executeJob',
       javaCode: `
-        Transaction t = getIsInternal() ?
-          parseInternal(getX(),getRow1(),getRow2()) :
-          parseExternal(getX(),getRow1());
+      if ( ! getTrackingJob().getFailed() ) {
+        try {
+          Transaction t = getIsInternal() ?
+            parseInternal(getX(),getRow1(),getRow2()) :
+            parseExternal(getX(),getRow1());
 
-        setTransaction(t);
+          setTransaction(t);
+        }
+        catch( Exception e ){
+          getTrackingJob().setFailed(true);
+          if ( getRow1() != null && getRow1().getTransactionId() != null ) {
+             getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing. \\nOn row "+ getRow1().getTransactionId());
+          }
+          else {
+            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing.");
+          }
+        }
+      }
       `
     },
     {
       name: 'endJob',
       javaCode: `
-        verifyBalance(getX(),getTransaction());
-        getOutputDAO().put(getTransaction());
-        if ( getPbd() != null )
-          ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
-        getTrackingJob().incrementTxnCounter(getTxnCount());
+        if (! getTrackingJob().getFailed() ){
+          try {
+            verifyBalance(getX(),getTransaction());
+            getOutputDAO().put(getTransaction());
+            if ( getPbd() != null )
+              ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
+            getTrackingJob().incrementTxnCounter(getTxnCount());
+          }
+          catch( Exception e ){
+            getTrackingJob().setFailed(true);
+            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction save.");
+          }
+        }
       `
     },
     {

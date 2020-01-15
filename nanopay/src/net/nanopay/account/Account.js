@@ -198,7 +198,6 @@ foam.CLASS({
       label: 'Account name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
-      tableWidth: 168,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
