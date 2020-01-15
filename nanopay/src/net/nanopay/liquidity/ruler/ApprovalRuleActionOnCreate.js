@@ -17,28 +17,40 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.Detachable',
     'foam.core.X',
     'foam.core.FObject',
+    'foam.core.MethodInfo',
     'foam.dao.DAO',
+    'foam.dao.AbstractSink',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.Operations',
+    'java.util.List',
+    'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
     'static foam.mlang.MLang.*'
   ],
 
   properties: [
     {
+      class: 'Int',
+      name: 'approverLevel'
+    },
+    {
       class: 'String',
-      name: 'classification'
+      name: 'outgoingAccountFinder',
+      value: 'getOutgoingAccount'
     },
     {
       class: 'Boolean',
-      name: 'updateOnApproved'
+      name: 'isFinal'
     }
   ],
 
@@ -57,7 +69,9 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            boolean done = processApproval(x, rule.getDaoKey(), objId);
+            boolean done = processApproval(x, rule.getDaoKey(), obj,
+              String.format("Created by Rule: %s", rule.getId()));
+
             if ( ! done ) {
               ruler.stop();
             }
@@ -71,38 +85,54 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'daoKey', type: 'String' },
-        { name: 'objId', type: 'Object' }
+        { name: 'obj', type: 'FObject' },
+        { name: 'description', type: 'String' }
       ],
       javaCode: `
+        Object objId = obj.getProperty("id");
+        String modelName = obj.getClassInfo().getObjClass().getSimpleName().toLowerCase();
+        String classification = String.format("L%d - %s approval", getApproverLevel(), modelName);
+
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
         ApprovalStatus approval = ApprovalRequestUtil.getState(
           approvalRequestDAO.where(AND(
-            EQ(RoleApprovalRequest.OBJ_ID, objId),
-            EQ(RoleApprovalRequest.DAO_KEY, daoKey),
-            OR(
-              EQ(getClassification(), ""),
-              EQ(RoleApprovalRequest.CLASSIFICATION, getClassification())
-            )
+            EQ(ApprovalRequest.OBJ_ID, objId),
+            EQ(ApprovalRequest.DAO_KEY, daoKey),
+            getIsFinal()
+              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION, classification)
           ))
         );
 
         // 1. Create approval request if not yet exists.
         if ( approval == null ) {
-          User user = (User) x.get("user");
-          User agent = (User) x.get("agent");
-          approvalRequestDAO.inX(x).put(
-            new RoleApprovalRequest.Builder(x)
-              .setClassification(getClassification())
+          if ( getIsFinal() ) return false;
+
+          AccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+          MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
+          long accountId = ((Long) method.call(x, obj, null)).longValue();
+
+          List<Long> approvers = ucjQueryService.getApproversByLevel(
+            modelName, accountId, getApproverLevel(), x);
+          if ( ! approvers.isEmpty() ) {
+            User user = (User) x.get("user");
+            User agent = (User) x.get("agent");
+            ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
+              .setClassification(classification)
               .setObjId(objId)
               .setDaoKey(daoKey)
               .setOperation(Operations.CREATE)
               .setInitiatingUser(agent != null ? agent.getId() : user.getId())
-              // TODO: Change setApprover(user) where user is the approver found
-              // by U(A)CJ service
-              .setGroup("liquidDev")
               .setStatus(ApprovalStatus.REQUESTED)
-              .build()
-          );
+              .setDescription(description)
+              .build();
+
+            for ( Long approver : approvers ) {
+              approvalRequest.clearId();
+              approvalRequest.setApprover(approver);
+              approvalRequestDAO.put(approvalRequest);
+            }
+          }
+          // TODO Handle when the approvers is empty
           return false;
         }
 
@@ -111,25 +141,52 @@ foam.CLASS({
           return false;
         }
 
-        // 3. Found rejected approval request, set lifecycleState = REJECTED.
         DAO dao = (DAO) x.get(daoKey);
         FObject object = dao.find(objId).fclone();
+
+        // 3. Found rejected approval request, set lifecycleState = REJECTED.
         if ( approval == ApprovalStatus.REJECTED ) {
           if ( object instanceof LifecycleAware ) {
             ((LifecycleAware) object).setLifecycleState(LifecycleState.REJECTED);
             dao.inX(x).put(object);
           }
+          updateApprovalRequestsIsFulfilled(x, objId, daoKey);
+
           return false;
         }
 
         // 4. Approved and set lifecycleState = ACTIVE.
-        if ( getUpdateOnApproved() ) {
+        if ( getIsFinal() ) {
           if ( object instanceof LifecycleAware ) {
             ((LifecycleAware) object).setLifecycleState(LifecycleState.ACTIVE);
             dao.inX(x).put(object);
           }
+          updateApprovalRequestsIsFulfilled(x, objId, daoKey);
         }
         return true;
+      `
+    },
+    {
+      name: 'updateApprovalRequestsIsFulfilled',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'objId', type: 'Object' },
+        { name: 'daoKey', type: 'String' }
+      ],
+      javaCode: `
+        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+        approvalRequestDAO.where(
+          AND(
+            EQ(ApprovalRequest.OBJ_ID, objId),
+            EQ(ApprovalRequest.DAO_KEY, daoKey)
+          )
+        ).select(new AbstractSink() {
+          public void put(Object obj, Detachable sub) {
+            RoleApprovalRequest approvalRequest = (RoleApprovalRequest) obj;
+            approvalRequest.setIsFulfilled(true);
+            approvalRequestDAO.inX(x).put(approvalRequest);
+          }
+        });
       `
     }
   ]

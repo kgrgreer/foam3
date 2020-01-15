@@ -20,7 +20,8 @@ foam.CLASS({
     'currencyDAO',
     'homeDenomination',
     'stack?',
-    'user'
+    'user',
+    'exchangeRateService'
   ],
 
   javaImports: [
@@ -293,6 +294,23 @@ foam.CLASS({
       visibility: 'RO',
       section: 'basicInfo',
       createMode: 'HIDDEN',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The id of the agent who created the transaction.`,
+      visibility: 'RO',
+      section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -839,6 +857,7 @@ foam.CLASS({
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
+      setLifecycleState(other.getLifecycleState());
       `
     },
     {

@@ -24,35 +24,35 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         TransactionQuote txq = (TransactionQuote) obj;
-                agency.submit(x, new ContextAgent() {
-                                    @Override
-                                    public void execute(X x) {
-          Transaction tx = txq.getRequestTransaction();
-          if ( (! ( txq.getSourceAccount() instanceof BrokerAccount ) ) && (! (txq.getDestinationAccount() instanceof BrokerAccount ) ) && SafetyUtil.equals(txq.getSourceUnit(), txq.getDestinationUnit() )  ) {
-            SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
+          agency.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              Transaction tx = txq.getRequestTransaction();
+                if ( (! ( txq.getSourceAccount() instanceof BrokerAccount ) ) && (! (txq.getDestinationAccount() instanceof BrokerAccount ) ) && SafetyUtil.equals(txq.getSourceUnit(), txq.getDestinationUnit() )  ) {
+                  SecurityTransaction plan = new SecurityTransaction.Builder(x).build();
 
-            plan.copyFrom(tx);
-            plan.setName("Digital Security Transaction");
-            plan.setSourceCurrency(txq.getSourceUnit());
-            plan.setDestinationCurrency(txq.getDestinationUnit());
+                  plan.copyFrom(tx);
+                  plan.setName("Digital Security Transaction");
+                  plan.setSourceCurrency(txq.getSourceUnit());
+                  plan.setDestinationCurrency(txq.getDestinationUnit());
 
-            plan.setAmount(tx.getAmount());
-            plan.setDestinationAmount(tx.getAmount());
+                  plan.setAmount(tx.getAmount());
+                  plan.setDestinationAmount(tx.getAmount());
 
-            plan.setSourceAccount(txq.getSourceAccount().getId());
-            plan.setDestinationAccount(txq.getDestinationAccount().getId());
+                  plan.setSourceAccount(txq.getSourceAccount().getId());
+                  plan.setDestinationAccount(txq.getDestinationAccount().getId());
 
 
-            plan.setIsQuoted(true);
-            plan.setTransfers(
-              createTransfers_(x, plan,
-              ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
-              ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
-            ));
+                  plan.setIsQuoted(true);
+                  plan.setTransfers(
+                    createTransfers_(x, plan,
+                    ((SecuritiesAccount) txq.getSourceAccount()).getSecurityAccount(x,txq.getSourceUnit()).getId(),
+                    ((SecuritiesAccount) txq.getDestinationAccount()).getSecurityAccount(x,txq.getDestinationUnit()).getId()
+                  ));
 
-            txq.setPlan(plan);
-          }
-        }}, "FOP Security Planner");
+                  txq.setPlan(plan);
+                }
+              }}, "FOP Security Planner");
 
       `
     },

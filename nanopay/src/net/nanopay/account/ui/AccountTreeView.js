@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.AggregateAccount',
+    'net.nanopay.account.SecuritiesAccount',
     'foam.graphics.ZoomMapView'
   ],
 
@@ -135,6 +136,9 @@ foam.CLASS({
           }),
           foam.mlang.predicate.IsClassOf.create({
             targetClass: self.AggregateAccount
+          }),
+          foam.mlang.predicate.IsClassOf.create({
+            targetClass: self.SecuritiesAccount
           })
         ));
         return v;

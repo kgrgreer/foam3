@@ -10,6 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'java.util.ArrayList',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.List',
     'java.util.Map',
     'foam.core.Detachable',
@@ -32,11 +33,11 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map<String,Map> cache = new HashMap<>();
+        Map<String,ConcurrentHashMap> cache = new HashMap<>();
 
-        cache.put("getRolesCache", new HashMap<String,List>());
-        cache.put("getUsersCache", new HashMap<String,List>());
-        cache.put("getApproversByLevelCache", new HashMap<String,List>());
+        cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
+        cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
+        cache.put("getApproversByLevelCache", new ConcurrentHashMap<String,List>());
   
         return cache;
       `

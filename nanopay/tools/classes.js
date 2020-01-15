@@ -335,6 +335,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
 
    'net.nanopay.util.Frequency',
+   'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
@@ -379,6 +380,8 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.fx.SecurityPrice',
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.fx.FXTransaction',
@@ -477,6 +480,7 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakPaymentTransaction',
   'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.KotakSplitTransactionPlanDAO',
@@ -501,6 +505,7 @@ var classes = [
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
+  'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
@@ -943,6 +948,7 @@ var skeletons = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+  'net.nanopay.fx.ExchangeRateServiceInterface'
 ];
 
 var proxies = [

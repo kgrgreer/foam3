@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IN_FILE=
-INSTANCE=
+INSTANCES=
 OUT_FILE=
 EXTRA_FILES=
 FILE_POSTFIX=jrl
@@ -11,7 +11,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -I : Input File, no option defaults to stdin"
-    echo "  -J : Instance"
+    echo "  -J : Instances"
     echo "  -O : Output File, no option defaults to stdout"
     echo "  -E : Specify extra journal source directory"
 }
@@ -19,7 +19,7 @@ function usage {
 while getopts "I:J:O:E:P:" opt ; do
     case $opt in
         I) IN_FILE=$OPTARG ;;
-        J) INSTANCE=$OPTARG ;;
+        J) INSTANCES=$OPTARG ;;
         O) OUT_FILE=$OPTARG ;;
         E) EXTRA_FILES=$OPTARG ;;
         P) FILE_POSTFIX=$OPTARG ;;
@@ -30,9 +30,12 @@ done
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
-  "deployment/$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')"
- # "interac/src"
 )
+
+IFS=',' read -ra DIRS <<< "$INSTANCES"
+for d in "${DIRS[@]}"; do
+    sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+done
 
 if [ ! -z $EXTRA_FILES ]; then
     sources+=($EXTRA_FILES)
