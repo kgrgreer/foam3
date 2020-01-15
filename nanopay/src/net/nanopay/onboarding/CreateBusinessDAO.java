@@ -40,6 +40,9 @@ public class CreateBusinessDAO extends ProxyDAO {
     }
 
     User user = (User) x.get("user");
+    if ( user instanceof Business ) {
+      user = (User) x.get("agent");
+    }
     Business business = (Business) super.put_(x, obj);
     String safeBusinessName = business.getBusinessPermissionId();
 

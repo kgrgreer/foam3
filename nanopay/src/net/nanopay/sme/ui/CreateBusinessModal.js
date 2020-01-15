@@ -96,7 +96,7 @@ foam.CLASS({
         });
         try {
           await this.businessDAO.put(business);
-          this.businessDAO.pub();
+          // this.businessDAO.pub();
           this.notify(this.SUCCESS_MESSAGE);
         } catch (e) {
           this.notify(`${this.ERROR_MESSAGE} ${e}`, 'error');

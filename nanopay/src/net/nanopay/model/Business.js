@@ -434,16 +434,7 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        // User user = (User) x.get("user");
-        // AuthService auth = (AuthService) x.get("auth");
-
-        // // Prevent privilege escalation by only allowing a user's group to be
-        // // set to one that the user doing the put has permission to update.
-        // boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
-
-        // if ( ! hasGroupUpdatePermission ) {
-        //   throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
-        // }
+        // No authorization required on create for businesses. The businessDAO is permissioned via service.businessDAO
       `
     },
     {
