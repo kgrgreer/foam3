@@ -8,11 +8,11 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
-    'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
+    'net.nanopay.contacts.ui.modal.UpgradeContactModal',
     'net.nanopay.invoice.model.Invoice'
   ],
 
@@ -77,9 +77,8 @@ foam.CLASS({
               label: 'Upgrade Contact',
               code: function(X) {
                 console.log('open modal');
-                X.controllerView.add(self.SMEModal.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
-                  // Setting data enables the edit flow.
+                X.controllerView.add(self.Popup.create().tag({
+                  class: 'net.nanopay.contacts.ui.modal.UpgradeContactModal',
                   data: this
                 }));
               }
