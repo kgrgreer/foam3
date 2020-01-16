@@ -396,6 +396,9 @@ foam.CLASS({
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
+      visibilityExpression: function(lifecycleState){
+        return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       name: 'statusChoices',
