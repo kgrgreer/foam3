@@ -1,4 +1,11 @@
 //Medusa Node
+r({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"quorumService",
+  "lazy":false,
+  "serviceClass":"foam.nanos.mrac.quorum.QuorumService"
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"nSpecDAO",
