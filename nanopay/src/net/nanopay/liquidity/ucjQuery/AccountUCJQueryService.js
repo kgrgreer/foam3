@@ -9,16 +9,16 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'userId',
           type: 'Long'
         },
         {
           name: 'accountId',
           type: 'Long'
-        },
-        {
-          name: 'x',
-          type: 'Context'
         }
       ]
     },
@@ -29,16 +29,16 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'roleId',
           type: 'String'
         },
         {
           name: 'accountId',
           type: 'Long'
-        },
-        {
-          name: 'x',
-          type: 'Context'
         }
       ]
     },
@@ -49,16 +49,16 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'userId',
           type: 'Long'
         },
         {
           name: 'roleId',
           type: 'String'
-        },
-        {
-          name: 'x',
-          type: 'Context'
         }
       ]
     },
@@ -68,6 +68,10 @@ foam.INTERFACE({
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           name: 'modelToApprove',
           type: 'String'
@@ -79,10 +83,6 @@ foam.INTERFACE({
         {
           name: 'level',
           type: 'Integer'
-        },
-        {
-          name: 'x',
-          type: 'Context'
         }
       ]
     }

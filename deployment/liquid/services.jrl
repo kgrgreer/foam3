@@ -136,14 +136,6 @@ p({
       .setJournalName("accounts")
       .setAuthorize(false)
       .setOf(Account.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {
-        net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
-        net.nanopay.account.Account.OWNER,
-        net.nanopay.account.Account.NAME,
-        net.nanopay.account.Account.ID,
-        net.nanopay.account.Account.ENABLED,
-        net.nanopay.account.Account.IS_DEFAULT,
-        net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
       .build();
   """
@@ -609,11 +601,19 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
+    import foam.dao.DAO;
+
+    dao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
+    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
+    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "liquidUserCapabilityJunctions");
+
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidUserCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
+      .setInnerDAO(dao)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
