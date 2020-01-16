@@ -92,7 +92,7 @@ foam.CLASS({
         // Tests
 
         // Happy path
-        TestWidget result = (TestWidget) dao.find(1);
+        TestWidget result = (TestWidget) dao.find(1l);
         PublicUserInfo owner = result.getOwner();
 
         test(owner != null, "Property to replace (owner) should not be null.");
@@ -124,7 +124,7 @@ foam.CLASS({
         badWidget.setName("badWidget");
         widgetDAO.put(badWidget);
 
-        result = (TestWidget) dao.find(2);
+        result = (TestWidget) dao.find(2l);
         test(result.getOwner() == null, "If there is no user with the matching id, then the destination property should be set to null.");
 
         // Test that appropriate errors are thrown in appropriate places.

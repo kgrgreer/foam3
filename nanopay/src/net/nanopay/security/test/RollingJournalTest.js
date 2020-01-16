@@ -12,6 +12,7 @@ foam.CLASS({
     'java.io.BufferedWriter',
     'java.io.FileReader',
     'java.io.FileWriter',
+    'java.io.IOException',
     'java.io.File',
     'java.math.BigInteger',
     'java.nio.charset.Charset',
@@ -367,6 +368,9 @@ foam.CLASS({
 
           try { // cleaning up
             imageDumpFile.delete();
+            if ( !imageDumpFile.delete() ) {
+              throw new IOException("Delete file failed!");
+            }
           } catch (Throwable t) { }
         `
       },
