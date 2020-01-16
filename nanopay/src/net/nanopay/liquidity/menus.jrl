@@ -72,6 +72,18 @@ p({
             "destinationCurrency",
             "destinationAmount"
           ],
+          "predicate": {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "net.nanopay.liquidity.LiquiditySettings",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          },
           "CRUDActionsAuth": {
             "class": "foam.comics.v2.CRUDActionsAuth",
             "create": ["transaction.make"],
