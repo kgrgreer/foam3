@@ -179,8 +179,8 @@ public class FlinksRestService
       IOUtils.closeQuietly(rd);
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
-      return msg;
     }
+    return msg;
   }
 
   private void closeSource(InputStream is, OutputStream os, HttpURLConnection connection) {

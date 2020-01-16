@@ -15,6 +15,7 @@ import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -149,10 +150,10 @@ public class SPSProcessor implements ContextAgent {
     try {
       post.setEntity(new UrlEncodedFormEntity(urlParameters));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
-
+      BufferedReader rd = null;
       try {
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
-          BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+          rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
           StringBuilder sb = new StringBuilder();
           String line;
           while ( (line = rd.readLine()) != null ) {
@@ -163,6 +164,7 @@ public class SPSProcessor implements ContextAgent {
           logger.warning("http status code was not 200");
         }
       } finally {
+        IOUtils.closeQuietly(rd);
         httpResponse.close();
       }
     } catch (IOException e) {

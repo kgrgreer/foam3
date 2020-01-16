@@ -3,11 +3,7 @@ package net.nanopay.fx.ascendantfx;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Image;
-import foam.blob.Blob;
-import foam.blob.FileBlob;
-import foam.blob.BlobService;
-import foam.blob.IdentifiedBlob;
-import foam.blob.ProxyBlobService;
+import foam.blob.*;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
@@ -1005,6 +1001,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     DataOutputStream os = null;
     ZipOutputStream zipos = null;
+    FileInputStream is = null;
     try {
       zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
       zipos.setMethod(ZipOutputStream.DEFLATED);
@@ -1016,7 +1013,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
         os = new DataOutputStream(zipos);
-        InputStream is = new FileInputStream(file);
+        is = new FileInputStream(file);
         byte[] b = new byte[100];
         int length;
         while((length = is.read(b))!= -1){
@@ -1031,6 +1028,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     } finally {
       IOUtils.closeQuietly(os);
       IOUtils.closeQuietly(zipos);
+      IOUtils.closeQuietly(is);
     }
   }
 }
