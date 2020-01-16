@@ -50,12 +50,12 @@ foam.CLASS({
   REQUIREMENT for this view:
   Must be given to this view:
   - linkAmount = which is the amount that data is based off
-  - currency = which is used for rate look up in the exchangeRateDAO
+  - currency = which is used for rate look up in the exchangeRateService
   - linkCurrency = which is used for rate and currency formatting.
   ? linked (should be considered - default = false)
 
   Need and access from this view:
-  - rate = use currency, linkCurrency and exchangeRateDAO
+  - rate = use currency, linkCurrency and exchangeRateService
   - currencyObj_ = currencyDAO obj return from currency
   - linkCurrencyObj_ = currencyDAO obj return from linkCurrency
 
@@ -78,7 +78,7 @@ foam.CLASS({
 
   imports: [
     'currencyDAO',
-    'exchangeRateDAO'
+    'exchangeRateService'
   ],
 
   messages: [
@@ -115,8 +115,9 @@ foam.CLASS({
             this.linkCurrencyObj_ = c;
             this.setRates(n, this.currency)
               .then((_) => {
-                this.updateData(this.currencyObj_.precision);
-                this.updateDisplay();
+                this.updateData(this.currencyObj_.precision, n, this.currency)
+                  .then((_) => this.updateDisplay())
+                  .catch((e) => console.warn(`@postSet.linkCurrency updateData() error: ${e}`));
               })
               .catch((_) => {
                 this.updateDisplay();
@@ -136,8 +137,9 @@ foam.CLASS({
             this.currencyObj_ = c;
             this.setRates(this.linkCurrency, n)
               .then((_) => {
-                this.updateData(this.currencyObj_.precision);
-                this.updateDisplay();
+                this.updateData(this.currencyObj_.precision, this.linkCurrency, n)
+                  .then((_) => this.updateDisplay())
+                  .catch((e) => console.warn(`@postSet.linkCurrency updateData() error: ${e}`));
               })
               .catch((_) => {
                 this.updateDisplay();
@@ -172,8 +174,9 @@ foam.CLASS({
       documentation: `Passed in value, preferably slot. This properties linked amount.`,
       postSet: function(o, n) {
         if ( ! this.linked && ! this.buildingModel_ ) {
-          this.updateData(this.currencyObj_.precision);
-          this.updateDisplay();
+          this.updateData(this.currencyObj_.precision, this.linkCurrency, this.currency)
+            .then((_) => this.updateDisplay())
+            .catch((e) => console.warn(`@postSet.linkCurrency updateData() error: ${e}`));
         }
       }
     },
@@ -262,57 +265,44 @@ foam.CLASS({
         `${this.currencyObj_.format(this.data)} @Rate: ${this.NO_RATE}`;
     },
 
-    function updateData(prec) {
+    async function updateData(prec, from, to) {
       let relativePrec = 0;
       if ( this.currencyObj_ && this.linkCurrencyObj_ ) {
         relativePrec = this.currencyObj_.precision - this.linkCurrencyObj_.precision;
       }
-      this.data = ((this.linkAmount/this.rate) * Math.pow(10, relativePrec)).toFixed(0);
-      this.disDstAmount = (this.data/Math.pow(10, prec)).toFixed(prec);
+
+      await this.exchangeRateService.exchange(from, to, this.linkAmount)
+        .then((d) => {
+          this.data = d * Math.pow(10, relativePrec);
+          this.disDstAmount = (d/Math.pow(10, prec)).toFixed(prec);
+        })
+        .catch((e) => {
+          this.data = ((this.linkAmount/this.rate) * Math.pow(10, relativePrec)).toFixed(0);
+          this.disDstAmount = (this.data/Math.pow(10, prec)).toFixed(prec);
+        });
     },
 
     async function currencyObjUpdate(cur, X) {
       return await this.currencyDAO.find(cur);
     },
 
-    function setValues(rate, trueValue) {
-      this.rate = rate;
-      this.trueRate = trueValue;
-    },
-
     async function setRates(fromCurrency, toCurrency) {
       if ( ! fromCurrency || ! toCurrency ) return;
 
-      if ( fromCurrency === toCurrency ) return this.SetValues(1.00, true);
+      if ( fromCurrency === toCurrency ) return this.setValues(1.00, true);
 
-      if ( this.linked ) {
-        // hack to manage the balancing of currency rate exchanges.
-        let temp = fromCurrency;
-        fromCurrency = toCurrency;
-        toCurrency = temp;
-      }
-
-      return await this.exchangeRateDAO.where(this.AND(
-        this.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, fromCurrency),
-        this.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, toCurrency)
-        )).select().then((result) => {
-          if ( result.array.length > 0 ) {
-            if ( this.linked ) return this.setValues((result.array[0].rate), true);
-            return this.setValues((1/result.array[0].rate), true);
-          } else {
-            return X.exchangeRateDAO.where(this.AND(
-              this.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, toCurrency),
-              this.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, fromCurrency)
-            )).select().then((result) => {
-              if ( result.array.length > 0 ) {
-                if ( this.linked ) return this.setValues((1/result.array[0].rate), true);
-                return this.setValues((result.array[0].rate), true);
-              }
-              return this.setValues(1.00, false); // <- it was decided that these rates are arbituary, for liquid.
-          });
-        }
-      });
+      await this.exchangeRateService.getRate(toCurrency, fromCurrency)
+        .then((r) => {
+          this.setValues(r, true);
+        }).catch((_)=>{
+          this.setValues(1.0, true);
+        });
     },
+
+    function setValues(rate, trueValue) {
+      this.rate = rate;
+      this.trueRate = trueValue;
+    }
   ],
 
 });
