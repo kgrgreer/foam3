@@ -1,9 +1,9 @@
 //Medusa Mediator
-p({"class":"foam.nanos.mrac.ClusterNode","id":1,"group":1,"ip":"172.19.241.156","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-156","servicePort":8001,"socketPort":7001,"electionIP":"172.19.241.156","electionPort":9001,"isVoter":true,"type":0})
-p({"class":"foam.nanos.mrac.ClusterNode","id":2,"group":1,"ip":"172.19.240.89","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-89","servicePort":8002,"socketPort":7002,"electionIP":"172.19.240.89","electionPort":9002,"isVoter":true,"type":0})
-p({"class":"foam.nanos.mrac.ClusterNode","id":3,"group":1,"ip":"172.19.241.252","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-252","servicePort":8003,"socketPort":7003,"electionIP":"172.19.241.252","electionPort":9003,"isVoter":true,"type":0})
+p({"class":"foam.nanos.mrac.ClusterNode","id":1,"group":1,"ip":"172.19.241.156","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-156","servicePort":8081,"socketPort":8082,"electionIP":"172.19.241.156","electionPort":8083,"isVoter":true,"type":0})
+p({"class":"foam.nanos.mrac.ClusterNode","id":2,"group":1,"ip":"172.19.240.89","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-89","servicePort":8081,"socketPort":8082,"electionIP":"172.19.240.89","electionPort":8083,"isVoter":true,"type":0})
+p({"class":"foam.nanos.mrac.ClusterNode","id":3,"group":1,"ip":"172.19.241.252","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-252","servicePort":8081,"socketPort":8082,"electionIP":"172.19.241.252","electionPort":8083,"isVoter":true,"type":0})
 
 // Medusa Nodes
-p({"class":"foam.nanos.mrac.ClusterNode","id":10,"group":1,"ip":"172.19.240.231","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-231","servicePort":8010,"socketPort":7010,"isVoter":false,"type":1})
-p({"class":"foam.nanos.mrac.ClusterNode","id":11,"group":1,"ip":"172.19.241.181","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-181","servicePort":8011,"socketPort":7011,"isVoter":false,"type":1})
-p({"class":"foam.nanos.mrac.ClusterNode","id":12,"group":1,"ip":"172.19.240.53","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-53","servicePort":8012,"socketPort":7012,"isVoter":false,"type":1})
+p({"class":"foam.nanos.mrac.ClusterNode","id":10,"group":1,"ip":"172.19.240.231","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-231","servicePort":8081,"socketPort":8082,"isVoter":false,"type":1})
+p({"class":"foam.nanos.mrac.ClusterNode","id":11,"group":1,"ip":"172.19.241.181","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-241-181","servicePort":8081,"socketPort":8082,"isVoter":false,"type":1})
+p({"class":"foam.nanos.mrac.ClusterNode","id":12,"group":1,"ip":"172.19.240.53","sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738","hostName":"ip-172-19-240-53","servicePort":8081,"socketPort":8082,"isVoter":false,"type":1})
