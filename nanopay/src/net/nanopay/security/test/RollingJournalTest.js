@@ -12,6 +12,7 @@ foam.CLASS({
     'java.io.BufferedWriter',
     'java.io.FileReader',
     'java.io.FileWriter',
+    'java.io.IOException',
     'java.io.File',
     'java.math.BigInteger',
     'java.nio.charset.Charset',
