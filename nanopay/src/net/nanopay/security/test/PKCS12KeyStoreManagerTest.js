@@ -252,8 +252,10 @@ foam.CLASS({
         } catch ( Throwable t ) {
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
         }
-        if ( keyStoreManager == null )
+        if ( keyStoreManager == null ) {
           test(false, "KeyStoreManager getKeyStore shouldn't be null"); 
+          return;
+        }
 
         SecretKey key = null;
         try {
