@@ -515,11 +515,19 @@ foam.CLASS({
       name: 'amount',
       label: 'Source Amount',
       section: 'amountSelection',
-      createMode: 'RW',
       required: true,
       gridColumns: 6,
+      visibility: 'RO',
       help: `This is the amount to be withdrawn from your chosen source account.
       When property looses focus, calulations done for destination Amount`,
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+          linkCurrency$: X.data.destinationCurrency$,
+          currency$: X.data.sourceCurrency$,
+          linkAmount$: X.data.destinationAmount$
+        };
+      },
       tableCellFormatter: function(value, obj) {
         obj.currencyDAO.find(obj.sourceCurrency).then(function(c) {
           if ( c ) {
@@ -619,40 +627,15 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      createMode: 'RO',
       gridColumns: 6,
       help: `This is the amount to be transfered to your chosen destination account.`,
       view: function(_, X) {
-        // TODO - coming in another pr JAN 15 - anna
-        let asdm = X.data.slot(function(amount, sourceCurrency, destinationCurrency) {
-          if ( sourceCurrency && destinationCurrency ) {
-            let e = foam.mlang.Expressions.create();
-            return X.currencyDAO.find(destinationCurrency).then((dstC) => {
-              return X.exchangeRateDAO.where(e.AND(
-                e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, sourceCurrency),
-                e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, destinationCurrency)
-                )).select().then((result) => {
-                  if ( sourceCurrency === destinationCurrency ) return amount;
-                  if ( result.array.length > 0 ) {
-                    return (amount*result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
-                  } else {
-                    return X.exchangeRateDAO.where(e.AND(
-                      e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, destinationCurrency),
-                      e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, sourceCurrency)
-                    )).select().then((result) => {
-                      if ( result.array.length > 0 ) {
-                        return (amount/result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
-                      }
-                      return 0;
-                  });
-                }
-              });
-            });
-          }
-        });
         return {
-          class: 'foam.u2.TextField',
-          data$: asdm
+          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+          linkAmount$: X.data.amount$,
+          linkCurrency$: X.data.sourceCurrency$,
+          currency$: X.data.destinationCurrency$,
+          linked: true
         };
       },
       documentation: 'Amount in Receiver Currency',

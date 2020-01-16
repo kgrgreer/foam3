@@ -36,9 +36,7 @@ foam.CLASS({
         this.data.referenceNumber = 'ManuallyCreated';
         this.data.mode = ''; // TODO - use controllerMode instead of mode, but currently it's lost ??
         this.data.payerId = x.user ? x.user.id : 0; // to show the user who created this transaction
-        this.data.id = foam.uuid.randomGUID(); // Added to fix CPF-4073
-        this.data.isQuoted = true; // Added to fix CPF-4073
-        x.liquidTransactionDAO.put(this.data)
+        x.transactionDAO.put(this.data)
         .then(
           (_) => {
             x.notify('Transaction Created Successfully!');

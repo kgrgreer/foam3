@@ -14,6 +14,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
 
   // Payment
+  { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
