@@ -144,6 +144,7 @@ p({
       .setRuler(false)
       .setAuthorize(false)
       .setSeqNo(true)
+      .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("entryRecords")
       .setOf(foam.nanos.mrac.EntryRecord.getOwnClassInfo())
