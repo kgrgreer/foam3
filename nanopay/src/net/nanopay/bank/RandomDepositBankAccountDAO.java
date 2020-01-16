@@ -50,10 +50,10 @@ public class RandomDepositBankAccountDAO
 
     // TODO: prevent a user from submitting their own status
     // generate random deposit amount and set in bank account model
-    FObject ret = super.put_(x, account);
     if ( newAccount && BankAccountStatus.UNVERIFIED.equals(account.getStatus()) ) {
       long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
       account.setRandomDepositAmount(randomDepositAmount);
+      super.put_(x, account);
       User user = (User) x.get("user");
 
       // create new transaction and store
@@ -72,7 +72,7 @@ public class RandomDepositBankAccountDAO
       getTransactionDAO().put_(x, transaction);
     }
 
-    return ret;
+    return super.put_(x, account);
   }
 
   public boolean isUseBMO() {
