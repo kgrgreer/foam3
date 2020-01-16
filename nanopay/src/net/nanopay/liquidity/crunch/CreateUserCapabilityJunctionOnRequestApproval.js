@@ -50,6 +50,9 @@ foam.CLASS({
                 newMap = new HashMap<String, CapabilityAccountData>();
                 newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
               }
+              
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
@@ -88,6 +91,9 @@ foam.CLASS({
                 newMap = new HashMap<String, CapabilityAccountData>();
                 newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
               }
+
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 

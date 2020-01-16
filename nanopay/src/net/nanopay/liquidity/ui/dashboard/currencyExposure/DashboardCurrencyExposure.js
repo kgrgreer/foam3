@@ -43,6 +43,14 @@ foam.CLASS({
       height: 425px;
       padding-top: 24px;
     }
+
+    ^message-no-data {
+      font-size: 16px;
+      margin: 0;
+      padding: 8px;
+      border: solid 1px /*%GREY3%*/ #cbcfd4;
+      border-radius: 3px;
+    }
   `,
 
 
@@ -63,6 +71,11 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'total'
+    },
+    {
+      class: 'Boolean',
+      name: 'isLoading',
+      value: true
     }
   ],
 
@@ -82,6 +95,10 @@ foam.CLASS({
     {
       name: 'LABEL_NO_DATA',
       message: 'Not enough data to graph'
+    },
+    {
+      name: 'LABEL_LOADING',
+      message: 'Loading Data...'
     }
   ],
 
@@ -98,11 +115,16 @@ foam.CLASS({
             // fill css class breaks pie chart
             // TODO: find better solution to center text for no data
             .enableClass(self.myClass('fill'), this.relevantDataCount$.map(count => { return count <= 0; }))
-            .add(this.slot(function(currency, relevantDataCount) {
+            .add(this.slot(function(currency, relevantDataCount, isLoading) {
               if ( ! currency || ! relevantDataCount || relevantDataCount <= 0 ) {
                 return self.E()
-                  .start('p')
-                    .add(self.LABEL_NO_DATA)
+                  .start('p').addClass(self.myClass('message-no-data'))
+                    .callIf(isLoading, function() {
+                      this.add(self.LABEL_LOADING);
+                    })
+                    .callIf(!isLoading, function() {
+                      this.add(self.LABEL_NO_DATA)
+                    })
                   .end();
               }
               return self.E()
@@ -182,11 +204,13 @@ foam.CLASS({
       name: 'dataUpdate',
       isFramed: true,
       code: function() {
+        this.isLoading = true;
         this.currencyDAO.find(this.homeDenomination).then(currency => {
           this.currency = currency;
         });
         this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)).select(this.COUNT()).then(count => {
           this.relevantDataCount = count.value;
+          this.isLoading = false;
         });
       }
     }
