@@ -1,4 +1,11 @@
 //Medusa Node
+r({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"quorumService",
+  "lazy":false,
+  "serviceClass":"foam.nanos.mrac.quorum.QuorumService"
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"nSpecDAO",
@@ -144,6 +151,7 @@ p({
       .setRuler(false)
       .setAuthorize(false)
       .setSeqNo(true)
+      .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("entryRecords")
       .setOf(foam.nanos.mrac.EntryRecord.getOwnClassInfo())
