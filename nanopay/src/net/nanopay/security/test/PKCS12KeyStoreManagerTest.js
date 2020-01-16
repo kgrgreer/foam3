@@ -59,7 +59,6 @@ foam.CLASS({
 
           // delete existing keystore file
           if ( keyStoreFile.exists() ) {
-            keyStoreFile.delete();
             if ( !keyStoreFile.delete() ) {
               throw new IOException("Delete keystore file failed!");
             }
