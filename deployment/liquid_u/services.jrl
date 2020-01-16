@@ -15,7 +15,13 @@ p({
         "class":"foam.nanos.servlet.VirtualHostRoutingServlet",
         "hostMapping":{
           "mm.demo.nanopay.net":"/index.html",
-          "localhost":"/index.html"
+          "localhost":"/index.html",
+          "172.19.241.156":"/index.html",
+          "172.19.240.89":"/index.html",
+          "172.19.241.252":"/index.html"
+          "172.19.240.231":"/index.html"
+          "172.19.241.181":"/index.html"
+          "172.19.240.53":"/index.html"
         },
         "defaultHost":"localhost"
       },
