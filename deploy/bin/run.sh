@@ -11,7 +11,7 @@ NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
 RUN_USER=
-CLUSTER=
+CLUSTER=true
 
 export DEBUG=0
 
@@ -19,7 +19,7 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -C 0 or 1           : enable cluster"
+    echo "  -C <true>          : enable cluster"
     echo "  -D 0 or 1           : Debug mode."
     echo "  -H <hostname>     : hostname"
     echo "  -h                  : Display help."
@@ -34,7 +34,7 @@ function usage {
 
 while getopts "C:D:H:hN:P:S:U:V:W:Z:" opt ; do
     case $opt in
-        C) CLUSTER=$OPTARG;;
+        c) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
         H) HOST_NAME=$OPTARG;;
         h) usage; exit 0;;

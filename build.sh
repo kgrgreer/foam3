@@ -278,7 +278,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -H${HOST_NAME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -H${HOST_NAME} -W${WEB_PORT} -C${CLUSTER} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -501,6 +501,7 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -C <true> enable clustering"
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -f : Build foam."
@@ -581,7 +582,7 @@ MODE=
 #MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
-CLUSTER=
+CLUSTER=false
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
