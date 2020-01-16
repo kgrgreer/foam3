@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.payment.PaymentCode'
   ],
 
   constants: [
@@ -135,6 +136,13 @@ foam.CLASS({
           .end()
         .end();
       }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.payment.PaymentCode',
+      name: 'paymentCode',
+      documentation: `Used to populate businessId by finding a business which
+        shares the same payment code.`
     },
     {
       // TODO: This should probably be defined by a relationship.

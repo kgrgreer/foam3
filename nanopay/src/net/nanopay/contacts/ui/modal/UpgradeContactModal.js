@@ -5,6 +5,14 @@ foam.CLASS({
 
   documentation: 'Upgrade Contact Modal',
 
+  imports: [
+    'user'
+  ],
+
+  requires: [
+    'net.nanopay.payment.PaymentCode'
+  ],
+
   css: `
     ^container {
       width: 540px;
@@ -38,40 +46,38 @@ foam.CLASS({
         type: 'search',
         placeholder: 'Enter payment code',
       }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.contacts.Contact',
-      name: 'contact'
-    },
+    }
   ],
 
   methods: [
-    function init() {
-      this.contact = this.data;
-      // console.log(this.data.id);
-    },
 
     function initE() {
-      var self = this;
       this
       .addClass(this.myClass('container'))
-      .start()
-        .start().addClass(this.myClass('contact-title')).add("Enter Payment Code").end()
+        .start().addClass(this.myClass('contact-title')).add('Enter Payment Code').end()
         .start(this.PAYMENT_CODE_VALUE).addClass(this.myClass('contact-input')).end()
-        .start('btn').addClass(this.myClass('contact-btn')).add(this.UPGRADE).end()
+        .startContext({ data: this }).start('btn').addClass(this.myClass('contact-btn')).add(this.UPGRADE).end().endContext()
       .end()
-    }
+    },
   ],
 
   actions: [
     {
       name: 'upgrade',
       label: 'Upgrade',
-      code: function(X) {
+      code: async function(X) {
         console.log('button clicked!');
-        console.log("Upgrade using " + this.paymentCodeValue);
-        console.log(this.contact);
+        let contact = this.data;
+        let paymentCode = this.PaymentCode.create();
+        paymentCode.id = this.data.paymentCodeValue;
+        contact.paymentCode = paymentCode;
+        try {
+          await this.user.contacts.put(contact);
+          console.log('done with put');
+        } catch (err) {
+          var msg = err.message || this.GENERIC_PUT_FAILED;
+          this.ctrl.notify(msg, 'error');
+        }
       }
     }
   ]
