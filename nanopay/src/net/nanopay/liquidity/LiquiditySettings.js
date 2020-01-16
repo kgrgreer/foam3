@@ -79,8 +79,8 @@ foam.CLASS({
       section: 'basicInfo',
       updateMode: 'RO',
       postSet: function(o, n) {
-        if ( this.lowLiquidity ) this.lowLiquidity.denomation = n;
-        if ( this.highLiquidity ) this.highLiquidity.denomation = n;
+        if ( this.lowLiquidity ) this.lowLiquidity.denomination = n;
+        if ( this.highLiquidity ) this.highLiquidity.denomination = n;
       },
       javaPostSet: `
             Liquidity high = this.getHighLiquidity();
@@ -95,7 +95,7 @@ foam.CLASS({
       name: 'lowLiquidity',
       section: 'thresholds',
       gridColumns: 6,
-      postSet: function(o, n) { n.denomation = this.denomination; },
+      postSet: function(o, n) { n.denomination = this.denomination; },
       javaPostSet: `
         lowLiquidity_.denomination_ = this.denomination_;
       `,
@@ -129,13 +129,17 @@ foam.CLASS({
       },
       validationTextVisible: true,
       validationStyleEnabled: true,
-      validateObj: function(lowLiquidity$resetBalance, lowLiquidity$threshold, highLiquidity$resetBalance, highLiquidity$threshold) {
-        if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
-          return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
-        }
-
-        if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
-          return 'High Liquidity threshold should be greater than Low liquidity values.';
+      validateObj: function(lowLiquidity$enabled, lowLiquidity$rebalancingEnabled, lowLiquidity$resetBalance, lowLiquidity$threshold,
+                          highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold) {
+        if ( this.lowLiquidity.enabled && this.highLiquidity.enabled ) {
+          if ( this.lowLiquidity.rebalancingEnabled && this.highLiquidity.rebalancingEnabled ) {
+            if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
+              return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
+            }
+          }
+          if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+            return 'High Liquidity threshold should be greater than Low liquidity values.';
+          }
         }
       }
     },
@@ -145,7 +149,7 @@ foam.CLASS({
       name: 'highLiquidity',
       section: 'thresholds',
       gridColumns: 6,
-      postSet: function(o, n) { n.denomation = this.denomination; },
+      postSet: function(o, n) { n.denomination = this.denomination; },
       javaPostSet: `
         highLiquidity_.denomination_ = this.denomination_;
       `,
@@ -179,14 +183,18 @@ foam.CLASS({
       },
       validationTextVisible: true,
       validationStyleEnabled: true,
-      validateObj: function(lowLiquidity$resetBalance, lowLiquidity$threshold, highLiquidity$resetBalance, highLiquidity$threshold) {
-        if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
-          return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
-        }
-
-        if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
-          return 'High Liquidity threshold should be greater than Low liquidity values.';
-        }
+      validateObj: function(lowLiquidity$enabled, lowLiquidity$rebalancingEnabled, lowLiquidity$resetBalance, lowLiquidity$threshold,
+                         highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold) {
+        if ( this.lowLiquidity.enabled && this.highLiquidity.enabled ) {
+          if ( this.lowLiquidity.rebalancingEnabled && this.highLiquidity.rebalancingEnabled ) {
+            if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
+              return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
+            }
+          }
+          if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+            return 'High Liquidity threshold should be greater than Low liquidity values.';
+          }
+      }
       }
     },
     {
