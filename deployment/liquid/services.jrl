@@ -119,6 +119,7 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.NAME });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION,net.nanopay.account.Account.SECURITIES_ACCOUNT });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.LIFECYCLE_STATE });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
@@ -782,7 +783,6 @@ p({
     }
   """
 })
-
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "tableViewTransactionDAO",

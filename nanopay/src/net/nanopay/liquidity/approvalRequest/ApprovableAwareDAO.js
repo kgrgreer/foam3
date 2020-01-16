@@ -26,10 +26,6 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
-    'foam.comics.v2.userfeedback.UserFeedbackAware',
-    'foam.comics.v2.userfeedback.UserFeedback',
-    'foam.comics.v2.userfeedback.UserFeedbackStatus',
-    'foam.comics.v2.userfeedback.UserFeedbackException',
     'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
@@ -169,20 +165,7 @@ foam.CLASS({
 
         // we need to prevent the remove_ call from being passed all the way down to actual deletion since
         // we are just creating the approval requests for deleting the object as of now
-        // TODO: the following is a temporary fix will need to create an actual exception and pass feedback as a property
-        // in the skeleton back to the client
-
-        // UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
-        
-        // UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
-        //     .setStatus(UserFeedbackStatus.SUCCESS)
-        //     .setMessage("An approval request has been sent out.")
-        //     .setNext(feedbackAwareObj.getUserFeedback()).build();
-
-        // UserFeedbackException successException = new UserFeedbackException(getX())
-        //     .setUserFeedback(newUserFeedback);
-
-        throw new RuntimeException("An approval request has been sent out."); // we aren't updating to deleted
+        return null;
       `
     },
     {
@@ -191,13 +174,19 @@ foam.CLASS({
       User user = (User) x.get("user");
       Logger logger = (Logger) x.get("logger");
 
+      LifecycleAware lifecycleObj = (LifecycleAware) obj;
+
       // system and admins override the approval process
-      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
+      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) {
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+          lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
+        }
+        return super.put_(x,obj);
+      }
 
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
 
-      LifecycleAware lifecycleObj = (LifecycleAware) obj;
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
@@ -246,20 +235,8 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
-        // UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
-
-        // TODO: the following is a temporary fix will need to create an actual exception and pass feedback as a property
-        // in the skeleton back to the client
-
-        // UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
-        //     .setStatus(UserFeedbackStatus.SUCCESS)
-        //     .setMessage("An approval request has been sent out.")
-        //     .setNext(feedbackAwareObj.getUserFeedback()).build();
-
-        // UserFeedbackException successException = new UserFeedbackException(getX())
-        //     .setUserFeedback(newUserFeedback);
-
-        throw new RuntimeException("An approval request has been sent out."); // we aren't updating to deleted
+        // TODO: Add UserFeedbackException here
+        return null;  // we aren't updating the object to deleted just yet
       }
 
       if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ) {
@@ -295,6 +272,7 @@ foam.CLASS({
             lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
             return super.put_(x,obj); 
           } 
+
           if ( approvedObjCreateRequests.size() > 1 ) {
             logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
             throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
@@ -311,21 +289,8 @@ foam.CLASS({
           fullSend(getX(), approvalRequest, obj);
 
           // we are storing the object in it's related dao with a lifecycle state of PENDING
-          // TODO: Add UserFeedback to obj here
-          UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
-
-          UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
-            .setStatus(UserFeedbackStatus.SUCCESS)
-            .setMessage("An approval request has been sent out.")
-            .setNext(feedbackAwareObj.getUserFeedback()).build();
-
-          FObject clonedObj = obj.fclone();
-
-          UserFeedbackAware feedbackAwareClonedObj = (UserFeedbackAware) clonedObj;
-
-          feedbackAwareClonedObj.setUserFeedback(newUserFeedback);
-
-          return super.put_(x,clonedObj);
+                  // TODO: Add UserFeedback to obj here
+          return super.put_(x,obj);
         } else {
           logger.error("Something went wrong used an invalid lifecycle status for create!");
           throw new RuntimeException("Something went wrong used an invalid lifecycle status for create!");
@@ -394,22 +359,8 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
-        
-
-        UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
-
-        UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
-          .setStatus(UserFeedbackStatus.SUCCESS)
-          .setMessage("An approval request has been sent out.")
-          .setNext(feedbackAwareObj.getUserFeedback()).build();
-
-        FObject clonedCurrentObj = currentObjectInDAO.fclone();
-
-        UserFeedbackAware feedbackAwareCurrentObj = (UserFeedbackAware) clonedCurrentObj;
-
-        feedbackAwareCurrentObj.setUserFeedback(newUserFeedback);
-
-        return clonedCurrentObj; // we aren't updating the object just yet so return the old one
+        // TODO: Grab feedback from obj, update it with approval request and add to CurrentObjectInDAO
+        return currentObjectInDAO; // we aren't updating the object just yet
       }
       `
     }
