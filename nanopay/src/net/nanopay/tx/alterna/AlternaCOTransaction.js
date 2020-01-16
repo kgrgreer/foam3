@@ -4,11 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'java.util.Arrays',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [

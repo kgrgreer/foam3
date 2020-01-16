@@ -5,23 +5,15 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
+    
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'java.text.NumberFormat',
-    'java.util.HashMap',
     'java.util.List',
-    'java.util.ArrayList',
-    'foam.util.SafetyUtil',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.liquidity.LiquiditySettings',
-    'net.nanopay.util.Frequency',
-    'net.nanopay.account.Account'
+    'java.util.ArrayList'
 ],
 
   properties: [
