@@ -14,6 +14,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
 
   // Payment
+  { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
@@ -37,6 +38,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/AccountBalanceView' },
@@ -930,7 +932,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
-
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },

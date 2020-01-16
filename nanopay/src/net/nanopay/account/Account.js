@@ -101,7 +101,7 @@ foam.CLASS({
     {
       class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Table',
-      view: { class: 'foam.comics.v2.DAOBrowserView' },
+      view: { class: 'net.nanopay.account.AccountDAOBrowserView' },
       icon: 'images/list-view.svg',
     },
     {
@@ -156,7 +156,7 @@ foam.CLASS({
       documentation: 'The type of the account.',
       transient: true,
       getter: function() {
-        return this.cls_.name;
+        return this.model_.label === 'Digital Account' ? 'Virtual Account' : this.model_.label;
       },
       javaGetter: `
         return getClass().getSimpleName();
@@ -381,7 +381,7 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table views`,
       tableWidth: 500,
       expression: function() {
-        return this.toSummary() + ` - ${this.cls_.name}`;
+        return this.toSummary() + ` - ${this.type}`;
       },
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
@@ -409,6 +409,11 @@ foam.CLASS({
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
       visibility: 'RO'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 

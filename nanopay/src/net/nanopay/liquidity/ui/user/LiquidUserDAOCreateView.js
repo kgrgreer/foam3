@@ -14,7 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl'
+    'ctrl',
+    'stack'
   ],
 
   properties: [
@@ -29,7 +30,7 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'An approval request has been created.'
+      message: 'User successfully created'
     }
   ],
 
@@ -52,16 +53,74 @@ foam.CLASS({
         this.config.dao.put(cData).then((o) => {
           this.data = o;
           this.finished.pub();
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.SUCCESS_MESSAGE
-          }));
+
+          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ){
+            var currentFeedback = o.userFeedback;
+            while ( currentFeedback ){
+              this.ctrl.add(this.NotificationMessage.create({
+                message: currentFeedback.message,
+                type: currentFeedback.status.name.toLowerCase()
+              }));
+
+              currentFeedback = currentFeedback.next;
+            }
+          } else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: this.SUCCESS_MESSAGE
+            }));
+          }
+
           this.stack.back();
         }, (e) => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
-            message: e.message,
-            type: 'error'
-          }));
+
+          // TODO: Uncomment this once we turn UserFeedbackException into a throwable
+          // if ( foam.comics.v2.userfeedback.UserFeedbackException.isInstance(e) && e.userFeedback  ){
+          //   var currentFeedback = e.userFeedback;
+          //   while ( currentFeedback ){
+          //     this.ctrl.add(this.NotificationMessage.create({
+          //       message: currentFeedback.message,
+          //       type: currentFeedback.status.name.toLowerCase()
+          //     }));
+
+          //     currentFeedback = currentFeedback.next;
+          //   }
+          // } else {
+          //   this.ctrl.add(this.NotificationMessage.create({
+          //     message: e.message,
+          //     type: 'error'
+          //   }));
+          // }
+
+                    // TODO: uncomment this once we wire up a proper exception
+          // if ( foam.comics.v2.userfeedback.UserFeedbackException.isInstance(e) && e.userFeedback  ){
+          //   var currentFeedback = e.userFeedback;
+          //   while ( currentFeedback ){
+          //     this.ctrl.add(this.NotificationMessage.create({
+          //       message: currentFeedback.message,
+          //       type: currentFeedback.status.name.toLowerCase()
+          //     }));
+
+          //     currentFeedback = currentFeedback.next;
+          //   }
+          // } else {
+          //   this.ctrl.add(this.NotificationMessage.create({
+          //     message: e.message,
+          //     type: 'error'
+          //   }));
+          // }
+
+          if ( e.message === "An approval request has been sent out." ){
+            this.ctrl.add(this.NotificationMessage.create({
+              message: e.message,
+              type: 'success'
+            }));
+          } else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: e.message,
+              type: 'error'
+            }));
+          }
         });
       }
     },

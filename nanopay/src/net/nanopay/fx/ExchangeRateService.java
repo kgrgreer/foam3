@@ -49,6 +49,7 @@ implements  ExchangeRateServiceInterface {
   }
 
   public double getRate(String u1, String u2) {
+    if (SafetyUtil.equals(u1,u2)) return 1;
     Unit unit1 = findUnit(u1);
     Unit unit2 = findUnit(u2);
     double rate;
