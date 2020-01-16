@@ -43,7 +43,8 @@ foam.CLASS({
       ],
       javaCode: `
         for ( PlanComparator comparator : getPlanComparators() ) {
-            return comparator.compare(o1, o2);
+          int result = comparator.compare(o1,o2);
+          if (result != 0) return result;
         }
         return 0;
 `
