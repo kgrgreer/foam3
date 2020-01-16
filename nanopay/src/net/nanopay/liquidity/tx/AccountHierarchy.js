@@ -17,6 +17,20 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getViewableRootAccounts',
+      type: 'java.util.List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'userId',
+          type: 'Long'
+        }
+      ]
+    },
+    {
       name: 'getChildAccounts',
       type: 'java.util.List',
       args: [

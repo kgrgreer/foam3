@@ -20,7 +20,8 @@ public class AccountHierarchyService
 
   public AccountHierarchyService() { }
 
-  public List<Account> getViewableRootAccounts(X x, Long userId) {
+  @Override
+  public List<Account> getViewableRootAccounts(X x, long userId) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     List<Account> ret = new ArrayList<Account>();
