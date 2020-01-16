@@ -693,6 +693,7 @@ try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
             getLogger().error("RollingJournal :: put wait interrupted. " + e);
+            Thread.currentThread().interrupt();
           }
         }
 
@@ -714,6 +715,7 @@ try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
             getLogger().error("RollingJournal :: put_ wait interrupted. " + e);
+            Thread.currentThread().interrupt();
           }
         }
 
