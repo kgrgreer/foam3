@@ -76,7 +76,7 @@ p({
             "class": "foam.mlang.predicate.Eq",
             "arg1": {
               "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.LiquiditySettings",
+              "forClass_": "net.nanopay.tx.model.Transaction",
               "name": "lifecycleState"
             },
             "arg2": {
