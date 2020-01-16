@@ -18,15 +18,13 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             if ( ((AccountApproverMap) ucj.getData()).getAccounts().size() == 0 ) {
               DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-              ucjDAO.remove(ucj.getId());
+              ucjDAO.remove(ucjDAO.find(ucj.getId()));
             }
           }
         }, "remove ucj if all accounts have been revoked");
