@@ -53,6 +53,9 @@ foam.CLASS({
 
                 template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
               }
+              
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
@@ -93,6 +96,9 @@ foam.CLASS({
                 
                 template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
               }
+
+              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
