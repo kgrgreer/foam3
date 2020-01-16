@@ -158,14 +158,15 @@ p({
   "denomination": "USD",
   "startAmount": 8500000,
   "enabled": false,
-  "lifecycleState":1
+  "lifecycleState": 1
 })
 p({
   "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
   "id": "L2 approval for transaction >= $50,000 - GS03 Bank Account",
   "sourceAccount": 1449,
   "startAmount": 5000000,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState": 1
 })
 
 // Add approval request rules
