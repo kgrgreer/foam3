@@ -13,7 +13,6 @@ foam.CLASS({
     'net.nanopay.security.PrivateKeyEntry',
     'net.nanopay.security.PublicKeyEntry',
     'org.apache.commons.codec.binary.Base64',
-
     'javax.crypto.Cipher',
     'javax.crypto.SecretKey',
     'java.security.KeyStore',
@@ -150,7 +149,6 @@ foam.CLASS({
           PrivateKey decryptedPrivateKey = (PrivateKey) cipher.unwrap(encryptedBytes, privateKey.getAlgorithm(), Cipher.PRIVATE_KEY);
           test(true , "Private key is encrypted");
         } catch (Throwable t){
-          t.printStackTrace();
           test(false , "Private key is not encrypted");
         }
       `
