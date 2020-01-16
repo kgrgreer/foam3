@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
-  name: 'RoleQueryViewGlobal',
+  name: 'RoleQueryViewBase',
   extends: 'foam.u2.Controller',
 
   implements: [
@@ -8,11 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.dao.ArrayDAO',
-    'foam.nanos.crunch.Capability',
-    'foam.u2.view.ChoiceView',
-    'foam.u2.view.RadioView',
-    'foam.u2.view.ScrollTableView',
+    'net.nanopay.liquidity.ucjQuery.ui.UserOrRoleSearchBar',
   ],
 
   imports: [
@@ -21,79 +17,18 @@ foam.CLASS({
     'capabilityDAO'
   ],
 
-  messages: [
-    {
-      name: 'SEARCHBY',
-      message: 'Search By:',
-    },
-    {
-      name: 'SEARCHBYCHOICEUSER',
-      message: 'User',
-    },
-    {
-      name: 'SEARCHBYCHOICEROLE',
-      message: 'Role',
-    },
-  ],
-
-  css: `
-    ^query-container {
-      height: 40pt;
-      line-height: 40pt;
-      padding-left: 16px;
-    }
-    ^query-container > div {
-      display: inline-block;
-    }
-    ^query-container > div:not(:last-child) {
-      margin-right: 16pt;
-    }
-    ^radio-view .foam-u2-view-RadioView:not(:last-child) {
-      margin-right: 16pt;
-    }
-  `,
-
   properties: [
     {
-      name: 'searchOption',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        isHorizontal: true,
-        choices: [
-          ['user','User'],
-          ['role','Role'],
-        ],
-      },
-      value: 'user',
-      postSet: function(_, nu) {
-        if ( nu === 'user' ) {
-          this.updateSearchForUser(this.referenceToUser);
-        }
-        if ( nu === 'role' ) {
-          this.updateSearchForRole(this.referenceToCapability);
-        }
-      },
-    },
-    {
-      name: 'referenceToUser',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      postSet: function(_, nu) {
-        if ( this.searchOption === 'user' ) {
-          this.updateSearchForUser(nu);
-        }
+      name: 'searchBar',
+      factory: function () {
+        return this.UserOrRoleSearchBar.create();
       }
     },
     {
-      name: 'referenceToCapability',
-      class: 'Reference',
-      of: 'foam.nanos.crunch.Capability',
+      name: 'userOrRole',
       postSet: function(_, nu) {
-        if ( this.searchOption === 'role' ) {
-          this.updateSearchForRole(nu);
-        }
+        this.updateSearch(nu);
       }
-      // of: 'net.nanopay.liquidity.crunch.LiquidCapability'
     },
     {
       name: 'searchResults',
@@ -107,53 +42,286 @@ foam.CLASS({
     }
   ],
 
+});
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.ucjQuery',
+  name: 'RoleQueryViewGlobal',
+  extends: 'net.nanopay.liquidity.ucjQuery.RoleQueryViewBase',
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+
+    'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
+    'foam.u2.view.ScrollTableView',
+  ],
+
+  imports: [
+    'ucjQueryService',
+    'userDAO',
+    'capabilityDAO'
+  ],
+
   methods: [
     function initE() {
-      // this.SUPER();
       var self = this;
+
+      self.userOrRole$.follow(
+        self.searchBar.userOrRoleRef$.dot('target'));
 
       self
         .start()
-          .addClass(self.myClass('query-container'))
-          .start()
-            .add(self.SEARCHBY)
-          .end()
-          .start()
-            .addClass(self.myClass('radio-view'))
-            .add(self.SEARCH_OPTION)
-          .end()
-          .add(self.slot(function (searchOption) {
-            switch (searchOption) {
-              case 'user': return self.E().tag(self.REFERENCE_TO_USER);
-              case 'role': return self.E().tag(self.REFERENCE_TO_CAPABILITY);
-            }
-            return self.E().add('ERROR');
-          }))
+          .add(self.searchBar)
         .end()
         .add(self.slot(function(searchResults) {
           return self.E()
            .tag(foam.u2.view.ScrollTableView.create({
              data: searchResults,
-            //  columns: ['id']
            }))
         }))
         ;
     },
-    function updateSearchForUser(userId) {
+    function updateSearch(userOrRoleId) {
       var self = this;
-      self.ucjQueryService.getRoles(userId).then(function (arry) {
-        self.searchResults = self.capabilityDAO.where(
-          self.IN(foam.nanos.crunch.Capability.ID, arry)
-        );
-      });
+      switch ( self.searchBar.searchOption ) {
+      case 'user':
+        self.ucjQueryService.getRoles(null, userOrRoleId).then(function (arry) {
+          self.searchResults = self.capabilityDAO.where(
+            self.IN(self.Capability.ID, arry)
+          );
+        });
+        break;
+      case 'role':
+        self.ucjQueryService.getUsers(null, userOrRoleId).then(function (arry) {
+          self.searchResults = self.userDAO.where(
+            self.IN(self.User.ID, arry)
+          );
+        });
+        break;
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.ucjQuery',
+  name: 'RoleQueryViewSelectTwo',
+  extends: 'net.nanopay.liquidity.ucjQuery.RoleQueryViewBase',
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
+    'foam.u2.view.ScrollTableView',
+
+    'net.nanopay.account.Account',
+    'net.nanopay.liquidity.ucjQuery.ui.SelectTwoSearchBar',
+  ],
+
+  imports: [
+    'accountUcjQueryService',
+    'userDAO',
+    'capabilityDAO',
+    'accountDAO',
+  ],
+
+  properties: [
+    {
+      name: 'searchBar',
+      factory: function () {
+        return this.SelectTwoSearchBar.create();
+      }
     },
-    function updateSearchForRole(roleId) {
+    {
+      name: 'accountOrUser',
+      postSet: function(_, nu) {
+        this.updateSearch(nu);
+      }
+    },
+  ],
+
+  methods: [
+    function initE() {
       var self = this;
-      self.ucjQueryService.getUsers(roleId).then(function (arry) {
-        self.searchResults = self.userDAO.where(
-          self.IN(foam.nanos.auth.User.ID, arry)
-        );
-      });
+
+      self.accountOrUser$.follow(
+        self.searchBar.accountOrUserRef$.dot('target'));
+      self.userOrRole$.follow(
+        self.searchBar.userOrRoleRef$.dot('target'));
+
+      self
+        .start()
+          .add(self.searchBar)
+        .end()
+        .add(self.slot(function(searchResults) {
+          return self.E()
+           .tag(foam.u2.view.ScrollTableView.create({
+             data: searchResults,
+           }))
+        }))
+        ;
+    },
+    function updateSearch() {
+      var self = this;
+      var userOrRole = self.userOrRole;
+      var accountOrUser = self.accountOrUser;
+      switch ( self.searchBar.searchOption ) {
+      case 'accountAndUser':
+        console.log(userOrRole);
+        console.log(accountOrUser);
+        self.accountUcjQueryService.getRoles(null, userOrRole, accountOrUser).then(function (arry) {
+          self.searchResults = self.capabilityDAO.where(
+            self.IN(self.Capability.ID, arry)
+          );
+        });
+        break;
+      case 'accountAndRole':
+        console.log(userOrRole);
+        console.log(accountOrUser);
+        self.accountUcjQueryService.getUsers(null, userOrRole, accountOrUser).then(function (arry) {
+          self.searchResults = self.userDAO.where(
+            self.IN(self.User.ID, arry)
+          );
+        });
+        break;
+      case 'userAndRole':
+        console.log(accountOrUser);
+        console.log(userOrRole);
+        self.accountUcjQueryService.getAccounts(null, userOrRole, accountOrUser).then(function (arry) {
+          self.searchResults = self.accountDAO.where(
+            self.IN(self.Account.ID, arry)
+          );
+        });
+        break;
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.ucjQuery',
+  name: 'RoleQueryViewSelectOne',
+  extends: 'net.nanopay.liquidity.ucjQuery.RoleQueryViewBase',
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.dao.ArrayDAO',
+    'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
+    'foam.u2.layout.Card',
+    'foam.u2.layout.Grid',
+    'foam.u2.view.ScrollTableView',
+
+    'net.nanopay.account.Account',
+    'net.nanopay.liquidity.ucjQuery.ui.SelectOneSearchBar',
+
+    'net.nanopay.liquidity.ucjQuery.ui.UserRoleRow',
+    'net.nanopay.liquidity.ucjQuery.ui.AccountUserRow',
+    'net.nanopay.liquidity.ucjQuery.ui.AccountRoleRow',
+  ],
+
+  imports: [
+    'accountUcjQueryService',
+    'userDAO',
+    'capabilityDAO',
+    'accountDAO',
+  ],
+
+  properties: [
+    {
+      name: 'searchBar',
+      factory: function () {
+        return this.SelectOneSearchBar.create();
+      }
+    },
+    {
+      name: 'queryId',
+      postSet: function(_, nu) {
+        this.updateSearch(nu);
+      }
+    },
+    {
+      name: 'searchResults',
+      class: 'foam.dao.DAOProperty',
+      factory: function () {
+        return foam.dao.NullDAO.create({
+          of: 'net.nanopay.liquidity.ucjQuery.ui.AccountRoleRow'
+        });
+      },
+    }
+  ],
+
+  methods: [
+    function initE() {
+      var self = this;
+
+      self.queryId$.follow(
+        self.searchBar.queryRef$.dot('target'));
+
+      self
+        .start()
+          .add(self.searchBar)
+        .end()
+        .add(self.slot(function(searchResults) {
+          return self.E()
+            .tag(foam.u2.view.ScrollTableView.create({
+              data: searchResults,
+            }))
+            ;
+        }))
+        ;
+    },
+    function updateSearch() {
+      var self = this;
+      var queryId = self.queryId;
+      switch ( self.searchBar.searchOption ) {
+      case 'account':
+        self.accountUcjQueryService.getUsersAndRoles(queryId).then(function (arry) {
+          var dao = self.ArrayDAO.create({ of: self.UserRoleRow });
+          for ( let i=0; i < arry.length; i++ ) {
+            dao.put(self.UserRoleRow.create({
+              user: arry[i][0],
+              role: arry[i][1]
+            }));
+          }
+          self.searchResults = dao;
+        });
+        break;
+      case 'user':
+        self.accountUcjQueryService.getRolesAndAccounts(queryId).then(function (arry) {
+          var dao = self.ArrayDAO.create({ of: self.AccountRoleRow });
+          for ( let i=0; i < arry.length; i++ ) {
+            dao.put(self.AccountRoleRow.create({
+              account: arry[i][1],
+              role: arry[i][0]
+            }));
+          }
+          self.searchResults = dao;
+        });
+        break;
+      case 'role':
+        self.accountUcjQueryService.getUsersAndAccounts(queryId).then(function (arry) {
+          var dao = self.ArrayDAO.create({ of: self.AccountUserRow });
+          for ( let i=0; i < arry.length; i++ ) {
+            dao.put(self.AccountUserRow.create({
+              account: arry[i][1],
+              user: arry[i][0]
+            }));
+          }
+          self.searchResults = dao;
+        });
+        break;
+      }
     }
   ]
 });
@@ -166,6 +334,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.liquidity.ucjQuery.RoleQueryViewGlobal',
+    'net.nanopay.liquidity.ucjQuery.RoleQueryViewSelectTwo',
+    'net.nanopay.liquidity.ucjQuery.RoleQueryViewSelectOne',
 
     'foam.u2.borders.CardBorder',
     'foam.u2.view.TabChoiceView'
@@ -196,7 +366,8 @@ foam.CLASS({
         class: 'foam.u2.view.TabChoiceView',
         choices: [
           ['globalRoles', 'Global Roles'],
-          ['accountRoles', 'Account Roles'],
+          ['selectTwo', 'Account Roles (Specific)'],
+          ['selectOne', 'Account Roles (Overview)'],
         ],
       },
     },
@@ -209,7 +380,7 @@ foam.CLASS({
       self
         .start().addClass(self.myClass('header-container'))
           .start().style({'align-items': 'baseline'})
-            .start().add(self.cls_.name).addClass(self.myClass('header')).end()
+            .start().add("Role Query").addClass(self.myClass('header')).end()
           .end()
         .end()
         .start(self.CardBorder)
@@ -220,6 +391,12 @@ foam.CLASS({
             if ( currentTab === 'globalRoles' ) {
               return self.E()
                 .tag(self.RoleQueryViewGlobal)
+            } else if ( currentTab === 'selectTwo' ) {
+              return self.E()
+                .tag(self.RoleQueryViewSelectTwo)
+            } else if ( currentTab === 'selectOne' ) {
+              return self.E()
+                .tag(self.RoleQueryViewSelectOne)
             } else {
               return self.E()
                 .add('Not yet implemented')
