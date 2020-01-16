@@ -31,7 +31,6 @@ foam.CLASS({
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
@@ -101,9 +100,9 @@ foam.CLASS({
   
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
   
-      CachedAccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+      AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
   
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, accountRequest.getOutgoingAccount(),1,getX());
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(getX(), modelName, accountRequest.getOutgoingAccount(),1);
   
       if ( approverIds.size() <= 0 ) {
         logger.log("No Approvers exist for the model: " + modelName);

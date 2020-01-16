@@ -6,11 +6,14 @@ foam.CLASS({
   A model for the data stored in the value of the map of AccountTemplate. 
   `,
 
-properties: [  
+  properties: [  
     {
       name: 'isCascading',
       class: 'Boolean',
-      value: true
+      value: true,
+      visibilityExpression: function(isIncluded) {
+        return isIncluded ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      }
     },
     {
       name: 'isIncluded',

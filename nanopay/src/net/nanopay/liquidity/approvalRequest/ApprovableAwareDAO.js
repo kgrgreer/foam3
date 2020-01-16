@@ -12,7 +12,6 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
     'foam.core.FObject',
-    'java.util.HashSet',
     'foam.dao.ArraySink',
     'java.util.ArrayList',
     'foam.util.SafetyUtil',
@@ -27,10 +26,13 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.approval.ApprovalRequest',
+    'foam.comics.v2.userfeedback.UserFeedbackAware',
+    'foam.comics.v2.userfeedback.UserFeedback',
+    'foam.comics.v2.userfeedback.UserFeedbackStatus',
+    'foam.comics.v2.userfeedback.UserFeedbackException',
     'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
@@ -74,7 +76,7 @@ foam.CLASS({
       DAO requestingDAO;
       Logger logger = (Logger) x.get("logger");
 
-      if ( request.getDaoKey().equals("approvableDAO") ){
+      if ( request.getDaoKey().equals("approvableDAO") ) {
         DAO approvableDAO = (DAO) x.get("approvableDAO");
 
         Approvable approvable = (Approvable) approvableDAO.find(request.getObjId());
@@ -86,16 +88,16 @@ foam.CLASS({
 
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
 
-      CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+      UCJQueryService ucjQueryService = (UCJQueryService) x.get("ucjQueryService");
 
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1, getX());
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(getX(), modelName, 1);
 
       if ( approverIds.size() <= 0 ) {
         logger.error("No Approvers exist for the model: " + modelName);
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
 
-      if ( approverIds.size() == 1 && approverIds.get(0) == request.getInitiatingUser() ){
+      if ( approverIds.size() == 1 && approverIds.get(0) == request.getInitiatingUser() ) {
         logger.log("The only approver of " + modelName + " is the maker of this request!");
         throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
@@ -106,7 +108,7 @@ foam.CLASS({
       sendSingleRequest(x, request, request.getInitiatingUser());
       approverIds.remove(request.getInitiatingUser());
 
-      for ( int i = 0; i < approverIds.size(); i++ ){
+      for ( int i = 0; i < approverIds.size(); i++ ) {
         sendSingleRequest(getX(), request, approverIds.get(i));
       }
       `
@@ -137,20 +139,20 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjRemoveRequests.size() == 1 ){
+        if ( approvedObjRemoveRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           } 
           
           return null;  // as request has been REJECTED
         } 
         
-        if ( approvedObjRemoveRequests.size() > 1 ){
+        if ( approvedObjRemoveRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -167,7 +169,20 @@ foam.CLASS({
 
         // we need to prevent the remove_ call from being passed all the way down to actual deletion since
         // we are just creating the approval requests for deleting the object as of now
-        return null;
+        // TODO: the following is a temporary fix will need to create an actual exception and pass feedback as a property
+        // in the skeleton back to the client
+
+        // UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
+        
+        // UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
+        //     .setStatus(UserFeedbackStatus.SUCCESS)
+        //     .setMessage("An approval request has been sent out.")
+        //     .setNext(feedbackAwareObj.getUserFeedback()).build();
+
+        // UserFeedbackException successException = new UserFeedbackException(getX())
+        //     .setUserFeedback(newUserFeedback);
+
+        throw new RuntimeException("An approval request has been sent out."); // we aren't updating to deleted
       `
     },
     {
@@ -186,9 +201,9 @@ foam.CLASS({
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       
-      if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ){
+      if ( obj instanceof LifecycleAware && ((LifecycleAware) obj).getLifecycleState() == LifecycleState.DELETED ) {
         approvableAwareObj = (ApprovableAware) currentObjectInDAO;
-          
+
         List approvedObjRemoveRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
@@ -203,20 +218,20 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjRemoveRequests.size() == 1 ){
+        if ( approvedObjRemoveRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjRemoveRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           } 
-          
+
           return null;  // as request has been REJECTED
         } 
-        
-        if ( approvedObjRemoveRequests.size() > 1 ){
+
+        if ( approvedObjRemoveRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         } 
@@ -231,14 +246,26 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
-        // TODO: Add UserFeedbackException here
-        return null;  // we aren't updating the object to deleted just yet
+        // UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
+
+        // TODO: the following is a temporary fix will need to create an actual exception and pass feedback as a property
+        // in the skeleton back to the client
+
+        // UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
+        //     .setStatus(UserFeedbackStatus.SUCCESS)
+        //     .setMessage("An approval request has been sent out.")
+        //     .setNext(feedbackAwareObj.getUserFeedback()).build();
+
+        // UserFeedbackException successException = new UserFeedbackException(getX())
+        //     .setUserFeedback(newUserFeedback);
+
+        throw new RuntimeException("An approval request has been sent out."); // we aren't updating to deleted
       }
 
-      if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ){
+      if ( currentObjectInDAO == null || ((LifecycleAware) currentObjectInDAO).getLifecycleState() == LifecycleState.PENDING ) {
         if ( lifecycleObj.getLifecycleState() == LifecycleState.ACTIVE ) { 
           return super.put_(x,obj);
-        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+        } else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ) {
           List approvedObjCreateRequests = ((ArraySink) approvalRequestDAO
             .where(
               foam.mlang.MLang.AND(
@@ -253,23 +280,22 @@ foam.CLASS({
               )
             ).select(new ArraySink())).getArray();
 
-          if ( approvedObjCreateRequests.size() == 1 ){
+          if ( approvedObjCreateRequests.size() == 1 ) {
             RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjCreateRequests.get(0);
             fulfilledRequest.setIsFulfilled(true);
 
             approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-            if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+            if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
               lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
               return super.put_(x,obj);
             } 
-            
+
             // create request has been rejected is only where we mark the object as REJECTED
             lifecycleObj.setLifecycleState(LifecycleState.REJECTED);
             return super.put_(x,obj); 
           } 
-          
-          if ( approvedObjCreateRequests.size() > 1 ){
+          if ( approvedObjCreateRequests.size() > 1 ) {
             logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
             throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           } 
@@ -285,8 +311,21 @@ foam.CLASS({
           fullSend(getX(), approvalRequest, obj);
 
           // we are storing the object in it's related dao with a lifecycle state of PENDING
-                  // TODO: Add UserFeedback to obj here
-          return super.put_(x,obj);
+          // TODO: Add UserFeedback to obj here
+          UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
+
+          UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
+            .setStatus(UserFeedbackStatus.SUCCESS)
+            .setMessage("An approval request has been sent out.")
+            .setNext(feedbackAwareObj.getUserFeedback()).build();
+
+          FObject clonedObj = obj.fclone();
+
+          UserFeedbackAware feedbackAwareClonedObj = (UserFeedbackAware) clonedObj;
+
+          feedbackAwareClonedObj.setUserFeedback(newUserFeedback);
+
+          return super.put_(x,clonedObj);
         } else {
           logger.error("Something went wrong used an invalid lifecycle status for create!");
           throw new RuntimeException("Something went wrong used an invalid lifecycle status for create!");
@@ -299,17 +338,18 @@ foam.CLASS({
         updatedProperties.put("lastModifiedBy", ((User) x.get("user")).getId());
         DAO approvableDAO = (DAO) getX().get("approvableDAO");
 
-        ApprovableId approvableId = new ApprovableId.Builder(getX())
-          .setDaoKey(getDaoKey())
-          .setPropertiesToUpdate(updatedProperties)
-          .setObjId(approvableAwareObj.getApprovableKey())
-          .build();
+        String daoKey = "d" + getDaoKey();
+        String objId = ":o" + approvableAwareObj.getApprovableKey();
+        String hashedMap = ":m" + String.valueOf(updatedProperties.hashCode());
+  
+        String hashedId = daoKey + objId + hashedMap;
+
 
         List approvedObjUpdateRequests = ((ArraySink) approvalRequestDAO
           .where(
             foam.mlang.MLang.AND(
               foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "approvableDAO"),
-              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvableId),
+              foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, hashedId),
               foam.mlang.MLang.EQ(RoleApprovalRequest.OPERATION, Operations.UPDATE),
               foam.mlang.MLang.EQ(RoleApprovalRequest.IS_FULFILLED, false),
               foam.mlang.MLang.OR(
@@ -319,25 +359,26 @@ foam.CLASS({
             )
           ).select(new ArraySink())).getArray();
 
-        if ( approvedObjUpdateRequests.size() == 1 ){
+        if ( approvedObjUpdateRequests.size() == 1 ) {
           RoleApprovalRequest fulfilledRequest = (RoleApprovalRequest) approvedObjUpdateRequests.get(0);
           fulfilledRequest.setIsFulfilled(true);
 
           approvalRequestDAO.put_(getX(), fulfilledRequest);
 
-          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ){
+          if ( fulfilledRequest.getStatus() == ApprovalStatus.APPROVED ) {
             return super.put_(x,obj);
           }
 
           return null; // as request has been REJECTED
         }
 
-        if ( approvedObjUpdateRequests.size() > 1 ){
+        if ( approvedObjUpdateRequests.size() > 1 ) {
           logger.error("Something went wrong cannot have multiple approved/rejected requests for the same request!");
           throw new RuntimeException("Something went wrong cannot have multiple approved/rejected requests for the same request!");
         }
 
         Approvable approvable = (Approvable) approvableDAO.put_(getX(), new Approvable.Builder(getX())
+          .setId(hashedId)
           .setDaoKey(getDaoKey())
           .setStatus(ApprovalStatus.REQUESTED)
           .setObjId(approvableAwareObj.getApprovableKey())
@@ -353,8 +394,22 @@ foam.CLASS({
 
         fullSend(getX(), approvalRequest, obj);
 
-        // TODO: Grab feedback from obj, update it with approval request and add to CurrentObjectInDAO
-        return currentObjectInDAO; // we aren't updating the object just yet
+        
+
+        UserFeedbackAware feedbackAwareObj = (UserFeedbackAware) obj;
+
+        UserFeedback newUserFeedback = new UserFeedback.Builder(getX())
+          .setStatus(UserFeedbackStatus.SUCCESS)
+          .setMessage("An approval request has been sent out.")
+          .setNext(feedbackAwareObj.getUserFeedback()).build();
+
+        FObject clonedCurrentObj = currentObjectInDAO.fclone();
+
+        UserFeedbackAware feedbackAwareCurrentObj = (UserFeedbackAware) clonedCurrentObj;
+
+        feedbackAwareCurrentObj.setUserFeedback(newUserFeedback);
+
+        return clonedCurrentObj; // we aren't updating the object just yet so return the old one
       }
       `
     }

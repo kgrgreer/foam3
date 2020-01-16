@@ -864,6 +864,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
@@ -905,12 +906,12 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
-   
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
    { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidityChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
@@ -921,12 +922,12 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/account/Overview' },
    { name: 'net/nanopay/liquidity/ui/account/Balance' },
    { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOBrowserView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOCreateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
- 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },

@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -395,6 +396,9 @@ foam.CLASS({
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
+      visibilityExpression: function(lifecycleState){
+        return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       name: 'statusChoices',
@@ -963,7 +967,8 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
+      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) &&
+      getLifecycleState() == LifecycleState.ACTIVE ) {
         return true;
       }
       return false;
