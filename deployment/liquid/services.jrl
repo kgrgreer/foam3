@@ -136,14 +136,6 @@ p({
       .setJournalName("accounts")
       .setAuthorize(false)
       .setOf(Account.getOwnClassInfo())
-      .setIndex(new foam.core.PropertyInfo[] {
-        net.nanopay.account.SecurityAccount.SECURITIES_ACCOUNT,
-        net.nanopay.account.Account.OWNER,
-        net.nanopay.account.Account.NAME,
-        net.nanopay.account.Account.ID,
-        net.nanopay.account.Account.ENABLED,
-        net.nanopay.account.Account.IS_DEFAULT,
-        net.nanopay.account.Account.DENOMINATION})
       .setInnerDAO(dao)
       .build();
   """
@@ -197,6 +189,7 @@ p({
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
@@ -618,11 +611,19 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
+    import foam.dao.DAO;
+
+    dao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
+    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
+    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "liquidUserCapabilityJunctions");
+
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidUserCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
+      .setInnerDAO(dao)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
@@ -828,4 +829,23 @@ p({
       }
     }
   """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewTransactionDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("transactionDAO"))
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(false)
+      .setPermissioned(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
 })
