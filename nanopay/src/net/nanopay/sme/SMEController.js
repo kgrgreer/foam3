@@ -229,7 +229,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.model.Business',
+      of: 'foam.nanos.auth.User',
       name: 'user',
       factory: function() {
         return this.Business.create({});

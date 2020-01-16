@@ -240,6 +240,7 @@ foam.CLASS({
 
     function initE() {
       var self = this;
+
       this.start().addClass(this.myClass())
         .start().show(this.agent$.map(function(agent) {
           return agent;
@@ -276,7 +277,7 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .select(this.enabledBusinesses_, function(junction) {
+            .select(this.enabledBusinesses_$proxy, function(junction) {
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessJunctionRowView',
@@ -292,7 +293,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .select(this.disabledBusinesses_, function(junction) {
+            .select(this.disabledBusinesses_$proxy, function(junction) {
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessJunctionRowView',

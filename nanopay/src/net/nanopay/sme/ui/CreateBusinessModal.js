@@ -6,12 +6,15 @@ foam.CLASS({
   documentation: 'Create new business modal',
 
   requires: [
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.Address'
   ],
 
   imports: [
     'notify',
-    'businessDAO'
+    'businessDAO',
+    'countryDAO'
   ],
 
   css: `
@@ -36,7 +39,7 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-AbliiActionView-create {
       float: right;
     }
-    ^ .foam-u2-TextField {
+    ^ .foam-u2-TextField, ^ .foam-u2-tag-Select {
       width: 100%;
       margin-bottom: 20px;
     }
@@ -46,6 +49,25 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyName'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'countryDAO',
+      name: 'countryId',
+      label: 'Country of operation',
+      of: 'foam.nanos.auth.Country',
+      documentation: 'Country address.',
+      view: function(_, X) {
+        var E = foam.mlang.Expressions.create();
+        return foam.u2.view.ChoiceView.create({
+          placeholder: 'Select your country',
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          },
+          dao: X.data.countryDAO.where(E.IN(X.data.Country.ID, ['CA', 'US']))
+        }, X);
+      },
+      required: true,
     },
     'updated'
   ],
@@ -71,6 +93,8 @@ foam.CLASS({
           .start('p').addClass('description').add(this.DESCRIPTION).end()
           .start().addClass('input-label').add(this.COMPANY_NAME.label).end()
           .start(this.COMPANY_NAME).end()
+          .start().addClass('input-label').add(this.COUNTRY_ID.label).end()
+          .start(this.COUNTRY_ID).end()
           .startContext({ data: this })
             .start()
               .start(this.CANCEL).end()
@@ -93,7 +117,8 @@ foam.CLASS({
       code: async function(X) {
         var business = this.Business.create({
           organization: this.companyName,
-          businessName: this.companyName
+          businessName: this.companyName,
+          address: this.Address.create({ countryId: this.countryId }),
         });
         try {
           await this.businessDAO.put(business);
