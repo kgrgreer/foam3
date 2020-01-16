@@ -9,11 +9,7 @@ foam.CLASS({
       included in this email.`,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
@@ -21,7 +17,6 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business'
   ],
