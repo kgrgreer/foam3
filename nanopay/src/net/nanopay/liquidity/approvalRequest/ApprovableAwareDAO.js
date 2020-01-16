@@ -191,8 +191,15 @@ foam.CLASS({
       User user = (User) x.get("user");
       Logger logger = (Logger) x.get("logger");
 
+      LifecycleAware lifecycleObj = (LifecycleAware) obj;
+
       // system and admins override the approval process
-      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
+      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) {
+        if ( lifecycleObj.getLifecycleState == LifecycleState.PENDING ){
+          lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
+        }
+        return super.put_(x,obj);
+      }
 
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
