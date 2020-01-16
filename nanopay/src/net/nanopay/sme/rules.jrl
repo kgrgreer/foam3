@@ -48,3 +48,22 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id": "Upgrade contact using payment code",
+  "priority": 100,
+  "ruleGroup": "smeContactUpgrade",
+  "documentation": "Upgrade contact when valid payment code is added by populating its businessId with the business that shares the same payment code",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.contacts.Contact"
+  },
+  "action": {
+    "class": "net.nanopay.sme.ruler.UpgradeContactByPaymentCodeRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

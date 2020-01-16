@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Upgrade Contact Modal',
 
   imports: [
+    'closeDialog',
+    'ctrl',
     'user'
   ],
 
@@ -72,8 +74,11 @@ foam.CLASS({
         paymentCode.id = this.data.paymentCodeValue;
         contact.paymentCode = paymentCode;
         try {
-          await this.user.contacts.put(contact);
+          let response = await this.user.contacts.put(contact);
+          console.log(response);
           console.log('done with put');
+          this.ctrl.notify('Success Upgrading Contact!', 'success');
+          X.closeDialog();
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;
           this.ctrl.notify(msg, 'error');
