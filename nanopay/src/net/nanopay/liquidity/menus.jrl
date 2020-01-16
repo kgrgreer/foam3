@@ -672,6 +672,18 @@ p({
         "update": ["capabilityrequest.make.%"],
         "delete": ["capabilityrequest.make.%"]
       },
+      "predicate": {
+        "class": "foam.mlang.predicate.Eq",
+        "arg1": {
+          "class": "__Property__",
+          "forClass_": "net.nanopay.liquidity.LiquiditySettings",
+          "name": "lifecycleState"
+        },
+        "arg2": {
+          "class": "foam.mlang.Constant",
+          "value": "ACTIVE"
+        }
+      },
     }
   },
   "order": 540,
