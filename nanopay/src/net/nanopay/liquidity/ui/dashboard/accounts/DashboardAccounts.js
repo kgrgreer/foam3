@@ -87,6 +87,7 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           defaultColumns: ["name","balance","homeBalance"],
+          filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
           dao: this.accountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
             this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
             this.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
