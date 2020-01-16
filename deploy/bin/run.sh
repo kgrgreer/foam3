@@ -34,7 +34,7 @@ function usage {
 
 while getopts "C:D:H:hN:P:S:U:V:W:Z:" opt ; do
     case $opt in
-        c) CLUSTER=$OPTARG;;
+        C) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
         H) HOST_NAME=$OPTARG;;
         h) usage; exit 0;;
