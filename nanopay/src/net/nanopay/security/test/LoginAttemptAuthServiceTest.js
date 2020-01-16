@@ -42,7 +42,7 @@ foam.CLASS({
         }
 
         // test login attempts reset by id
-        Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, 1000, "login by id");
+        Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, 1000l, "login by id");
         ResetLoginCount(x, userDAO);
 
         // test login attempts reset by email
@@ -50,7 +50,7 @@ foam.CLASS({
         ResetLoginCount(x, userDAO);
 
         // test login by id
-        Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, 1000, "login by id");
+        Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, 1000l, "login by id");
         ResetLoginCount(x, userDAO);
 
         // test login by email
