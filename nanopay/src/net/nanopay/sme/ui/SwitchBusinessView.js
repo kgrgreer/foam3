@@ -144,13 +144,14 @@ foam.CLASS({
   ],
 
   properties: [
+    ['updated', false],
     {
       class: 'foam.dao.DAOProperty',
       name: 'enabledBusinesses_',
       documentation: `
         The DAO used to populate the enabled businesses in the list.
       `,
-      expression: function(user, agent, businessDAO) {
+      expression: function(user, agent, updated) {
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
@@ -173,7 +174,7 @@ foam.CLASS({
       documentation: `
         The DAO used to populate the disabled businesses in the list.
       `,
-      expression: function(user, agent, businessDAO) {
+      expression: function(user, agent, updated) {
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
@@ -220,7 +221,7 @@ foam.CLASS({
     },
 
     function init() {
-      if ( this.user.cls_ != this.Business ) {
+      if ( this.user.cls_ != net.nanopay.model.Business ) {
         this.enabledBusinesses_
           .select()
           .then((sink) => {
@@ -345,6 +346,7 @@ foam.CLASS({
       code: function(X) {
         this.add(this.Popup.create(null, X).tag({
           class: 'net.nanopay.sme.ui.CreateBusinessModal',
+          updated$: this.updated$
         }));
       }
     }

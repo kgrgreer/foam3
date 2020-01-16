@@ -46,7 +46,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyName'
-    }
+    },
+    'updated'
   ],
 
   messages: [
@@ -96,7 +97,7 @@ foam.CLASS({
         });
         try {
           await this.businessDAO.put(business);
-          // this.businessDAO.pub();
+          this.updated = ! this.updated;
           this.notify(this.SUCCESS_MESSAGE);
         } catch (e) {
           this.notify(`${this.ERROR_MESSAGE} ${e}`, 'error');
