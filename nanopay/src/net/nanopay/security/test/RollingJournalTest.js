@@ -367,6 +367,9 @@ foam.CLASS({
 
           try { // cleaning up
             imageDumpFile.delete();
+            if ( !imageDumpFile.delete() ) {
+              throw new IOException("Delete file failed!");
+            }
           } catch (Throwable t) { }
         `
       },
