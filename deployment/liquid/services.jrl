@@ -183,6 +183,7 @@ p({
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
@@ -819,4 +820,23 @@ p({
       }
     }
   """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewTransactionDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("transactionDAO"))
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(false)
+      .setPermissioned(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
 })
