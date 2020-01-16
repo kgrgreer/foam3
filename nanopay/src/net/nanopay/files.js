@@ -909,7 +909,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
    { name: 'net/nanopay/liquidity/crunch/RemoveAccountBasedUCJIfAccountsEmpty' },
-   
+   { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
+
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },

@@ -3,31 +3,44 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'CapabilityAccountTemplateMapView',
   extends: 'foam.u2.view.MapView',
+
+  properties: [
+    {
+      name: 'isCapabilityAccountData',
+      class: 'Boolean'
+    }
+  ],
+
+  exports: [ 'isCapabilityAccountData' ],
+
   classes: [
     {
       name: 'KeyValueRow',
       imports: [
-        'data',
         'mode',
-        'updateData'
+        'view',
+        'isCapabilityAccountData'
       ],
       properties: [
         {
           name: 'key',
           class: 'Reference',
           of: 'net.nanopay.account.Account',
-          postSet: function(o, n) {
-            delete this.data[o];
-            this.data[n] = this.value;
-          }
         },
         {
           name: 'value',
-          view: { class: 'foam.u2.view.FObjectView' },
           class: 'FObjectProperty',
-          of: 'net.nanopay.liquidity.crunch.CapabilityAccountData',
-          postSet: function(o, n) {
-            this.data[this.key] = n;
+          view: function(_, X) {
+            if ( X.isCapabilityAccountData )
+              return { 
+                class: 'foam.u2.view.FObjectView',
+                of: 'net.nanopay.liquidity.crunch.CapabilityAccountData' 
+              };
+              
+            return { 
+              class: 'foam.u2.view.FObjectView',
+              of: 'net.nanopay.liquidity.crunch.AccountData' 
+            };
           }
         }
       ],
@@ -38,11 +51,12 @@ foam.CLASS({
             return mode === foam.u2.DisplayMode.RW;
           },
           code: function() {
-            delete this.data[this.key];
-            this.updateData();
+            var d2 = foam.Object.shallowClone(this.view.data);
+            delete d2[this.key];
+            this.view.data = d2;
           }
         }
       ]
     }
-  ]
+  ],
 });
