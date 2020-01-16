@@ -1973,4 +1973,41 @@ p({
   "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "csvUploadScriptDAO",
+  "lazy": true,
+  "serve": true,
+  "serviceScript": "
+    return new foam.dao.EasyDAO.Builder(x) 
+      .setPm(true)
+      .setGuid(true)
+      .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"csvUploadScripts\")
+      .setAuthorize(false)
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
+      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .build();",
+  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+})
 
+// Progress bar service
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ProgressBarDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(false)
+      .setPipelinePm(false)
+      .setRuler(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ProgressBarDAO")
+      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
+})
