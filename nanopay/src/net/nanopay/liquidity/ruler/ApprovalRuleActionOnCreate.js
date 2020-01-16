@@ -50,6 +50,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isFinal'
+    },
+    {
+      class: 'Long',
+      name: 'defaultApprover',
+      documentation: 'The default approver when there is no approvers found in the UCJ for the approverLevel.',
+      value: 1348
     }
   ],
 
@@ -112,26 +118,33 @@ foam.CLASS({
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
             x, modelName, accountId, getApproverLevel());
-          if ( ! approvers.isEmpty() ) {
-            User user = (User) x.get("user");
-            User agent = (User) x.get("agent");
-            ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
-              .setClassification(classification)
-              .setObjId(objId)
-              .setDaoKey(daoKey)
-              .setOperation(Operations.CREATE)
-              .setInitiatingUser(agent != null ? agent.getId() : user.getId())
-              .setStatus(ApprovalStatus.REQUESTED)
-              .setDescription(description)
-              .build();
 
+          User user = (User) x.get("user");
+          User agent = (User) x.get("agent");
+          ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
+            .setClassification(classification)
+            .setObjId(objId)
+            .setDaoKey(daoKey)
+            .setOperation(Operations.CREATE)
+            .setInitiatingUser(agent != null ? agent.getId() : user.getId())
+            .setStatus(ApprovalStatus.REQUESTED)
+            .setDescription(description)
+            .build();
+
+          if ( ! approvers.isEmpty() ) {
             for ( Long approver : approvers ) {
               approvalRequest.clearId();
               approvalRequest.setApprover(approver);
               approvalRequestDAO.put(approvalRequest);
             }
+          } else if ( getDefaultApprover() > 0 ) {
+            approvalRequest.setApprover(getDefaultApprover());
+            approvalRequestDAO.put(approvalRequest);
+          } else {
+            ((Logger) x.get("logger")).error(
+              "ApprovalRuleActionOnCreate - No approvers found.", classification, objId);
           }
-          // TODO Handle when the approvers is empty
+
           return false;
         }
 
