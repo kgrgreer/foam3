@@ -999,7 +999,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
-    DataOutputStream os = null;
     ZipOutputStream zipos = null;
     FileInputStream is = null;
     try {
@@ -1012,21 +1011,21 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
-        os = new DataOutputStream(zipos);
-        is = new FileInputStream(file);
-        byte[] b = new byte[100];
-        int length;
-        while((length = is.read(b))!= -1){
-          os.write(b, 0, length);
+        try ( DataOutputStream os = new DataOutputStream(zipos) ) {
+          is = new FileInputStream(file);
+          byte[] b = new byte[100];
+          int length;
+          while ((length = is.read(b)) != -1) {
+            os.write(b, 0, length);
+          }
+          is.close();
+          zipos.closeEntry();
+          os.flush();
         }
-        is.close();
-        zipos.closeEntry();
-        os.flush();
       }
     } catch (Exception e) {
       logger.error(e);
     } finally {
-      IOUtils.closeQuietly(os);
       IOUtils.closeQuietly(zipos);
       IOUtils.closeQuietly(is);
     }
