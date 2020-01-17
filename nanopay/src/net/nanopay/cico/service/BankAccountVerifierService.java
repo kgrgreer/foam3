@@ -1,24 +1,25 @@
 package net.nanopay.cico.service;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.Date;
+import java.util.List;
+
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.NanoService;
 import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
-import java.util.Date;
-import java.util.List;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
-
-import static foam.mlang.MLang.*;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport

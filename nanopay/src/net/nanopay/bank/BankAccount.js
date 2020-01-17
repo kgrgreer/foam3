@@ -16,18 +16,14 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Branch',
     'foam.core.Currency',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.mlang.sink.Count',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
     'java.util.List'
   ],

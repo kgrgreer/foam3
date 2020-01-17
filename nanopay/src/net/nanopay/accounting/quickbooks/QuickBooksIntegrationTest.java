@@ -1,31 +1,26 @@
 package net.nanopay.accounting.quickbooks;
 
-import com.intuit.ipp.data.*;
-import com.xero.model.Contact;
-import com.xero.model.CurrencyCode;
-import com.xero.model.InvoiceStatus;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.intuit.ipp.data.Customer;
+import com.intuit.ipp.data.EmailAddress;
+import com.intuit.ipp.data.Invoice;
+import com.intuit.ipp.data.ModificationMetaData;
+import com.intuit.ipp.data.NameBase;
+import com.intuit.ipp.data.ReferenceType;
+import com.intuit.ipp.data.Transaction;
+
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.test.TestUtils;
-import foam.util.Auth;
-import foam.util.SafetyUtil;
 import net.nanopay.accounting.ContactMismatchPair;
-import net.nanopay.accounting.ResultResponse;
-import net.nanopay.accounting.quickbooks.QuickbooksIntegrationService;
 import net.nanopay.accounting.resultresponse.ContactResponseItem;
 import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
-import net.nanopay.accounting.xero.XeroIntegrationService;
-import net.nanopay.accounting.xero.XeroToken;
-import net.nanopay.iso20022.CurrencyReference2;
-import foam.core.Currency;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.*;
 
 public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
 

@@ -1,18 +1,16 @@
 package net.nanopay.plaid;
 
+import java.io.IOException;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
 import foam.lib.json.JSONParser;
-import foam.mlang.MLang;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import net.nanopay.plaid.model.PlaidItem;
 import net.nanopay.plaid.model.PlaidWebhook;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class PlaidWebAgent implements WebAgent {
   @Override

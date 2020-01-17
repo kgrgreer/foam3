@@ -4,18 +4,14 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.EmptyX',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.MDAO',
     'foam.dao.Sink',
     'foam.nanos.auth.*',
     'foam.util.Auth',
-    'java.lang.Object',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount',
     'static foam.mlang.MLang.*'
   ],
 

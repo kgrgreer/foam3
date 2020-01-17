@@ -3,15 +3,6 @@ foam.CLASS({
   name: 'BmoCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
 
-  javaImports: [
-    'java.util.ArrayList',
-    'java.util.Arrays',
-    'net.nanopay.tx.bmo.BmoFormatUtil',
-    'net.nanopay.tx.bmo.BmoTransactionHistory',
-    'foam.core.FObject',
-    'java.util.List'
-  ],
-
   implements: [
     'net.nanopay.tx.bmo.cico.BmoTransaction'
   ],

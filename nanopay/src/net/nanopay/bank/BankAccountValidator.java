@@ -1,16 +1,9 @@
 package net.nanopay.bank;
 
-import net.nanopay.model.Branch;
-import net.nanopay.payment.Institution;
 import foam.core.FObject;
 import foam.core.Validator;
 import foam.core.X;
 import foam.dao.DAO;
-import foam.mlang.sink.Count;
-import foam.util.SafetyUtil;
-import java.util.regex.Pattern;
-
-import static foam.mlang.MLang.*;
 
 /**
  * Validates BankAccount objects
