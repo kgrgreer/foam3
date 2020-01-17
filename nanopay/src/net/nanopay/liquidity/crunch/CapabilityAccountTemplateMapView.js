@@ -26,6 +26,12 @@ foam.CLASS({
           name: 'key',
           class: 'Reference',
           of: 'net.nanopay.account.Account',
+          adapt: function(oldVal, newVal) {
+            if ( typeof newVal === 'string' ) {
+              return parseInt(newVal);
+            }
+            return newVal;
+          }
         },
         {
           name: 'value',

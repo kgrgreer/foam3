@@ -88,9 +88,17 @@ p({
   "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
   "ruleGroup":"(Default)",
   "priority":1000,
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":0,
   "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"referenceNumber",
+    "propValue":{
+      "class":"foam.mlang.Constant",
+      "value":"ManuallyCreated"
+    }
+  },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
     "propName":"lifecycleState",
@@ -110,7 +118,7 @@ p({
   "documentation":"Add L1 approval to all liquid transactions created.",
   "ruleGroup":"txapprovals",
   "priority":100,
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -131,7 +139,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Final transaction approval",
   "ruleGroup":"txapprovals",
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":1,
   "after":true,
   "predicate":{

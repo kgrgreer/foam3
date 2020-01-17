@@ -54,6 +54,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userToEmail',
+      required: true,
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
       section: 'basicInfo'
     },
