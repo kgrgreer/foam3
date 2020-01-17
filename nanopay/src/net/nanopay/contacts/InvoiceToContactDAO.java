@@ -38,7 +38,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
 
     boolean isPayable = invoice.getPayerId() == user.getId();
 
-    if ( invoice.getContactId() != 0c ) {
+    if ( invoice.getContactId() != 0 ) {
       User contact = (User) localUserDAO_.inX(x).find(invoice.getContactId());
       long idToSet;
       long businessId = ((Contact) contact).getBusinessId();
