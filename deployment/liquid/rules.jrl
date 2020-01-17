@@ -112,19 +112,30 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Set transaction lifecycleState to PENDING",
-  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
+  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force transactions going through approval.",
   "ruleGroup":"(Default)",
   "priority":1000,
   "daoKey":"transactionDAO",
   "operation":0,
   "after":false,
   "predicate":{
-    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-    "propName":"referenceNumber",
-    "propValue":{
-      "class":"foam.mlang.Constant",
-      "value":"ManuallyCreated"
-    }
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.liquidity.ruler.IsSystemOrAdminUser"
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"referenceNumber",
+        "propValue":{
+          "class":"foam.mlang.Constant",
+          "value":"ManuallyCreated"
+        }
+      }
+    ]
   },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
@@ -197,7 +208,7 @@ p({
 })
 p({
   "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-  "id": "L2 approval for transaction >= $50,000 - GS03 Bank Account",
+  "id": "L2 approval for transaction >= $50,000 - GS06 CASH (USD)",
   "sourceAccount": 1449,
   "startAmount": 5000000,
   "enabled": false,

@@ -102,7 +102,14 @@ p({
                 "class": "foam.mlang.Constant",
                 "value": "CSV"
               }
+            },
+          "browseViews": [
+            {
+              "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+              "name": "Transactions",
+              "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
             }
+          ]
         }
     },
   "order":300
