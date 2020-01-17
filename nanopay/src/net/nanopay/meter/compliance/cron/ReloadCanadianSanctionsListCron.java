@@ -14,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -82,6 +83,8 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
 
       if ( ! Record.datasetChecksum.equals(checksum) ) {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
         reader = inputFactory.createXMLStreamReader(
           new InputStreamReader(in));
 
