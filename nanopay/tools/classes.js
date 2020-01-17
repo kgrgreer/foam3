@@ -346,7 +346,6 @@ var classes = [
    'net.nanopay.liquidity.tx.GenericBusinessRule',
    'net.nanopay.liquidity.tx.IsChildAccountPredicate',
    'net.nanopay.liquidity.tx.L2TransactionApprovalRule',
-   'net.nanopay.liquidity.tx.LiquidTransactionLifecycleDAO',
    'net.nanopay.liquidity.tx.TxLimitAction',
    'net.nanopay.liquidity.tx.TxLimitEntityType',
    'net.nanopay.liquidity.tx.TxLimitPredicate',
