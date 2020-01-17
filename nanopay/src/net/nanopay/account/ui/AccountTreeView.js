@@ -329,7 +329,7 @@ foam.CLASS({
           curr.expanded = true;
         }
 
-        currId = ancestry.pop();
+        var currId = ancestry.pop();
 
         var children = curr.childNodes;
 

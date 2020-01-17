@@ -366,7 +366,7 @@ foam.CLASS({
         if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
           this.displayExpiredTokenMessage = true;
         }
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
           } else {
@@ -578,7 +578,7 @@ foam.CLASS({
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         let accountingBank = null;
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
             accountingBank = this.accountingBankAccounts.bankAccountList[i];
             break;

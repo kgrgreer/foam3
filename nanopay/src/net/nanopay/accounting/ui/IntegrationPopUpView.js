@@ -340,7 +340,7 @@ foam.CLASS({
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         let accountingBank = null;
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
             accountingBank = this.accountingBankAccounts.bankAccountList[i];
             break;

@@ -268,7 +268,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
       }
       if ( this.accountingBankAccounts ) {
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
           } else {
