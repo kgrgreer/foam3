@@ -142,7 +142,7 @@ public class AscendantFXServiceTest
   }
 
   public void testGetFXRate() {
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "BUY", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
     test( "USD".equals(fxQuote.getSourceCurrency()), "Quote has Source Currency" );
@@ -154,7 +154,7 @@ public class AscendantFXServiceTest
 
   public void testAcceptFXRate() {
 
-    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 100l, 0l, "BUY", null, 1002, null);
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );
 
     fxQuote = (FXQuote) fxQuoteDAO_.find(fxQuote.getId());
@@ -174,7 +174,7 @@ public class AscendantFXServiceTest
   }
 
   public void testSubmit_Payment_Payee_Updated() {
-    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "BUY", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
@@ -228,7 +228,7 @@ public class AscendantFXServiceTest
 
 
 public void testSubmit_Payment_Payee_Not_Updated() {
-      FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+      FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "BUY", null, 1002, null);
       test( null != fxQuote, "FX Quote was returned" );
       Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
       PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
@@ -291,7 +291,7 @@ public void testSubmit_Payment_Payee_Not_Updated() {
   }
 
   public void testSubmitDeal(){
-    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
+    FXQuote fxQuote = fxService.getFXRate("CAD", "USD", 100l, 0l, "BUY", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
     PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
@@ -323,7 +323,7 @@ public void testSubmit_Payment_Payee_Not_Updated() {
   }
 
     public void testSubmitDealWithNoAmount(){
-      FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 0l, 100l, "Buy", null, 1002, null);
+      FXQuote fxQuote = fxService.getFXRate("USD", "CAD", 0l, 100l, "BUY", null, 1002, null);
       Boolean fxAccepted = fxService.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
       PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x_, ascendantFX);
       AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();

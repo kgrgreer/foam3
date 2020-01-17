@@ -335,7 +335,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         ascendantRequest.setQuoteID(Long.parseLong(quote.getExternalId()));
         ascendantRequest.setTotalNumberOfPayment(1);
 
-        String fxDirection = payerHasHoldingAccount ? FXDirection.Sell.getName() :  FXDirection.Buy.getName();
+        String fxDirection = payerHasHoldingAccount ? FXDirection.SELL.getName() :  FXDirection.BUY.getName();
 
         DealDetail[] dealArr = new DealDetail[1];
         DealDetail dealDetail = new DealDetail();

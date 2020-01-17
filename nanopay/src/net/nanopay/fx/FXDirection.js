@@ -2,11 +2,11 @@ foam.ENUM({
     package: 'net.nanopay.fx',
     name: 'FXDirection',
     values: [{
-            name: 'Buy',
+            name: 'BUY',
             label: 'Buy'
         },
         {
-            name: 'Sell',
+            name: 'SELL',
             label: 'Sell'
         }
     ]
