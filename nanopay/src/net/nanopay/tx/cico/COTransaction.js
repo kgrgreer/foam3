@@ -127,8 +127,7 @@ foam.CLASS({
           && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
             || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
           && ! getStatus().equals(TransactionStatus.DECLINED)
-          && ! ( oldTxn.getLifecycleState() == LifecycleState.PENDING
-            && getLifecycleState() == LifecycleState.ACTIVE )
+          && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
           throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
