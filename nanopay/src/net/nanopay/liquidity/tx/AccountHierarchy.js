@@ -79,8 +79,8 @@ foam.INTERFACE({
           type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
         },
         {
-          name: 'template',
-          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+          name: 'newMap',
+          javaType: 'java.util.Map<String, net.nanopay.liquidity.crunch.CapabilityAccountData>'
         }
       ]
     },
@@ -105,8 +105,8 @@ foam.INTERFACE({
           type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
         },
         {
-          name: 'template',
-          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+          name: 'newMap',
+          javaType: 'java.util.Map<String, net.nanopay.liquidity.crunch.CapabilityAccountData>'
         }
       ]
     }
