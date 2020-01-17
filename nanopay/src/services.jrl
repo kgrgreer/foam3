@@ -1,15 +1,15 @@
 p({
-  "class": "foam.nanos.boot.NSpec", 
+  "class": "foam.nanos.boot.NSpec",
   "name": "agentAuth",
   "description": "Allows one user to act on behalf of another user.",
-  "documentation": 
+  "documentation":
   """
     This service can be used by one user to act as another user. We refer to the user acting as the other user as the agent,
     and the user being acted as the entity. When one user acts as another, both the agent's session and context are updated
     to keep track of both the agent and the entity. In doing so, the application is able to use this extra information to
     provide additional or alternative behaviour. For example, a user acting as another user might have additional permissions.
     This feature was created to allow users to act as businesses, so one user can be in many businesses.
-  """,        
+  """,
   "serviceScript":
   """
     return new net.nanopay.auth.BusinessAgentAuthService.Builder(x)
@@ -440,10 +440,10 @@ p({
 p({"class":"foam.nanos.boot.NSpec", "name":"smsToken",                         "serve":true,  "serviceClass":"net.nanopay.auth.sms.PhoneVerificationTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}","service":{"class":"net.nanopay.auth.sms.PhoneVerificationTokenService","accountSid":"ACe4c949440e9f057f4701e23bb82e5059","authToken":"fcb37f309069583b874aa7abcd61aac8","phoneNumber":"+14378000353"}})
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "push",        
+  "class": "foam.nanos.boot.NSpec",
+  "name": "push",
   "description": "Connects to google's firebase API and sends a message and notification pair to be processed by the interface.",
-  "documentation": "Pushes a message to google's firebase API. See https://firebase.google.com/docs/reference for information on how to use google's firebase API.", 
+  "documentation": "Pushes a message to google's firebase API. See https://firebase.google.com/docs/reference for information on how to use google's firebase API.",
   "serviceClass": "foam.nanos.notification.push.FirebasePushService",
   "service": {"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}
 })
@@ -651,6 +651,30 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "localPaymentCodeDAO",
+  "serve": false,
+  "authenticate": false,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setPipelinePm(true)
+    .setGuid(true)
+    .setAuthorize(false)
+    .setJournalName("paymentCodes")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
+    .build();
+  """,
+  "client": """
+  {
+    "of": "net.nanopay.payment.PaymentCode"
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "paymentCodeDAO",
   "serve": true,
   "serviceScript":
@@ -658,9 +682,9 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setPipelinePm(true)
+    .setInnerDAO(x.get("localPaymentCodeDAO"))
     .setGuid(true)
-    .setJournalName("paymentCodes")
-    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setAuthorize(true)
     .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
     .build();
   """,
@@ -759,10 +783,10 @@ p({
   "name": "deviceAuth",
   "serve": true,
   "description": "Allows users to authenticate themselves by providing an email address in a device-specific format.",
-  "documentation": 
+  "documentation":
   """
     Given a particular device email, service finds the device within the deviceDAO and performs authentication checks making sure that the email does indeed match the
-    password provided. If authentication or value integrity checks fail, an exception will be thrown. If all is well however, the user who is the owner of the device is 
+    password provided. If authentication or value integrity checks fail, an exception will be thrown. If all is well however, the user who is the owner of the device is
     used to create a new session and the device itself is flagged as activated.
   """,
   "authenticate": false,
@@ -888,10 +912,10 @@ p({
   "description": "Connects a user to Xero's website in order to grant permissions to Ablii.",
   "documentation":
   """
-    When the user hits the "Connect" button in Ablii for Xero, they're brought to /services/xero, which 
+    When the user hits the "Connect" button in Ablii for Xero, they're brought to /services/xero, which
     calls the execute method defined in this file. The execute method will generate a URL for Xero's website that the user's
-    browser gets redirected to. At that URL they'll be able to sign in and grant Ablii access to their data, such as invoices, 
-    contacts, and bank accounts. This is the 'xeroWebAgent' service, which is not served. It is accessed via a web agent. 
+    browser gets redirected to. At that URL they'll be able to sign in and grant Ablii access to their data, such as invoices,
+    contacts, and bank accounts. This is the 'xeroWebAgent' service, which is not served. It is accessed via a web agent.
     This needs to be a web agent because we need a URL that QuickBooks can redirect to when giving us the API access information.
   """,
   "serviceClass": "net.nanopay.accounting.xero.XeroWebAgent"
@@ -944,10 +968,10 @@ p({
   "description": "Allows the user to redirect to the quickbooks' website in order to grant Ablii access permissions.",
   "documentation":
   """
-    When the user hits the "Connect" button in Ablii for QuickBooks, they'recbrought to /services/quickbooks, which 
+    When the user hits the "Connect" button in Ablii for QuickBooks, they'recbrought to /services/quickbooks, which
     calls the execute method defined in this file. The execute method will generate a URL for QuickBooks' website that the user's
-    browser gets redirected to. At that URL they'll be able to sign in and grant Ablii access to their data, such as invoices, 
-    contacts, and bank accounts. This is the 'quickbooks' service, which is not served. It is accessed via a web agent. 
+    browser gets redirected to. At that URL they'll be able to sign in and grant Ablii access to their data, such as invoices,
+    contacts, and bank accounts. This is the 'quickbooks' service, which is not served. It is accessed via a web agent.
     This needs to be a web agent because we need a URL that QuickBooks can redirect to when giving us the API access information.
   """,
   "serviceClass": "net.nanopay.accounting.quickbooks.QuickbooksWebAgent"
@@ -1252,9 +1276,9 @@ p({
   "name": "keyPairDAO",
   "serve": true,
   "description": "DAO that stores a public-private key pair.",
-  "documentation": 
+  "documentation":
   """
-    Stores a public-private key pair (KeyPairEntry object) and also puts each 
+    Stores a public-private key pair (KeyPairEntry object) and also puts each
     individual member of the pair into public key dao and private key dao respectively.
   """,
   "serviceScript":
@@ -1309,7 +1333,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "testReportDAO",
   "description": "DAO to store all of the meta-data related to tests.",
-  "documentation": 
+  "documentation":
   """
     Stores a TestReport object which contains a timestamp of the last run test and the number of tests
     currently within the system.
@@ -1371,15 +1395,15 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "receiptDAO",  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "receiptDAO",
   "description": "Stores receipts used by Merkle Trees.",
   "documentation":
   """
     Stores a receipt model while using a Merkle Tree with hash signatures to ensure integrity
     of the data contained within the DAO.
-  """,               
-  "serve": true,  
+  """,
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -1455,10 +1479,10 @@ p({
   "documentation":
   """
     When a user attempts a login, a LoginAttempt object is used to store its email, user id, and group. This
-    dao stores all such objects. The login attempt object also has a date field to describe when the login was 
+    dao stores all such objects. The login attempt object also has a date field to describe when the login was
     attempted so multiple such objects can safely refer to the same user.
   """,
-  "serviceScript": 
+  "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())

@@ -13,9 +13,8 @@ foam.CLASS({
       'foam.core.ContextAgent',
       'foam.core.X',
       'foam.dao.DAO',
-      'net.nanopay.model.Business',
       'net.nanopay.contacts.Contact',
-      'static foam.mlang.MLang.*'
+      'net.nanopay.payment.PaymentCode'
     ],
 
     methods: [
@@ -23,28 +22,23 @@ foam.CLASS({
         name: 'applyAction',
         javaCode: `
 
-          // if ( true ) throw new RuntimeException("error");
+          DAO       paymentCodeDAO =   (DAO) x.get("localPaymentCodeDAO");
+          Contact   newContact     =   (Contact) obj;
+          Contact   oldContact     =   (Contact) oldObj;
 
-          // [UPDATE]
-          // 1) check if update (oldObj != null)
-          // 2) check oldObj.getPaymentCode == ""
-          // 3) check obj.getPaymentCode != ""
+          if ( ! newContact.getPaymentCode.equals(oldContact.getPaymentCode) ) {
+            throw new RuntimeException("Same Business");
+          }
 
-          // if newObj.getPaymentCode != oldObj.getPaymentCode => swap
-
-          // [CREATE]
-          // TODO: figure out if same rule can be aplied for CPF-3829
-
-          Contact newContact = (Contact) obj;
-          Contact oldContact = (Contact) oldObj;
-          if ( ! oldContact.getPaymentCode.equals("") || newContact.getPaymentCode).equals("") || new) {
-            throw new RuntimeException("Cannot upgrade contact ");
+          PaymentCode paymentCode = (PaymentCode) paymentCodeDAO.find(newContact.getPaymentCode());
+          if (paymentCode == null) {
+            throw new RuntimeException("Invalid payment code. Please try again.");
           }
 
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-
+              newContact.setBusinessId(paymentCode.getOwner());
             }
           }, "upgrade contact");
         `

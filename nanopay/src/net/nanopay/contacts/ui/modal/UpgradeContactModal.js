@@ -11,10 +11,6 @@ foam.CLASS({
     'user'
   ],
 
-  requires: [
-    'net.nanopay.payment.PaymentCode'
-  ],
-
   css: `
     ^container {
       width: 540px;
@@ -69,10 +65,9 @@ foam.CLASS({
       label: 'Upgrade',
       code: async function(X) {
         console.log('button clicked!');
+        console.log(this.data.paymentCodeValue);
         let contact = this.data;
-        let paymentCode = this.PaymentCode.create();
-        paymentCode.id = this.data.paymentCodeValue;
-        contact.paymentCode = paymentCode;
+        contact.paymentCode = this.data.paymentCodeValue;
         try {
           let response = await this.user.contacts.put(contact);
           console.log(response);

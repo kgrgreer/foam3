@@ -76,7 +76,7 @@ foam.CLASS({
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
       User user = (User) x.get("user");
-      if (  user == null || ( ! auth.check(x, "paymentcode.read." + getId()) && SafetyUtil.equals(String.valueOf(user.getId()), getOwner())) ) {
+      if (  user == null || ( ! auth.check(x, "paymentcode.read." + getId()) && SafetyUtil.equals(user.getId(), getOwner())) ) {
         throw new AuthorizationException(LACKS_READ_PERMISSION);
       }
       `
@@ -91,7 +91,7 @@ foam.CLASS({
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
       User user = (User) x.get("user");
-      if (  user == null || ( ! auth.check(x, "paymentcode.update." + getId()) && SafetyUtil.equals(String.valueOf(user.getId()), getOwner()) ) ) {
+      if (  user == null || ( ! auth.check(x, "paymentcode.update." + getId()) && SafetyUtil.equals(user.getId(), getOwner()) ) ) {
         throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       }
       `
