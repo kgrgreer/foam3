@@ -1,18 +1,11 @@
 package net.nanopay.fx.afex;
 
-import foam.core.ContextAwareSupport;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.lib.json.JSONParser;
-import foam.lib.json.Outputter;
-import foam.lib.NetworkPropertyPredicate;
-import foam.nanos.logger.Logger;
-import foam.nanos.logger.PrefixLogger;
-import foam.nanos.om.OMLogger;
-import foam.util.SafetyUtil;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -20,22 +13,26 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
-import java.util.List;
+import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.lib.NetworkPropertyPredicate;
+import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
+import foam.nanos.om.OMLogger;
+import foam.util.SafetyUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class AFEXService extends ContextAwareSupport implements AFEX {
 

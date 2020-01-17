@@ -1,22 +1,23 @@
 package net.nanopay.invoice;
 
-import foam.core.ContextAwareSupport;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import foam.util.SafetyUtil;
-import net.nanopay.admin.model.AccountStatus;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.model.Transaction;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.NEQ;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static foam.mlang.MLang.*;
+import foam.core.ContextAwareSupport;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport

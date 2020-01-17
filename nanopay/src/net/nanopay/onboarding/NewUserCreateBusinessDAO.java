@@ -1,8 +1,15 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Address;
@@ -16,17 +23,6 @@ import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
-import net.nanopay.onboarding.CreateOnboardingCloneService;
-import net.nanopay.sme.onboarding.BusinessOnboarding;
-import net.nanopay.sme.onboarding.OnboardingStatus;
-import net.nanopay.sme.onboarding.USBusinessOnboarding;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
 
 /**
  * When a new user is signing up and wants to create a business, this decorator
