@@ -47,12 +47,13 @@ foam.CLASS({
         class: 'foam.u2.view.RadioView',
         isHorizontal: true,
         choices: [
-          ['userAndRole','Accounts'],
+          // TODO: need to fix afterwards, a problem with passing the argument into the skeleton
+          // ['userAndRole','Accounts'],
           ['accountAndUser','Roles'],
           ['accountAndRole','Users'],
         ],
       },
-      value: 'userAndRole',
+      value: 'accountAndUser',
       postSet: function(_, nu) {
         if ( nu === 'userAndRole' ) {
           this.accountOrUserRef.of = foam.nanos.auth.User;
