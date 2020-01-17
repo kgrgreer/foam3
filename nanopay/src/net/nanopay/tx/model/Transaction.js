@@ -65,10 +65,10 @@ foam.CLASS({
     {
       name: 'STATUS_BLACKLIST',
       javaType: 'Set<TransactionStatus>',
-      javaValue: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-        add(TransactionStatus.REFUNDED);
-        add(TransactionStatus.PENDING);
-      }});`
+      javaValue: `Collections.unmodifiableSet(foam.util.Arrays.asSet(new Object[] {
+        TransactionStatus.REFUNDED,
+        TransactionStatus.PENDING
+      }));`
     }
   ],
 
