@@ -338,6 +338,7 @@ var classes = [
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
+   'net.nanopay.liquidity.ruler.IsSystemOrAdminUser',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
