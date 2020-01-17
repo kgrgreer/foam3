@@ -7,7 +7,7 @@
 
 # Exit on first failure
 set -e
-echo $NANOPAY_HOME
+
 function warning {
     echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
 }
@@ -100,14 +100,10 @@ function setup_jce {
 function deploy_journals {
     echo "INFO :: Deploying Journals"
 
-    journalPostfix=`instanceType_postfix $INSTANCE_TYPE`
-
     # prepare journals
     cd "$PROJECT_HOME"
 
-    # JOURNALS=tools/journals
-    JOURNALS=`instance_journals $INSTANCE_TYPE`
-
+    JOURNALS=tools/journals
     if [[ ! -f  $JOURNALS ]]; then
         echo "ERROR :: Missing ${JOURNALS} file."
         quit 1
@@ -117,18 +113,19 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    journalExtras=""
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
-        journalExtras=-E"tools/journal_extras/disable_livescriptbundler"
+        if [ -z ${EXPLICIT_JOURNALS} ]; then
+            EXPLICIT_JOURNALS="-E"
+        else
+            EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
+        fi
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras -P$journalPostfix < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras -P$journalPostfix < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
-        # echo ${JOURNAL_OUT}
-        # exit
     fi
 
     if [[ $? -eq 1 ]]; then
@@ -278,7 +275,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -H${HOST_NAME} -W${WEB_PORT} -C${CLUSTER} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -337,28 +334,9 @@ function beginswith {
     esac
 }
 
-function instanceType_postfix {
-    case $1 in
-        "mm") echo "mm" ;;
-        "mn") echo "mn" ;;
-        "standalone") echo "jrl" ;;
-        *) echo "" ;;
-    esac
-}
-
-function instance_journals {
-    case $1 in
-        "mm") echo "tools/mm_journals" ;;
-        "mn") echo "tools/mn_journals" ;;
-        *) echo "tools/journals" ;;
-    esac
-}
-
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
-        if [ -z "$NANOPAY_ROOT" ]; then
-            NANOPAY_ROOT="/opt"
-        fi
+        NANOPAY_ROOT="/opt"
         if [ "$TEST" -eq 1 ]; then
             NANOPAY_ROOT="/tmp"
         fi
@@ -501,9 +479,10 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -C <true> enable clustering"
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
+    echo "  -e : supress gen_java"
+    echo "  -E EXPLICIT_JOURNALS : "
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -582,10 +561,10 @@ MODE=
 #MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
-CLUSTER=false
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
+EXPLICIT_JOURNALS=
 export JAVA_OPTS=
 INSTALL=0
 PACKAGE=0
@@ -607,19 +586,17 @@ VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
-INSTANCE_TYPE=standalone
 
-while getopts "bcC:dD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
+while getopts "bcdD:E:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
-           ;;
-        C) CLUSTER=$OPTARG
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
            ;;
+        E) EXPLICIT_JOURNALS="-E"$OPTARG ;;
         e) warning "Skipping genJava task"
            skipGenFlag="-Pfoamoptions.skipgenjava=true"
            if [ "$GRADLE_FLAGS" == "" ]; then
@@ -690,8 +667,6 @@ while getopts "bcC:dD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xzA:" opt ; do
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         x) VULNERABILITY_CHECK=1 ;;
-        A) INSTANCE_TYPE=$OPTARG
-            echo "INSTANCE_TYPE=${OPTARG}" ;;
         ?) usage ; quit 1 ;;
     esac
 done
