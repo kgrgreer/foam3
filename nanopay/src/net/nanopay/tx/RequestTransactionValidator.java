@@ -3,7 +3,9 @@ package net.nanopay.tx;
 import foam.core.FObject;
 import foam.core.Validator;
 import foam.core.X;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
+import net.nanopay.tx.model.Transaction;
 
 public class RequestTransactionValidator implements Validator {
 
