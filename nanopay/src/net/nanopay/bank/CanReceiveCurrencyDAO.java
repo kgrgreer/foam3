@@ -24,9 +24,9 @@ import net.nanopay.contacts.Contact;
  * in that currency.
  */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
-  public DAO userDAO;
-  public DAO bareUserDAO;
-  public DAO accountDAO;
+  protected DAO userDAO;
+  protected DAO bareUserDAO;
+  protected DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);

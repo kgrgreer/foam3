@@ -18,7 +18,7 @@ import net.nanopay.contacts.Contact;
 public class CheckEmailWhitelistDAO
   extends ProxyDAO
 {
-  public AppConfig config;
+  protected AppConfig config;
   private DAO       whitelistedEmailDAO_;
   private DAO       groupDAO_;
 
