@@ -1,27 +1,29 @@
 package net.nanopay.tx.test;
 
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
-import foam.dao.SequenceNumberDAO;
-import foam.nanos.ruler.*;
+import foam.nanos.ruler.Operations;
+import foam.nanos.ruler.RuleGroup;
+import foam.nanos.ruler.RulerDAO;
+import foam.nanos.ruler.RulerProbe;
+import foam.nanos.ruler.TestedRule;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.ruler.BusinessLimit;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.ruler.BusinessLimit;
 import net.nanopay.tx.ruler.TransactionLimitProbeInfo;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
 
 public class TransactionLimitTest extends Test {
 
