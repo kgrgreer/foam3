@@ -81,7 +81,7 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
       HashingInputStream his = new HashingInputStream(Hashing.md5(), in);
       String checksum = his.hash().toString();
 
-      if ( ! Record.datasetChecksum.equals(checksum) ) {
+      //if ( ! Record.datasetChecksum.equals(checksum) ) {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
@@ -89,8 +89,10 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
           new InputStreamReader(in));
 
         reloadDataset(x, reader);
-        Record.datasetChecksum = checksum;
-      }
+        // This value removed because it was a mutable checksum, replace with
+        // something better
+        //Record.datasetChecksum = checksum;
+      //}
     } catch (IOException | XMLStreamException ex) {
       logger.error("Error reloading Canadian sanctions list", ex);
     } finally {
