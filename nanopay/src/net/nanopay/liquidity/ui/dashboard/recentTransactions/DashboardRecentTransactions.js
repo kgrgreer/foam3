@@ -52,7 +52,9 @@ foam.CLASS({
         return this.DAOControllerConfig.create({
           defaultColumns:["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"],
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.data
+          dao: this.data,
+          editEnabled: false,
+          deleteEnabled: false
         });
       }
     }
