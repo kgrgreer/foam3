@@ -625,7 +625,7 @@ foam.CLASS({
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
-        return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
+        // return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
         X.stack.push({

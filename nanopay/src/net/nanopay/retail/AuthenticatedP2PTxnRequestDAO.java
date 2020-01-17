@@ -89,8 +89,7 @@ public class AuthenticatedP2PTxnRequestDAO
 
   private boolean isUserAssociatedWithRequest(User user, P2PTxnRequest request) {
 
-    if ( SafetyUtil.isEmpty(request.getRequestorEmail()) ||
-    SafetyUtil.isEmpty(request.getRequestorEmail()) ) {
+    if ( SafetyUtil.isEmpty(request.getRequestorEmail()) ) {
       return false;
     }
 

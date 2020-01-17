@@ -47,6 +47,7 @@ public class TermsAndConditionsWebAgent
       e.printStackTrace();
     } finally {
       IOUtils.closeQuietly(osw);
+      IOUtils.closeQuietly(out);
     }
 
     if ( SafetyUtil.isEmpty(version) ) {
