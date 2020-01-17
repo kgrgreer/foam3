@@ -11,10 +11,13 @@
       tableColumns: [ left, right ],
       properties: [
         left, right,
+        [ 'leftKey', left ],
+        [ 'rightKey', right ],
         {
           name: 'id',
+          class: 'String',
           getter: function () {
-            return JSON.stringify([this.left, this.right]);
+            return JSON.stringify([this[this.leftKey], this[this.rightKey]]);
           }
         }
       ]
