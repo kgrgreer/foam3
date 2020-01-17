@@ -73,13 +73,11 @@ foam.CLASS({
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
-        if ( countryId == 'US' ) {
+        if ( countryId == 'US' ) 
           return self.regionDAO.where(
             self.EQ(self.Region.COUNTRY_ID, countryId || '')
           );
-        } else {
-          return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
-        }
+        return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
       });
 
       this
