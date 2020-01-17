@@ -1,6 +1,7 @@
 package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.X;
+import foam.nanos.logger.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -211,6 +212,8 @@ public class DowJonesResponseMsg
         obj.setResponseBody(responseBody);
 
       } catch ( ParserConfigurationException | SAXException | IOException e ) {
+        Logger logger = (Logger) getX().get("logger");
+        logger.log("Error parsing DowJonesReponse",e);
         throw new RuntimeException("Could not parse xml string");
       }
 
