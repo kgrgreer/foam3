@@ -24,11 +24,11 @@ public class TransactionSetupTest
 
       BankAccount bankAccount = TransactionTestUtil.RetrieveBankAccount(x, user, currency);
       test(bankAccount != null && bankAccount.getId() > 0, "Bank account found.");
-      test(bankAccount.getStatus() == BankAccountStatus.VERIFIED, "Bank account verified");
+      test(bankAccount != null && bankAccount.getStatus() == BankAccountStatus.VERIFIED, "Bank account verified");
 
       DigitalAccount digitalAccount = TransactionTestUtil.RetrieveDigitalAccount(x, user, currency);
       test(digitalAccount != null && digitalAccount.getId() > 0, "Digital account found.");
-      test((Long) digitalAccount.findBalance(x) > 0L, "Digital account has a positive balance.");
+      test(digitalAccount != null && (Long) digitalAccount.findBalance(x) > 0L, "Digital account has a positive balance.");
     }
   }
 }

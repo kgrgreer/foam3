@@ -16,6 +16,7 @@ public class KotakEncryption {
       throw new IllegalArgumentException("text to be encrypted and key should not be null");
     }
 
+    // Customer requested algorithm
     Cipher cipher = Cipher.getInstance(ALGORITHM);
     byte[] messageArr = message.getBytes();
 
@@ -42,6 +43,7 @@ public class KotakEncryption {
       throw new IllegalArgumentException("text to be decrypted and key should not be null");
     }
 
+    // Customer requested algorithm
     Cipher cipher = Cipher.getInstance(ALGORITHM);
 
     SecretKeySpec keySpec = new SecretKeySpec(Base64.getDecoder().decode(key), "AES");

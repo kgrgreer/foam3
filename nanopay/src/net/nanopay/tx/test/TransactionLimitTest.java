@@ -62,6 +62,7 @@ public class TransactionLimitTest extends Test {
         break;
       }
     }
+    if ( txRule == null ) return;
     test(((TransactionLimitProbeInfo)txRule.getProbeInfo()).getRemainingLimit() == 10000, "Remaining limit is 10000");
     test(txRule != null, "Probe for transaction limit was found");
     test(txRule.getPassed(), "Transaction is to go through successfully");

@@ -91,6 +91,8 @@ public class JoinBusinessWebAgent implements WebAgent {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
 
+    if ( user == null ) throw new RuntimeException("User not found.");
+
     if ( config_ == null ) {
       config_ = EnvironmentConfigurationBuilder
         .configuration()
