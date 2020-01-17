@@ -34,7 +34,7 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map<String,ConcurrentHashMap> cache = new HashMap<>();
+        Map<String,ConcurrentHashMap> cache = new ConcurrentHashMaphMap<>();
 
         cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
@@ -305,7 +305,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      String cacheKey = 'm' + String.valueOf(accountId) + 'a' + String.valueOf(accountId) + 'l' + level;
+      String cacheKey = 'm' + modelToApprove + 'a' + String.valueOf(accountId) + 'l' + level;
       String cache = "getApproversByLevelCache";
 
       Map<String,List> getApproversByLevelCache = (Map<String,List>) getCache().get(cache);
@@ -402,7 +402,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Map<String,List> cacheMap = (HashMap<String,List>) getCache().get(cache);
+      Map<String,List> cacheMap = (ConcurrentHashMap<String,List>) getCache().get(cache);
 
       cacheMap.remove(cacheKey);
       `

@@ -33,7 +33,7 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map<String,ConcurrentHashMap> cache = new HashMap<>();
+        Map<String,ConcurrentHashMap> cache = new ConcurrentHashMap<>();
 
         cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
@@ -304,7 +304,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Map<String,List> cacheMap = (HashMap<String,List>) getCache().get(cache);
+      Map<String,List> cacheMap = (ConcurrentHashMap<String,List>) getCache().get(cache);
 
       cacheMap.remove(cacheKey);
       `
