@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import net.nanopay.meter.reports.AbstractReport;
 import net.nanopay.tx.BulkTransaction;
 import net.nanopay.tx.DigitalTransaction;
@@ -170,6 +171,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       writer.flush();
       writer.close();
     } catch (IOException e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     }
   }
 
