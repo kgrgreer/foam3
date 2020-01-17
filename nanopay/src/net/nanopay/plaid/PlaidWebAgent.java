@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import foam.core.X;
 import foam.lib.json.JSONParser;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
+import net.nanopay.plaid.model.PlaidItem;
 import net.nanopay.plaid.model.PlaidWebhook;
 
 public class PlaidWebAgent implements WebAgent {
@@ -25,7 +27,8 @@ public class PlaidWebAgent implements WebAgent {
       }
 
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     }
   }
 

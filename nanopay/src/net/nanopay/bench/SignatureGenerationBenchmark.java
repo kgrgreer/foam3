@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
@@ -38,7 +39,8 @@ public class SignatureGenerationBenchmark
       int n = (int) (Math.random() * transactions_.size());
       ((Transaction) transactions_.get(n)).sign(sigAlgo_, keypair_.getPrivate());
     } catch (Throwable t) {
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
     }
   }
 }

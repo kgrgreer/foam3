@@ -22,7 +22,6 @@ public class DecryptingSink
       EncryptedObject eo = (EncryptedObject) obj;
       super.put(dao_.find_(x_, eo.getId()), sub);
     } catch (Throwable t) {
-      t.printStackTrace();
     }
   }
 }

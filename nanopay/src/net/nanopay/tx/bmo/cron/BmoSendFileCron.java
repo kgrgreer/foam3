@@ -86,7 +86,6 @@ public class BmoSendFileCron implements ContextAgent {
     try {
       Thread.sleep(30L * 1000);
     } catch (InterruptedException e) {
-      e.printStackTrace();
     }
 
     logger.info("Sending CO transactions.");

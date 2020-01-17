@@ -17,6 +17,7 @@ import com.intuit.ipp.data.Transaction;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.accounting.ContactMismatchPair;
 import net.nanopay.accounting.resultresponse.ContactResponseItem;
 import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
@@ -35,6 +36,8 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickbooksService.start();
     } catch (Exception e) {
       e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
       return;
     }
     createToken(x);
@@ -44,6 +47,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
   }
 
   public void testContactSync(X x, QuickbooksIntegrationService quickbooksService) {
+    Logger logger = (Logger) x.get("logger");
     NameBase quickBooksContact = new Customer();
     ContactMismatchPair result;
     HashMap<String, List<ContactResponseItem>> contactErrors = quickbooksService.initContactErrors();
@@ -87,6 +91,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Invalid Email");
     } catch (Exception e) {
+      logger.log(e);
       e.printStackTrace();
       test(true, "Invalid Email");
     }
@@ -122,6 +127,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(false, "Optional First & last Names");
     }
 
@@ -140,6 +146,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       test(false, "Number in First Name");
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(true, "Number in First Name");
     }
 
@@ -156,6 +163,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       test(false, "Number in Last Name");
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(true, "Number in Last Name");
     }
 
@@ -178,12 +186,13 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(false, "All Valid Fields Contact");
     }
   }
 
   public void testInvoiceSync(X x, QuickbooksIntegrationService quickbookService) {
-
+    Logger logger = (Logger) getX().get("logger");
     Transaction quickbooksInvoice = new com.intuit.ipp.data.Invoice();
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = quickbookService.initInvoiceErrors();
     Date date = new Date();
@@ -209,6 +218,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(true, "Invalid Currency");
     }
 
@@ -234,6 +244,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(true, "Missing Contact");
     }
 
@@ -259,6 +270,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.log(e);
       test(false, "Valid Fields Invoice");
     }
   }

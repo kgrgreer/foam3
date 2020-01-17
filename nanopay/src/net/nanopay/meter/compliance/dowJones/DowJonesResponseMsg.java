@@ -211,7 +211,6 @@ public class DowJonesResponseMsg
         obj.setResponseBody(responseBody);
 
       } catch ( ParserConfigurationException | SAXException | IOException e ) {
-        e.printStackTrace();
         throw new RuntimeException("Could not parse xml string");
       }
 

@@ -75,7 +75,6 @@ public class Test {
       System.out.println(outputter.stringify(service.downloadReconciliation(date, "123456789")));
       System.out.println(outputter.stringify(service.downloadStatement(date, "123456789")));
     } catch (Throwable t) {
-      t.printStackTrace();
     }
   }
 }
