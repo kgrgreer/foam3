@@ -192,7 +192,7 @@ foam.CLASS({
         }
       ],
       javaCode: `  
-      String cacheKey = 'm' + modelToApprove + 'l' + level;
+      String cacheKey = 'm' + modelToApprove + 'l' + String.valueOf(level);
       String cache = "getApproversByLevelCache";
 
       Map<String, List> getApproversByLevelCache = (Map<String, List>) getCache().get(cache);
