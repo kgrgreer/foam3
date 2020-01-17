@@ -4,17 +4,20 @@ foam.CLASS({
 
   documentation: 'model for Flinks Security Challenges',
 
-  constants: [
+  axioms: [
     {
-      javaType: 'java.util.Set<String>',
-      name: 'SUPPORTED_TYPES',
-      javaValue: `(java.util.Set<String>) java.util.Collections.unmodifiableSet(foam.util.Arrays.asSet(new String[] {
-        "QuestionAndAnswer",
-        "MultipleChoice",
-        "MultipleChoiceMultipleAnswers",
-        "ImageSelection",
-        "TextOrCall"
-      }))`
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+        protected static final java.util.Set<String> SUPPORTED_TYPES = (java.util.Set<String>) java.util.Collections.unmodifiableSet(foam.util.Arrays.asSet(new String[] {
+          "QuestionAndAnswer",
+          "MultipleChoice",
+          "MultipleChoiceMultipleAnswers",
+          "ImageSelection",
+          "TextOrCall"
+        }));
+        `);
+      }
     }
   ],
 
