@@ -305,7 +305,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Map<String,List> cacheMap = (ConcurrentHashMap<String,List>) getCache().get(cache);
+      Map<String,List> cacheMap = (Map<String,List>) getCache().get(cache);
 
       cacheMap.remove(cacheKey);
       `
