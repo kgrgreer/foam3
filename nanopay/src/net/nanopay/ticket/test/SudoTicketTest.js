@@ -95,6 +95,7 @@ foam.CLASS({
      Thread.currentThread().sleep(1000);
    } catch (InterruptedException e) {
      //nop
+     Thread.currentThread().interrupt();
    }
 
    user2 = (User) userDAO.find(user2.getId());
@@ -111,6 +112,7 @@ foam.CLASS({
      Thread.currentThread().sleep(1000);
    } catch (InterruptedException e) {
      //nop
+     Thread.currentThread().interrupt();
    }
 
    user2 = (User) userDAO.find(user2.getId());
