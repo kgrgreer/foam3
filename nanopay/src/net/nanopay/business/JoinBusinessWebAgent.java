@@ -1,29 +1,6 @@
 package net.nanopay.business;
 
-import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.UserUserJunction;
-import foam.nanos.auth.token.Token;
-import foam.nanos.http.WebAgent;
-import foam.nanos.notification.email.DAOResourceLoader;
-import foam.nanos.notification.email.EmailTemplate;
-import net.nanopay.model.Business;
-import net.nanopay.onboarding.CreateOnboardingCloneService;
-import net.nanopay.sme.onboarding.BusinessOnboarding;
-import net.nanopay.sme.onboarding.OnboardingStatus;
-import net.nanopay.sme.onboarding.USBusinessOnboarding;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-import org.jtwig.environment.EnvironmentConfiguration;
-import org.jtwig.environment.EnvironmentConfigurationBuilder;
-import org.jtwig.resource.loader.TypedResourceLoader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static foam.mlang.MLang.EQ;
 
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -31,8 +8,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.AND;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
+import org.jtwig.environment.EnvironmentConfiguration;
+import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.resource.loader.TypedResourceLoader;
+
+import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.token.Token;
+import foam.nanos.http.WebAgent;
+import foam.nanos.notification.email.DAOResourceLoader;
+import foam.nanos.notification.email.EmailTemplate;
+import net.nanopay.model.Business;
+import net.nanopay.onboarding.CreateOnboardingCloneService;
 
 /**
  * When an existing user is invited to join another business, they can click a

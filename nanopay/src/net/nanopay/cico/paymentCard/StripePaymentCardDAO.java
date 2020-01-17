@@ -1,24 +1,23 @@
 package net.nanopay.cico.paymentCard;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.stripe.Stripe;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Customer;
+import com.stripe.net.RequestOptions;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import net.nanopay.cico.paymentCard.model.PaymentCard;
-import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 import foam.nanos.auth.User;
-import net.nanopay.tx.stripe.StripeCustomer;
-import java.util.*;
-
-import com.stripe.net.RequestOptions;
-import com.stripe.model.Customer;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.APIException;
-import com.stripe.model.Card;
-import com.stripe.Stripe;
+import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 
 public class StripePaymentCardDAO
     extends ProxyDAO

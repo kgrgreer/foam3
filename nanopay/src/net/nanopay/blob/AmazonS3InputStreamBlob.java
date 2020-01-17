@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.model.S3Object;
 import foam.blob.InputStreamBlob;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class AmazonS3InputStreamBlob
   extends InputStreamBlob

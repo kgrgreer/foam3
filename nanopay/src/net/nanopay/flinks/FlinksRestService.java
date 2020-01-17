@@ -1,28 +1,35 @@
 package net.nanopay.flinks;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import foam.core.ContextAwareSupport;
-import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
-import net.nanopay.flinks.model.*;
-
-//apach
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.client.utils.HttpClientUtils;
-import org.apache.http.client.config.RequestConfig;
+import net.nanopay.flinks.model.FlinksAccountDetailAsyncRequest;
+import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
+import net.nanopay.flinks.model.FlinksAccountsSummaryResponse;
+import net.nanopay.flinks.model.FlinksAuthResponse;
+import net.nanopay.flinks.model.FlinksCredentials;
+import net.nanopay.flinks.model.FlinksInvalidResponse;
+import net.nanopay.flinks.model.FlinksMFAResponse;
 
 /**
  * The FlinksRestService is used to make a call to the Flinks

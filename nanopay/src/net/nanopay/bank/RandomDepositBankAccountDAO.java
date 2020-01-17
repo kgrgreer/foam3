@@ -5,11 +5,9 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.account.TrustAccount;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
-import net.nanopay.tx.model.Transaction;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
