@@ -941,6 +941,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
+   { name: 'net/nanopay/liquidity/ui/transaction/TransactionDAOBrowserView' },
 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
