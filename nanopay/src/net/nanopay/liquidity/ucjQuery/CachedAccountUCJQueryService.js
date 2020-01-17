@@ -34,7 +34,7 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map<String,ConcurrentHashMap> cache = new ConcurrentHashMaphMap<>();
+        Map<String,ConcurrentHashMap> cache = new ConcurrentHashMap<>();
 
         cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
@@ -376,6 +376,7 @@ foam.CLASS({
         }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
+        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
         List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
 

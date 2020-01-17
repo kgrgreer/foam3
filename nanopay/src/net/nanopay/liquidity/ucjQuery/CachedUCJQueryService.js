@@ -282,6 +282,7 @@ foam.CLASS({
         getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelList);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
+        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
         return uniqueApproversForLevelList;
 
