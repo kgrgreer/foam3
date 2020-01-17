@@ -14,6 +14,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
 
   // Payment
+  { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
@@ -37,6 +38,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/AccountBalanceView' },
@@ -867,6 +869,15 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReference' },
+   { name: 'net/nanopay/liquidity/ucjQuery/referencespec/ReferenceSpec' },
+   { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReferenceView' },
+   { name: 'net/nanopay/liquidity/ucjQuery/referencespec/ReadWeakReferenceView' },
+   { name: 'net/nanopay/liquidity/ucjQuery/referencespec/ReferenceSpecPropertyView' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ui/UserOrRoleSearchBar' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ui/SelectTwoSearchBar' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ui/SelectOneSearchBar' },
+   { name: 'net/nanopay/liquidity/ucjQuery/ui/rows' },
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
    { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
@@ -906,12 +917,13 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
-   
+
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
    { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidityChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
@@ -928,7 +940,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
- 
+
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },

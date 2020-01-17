@@ -279,6 +279,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.label();
+      },
+      javaCode: `
+        return label();
+      `
+    },
+    {
       name: 'getApprovableKey',
       type: 'String',
       javaCode: `

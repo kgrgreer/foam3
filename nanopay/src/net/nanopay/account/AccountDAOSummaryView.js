@@ -92,7 +92,8 @@ foam.CLASS({
     'foam.u2.layout.GUnit',
     'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
-    'net.nanopay.account.AccountBalanceView'
+    'net.nanopay.account.AccountBalanceView',
+    'net.nanopay.account.AggregateAccount'
   ],
   imports: [
     'transactionDAO',
@@ -209,17 +210,20 @@ foam.CLASS({
                     .end()
                   })
                 .end()
-            .start(self.CardBorder).addClass(this.myClass('transactions-table'))
-              .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
-              .start(foam.comics.v2.DAOBrowserView, {
-                data: self.transactionDAO
-                  .where(self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id),
-                                 self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)))
-                  .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
-                  .limit(20),
-              })
-              .end()
-            .end();
+            .callIf(! self.AggregateAccount.isInstance(self.data), function() {
+              this
+                .start(self.CardBorder).addClass(self.myClass('transactions-table'))
+                  .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
+                  .start(foam.comics.v2.DAOBrowserView, {
+                    data: self.transactionDAO
+                      .where(self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id),
+                                    self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)))
+                      .orderBy(self.DESC(net.nanopay.tx.model.Transaction.CREATED))
+                      .limit(20),
+                  })
+                  .end()
+                .end();
+            })
         }));
     }
   ]

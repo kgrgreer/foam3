@@ -32,14 +32,14 @@ foam.CLASS({
     {
       //not required, except maybe for view.
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Security',
-      targetDAOKey: 'securitiesDAO',
+      of: 'foam.core.Unit',
+      targetDAOKey: 'currencyDAO',
       name: 'denomination',
       documentation: 'The security that this account stores.',
       tableWidth: 127,
       section: 'accountDetails',
+      value: 'USD',
       order: 3,
-      required: false
     },
     {
     // balance of all sub accounts I suppose

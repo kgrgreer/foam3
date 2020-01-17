@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.liquidity.ui.dashboard.DateFrequency',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidityChart',
     'org.chartjs.CandlestickDAOChartView',
   ],
 
@@ -199,10 +200,12 @@ foam.CLASS({
         .start()
           .style({ 'height': '550px' })
           .addClass(this.myClass('chart'))
-          .add(this.CandlestickDAOChartView.create({
+          .add(this.DashboardLiquidityChart.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
-            customDatasetStyling$: this.styling$
+            customDatasetStyling$: this.styling$,
+            startDate$: this.startDate$,
+            endDate$: this.endDate$
           }))
         .end()
         .start(this.Cols)
@@ -295,7 +298,7 @@ foam.CLASS({
                   await dao.put(last);
                 } else {
                   await dao.put(this.Candlestick.create({
-                    closeTime: maxTime,
+                    closeTime: this.endDate,
                     key: key,
                     total: liquiditySetting[threshold + 'Liquidity'].threshold,
                     count: 1

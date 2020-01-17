@@ -119,6 +119,7 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.NAME });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.DENOMINATION,net.nanopay.account.Account.SECURITIES_ACCOUNT });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.LIFECYCLE_STATE });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
@@ -746,45 +747,6 @@ p({
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "csvUploadScriptDAO",
-  "lazy": true,
-  "serve": true,
-  "serviceScript": "
-    return new foam.dao.EasyDAO.Builder(x) 
-      .setPm(true)
-      .setGuid(true)
-      .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"csvUploadScripts\")
-      .setAuthorize(false)
-      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .build();",
-  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
-})
-
-// Progress bar service
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "ProgressBarDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorize(false)
-      .setPipelinePm(false)
-      .setRuler(false)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("ProgressBarDAO")
-      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
-      .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
 })
 
 p({
