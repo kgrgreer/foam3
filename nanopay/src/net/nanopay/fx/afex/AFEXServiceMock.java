@@ -1,30 +1,13 @@
 package net.nanopay.fx.afex;
 
-import foam.core.ContextAwareSupport;
-import foam.core.X;
-import foam.lib.json.JSONParser;
-import foam.nanos.logger.Logger;
-import foam.util.SafetyUtil;
-import foam.core.Currency;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
+import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.nanos.logger.Logger;
 
 public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 

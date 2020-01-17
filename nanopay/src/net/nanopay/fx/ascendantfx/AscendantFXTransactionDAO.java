@@ -1,22 +1,18 @@
 package net.nanopay.fx.ascendantfx;
 
-import foam.core.FObject;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.util.SafetyUtil;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import foam.core.FObject;
+import foam.core.X;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
 import foam.nanos.logger.Logger;
-import net.nanopay.fx.ascendantfx.AscendantFX;
-import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
+import foam.util.SafetyUtil;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.alterna.CsvUtil;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.model.Transaction;
 
 /**
  * This DAO would accept FX Quote if it is not yet accepted and then submit deal to AscendantFX

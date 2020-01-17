@@ -12,9 +12,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
 
 public class GreenfencePlanDAO extends ProxyDAO {
 

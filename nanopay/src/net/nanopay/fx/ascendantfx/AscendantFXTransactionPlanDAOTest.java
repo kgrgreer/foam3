@@ -1,24 +1,25 @@
 
 package net.nanopay.fx.ascendantfx;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.User;
-import java.util.List;
-import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.CABankAccount;
-import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.fx.FXService;
 import foam.nanos.auth.Address;
-import static foam.mlang.MLang.*;
+import foam.nanos.auth.User;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.fx.FXService;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.account.DigitalAccount;
 
 
 public class AscendantFXTransactionPlanDAOTest

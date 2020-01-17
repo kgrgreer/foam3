@@ -4,12 +4,9 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.auth.email.EmailTokenService;
-import foam.nanos.auth.AuthService;
-import foam.mlang.MLang;
-import net.nanopay.model.Business;
-import net.nanopay.contacts.Contact;
 
 public class EmailVerificationDAO
     extends ProxyDAO

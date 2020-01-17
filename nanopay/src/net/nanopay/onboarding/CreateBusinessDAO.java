@@ -1,21 +1,20 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.auth.*;
-import net.nanopay.contacts.Contact;
-import net.nanopay.contacts.ContactStatus;
-import net.nanopay.invoice.model.Invoice;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.GroupPermissionJunction;
+import foam.nanos.auth.Permission;
+import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
 import net.nanopay.model.Business;
-
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
 
 /**
  * When creating a new business, this decorator will create the groups for that

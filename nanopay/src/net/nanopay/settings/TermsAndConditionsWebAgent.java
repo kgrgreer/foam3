@@ -6,24 +6,24 @@
 
 package net.nanopay.settings;
 
-import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.mlang.sink.Max;
-import foam.nanos.http.WebAgent;
-import foam.nanos.auth.HtmlDoc;
-import foam.util.SafetyUtil;
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import static foam.mlang.MLang.*;
+import static foam.mlang.MLang.EQ;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.HtmlDoc;
+import foam.nanos.http.WebAgent;
+import foam.util.SafetyUtil;
 
 public class TermsAndConditionsWebAgent
         implements WebAgent {
