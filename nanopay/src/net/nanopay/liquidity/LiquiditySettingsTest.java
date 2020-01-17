@@ -137,7 +137,6 @@ public class LiquiditySettingsTest
 
   public void testAffectOfCICO(X x) {
     Long balance = (Long) senderLiquidityDigital.findBalance(x);
-    test(balance == balance, "testAffectofCICO: initial balance: " + balance);
 
     Liquidity high = new Liquidity();
     high.setResetBalance(3L);

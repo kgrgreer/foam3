@@ -324,6 +324,7 @@ public class TransactionTest
     }
 
     test(padTypeLineItem != null, "pad type line item must be set");
+    if ( padTypeLineItem == null ) return;
     test(padTypeLineItem.getPadType() <= 0, "Quote plan should not set the default value");
 
     Transaction txn2 = new Transaction.Builder(x_)

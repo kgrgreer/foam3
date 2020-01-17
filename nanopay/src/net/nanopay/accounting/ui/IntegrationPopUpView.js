@@ -237,7 +237,7 @@ foam.CLASS({
       }
       if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
         this.add(this.NotificationMessage.create({ message: this.TokenExpired, type: 'error' }));
-      } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
+      } else if ( ! this.accountingBankAccounts.result && ! ( this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) ) {
         this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
       }
       if ( this.accountingBankAccounts ) {
@@ -349,8 +349,9 @@ foam.CLASS({
             break;
           }
         }
+        if ( ! accountingBank ) return;
 
-        if ( accountingBank && ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
+        if ( ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
           this.showMatchCurrency = true;
           return;
         }
