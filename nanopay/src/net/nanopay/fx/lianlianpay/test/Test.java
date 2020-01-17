@@ -1,6 +1,7 @@
 package net.nanopay.fx.lianlianpay.test;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.Logger;
 import foam.core.ProxyX;
 import foam.core.X;
 import foam.lib.json.Outputter;
@@ -76,7 +77,6 @@ public class Test {
       System.out.println(outputter.stringify(service.downloadReconciliation(date, "123456789")));
       System.out.println(outputter.stringify(service.downloadStatement(date, "123456789")));
     } catch (Throwable t) {
-      t.printStackTrace();
     }
   }
 }

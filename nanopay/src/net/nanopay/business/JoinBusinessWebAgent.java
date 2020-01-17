@@ -9,6 +9,7 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
@@ -127,7 +128,8 @@ public class JoinBusinessWebAgent implements WebAgent {
       try {
         response.addHeader("REFRESH", "2;URL=" + redirect);
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger logger = (Logger) x.get("logger");
+        logger.log(e);
       }
     }
   }

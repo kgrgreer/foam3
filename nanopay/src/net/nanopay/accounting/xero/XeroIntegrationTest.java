@@ -7,6 +7,7 @@ import com.xero.model.InvoiceStatus;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.accounting.ContactMismatchPair;
 import net.nanopay.accounting.resultresponse.ContactResponseItem;
 import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
@@ -38,6 +39,8 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
   }
 
   public void testContactSync(X x, XeroIntegrationService xeroService ) {
+    Logger logger = (Logger) x.get("logger");
+
     HashMap<String, List<ContactResponseItem>> contactErrors = xeroService.initContactErrors();
     Contact xeroContact = new Contact();
     Calendar date = new GregorianCalendar();
@@ -84,7 +87,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       result = xeroService.importContact(x, xeroContact);
       test(false, "Invalid Email");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(true, "Invalid Email");
     }
 
@@ -100,7 +103,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       result = xeroService.importContact(x, xeroContact);
       test(true, "Optional name");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "Optional name");
     }
 
@@ -116,7 +119,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       result = xeroService.importContact(x, xeroContact);
       test(false, "Number first name");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(true, "Number in first name");
     }
 
@@ -132,7 +135,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       result = xeroService.importContact(x, xeroContact);
       test(false, "Number Last Name");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(true, "Number in Last Name");
     }
 
@@ -148,13 +151,14 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       result = xeroService.importContact(x, xeroContact);
       test(true, "All Valid Contacts");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "All Valid Contacts");
     }
 
   }
 
   public void testInvoiceSync(X x, XeroIntegrationService xeroService) {
+    Logger logger = (Logger) x.get("logger");
     Invoice xeroInvoice = new Invoice();
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = xeroService.initInvoiceErrors();
     Calendar date = new GregorianCalendar();
@@ -166,7 +170,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setUpdatedDateUTC(date);
       test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Invalid Currency");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "Invalid Currency");
     }
 
@@ -179,7 +183,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setUpdatedDateUTC(date);
       test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Not Authorized");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "Not Authorized");
     }
 
@@ -196,7 +200,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Missing Contact" );
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "Missing Contact");
     }
 
@@ -213,7 +217,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setUpdatedDateUTC(date);
       test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "All Fields Valid" );
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(e);
       test(false, "All Fields Valid");
     }
   }

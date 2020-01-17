@@ -398,7 +398,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( accountingException.getErrorCodes() != null ) {
         resultResponse.setErrorCode(accountingException.getErrorCodes());
         resultResponse.setReason(e.getMessage());
-        e.printStackTrace();
         return resultResponse;
       }
 
@@ -414,7 +413,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
         }
 
-        temp.printStackTrace();
         return resultResponse;
       }
     }
@@ -863,7 +861,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           .setData(data)
           .build());
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger logger = (Logger) x.get("logger");
+        logger.log("Unexpected error fetching atachments",e);
         throw new AccountingException(e.getMessage(), AccountingErrorCodes.INTERNAL_ERROR);
       }
     }).filter(Objects::nonNull)

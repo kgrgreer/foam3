@@ -116,14 +116,13 @@ public class QuickbooksWebAgent implements WebAgent {
         }
       }
     } catch ( Throwable e ) {
-      e.printStackTrace();
       logger.error(e);
     }
   }
 
   public void sync(X x, HttpServletResponse response) {
     try {
-      response.sendRedirect("/#sme.bank.matching");
+      response.sendRedirect("/#xsme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);

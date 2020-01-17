@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import net.nanopay.plaid.model.PlaidItem;
 import net.nanopay.plaid.model.PlaidWebhook;
 
@@ -28,7 +29,8 @@ public class PlaidWebAgent implements WebAgent {
       }
 
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     }
   }
 

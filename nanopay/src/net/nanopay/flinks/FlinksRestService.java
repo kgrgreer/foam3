@@ -183,19 +183,20 @@ public class FlinksRestService
     return msg;
   }
 
-  private void closeSource(InputStream is, OutputStream os, HttpURLConnection connection) {
+  private void closeSource(X x, InputStream is, OutputStream os, HttpURLConnection connection) {
+    Logger logger = (Logger) x.get("logger");
     if ( os != null ) {
       try {
         os.close();
       } catch ( IOException e ) {
-        e.printStackTrace();
+        logger.log(e);
       }
     }
     if ( is != null ) {
       try {
         is.close();
       } catch ( IOException e ) {
-        e.printStackTrace();
+        logger.log(e);
       }
     }
     if ( connection != null ) {

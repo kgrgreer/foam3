@@ -12,6 +12,7 @@ import foam.dao.DAO;
 import foam.mlang.sink.Max;
 import foam.nanos.http.WebAgent;
 import foam.nanos.auth.HtmlDoc;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import org.apache.commons.io.IOUtils;
 
@@ -44,7 +45,8 @@ public class TermsAndConditionsWebAgent
       osw = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1);
       out = new PrintWriter(osw, true);
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     } finally {
       IOUtils.closeQuietly(osw);
       IOUtils.closeQuietly(out);
