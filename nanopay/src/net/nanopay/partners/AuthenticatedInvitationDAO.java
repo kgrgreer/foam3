@@ -22,7 +22,7 @@ import net.nanopay.model.InvitationStatus;
 public class AuthenticatedInvitationDAO
   extends ProxyDAO
 {
-  public AuthService auth_ = null;
+  private AuthService auth_ = null;
 
   public AuthenticatedInvitationDAO(X x, DAO delegate) {
     setX(x);

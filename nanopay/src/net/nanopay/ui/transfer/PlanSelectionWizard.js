@@ -130,7 +130,6 @@ foam.CLASS({
         .add(prefix + "-" + txn.type)
         .callIf(txn.type !== 'SummaryTransaction' &&
                 txn.type !== 'ComplianceTransaction', function() {
-          debugger
           for ( let lineItem of txn.lineItems ) {
             if (lineItem.requireUserAction) {
               self2.start().add(lineItem).end();

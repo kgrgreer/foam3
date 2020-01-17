@@ -17,7 +17,7 @@ import net.nanopay.invoice.model.Invoice;
  * Business.
  */
 public class InvoiceToContactDAO extends ProxyDAO {
-  public DAO localUserDAO_;
+  private DAO localUserDAO_;
 
   public InvoiceToContactDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -38,7 +38,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
 
     boolean isPayable = invoice.getPayerId() == user.getId();
 
-    if ( invoice.getContactId() != 0 ) {
+    if ( invoice.getContactId() != 0c ) {
       User contact = (User) localUserDAO_.inX(x).find(invoice.getContactId());
       long idToSet;
       long businessId = ((Contact) contact).getBusinessId();

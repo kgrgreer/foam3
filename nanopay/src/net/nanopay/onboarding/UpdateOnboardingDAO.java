@@ -20,14 +20,14 @@ import static foam.mlang.MLang.EQ;
  */
 
 public class UpdateOnboardingDAO extends ProxyDAO {
-  public DAO localBusinessDAO_;
-  public DAO businessOnboardingDAO_;
-  public DAO uSBusinessOnboardingDAO_;
-  public BusinessOnboarding businessOnboarding;
-  public BusinessOnboarding newBusinessOnboardingClone;
-  public USBusinessOnboarding uSBusinessOnboarding;
-  public USBusinessOnboarding newUSBusinessOnboardingClone;
-  public long businessId;
+  private DAO localBusinessDAO_;
+  private DAO businessOnboardingDAO_;
+  private DAO uSBusinessOnboardingDAO_;
+  private BusinessOnboarding businessOnboarding;
+  private BusinessOnboarding newBusinessOnboardingClone;
+  private USBusinessOnboarding uSBusinessOnboarding;
+  private USBusinessOnboarding newUSBusinessOnboardingClone;
+  private long businessId;
 
   public UpdateOnboardingDAO(X x, DAO delegate) {
     setX(x);
