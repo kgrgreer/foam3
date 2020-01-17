@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       name: 'daoKey',
-      value: 'liquidTransactionDAO'
+      value: 'transactionDAO'
     },
     {
       class: 'Enum',
