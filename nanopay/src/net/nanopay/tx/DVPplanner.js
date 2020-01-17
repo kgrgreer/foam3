@@ -6,18 +6,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.nanos.logger.Logger',
-    'foam.dao.DAO',
-    'net.nanopay.tx.DVPTransaction',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.SecurityTransaction',
-    'net.nanopay.tx.Transfer',
-    'java.util.List',
-    'java.util.ArrayList'
+    'foam.dao.DAO'
   ],
-
 
   methods: [
     {

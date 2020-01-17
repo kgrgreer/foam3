@@ -36,16 +36,13 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.X',
+
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'foam.nanos.fs.File',
-    'net.nanopay.auth.PublicUserInfo',
-    'net.nanopay.auth.PublicUserInfoDAO',
-    'net.nanopay.auth.TestWidget'
+    'foam.nanos.fs.File'
   ],
 
   methods: [
