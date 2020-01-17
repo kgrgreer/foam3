@@ -139,7 +139,10 @@ public class AccountHierarchyService
         if ( ( ! oldMap.containsKey(accountId) || 
                ( oldMap.containsKey(accountId) && 
                  roots.contains(accountId) ) ) &&
-             newMap.get(accountId).getIsIncluded() ) {
+             (
+               newMap.get(accountId) != null &&
+               newMap.get(accountId).getIsIncluded()
+             ) ){
           roots.add(accountId);
         }
       }
@@ -251,7 +254,7 @@ public class AccountHierarchyService
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     if ( trackRootAccounts ) {
       for ( String accountId : accountIds ) {
-        if ( newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+        if ( newMap.get(accountId) != null && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
       }
     }
 

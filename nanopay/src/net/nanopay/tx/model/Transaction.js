@@ -61,6 +61,7 @@ foam.CLASS({
   ],
 
   requires: [
+   'net.nanopay.bank.CanReceiveCurrency',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
@@ -729,24 +730,21 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'dstAccountError',
+      documentation: 'This is used strictly for the synchronizing of dstAccount errors on create.',
+      hidden: true,
+      transient: true
+    },
+    {
+      class: 'String',
       name: 'destinationCurrency',
       aliases: ['destinationDenomination'],
-      updateMode: 'RO',
-      editMode: 'RO',
+      visibility: 'RO',
       section: 'paymentInfoDestination',
       gridColumns: 5,
       help: `Manual entry, please confirm currency and account id with contact externally.
       This property will toggle the displayed amounts to show rate conversions.`,
-      createMode: 'RW',
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          objToChoice: function(unit) {
-            return [unit.id, unit.id];
-          }
-        });
-      }
+      value: 'CAD'
     },
     {
       name: 'next',
