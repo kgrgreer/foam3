@@ -38,7 +38,7 @@ import net.nanopay.onboarding.CreateOnboardingCloneService;
  */
 public class JoinBusinessWebAgent implements WebAgent {
 
-  public EnvironmentConfiguration config_;
+  private EnvironmentConfiguration config_;
 
   @Override
   public void execute(X x) {

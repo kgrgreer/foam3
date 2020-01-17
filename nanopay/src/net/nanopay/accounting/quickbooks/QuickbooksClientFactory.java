@@ -76,7 +76,6 @@ public class QuickbooksClientFactory {
       // access to their account.
       tokenStorage.setAppRedirect(oauth2Config.prepareUrl(scopes, config.getAppRedirect(), tokenStorage.getCsrf()));
     } catch ( Exception e ) {
-      e.printStackTrace();
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
     }

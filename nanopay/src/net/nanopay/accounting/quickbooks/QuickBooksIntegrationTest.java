@@ -35,7 +35,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
     try {
       quickbooksService.start();
     } catch (Exception e) {
-      e.printStackTrace();
       Logger logger = (Logger) x.get("logger");
       logger.log(e);
       return;
@@ -92,7 +91,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       test(false, "Invalid Email");
     } catch (Exception e) {
       logger.log(e);
-      e.printStackTrace();
       test(true, "Invalid Email");
     }
 
@@ -126,7 +124,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
         test(false, "Optional First & last Names");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(false, "Optional First & last Names");
     }
@@ -145,7 +142,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Number in First Name");
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(true, "Number in First Name");
     }
@@ -162,7 +158,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Number in Last Name");
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(true, "Number in Last Name");
     }
@@ -185,7 +180,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
         test(false, "All Valid Fields Contact");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(false, "All Valid Fields Contact");
     }
@@ -217,7 +211,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
         test(true, "Invalid Currency");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(true, "Invalid Currency");
     }
@@ -243,7 +236,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
         test(true, "Missing Contact");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(true, "Missing Contact");
     }
@@ -269,7 +261,6 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
         test(false, "Valid Fields Invoice");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.log(e);
       test(false, "Valid Fields Invoice");
     }

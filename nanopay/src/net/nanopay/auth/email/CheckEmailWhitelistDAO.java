@@ -19,8 +19,8 @@ public class CheckEmailWhitelistDAO
   extends ProxyDAO
 {
   public AppConfig config;
-  public DAO       whitelistedEmailDAO_;
-  public DAO       groupDAO_;
+  private DAO       whitelistedEmailDAO_;
+  private DAO       groupDAO_;
 
   public CheckEmailWhitelistDAO(X x, DAO delegate) {
     super(x, delegate);

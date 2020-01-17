@@ -22,8 +22,8 @@ import net.nanopay.model.Business;
  * user creating the business is in the admin group for the business.
  */
 public class CreateBusinessDAO extends ProxyDAO {
-  public DAO groupDAO;
-  public DAO agentJunctionDAO;
+  private DAO groupDAO;
+  private DAO agentJunctionDAO;
 
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
