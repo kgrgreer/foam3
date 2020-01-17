@@ -1,18 +1,28 @@
 package net.nanopay.fx.afex;
 
-import foam.core.X;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import foam.core.ContextAwareSupport;
+import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-
-import static foam.mlang.MLang.*;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
@@ -31,17 +41,6 @@ import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 

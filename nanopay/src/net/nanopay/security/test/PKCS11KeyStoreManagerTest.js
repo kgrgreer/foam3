@@ -7,7 +7,6 @@ foam.CLASS({
     'foam.util.SecurityUtil',
     'net.nanopay.security.PKCS11KeyStoreManager',
     'sun.security.pkcs11.SunPKCS11',
-
     'javax.crypto.KeyGenerator',
     'javax.crypto.SecretKey',
     'java.io.*',
@@ -61,7 +60,6 @@ foam.CLASS({
           test(keyStore != null, "Generating a PKCS11KeyStoreManager with valid configuration creates KeyStore successfully");
           test(keyStore.size() == 0, "Generating a PKCS11KeyStoreManager with valid configuration and no keys returns key size of 0");
         } catch ( Throwable t ) {
-          t.printStackTrace();
           test(false, "Generating a PKCS11KeyStoreManager with valid configuration should not throw an exception");
         }
       `
@@ -169,7 +167,6 @@ foam.CLASS({
           SecretKey stored = entry.getSecretKey();
           test(Arrays.equals(key.getEncoded(), stored.getEncoded()), "Loaded SecretKey is equal to stored SecretKey");
         } catch ( Throwable t ) {
-          t.printStackTrace();
           test(false, "Storing a secret key using PKCS11KeyStoreManager should not throw an exception");
         }
       `

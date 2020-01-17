@@ -673,7 +673,6 @@ foam.CLASS({
                     out.println("<pre>");
                     t.printStackTrace(out);
                     out.println("</pre>");
-                    t.printStackTrace();
                     logger.error(t);
                 }
              }
@@ -783,7 +782,6 @@ foam.CLASS({
               out.println("<pre>");
               t.printStackTrace(out);
               out.println("</pre>");
-              t.printStackTrace();
               logger.error(t);
              }
 

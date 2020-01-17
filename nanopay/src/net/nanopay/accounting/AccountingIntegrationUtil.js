@@ -71,6 +71,8 @@ foam.CLASS({
         service = this.quickbooksService;
       }
 
+      if ( ! service ) return;
+
       // contact sync
       let contactResult = await service.contactSync(null);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {

@@ -588,7 +588,7 @@ foam.CLASS({
           }
         }
 
-        if ( ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
+        if ( accountingBank && ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
           this.showMatchCurrency = true;
           return;
         }

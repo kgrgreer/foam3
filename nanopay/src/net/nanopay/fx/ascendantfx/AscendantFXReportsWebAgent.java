@@ -1,16 +1,50 @@
 package net.nanopay.fx.ascendantfx;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.DESC;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NEQ;
+
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import foam.blob.Blob;
-import foam.blob.FileBlob;
 import foam.blob.BlobService;
+import foam.blob.FileBlob;
 import foam.blob.IdentifiedBlob;
 import foam.blob.ProxyBlobService;
 import foam.core.X;
-import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
@@ -27,29 +61,19 @@ import net.nanopay.documents.AcceptanceDocument;
 import net.nanopay.documents.UserAcceptanceDocument;
 import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
-import net.nanopay.model.*;
+import net.nanopay.model.BeneficialOwner;
+import net.nanopay.model.Branch;
+import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
+import net.nanopay.model.BusinessSector;
+import net.nanopay.model.BusinessType;
+import net.nanopay.model.IdentificationType;
+import net.nanopay.payment.Institution;
+import net.nanopay.plaid.PlaidResultReport;
 import net.nanopay.sme.onboarding.BusinessOnboarding;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.sme.onboarding.OnboardingStatus;
 import net.nanopay.sme.onboarding.USBusinessOnboarding;
-import net.nanopay.payment.Institution;
-import net.nanopay.plaid.PlaidResultReport;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import static foam.mlang.MLang.*;
 
 public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebAgent {
 
@@ -1003,8 +1027,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
-    DataOutputStream os = null;
     ZipOutputStream zipos = null;
+    FileInputStream is = null;
     try {
       zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
       zipos.setMethod(ZipOutputStream.DEFLATED);
@@ -1015,22 +1039,23 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
-        os = new DataOutputStream(zipos);
-        InputStream is = new FileInputStream(file);
-        byte[] b = new byte[100];
-        int length;
-        while((length = is.read(b))!= -1){
-          os.write(b, 0, length);
+        try ( DataOutputStream os = new DataOutputStream(zipos) ) {
+          is = new FileInputStream(file);
+          byte[] b = new byte[100];
+          int length;
+          while ((length = is.read(b)) != -1) {
+            os.write(b, 0, length);
+          }
+          is.close();
+          zipos.closeEntry();
+          os.flush();
         }
-        is.close();
-        zipos.closeEntry();
-        os.flush();
       }
     } catch (Exception e) {
       logger.error(e);
     } finally {
-      IOUtils.closeQuietly(os);
       IOUtils.closeQuietly(zipos);
+      IOUtils.closeQuietly(is);
     }
   }
 }

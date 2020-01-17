@@ -14,12 +14,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'java.util.Calendar',
-    'java.util.Date',
-    'net.nanopay.security.pii.ViewPIIRequest'
+    'java.util.Date'
   ],
 
   methods: [

@@ -7,20 +7,10 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'com.google.common.io.BaseEncoding',
-    'foam.core.X',
-    'foam.core.FObject',
-    'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.EmailConfig',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'foam.util.SecurityUtil',
-    'io.nayuki.qrcodegen.QrCode',
-    'java.net.URI',
     'java.util.*'
   ],
 

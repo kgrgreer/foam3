@@ -6,7 +6,6 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
 /**

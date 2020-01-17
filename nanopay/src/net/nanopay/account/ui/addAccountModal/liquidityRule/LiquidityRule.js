@@ -78,12 +78,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'existingRuleDetails',
-      label: '',
       documentation: `
         To show or hide the liquidity rule existing view depending on whether
         LiquidityRuleExisting is selected or not
       `,
-      label: '',
       expression: function (isExistingSelected) {
         return isExistingSelected ? this.LiquidityRuleExisting.create() : null;
       },

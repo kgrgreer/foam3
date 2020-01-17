@@ -394,9 +394,7 @@ foam.CLASS({
                 } else {
                   user = (User) bareUserDAO.find(userId);
                 }
-              } catch(Exception e) {
-                e.printStackTrace();
-              }
+              } catch(Exception e) {}
               return user;
             }
         `);

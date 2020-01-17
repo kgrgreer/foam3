@@ -426,13 +426,14 @@ foam.CLASS({
     
         DataOutputStream os = null;
         ZipOutputStream zipos = null;
+        InputStream is = null;
         try {
           zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
           zipos.setMethod(ZipOutputStream.DEFLATED);
     
           zipos.putNextEntry(new ZipEntry(file.getName()));
           os = new DataOutputStream(zipos);
-          InputStream is = new FileInputStream(file);
+          is = new FileInputStream(file);
           byte[] b = new byte[100];
           int length;
           while((length = is.read(b))!= -1){
@@ -446,6 +447,7 @@ foam.CLASS({
           Logger logger = (Logger) x.get("logger");
           logger.error(e);
         } finally {
+          IOUtils.closeQuietly(is);
           IOUtils.closeQuietly(os);
           IOUtils.closeQuietly(zipos);
         }

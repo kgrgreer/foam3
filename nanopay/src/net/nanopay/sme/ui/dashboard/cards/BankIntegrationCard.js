@@ -8,10 +8,6 @@ foam.CLASS({
     Actions are provided for both scenarios (attached or not).
   `,
 
-  implements: [
-    'foam.mlang.Expressions',
-  ],
-
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -21,10 +17,6 @@ foam.CLASS({
     'net.nanopay.payment.Institution',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
     'foam.u2.dialog.Popup'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions',
   ],
 
   imports: [

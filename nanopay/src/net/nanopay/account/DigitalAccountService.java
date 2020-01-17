@@ -1,17 +1,12 @@
 package net.nanopay.account;
 
-import foam.core.X;
 import foam.core.ContextAwareSupport;
+import foam.core.X;
 import foam.dao.DAO;
-import static foam.mlang.MLang.INSTANCE_OF;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-
 import foam.util.SafetyUtil;
-import net.nanopay.liquidity.Liquidity;
-import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.model.Business;
-import net.nanopay.util.Frequency;
 
 public class DigitalAccountService
   extends ContextAwareSupport

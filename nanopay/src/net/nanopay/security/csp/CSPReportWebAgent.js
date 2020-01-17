@@ -14,19 +14,16 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
 
     'javax.servlet.http.HttpServletRequest',
-    'javax.servlet.http.HttpServletResponse',
 
     'java.io.BufferedReader',
     'java.io.IOException',
     'java.io.UnsupportedEncodingException',
     'java.util.Date',
 
-    'net.nanopay.security.csp.CSPViolation',
     'net.nanopay.security.csp.CSPViolationReport',
 
     'com.google.gson.Gson',

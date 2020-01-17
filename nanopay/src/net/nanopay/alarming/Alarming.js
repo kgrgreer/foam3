@@ -12,8 +12,6 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'java.util.Date',
-    'foam.nanos.analytics.Candlestick',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger'

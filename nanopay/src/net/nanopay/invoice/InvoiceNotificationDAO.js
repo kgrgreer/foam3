@@ -152,9 +152,7 @@ foam.CLASS({
               args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+          } catch (Exception e) {}
         }
         return invoice;
       `
@@ -251,32 +249,32 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        args = new HashMap<>();
-        args.put("agentName", agentName);
-        args.put("fromName", fromName);
-        args.put("invoiceType", invoiceType);
-        args.put("account", invoice.getInvoiceNumber());
-        args.put("transId", invoice.getPaymentId());
-        args.put("note", invoice.getNote());
+      HashMap<String, Object> newArgs = new HashMap<>();
+      newArgs.put("agentName", agentName);
+      newArgs.put("fromName", fromName);
+      newArgs.put("invoiceType", invoiceType);
+      newArgs.put("account", invoice.getInvoiceNumber());
+      newArgs.put("transId", invoice.getPaymentId());
+      newArgs.put("note", invoice.getNote());
 
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
 
-        args.put("currency", invoice.getDestinationCurrency());
-        args.put("amount", amount);
+        newArgs.put("currency", invoice.getDestinationCurrency());
+        newArgs.put("amount", amount);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-        args.put("date", date != null ? dateFormat.format(date) : "n/a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        newArgs.put("date", date != null ? dateFormat.format(date) : "n/a");
 
         if ( invoice instanceof BillingInvoice ) {
           BillingInvoice billingInvoice = (BillingInvoice) invoice;
-          args.put("billingPeriod", String.format("from %s to %s",
+          newArgs.put("billingPeriod", String.format("from %s to %s",
             dateFormat.format(billingInvoice.getBillingStartDate()),
             dateFormat.format(billingInvoice.getBillingEndDate()))
           );
         }
 
-        return args;
+        return newArgs;
       `
     },
     {
@@ -294,6 +292,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
+          return null;
         }
 
         // currently the only sme group that can not approve an invoice is employees

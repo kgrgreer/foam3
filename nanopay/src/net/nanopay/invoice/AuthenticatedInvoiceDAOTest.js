@@ -6,20 +6,15 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.ArraySink',
-    'foam.dao.OrderedSink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
-    'java.util.List',
-    'net.nanopay.invoice.AuthenticatedInvoiceDAO',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.invoice.PreventRemoveInvoiceDAO',
     'foam.nanos.auth.CreatedByAwareDAO',
     'foam.dao.SequenceNumberDAO'
   ],
@@ -100,7 +95,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(x, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Admin user should be able to create an invoice." );
@@ -112,7 +106,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(x, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Admin user should be able to edit an invoice." );
@@ -122,7 +115,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.find_(x, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Admin user should be able to find the invoice." );
@@ -133,7 +125,6 @@ foam.CLASS({
       try {
         tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
 
@@ -170,7 +161,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payeeContext, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payee (Business user) should be able to create an invoice." );
@@ -183,7 +173,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payeeContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payee (Business user) should be able to update an invoice they created." );
@@ -193,7 +182,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.find_(payeeContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payee (Business user) should be able to find the invoice." );
@@ -215,7 +203,6 @@ foam.CLASS({
       try {
         tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && tempSink.getArray().size() > 0, "Invoice payee successfully selected invoice.");
@@ -249,7 +236,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payerContext, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payer (Business user) should be able to put new invoice." );
@@ -262,7 +248,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.put_(payerContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payer (Business user) should be able to update an invoice they created." );
@@ -272,7 +257,6 @@ foam.CLASS({
       try {
         invoice = (Invoice) dao.find_(payerContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Payer (Business user) should be able to find the invoice." );
@@ -294,7 +278,6 @@ foam.CLASS({
       try {
         tempSink = (ArraySink) dao.select_(x, tempSink, 0, 1000, null, null);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && tempSink.getArray().size() > 0, "Invoice payer successfully selected invoice.");
@@ -393,7 +376,6 @@ foam.CLASS({
         dao.remove_(relatedUserContext, invoice);
         inv = (Invoice) dao.find_(relatedUserContext, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && inv == null, "Related user can remove invoice they created." );
@@ -415,7 +397,6 @@ foam.CLASS({
         dao.remove_(relatedUserContext, invoice);
         inv = (Invoice) dao.find_(x, invoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && inv != null, "Related user can't remove invoice related to transaction, can't find but permitted admin can." );
@@ -454,7 +435,6 @@ foam.CLASS({
         dao.remove_(x, invoice);
         inv = (Invoice) dao.find_(x, invoice);
       } catch (Exception t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && inv != null && inv.getRemoved() == true, "Admin user can find removed invoice." );
@@ -465,7 +445,6 @@ foam.CLASS({
       try {
         result = (ArraySink) dao.select_(x, new ArraySink(), 0, 1, null, null);
       } catch (Exception t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && result.getArray().size() != 0, "Admin user can select removed invoices." );
@@ -485,7 +464,6 @@ foam.CLASS({
       try {
         inv = (Invoice) dao.find_(relatedUserContext, invoice);
       } catch (Exception t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw && inv == null, "Related user can't find removed invoice." );
@@ -564,7 +542,6 @@ foam.CLASS({
       try {
         dao.remove_(relatedUserContext, mutatedInvoice);
       } catch(AuthorizationException t) {
-        t.printStackTrace();
         threw = true;
       }
       test( ! threw, "Able to delete draft invoice." );
@@ -643,7 +620,6 @@ foam.CLASS({
       try {
         Invoice inv = (Invoice) invoiceDAO.put_(regUserContext, regUserPermInvoice);
       } catch (Exception e) {
-        e.printStackTrace();
         threw = true;
       }
       test( ! threw, "Test 1: Put regUserPermInvoice with regUserContext" );
@@ -678,7 +654,6 @@ foam.CLASS({
       try {
         Invoice tempInv = (Invoice) invoiceDAO.find_(regUserContext, regUserPermInvoice.getId());
       } catch (Exception e) {
-        e.printStackTrace();
         threw = true;
       }
       test( ! threw, "Test 4: Find invoice created by regular user as regular user in context." );
@@ -691,7 +666,6 @@ foam.CLASS({
         result = (ArraySink) invoiceDAO.where(
           EQ(Invoice.ID, regUserPermInvoice.getId())).select_(regUserContext, result, 0, 1, null, null);
       } catch (Exception e) {
-        e.printStackTrace();
       }
       test( result.getArray().size() != 0, "Test 5: Selecting regular user invoice as regular user" );
 
@@ -701,7 +675,6 @@ foam.CLASS({
         result = (ArraySink) invoiceDAO.where(
         EQ(Invoice.ID, adminPermInvoice.getId())).select_(regUserContext, new ArraySink(), 0, 1, null, null);
       } catch (Exception e) {
-        e.printStackTrace();
       }
       test( result.getArray().size() == 0, "Test 6: Select adminPermInvoice with regUser" );
 

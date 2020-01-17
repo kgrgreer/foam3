@@ -1,32 +1,25 @@
 package net.nanopay.tx;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.test.TestUtils;
-import java.util.List;
-import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.fx.FXQuote;
+import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXService;
-import net.nanopay.payment.PaymentService;
-import foam.nanos.auth.Address;
-import static foam.mlang.MLang.*;
-import net.nanopay.fx.ExchangeRateStatus;
-import net.nanopay.fx.FeesFields;
 import net.nanopay.payment.Institution;
+import net.nanopay.tx.alterna.AlternaCOTransaction;
+import net.nanopay.tx.model.PercentageFee;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionFee;
-import net.nanopay.tx.model.PercentageFee;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.Transfer;
-import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.FeeLineItem;
-
-import java.util.List;
 
 public class NanopayTransactionFeeDAOTest
     extends foam.nanos.test.Test {

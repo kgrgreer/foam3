@@ -8,11 +8,11 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.DAO',
-
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.FileReader',
     'java.io.FileWriter',
+    'java.io.IOException',
     'java.io.File',
     'java.math.BigInteger',
     'java.nio.charset.Charset',
@@ -367,7 +367,9 @@ foam.CLASS({
           }
 
           try { // cleaning up
-            imageDumpFile.delete();
+            if ( !imageDumpFile.delete() ) {
+              throw new IOException("Delete file failed!");
+            }
           } catch (Throwable t) { }
         `
       },
@@ -834,7 +836,7 @@ foam.CLASS({
               }
             }
 
-            test(line.contains("signature"), "Signature is being appended to the image.");
+            test( line != null && line.contains("signature"), "Signature is being appended to the image.");
 
             Pattern pattern = Pattern.compile("signature\\\\(\\"(.*?)\\"\\\\)");
             Matcher matcher = pattern.matcher(line);
@@ -847,7 +849,6 @@ foam.CLASS({
               test(false, "Signature should be included in signed journals.");
             }
           } catch ( Throwable t ) {
-            t.printStackTrace();
             test(false, "Images are incorrectly being written to. " + t);
           }
         `

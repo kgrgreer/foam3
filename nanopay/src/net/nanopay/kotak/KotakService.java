@@ -16,6 +16,7 @@ import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
 import net.nanopay.kotak.model.reversal.Rev_DetailType;
 import net.nanopay.kotak.model.reversal.Reversal;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -27,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -83,8 +85,9 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       post.setEntity(new StringEntity(encryptedData, Encoding));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
+      BufferedReader rd = null;
       try {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
         StringBuilder sb = new StringBuilder();
         String line;
         while ( (line = rd.readLine()) != null ) {
@@ -93,6 +96,8 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         response = sb.toString();
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
 
@@ -110,6 +115,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       } catch (ParserConfigurationException | SAXException e) {
         logger.error(e);
       } finally {
+        IOUtils.closeQuietly(rd);
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {
@@ -151,8 +157,9 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       post.setEntity(new StringEntity(encryptedData, Encoding));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
+      BufferedReader rd = null;
       try {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
         StringBuilder sb = new StringBuilder();
         String line;
         while ( (line = rd.readLine()) != null ) {
@@ -161,6 +168,8 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         response = sb.toString();
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
 
@@ -207,6 +216,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       } catch (ParserConfigurationException | SAXException e) {
         logger.error(e);
       } finally {
+        IOUtils.closeQuietly(rd);
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {

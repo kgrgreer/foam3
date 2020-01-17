@@ -1,30 +1,24 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.app.Mode;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.FeeTransfer;
 import net.nanopay.tx.Transfer;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class TransactionDAOTest
   extends foam.nanos.test.Test

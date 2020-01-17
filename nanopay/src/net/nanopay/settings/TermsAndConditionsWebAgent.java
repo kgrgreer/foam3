@@ -6,22 +6,24 @@
 
 package net.nanopay.settings;
 
-import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.mlang.sink.Max;
-import foam.nanos.http.WebAgent;
-import foam.nanos.auth.HtmlDoc;
-import foam.util.SafetyUtil;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import static foam.mlang.MLang.*;
+import static foam.mlang.MLang.EQ;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.HtmlDoc;
+import foam.nanos.http.WebAgent;
+import foam.util.SafetyUtil;
 
 public class TermsAndConditionsWebAgent
         implements WebAgent {
@@ -37,10 +39,15 @@ public class TermsAndConditionsWebAgent
 
     // Query to get latest terms and conditions based on the effective date
     tcDAO = tcDAO.limit(1).orderBy(HtmlDoc.ISSUED_DATE);
+    OutputStreamWriter osw = null;
     try {
-      out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1), true);
+      osw = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1);
+      out = new PrintWriter(osw, true);
     } catch (IOException e) {
       e.printStackTrace();
+    } finally {
+      IOUtils.closeQuietly(osw);
+      IOUtils.closeQuietly(out);
     }
 
     if ( SafetyUtil.isEmpty(version) ) {

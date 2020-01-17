@@ -41,6 +41,7 @@ foam.CLASS({
               Notification notification = new Notification();
               notification.setEmailIsEnabled(true);
 
+              if ( obj == null ) return; 
               Transaction t = (Transaction) obj; // used through loop
               Transaction tx = (Transaction) obj; //keep original object
               while ( t != null && !(t instanceof net.nanopay.tx.AbliiTransaction) ){

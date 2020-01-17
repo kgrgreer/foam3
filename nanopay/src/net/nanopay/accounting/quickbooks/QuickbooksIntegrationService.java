@@ -883,9 +883,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       type = "Invoice";
       currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getSourceCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getSourceCurrency());
-    }
-
-    if ( quickInvoice.getPayerId() == user.getId() ) {
+    } else {
       type = "Bill";
       currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getDestinationCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getDestinationCurrency());

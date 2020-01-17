@@ -1,18 +1,5 @@
 package net.nanopay.flinks;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.lib.json.JSONParser;
-import foam.lib.json.Outputter;
-import foam.lib.StoragePropertyPredicate;
-import foam.nanos.app.AppConfig;
-import foam.nanos.http.WebAgent;
-import net.nanopay.flinks.model.FlinksAuthRequest;
-import net.nanopay.flinks.model.FlinksResponse;
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -20,6 +7,20 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+
+import foam.core.X;
+import foam.lib.StoragePropertyPredicate;
+import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.nanos.app.AppConfig;
+import foam.nanos.http.WebAgent;
+import net.nanopay.flinks.model.FlinksAuthRequest;
+import net.nanopay.flinks.model.FlinksResponse;
 
 public class FlinksConnectWebAgent
     implements WebAgent

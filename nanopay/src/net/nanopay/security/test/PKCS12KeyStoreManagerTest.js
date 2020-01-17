@@ -29,7 +29,10 @@ foam.CLASS({
 
           // delete existing passphrase file
           if ( passphraseFile.exists() ) {
-            passphraseFile.delete();
+            //passphraseFile.delete();
+            if ( !passphraseFile.delete() ) {
+              throw new IOException("Delete file failed!");
+            }
           }
 
           // create new passphrase
@@ -56,7 +59,9 @@ foam.CLASS({
 
           // delete existing keystore file
           if ( keyStoreFile.exists() ) {
-            keyStoreFile.delete();
+            if ( !keyStoreFile.delete() ) {
+              throw new IOException("Delete keystore file failed!");
+            }
           }
 
           if ( ! keyStoreFile.exists() ) {
@@ -251,6 +256,10 @@ foam.CLASS({
           check = keyStoreManager.getKeyStore().size();
         } catch ( Throwable t ) {
           test(false, "KeyStoreManager getKeyStore shouldn't be throwing exceptions.");
+        }
+        if ( keyStoreManager == null ) {
+          test(false, "KeyStoreManager getKeyStore shouldn't be null"); 
+          return;
         }
 
         SecretKey key = null;

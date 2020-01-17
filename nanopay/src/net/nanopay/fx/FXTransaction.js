@@ -18,17 +18,9 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'foam.nanos.auth.User',
-    'java.util.Arrays',
-    'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
-    'net.nanopay.tx.AcceptAware',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
