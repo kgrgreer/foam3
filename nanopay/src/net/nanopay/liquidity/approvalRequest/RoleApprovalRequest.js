@@ -21,7 +21,8 @@ foam.CLASS({
     'operation',
     'initiatingUser',
     'approver',
-    'status'
+    'status',
+    'lastModified'
   ],
 
   topics: [

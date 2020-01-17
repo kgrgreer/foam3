@@ -949,12 +949,18 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) &&
-      getLifecycleState() == LifecycleState.ACTIVE ) {
-        return true;
-      }
-      return false;
+        // Allow transfer when status=COMPLETED and lifecycleState=ACTIVE
+        // - for new transaction and
+        // - for old transaction that just transitions to status=COMPLETED or lifecycleState=ACTIVE
+        if ( getStatus() == TransactionStatus.COMPLETED
+          && getLifecycleState() == LifecycleState.ACTIVE
+          && ( oldTxn == null
+            || oldTxn.getStatus() != TransactionStatus.COMPLETED
+            || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
+        ) {
+          return true;
+        }
+        return false;
       `
     },
     {

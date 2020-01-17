@@ -213,7 +213,10 @@ p({
   "documentation":"When transaction status changes update the status history array with a timestamped entry.",
   "daoKey":"localTransactionDAO",
   "operation":1,
-  "predicate":{"class":"net.nanopay.tx.ruler.PropertyChangePredicate","propName":"status"},
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+    "propName":"status"
+  },
   "action":{"class":"net.nanopay.tx.ruler.AddStatusHistoryAction"}
 })
 p({"class":"foam.nanos.ruler.Rule","id":"Generic Security CICO planner","priority":110,"ruleGroup":"SecurityPlanner","daoKey":"securityPlannerDAO","enabled":true,"operation":0,"predicate":{"class":"foam.core.ruler.predicate.PropertyEQProperty","prop1":"sourceUnit","prop2":"destinationUnit"},"action":{"class":"net.nanopay.tx.SecurityCIplanner"}})

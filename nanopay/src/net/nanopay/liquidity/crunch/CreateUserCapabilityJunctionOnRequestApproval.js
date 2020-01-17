@@ -28,7 +28,6 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
             DAO capabilityDAO = (DAO) getX().get("localCapabilityDAO");
-            DAO capabilityAccountTemplateDAO = (DAO) getX().get("capabilityAccountTemplateDAO");
 
             CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
@@ -39,22 +38,20 @@ foam.CLASS({
             if ( requestType == CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template;
+              Map<String, CapabilityAccountData> newMap;
               if ( req.getIsUsingTemplate() ) { 
-                template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+                newMap = req.getCapabilityAccountTemplateMap();
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
                   .setIsCascading(false)
                   .setIsIncluded(true)
                   .setApproverLevel(new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build())
                   .build();
-                Map<String, CapabilityAccountData> map = new HashMap<String, CapabilityAccountData>();
-                map.put(String.valueOf(req.getAccountToAssignTo()), data);
-
-                template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
+                newMap = new HashMap<String, CapabilityAccountData>();
+                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
               }
               
-              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+              if ( newMap == null || newMap.size() == 0 ) 
                 throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
@@ -63,7 +60,7 @@ foam.CLASS({
                 UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
                 UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
                 AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
-                AccountApproverMap fullAccountMap = accountHierarchy.getAssignedAccountMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, template);
+                AccountApproverMap fullAccountMap = accountHierarchy.getAssignedAccountMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
                 ucj.setData(fullAccountMap);
                 userCapabilityJunctionDAO.put(ucj);
               }
@@ -83,21 +80,19 @@ foam.CLASS({
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template;
+              Map<String, CapabilityAccountData> newMap;
               if ( req.getIsUsingTemplate() ) { 
-                template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+                newMap = req.getCapabilityAccountTemplateMap();
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
                   .setIsCascading(false)
                   .setIsIncluded(true)
                   .build();
-                Map<String, CapabilityAccountData> map = new HashMap<String, CapabilityAccountData>();
-                map.put(String.valueOf(req.getAccountToAssignTo()), data);
-                
-                template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
+                newMap = new HashMap<String, CapabilityAccountData>();
+                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
               }
 
-              if ( template == null || template.getAccounts() == null || template.getAccounts().size() == 0 ) 
+              if ( newMap == null || newMap.size() == 0 ) 
                 throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
@@ -106,7 +101,7 @@ foam.CLASS({
                 UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
                 UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
                 AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
-                AccountApproverMap fullAccountMap = accountHierarchy.getRevokedAccountsMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, template);
+                AccountApproverMap fullAccountMap = accountHierarchy.getRevokedAccountsMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
                 ucj.setData(fullAccountMap);
                 userCapabilityJunctionDAO.put(ucj);
               }
