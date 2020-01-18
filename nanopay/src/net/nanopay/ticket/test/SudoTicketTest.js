@@ -99,7 +99,7 @@ foam.CLASS({
    }
 
    user2 = (User) userDAO.find(user2.getId());
-   test( user2.getGroup() == group3.getId(), "User2 group changed to group3 ("+user2.getGroup()+")");
+   test( user2.getGroup().equals(group3.getId()), "User2 group changed to group3 ("+user2.getGroup()+")");
 
    ticket = (SudoTicket) ticketDAO.find_(y, ticket.getId()).fclone();
    ticket.setStatus("CLOSED");
@@ -116,7 +116,7 @@ foam.CLASS({
    }
 
    user2 = (User) userDAO.find(user2.getId());
-   test( user2.getGroup() == group2.getId(), "User2 group changed to group2 ("+user2.getGroup()+")");
+   test( user2.getGroup().equals(group2.getId()), "User2 group changed to group2 ("+user2.getGroup()+")");
 
    // TODO: 1) REQUESTED -> DECLINED, 2) APPROVED -> DECLINED
      ` 
