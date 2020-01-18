@@ -86,7 +86,7 @@ import java.text.SimpleDateFormat;
           String formattedLRDFilter = sdf.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }
-        if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
+        if ( dateOfBirth != null ) {
           String formattedDOBFilter = sdf.format(dateOfBirth);
           urlAddress += "&date-of-birth=" + formattedDOBFilter;
         }
@@ -99,7 +99,7 @@ import java.text.SimpleDateFormat;
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "entity-name=" + entityName;
-        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
+        if ( filterLRDFrom != null ) {
           String formattedFilter = sdf.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedFilter;
         }
