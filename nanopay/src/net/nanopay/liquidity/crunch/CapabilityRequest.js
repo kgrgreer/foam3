@@ -3,11 +3,14 @@ foam.CLASS({
   name: 'CapabilityRequest', 
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   imports: [
-    'capabilityAccountTemplateDAO'
+    'capabilityAccountTemplateDAO',
+    // TODO: figure out why we can't import controllerMode
+    // 'controllerMode'
   ],
 
   javaImports: [
@@ -21,7 +24,8 @@ foam.CLASS({
   tableColumns: [
     'id',
     'requestType',
-    'users'
+    'lifecycleState',
+    'lastModified'
   ],
 
   properties: [  
@@ -177,8 +181,16 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
+      label: 'Status',
       value: foam.nanos.auth.LifecycleState.PENDING,
-      visibility: foam.u2.Visibility.HIDDEN
+      // TODO: figure out why we can't import controllerMode
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      // TODO: figure out why we can't import controllerMode
+      visibility: foam.u2.Visibility.RO
     },
   ],
 
@@ -190,6 +202,13 @@ foam.CLASS({
         String id = String.valueOf(getId());
         return id;
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(){
+        return `(Capability Request #${this.id}) ${this.requestType.label}`
+      }
     }
   ]
 });
