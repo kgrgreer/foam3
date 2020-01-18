@@ -194,40 +194,6 @@ foam.CLASS({
     'cview',
     'canvasContainer',
   ],
-  actions: [
-    {
-      name: 'zoomIn',
-      code: function() {
-        this.AnimateTo.create({
-          slot: this.cview.scale$,
-          destValue: this.cview.scale * 1.25,
-          ms: 200
-        }).doAnimation();
-      }
-    },
-    {
-      name: 'zoomOut',
-      isEnabled: function(cview$scale) {
-        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
-      },
-      code: function() {
-        this.AnimateTo.create({
-          slot: this.cview.scale$,
-          destValue: this.cview.scale / 1.25,
-          ms: 200
-        }).doAnimation();
-      }
-    },
-    {
-      name: 'home',
-      isEnabled: function(canvasContainer) {
-        return !! canvasContainer;
-      },
-      code: function() {
-        this.scrollToNode(this.cview.view.root);
-      }
-    }
-  ],
 
   methods: [
     function initE(){
@@ -425,6 +391,42 @@ foam.CLASS({
             break;
           }
         }
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'zoomIn',
+      code: function() {
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale * 1.25,
+          ms: 200
+        }).doAnimation();
+      }
+    },
+    {
+      name: 'zoomOut',
+      isEnabled: function(cview$scale) {
+        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
+      },
+      code: function() {
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale / 1.25,
+          ms: 200
+        }).doAnimation();
+      }
+    },
+    {
+      name: 'home',
+      isEnabled: function(canvasContainer) {
+        return !! canvasContainer;
+      },
+      code: function() {
+        this.highlightedAccount = this.selectedRoot;
+        this.scrollToNode(this.cview.view.root);
       }
     }
   ],
