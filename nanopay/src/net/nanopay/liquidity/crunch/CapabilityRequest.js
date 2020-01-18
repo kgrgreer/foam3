@@ -138,7 +138,8 @@ foam.CLASS({
       },
       view: function(_, x) {
         return {
-          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView'
+          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView',
+          isCapabilityAccountData: true
         };
       }
     },
