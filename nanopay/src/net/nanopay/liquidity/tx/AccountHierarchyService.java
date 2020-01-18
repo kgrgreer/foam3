@@ -77,6 +77,7 @@ public class AccountHierarchyService
     List<String> justRoot = new ArrayList<>();
     justRoot.add("1103");
 
+    userToViewableRootAccountsMap_.put(Long.parseLong("1348"), new ArrayList<>(justRoot));
     userToViewableRootAccountsMap_.put(Long.parseLong("8006"), new ArrayList<>(justRoot));
     userToViewableRootAccountsMap_.put(Long.parseLong("8007"), new ArrayList<>(justRoot));
     userToViewableRootAccountsMap_.put(Long.parseLong("8015"), new ArrayList<>(justRoot));
