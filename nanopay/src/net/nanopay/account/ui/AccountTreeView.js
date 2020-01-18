@@ -85,6 +85,10 @@ foam.CLASS({
       border-radius: 3px;
     }
 
+    ^ .foam-u2-ActionView-tertiary:focus {
+      border-bottom-color: transparent;
+    }
+
     ^ .foam-u2-ActionView-tertiary:hover {
       background-color: rgba(0, 0, 0, 0.08);
     }
