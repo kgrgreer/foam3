@@ -345,7 +345,6 @@ var classes = [
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
    'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
    'net.nanopay.liquidity.tx.ExceptionRuleAction',
-   'net.nanopay.liquidity.tx.AccountHierarchy',
    'net.nanopay.liquidity.tx.GenericBusinessRule',
    'net.nanopay.liquidity.tx.IsChildAccountPredicate',
    'net.nanopay.liquidity.tx.L2TransactionApprovalRule',
@@ -355,6 +354,8 @@ var classes = [
    'net.nanopay.liquidity.tx.TxLimitRule',
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
+   'net.nanopay.liquidity.tx.AccountHierarchy',
+   'net.nanopay.liquidity.tx.ClientAccountHierarchyService',
 
    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
@@ -950,7 +951,8 @@ var skeletons = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
-  'net.nanopay.fx.ExchangeRateServiceInterface'
+  'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.liquidity.tx.AccountHierarchy'
 ];
 
 var proxies = [
