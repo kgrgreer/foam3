@@ -124,10 +124,10 @@ public class ContactAuthorizationTest
       Contact result = (Contact) user.getContacts(x).put_(x, contact);
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == testLastName_;
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals(testLastName_);
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
