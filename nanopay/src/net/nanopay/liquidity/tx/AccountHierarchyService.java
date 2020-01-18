@@ -25,8 +25,9 @@ public class AccountHierarchyService
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     List<Account> ret = new ArrayList<Account>();
+    if ( getUserToViewableRootAccountsMap().get(userId) == null ) return ret;
+
     Set<String> roots = new HashSet<String>(getUserToViewableRootAccountsMap().get(userId));
-    if ( roots == null ) return null;
 
     for ( String root : roots ) {
       ret.add((Account) accountDAO.find(root));
@@ -70,6 +71,21 @@ public class AccountHierarchyService
     }
 
     userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
+
+    // TODO: figure out a better way to do this
+    // we are putting the journal generated user roots in the services
+    List<String> justRoot = new ArrayList<>();
+    justRoot.add("1103");
+
+    userToViewableRootAccountsMap_.put(Long.parseLong("8006"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8007"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8015"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8016"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8017"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8018"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8019"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8020"), new ArrayList<>(justRoot));
+
     return userToViewableRootAccountsMap_;
   }
 
