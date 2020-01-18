@@ -889,6 +889,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
    { name: 'net/nanopay/liquidity/tx/AccountHierarchy' },
+   { name: 'net/nanopay/liquidity/tx/ClientAccountHierarchyService' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
    { name: 'net/nanopay/liquidity/tx/IsChildAccountPredicate' },
    { name: 'net/nanopay/liquidity/tx/L2TransactionApprovalRule' },

@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'accountHierarchyService',
+    'user'
   ],
 
   requires: [
@@ -116,6 +118,13 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'rootAccounts',
+      documentation: 'Array of root accounts viewable by user',
+      factory: function() {
+        return [];
+      }
+    },
+    {
       name: 'accounts',
       documentation: 'array for ChoiceView choices',
       factory: function() {
@@ -194,7 +203,10 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-
+      debugger;
+      this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((accounts) => {
+        debugger;
+      });
       // sub to selected root
       this.onDetach(this.selectedRoot$.sub(this.rootChanged));
 
@@ -241,13 +253,13 @@ foam.CLASS({
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
           .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
             console.log(a);
-            
+
             if ( ! a ){
               return self.E()
               .start()
                 .add("test")
               .end()
-            } 
+            }
             var v = this.AccountTreeGraph.create({
               data: a,
             });
