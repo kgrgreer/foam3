@@ -77,11 +77,16 @@ foam.CLASS({
       vertical-align: middle;
     }
 
-    ^ .foam-u2-ActionView-secondary {
+    ^ .foam-u2-ActionView-tertiary {
       font-size: 18px;
       width: 24px;
       height: 24px;
       padding: 0;
+      border-radius: 3px;
+    }
+
+    ^ .foam-u2-ActionView-tertiary:hover {
+      background-color: rgba(0, 0, 0, 0.08);
     }
 
     ^ .foam-u2-ActionView + .foam-u2-ActionView {
@@ -253,7 +258,9 @@ foam.CLASS({
             .start().addClass(this.myClass('selector'))
               .start({
                 class: 'foam.u2.view.ChoiceView',
-                mode$: this.selectedRoot$.map((root) => { return root ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.DISABLED; }),
+                mode$: this.selectedRoot$.map((root) => {
+                  return root ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.DISABLED;
+                }),
                 choices$: this.childAccounts$,
                 data$: this.highlightedAccount$,
                 placeholder: 'Search For An Account'
@@ -262,20 +269,23 @@ foam.CLASS({
           .endContext()
         .end()
         .startContext({data: this})
-          .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
+          .start(this.Cols)
+            .style({'flex-direction':'column','align-items':'center','justify-content':'space-around'})
+            .addClass(this.myClass('nav-container'))
+            .show(this.selectedRoot$)
             .tag(this.HOME, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               icon: 'images/ic-round-home.svg',
               label: '',
               size: foam.u2.ButtonSize.SMALL
             })
             .tag(this.ZOOM_IN, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               label: '+',
               size: foam.u2.ButtonSize.SMALL
             })
             .tag(this.ZOOM_OUT, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               label: '-',
               size: foam.u2.ButtonSize.SMALL
             })
@@ -283,8 +293,7 @@ foam.CLASS({
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
           .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
-
-            if ( ! a ){
+            if ( ! a ) {
               return self.E()
                 .start().addClass(self.myClass('container-message'))
                   .start('p').addClass(self.myClass('message-select-root'))
@@ -306,7 +315,6 @@ foam.CLASS({
             return this.cview;
           }))
         )
-
         .end()
     },
 
