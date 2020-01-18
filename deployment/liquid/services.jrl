@@ -112,6 +112,7 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
+    import foam.nanos.mrac.*;
 
     dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
@@ -122,7 +123,11 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.LIFECYCLE_STATE });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
-    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+    if ( "true".equals(System.getProperty("CLUSTER")) ) {
+      dao = new MMDAO(x, "localAccountDAO", dao, "singleJournal", "accounts");
+    } else {
+      dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+    }
     dao = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
