@@ -49,7 +49,6 @@ public class BmoSFTPClient {
    * Connect to BMO sftp server
    */
   private BmoSFTPClient connect(String loginId) throws Exception {
-    ChannelSftp sftp = new ChannelSftp();
     sshClient        = new SSHClient();
 
     sshClient.addHostKeyVerifier (new PromiscuousVerifier());
