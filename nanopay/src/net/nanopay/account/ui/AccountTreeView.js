@@ -28,22 +28,40 @@ foam.CLASS({
 
   css: `
     ^header {
+      box-sizing: border-box;
+      height: 51px;
       border-bottom: solid 1px #e7eaec;
-      height: 39px;
       width: 100%;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.5;
-      color: #1e1f21;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    ^title {
-      left: 45%;
-      position: absolute;
+    ^container-selectors {
+      border-bottom: solid 1px #e7eaec;
     }
 
     ^selector {
-      padding-left: 16px;
+      width: 50%;
+      height: 50px;
+    }
+
+    ^selector:first-child {
+      border-right: solid 1px #e7eaec;
+    }
+
+    ^selector .foam-u2-tag-Select {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-indent: 16px;
+
+      cursor: pointer;
+    }
+
+    ^selector .foam-u2-tag-Select:focus {
+      border: none;
     }
 
     ^nav-container {
@@ -75,13 +93,29 @@ foam.CLASS({
       width: 16px;
       margin-right: 0;
     }
+
+    ^container-message {
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    ^message-select-root {
+      margin: 0;
+      font-size: 14px;
+    }
   `,
 
   messages: [
     {
       name: 'VIEW_HEADER',
-      message: 'ACCOUNT HIERARCHY VIEW',
+      message: 'Account Hierarchy View',
     },
+    {
+      name: 'MESSAGE_SELECT_ROOT',
+      message: 'Please select a base account'
+    }
   ],
 
   classes: [
@@ -122,10 +156,18 @@ foam.CLASS({
       documentation: 'Array of root accounts viewable by user',
       factory: function() {
         return [];
+      },
+      preSet: function(_, n) {
+        // pre processes the [Account] into [[Account, String]] for choice view
+        var accounts = [];
+        n.forEach((root) => {
+          accounts.push([root, root.toSummary()]);
+        });
+        return accounts;
       }
     },
     {
-      name: 'accounts',
+      name: 'childAccounts',
       documentation: 'array for ChoiceView choices',
       factory: function() {
         return [];
@@ -142,25 +184,7 @@ foam.CLASS({
     {
       class: 'Reference',
       name: 'selectedRoot',
-      of :'net.nanopay.account.Account',
-      view: function(_,x){
-        var self = x.data;
-        var prop = this;
-        var v = foam.u2.view.ReferenceView.create(null, x);
-        v.fromProperty(prop);
-        v.dao = v.dao.where(self.OR(
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.DigitalAccount
-          }),
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.AggregateAccount
-          }),
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.SecuritiesAccount
-          })
-        ));
-        return v;
-      }
+      of :'net.nanopay.account.Account'
     },
     'cview',
     'canvasContainer',
@@ -203,32 +227,39 @@ foam.CLASS({
   methods: [
     function initE(){
       var self = this;
-      debugger;
-      this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((accounts) => {
-        debugger;
+      this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((roots) => {
+        this.rootAccounts = roots;
       });
       // sub to selected root
       this.onDetach(this.selectedRoot$.sub(this.rootChanged));
 
       this.addClass(this.myClass());
       this
-        .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
+        .start(this.Cols).addClass(this.myClass('header'))
+          .start().addClass(this.myClass('title'))
+            .add(this.VIEW_HEADER)
+          .end()
+        .end()
+        .start(this.Cols).addClass(this.myClass('container-selectors'))
           .startContext({data: this})
             .start().addClass(this.myClass('selector'))
-              .add(this.SELECTED_ROOT)
+              .start({
+                class: 'foam.u2.view.ChoiceView',
+                choices$: this.rootAccounts$,
+                data$: this.selectedRoot$,
+                placeholder: 'Select Base Account'
+              }).end()
             .end()
             .start().addClass(this.myClass('selector'))
               .start({
                 class: 'foam.u2.view.ChoiceView',
-                choices$: this.accounts$,
+                mode$: this.selectedRoot$.map((root) => { return root ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.DISABLED; }),
+                choices$: this.childAccounts$,
                 data$: this.highlightedAccount$,
                 placeholder: 'Search For An Account'
               }).end()
             .end()
           .endContext()
-          .start().addClass(this.myClass('title'))
-            .add(this.VIEW_HEADER)
-          .end()
         .end()
         .startContext({data: this})
           .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
@@ -252,18 +283,17 @@ foam.CLASS({
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
           .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
-            console.log(a);
 
             if ( ! a ){
               return self.E()
-              .start()
-                .add("test")
-              .end()
+                .start().addClass(self.myClass('container-message'))
+                  .start('p').addClass(self.myClass('message-select-root'))
+                    .add(self.MESSAGE_SELECT_ROOT)
+                  .end()
+                .end();
             }
-            var v = this.AccountTreeGraph.create({
-              data: a,
-            });
 
+            var v = this.AccountTreeGraph.create({ data: a });
             this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
@@ -396,7 +426,11 @@ foam.CLASS({
       name: 'rootChanged',
       code: async function() {
         // return if no root selected
-        if ( ! this.selectedRoot ) return;
+        if ( ! this.selectedRoot ) {
+          this.childAccounts = [];
+          this.highlightedAccount = null;
+          return;
+        }
 
         // get actual root
         var rootAccount = await this.accountDAO.find(this.selectedRoot);
@@ -405,12 +439,12 @@ foam.CLASS({
         if ( ! rootAccount ) return;
 
         // temp array
-        var accounts = [];
+        var childAccounts = [];
 
         // recursive function that takes an account and context (for getChildren)
         async function getChildData(account, context) {
           // at node, push id and name in format for choice view
-          accounts.push([account.id, account.toSummary()]);
+          childAccounts.push([account.id, account.toSummary()]);
 
           // at node, get its children
           var children = await account.getChildren(context).select();
@@ -429,7 +463,7 @@ foam.CLASS({
         // get all child data before proceeding
         await getChildData(rootAccount, this.__subContext__);
 
-        this.accounts = accounts;
+        this.childAccounts = childAccounts;
       }
     }
   ]
