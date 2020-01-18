@@ -334,6 +334,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
    'net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty',
    'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
+   'net.nanopay.liquidity.crunch.RemoveJunctionsOnCapabilityRemoval',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
