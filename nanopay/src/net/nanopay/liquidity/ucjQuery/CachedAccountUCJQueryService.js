@@ -115,14 +115,17 @@ foam.CLASS({
           }
         }
 
-        ucjDAO.listen(purgeSink, MLang.TRUE);
+        List rolesFilteredByAccountToCache = new ArrayList(rolesFilteredByAccount);
+        getRolesCache.put(cacheKey, rolesFilteredByAccountToCache);
 
-        getRolesCache.put(cacheKey, rolesFilteredByAccount);
+        ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return rolesFilteredByAccount;
 
       } else {
-        return getRolesCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getRolesCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `,
     },
@@ -192,14 +195,17 @@ foam.CLASS({
           }
         }
 
-        ucjDAO.listen(purgeSink, MLang.TRUE);
+        List usersFilteredByAccountToCache = new ArrayList(usersFilteredByAccount);
+        getUsersCache.put(cacheKey, usersFilteredByAccountToCache);
 
-        getUsersCache.put(cacheKey, usersFilteredByAccount);
+        ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return usersFilteredByAccount;
 
       } else {
-        return getUsersCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getUsersCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `,
     },
@@ -272,12 +278,17 @@ foam.CLASS({
           }
         }
 
-        getAccountsCache.put(cacheKey, accounts);
+        List accountsToCache = new ArrayList(accounts);
+        getAccountsCache.put(cacheKey, accountsToCache);
+
+        ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return accounts;
 
       } else {
-        return getAccountsCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getAccountsCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `,
     },
@@ -375,38 +386,21 @@ foam.CLASS({
           if (  accountMap.hasAccountByApproverLevel(x, accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
         }
 
+        List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
+        
+        List uniqueApproversForLevelListToCache = new ArrayList(uniqueApproversForLevelList);
+        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
+
         ucjDAO.listen(purgeSink, MLang.TRUE);
         capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
-        List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
-
-        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelList);
-
         return uniqueApproversForLevelList;
-
       } else {
-        return getApproversByLevelCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getApproversByLevelCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `,
-    },
-    {
-      name: 'purgeCache',
-      type: 'void',
-      args: [
-        {
-          name: 'cache',
-          type: 'String'
-        },
-        {
-          name: 'cacheKey',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-      Map<String,List> cacheMap = (Map<String,List>) getCache().get(cache);
-
-      cacheMap.remove(cacheKey);
-      `
     },
     {
       name: 'getRolesAndAccounts',
@@ -480,14 +474,17 @@ foam.CLASS({
           }
         }
 
-        ucjDAO.listen(purgeSink, MLang.TRUE);
+        List totalListToCache = new ArrayList(totalList);
+        getRolesAndAccountsCache.put(cacheKey, totalListToCache);
 
-        getRolesAndAccountsCache.put(cacheKey, totalList);
+        ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return totalList;
 
       } else {
-        return getRolesAndAccountsCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getRolesAndAccountsCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `
     },
@@ -560,15 +557,18 @@ foam.CLASS({
             }
           }
         }
-  
+    
+        List totalListToCache = new ArrayList(totalList);
+        getUsersAndRolesCache.put(cacheKey, totalListToCache);
+
         ucjDAO.listen(purgeSink, MLang.TRUE);
-  
-        getUsersAndRolesCache.put(cacheKey, totalList);
   
         return totalList;
   
       } else {
-        return getUsersAndRolesCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getUsersAndRolesCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `
     },
@@ -645,16 +645,38 @@ foam.CLASS({
             }
           }
         }
-  
+    
+        List totalListToCache = new ArrayList(totalList);
+        getUsersAndAccountsCache.put(cacheKey, totalListToCache);
+        
         ucjDAO.listen(purgeSink, MLang.TRUE);
-  
-        getUsersAndAccountsCache.put(cacheKey, totalList);
   
         return totalList;
   
       } else {
-        return getUsersAndAccountsCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getUsersAndAccountsCache.get(cacheKey));
+
+        return newListFromCache;
       }
+      `
+    },
+    {
+      name: 'purgeCache',
+      type: 'void',
+      args: [
+        {
+          name: 'cache',
+          type: 'String'
+        },
+        {
+          name: 'cacheKey',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+      Map<String,List> cacheMap = (Map<String,List>) getCache().get(cache);
+
+      cacheMap.remove(cacheKey);
       `
     }
   ]
