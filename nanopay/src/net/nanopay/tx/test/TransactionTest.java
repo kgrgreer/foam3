@@ -270,7 +270,7 @@ public class TransactionTest
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber() == txn.getReferenceNumber(),"Reference Number copied in LimitedClone");
+    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
     test(! txn.isActive(), "isActive returns false");
 
