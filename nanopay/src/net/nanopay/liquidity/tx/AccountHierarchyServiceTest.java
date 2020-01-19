@@ -79,9 +79,8 @@ public class AccountHierarchyServiceTest extends Test {
       System.out.println("id : " + id + "\t\tApproverLevel=" + map.get(id).getApproverLevel().getApproverLevel() + "\t\tIsCascading=" + map.get(id).getIsCascading() + "\t\tIsIncluded=" + map.get(id).getIsIncluded());
     }
 
-    template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
     AccountApproverMap oldtemplate = ucj == null ? null : (AccountApproverMap) ucj.getData();
-    result = foo(x, true, user.getId(), (AccountApproverMap) oldtemplate, template);
+    result = foo(x, true, user.getId(), (AccountApproverMap) oldtemplate, map);
 
     printRoots(x, user.getId());
     printAccounts(result);
@@ -95,9 +94,8 @@ public class AccountHierarchyServiceTest extends Test {
       System.out.println("id : " + id + "\t\tApproverLevel=" + map.get(id).getApproverLevel().getApproverLevel() + "\t\tIsCascading=" + map.get(id).getIsCascading() + "\t\tIsIncluded=" + map.get(id).getIsIncluded());
     }
 
-    template = new CapabilityAccountTemplate.Builder(x).setAccounts(map).build();
     AccountApproverMap oldtemplate = ucj == null ? null : (AccountApproverMap) ucj.getData();
-    result = bar(x, true, user.getId(), (AccountApproverMap) oldtemplate, template);
+    result = bar(x, true, user.getId(), (AccountApproverMap) oldtemplate, map);
 
     printRoots(x, user.getId());
     printAccounts(result);
@@ -105,11 +103,11 @@ public class AccountHierarchyServiceTest extends Test {
   }
 
   // for easier to type name
-  public AccountApproverMap foo(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+  public AccountApproverMap foo(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> template) {
     return service.getAssignedAccountMap(x, trackRootAccounts, user, oldTemplate, template);
   }
 
-  public AccountApproverMap bar(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, net.nanopay.liquidity.crunch.CapabilityAccountTemplate template) {
+  public AccountApproverMap bar(foam.core.X x, boolean trackRootAccounts, long user, net.nanopay.liquidity.crunch.AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> template) {
     return service.getRevokedAccountsMap(x, trackRootAccounts, user, oldTemplate, template);
   }
 

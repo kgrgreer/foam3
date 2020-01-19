@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'padding',
       value: 30
     },
-    
+
     {
       name: 'x',
       value: 0

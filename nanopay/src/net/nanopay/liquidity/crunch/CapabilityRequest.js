@@ -3,7 +3,14 @@ foam.CLASS({
   name: 'CapabilityRequest', 
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+  imports: [
+    'capabilityAccountTemplateDAO',
+    // TODO: figure out why we can't import controllerMode
+    // 'controllerMode'
   ],
 
   javaImports: [
@@ -17,7 +24,8 @@ foam.CLASS({
   tableColumns: [
     'id',
     'requestType',
-    'users'
+    'lifecycleState',
+    'lastModified'
   ],
 
   properties: [  
@@ -49,15 +57,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isUsingTemplate',
-      label: 'Assign to multiple accounts using a template',
       value: false,
       visibilityExpression: function(requestType) {
-        if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
-        ) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
+          this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
           return foam.u2.Visibility.RW;
         }
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+          this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using a Template';
+          return foam.u2.Visibility.RW;
+        }
+
         return foam.u2.Visibility.HIDDEN;
       }
     },
@@ -90,9 +100,11 @@ foam.CLASS({
       }
     },
     {
+      name: 'capabilityAccountTemplateChoice',
+      flags: ['js'],
       class: 'Reference',
-      name: 'capabilityAccountTemplate',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
+      label: 'Choose Capability Account Template',
       visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
             isUsingTemplate &&
@@ -104,15 +116,21 @@ foam.CLASS({
           return foam.u2.Visibility.RW;
         }
         return foam.u2.Visibility.HIDDEN;
+      },
+      postSet: function(_, data) {
+        this.capabilityAccountTemplateDAO.find(data).then((template) => {
+          this.capabilityAccountTemplateMap = template.accounts;
+        });
       }
     },
     {
-      class: 'Reference',
-      name: 'accountToAssignTo',
-      of : 'net.nanopay.account.Account',
+      name: 'capabilityAccountTemplateMap',
+      class: 'Map',
+      javaType: 'java.util.Map<String, CapabilityAccountData>',
+      label: 'Create New Template Or Customize Chosen Capability Account Template ', 
       visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
-            ! isUsingTemplate &&
+            isUsingTemplate &&
             (
               requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
               requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
@@ -120,6 +138,30 @@ foam.CLASS({
           ) {
           return foam.u2.Visibility.RW;
         }
+        return foam.u2.Visibility.HIDDEN;
+      },
+      view: function(_, x) {
+        return {
+          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView',
+          isCapabilityAccountData: true
+        };
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'accountToAssignTo',
+      of : 'net.nanopay.account.Account',
+      visibilityExpression: function(requestType, isUsingTemplate) {
+
+        if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
+          this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Assign To';
+          return foam.u2.Visibility.RW;
+        }
+        if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+          this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
+          return foam.u2.Visibility.RW;
+        }
+
         return foam.u2.Visibility.HIDDEN;
       }
     },
@@ -139,8 +181,16 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
+      label: 'Status',
       value: foam.nanos.auth.LifecycleState.PENDING,
-      visibility: foam.u2.Visibility.HIDDEN
+      // TODO: figure out why we can't import controllerMode
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      // TODO: figure out why we can't import controllerMode
+      visibility: foam.u2.Visibility.RO
     },
   ],
 
@@ -152,6 +202,13 @@ foam.CLASS({
         String id = String.valueOf(getId());
         return id;
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(){
+        return `(Capability Request #${this.id}) ${this.requestType.label}`
+      }
     }
   ]
 });

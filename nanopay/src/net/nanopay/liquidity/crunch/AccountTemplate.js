@@ -18,7 +18,13 @@ foam.CLASS({
     },
     {
       name: 'accounts',
-      class: 'Map'
+      class: 'Map',
+      view: function() {
+        return {
+          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView',
+          isCapabilityAccountData: false
+        }
+      }
     }
   ],
 });

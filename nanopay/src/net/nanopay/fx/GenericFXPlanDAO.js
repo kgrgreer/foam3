@@ -61,6 +61,7 @@ foam.CLASS({
       type: 'net.nanopay.fx.FXTransaction',
       javaCode:`
         FXTransaction f = new FXTransaction();
+        f.setLifecycleState(txn.getLifecycleState());
         f.setDestinationCurrency(txn.getDestinationCurrency());
         f.setSourceCurrency(txn.getSourceCurrency());
         f.setAmount(txn.getAmount());

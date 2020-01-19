@@ -41,6 +41,13 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
     CanReceiveCurrency request = (CanReceiveCurrency) obj;
+
+    // Reusing this service for a liquid requirement:
+    // Given an account id return if this is an account-not aggregate - and its currency.
+    // will return account selection validity with response.response
+    // and denomination in response.message
+    if ( request.getAccountChoice() > 0 ) return accountSelectionLookUp(request);
+
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
@@ -98,6 +105,23 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     return user;
   }
   
+  public CanReceiveCurrency accountSelectionLookUp(CanReceiveCurrency query) {
+    CanReceiveCurrency response = (CanReceiveCurrency) query.fclone();
+    response.setResponse(false);
+    ArraySink accountSink = (ArraySink) accountDAO.where(
+      EQ(net.nanopay.account.Account.ID, query.getAccountChoice())
+      ).select(new ArraySink());
+    if ( accountSink.getArray().size() > 0 ) {
+      Account account = (Account)accountSink.getArray().get(0);
+      if ( account.getType() != "Aggregate Account" ) {
+        response.setResponse(true);
+        response.setMessage(account.getDenomination()); // do all accounts have a denomination??
+      }
+    }
+    return response;
+  }
+
+
   @Override
   public FObject find_(X x, Object id) {
     return null;

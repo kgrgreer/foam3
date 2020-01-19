@@ -46,13 +46,12 @@ foam.CLASS({
       javaCode: `
       super.validate(x);
 
-      // Don't allow updating a DigitalTransaction that is already COMPLETED
-      // except when changing lifecycleState from PENDING to ACTIVE.
+      // Don't allow updating a DigitalTransaction that is already COMPLETED,
+      // except when the old lifecycleState=PENDING.
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null
         && oldTxn.getStatus() == TransactionStatus.COMPLETED
-        && ! ( oldTxn.getLifecycleState() == LifecycleState.PENDING
-          && getLifecycleState() == LifecycleState.ACTIVE )
+        && oldTxn.getLifecycleState() != LifecycleState.PENDING
       ) {
         ((Logger) x.get("logger")).error("instanceof DigitalTransaction cannot be updated.");
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
