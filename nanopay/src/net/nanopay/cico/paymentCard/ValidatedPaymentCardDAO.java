@@ -42,7 +42,7 @@ public class ValidatedPaymentCardDAO
     }
 
     if ( card.getExpirationDate() != null && card.isExpired() ) {
-         throw new RuntimeException("Card has expired");
+      throw new RuntimeException("Card has expired");
     }
 
     if ( card.getType() == PaymentCardType.CREDIT || card.getType() == PaymentCardType.DEBIT ) {

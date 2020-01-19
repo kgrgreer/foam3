@@ -280,7 +280,7 @@ public class TransactionDAOTest
       Transfer[] transfers = tx.getTransfers();
       for ( Transfer transfer : transfers ) {
         if ( transfer instanceof FeeTransfer && transfer.getAmount() > 0 ) {
-          fee = fee + transfer.getAmount();
+          fee += transfer.getAmount();
         }
       }
     }
