@@ -33,7 +33,7 @@ public class KotakXMLOutputter extends Outputter {
 
   @Override
   protected void outputPrimitiveProperty(Object value, PropertyInfo prop) {
-    if ( value.equals("") ) {
+    if ( "".equals(value) ) {
       writer_.append("<").append(getPropertyName(prop)).append(" />");
       return;
     }
