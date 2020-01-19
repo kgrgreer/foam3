@@ -112,6 +112,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewTransaction' },
     { class: 'Boolean', name: 'canMakeTransaction' },
     { class: 'Boolean', name: 'canApproveTransaction' },
+    { class: 'Boolean', name: 'canViewDashboard' },
     {
       name: 'of',
       hidden: true,
@@ -126,7 +127,7 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add dashboard menu permission for account maker/approver
-        if ( getCanMakeAccount() && getCanApproveAccount() ) permissions.add("menu.read.liquid.dashboard");
+        if ( getViewDashboard() ) permissions.add("menu.read.liquid.dashboard");
 
         // add account menu permission if user can view, make or approve account
         if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
