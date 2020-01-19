@@ -212,7 +212,12 @@ p({
       .setFm(dao)
       .build();
     dao = new net.nanopay.tx.TransactionDAO(x, dao);
-    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
+
+    if ( "true".equals(System.getProperty("CLUSTER")) ) {
+      dao = new MMDAO(x, "localTransactionDAO", dao, "singleJournal", "transactions");
+    } else {
+      dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
+    }
     dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
       .setDelegate(dao)
       .build();
@@ -237,12 +242,15 @@ p({
     dao = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new foam.nanos.mrac.ClusterClientDAO.Builder(x)
-      .setServiceName("transactionDAO")
-      .setDelegate(dao)
-      .setMdao(transactionMDao)
-      .build();
-    dao = new foam.nanos.mrac.VotingDAO(x, dao);
+
+    if ( "true".equals(System.getProperty("CLUSTER")) ) {
+      dao = new foam.nanos.mrac.ClusterClientDAO.Builder(x)
+        .setServiceName("transactionDAO")
+        .setDelegate(dao)
+        .setMdao(transactionMDao)
+        .build();
+      dao = new foam.nanos.mrac.VotingDAO(x, dao);
+    }
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);    
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
   """
