@@ -22,7 +22,6 @@ public class SecurityAccountTest
     account.setOwner(1002);
     Account acct = (Account) accountDAO.put(account);
 
-    test(acct.getDenomination().isEmpty(), "Securities Account does not need a denomination!" );
     SecuritiesAccount acct2 = (SecuritiesAccount) acct;
     test(((Count)(acct2).getSubAccounts(x_).select(new Count())).getValue()  == 0, "Securities Account has no exisiting Security Accounts" );
     SecurityAccount sa = acct2.getSecurityAccount(x_,"NANO.TO");

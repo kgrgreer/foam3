@@ -127,8 +127,7 @@ foam.CLASS({
           && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
             || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
           && ! getStatus().equals(TransactionStatus.DECLINED)
-          && ! ( oldTxn.getLifecycleState() == LifecycleState.PENDING
-            && getLifecycleState() == LifecycleState.ACTIVE )
+          && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
           throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
@@ -150,28 +149,32 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-           oldTxn == null ) {
-        return true;
-      }
-      if ( getStatus() != TransactionStatus.PENDING ) {
-        return false;
-      }
-      if ( oldTxn == null ) {
-        if ( SafetyUtil.isEmpty(getParent()) ) {
-          return true;
-        } else {
-          Transaction parent = (Transaction) ((DAO) x.get("transactionDAO")).find(getParent());
-          return parent.getStatus() == TransactionStatus.COMPLETED;
+        // Cannot transfer when not ACTIVE.
+        if ( getLifecycleState() != LifecycleState.ACTIVE ) {
+          return false;
         }
-      }
-      else if ( oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED ||
-                  oldTxn.getStatus() == TransactionStatus.PAUSED ||
-                  oldTxn.getStatus() == TransactionStatus.SCHEDULED ) {
-        return true;
-      }
-    return false;
-    `
-   }
+
+        // New transaction, can transfer when
+        // 1. COMPLETED
+        // 2. PENDING and has no parent or parent is COMPLETED.
+        if ( oldTxn == null ) {
+          if ( getStatus() == TransactionStatus.COMPLETED ) return true;
+          if ( getStatus() == TransactionStatus.PENDING ) {
+            if ( SafetyUtil.isEmpty(getParent()) ) return true;
+            return findParent(x).getStatus() == TransactionStatus.COMPLETED;
+          }
+          return false;
+        }
+
+        // Cannot transfer when updating status != PENDING.
+        if ( getStatus() != TransactionStatus.PENDING ) return false;
+
+        // Updating status=PENDING, can transfer when transitioning from
+        // PENDING_PARENT_COMPLETED, PAUSED or SCHEDULED.
+        return oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
+          || oldTxn.getStatus() == TransactionStatus.PAUSED
+          || oldTxn.getStatus() == TransactionStatus.SCHEDULED;
+      `
+    }
  ]
 });

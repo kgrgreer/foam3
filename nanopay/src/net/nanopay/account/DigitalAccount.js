@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.account',
   name: 'DigitalAccount',
   extends: 'net.nanopay.account.Account',
-
+  label: 'Virtual Account',
   documentation: 'Digital Account. Default to monetary denomination.',
 
   javaImports: [

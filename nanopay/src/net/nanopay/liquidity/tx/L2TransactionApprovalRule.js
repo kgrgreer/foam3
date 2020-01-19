@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       name: 'daoKey',
-      value: 'liquidTransactionDAO'
+      value: 'transactionDAO'
     },
     {
       class: 'Enum',
@@ -76,6 +76,13 @@ foam.CLASS({
       },
       visibilityExpression: function(useAccountTemplate) {
         return ! useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      postSet: function(_, nu) {
+        if ( ! this.useAccountTemplate && !! nu ) {
+          this.sourceAccount$find.then((account) => {
+            this.denomination = account.denomination;
+          });
+        }
       }
     },
     {
@@ -101,7 +108,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'startAmount',
       label: 'Apply to Transactions More Than',
       section: 'basicInfo',
@@ -113,7 +120,15 @@ foam.CLASS({
           },
           errorString: 'Amount must be greater than 0.'
         }
-      ]
+      ],
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.IntView',
+          readView: {
+            class: 'foam.u2.view.TableCellFormatterReadView' ,
+          }
+        };
+      }
     },
     {
       name: 'predicate',

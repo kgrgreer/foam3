@@ -72,6 +72,18 @@ p({
             "destinationCurrency",
             "destinationAmount"
           ],
+          "predicate": {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "net.nanopay.tx.model.Transaction",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          },
           "CRUDActionsAuth": {
             "class": "foam.comics.v2.CRUDActionsAuth",
             "create": ["transaction.make"],
@@ -90,7 +102,14 @@ p({
                 "class": "foam.mlang.Constant",
                 "value": "CSV"
               }
+            },
+          "browseViews": [
+            {
+              "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+              "name": "Transactions",
+              "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
             }
+          ]
         }
     },
   "order":300
@@ -141,7 +160,14 @@ p({
         "create": ["user.make"],
         "update": ["user.make.%"],
         "delete": ["user.make.%"]
-      }
+      },
+      "browseViews": [
+        {
+          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+          "name": "Users",
+          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
+        }
+      ]
     }
   },
   "order": 400
@@ -652,7 +678,7 @@ p({
         "create": ["capabilityrequest.make"],
         "update": ["capabilityrequest.make.%"],
         "delete": ["capabilityrequest.make.%"]
-      },
+      }
     }
   },
   "order": 540,

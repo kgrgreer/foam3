@@ -68,13 +68,75 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"Remove junctions on user removal",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "remove junctions on user removal",
+  "daoKey": "localUserDAO",
+  "operation": 2, 
+  "after": true,
+  "action":{ "class":"foam.nanos.crunch.RemoveJunctionsOnUserRemoval" },
+  "saveHistory": true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Remove junctions on capability removal",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "remove junctions on capability removal",
+  "daoKey": "localCapabilityDAO",
+  "operation": 1, 
+  "after": true,
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveJunctionsOnCapabilityRemoval" },
+  "saveHistory": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Remove account-based ucj obj if no accounts granted",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "remove ucj if all accounts have been revoked",
+  "daoKey": "userCapabilityJunctionDAO",
+  "operation": 3,
+  "after": true,
+  "action" : {
+    "class": "net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty"
+  },
+  "saveHistory": true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"Set transaction lifecycleState to PENDING",
-  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
+  "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force transactions going through approval.",
   "ruleGroup":"(Default)",
   "priority":1000,
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":0,
   "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.liquidity.ruler.IsSystemOrAdminUser"
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"referenceNumber",
+        "propValue":{
+          "class":"foam.mlang.Constant",
+          "value":"ManuallyCreated"
+        }
+      }
+    ]
+  },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
     "propName":"lifecycleState",
@@ -94,7 +156,7 @@ p({
   "documentation":"Add L1 approval to all liquid transactions created.",
   "ruleGroup":"txapprovals",
   "priority":100,
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -115,7 +177,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Final transaction approval",
   "ruleGroup":"txapprovals",
-  "daoKey":"liquidTransactionDAO",
+  "daoKey":"transactionDAO",
   "operation":1,
   "after":true,
   "predicate":{
@@ -142,14 +204,15 @@ p({
   "denomination": "USD",
   "startAmount": 8500000,
   "enabled": false,
-  "lifecycleState":1
+  "lifecycleState": 1
 })
 p({
   "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-  "id": "L2 approval for transaction >= $50,000 - GS03 Bank Account",
+  "id": "L2 approval for transaction >= $50,000 - GS06 CASH (USD)",
   "sourceAccount": 1449,
   "startAmount": 5000000,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState": 1
 })
 
 // Add approval request rules

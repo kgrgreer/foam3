@@ -29,7 +29,6 @@ foam.CLASS({
     'net.nanopay.liquidity.ucjQuery.UCJQueryService',
     'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest'
   ],
@@ -85,9 +84,9 @@ foam.CLASS({
 
       String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
 
-      CachedUCJQueryService ucjQueryService = new CachedUCJQueryService();
+      UCJQueryService ucjQueryService = (UCJQueryService) x.get("ucjQueryService");
 
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(modelName, 1, getX());
+      List<Long> approverIds = ucjQueryService.getApproversByLevel(getX(), modelName, 1);
 
       if ( approverIds.size() <= 0 ) {
         logger.error("No Approvers exist for the model: " + modelName);
@@ -175,13 +174,19 @@ foam.CLASS({
       User user = (User) x.get("user");
       Logger logger = (Logger) x.get("logger");
 
+      LifecycleAware lifecycleObj = (LifecycleAware) obj;
+
       // system and admins override the approval process
-      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return super.put_(x,obj);
+      if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) {
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+          lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
+        }
+        return super.put_(x,obj);
+      }
 
       DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
       DAO dao = (DAO) getX().get(getDaoKey());
 
-      LifecycleAware lifecycleObj = (LifecycleAware) obj;
       ApprovableAware approvableAwareObj = (ApprovableAware) obj;
       FObject currentObjectInDAO = (FObject) dao.find(approvableAwareObj.getApprovableKey());
       

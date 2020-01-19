@@ -274,21 +274,39 @@ if ( obj == null ) {
       name: 'referenceObj',
       isDefault: true,
       label: 'View Reference',
-      code: function(approvalRequest) {
-        var key = approvalRequest.data.daoKey;
-        if(!this.__context__[approvalRequest.data.daoKey]) {
+      code: function(X, action) {
+        var key = this.daoKey;
+
+        // FIXME: This is hacky
+        if ( ! X[this.daoKey] ) {
           // if DAO doesn't exist in context, change daoKey from localMyDAO
           // (server-side) to myDAO (accessible on front-end)
           key = key.substring(5,6).toLowerCase() + key.substring(6);
         }
-        var service = this.__context__[key];
-        // this.proxyOfDAO.delegate = service;
-        this.__context__.stack.push({
-          class: 'foam.comics.DAOUpdateControllerView',
-          detailView: 'foam.u2.DetailView',
-          key: approvalRequest.data.objId,
-          dao: service
-        }, this);
+
+        X[key]
+          .find(this.objId)
+          .then((obj) => {
+            if ( obj == null ) {
+              throw new Error('Reference object not found.');
+            }
+
+            X.stack.push({
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              of: obj.cls_,
+              config: foam.comics.v2.DAOControllerConfig.create({
+                daoKey: key,
+                of: obj.cls_,
+                editEnabled: false,
+                createEnabled: false,
+                deleteEnabled: false
+              })
+            });
+          })
+          .catch((err) => {
+            alert(err);
+          });
       },
       tableWidth: 100
     }

@@ -8,6 +8,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.Map',
+    'java.util.HashMap',
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.AccountHierarchy',
@@ -26,7 +28,6 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
             DAO capabilityDAO = (DAO) getX().get("localCapabilityDAO");
-            DAO capabilityAccountTemplateDAO = (DAO) getX().get("capabilityAccountTemplateDAO");
 
             CapabilityRequest req = (CapabilityRequest) obj;
             CapabilityRequestOperations requestType = req.getRequestType();
@@ -35,24 +36,36 @@ foam.CLASS({
             LiquidCapability capability;
 
             if ( requestType == CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
-              capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
+              capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              Map<String, CapabilityAccountData> newMap;
+              if ( req.getIsUsingTemplate() ) { 
+                newMap = req.getCapabilityAccountTemplateMap();
+              } else { 
+                CapabilityAccountData data = new CapabilityAccountData.Builder(x)
+                  .setIsCascading(false)
+                  .setIsIncluded(true)
+                  .setApproverLevel(new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build())
+                  .build();
+                newMap = new HashMap<String, CapabilityAccountData>();
+                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
+              }
+              
+              if ( newMap == null || newMap.size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
-              AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
-
-              UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).build();
-
-              ucj.setData(fullAccountMap);
-
-              for ( Long userId : users ) {
-                ucj.setSourceId(userId);
-                ucj.setTargetId(capability.getId());
-                userCapabilityJunctionDAO.put_(getX(), ucj);
+              for ( Long user : users )  {
+                UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
+                UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
+                AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
+                AccountApproverMap fullAccountMap = accountHierarchy.getAssignedAccountMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
+                ucj.setData(fullAccountMap);
+                userCapabilityJunctionDAO.put(ucj);
               }
             } else if ( requestType == CapabilityRequestOperations.ASSIGN_GLOBAL ) {
-              capability = (LiquidCapability) capabilityDAO.find(req.getGlobalCapability());
+              capability = (GlobalLiquidCapability) capabilityDAO.find(req.getGlobalCapability());
 
               ApproverLevel approverLevel = new net.nanopay.liquidity.crunch.ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
               UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).build();
@@ -65,40 +78,35 @@ foam.CLASS({
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-              capability = (LiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
+              capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
-              CapabilityAccountTemplate template = (CapabilityAccountTemplate) capabilityAccountTemplateDAO.find(req.getCapabilityAccountTemplate());
+              Map<String, CapabilityAccountData> newMap;
+              if ( req.getIsUsingTemplate() ) { 
+                newMap = req.getCapabilityAccountTemplateMap();
+              } else { 
+                CapabilityAccountData data = new CapabilityAccountData.Builder(x)
+                  .setIsCascading(false)
+                  .setIsIncluded(true)
+                  .build();
+                newMap = new HashMap<String, CapabilityAccountData>();
+                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
+              }
+
+              if ( newMap == null || newMap.size() == 0 ) 
+                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
 
-              AccountApproverMap fullAccountMap = accountHierarchy.getAccountsFromCapabilityAccountTemplate(getX(), template);
-
-              UserCapabilityJunction ucj;
-
-              for ( Long userId : users ) {
-                ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
-                  EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
-                ));
-
-                AccountApproverMap map = (AccountApproverMap) ucj.getData();
-
-                if ( map == null || map.getAccounts() == null ) {
-                  throw new RuntimeException("map does not contain account to revoke from");
-                }
-
-                for ( String accountId : fullAccountMap.getAccounts().keySet() ){
-                  map.removeAccount(Long.parseLong(accountId));
-                }
-
-                if ( map.getAccounts().size() == 0 ) {
-                  userCapabilityJunctionDAO.remove_(getX(), ucj);
-                } else {
-                  ucj.setData(map);
-                  userCapabilityJunctionDAO.put_(getX(), ucj);
-                }
+              for ( Long user : users )  {
+                UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
+                UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
+                AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
+                AccountApproverMap fullAccountMap = accountHierarchy.getRevokedAccountsMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
+                ucj.setData(fullAccountMap);
+                userCapabilityJunctionDAO.put(ucj);
               }
             } else if ( requestType == CapabilityRequestOperations.REVOKE_GLOBAL ) {
-              capability = (LiquidCapability) capabilityDAO.find(req.getGlobalCapability());
+              capability = (GlobalLiquidCapability) capabilityDAO.find(req.getGlobalCapability());
 
               for ( Long userId : users ) {
 

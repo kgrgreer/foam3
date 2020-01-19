@@ -15,14 +15,13 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode:  `
         Long accountId = ((Transaction) obj).getDestinationAccount();
-        String readPermission = createPermission("View", accountId);
+        String readPermission = createPermission("view", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, readPermission) ) {
           super.authorizeOnRead(x, obj);
-        }        
+        }
       `
     }
   ]
 })
-  

@@ -33,7 +33,7 @@ foam.CLASS({
       class: 'Map',
       name: 'cache',
       javaFactory: `
-        Map<String,ConcurrentHashMap> cache = new HashMap<>();
+        Map<String,ConcurrentHashMap> cache = new ConcurrentHashMap<>();
 
         cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
@@ -52,12 +52,12 @@ foam.CLASS({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'userId',
-          type: 'Long'
-        },
-        {
           name: 'x',
           type: 'Context'
+        },
+        {
+          name: 'userId',
+          type: 'Long'
         }
       ],
       javaCode: `
@@ -96,13 +96,16 @@ foam.CLASS({
           roleIdsForUser.add(currentUCJ.getTargetId());
         }
 
-        getRolesCache.put(cacheKey, roleIdsForUser);
+        List roleIdsForUserToCache = new ArrayList(roleIdsForUser);
+        getRolesCache.put(cacheKey, roleIdsForUserToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return roleIdsForUser;
       } else {
-        return getRolesCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getRolesCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `
     },
@@ -113,12 +116,12 @@ foam.CLASS({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          name: 'roleId',
-          type: 'String'
-        },
-        {
           name: 'x',
           type: 'Context'
+        },
+        {
+          name: 'roleId',
+          type: 'String'
         }
       ],
       javaCode: `
@@ -161,14 +164,17 @@ foam.CLASS({
           userIdsForRole.add(currentUCJ.getSourceId());
         }
 
-        getUsersCache.put(cacheKey, userIdsForRole);
+        List userIdsForRoleToCache = new ArrayList(userIdsForRole);
+        getUsersCache.put(cacheKey, userIdsForRoleToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return userIdsForRole;
 
       } else {
-        return getUsersCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getUsersCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `
     },
@@ -179,20 +185,20 @@ foam.CLASS({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'modelToApprove',
           type: 'String'
         },
         {
           name: 'level',
           type: 'Integer'
-        },
-        {
-          name: 'x',
-          type: 'Context'
         }
       ],
       javaCode: `  
-      String cacheKey = 'm' + modelToApprove + 'l' + level;
+      String cacheKey = 'm' + modelToApprove + 'l' + String.valueOf(level);
       String cache = "getApproversByLevelCache";
 
       Map<String, List> getApproversByLevelCache = (Map<String, List>) getCache().get(cache);
@@ -278,15 +284,19 @@ foam.CLASS({
         }
 
         List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
-
-        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelList);
+        
+        List uniqueApproversForLevelListToCache = new ArrayList(uniqueApproversForLevelList);
+        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
+        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
         return uniqueApproversForLevelList;
 
       } else {
-        return getApproversByLevelCache.get(cacheKey);
+        List newListFromCache = new ArrayList(getApproversByLevelCache.get(cacheKey));
+
+        return newListFromCache;
       }
       `
     },
@@ -304,7 +314,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Map<String,List> cacheMap = (HashMap<String,List>) getCache().get(cache);
+      Map<String,List> cacheMap = (Map<String,List>) getCache().get(cache);
 
       cacheMap.remove(cacheKey);
       `

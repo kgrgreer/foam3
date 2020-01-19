@@ -29,12 +29,13 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.Operations',
     'java.util.List',
+    'net.nanopay.account.Account',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
-    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
+    'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -51,6 +52,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isFinal'
+    },
+    {
+      class: 'Long',
+      name: 'defaultApprover',
+      documentation: 'The default approver when there is no approvers found in the UCJ for the approverLevel.',
+      value: 1348
     }
   ],
 
@@ -90,7 +97,7 @@ foam.CLASS({
       ],
       javaCode: `
         Object objId = obj.getProperty("id");
-        String modelName = obj.getClassInfo().getObjClass().getSimpleName().toLowerCase();
+        String modelName = getModelName(obj);
         String classification = String.format("L%d - %s approval", getApproverLevel(), modelName);
 
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
@@ -107,32 +114,39 @@ foam.CLASS({
         if ( approval == null ) {
           if ( getIsFinal() ) return false;
 
-          AccountUCJQueryService ucjQueryService = new CachedAccountUCJQueryService();
+          AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
           MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
           long accountId = ((Long) method.call(x, obj, null)).longValue();
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
-            modelName, accountId, getApproverLevel(), x);
-          if ( ! approvers.isEmpty() ) {
-            User user = (User) x.get("user");
-            User agent = (User) x.get("agent");
-            ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
-              .setClassification(classification)
-              .setObjId(objId)
-              .setDaoKey(daoKey)
-              .setOperation(Operations.CREATE)
-              .setInitiatingUser(agent != null ? agent.getId() : user.getId())
-              .setStatus(ApprovalStatus.REQUESTED)
-              .setDescription(description)
-              .build();
+            x, modelName, accountId, getApproverLevel());
 
+          User user = (User) x.get("user");
+          User agent = (User) x.get("agent");
+          ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
+            .setClassification(classification)
+            .setObjId(objId)
+            .setDaoKey(daoKey)
+            .setOperation(Operations.CREATE)
+            .setInitiatingUser(agent != null ? agent.getId() : user.getId())
+            .setStatus(ApprovalStatus.REQUESTED)
+            .setDescription(description)
+            .build();
+
+          if ( ! approvers.isEmpty() ) {
             for ( Long approver : approvers ) {
               approvalRequest.clearId();
               approvalRequest.setApprover(approver);
               approvalRequestDAO.put(approvalRequest);
             }
+          } else if ( getDefaultApprover() > 0 ) {
+            approvalRequest.setApprover(getDefaultApprover());
+            approvalRequestDAO.put(approvalRequest);
+          } else {
+            ((Logger) x.get("logger")).error(
+              "ApprovalRuleActionOnCreate - No approvers found.", classification, objId);
           }
-          // TODO Handle when the approvers is empty
+
           return false;
         }
 
@@ -164,6 +178,18 @@ foam.CLASS({
           updateApprovalRequestsIsFulfilled(x, objId, daoKey);
         }
         return true;
+      `
+    },
+    {
+      name: 'getModelName',
+      type: 'String',
+      args: [
+        { name: 'obj', type: 'FObject' }
+      ],
+      javaCode: `
+        if ( obj instanceof Transaction ) return "transaction";
+        if ( obj instanceof Account )     return "account";
+        return null;
       `
     },
     {

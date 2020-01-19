@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -60,6 +61,7 @@ foam.CLASS({
   ],
 
   requires: [
+   'net.nanopay.bank.CanReceiveCurrency',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
@@ -395,6 +397,9 @@ foam.CLASS({
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
+      visibilityExpression: function(lifecycleState){
+        return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       name: 'statusChoices',
@@ -511,11 +516,19 @@ foam.CLASS({
       name: 'amount',
       label: 'Source Amount',
       section: 'amountSelection',
-      createMode: 'RW',
       required: true,
       gridColumns: 6,
+      visibility: 'RO',
       help: `This is the amount to be withdrawn from your chosen source account.
       When property looses focus, calulations done for destination Amount`,
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+          linkCurrency$: X.data.destinationCurrency$,
+          currency$: X.data.sourceCurrency$,
+          linkAmount$: X.data.destinationAmount$
+        };
+      },
       tableCellFormatter: function(value, obj) {
         obj.currencyDAO.find(obj.sourceCurrency).then(function(c) {
           if ( c ) {
@@ -615,40 +628,15 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      createMode: 'RO',
       gridColumns: 6,
       help: `This is the amount to be transfered to your chosen destination account.`,
       view: function(_, X) {
-        // TODO - coming in another pr JAN 15 - anna
-        let asdm = X.data.slot(function(amount, sourceCurrency, destinationCurrency) {
-          if ( sourceCurrency && destinationCurrency ) {
-            let e = foam.mlang.Expressions.create();
-            return X.currencyDAO.find(destinationCurrency).then((dstC) => {
-              return X.exchangeRateDAO.where(e.AND(
-                e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, sourceCurrency),
-                e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, destinationCurrency)
-                )).select().then((result) => {
-                  if ( sourceCurrency === destinationCurrency ) return amount;
-                  if ( result.array.length > 0 ) {
-                    return (amount*result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
-                  } else {
-                    return X.exchangeRateDAO.where(e.AND(
-                      e.EQ(net.nanopay.fx.ExchangeRate.FROM_CURRENCY, destinationCurrency),
-                      e.EQ(net.nanopay.fx.ExchangeRate.TO_CURRENCY, sourceCurrency)
-                    )).select().then((result) => {
-                      if ( result.array.length > 0 ) {
-                        return (amount/result.array[0].rate/Math.pow(10, dstC.precision)).toFixed(dstC.precision);
-                      }
-                      return 0;
-                  });
-                }
-              });
-            });
-          }
-        });
         return {
-          class: 'foam.u2.TextField',
-          data$: asdm
+          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+          linkAmount$: X.data.amount$,
+          linkCurrency$: X.data.sourceCurrency$,
+          currency$: X.data.destinationCurrency$,
+          linked: true
         };
       },
       documentation: 'Amount in Receiver Currency',
@@ -742,24 +730,21 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'dstAccountError',
+      documentation: 'This is used strictly for the synchronizing of dstAccount errors on create.',
+      hidden: true,
+      transient: true
+    },
+    {
+      class: 'String',
       name: 'destinationCurrency',
       aliases: ['destinationDenomination'],
-      updateMode: 'RO',
-      editMode: 'RO',
+      visibility: 'RO',
       section: 'paymentInfoDestination',
       gridColumns: 5,
       help: `Manual entry, please confirm currency and account id with contact externally.
       This property will toggle the displayed amounts to show rate conversions.`,
-      createMode: 'RW',
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          objToChoice: function(unit) {
-            return [unit.id, unit.id];
-          }
-        });
-      }
+      value: 'CAD'
     },
     {
       name: 'next',
@@ -962,11 +947,18 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
-        return true;
-      }
-      return false;
+        // Allow transfer when status=COMPLETED and lifecycleState=ACTIVE
+        // - for new transaction and
+        // - for old transaction that just transitions to status=COMPLETED or lifecycleState=ACTIVE
+        if ( getStatus() == TransactionStatus.COMPLETED
+          && getLifecycleState() == LifecycleState.ACTIVE
+          && ( oldTxn == null
+            || oldTxn.getStatus() != TransactionStatus.COMPLETED
+            || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
+        ) {
+          return true;
+        }
+        return false;
       `
     },
     {
