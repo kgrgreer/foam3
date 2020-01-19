@@ -141,7 +141,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setAuthorize(false)
-      .setMedusaMediator(true)
       .setOf(Account.getOwnClassInfo())
       .setInnerDAO(dao)
       .build();
