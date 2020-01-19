@@ -193,6 +193,7 @@ p({
   """
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
+    import foam.nanos.mrac.*;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
