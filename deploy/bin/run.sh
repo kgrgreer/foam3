@@ -19,9 +19,9 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -C <true>          : enable cluster"
+    echo "  -C <true>           : enable cluster"
     echo "  -D 0 or 1           : Debug mode."
-    echo "  -H <hostname>     : hostname"
+    echo "  -H <hostname>       : hostname "
     echo "  -h                  : Display help."
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -P <debug port>     : Port to run debugger on."
@@ -48,6 +48,8 @@ while getopts "C:D:H:hN:P:S:U:V:W:Z:" opt ; do
         ?) usage ; exit 0 ;;
    esac
 done
+
+echo "run.sh HOST_NAME=$HOST_NAME"
 
 if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${RUN_USER}" ]; then
     exec sudo -u "${RUN_USER}" -- "$0" "$@"
