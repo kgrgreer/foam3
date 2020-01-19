@@ -195,18 +195,32 @@ p({"class":"foam.nanos.boot.NSpec", "name":"bankAccountVerification",          "
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"exchangeRateDAO",
-  "serve":true,
+  "name":"localExchangeRateDAO",
+  "serve":false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.ExchangeRate.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("exchangeRates")
       .setIndex(new foam.core.PropertyInfo[] {net.nanopay.fx.ExchangeRate.FROM_CURRENCY, net.nanopay.fx.ExchangeRate.TO_CURRENCY})
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeRateDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.fx.ExchangeRate.getOwnClassInfo())
+      .setAuthorize(false)
+      .setInnerDAO(x.get("localExchangeRateDAO"))
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true}"

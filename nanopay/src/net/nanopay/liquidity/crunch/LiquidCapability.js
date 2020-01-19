@@ -128,11 +128,17 @@ foam.CLASS({
         // add dashboard menu permission for account maker/approver
         if ( getCanMakeAccount() && getCanApproveAccount() ) permissions.add("menu.read.liquid.dashboard");
 
+        // add account menu permission if user can view, make or approve account
+        if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
+
         // add approver menu permission for approvers
         if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
 
         if ( getCanMakeAccount() ) permissions.add("account.make");
         if ( getCanMakeTransaction() ) permissions.add("transaction.make");
+
+        // add transaction menu permission if user can view, make or approve transaction
+        if ( getCanViewTransaction() || getCanMakeTransaction() || getCanApproveTransaction() ) permissions.add("menu.read.liquid.transactions");
 
         return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
       `
@@ -235,6 +241,31 @@ foam.CLASS({
 
         // add approver menu permission for approvers
         if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysettings() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
+
+        // add rules menu permission if user can view, make or approve rules
+        if ( getCanViewRule() || getCanMakeRule() || getCanApproveRule() ) permissions.add("menu.read.liquid.rules");
+
+        // add user menu permission if user can view, make or approve user
+        if ( getCanViewUser() || getCanMakeUser() || getCanApproveUser() ) permissions.add("menu.read.liquid.users");
+
+        // add liquidity settings menu permission if user can view, make or approve liquidity settings
+        if( getCanViewLiquiditysettings() || getCanMakeLiquiditysettings() || getCanApproveLiquiditysettings() ) permissions.add("menu.read.liquid.liquidity");
+
+        // add roles, global liquid capabilities and account based liquid capabilities menu permission if user can view, make or approve a capability
+        if ( getCanViewCapability() || getCanMakeCapability() || getCanApproveCapability() ) {
+          permissions.add("menu.read.liquid.roles");
+          permissions.add("menu.read.liquid.globalliquidcapabilities");
+          permissions.add("menu.read.liquid.accountbasedliquidcapabilities");
+        }
+
+        // add assign capability menu permission if user can make or approve a capability request
+        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.assigncapability");
+
+        // add capability account template menu permission if user can make or approve capability requests
+        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.capabilityaccounttemplates");
+
+        // add role query view menu permission if user can view capability, user and account
+        if ( getCanViewCapability() && getCanViewUser() ) permissions.add("menu.read.liquid.rolequeryview");
 
         // add file upload permission for file ingesters
         if ( getCanIngestFile() ) permissions.add("menu.read.liquid.fileupload");

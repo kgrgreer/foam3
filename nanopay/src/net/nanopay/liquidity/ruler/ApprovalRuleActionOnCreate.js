@@ -29,11 +29,13 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.Operations',
     'java.util.List',
+    'net.nanopay.account.Account',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
+    'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -95,7 +97,7 @@ foam.CLASS({
       ],
       javaCode: `
         Object objId = obj.getProperty("id");
-        String modelName = obj.getClassInfo().getObjClass().getSimpleName().toLowerCase();
+        String modelName = getModelName(obj);
         String classification = String.format("L%d - %s approval", getApproverLevel(), modelName);
 
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
@@ -176,6 +178,18 @@ foam.CLASS({
           updateApprovalRequestsIsFulfilled(x, objId, daoKey);
         }
         return true;
+      `
+    },
+    {
+      name: 'getModelName',
+      type: 'String',
+      args: [
+        { name: 'obj', type: 'FObject' }
+      ],
+      javaCode: `
+        if ( obj instanceof Transaction ) return "transaction";
+        if ( obj instanceof Account )     return "account";
+        return null;
       `
     },
     {

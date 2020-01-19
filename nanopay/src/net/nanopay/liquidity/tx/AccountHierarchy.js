@@ -5,6 +5,8 @@ foam.INTERFACE({
     {
       name: 'getChildAccountIds',
       type: 'java.util.HashSet',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -19,6 +21,8 @@ foam.INTERFACE({
     {
       name: 'getViewableRootAccounts',
       type: 'java.util.List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -33,6 +37,8 @@ foam.INTERFACE({
     {
       name: 'getChildAccounts',
       type: 'java.util.List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -47,6 +53,8 @@ foam.INTERFACE({
     {
       name: 'getAccountsFromAccountTemplate',
       type: 'net.nanopay.liquidity.crunch.AccountMap',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -61,6 +69,8 @@ foam.INTERFACE({
     {
       name: 'getAssignedAccountMap',
       type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -79,14 +89,16 @@ foam.INTERFACE({
           type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
         },
         {
-          name: 'template',
-          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+          name: 'newMap',
+          javaType: 'java.util.Map<String, net.nanopay.liquidity.crunch.CapabilityAccountData>'
         }
       ]
     },
     {
       name: 'getRevokedAccountsMap',
       type: 'net.nanopay.liquidity.crunch.AccountApproverMap',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -105,8 +117,8 @@ foam.INTERFACE({
           type: 'net.nanopay.liquidity.crunch.AccountApproverMap'
         },
         {
-          name: 'template',
-          type: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate'
+          name: 'newMap',
+          javaType: 'java.util.Map<String, net.nanopay.liquidity.crunch.CapabilityAccountData>'
         }
       ]
     }
