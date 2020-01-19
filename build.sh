@@ -275,7 +275,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -479,6 +479,7 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -C <true | false> : Enable clustering"
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : supress gen_java"
@@ -561,6 +562,7 @@ MODE=
 #MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
+CLUSTER=false
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
@@ -587,11 +589,11 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:E:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1
-           ;;
+        c) CLEAN_BUILD=1 ;;
+        C) CLUSTER=$OPTARG ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
