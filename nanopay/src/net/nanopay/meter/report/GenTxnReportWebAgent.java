@@ -111,11 +111,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD += txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD += txn.getAmount();
-              } else if (txn instanceof DigitalTransaction) {
-                if ( txn.getCost() > 0 ) {
+              } else if ( txn instanceof DigitalTransaction &&
+                          txn.getCost() > 0 ) {
                   totalCount += 1;
                   totalFee += txn.getCost();
-                }
               }
             }
             break;

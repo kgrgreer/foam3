@@ -85,9 +85,7 @@ public class SecurefactRequestGenerator {
   private static SIDniAddress[] buildAddress(X x, User user) {
     Address userAddress = user.getAddress();
     String address = userAddress.getAddress();
-    if (userAddress == null
-      || SafetyUtil.isEmpty(address)
-    ) {
+    if ( SafetyUtil.isEmpty(address) ) {
       throw new IllegalStateException("User address can't be blank");
     }
     if ( ! SafetyUtil.isEmpty(userAddress.getSuite()) ) {

@@ -366,10 +366,8 @@ foam.CLASS({
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         let accountingBank = null;
         for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
-            accountingBank = this.accountingBankAccounts.bankAccountList[i];
-            break;
-          } else if ( this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList ) {
+          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ||
+               this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList) {
             accountingBank = this.accountingBankAccounts.bankAccountList[i];
             break;
           }

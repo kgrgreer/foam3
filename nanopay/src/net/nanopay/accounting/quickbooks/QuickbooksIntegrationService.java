@@ -459,10 +459,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existContact instanceof QuickbooksContact ) {
-      if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
+    if ( existContact instanceof QuickbooksContact && 
+       ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
         throw new RuntimeException("skip");
-      }
     }
 
     // existing user

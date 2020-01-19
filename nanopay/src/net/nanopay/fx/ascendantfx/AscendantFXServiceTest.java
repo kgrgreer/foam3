@@ -112,7 +112,7 @@ public class AscendantFXServiceTest
       branch.setInstitution(institution.getId());
       branch.setAddress(branchAddress);
       DAO branchDAO = (DAO) x_.get("branchDAO");
-      branch = (Branch) branchDAO.put(branch);
+      branchDAO.put(branch);
 
     } else {
       institution = (Institution) institutions.get(0);

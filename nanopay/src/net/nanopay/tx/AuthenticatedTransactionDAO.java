@@ -145,7 +145,7 @@ public class AuthenticatedTransactionDAO
       logger.error(this.getClass().getSimpleName(), id, "source account", t.getSourceAccount(), "not found.", t);
     }
 
-    if ( t != null && t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
     return t;
