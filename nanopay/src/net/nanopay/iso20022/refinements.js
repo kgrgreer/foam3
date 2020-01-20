@@ -747,11 +747,11 @@ foam.CLASS({
                     //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
                     Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
-                    String cur_txnStatus = null;
+                    TransactionStatus cur_txnStatus = null;
                     String txnStatus  = null;
 
                     if ( txn != null ) {
-                      cur_txnStatus = ((TransactionStatus)txn.getStatus()).getName();
+                      cur_txnStatus = (TransactionStatus)txn.getStatus();
                       System.out.println("txn.getStatus() : " + txn.getStatus());
                       System.out.println("txn.getStatus().getName() : " + txn.getStatus().getName());
 
