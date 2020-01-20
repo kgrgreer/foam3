@@ -505,6 +505,7 @@ p({
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.GlobalLiquidCapability.class), 
@@ -526,6 +527,7 @@ p({
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.class), 

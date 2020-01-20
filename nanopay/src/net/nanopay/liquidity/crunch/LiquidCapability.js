@@ -94,6 +94,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'AccountBasedLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+  implements: [ 'foam.core.Validatable' ],
 
   javaImports: [
     'foam.nanos.auth.User',
@@ -195,6 +196,14 @@ foam.CLASS({
         return false;
       `
     },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( ! ( getCanViewAccount() || getCanApproveAccount() || getCanMakeAccount() ||
+                 getCanViewTransaction() || getCanApproveTransaction() || getCanMakeTransaction() ) )
+          throw new IllegalStateException("At least one permission must be selected in order to create this capability.");
+      `
+    }
   ]
 });
 
@@ -203,6 +212,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'GlobalLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+  implements: [ 'foam.core.Validatable' ],
 
   javaImports: [
     'java.util.List',
@@ -313,6 +323,17 @@ foam.CLASS({
         }
       `
     },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( ! ( getCanViewRule() || getCanApproveRule() || getCanMakeRule() ||
+                 getCanViewUser() || getCanApproveUser() || getCanMakeUser() ||
+                 getCanViewLiquiditysettings() || getCanApproveLiquiditysettings() || getCanMakeLiquiditysettings() ||
+                 getCanViewCapability() || getCanMakeCapability() || getCanApproveCapability() ||
+                 getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ||
+                 getCanIngestFile() ) )
+          throw new IllegalStateException("At least one permission must be selected in order to create this capability.");
+      `
+    }
   ]
 });
-
