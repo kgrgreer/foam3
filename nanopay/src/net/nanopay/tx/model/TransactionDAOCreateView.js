@@ -39,7 +39,7 @@ foam.CLASS({
         x.transactionDAO.put(this.data)
         .then(
           (_) => {
-            x.notify('Transaction Created Successfully!');
+            x.notify('An approval request has been created.');
             x.stack.back();
           }
         ).catch(

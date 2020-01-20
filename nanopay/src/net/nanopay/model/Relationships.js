@@ -798,9 +798,7 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
-    help: `Set this to the account you would like to transfer funds to.
-    Manual entry, please contact the individual you would like to transfer funds to,
-    and get the account id from said contact.`,
+    help: `Please input your payee's account id. Confirm account id with contact externally.`,
     gridColumns: 7,
     required: true,
     createMode: 'RW',
