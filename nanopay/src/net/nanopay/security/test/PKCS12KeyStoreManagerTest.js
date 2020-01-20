@@ -29,7 +29,6 @@ foam.CLASS({
 
           // delete existing passphrase file
           if ( passphraseFile.exists() ) {
-            //passphraseFile.delete();
             if ( !passphraseFile.delete() ) {
               throw new IOException("Delete file failed!");
             }

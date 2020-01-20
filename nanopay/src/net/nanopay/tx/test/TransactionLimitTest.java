@@ -57,7 +57,7 @@ public class TransactionLimitTest extends Test {
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     TestedRule txRule = null;
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName() == "transactionLimits" ) {
+      if ( testedRule.getName().equals("transactionLimits") ) {
         txRule = testedRule;
         break;
       }
@@ -72,7 +72,7 @@ public class TransactionLimitTest extends Test {
     probe.clearAppliedRules();
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName() == "transactionLimits" ) {
+      if ( testedRule.getName().equals("transactionLimits") ) {
         txRule = testedRule;
         break;
       }

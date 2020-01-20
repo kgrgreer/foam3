@@ -167,10 +167,10 @@ public class ContactAuthorizationTest
       result = (Contact) user.getContacts(x).put_(x, result);
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == "Married";
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals("Married");
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -238,10 +238,10 @@ public class ContactAuthorizationTest
       Contact findResult = (Contact) user.getContacts(x).find_(x, putResult.getId());
 
       // Conditions to check.
-      boolean emailMatches = findResult.getEmail() == testEmail_;
-      boolean firstNameMatches = findResult.getFirstName() == testFirstName_;
-      boolean lastNameMatches = findResult.getLastName() == testLastName_;
-      boolean organizationMatches = findResult.getOrganization() == testOrganization_;
+      boolean emailMatches = findResult.getEmail().equals(testEmail_);
+      boolean firstNameMatches = findResult.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = findResult.getLastName().equals(testLastName_);
+      boolean organizationMatches = findResult.getOrganization().equals(testOrganization_);
       boolean ownerMatches = findResult.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -278,10 +278,10 @@ public class ContactAuthorizationTest
       Contact result = (Contact) contactDAO.find_(adminUserContext_, putResult.getId());
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == testLastName_;
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals(testLastName_);
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == businessUser_.getId();
 
       // Helpful print statements to track down what went wrong.
