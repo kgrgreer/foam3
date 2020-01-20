@@ -52,7 +52,7 @@ foam.CLASS({
         };
       },
       validateObj: function(users) {
-        if ( users.length == 0 ||  users.some( u => ! u ) ) {
+        if ( users.length == 0 || users.some( u => ! u ) ) {
           return 'Valid selection required';
         }
       }
