@@ -206,10 +206,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existingContact instanceof XeroContact ) {
-      if ( ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime() ) {
+    if ( existingContact instanceof XeroContact && 
+         ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime()) {
         return null;
-      }
     }
 
     User existingUser = (User) userDAO.find(

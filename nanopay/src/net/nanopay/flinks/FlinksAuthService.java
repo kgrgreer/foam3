@@ -111,10 +111,9 @@ public class FlinksAuthService
 
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( httpCode == 203 ) {
-          if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
-            decodeMsg((FlinksMFAResponse) feedback);
-          }
+        if ( httpCode == 203 &&
+             "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
+             decodeMsg((FlinksMFAResponse) feedback);
         }
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();

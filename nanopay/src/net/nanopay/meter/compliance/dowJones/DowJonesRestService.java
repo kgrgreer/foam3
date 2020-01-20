@@ -82,7 +82,7 @@ import java.text.SimpleDateFormat;
         Date dateOfBirth = ((PersonNameSearchRequest) req.getModel()).getDateOfBirth();
         String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
-        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
+        if ( filterLRDFrom != null ) {
           String formattedLRDFilter = sdf.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }

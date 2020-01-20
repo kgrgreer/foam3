@@ -96,8 +96,6 @@ foam.CLASS({
       // }
 
       if ( fxService instanceof AFEXServiceProvider  ) {
-        fxService = (AFEXServiceProvider) fxService;
-  
         // Validate that Payer is provisioned for AFEX before proceeding
         // if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
           AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
