@@ -86,10 +86,7 @@ p({
           },
           "CRUDActionsAuth": {
             "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["transaction.make"],
-            // the bottom are have enabled set to false by default anyways
-            // "update": ["transaction.make.%"],
-            // "delete": ["transaction.make.%"]
+            "create": ["transaction.make"]
           },
           "filterExportPredicate":
             {
