@@ -8,7 +8,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'accountHierarchyService',
+    'user'
   ],
 
   requires: [
@@ -26,22 +28,40 @@ foam.CLASS({
 
   css: `
     ^header {
+      box-sizing: border-box;
+      height: 51px;
       border-bottom: solid 1px #e7eaec;
-      height: 39px;
       width: 100%;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.5;
-      color: #1e1f21;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    ^title {
-      left: 45%;
-      position: absolute;
+    ^container-selectors {
+      border-bottom: solid 1px #e7eaec;
     }
 
     ^selector {
-      padding-left: 16px;
+      width: 50%;
+      height: 50px;
+    }
+
+    ^selector:first-child {
+      border-right: solid 1px #e7eaec;
+    }
+
+    ^selector .foam-u2-tag-Select {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-indent: 16px;
+
+      cursor: pointer;
+    }
+
+    ^selector .foam-u2-tag-Select:focus {
+      border: none;
     }
 
     ^nav-container {
@@ -57,11 +77,20 @@ foam.CLASS({
       vertical-align: middle;
     }
 
-    ^ .foam-u2-ActionView-secondary {
+    ^ .foam-u2-ActionView-tertiary {
       font-size: 18px;
       width: 24px;
       height: 24px;
       padding: 0;
+      border-radius: 3px;
+    }
+
+    ^ .foam-u2-ActionView-tertiary:focus {
+      border-bottom-color: transparent;
+    }
+
+    ^ .foam-u2-ActionView-tertiary:hover {
+      background-color: rgba(0, 0, 0, 0.08);
     }
 
     ^ .foam-u2-ActionView + .foam-u2-ActionView {
@@ -73,13 +102,29 @@ foam.CLASS({
       width: 16px;
       margin-right: 0;
     }
+
+    ^container-message {
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    ^message-select-root {
+      margin: 0;
+      font-size: 14px;
+    }
   `,
 
   messages: [
     {
       name: 'VIEW_HEADER',
-      message: 'ACCOUNT HIERARCHY VIEW',
+      message: 'Account Hierarchy View',
     },
+    {
+      name: 'MESSAGE_SELECT_ROOT',
+      message: 'Please select a base account'
+    }
   ],
 
   classes: [
@@ -116,122 +161,129 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
-      name: 'accounts',
-      of: 'net.nanopay.account.Account',
-      visibilityExpression: function(canvasContainer) {
-        return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
+      name: 'rootAccounts',
+      documentation: 'Array of root accounts viewable by user',
+      factory: function() {
+        return [];
       },
-      postSet: function(_, n){
-        this.scrollToAccount(n);
-      },
-      view: function(_, x) {
-        var self = x.data;
-        var prop = this;
-        var v = foam.u2.view.ReferenceView.create(null, x);
-        v.fromProperty(prop);
-        v.dao = v.dao.where(self.OR(
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.DigitalAccount
-          }),
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.AggregateAccount
-          }),
-          foam.mlang.predicate.IsClassOf.create({
-            targetClass: self.SecuritiesAccount
-          })
-        ));
-        return v;
+      preSet: function(_, n) {
+        // pre processes the [Account] into [[Account, String]] for choice view
+        var accounts = [];
+        n.forEach((root) => {
+          accounts.push([root, root.toSummary()]);
+        });
+        return accounts;
       }
+    },
+    {
+      name: 'childAccounts',
+      documentation: 'array for ChoiceView choices',
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'highlightedAccount',
+      documentation: 'account id that has been selected through ChoiceView',
+      postSet: function(o, n) {
+        if ( ! n ) return;
+        this.scrollToAccount(n);
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'selectedRoot',
+      of :'net.nanopay.account.Account'
     },
     'cview',
     'canvasContainer',
-  ],
-  actions: [
-    {
-      name: 'zoomIn',
-      code: function() {
-        this.AnimateTo.create({
-          slot: this.cview.scale$,
-          destValue: this.cview.scale * 1.25,
-          ms: 200
-        }).doAnimation();
-      }
-    },
-    {
-      name: 'zoomOut',
-      isEnabled: function(cview$scale) {
-        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
-      },
-      code: function() {
-        this.AnimateTo.create({
-          slot: this.cview.scale$,
-          destValue: this.cview.scale / 1.25,
-          ms: 200
-        }).doAnimation();
-      }
-    },
-    {
-      name: 'home',
-      isEnabled: function(canvasContainer) {
-        return !! canvasContainer;
-      },
-      code: function() {
-        this.scrollToNode(this.cview.view.root);
-      }
-    }
   ],
 
   methods: [
     function initE(){
       var self = this;
+      this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((roots) => {
+        this.rootAccounts = roots;
+      });
+      // sub to selected root
+      this.onDetach(this.selectedRoot$.sub(this.rootChanged));
 
       this.addClass(this.myClass());
       this
-        .start(this.Cols).style({ 'justify-content': 'flex-start', 'align-items': 'center'}).addClass(this.myClass('header'))
-          .startContext({data: this})
-            .start().addClass(this.myClass('selector'))
-              .add(this.ACCOUNTS)
-            .end()
-          .endContext()
+        .start(this.Cols).addClass(this.myClass('header'))
           .start().addClass(this.myClass('title'))
             .add(this.VIEW_HEADER)
           .end()
         .end()
+        .start(this.Cols).addClass(this.myClass('container-selectors'))
+          .startContext({data: this})
+            .start().addClass(this.myClass('selector'))
+              .start({
+                class: 'foam.u2.view.ChoiceView',
+                choices$: this.rootAccounts$,
+                data$: this.selectedRoot$,
+                placeholder: 'Select Base Account'
+              }).end()
+            .end()
+            .start().addClass(this.myClass('selector'))
+              .start({
+                class: 'foam.u2.view.ChoiceView',
+                mode$: this.selectedRoot$.map((root) => {
+                  return root ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.DISABLED;
+                }),
+                choices$: this.childAccounts$,
+                data$: this.highlightedAccount$,
+                placeholder: 'Search For An Account'
+              }).end()
+            .end()
+          .endContext()
+        .end()
         .startContext({data: this})
-          .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
+          .start(this.Cols)
+            .style({'flex-direction':'column','align-items':'center','justify-content':'space-around'})
+            .addClass(this.myClass('nav-container'))
+            .show(this.selectedRoot$)
             .tag(this.HOME, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               icon: 'images/ic-round-home.svg',
               label: '',
               size: foam.u2.ButtonSize.SMALL
             })
             .tag(this.ZOOM_IN, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               label: '+',
               size: foam.u2.ButtonSize.SMALL
             })
             .tag(this.ZOOM_OUT, {
-              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              buttonStyle: foam.u2.ButtonStyle.TERTIARY,
               label: '-',
               size: foam.u2.ButtonSize.SMALL
             })
           .end()
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-          .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
-            var v = self.AccountTreeGraph.create({ data: a.array[0] });
-            self.cview = self.ZoomMapView.create({
+          .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
+            if ( ! a ) {
+              return self.E()
+                .start().addClass(self.myClass('container-message'))
+                  .start('p').addClass(self.myClass('message-select-root'))
+                    .add(self.MESSAGE_SELECT_ROOT)
+                  .end()
+                .end();
+            }
+
+            var v = this.AccountTreeGraph.create({ data: a });
+            this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
-              width: self.el().clientWidth,
+              width: this.el().clientWidth,
               viewBorder: '#d9170e',
               navBorder: 'black',
               handleHeight: '10',
-              handleColor: '#406dea'
+              handleColor: '#406dea',
             });
-            return self.cview;
-          })
+            return this.cview;
+          }))
         )
         .end()
     },
@@ -346,4 +398,87 @@ foam.CLASS({
       }
     }
   ],
+
+  actions: [
+    {
+      name: 'zoomIn',
+      code: function() {
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale * 1.25,
+          ms: 200
+        }).doAnimation();
+      }
+    },
+    {
+      name: 'zoomOut',
+      isEnabled: function(cview$scale) {
+        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
+      },
+      code: function() {
+        this.AnimateTo.create({
+          slot: this.cview.scale$,
+          destValue: this.cview.scale / 1.25,
+          ms: 200
+        }).doAnimation();
+      }
+    },
+    {
+      name: 'home',
+      isEnabled: function(canvasContainer) {
+        return !! canvasContainer;
+      },
+      code: function() {
+        this.highlightedAccount = this.selectedRoot;
+        this.scrollToNode(this.cview.view.root);
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'rootChanged',
+      code: async function() {
+        // return if no root selected
+        if ( ! this.selectedRoot ) {
+          this.childAccounts = [];
+          this.highlightedAccount = null;
+          return;
+        }
+
+        // get actual root
+        var rootAccount = await this.accountDAO.find(this.selectedRoot);
+
+        // return if no account found for id
+        if ( ! rootAccount ) return;
+
+        // temp array
+        var childAccounts = [];
+
+        // recursive function that takes an account and context (for getChildren)
+        async function getChildData(account, context) {
+          // at node, push id and name in format for choice view
+          childAccounts.push([account.id, account.toSummary()]);
+
+          // at node, get its children
+          var children = await account.getChildren(context).select();
+
+          // return if no children
+          if ( ! children.array ) return;
+
+          // for each child, recursively call this function.
+          // putting this logic in forEach gives a weird side effect when using
+          // await
+          for ( var i = 0 ; i < children.array.length ; i++ ) {
+            await getChildData(children.array[i], context);
+          }
+        };
+
+        // get all child data before proceeding
+        await getChildData(rootAccount, this.__subContext__);
+
+        this.childAccounts = childAccounts;
+      }
+    }
+  ]
 });

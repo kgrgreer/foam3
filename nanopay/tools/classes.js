@@ -332,27 +332,30 @@ var classes = [
    'net.nanopay.liquidity.crunch.CapabilityRequest',
    'net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval',
    'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
+   'net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty',
    'net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate',
+   'net.nanopay.liquidity.crunch.RemoveJunctionsOnCapabilityRemoval',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
+   'net.nanopay.liquidity.ruler.IsSystemOrAdminUser',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
    'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
    'net.nanopay.liquidity.tx.ExceptionRuleAction',
-   'net.nanopay.liquidity.tx.AccountHierarchy',
    'net.nanopay.liquidity.tx.GenericBusinessRule',
    'net.nanopay.liquidity.tx.IsChildAccountPredicate',
    'net.nanopay.liquidity.tx.L2TransactionApprovalRule',
-   'net.nanopay.liquidity.tx.LiquidTransactionLifecycleDAO',
    'net.nanopay.liquidity.tx.TxLimitAction',
    'net.nanopay.liquidity.tx.TxLimitEntityType',
    'net.nanopay.liquidity.tx.TxLimitPredicate',
    'net.nanopay.liquidity.tx.TxLimitRule',
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
+   'net.nanopay.liquidity.tx.AccountHierarchy',
+   'net.nanopay.liquidity.tx.ClientAccountHierarchyService',
 
    'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
@@ -381,6 +384,7 @@ var classes = [
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.ExchangeRate',
   'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.fx.SecurityPrice',
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
@@ -948,7 +952,9 @@ var skeletons = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
-  'net.nanopay.fx.ExchangeRateServiceInterface'
+  'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.account.BalanceServiceInterface',
+  'net.nanopay.liquidity.tx.AccountHierarchy'
 ];
 
 var proxies = [

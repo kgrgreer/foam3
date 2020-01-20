@@ -741,7 +741,10 @@ foam.RELATIONSHIP({
     required: true,
     postSet: function(_, n) {
       this.accountDAO.find(n).then((a) => {
-        this.sourceCurrency = a.denomination;
+        if ( a )
+        {
+          this.sourceCurrency = a.denomination;
+        }
       });
     },
     view: function(_, X) {
@@ -804,6 +807,30 @@ foam.RELATIONSHIP({
     view: { class: 'foam.u2.view.IntView' },
     visibility: 'FINAL',
     section: 'paymentInfoDestination',
+    postSet: function(o, n) {
+      if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
+        // setup
+        var setValues = (value, txt) => {
+          this.destinationCurrency = value;
+          this.dstAccountError = txt;
+        };
+        if ( n == 0 ) setValues(undefined, 'please input an account id.');
+        var x = this.__subContext__;
+        if ( ! x.canReceiveCurrencyDAO ) setValues(undefined, 'issue loading service.');
+
+        // check
+        var request = this.CanReceiveCurrency.create({ accountChoice: n });
+        x.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+          if ( responseObj.response ) {
+            return setValues(responseObj.message, '');
+          }
+          setValues(undefined, 'entered account does not exist');
+        }).catch((e) => console.warn('validation on Transaction.destinationAccount error:', e.message || e));
+      }
+    },
+    validateObj: function(dstAccountError) {
+      return dstAccountError;
+    },
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
         .then((account) => account ? account.name : value));

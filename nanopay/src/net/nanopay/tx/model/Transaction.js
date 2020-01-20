@@ -61,6 +61,7 @@ foam.CLASS({
   ],
 
   requires: [
+   'net.nanopay.bank.CanReceiveCurrency',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
@@ -729,24 +730,21 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'dstAccountError',
+      documentation: 'This is used strictly for the synchronizing of dstAccount errors on create.',
+      hidden: true,
+      transient: true
+    },
+    {
+      class: 'String',
       name: 'destinationCurrency',
       aliases: ['destinationDenomination'],
-      updateMode: 'RO',
-      editMode: 'RO',
+      visibility: 'RO',
       section: 'paymentInfoDestination',
       gridColumns: 5,
       help: `Manual entry, please confirm currency and account id with contact externally.
       This property will toggle the displayed amounts to show rate conversions.`,
-      createMode: 'RW',
-      value: 'CAD',
-      view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO,
-          objToChoice: function(unit) {
-            return [unit.id, unit.id];
-          }
-        });
-      }
+      value: 'CAD'
     },
     {
       name: 'next',
@@ -949,12 +947,18 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) &&
-      getLifecycleState() == LifecycleState.ACTIVE ) {
-        return true;
-      }
-      return false;
+        // Allow transfer when status=COMPLETED and lifecycleState=ACTIVE
+        // - for new transaction and
+        // - for old transaction that just transitions to status=COMPLETED or lifecycleState=ACTIVE
+        if ( getStatus() == TransactionStatus.COMPLETED
+          && getLifecycleState() == LifecycleState.ACTIVE
+          && ( oldTxn == null
+            || oldTxn.getStatus() != TransactionStatus.COMPLETED
+            || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
+        ) {
+          return true;
+        }
+        return false;
       `
     },
     {

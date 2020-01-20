@@ -179,6 +179,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -230,6 +231,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/ExchangeRateServiceInterface' },
   { name: 'net/nanopay/fx/ClientExchangeRateService' },
+  { name: 'net/nanopay/account/BalanceServiceInterface' },
+  { name: 'net/nanopay/account/ClientBalanceService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
@@ -883,16 +886,17 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
+   { name: 'net/nanopay/liquidity/ruler/IsSystemOrAdminUser' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleTransactionPredicate' },
    { name: 'net/nanopay/liquidity/tx/ExceptionRuleAction' },
    { name: 'net/nanopay/liquidity/tx/AccountHierarchy' },
+   { name: 'net/nanopay/liquidity/tx/ClientAccountHierarchyService' },
    { name: 'net/nanopay/liquidity/tx/GenericBusinessRule' },
    { name: 'net/nanopay/liquidity/tx/IsChildAccountPredicate' },
    { name: 'net/nanopay/liquidity/tx/L2TransactionApprovalRule' },
-   { name: 'net/nanopay/liquidity/tx/LiquidTransactionLifecycleDAO' },
    { name: 'net/nanopay/liquidity/tx/TxLimitAction' },
    { name: 'net/nanopay/liquidity/tx/TxLimitEntityType' },
    { name: 'net/nanopay/liquidity/tx/TxLimitPredicate' },
@@ -917,6 +921,9 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityRequestOperations' },
    { name: 'net/nanopay/liquidity/crunch/CreateUserCapabilityJunctionOnRequestApproval' },
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
+   { name: 'net/nanopay/liquidity/crunch/RemoveJunctionsOnCapabilityRemoval' },
+   { name: 'net/nanopay/liquidity/crunch/RemoveAccountBasedUCJIfAccountsEmpty' },
+   { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
 
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
@@ -940,6 +947,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
+   { name: 'net/nanopay/liquidity/ui/transaction/TransactionDAOBrowserView' },
 
    // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

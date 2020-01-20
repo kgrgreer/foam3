@@ -20,9 +20,8 @@ foam.CLASS({
 
         if ( ! authService.check(x, readPermission) ) {
           super.authorizeOnRead(x, obj);
-        }        
+        }
       `
     }
   ]
 })
-  

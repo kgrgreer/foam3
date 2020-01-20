@@ -18,7 +18,8 @@ foam.CLASS({
   imports: [
     'homeDenomination',
     'fxService',
-    'user'
+    'user',
+    'balanceService'
   ],
 
   javaImports: [
@@ -409,6 +410,11 @@ foam.CLASS({
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
       visibility: 'RO'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 
@@ -436,7 +442,7 @@ foam.CLASS({
     },
     {
       name: 'findBalance',
-      type: 'Any',
+      type: 'Long',
       async: true,
       args: [
         {
@@ -445,11 +451,10 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO 
-          ? x.balanceDAO.find(this.id).then(b => b ? b.balance : 0) 
-          : 0;
+        return x.balanceService.findBalance(x,this.id);
       },
       javaCode: `
+      //TODO: make it use service
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {

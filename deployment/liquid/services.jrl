@@ -154,9 +154,7 @@ p({
       .setInnerDAO(new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO"))))
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("account").build())
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
-
-      // These decorators are present on localAccountDAO.
-      .setDeletedAware(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":
@@ -168,7 +166,8 @@ p({
         "class":"foam.nanos.fs.FileDAODecorator"
       }
     ],
-    "cache": false
+    "cache": true,
+    "cacheType": "FULL"
   }
   """
 })
@@ -645,28 +644,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "liquidTransactionDAO",
-  "lazy": false,
-  "serve": true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
-      .setPm(true)
-      .setPipelinePm(true)
-      .setAuthorize(false)
-      .setDecorator(new net.nanopay.liquidity.tx.LiquidTransactionLifecycleDAO.Builder(x)
-        .build())
-      .setInnerDAO(x.get("transactionDAO"))
-      .setRulerDaoKey("liquidTransactionDAO")
-      .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/liquidTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/liquidTransactionDAO\"}}}}",
-  "documentation":"A client-side enabled (serve:true), authenticated transaction DAO for Liquid that enforces transactions to go through approval flow."
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "exchangeRateService",
   "serve": true,
   "serviceClass": "net.nanopay.fx.ExchangeRateService",
@@ -681,6 +658,27 @@ p({
             "class":"foam.box.HTTPBox",
             "url":
             "service/exchangeRateService"
+          }
+        }
+      }
+    """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "balanceService",
+  "serve": true,
+  "serviceClass": "net.nanopay.account.BalanceService",
+  "boxClass": "net.nanopay.account.BalanceServiceInterfaceSkeleton",
+  "client":
+    """
+      {
+        "class":"net.nanopay.account.ClientBalanceService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/balanceService"
           }
         }
       }

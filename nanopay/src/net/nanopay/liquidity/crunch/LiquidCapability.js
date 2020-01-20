@@ -70,6 +70,11 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       hidden: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 
@@ -106,12 +111,13 @@ foam.CLASS({
   ],
 
   properties: [
-    { class: 'Boolean', name: 'canViewAccount' },
-    { class: 'Boolean', name: 'canMakeAccount' },
-    { class: 'Boolean', name: 'canApproveAccount' },
-    { class: 'Boolean', name: 'canViewTransaction' },
-    { class: 'Boolean', name: 'canMakeTransaction' },
-    { class: 'Boolean', name: 'canApproveTransaction' },
+    { class: 'Boolean', name: 'canViewAccount', label: 'View Account' },
+    { class: 'Boolean', name: 'canMakeAccount', label: 'Make Account' },
+    { class: 'Boolean', name: 'canApproveAccount', label: 'Approve Account' },
+    { class: 'Boolean', name: 'canViewTransaction', label: 'View Transaction' },
+    { class: 'Boolean', name: 'canMakeTransaction', label: 'Make Transaction' },
+    { class: 'Boolean', name: 'canApproveTransaction', label: 'Approve Transaction' },
+    { class: 'Boolean', name: 'canViewDashboard', label: 'View Dashboard' },
     {
       name: 'of',
       hidden: true,
@@ -126,7 +132,7 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add dashboard menu permission for account maker/approver
-        if ( getCanMakeAccount() && getCanApproveAccount() ) permissions.add("menu.read.liquid.dashboard");
+        if ( getCanViewDashboard() ) permissions.add("menu.read.liquid.dashboard");
 
         // add account menu permission if user can view, make or approve account
         if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
@@ -209,21 +215,21 @@ foam.CLASS({
   ],
 
   properties: [
-    { class: 'Boolean', name: 'canViewRule' },
-    { class: 'Boolean', name: 'canMakeRule' },
-    { class: 'Boolean', name: 'canApproveRule' },
-    { class: 'Boolean', name: 'canViewUser' },
-    { class: 'Boolean', name: 'canMakeUser' },
-    { class: 'Boolean', name: 'canApproveUser' },
-    { class: 'Boolean', name: 'canViewLiquiditysettings' },
-    { class: 'Boolean', name: 'canMakeLiquiditysettings' },
-    { class: 'Boolean', name: 'canApproveLiquiditysettings' },
-    { class: 'Boolean', name: 'canViewCapability' },
-    { class: 'Boolean', name: 'canMakeCapability' },
-    { class: 'Boolean', name: 'canApproveCapability' },
-    { class: 'Boolean', name: 'canMakeCapabilityrequest' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproveCapabilityrequest' },
-    { class: 'Boolean', name: 'canIngestFile' },
+    { class: 'Boolean', name: 'canViewRule', label: 'View Rule' },
+    { class: 'Boolean', name: 'canMakeRule', label: 'Make Rule' },
+    { class: 'Boolean', name: 'canApproveRule', label: 'Approve Rule' },
+    { class: 'Boolean', name: 'canViewUser', label: 'View User' },
+    { class: 'Boolean', name: 'canMakeUser', label: 'Make User' },
+    { class: 'Boolean', name: 'canApproveUser', label: 'Approve User' },
+    { class: 'Boolean', name: 'canViewLiquiditysettings', label: 'View Liquidity Settings' },
+    { class: 'Boolean', name: 'canMakeLiquiditysettings', label: 'Make Liquidity Settings' },
+    { class: 'Boolean', name: 'canApproveLiquiditysettings', label: 'Approve Liquidity Settings' },
+    { class: 'Boolean', name: 'canViewCapability', label: 'View Capability' },
+    { class: 'Boolean', name: 'canMakeCapability', label: 'Make Capability' },
+    { class: 'Boolean', name: 'canApproveCapability', label: 'Approve Capability' },
+    { class: 'Boolean', name: 'canMakeCapabilityrequest', label: 'Make Capability Request' }, // global role vs. account role maker/approver may be implied by whether there
+    { class: 'Boolean', name: 'canApproveCapabilityrequest', label: 'Approve Capability Request' },
+    { class: 'Boolean', name: 'canIngestFile', label: 'Ingest File' },
     {
       name: 'of',
       javaFactory: ` return net.nanopay.liquidity.crunch.ApproverLevel.getOwnClassInfo(); `,

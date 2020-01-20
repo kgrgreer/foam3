@@ -90,7 +90,7 @@ foam.CLASS({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
           dao: this.accountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
             this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
-            this.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
 foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
           ))
         });

@@ -94,7 +94,7 @@ public class LiquiditySettingsTest
 
     defaultBalance = (long)senderDigitalDefault.findBalance(x_);
     // balance = 90.00
-    test(senderDigitalDefault.findBalance(x_).equals(defaultBalance), "In the beginning user has CAD10000");
+    test(senderDigitalDefault.findBalance(x_) == (defaultBalance), "In the beginning user has CAD10000");
     Transaction txn1 = new Transaction();
     txn1.setSourceAccount(senderDigitalDefault.getId());
     txn1.setDestinationAccount(senderLiquidityDigital.getId());
@@ -102,16 +102,16 @@ public class LiquiditySettingsTest
     txn1 = (Transaction)txnDAO.put(txn1);
 
     liquidityBalance = liquidityBalance + defaultBalance - maxLimit;
-    test(senderDigitalDefault.findBalance(x_).equals(maxLimit), "After test transaction was placed, money cashed out from digital account and balance matches maximum limit");
-    test(senderLiquidityDigital.findBalance(x_).equals(liquidityBalance), "Money were cashed out to specified digital account");
+    test(senderDigitalDefault.findBalance(x_) == (maxLimit), "After test transaction was placed, money cashed out from digital account and balance matches maximum limit");
+    test(senderLiquidityDigital.findBalance(x_) == (liquidityBalance), "Money were cashed out to specified digital account");
     Transaction txn2 = new Transaction();
     txn2.setSourceAccount(senderDigitalDefault.getId());
     txn2.setDestinationAccount(senderLiquidityDigital.getId());
     txn2.setAmount(txnTotal2);
     txnDAO.put(txn2);
     liquidityBalance = liquidityBalance - minLimit + maxLimit;
-    test(senderDigitalDefault.findBalance(x_).equals(minLimit), "After test transaction money were cashed in to digital account and the balance matches minimum limit");
-    test(senderLiquidityDigital.findBalance(x_).equals(liquidityBalance  ), "Money were cashed out from specified digital account");
+    test(senderDigitalDefault.findBalance(x_) == (minLimit), "After test transaction money were cashed in to digital account and the balance matches minimum limit");
+    test(senderLiquidityDigital.findBalance(x_) == (liquidityBalance  ), "Money were cashed out from specified digital account");
   }
 
   public void testLsCronjob() {

@@ -25,8 +25,9 @@ public class AccountHierarchyService
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     List<Account> ret = new ArrayList<Account>();
+    if ( getUserToViewableRootAccountsMap().get(userId) == null ) return ret;
+
     Set<String> roots = new HashSet<String>(getUserToViewableRootAccountsMap().get(userId));
-    if ( roots == null ) return null;
 
     for ( String root : roots ) {
       ret.add((Account) accountDAO.find(root));
@@ -70,6 +71,22 @@ public class AccountHierarchyService
     }
 
     userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
+
+    // TODO: figure out a better way to do this
+    // we are putting the journal generated user roots in the services
+    List<String> justRoot = new ArrayList<>();
+    justRoot.add("1103");
+
+    userToViewableRootAccountsMap_.put(Long.parseLong("1348"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8006"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8007"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8015"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8016"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8017"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8018"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8019"), new ArrayList<>(justRoot));
+    userToViewableRootAccountsMap_.put(Long.parseLong("8020"), new ArrayList<>(justRoot));
+
     return userToViewableRootAccountsMap_;
   }
 
@@ -121,9 +138,8 @@ public class AccountHierarchyService
   }
 
   @Override
-  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
+  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
@@ -140,7 +156,10 @@ public class AccountHierarchyService
         if ( ( ! oldMap.containsKey(accountId) || 
                ( oldMap.containsKey(accountId) && 
                  roots.contains(accountId) ) ) &&
-             newMap.get(accountId).getIsIncluded() ) {
+             (
+               newMap.get(accountId) != null &&
+               newMap.get(accountId).getIsIncluded()
+             ) ){
           roots.add(accountId);
         }
       }
@@ -241,9 +260,8 @@ public class AccountHierarchyService
 
 
   @Override
-  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, CapabilityAccountTemplate template) {
+  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-    Map<String, CapabilityAccountData> newMap = template == null ? null : template.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
@@ -253,7 +271,7 @@ public class AccountHierarchyService
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     if ( trackRootAccounts ) {
       for ( String accountId : accountIds ) {
-        if ( newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
+        if ( newMap.get(accountId) != null && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
       }
     }
 
