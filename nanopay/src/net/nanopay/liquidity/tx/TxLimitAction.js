@@ -56,7 +56,7 @@ foam.CLASS({
       Currency ruleCurrency = (Currency) currencyDAO.find(txLimitRule.getDenomination());
 
       // Convert to rule currency if necessary
-      if ( ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
+      if ( ruleCurrency != null && ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
         User user = (User) x.get("user");
         FXService fxService = (FXService) x.get("fxService");
         
