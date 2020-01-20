@@ -112,7 +112,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewTransaction' },
     { class: 'Boolean', name: 'canMakeTransaction' },
     { class: 'Boolean', name: 'canApproveTransaction' },
-    { class: 'Boolean', name: 'canViewDashboard' },
+    { class: 'Boolean', name: 'canViewDashboard', label: 'View Dashboard' },
     {
       name: 'of',
       hidden: true,
