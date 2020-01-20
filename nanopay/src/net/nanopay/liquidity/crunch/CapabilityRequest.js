@@ -44,7 +44,7 @@ foam.CLASS({
       name: 'users',
       class: 'List',
       javaType: 'java.util.List<Long>',
-      factory: () => { return []; },
+      factory: () => [],
       view: () => {
         return {
           class: 'foam.u2.view.ReferenceArrayView',
@@ -52,14 +52,9 @@ foam.CLASS({
         };
       },
       validateObj: function(users) {
-        if ( ! users || users.length == 0 )
-          return 'At least one user must be provided';
-        var count = 0;
-        users.forEach((userRef) => {
-          if ( userRef ) count++;
-        })
-        if ( count != users.length ) 
+        if ( users.length == 0 ||  users.some( u => ! u ) ) {
           return 'Valid selection required';
+        }
       }
     },
     {
