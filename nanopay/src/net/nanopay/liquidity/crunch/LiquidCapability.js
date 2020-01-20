@@ -133,7 +133,10 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add dashboard menu permission for account maker/approver
-        if ( getCanViewDashboard() ) permissions.add("menu.read.liquid.dashboard");
+        if ( getCanViewDashboard() ) {
+          permissions.add("shadowaccount.view");
+          permissions.add("menu.read.liquid.dashboard");
+        }
 
         // add account menu permission if user can view, make or approve account
         if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
