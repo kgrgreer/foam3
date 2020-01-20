@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.model.Business',
@@ -45,7 +46,8 @@ foam.CLASS({
         Transaction tx = (Transaction) NEW_OBJ.f(obj);
 
         // Only check digital transactions
-        if ( ! ( tx instanceof DigitalTransaction )) {
+        if ( ! ( tx instanceof DigitalTransaction ||
+                 tx instanceof FXTransaction ) ) {
           return false;
         }    
 
