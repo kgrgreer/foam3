@@ -522,16 +522,18 @@ foam.CLASS({
         SecurityPrice price = new SecurityPrice.Builder(x)
           .setSecurity(row.getProductId())
           .setCurrency(row.getMarketValueCCy())
-          .setPrice(Math.abs(row.getMarketValueLocal()/row.getSecQty()))
+          .setPrice(Math.abs(((long)(Math.pow(10,6)*(row.getMarketValueLocal()/row.getSecQty())))* Math.pow(10,-6)))
           .build();
-        SecurityPrice priceUSD = new SecurityPrice.Builder(x)
-          .setSecurity(row.getProductId())
-          .setCurrency("USD")
-          .setPrice(Math.abs(row.getMarketValue()/row.getSecQty()))
-          .build();
-        addExchangeRate(x, row.getMarketValueCCy(), "USD", row.getMarketValueLocal(), row.getMarketValue());
+        if (row.getMarketValueLocal() !=  row.getMarketValue() ) {
+          SecurityPrice priceUSD = new SecurityPrice.Builder(x)
+            .setSecurity(row.getProductId())
+            .setCurrency("USD")
+            .setPrice(Math.abs(((long)(Math.pow(10,6)*(row.getMarketValue()/row.getSecQty())))* Math.pow(10,-6)))
+            .build();
+          addExchangeRate(x, row.getMarketValueCCy(), "USD", row.getMarketValueLocal(), row.getMarketValue());
+          priceDAO.put(priceUSD);
+        }
         priceDAO.put(price);
-        priceDAO.put(priceUSD);
       `
     },
     {
@@ -548,7 +550,7 @@ foam.CLASS({
         ExchangeRate er = new ExchangeRate.Builder(x)
           .setFromCurrency(curr1)
           .setToCurrency(curr2)
-          .setRate(Math.abs(amnt2/amnt1))
+          .setRate(Math.abs(((long)(Math.pow(10,6)*(amnt2/amnt1)))* Math.pow(10,-6)))
           .build();
         exchangeRateDAO.put(er);
       `
