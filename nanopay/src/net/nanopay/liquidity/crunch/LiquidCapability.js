@@ -118,7 +118,21 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewTransaction', label: 'View Transaction' },
     { class: 'Boolean', name: 'canMakeTransaction', label: 'Make Transaction' },
     { class: 'Boolean', name: 'canApproveTransaction', label: 'Approve Transaction' },
-    { class: 'Boolean', name: 'canViewDashboard', label: 'View Dashboard' },
+    { class: 'Boolean', 
+      name: 'canViewDashboard', 
+      label: 'View Dashboard' ,
+      postSet: function(canViewDashboard, canViewShadowAccount) {
+        canViewShadowAccount = canViewDashboard;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'canViewShadowAccount',
+      hidden: true,
+      postSet: function(canViewShadowAccount) {
+        console.log(canViewShadowAccount);
+      }
+    },
     {
       name: 'of',
       hidden: true,
@@ -133,7 +147,10 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add dashboard menu permission for account maker/approver
-        if ( getCanViewDashboard() ) permissions.add("menu.read.liquid.dashboard");
+        if ( getCanViewDashboard() ) {
+          permissions.add("shadowaccount.view");
+          permissions.add("menu.read.liquid.dashboard");
+        }
 
         // add account menu permission if user can view, make or approve account
         if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
@@ -165,6 +182,8 @@ foam.CLASS({
         if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
+          if ( permission.equals("canViewShadowAccount") ) return getCanViewShadowAccount();
+
           String[] permissionComponents = permission.split("\\\\.");
           if ( permissionComponents.length != 3 ) {
             // the permission string was not generated properly, should never happen
