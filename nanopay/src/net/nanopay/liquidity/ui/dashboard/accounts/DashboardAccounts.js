@@ -130,7 +130,7 @@ foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.Digita
                   .end()
                 .end()
                 .start()
-                  .start(foam.comics.v2.DAOBrowserView, {
+                  .start(net.nanopay.account.AccountDAOBrowserView, {
                     config
                   })
                     .addClass(this.myClass('accounts-table'))
