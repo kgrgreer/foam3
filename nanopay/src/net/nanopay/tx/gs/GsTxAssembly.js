@@ -118,6 +118,8 @@ foam.CLASS({
           setTransaction(t);
         }
         catch( Exception e ){
+          Logger logger = (Logger) getX().get("logger");
+          logger.error(e);
           getTrackingJob().setFailed(true);
           if ( getRow1() != null && getRow1().getTransactionId() != null ) {
              getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing. \\nOn row "+ getRow1().getTransactionId());
@@ -141,6 +143,8 @@ foam.CLASS({
             getTrackingJob().incrementTxnCounter(getTxnCount());
           }
           catch( Exception e ){
+            Logger logger = (Logger) getX().get("logger");
+            logger.error(e);
             getTrackingJob().setFailed(true);
             getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction save.");
           }
