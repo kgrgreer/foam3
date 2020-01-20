@@ -49,9 +49,9 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-            tableCellFormatter: function(value, obj, id) {
-              return this.balance;
-            },
+      tableCellFormatter: function(value, obj, id) {
+        return this.findBalance(this.__subContext__,id);
+      },
       /*tableCellFormatter: function(value, obj, id) {
         var self = this;
         // React to homeDenomination because it's used in the currency formatter.
@@ -73,38 +73,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'findBalance',
-      type: 'Any',
-      async: true,
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      code: function(x) {
-        // TODO: properly wire up findBalance
-        return Promise.resolve(0);
-        // return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
-      },
-      javaCode: `
-        // TODO: properly wire up findBalance
-        return 0L;
-        /*
-        DAO balanceDAO = (DAO) x.get("balanceDAO");
-        Balance balance = (Balance) balanceDAO.find(this.getId());
-        if ( balance != null ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
-          return balance.getBalance();
-        } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
-        }
-        return 0L;
-        */
-      `
-
-    },
     {
       name: 'getSecurityAccount',
       type: 'net.nanopay.account.SecurityAccount',

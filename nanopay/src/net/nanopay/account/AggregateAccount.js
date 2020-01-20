@@ -30,46 +30,7 @@ foam.CLASS({
     {
       name: 'findBalance',
       code: async function(x) {
-        // TODO: need to wire up more efficient way of calculating
-        var balance = 0;
-        var sink = await x.accountDAO.where(
-          this.EQ(net.nanopay.account.AggregateAccount.PARENT, this.id)
-        ).select();
-        var accounts = [];
-        var list1 = sink.array;
-        while( list1.length > 0) {
-          var next = list1[0];
-          if (! ( next.cls_ === net.nanopay.account.AggregateAccount ) ) {
-            var childsSink = await x.accountDAO.where(
-              this.EQ(net.nanopay.account.AggregateAccount.PARENT, next.id)
-            ).select();
-            const childsSinkArray = childsSink.array;
-            for( var i = 0; i < childsSinkArray.length; i++ ) {
-              if ( ! accounts.includes(childsSinkArray[i]) )
-                list1.push(childsSinkArray[i]);
-            }
-          }
-          if ( ! accounts.includes(next) ) accounts.push(next);
-          list1 = list1.filter(val => val !== next);
-        }
-
-        for ( var i = 0; i < accounts.length; i++ ) {
-          if ( accounts[i].type == 'ShadowAccount' ) continue;
-          var accBal = await accounts[i].findBalance(x);
-          if ( this.denomination !== accounts[i].denomination ) {
-            var exchangeRate = await x.exchangeRateDAO.where(
-                this.AND(
-                  this.EQ(this.ExchangeRate.FROM_CURRENCY, accounts[i].denomination),
-                  this.EQ(this.ExchangeRate.TO_CURRENCY, this.denomination)
-                )
-            ).select();
-            if ( exchangeRate && exchangeRate.array.length > 0 ) {
-              accBal = Math.round(accBal * exchangeRate.array[0].rate);
-            }
-          }
-          balance = balance + accBal;
-        }
-        return balance;
+        return await x.balanceService.findBalance(x,this.id);
       },
       javaCode: `
         // TODO: need to wire up more efficient way of calculating

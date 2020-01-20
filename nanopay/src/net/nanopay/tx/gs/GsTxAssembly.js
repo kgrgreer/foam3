@@ -196,6 +196,7 @@ foam.CLASS({
               t = tx;
             }
           populateSecurityPriceDAO(x, destRow);
+          populateSecurityPriceDAO(x, sourceRow);
           t.setSourceAccount(findAcc(x,sourceRow,isCash(sourceRow)));
           t.setDestinationAccount(findAcc(x,destRow,isCash(destRow)));
           t.setSourceCurrency(sourceRow.getProductId());
@@ -241,8 +242,6 @@ foam.CLASS({
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         Transaction t = new Transaction();
-        // if {
-          //sending
           if(isCash(row1) && ( row1.getCashUSD() < 0 )) {
             t.setSourceAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationAccount(((Account) accountDAO.find(MLang.EQ(Account.NAME,row1.getCompany()+" Shadow Account"))).getId());
@@ -296,7 +295,7 @@ foam.CLASS({
               t = tx;
               // add cash piece
             }
-
+            populateSecurityPriceDAO(x, row1);
             t.setSourceAccount(BROKER_ID);
             t.setDestinationAccount(findAcc(x,row1,isCash(row1)));
             t.setDestinationCurrency(row1.getProductId());
@@ -405,7 +404,7 @@ foam.CLASS({
             return true; 
 
           // Calculate the number of remaining securities and top up the source account
-          long remainder = (long) source.findBalance(x) - txn.getAmount(); // is this the correct account ?
+          long remainder = source.findBalance(x) - txn.getAmount(); // is this the correct account ?
           if ( remainder < 0 ) {
             Transaction secCI = new Transaction();
             secCI.setAmount(Math.abs(remainder));
@@ -444,7 +443,7 @@ foam.CLASS({
         }
 
         // Create a top up transaction if necessary
-        Long topUp = (long) source.findBalance(x) - txn.getAmount();
+        Long topUp = source.findBalance(x) - txn.getAmount();
         if ( topUp < 0 ) {
           Transaction ci = new Transaction.Builder(x)
             .setDestinationAccount(source.getId())

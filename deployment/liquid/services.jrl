@@ -663,6 +663,27 @@ p({
       }
     """
 })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "balanceService",
+  "serve": true,
+  "serviceClass": "net.nanopay.account.BalanceService",
+  "boxClass": "net.nanopay.account.BalanceServiceInterfaceSkeleton",
+  "client":
+    """
+      {
+        "class":"net.nanopay.account.ClientBalanceService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/balanceService"
+          }
+        }
+      }
+    """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
