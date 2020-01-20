@@ -87,8 +87,9 @@ p({
           "CRUDActionsAuth": {
             "class": "foam.comics.v2.CRUDActionsAuth",
             "create": ["transaction.make"],
-            "update": ["transaction.make.%"],
-            "delete": ["transaction.make.%"]
+            // the bottom are have enabled set to false by default anyways
+            // "update": ["transaction.make.%"],
+            // "delete": ["transaction.make.%"]
           },
           "filterExportPredicate":
             {
@@ -158,8 +159,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["user.make"],
-        "update": ["user.make.%"],
-        "delete": ["user.make.%"]
+        "update": ["user.make"],
+        "delete": ["user.make"]
       },
       "browseViews": [
         {
@@ -199,8 +200,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["liquiditysettings.make"],
-        "update": ["liquiditysettings.make.%"],
-        "delete": ["liquiditysettings.make.%"]
+        "update": ["liquiditysettings.make"],
+        "delete": ["liquiditysettings.make"]
       }
     }
   },
@@ -293,8 +294,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -345,8 +346,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -397,8 +398,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -430,8 +431,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -483,8 +484,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -603,8 +604,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capability.make"],
-        "update": ["capability.make.%"],
-        "delete": ["capability.make.%"]
+        "update": ["capability.make"],
+        "delete": ["capability.make"]
       }
     }
   },
@@ -637,8 +638,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capability.make"],
-        "update": ["capability.make.%"],
-        "delete": ["capability.make.%"]
+        "update": ["capability.make"],
+        "delete": ["capability.make"]
       }
     }
   },
@@ -676,8 +677,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capabilityrequest.make"],
-        "update": ["capabilityrequest.make.%"],
-        "delete": ["capabilityrequest.make.%"]
+        "update": ["capabilityrequest.make"],
+        "delete": ["capabilityrequest.make"]
       }
     }
   },
