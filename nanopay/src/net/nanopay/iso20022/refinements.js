@@ -755,7 +755,7 @@ foam.CLASS({
                       System.out.println("txn.getStatus() : " + txn.getStatus());
                       System.out.println("txn.getStatus().getName() : " + txn.getStatus().getName());
 
-                      if ( cur_txnStatus.equals(TransactionStatus.COMPLETED) ) {
+                      if ( cur_txnStatus.equals(TransactionStatus.COMPLETED.getName()) ) {
                         txnStatus = "ACSP"; //TransactionStatus.ACSP;
                       } else {
                         txnStatus = "ACSC"; //TransactionStatus.ACSC;
