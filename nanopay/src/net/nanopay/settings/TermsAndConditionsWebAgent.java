@@ -57,7 +57,9 @@ public class TermsAndConditionsWebAgent
     } else {
       terms = (HtmlDoc) tcDAO.find(EQ(HtmlDoc.ID,Long.valueOf(version)));
     }
-    out.println(terms.getBody());
+
+    if(out != null)
+      out.println(terms.getBody());
   }
 }
 
