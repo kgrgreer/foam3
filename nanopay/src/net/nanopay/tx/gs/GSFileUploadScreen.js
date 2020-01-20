@@ -201,7 +201,7 @@ foam.CLASS({
       }, 1000);
 
       this.onDetach(function() {
-        this.clearInterval(timeout);
+        clearInterval(timeout);
       }.bind(this));
 
       this.SUPER();
