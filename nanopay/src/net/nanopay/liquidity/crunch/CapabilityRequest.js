@@ -182,15 +182,17 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       label: 'Status',
-      value: foam.nanos.auth.LifecycleState.PENDING,
-      // TODO: figure out why we can't import controllerMode
-      visibility: foam.u2.Visibility.RO
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateMode: 'RO',
+      readMode: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      // TODO: figure out why we can't import controllerMode
-      visibility: foam.u2.Visibility.RO
+      createMode: 'HIDDEN', 
+      updateMode: 'RO',
+      readMode: 'RO'
     },
   ],
 
