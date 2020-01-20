@@ -174,7 +174,8 @@ public class BmoSendFileCron implements ContextAgent {
     } catch ( Exception e ) {
       logger.error("BMO EFT : " + e.getMessage(), e);
       BmoFormatUtil.sendEmail(x, "BMO EFT Error during sending EFT file", e);
-      passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Error: " + e.getMessage()).build()));
+      if(passedTransaction != null)
+        passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Error: " + e.getMessage()).build()));
 
       if ( readyToSend != null ) {
         try {
