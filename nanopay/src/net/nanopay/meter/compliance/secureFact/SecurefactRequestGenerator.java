@@ -39,7 +39,7 @@ public class SecurefactRequestGenerator {
     }
     request.setCountry(address.getCountryId());
     request.setJurisdiction(address.getRegionId());
-    request.setAddress(address.getPostalCode().replaceAll(" ", ""));
+    request.setAddress(address.getPostalCode().replace(" ", ""));
 
     BusinessType businessType = business.findBusinessTypeId(x);
     if ( businessType != null ) {
@@ -97,7 +97,7 @@ public class SecurefactRequestGenerator {
         .setAddressLine(address)
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
-        .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
+        .setPostalCode(userAddress.getPostalCode().replace(" ", ""))
         .build()
     };
   }

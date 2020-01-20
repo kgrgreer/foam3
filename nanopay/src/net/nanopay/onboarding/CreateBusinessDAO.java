@@ -93,7 +93,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     List<GroupPermissionJunction> junctions = ((ArraySink) templateGroup.getPermissions(x).getJunctionDAO().where(EQ(GroupPermissionJunction.SOURCE_ID, templateGroup.getId())).select(new ArraySink())).getArray();
 
     for ( GroupPermissionJunction junction : junctions ) {
-      Permission newPermission = new Permission.Builder(x).setId(junction.getTargetId().replaceAll("\\.id\\.", "." + safeBusinessName + ".")).build();
+      Permission newPermission = new Permission.Builder(x).setId(junction.getTargetId().replace(".id.", "." + safeBusinessName + ".")).build();
 
       // Use the system context to pass the auth checks.
       realGroup.getPermissions(getX()).add(newPermission);

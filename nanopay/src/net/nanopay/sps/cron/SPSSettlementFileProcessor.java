@@ -142,12 +142,15 @@ public class SPSSettlementFileProcessor implements ContextAgent {
       br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
       if ( (line = br.readLine()) != null ) {
-        line = line.replaceAll(" ", "_")
-          .replaceAll("/", "_")
-          .replaceAll("\\+", "_")
-          .replaceAll("#", "Num")
-          .replaceAll("\\(", "")
-          .replaceAll("\\)", "");
+        // TODO: verify that the input file contains backslash escapes;
+        //       this used to be a call to replaceAll so it's possible regex
+        //       parsing of strings was assumed erroneously.
+        line = line.replace(" ", "_")
+          .replace("/", "_")
+          .replace("+", "_")
+          .replace("#", "Num")
+          .replace("(", "")
+          .replace(")", "");
         sb.append(line).append("\n");
       }
 
