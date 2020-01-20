@@ -90,7 +90,8 @@ foam.CLASS({
                   net.nanopay.account.Account.DENOMINATION,
                   X.denominationToFilterBySlot.get()
                 ),
-                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount))
+                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount))
               )
             );
           }));
