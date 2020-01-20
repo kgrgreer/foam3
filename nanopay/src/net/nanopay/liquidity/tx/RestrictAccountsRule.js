@@ -187,7 +187,10 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaGetter: `
-        ((Logger) getX().get("logger")).warning(this.getId() + " restricting operation. " + this.getDescription());
+        Logger logger = (Logger) getX().get("logger");
+        if ( logger != null ) {
+          logger.warning(this.getId() + " restricting operation. " + this.getDescription());
+        }
         return new ExceptionRuleAction.Builder(getX()).setMessage("Operation prevented by business rule: " + this.getId()).build(); // <- seen by users
       `
     }
