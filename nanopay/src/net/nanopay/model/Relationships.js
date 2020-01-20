@@ -98,13 +98,17 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'parentSection',
     order: 4,
+    label: 'Parent Account',
     view: function(_, X) {
-      var E = foam.mlang.Expressions.create();
       return {
-        class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
-        placeholder: 'select Parent',
-        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: [
+          {
+            heading: 'Accounts',
+            dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME)
+          }
+        ]
       };
     },
     readPermissionRequired: true

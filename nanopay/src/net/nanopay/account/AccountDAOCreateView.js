@@ -10,8 +10,10 @@ foam.CLASS({
   extends: 'foam.comics.v2.DAOCreateView',
 
   imports: [
+    'ctrl',
+    'group',
     'stack',
-    'ctrl'
+    'user'
   ],
 
   requires: [
@@ -37,7 +39,8 @@ foam.CLASS({
       expression: function() {
         return {
           class: 'foam.u2.view.FObjectView',
-          of: 'net.nanopay.account.Account'
+          of: 'net.nanopay.account.Account',
+          dataView: 'net.nanopay.liquidity.ui.account.AccountDetailView'
         };
       }
     },
@@ -46,6 +49,9 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
+      isEnabled: function(data, data$errors_, group$id, data$parent, data$name) {
+        return ! data$errors_ && (group$id !== 'liquidBasic' || !! data$parent) && !! data$name;
+      },
       code: function() {
         var cData = this.data;
 

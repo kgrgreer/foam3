@@ -241,7 +241,22 @@ foam.CLASS({
       tableWidth: 127,
       writePermissionRequired: true,
       section: 'accountDetails',
-      order: 3
+      order: 3,
+      view: {
+        class: 'foam.u2.view.ReferencePropertyView',
+        writeView: function(_, X) {
+          return {
+            class: 'foam.u2.view.RichChoiceView',
+            search: true,
+            sections: [
+              {
+                dao: X.currencyDAO,
+                heading: 'Currencies'
+              }
+            ]
+          }
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -272,7 +287,9 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       section: 'balanceDetails',
       storageTransient: true,
-      visibility: 'RO',
+      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateMode: 'RO',
+      readMode: 'RO',
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);

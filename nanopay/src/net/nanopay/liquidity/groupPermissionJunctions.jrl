@@ -10,10 +10,10 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"net.nanopay.account.shadowaccount.section.accountType"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"digitalaccount.rw.parent"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"aggregateaccount.rw.parent"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"digitalaccount.rw.denomination"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"aggregateaccount.rw.denomination"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"shadowaccount.rw.parent"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"securitiesaccount.rw.parent"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"aggregateaccount.rw.denomination"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"digitalaccount.rw.denomination"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"alternacitransaction.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"alternacotransaction.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"citransaction.rw.status"})
@@ -48,7 +48,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"menu.read.liquid.restrictusersrules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.4b5d8b34-a3bf-487a-a451-a9e68a91df7f"}) // AggregateAccount
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.eca7cf8e-82d7-42a7-9061-26a01cce4dc7"}) // DigitalAccount
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.dfce5b83-3861-4fcd-9196-93da05f9a931"}) // ShadowAccount
 
 // Allowed predicates for Business Rules
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.1af7d5c6-5236-4165-8444-6d378574bc15"}) // Eq
