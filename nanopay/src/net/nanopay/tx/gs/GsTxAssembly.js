@@ -141,8 +141,19 @@ foam.CLASS({
             getTrackingJob().incrementTxnCounter(getTxnCount());
           }
           catch( Exception e ){
-            getTrackingJob().setFailed(true);
-            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction save.");
+            try {
+              String fail ="";
+              if (! SafetyUtil.isEmpty(getTrackingJob().getFailedRows()))
+                fail+= ", ";
+              fail += getRow1().getTransactionId();
+              if (getRow2() != null)
+                fail += (" and " + getRow2().getTransactionId());
+              getTrackingJob().addToFailed(fail);
+            }
+            catch(Exception innerE) {
+              getTrackingJob().setFailed(true);
+            getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction save. " + innerE.getMessage());
+          }
           }
         }
       `
