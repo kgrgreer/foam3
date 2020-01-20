@@ -64,7 +64,6 @@ p({
           "editEnabled": false,
           "deleteEnabled": false, 
           "defaultColumns": [
-            "id",
             "summary",
             "lastModified",
             "sourceAccount",

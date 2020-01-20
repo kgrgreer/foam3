@@ -709,9 +709,30 @@ p({
       .setOrder(cArray)
       .setInnerDAO(x.get("localTransactionDAO"))
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.tx.model.Transaction", 
+      "remoteListenerSupport": false,
+      "serverBox": { 
+        "class":"foam.box.SessionClientBox", 
+        "url":"service/transactionDAO", 
+        "delegate": { 
+          "class":"foam.box.TimeoutBox",
+          "timeout":60000,
+          "delegate": {
+            "class":"foam.box.HTTPBox", 
+            "url":"service/transactionDAO"
+          }
+        }
+      },
+      "cache": true,
+      "cacheType": "FULL"
+    }
+  """
 })
 
 p({
