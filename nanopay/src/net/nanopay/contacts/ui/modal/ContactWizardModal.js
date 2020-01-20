@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation'
   ],
 
@@ -105,7 +106,7 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'data',
       factory: function() {
-        return net.nanopay.contacts.Contact.create({
+        return this.Contact.create({
           type: 'Contact',
           group: 'sme'
         });

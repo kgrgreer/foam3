@@ -14,6 +14,7 @@ foam.CLASS({
       'foam.core.X',
       'foam.dao.DAO',
       'net.nanopay.contacts.Contact',
+      'net.nanopay.model.Business',
       'net.nanopay.payment.PaymentCode'
     ],
 
@@ -22,23 +23,37 @@ foam.CLASS({
         name: 'applyAction',
         javaCode: `
 
-          DAO       paymentCodeDAO =   (DAO) x.get("localPaymentCodeDAO");
-          Contact   newContact     =   (Contact) obj;
-          Contact   oldContact     =   (Contact) oldObj;
+          DAO       paymentCodeDAO   =   (DAO) x.get("localPaymentCodeDAO");
+          DAO       businessDAO      =   (DAO) x.get("localBusinessDAO");
+          Business  loggedInBusiness =   (Business) x.get("user");
+          Contact   contact          =   (Contact) obj;
+          Contact   oldContact       =   (Contact) oldObj;
+          String    paymentCodeValue =   contact.getPaymentCode();
 
-          if ( ! newContact.getPaymentCode.equals(oldContact.getPaymentCode) ) {
-            throw new RuntimeException("Same Business");
+          //check if your own paymentcode
+          //run on create w/ paymentcode should not throw
+
+          if ( oldContact != null && paymentCodeValue.equals(oldContact.getPaymentCode()) ) {
+            throw new RuntimeException("Cannot add same business");
           }
 
-          PaymentCode paymentCode = (PaymentCode) paymentCodeDAO.find(newContact.getPaymentCode());
-          if (paymentCode == null) {
+          PaymentCode paymentCode = (PaymentCode) paymentCodeDAO.find(paymentCodeValue);
+          if ( paymentCode == null ) {
+            throw new RuntimeException("Invalid payment code. Please try again.");
+          }
+
+          Business business = (Business) businessDAO.find(paymentCode.getOwner());
+          if ( business == null || ((Long) business.getId()).equals(loggedInBusiness.getId())) {
             throw new RuntimeException("Invalid payment code. Please try again.");
           }
 
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              newContact.setBusinessId(paymentCode.getOwner());
+              contact.setOrganization(business.getOrganization());
+              contact.setBusinessId(business.getId());
+              //Overwrite email, will need refactor with upcoming changes
+              contact.setEmail(business.getEmail());
             }
           }, "upgrade contact");
         `

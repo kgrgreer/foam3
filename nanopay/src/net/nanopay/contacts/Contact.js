@@ -145,6 +145,12 @@ foam.CLASS({
         shares the same payment code.`
     },
     {
+      class: 'Boolean',
+      name: 'createdUsingPaymentCode',
+      documentation: 'Determines whether contact was created using payment code.',
+      value: false
+    },
+    {
       // TODO: This should probably be defined by a relationship.
       class: 'Reference',
       of: 'net.nanopay.model.Business',
