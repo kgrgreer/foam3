@@ -31,6 +31,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currentMenu',
     'stack',
     'ctrl'
   ],
@@ -156,7 +157,7 @@ foam.CLASS({
         logger.error(this.getClass().getSimpleName(), "DaoKey not found", getDaoKey());
         throw new RuntimeException("Invalid dao key for the approval request object.");
       }
-      
+
       if ( getOperation() != Operations.CREATE ){
         FObject obj = dao.inX(x).find(getObjId());
         if ( obj == null ) {
@@ -184,9 +185,9 @@ foam.CLASS({
       name: 'approve',
       section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
-          if ( 
-            status === net.nanopay.approval.ApprovalStatus.REJECTED || 
-            status === net.nanopay.approval.ApprovalStatus.APPROVED 
+          if (
+            status === net.nanopay.approval.ApprovalStatus.REJECTED ||
+            status === net.nanopay.approval.ApprovalStatus.APPROVED
           ) {
         return false;
         }
@@ -202,7 +203,10 @@ foam.CLASS({
           this.ctrl.add(this.NotificationMessage.create({
             message: this.SUCCESS_APPROVED
           }));
-          this.stack.back();
+
+          if ( this.currentMenu.id !== this.stack.top[2] ) {
+            this.stack.back();
+          }
         }, e => {
           this.throwError.pub(e);
           this.ctrl.add(this.NotificationMessage.create({
@@ -216,9 +220,9 @@ foam.CLASS({
       name: 'reject',
       section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
-        if ( 
-            status === net.nanopay.approval.ApprovalStatus.REJECTED || 
-            status === net.nanopay.approval.ApprovalStatus.APPROVED 
+        if (
+            status === net.nanopay.approval.ApprovalStatus.REJECTED ||
+            status === net.nanopay.approval.ApprovalStatus.APPROVED
           ) {
          return false;
         }
@@ -234,7 +238,10 @@ foam.CLASS({
           this.ctrl.add(this.NotificationMessage.create({
             message: this.SUCCESS_REJECTED
           }));
-          this.stack.back();
+
+          if ( this.currentMenu.id !== this.stack.top[2] ) {
+            this.stack.back();
+          }
         }, e => {
           this.throwError.pub(e);
           this.ctrl.add(this.NotificationMessage.create({
