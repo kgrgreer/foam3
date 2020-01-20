@@ -166,7 +166,8 @@ p({
         "class":"foam.nanos.fs.FileDAODecorator"
       }
     ],
-    "cache": false
+    "cache": true,
+    "cacheType": "FULL"
   }
   """
 })

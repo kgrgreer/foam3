@@ -741,7 +741,10 @@ foam.RELATIONSHIP({
     required: true,
     postSet: function(_, n) {
       this.accountDAO.find(n).then((a) => {
-        this.sourceCurrency = a.denomination;
+        if ( a )
+        {
+          this.sourceCurrency = a.denomination;
+        }
       });
     },
     view: function(_, X) {
