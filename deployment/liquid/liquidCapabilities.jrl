@@ -24,6 +24,7 @@ p({
   "canViewTransaction": true,
   "canMakeTransaction": true,
   "canApproveTransaction": true,
+  "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id": "Treasury Cash Manager (Account-Based)"
 })
@@ -33,6 +34,7 @@ p({
   "canMakeAccount": true,
   "canApproveAccount": true,
   "canViewTransaction": true,
+  "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
   "id": "Operational Administrator (Account-Based)"
 })

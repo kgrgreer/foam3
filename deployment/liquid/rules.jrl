@@ -39,7 +39,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "Create ucj on capabilityrequest approval",
   "daoKey": "capabilityRequestDAO",
-  "operation": 1,
+  "operation": 3,
   "after": true,
   "predicate":{
     "class":"net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate",

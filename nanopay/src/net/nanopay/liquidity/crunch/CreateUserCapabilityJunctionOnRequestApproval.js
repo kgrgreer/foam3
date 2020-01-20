@@ -54,7 +54,7 @@ foam.CLASS({
               if ( newMap == null || newMap.size() == 0 ) 
                 throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
-              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
+              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
 
               for ( Long user : users )  {
                 UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
@@ -95,7 +95,7 @@ foam.CLASS({
               if ( newMap == null || newMap.size() == 0 ) 
                 throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
 
-              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchy");
+              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
 
               for ( Long user : users )  {
                 UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
