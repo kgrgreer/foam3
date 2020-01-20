@@ -44,20 +44,27 @@ foam.CLASS({
       name: 'users',
       class: 'List',
       javaType: 'java.util.List<Long>',
-      factory: function () {
-        return [];
-      },
+      factory: () => { return []; },
       view: () => {
         return {
           class: 'foam.u2.view.ReferenceArrayView',
           daoKey: 'userDAO'
         };
+      },
+      validateObj: function(users) {
+        if ( ! users || users.length == 0 )
+          return 'At least one user must be provided';
+        var count = 0;
+        users.forEach((userRef) => {
+          if ( userRef ) count++;
+        })
+        if ( count != users.length ) 
+          return 'Valid selection required';
       }
     },
     {
       class: 'Boolean',
       name: 'isUsingTemplate',
-      value: false,
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
           this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
