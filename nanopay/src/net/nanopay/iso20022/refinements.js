@@ -361,7 +361,7 @@ foam.CLASS({
 
                        Phone senderPhone = new Phone();
                        senderPhone.setVerified(true);
-                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                        sender.setPhone(senderPhone);
 
@@ -460,7 +460,7 @@ foam.CLASS({
 
                       Phone receiverPhone = new Phone();
                       receiverPhone.setVerified(true);
-                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                       receiver.setPhone(receiverPhone);
 
