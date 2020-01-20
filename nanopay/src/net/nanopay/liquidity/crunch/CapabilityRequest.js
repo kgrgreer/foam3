@@ -194,6 +194,11 @@ foam.CLASS({
       updateMode: 'RO',
       readMode: 'RO'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
+    }
   ],
 
   methods: [

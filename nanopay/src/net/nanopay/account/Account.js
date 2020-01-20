@@ -410,6 +410,11 @@ foam.CLASS({
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
       visibility: 'RO'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 
