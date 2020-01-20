@@ -380,7 +380,7 @@ foam.CLASS({
                        Address senderAddress = new Address();
                        addrLine = "";
 
-                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null |
+                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null ||
                               ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                 senderAddress.setStructured(true);
                                 senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName());
@@ -479,7 +479,7 @@ foam.CLASS({
                       Address receiverAddress = new Address();
                       addrLine = "";
 
-                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null |
+                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null ||
                              ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                receiverAddress.setStructured(true);
                                receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName());
