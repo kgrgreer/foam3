@@ -52,21 +52,23 @@ public class FlinksRestService
   public ResponseMsg serve(RequestMsg msg, String RequestInfo) {
     if ( RequestInfo.equals(AUTHORIZE) ) {
       return authorizeService(msg);
-    } else if ( RequestInfo.equals(CHALLENGE) ) {
+    }
+    if ( RequestInfo.equals(CHALLENGE) ) {
       return challengeService(msg);
-    } if ( RequestInfo.equals(AUTHORIZE_MULTIPLE) ) {
-      return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_SUMMARY) ) {
-      return accountsSummaryService(msg);
-    } else if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
-      return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
-      return accountsDetailService(msg);
-    } else if ( RequestInfo.equals(WAIT_SUMMARY) ) {
-      return null;
-    } else {
+    }
+    if ( RequestInfo.equals(AUTHORIZE_MULTIPLE) ) {
       return null;
     }
+    if ( RequestInfo.equals(ACCOUNTS_SUMMARY) ) {
+      return accountsSummaryService(msg);
+    }
+    if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
+      return null;
+    }
+    if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
+      return accountsDetailService(msg);
+    }
+    return null;
   }
 
   public ResponseMsg authorizeService(RequestMsg msg) {

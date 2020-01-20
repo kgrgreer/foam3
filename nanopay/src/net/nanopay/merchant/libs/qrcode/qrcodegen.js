@@ -817,8 +817,10 @@ var qrcodegen = new function() {
 		} else if ((1 << 14) <= assignVal && assignVal < 1000000) {
 			bb.appendBits(6, 3);
 			bb.appendBits(assignVal, 21);
-		} else
-			throw "ECI assignment value out of range";
+		} else {
+		  throw "ECI assignment value out of range";
+		}
+			
 		return new this(this.Mode.ECI, 0, bb);
 	};
 

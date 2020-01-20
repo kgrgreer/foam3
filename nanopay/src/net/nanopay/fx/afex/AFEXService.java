@@ -223,10 +223,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof IOException ) {
-        omLogger.log("AFEX getClientAccountStatus timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX getClientAccountStatus timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -274,10 +274,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof IOException ) {
-        omLogger.log("AFEX retrieveClientAccountDetails timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX retrieveClientAccountDetails timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -453,10 +453,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof  IOException ) {
-        omLogger.log("AFEX disableBeneficiary timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX disableBeneficiary timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -498,13 +498,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof IOException ) {
-        omLogger.log("AFEX findBeneficiary timeout");
-      }
+    } catch (IOException e  ) {
+      omLogger.log("AFEX findBeneficiary timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
-
     return null;
   }
 
@@ -601,10 +600,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof IOException ) {
-        omLogger.log("AFEX getValueDate timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX getValueDate timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -650,10 +649,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof  IOException ) {
-        omLogger.log("AFEX getRate timeout");
-      }
+    } catch (IOException e) {
+      omLogger.log("AFEX getRate timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -702,10 +701,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof  IOException ) {
-        omLogger.log("AFEX getQuote timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX getQuote timeout");
+      logger.error("AFEX GetQoute failed",e);
+    } catch (URISyntaxException e) {
       logger.error("AFEX GetQoute failed",e);
     }
 
@@ -831,10 +830,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof  IOException ) {
-        omLogger.log("AFEX checkTradeStatus timeout");
-      }
+    } catch (IOException e) {
+      omLogger.log("AFEX checkTradeStatus timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -929,10 +928,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         httpResponse.close();
       }
 
-    } catch (IOException | URISyntaxException e) {
-      if ( e instanceof IOException ) {
-        omLogger.log("AFEX checkPaymentStatus timeout");
-      }
+    } catch (IOException e ) {
+      omLogger.log("AFEX checkPaymentStatus timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
       logger.error(e);
     }
 
@@ -964,10 +963,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       logger.debug("{ apiKey: " + confirmationPDFRequest.getClientAPIKey() + ", name: getTradeConfirmation " + "Response recieved" );
       return bytes;
 
-    } catch ( Throwable t ) {
-      if ( t instanceof IOException ) {
-        omLogger.log("AFEX checkPaymentStatus timeout");
-      }
+    } catch (IOException e) {
+      omLogger.log("AFEX checkPaymentStatus timeout");
+      logger.error(e);
+    } 
+    catch ( Throwable t ) {
       logger.error(t);
 
     } finally {
