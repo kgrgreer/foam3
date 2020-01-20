@@ -455,6 +455,7 @@ p({
       .setNullify(true)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .setRuler(true)
+      .setCluster(false)
       .setRulerDaoKey("securityPlannerDAO")
       .setPm(true)
       .setPipelinePm(true)
