@@ -118,21 +118,7 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewTransaction', label: 'View Transaction' },
     { class: 'Boolean', name: 'canMakeTransaction', label: 'Make Transaction' },
     { class: 'Boolean', name: 'canApproveTransaction', label: 'Approve Transaction' },
-    { class: 'Boolean', 
-      name: 'canViewDashboard', 
-      label: 'View Dashboard' ,
-      postSet: function(canViewDashboard, canViewShadowAccount) {
-        canViewShadowAccount = canViewDashboard;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'canViewShadowAccount',
-      hidden: true,
-      postSet: function(canViewShadowAccount) {
-        console.log(canViewShadowAccount);
-      }
-    },
+    { class: 'Boolean', name: 'canViewDashboard', label: 'View Dashboard' },
     {
       name: 'of',
       hidden: true,
@@ -182,8 +168,6 @@ foam.CLASS({
         if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
 
         try {
-          if ( permission.equals("canViewShadowAccount") ) return getCanViewShadowAccount();
-
           String[] permissionComponents = permission.split("\\\\.");
           if ( permissionComponents.length != 3 ) {
             // the permission string was not generated properly, should never happen
