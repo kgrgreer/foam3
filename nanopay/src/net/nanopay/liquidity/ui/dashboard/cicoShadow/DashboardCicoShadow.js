@@ -41,7 +41,7 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'org.chartjs.HorizontalBarDAOChartView',
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadowChart',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
     'foam.glang.EndOfWeek',
@@ -276,7 +276,7 @@ foam.CLASS({
                     }
                   };
                 }
-                return self.HorizontalBarDAOChartView.create({
+                return self.DashboardCicoShadowChart.create({
                   data$: self.cicoTransactionsDAO$,
                   keyExpr: self.TransactionCICOType.create(),
                   config: config,

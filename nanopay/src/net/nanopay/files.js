@@ -932,6 +932,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidityChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadowChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
