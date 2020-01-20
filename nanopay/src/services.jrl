@@ -1815,7 +1815,7 @@ p({
   "name":"csvUploadScriptDAO",
   "lazy":true,
   "serve":true,
-  "serviceScript":"return new foam.dao.EasyDAO.Builder(x)\n  .setPm(true)\n  .setGuid(true)\n  .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())\n  .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n  .setJournalName(\"csvUploadScripts\")\n  .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))\n  .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .build();",
+  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setCluster(false)\n  .setPm(true)\n  .setGuid(true)\n  .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())\n  .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n  .setJournalName(\"csvUploadScripts\")\n  .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))\n  .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})\n  .build();",
   "client":"{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
 })
 
@@ -1976,6 +1976,7 @@ p({
   "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
+      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -1997,9 +1998,11 @@ p({
       .setPm(true)
       .setGuid(true)
       .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
+      .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName(\"csvUploadScripts\")
       .setAuthorize(false)
+      .setCluster(false)
       .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
@@ -2012,15 +2015,18 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "ProgressBarDAO",
   "serve": true,
+  "lazy": false,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
+      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
       .setAuthorize(false)
+      .setCluster(false)
+      .setPm(true)
       .setPipelinePm(false)
       .setRuler(false)
+      .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("ProgressBarDAO")
-      .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
