@@ -53,14 +53,7 @@ foam.CLASS({
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
-      label: 'All',
-      predicateFactory: function(e) {
-        return e.TRUE;
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'Requested',
+      label: 'Pending',
       predicateFactory: function(e) {
         return e.EQ(
           net.nanopay.approval.ApprovalRequest.STATUS,
@@ -86,6 +79,13 @@ foam.CLASS({
           net.nanopay.approval.ApprovalRequest.STATUS,
           net.nanopay.approval.ApprovalStatus.REJECTED
         );
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
       }
     },
     {
@@ -115,12 +115,14 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
+      label: 'Action',
       section: 'requestDetails'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'initiatingUser',
+      label: 'Requestor',
       tableCellFormatter: function(initiatingUser) {
         let self = this;
         this.__subSubContext__.userDAO.find(initiatingUser).then((user)=> {
@@ -131,8 +133,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isFulfilled'
-    }
+      name: 'isFulfilled',
+      hidden: true
+    },
+    {
+      name: 'memo',
+      hidden: true
+    },
   ],
 
   methods: [

@@ -5,8 +5,8 @@ foam.ENUM({
   values: [
     {
       name: 'REQUESTED',
-      label: 'Requested',
-      documentation: 'Request was sent.'
+      label: 'Pending',
+      documentation: 'Requent pending.'
     },
     {
       name: 'APPROVED',

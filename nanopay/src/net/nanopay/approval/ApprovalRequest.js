@@ -114,6 +114,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'classification',
+      label: 'Approval Type',
       section: 'requestDetails',
       tableWidth: 150,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
@@ -166,7 +167,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'memo',
-      label: 'Notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
       documentation: 'Meant to be used for explanation on why request was approved/rejected'
     },

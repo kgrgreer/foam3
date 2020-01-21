@@ -19,9 +19,7 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'enabled',
     'applyLimitTo',
-    'send',
     'limit',
     'period'
   ],
@@ -33,11 +31,9 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.tx.TxLimitEntityType',
       name: 'applyLimitTo',
+      label: 'Applies To',
       section: 'basicInfo',
       tableWidth: 125,
-      tableHeaderFormatter: function(axiom) {
-        this.add('Entity Type');
-      },
       value: 'ACCOUNT'
     },
     {
@@ -160,10 +156,7 @@ foam.CLASS({
       name: 'period',
       value: 'PER_TRANSACTION',
       section: 'basicInfo',
-      label: 'Over Timeframe',
-      tableHeaderFormatter: function(axiom) {
-        this.add('Period');
-      },
+      label: 'Frequency',
       tableWidth: 200,
     },
     {

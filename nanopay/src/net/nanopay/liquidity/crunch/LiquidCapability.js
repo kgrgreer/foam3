@@ -11,6 +11,10 @@ foam.CLASS({
 
   sections: [
     {
+      name: '_defaultSection',
+      title: 'Permissions'
+    },
+    {
       name: 'uiSettings',
       isAvailable: () => false
     },
@@ -113,6 +117,7 @@ foam.CLASS({
   ],
 
   properties: [
+    { name: 'id' },
     { class: 'Boolean', name: 'canViewAccount', label: 'View Account' },
     { class: 'Boolean', name: 'canMakeAccount', label: 'Make Account' },
     { class: 'Boolean', name: 'canApproveAccount', label: 'Approve Account' },
@@ -226,6 +231,7 @@ foam.CLASS({
   ],
 
   properties: [
+    { name: 'id' },
     { class: 'Boolean', name: 'canViewRule', label: 'View Rule' },
     { class: 'Boolean', name: 'canMakeRule', label: 'Make Rule' },
     { class: 'Boolean', name: 'canApproveRule', label: 'Approve Rule' },
@@ -235,11 +241,11 @@ foam.CLASS({
     { class: 'Boolean', name: 'canViewLiquiditysettings', label: 'View Liquidity Settings' },
     { class: 'Boolean', name: 'canMakeLiquiditysettings', label: 'Make Liquidity Settings' },
     { class: 'Boolean', name: 'canApproveLiquiditysettings', label: 'Approve Liquidity Settings' },
-    { class: 'Boolean', name: 'canViewCapability', label: 'View Capability' },
-    { class: 'Boolean', name: 'canMakeCapability', label: 'Make Capability' },
-    { class: 'Boolean', name: 'canApproveCapability', label: 'Approve Capability' },
-    { class: 'Boolean', name: 'canMakeCapabilityrequest', label: 'Make Capability Request' }, // global role vs. account role maker/approver may be implied by whether there
-    { class: 'Boolean', name: 'canApproveCapabilityrequest', label: 'Approve Capability Request' },
+    { class: 'Boolean', name: 'canViewCapability', label: 'View Role' },
+    { class: 'Boolean', name: 'canMakeCapability', label: 'Make Role' },
+    { class: 'Boolean', name: 'canApproveCapability', label: 'Approve Role' },
+    { class: 'Boolean', name: 'canMakeCapabilityrequest', label: 'Make Role Assignment' }, // global role vs. account role maker/approver may be implied by whether there
+    { class: 'Boolean', name: 'canApproveCapabilityrequest', label: 'Approve Role Assignment' },
     { class: 'Boolean', name: 'canIngestFile', label: 'Ingest File' },
     {
       name: 'of',
