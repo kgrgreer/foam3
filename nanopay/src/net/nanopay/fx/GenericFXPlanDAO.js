@@ -16,7 +16,8 @@ foam.CLASS({
      'net.nanopay.tx.Transfer',
      'net.nanopay.tx.model.TransactionStatus',
      'java.util.ArrayList',
-     'java.util.List'
+     'java.util.List',
+     'net.nanopay.fx.ExchangeRateService'
   ],
 
   properties: [
@@ -69,7 +70,8 @@ foam.CLASS({
         f.setSourceAccount(txn.getSourceAccount());
         f.setLastStatusChange(txn.getLastStatusChange());
         f.setDestinationAccount(txn.getDestinationAccount());
-        f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
+        ExchangeRateService ers = (ExchangeRateService) x.get("exchangeRateService");
+        f.setFxRate(ers.getRate(txn.getSourceCurrency(),txn.getDestinationCurrency()));
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
             .setDescription(TrustAccount.find(getX(), txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")

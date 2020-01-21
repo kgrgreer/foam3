@@ -422,7 +422,8 @@ foam.CLASS({
       name: 'referenceNumber',
       createMode: 'HIDDEN',
       visibility: 'RO',
-      label: 'Reference',
+      section: 'basicInfo',
+      label: 'Originating Source',
       includeInDigest: true
     },
      {

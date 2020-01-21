@@ -282,10 +282,12 @@ foam.CLASS({
 
     function updateDisplay() {
       if ( ! this.currencyObj_ ) return;
-      let formattedRate = this.rate.toFixed(5);
-      this.displayString = this.trueRate ?
-        `${this.currencyObj_.format(this.data)} @Rate: ${formattedRate}` :
-        `${this.currencyObj_.format(this.data)} @Rate: ${this.NO_RATE}`;
+      let formattedRate = (1/this.rate).toFixed(5);
+      if ( this.mode === foam.u2.DisplayMode.RW ) {
+        this.displayString = this.trueRate ?
+          `${this.currencyObj_.format(this.data)} @Rate: ${formattedRate}` :
+          `${this.currencyObj_.format(this.data)} @Rate: ${this.NO_RATE}`;
+      } else this.displayString = `${this.currencyObj_.format(this.data)}`
     },
 
     async function updateData(prec, from, to) {

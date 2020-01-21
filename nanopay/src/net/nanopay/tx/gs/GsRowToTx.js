@@ -199,13 +199,13 @@ foam.CLASS({
           return;
 
         // Create the source trustee account
-        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,denomination +" Trust Account"));
+        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+denomination));
         if( sourceTrust == null ) {
           logger.info("trustee not found for " + denomination + " ... Generating...");
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(denomination)
-            .setName(denomination +" Trust Account")
+            .setName("Trust Account "+denomination)
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net

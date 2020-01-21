@@ -234,7 +234,7 @@ foam.CLASS({
       javaCode: `
       tx = addStatusHistory(tx,stamp);
       setTxnCount(getTxnCount()+1);
-      tx.setReferenceNumber("IngestedTransaction");
+      tx.setReferenceNumber("File Upload");
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -397,7 +397,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-          txn2.setReferenceNumber("TopUp");
+          txn2.setReferenceNumber("System Generated");
           verifyBalance(x,txn2);
         }  
 
@@ -424,7 +424,7 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
-            secCI.setReferenceNumber("TopUp");
+            secCI.setReferenceNumber("System Generated");
             transactionDAO.put(secCI); // top up the sending security account
             getTrackingJob().incrementTopUpCounter(1);
           }
@@ -463,7 +463,7 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
-            .setReferenceNumber("TopUp")
+            .setReferenceNumber("System Generated")
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
@@ -592,13 +592,13 @@ foam.CLASS({
           return;
         
         // Create the source trustee account
-        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
+        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getSourceCurrency()));
         if( sourceTrust == null ) {
           logger.info("trustee not found for " + txn.getSourceCurrency() + " ... Generating...");
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getSourceCurrency())
-            .setName(txn.getSourceCurrency() +" Trust Account")
+            .setName("Trust Account "+txn.getSourceCurrency())
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net
@@ -616,13 +616,13 @@ foam.CLASS({
             return;
         
         // Create the destination trustee account
-        TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Trust Account"));
+        TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getDestinationCurrency()));
         if( destinationTrust == null ) {
           logger.info("trustee not found for " + txn.getDestinationCurrency() + " ... Generating...");
           destinationTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getDestinationCurrency())
-            .setName(txn.getDestinationCurrency() +" Trust Account")
+            .setName(" Trust Account "+ txn.getDestinationCurrency())
             .build();
           BankAccount destBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net

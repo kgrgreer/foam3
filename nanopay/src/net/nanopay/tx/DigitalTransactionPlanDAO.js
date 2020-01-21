@@ -49,7 +49,7 @@ foam.CLASS({
     Transaction txn = quote.getRequestTransaction();
     if ( quote.getSourceAccount() instanceof DigitalAccount &&
          quote.getDestinationAccount() instanceof DigitalAccount &&
-         SafetyUtil.equals(txn.getSourceCurrency(), txn.getDestinationCurrency()) ) {
+         SafetyUtil.equals(quote.getSourceAccount().getDenomination(), quote.getDestinationAccount().getDenomination()) ) {
 
       Transaction dt;
       if ( ! ( txn instanceof DigitalTransaction ) ) {
@@ -58,7 +58,10 @@ foam.CLASS({
       } else {
         dt = (Transaction) txn.fclone();
       }
+      dt.setDestinationCurrency(quote.getDestinationAccount().getDenomination());
+      dt.setSourceCurrency(quote.getSourceAccount().getDenomination());
       dt.setTransfers(createTransfers(dt));
+      dt.setDestinationAmount(txn.getAmount());
       dt.setIsQuoted(true);
       quote.addPlan(dt);
       quote.setPlan(dt);
