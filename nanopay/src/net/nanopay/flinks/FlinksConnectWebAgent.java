@@ -69,17 +69,16 @@ public class FlinksConnectWebAgent
 
       try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
           conn.getOutputStream(), StandardCharsets.UTF_8))) {
-    	  writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
+        writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
         writer.flush();
       }
-      
       String line = null;
       int code = conn.getResponseCode();
       StringBuilder builder = sb.get();
 
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(
           code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
-    	  while ((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
           builder.append(line);
         }
       }

@@ -90,8 +90,7 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
           new InputStreamReader(in));
 
         reloadDataset(x, reader);
-      } 
-      
+      }
         // This value removed because it was a mutable checksum, replace with
         // something better
         //Record.datasetChecksum = checksum;
