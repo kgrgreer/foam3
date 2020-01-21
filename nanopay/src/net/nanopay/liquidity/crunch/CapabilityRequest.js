@@ -281,7 +281,8 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( getRequestType() == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ) return;
+        if ( ! getIsUsingTemplate() || getRequestType() == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ) 
+          return;
 
         Map<String, CapabilityAccountData> map = getCapabilityAccountTemplateMap();
         if ( map == null || map.size() == 0 ) 
