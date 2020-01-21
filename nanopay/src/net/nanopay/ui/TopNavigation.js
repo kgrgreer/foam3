@@ -27,7 +27,7 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 40px;
+      margin-left: 16px;
       display: flex;
       flex-grow: 1;
     }
