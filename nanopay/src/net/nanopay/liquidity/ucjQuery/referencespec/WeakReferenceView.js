@@ -57,20 +57,18 @@ foam.CLASS({
           throw new Error('unable to set DAO for WeakReferenceView');
         }
 
-        var self = this;
-
         var updateDAO = () => {
           if ( !! propValue.dao ) {
-            self.choiceView.dao = propValue.dao;
+            this.choiceView.dao = propValue.dao;
           } else if ( !! propValue.targetDAOKey ) {
-            self.choiceView.dao = self.ctrl.__subContext__[propValue.targetDAOKey];
+            this.choiceView.dao = this.ctrl.__subContext__[propValue.targetDAOKey];
           }
         };
 
         updateDAO();
 
-        propValue.targetDAOKey$.sub(updateDAO);
-        propValue.dao$.sub(updateDAO);
+        this.onDetach(propValue.targetDAOKey$.sub(updateDAO));
+        this.onDetach(propValue.dao$.sub(updateDAO));
       }
     },
     function initE() {
