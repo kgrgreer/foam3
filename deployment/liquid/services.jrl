@@ -229,7 +229,7 @@ p({
       .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
         .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
           .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
-            .setDelegate(new foam.dao.GUIDDAO(dao))
+            .setDelegate(dao)
             .build())
           .build())
         .build())
@@ -277,6 +277,9 @@ p({
     dao = new net.nanopay.tx.SecurityPlanDAO(x, dao);
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
     dao = new net.nanopay.tx.QuoteFillerDAO.Builder(x)
+      .setDelegate(dao)
+      .build();
+    dao = new net.nanopay.tx.GuidTransactionPlanDAO.Builder(x)
       .setDelegate(dao)
       .build();
 
