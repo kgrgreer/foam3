@@ -928,12 +928,20 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    visibilityExpression: function(entityId) {
+      return entityId ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'administrative',
+    visibilityExpression: function(approvalRequests) {
+      return approvalRequests ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   }
 });
 
