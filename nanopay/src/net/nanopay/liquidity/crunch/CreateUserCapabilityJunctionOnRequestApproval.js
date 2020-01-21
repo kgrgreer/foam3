@@ -41,6 +41,15 @@ foam.CLASS({
               Map<String, CapabilityAccountData> newMap;
               if ( req.getIsUsingTemplate() ) { 
                 newMap = req.getCapabilityAccountTemplateMap();
+                ApproverLevel newApproverLevel = new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
+
+                for ( String k : newMap.keySet()  ){
+                  CapabilityAccountData cad = newMap.get(k);
+
+                  cad.setApproverLevel(newApproverLevel);
+
+                  newMap.put(k, cad);
+                }
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
                   .setIsCascading(false)

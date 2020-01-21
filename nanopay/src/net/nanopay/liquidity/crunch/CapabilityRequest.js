@@ -58,22 +58,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'isUsingTemplate',
-      visibilityExpression: function(requestType) {
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
-          this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
-          return foam.u2.Visibility.RW;
-        }
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-          this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using a Template';
-          return foam.u2.Visibility.RW;
-        }
-
-        return foam.u2.Visibility.HIDDEN;
-      }
-    },
-    {
       class: 'Reference',
       name: 'accountBasedCapability',
       of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
@@ -98,6 +82,22 @@ foam.CLASS({
         ) {
           return foam.u2.Visibility.RW;
         }
+        return foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isUsingTemplate',
+      visibilityExpression: function(requestType) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
+          this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
+          return foam.u2.Visibility.RW;
+        }
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+          this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using a Template';
+          return foam.u2.Visibility.RW;
+        }
+
         return foam.u2.Visibility.HIDDEN;
       }
     },
@@ -169,11 +169,20 @@ foam.CLASS({
     },
     {
       name: 'approverLevel',
+      label: 'Authorization Level',
       class: 'Int',
+      min: 1, 
+      max: 2,
+      value: 1,
       javaType: 'java.lang.Integer',
-      visibilityExpression: function(requestType, isUsingTemplate) {
+      validateObj: function(approverLevel) {
+        if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
+          return this.approverLevelRangeError;
+        }
+      },
+      visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL || 
-          ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED && ! isUsingTemplate )
+          ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED )
         ) 
           return foam.u2.Visibility.RW;
         return foam.u2.Visibility.HIDDEN;
@@ -199,7 +208,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
-      name: 'userFeedback'
+      name: 'userFeedback',
+      visibility: foam.u2.Visibility.HIDDEN
     }
   ],
 
