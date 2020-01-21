@@ -102,7 +102,7 @@ public class RestrictUsersRuleTest
     test(
       TestUtils.testThrows(
         () -> transactionDAO_.put(transaction_),
-        rule_.getId() + " restricting operation. " + rule_.getDescription(),
+        "Operation prevented by business rule: " + rule_.getId(),
         RuntimeException.class
       ),
       "Send transaction between restricted users throws RuntimeException."

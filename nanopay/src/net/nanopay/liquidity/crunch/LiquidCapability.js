@@ -70,6 +70,11 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       hidden: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 
@@ -89,6 +94,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'AccountBasedLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+  implements: [ 'foam.core.Validatable' ],
 
   javaImports: [
     'foam.nanos.auth.User',
@@ -127,10 +133,10 @@ foam.CLASS({
         List<String> permissions = new ArrayList<String>();
 
         // add dashboard menu permission for account maker/approver
-        if ( getCanViewDashboard() ) permissions.add("menu.read.liquid.dashboard");
-
-        // add account menu permission if user can view, make or approve account
-        if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
+        if ( getCanViewDashboard() ) {
+          permissions.add("shadowaccount.view");
+          permissions.add("menu.read.liquid.dashboard");
+        }
 
         // add approver menu permission for approvers
         if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
@@ -190,6 +196,14 @@ foam.CLASS({
         return false;
       `
     },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( ! ( getCanViewAccount() || getCanApproveAccount() || getCanMakeAccount() ||
+                 getCanViewTransaction() || getCanApproveTransaction() || getCanMakeTransaction() ) )
+          throw new IllegalStateException("At least one permission must be selected in order to create this capability.");
+      `
+    }
   ]
 });
 
@@ -198,6 +212,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'GlobalLiquidCapability',
   extends: 'net.nanopay.liquidity.crunch.LiquidCapability',
+  implements: [ 'foam.core.Validatable' ],
 
   javaImports: [
     'java.util.List',
@@ -308,6 +323,17 @@ foam.CLASS({
         }
       `
     },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( ! ( getCanViewRule() || getCanApproveRule() || getCanMakeRule() ||
+                 getCanViewUser() || getCanApproveUser() || getCanMakeUser() ||
+                 getCanViewLiquiditysettings() || getCanApproveLiquiditysettings() || getCanMakeLiquiditysettings() ||
+                 getCanViewCapability() || getCanMakeCapability() || getCanApproveCapability() ||
+                 getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ||
+                 getCanIngestFile() ) )
+          throw new IllegalStateException("At least one permission must be selected in order to create this capability.");
+      `
+    }
   ]
 });
-

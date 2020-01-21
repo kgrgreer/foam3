@@ -98,13 +98,17 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'parentSection',
     order: 4,
+    label: 'Parent Account',
     view: function(_, X) {
-      var E = foam.mlang.Expressions.create();
       return {
-        class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
-        placeholder: 'select Parent',
-        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: [
+          {
+            heading: 'Accounts',
+            dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME)
+          }
+        ]
       };
     },
     readPermissionRequired: true
@@ -741,7 +745,10 @@ foam.RELATIONSHIP({
     required: true,
     postSet: function(_, n) {
       this.accountDAO.find(n).then((a) => {
-        this.sourceCurrency = a.denomination;
+        if ( a )
+        {
+          this.sourceCurrency = a.denomination;
+        }
       });
     },
     view: function(_, X) {
@@ -795,9 +802,7 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
-    help: `Set this to the account you would like to transfer funds to.
-    Manual entry, please contact the individual you would like to transfer funds to,
-    and get the account id from said contact.`,
+    help: `Please input your payee's account id. Confirm account id with contact externally.`,
     gridColumns: 7,
     required: true,
     createMode: 'RW',

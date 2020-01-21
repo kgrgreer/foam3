@@ -93,7 +93,6 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
     'type',
     'status',
     'summary',
@@ -519,8 +518,7 @@ foam.CLASS({
       required: true,
       gridColumns: 6,
       visibility: 'RO',
-      help: `This is the amount to be withdrawn from your chosen source account.
-      When property looses focus, calulations done for destination Amount`,
+      help: `This is the amount to be withdrawn from payer's chosen account (Source Account).`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
@@ -629,7 +627,7 @@ foam.CLASS({
       name: 'destinationAmount',
       label: 'Destination Amount',
       gridColumns: 6,
-      help: `This is the amount to be transfered to your chosen destination account.`,
+      help: `This is the amount to be transfered to payee's account (destination account).`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
@@ -742,8 +740,6 @@ foam.CLASS({
       visibility: 'RO',
       section: 'paymentInfoDestination',
       gridColumns: 5,
-      help: `Manual entry, please confirm currency and account id with contact externally.
-      This property will toggle the displayed amounts to show rate conversions.`,
       value: 'CAD'
     },
     {

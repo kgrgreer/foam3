@@ -87,13 +87,14 @@ foam.CLASS({
           this.__subContext__.currencyDAO.find(this.data.denomination).then(denom => {
             // securities and cash colouring are for the liquid accounts
             let color;
-            if ( type === 'Securities' ) {
-              color = '#406dea';
-            } else if (type === 'Digital') {
+            if ( type.includes('Securities') ) {
               color = '#d9170e';
-            } else if (type === 'Aggregate') {
+            } else if ( type.includes('Virtual') || type.includes('Digital') ) {
+              if ( denom.id === this.__subContext__.homeDenomination ) color = '#406dea';
+              else color = '#a96dad';
+            } else if ( type.includes('Aggregate') ) {
               color = '#9ba1a6';
-             } else {
+            } else {
               color = denom != null ? denom.colour : '#ffffff';
             }
 
@@ -106,15 +107,15 @@ foam.CLASS({
               lineWidth: 6
             }));
 
-            const circleColour = balance && !(type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
+            const circleColour = balance && !type.includes('Aggregate') ? '#32bf5e' : '#cbcfd4';
             this.add(foam.graphics.Circle.create({ color: circleColour, x: this.width / 2 - 14, y: this.height - 14, radius: 5, border: null }));
 
             // Account Type
-            if (type == 'Digital') type = 'Virtual';
+            if ( type.includes('Digital') ) type = 'Virtual';
             this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type }));
 
-            const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
-            const balanceFont = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
+            const balanceColour = type.includes('Aggregate') ? 'gray' : 'black';
+            const balanceFont = type.includes('Aggregate') ? '12px sans-serif' : 'bold 12px sans-serif';
             this.add(this.Label.create({
               color: balanceColour,
               font: balanceFont,

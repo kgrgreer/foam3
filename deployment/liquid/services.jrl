@@ -171,7 +171,8 @@ p({
         "class":"foam.nanos.fs.FileDAODecorator"
       }
     ],
-    "cache": false
+    "cache": true,
+    "cacheType": "FULL"
   }
   """
 })
@@ -527,6 +528,7 @@ p({
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.GlobalLiquidCapability.class), 
@@ -548,6 +550,7 @@ p({
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.class), 
@@ -685,6 +688,27 @@ p({
       }
     """
 })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "balanceService",
+  "serve": true,
+  "serviceClass": "net.nanopay.account.BalanceService",
+  "boxClass": "net.nanopay.account.BalanceServiceInterfaceSkeleton",
+  "client":
+    """
+      {
+        "class":"net.nanopay.account.ClientBalanceService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/balanceService"
+          }
+        }
+      }
+    """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -708,9 +732,30 @@ p({
       .setOrder(cArray)
       .setInnerDAO(x.get("localTransactionDAO"))
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer("transaction"))
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.tx.model.Transaction", 
+      "remoteListenerSupport": false,
+      "serverBox": { 
+        "class":"foam.box.SessionClientBox", 
+        "url":"service/transactionDAO", 
+        "delegate": { 
+          "class":"foam.box.TimeoutBox",
+          "timeout":60000,
+          "delegate": {
+            "class":"foam.box.HTTPBox", 
+            "url":"service/transactionDAO"
+          }
+        }
+      },
+      "cache": true,
+      "cacheType": "FULL"
+    }
+  """
 })
 
 p({

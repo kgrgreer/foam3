@@ -18,7 +18,8 @@ foam.CLASS({
   imports: [
     'homeDenomination',
     'fxService',
-    'user'
+    'user',
+    'balanceService'
   ],
 
   javaImports: [
@@ -93,6 +94,17 @@ foam.CLASS({
       predicateFactory: function(e) {
         return e.AND(
           foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Securities Accounts',
+      predicateFactory: function(e) {
+        return e.AND(
+          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
           e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
           e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         )
@@ -240,7 +252,22 @@ foam.CLASS({
       tableWidth: 127,
       writePermissionRequired: true,
       section: 'accountDetails',
-      order: 3
+      order: 3,
+      view: {
+        class: 'foam.u2.view.ReferencePropertyView',
+        writeView: function(_, X) {
+          return {
+            class: 'foam.u2.view.RichChoiceView',
+            search: true,
+            sections: [
+              {
+                dao: X.currencyDAO,
+                heading: 'Currencies'
+              }
+            ]
+          }
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -271,7 +298,9 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       section: 'balanceDetails',
       storageTransient: true,
-      visibility: 'RO',
+      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateMode: 'RO',
+      readMode: 'RO',
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -409,6 +438,11 @@ foam.CLASS({
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
       visibility: 'RO'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback'
     }
   ],
 
@@ -436,7 +470,7 @@ foam.CLASS({
     },
     {
       name: 'findBalance',
-      type: 'Any',
+      type: 'Long',
       async: true,
       args: [
         {
@@ -445,11 +479,10 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO 
-          ? x.balanceDAO.find(this.id).then(b => b ? b.balance : 0) 
-          : 0;
+        return x.balanceService.findBalance(x,this.id);
       },
       javaCode: `
+      //TODO: make it use service
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {

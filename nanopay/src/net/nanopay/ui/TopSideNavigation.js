@@ -184,7 +184,6 @@ foam.CLASS({
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
-                      slot.set(! slot.get());
                       return;
                     }
                     if ( ! hasChildren.get() ) {
@@ -192,7 +191,6 @@ foam.CLASS({
                       self.pushMenu(menu.id);
                     }
                     self.menuSearch = menu.id;
-                    slot.set(! slot.get());
                   })
                   .addClass('sidenav-item-wrapper')
                     .start().addClass('menu-label')

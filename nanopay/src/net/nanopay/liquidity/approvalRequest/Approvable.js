@@ -39,4 +39,18 @@ foam.CLASS({
       }
     },
   ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function() {
+        var modelString = this.daoKey;
+
+        modelString = modelString.replace('local', '');
+        modelString = modelString.replace('DAO', '');
+
+        return `(${modelString}:${this.objId}) UPDATE`;
+      }
+    }
+  ]
 });

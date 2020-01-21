@@ -31,7 +31,7 @@ public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
-  public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
+  public final static String GLOBAL_TXN_CREATE = "transaction.create";
   public final static String GLOBAL_TXN_UPDATE = "transaction.update.*";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
