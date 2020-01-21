@@ -57,13 +57,18 @@ foam.CLASS({
         if ( nu === 'account' ) {
           this.queryRef.of = net.nanopay.account.Account;
           this.queryRef.clearProperty("targetDAOKey");
+          this.queryRef.dao = this.__context__['accountDAO'].where(
+            this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
+          );
         }
         if ( nu === 'role' ) {
           this.queryRef.of = foam.nanos.crunch.Capability;
+          this.queryRef.clearProperty("dao");
           this.queryRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
         }
         if ( nu === 'user' ) {
           this.queryRef.of = foam.nanos.auth.User;
+          this.queryRef.clearProperty("dao");
           this.queryRef.clearProperty("targetDAOKey");
         }
       },
