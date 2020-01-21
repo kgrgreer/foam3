@@ -83,7 +83,6 @@ foam.CLASS({
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       documentation: 'Account associated to setting.',
-      updateMode: 'RO',
       view: function(_, X) {
         const Account = net.nanopay.account.Account;
         const LifecycleState = foam.nanos.auth.LifecycleState;
