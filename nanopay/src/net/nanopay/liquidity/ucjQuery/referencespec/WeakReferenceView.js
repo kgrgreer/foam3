@@ -58,11 +58,24 @@ foam.CLASS({
         }
 
         var self = this;
-        if ( !! propValue.targetDAOKey ) {
-          self.choiceView.dao = self.ctrl.__subContext__[propValue.targetDAOKey];
-        }
+
+        var updateDAO = () => {
+          if ( !! propValue.dao ) {
+            console.log("yes the code got here");
+            self.choiceView.dao = propValue.dao;
+          } else if ( !! propValue.targetDAOKey ) {
+            self.choiceView.dao = self.ctrl.__subContext__[propValue.targetDAOKey];
+          }
+        };
+
+        updateDAO();
+
         propValue.targetDAOKey$.sub(function () {
-          self.choiceView.dao = self.__context__[propValue.targetDAOKey];
+          updateDAO();
+        });
+
+        propValue.dao$.sub(function () {
+          updateDAO();
         });
       }
     },

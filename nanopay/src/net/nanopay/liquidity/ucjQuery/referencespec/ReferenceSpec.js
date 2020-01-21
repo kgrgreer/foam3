@@ -14,11 +14,22 @@ foam.CLASS({
     [
       'view',
       { class: 'net.nanopay.liquidity.ucjQuery.referencespec.ReferenceSpecPropertyView' }
+    ],
+    [
+      'daoFactory',
+      { class: 'Function' }
     ]
   ],
 
   methods: [
     function installInProto(proto) {
+      if ( typeof this.daoFactory === 'function' ) {
+        this.factory = function () {
+          return net.nanopay.liquidity.ucjQuery.referencespec.WeakReference.create({
+            dao: this.daoFactory.call(proto, this)
+          })
+        }
+      }
       this.SUPER(proto);
       var self = this;
       Object.defineProperty(proto, self.name + '$find', {
@@ -31,6 +42,7 @@ foam.CLASS({
         },
         configurable: true
       });
+
     }
   ]
 });
