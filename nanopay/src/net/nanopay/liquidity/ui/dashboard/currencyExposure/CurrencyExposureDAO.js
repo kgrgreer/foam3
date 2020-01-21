@@ -13,24 +13,35 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
   imports: [
-    'filteredAccountDAO?',
     'accountDAO',
     'balanceDAO',
     'homeDenomination',
-    'fxService',
+    'exchangeRateService',
     'user'
   ],
   properties: [
     {
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
-      expression: function(homeDenomination, fxService, user, filteredAccountDAO, accountDAO) {
-        var daoToUse = filteredAccountDAO || accountDAO;
-        var accountDenominationGroupBy = daoToUse
+      expression: function(homeDenomination, exchangeRateService, user, accountDAO) {
+        var accountDenominationGroupBy = accountDAO.where(
+          this.OR(
+            this.AND(
+              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+              this.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+            ),
+            this.AND(
+              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.ShadowAccount' }),
+              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+            )
+          ))
           .select(
             this.GROUP_BY(
               this.Account.DENOMINATION,
-              this.MAP(this.Account.ID, this.ArraySink.create())));
+              this.MAP(this.Account.ID, this.ArraySink.create())
+            )
+          );
 
         var accountDenominationMap = accountDenominationGroupBy
           .then(sink => {
@@ -46,8 +57,8 @@ foam.CLASS({
           .then(g => {
             var rates = {};
             return Promise.all(g.groupKeys.map(d => {
-              return fxService.getFXRate(d, homeDenomination, 0, 1, 'BUY', null, user.id, 'nanopay').then(r => {
-                rates[d] = r.rate;
+              return exchangeRateService.getRate(d, homeDenomination).then(r => {
+                rates[d] = r;
               });
             })).then(_ => rates);
           });
