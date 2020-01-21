@@ -135,12 +135,9 @@ public class SPSSettlementFileProcessor implements ContextAgent {
   private String editFirstRow(X x, InputStream is) {
     String line;
     StringBuilder sb = new StringBuilder();
-    BufferedReader br = null;
     Logger logger = (Logger) x.get("logger");
 
-    try {
-      br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-
+    try(BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       if ( (line = br.readLine()) != null ) {
         // TODO: verify that the input file contains backslash escapes;
         //       this used to be a call to replaceAll so it's possible regex
@@ -160,14 +157,6 @@ public class SPSSettlementFileProcessor implements ContextAgent {
 
     } catch (IOException e) {
       logger.error(e);
-    } finally {
-      if ( br != null ) {
-        try {
-          br.close();
-        } catch (IOException e) {
-          logger.error(e);
-        }
-      }
     }
 
     return sb.toString();
