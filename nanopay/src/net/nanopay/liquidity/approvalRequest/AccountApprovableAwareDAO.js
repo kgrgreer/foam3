@@ -102,7 +102,7 @@ foam.CLASS({
   
       AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
   
-      List<Long> approverIds = ucjQueryService.getApproversByLevel(getX(), modelName, accountRequest.getOutgoingAccount(),1);
+      List<Long> approverIds = ucjQueryService.getAllApprovers(getX(), modelName, accountRequest.getOutgoingAccount());
   
       if ( approverIds.size() <= 0 ) {
         logger.log("No Approvers exist for the model: " + modelName);

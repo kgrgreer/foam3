@@ -53,6 +53,22 @@ foam.INTERFACE({
           type: 'Integer'
         }
       ]
-    }
+    },
+    {
+      name: 'getAllApprovers',
+      type: 'List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'modelToApprove',
+          type: 'String'
+        }
+      ]
+    },
   ]
 });

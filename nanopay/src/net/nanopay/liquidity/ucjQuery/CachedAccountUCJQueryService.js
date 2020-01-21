@@ -40,10 +40,11 @@ foam.CLASS({
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
         cache.put("getAccountsCache", new ConcurrentHashMap<String,List>());
         cache.put("getApproversByLevelCache", new ConcurrentHashMap<String,List>());
+        cache.put("getAllApproversCache", new ConcurrentHashMap<String,List>());
 
-        cache.put("getRolesAndAccounts", new ConcurrentHashMap<String,List>());
-        cache.put("getUsersAndRoles", new ConcurrentHashMap<String,List>());
-        cache.put("getUsersAndAccounts", new ConcurrentHashMap<String,List>());
+        cache.put("getRolesAndAccountsCache", new ConcurrentHashMap<String,List>());
+        cache.put("getUsersAndRolesCache", new ConcurrentHashMap<String,List>());
+        cache.put("getUsersAndAccountsCache", new ConcurrentHashMap<String,List>());
 
         return cache;
       `
@@ -402,6 +403,112 @@ foam.CLASS({
       }
       `,
     },
+     {
+      name: 'getAllApprovers',
+      type: 'List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'modelToApprove',
+          type: 'String'
+        },
+        {
+          name: 'accountId',
+          type: 'Long'
+        }
+      ],
+      javaCode: `
+      String cacheKey = 'm' + modelToApprove + 'a' + String.valueOf(accountId);
+      String cache = "getAllApproversCache";
+
+      Map<String,List> getAllApproversCache = (Map<String,List>) getCache().get(cache);
+
+      if ( ! getAllApproversCache.containsKey(cacheKey) ) {
+        Sink purgeSink = new Sink() {
+          public void put(Object obj, Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+
+          public void remove(Object obj, Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+
+          public void eof() {
+          }
+
+          public void reset(Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+        };
+
+        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
+
+        Logger logger = (Logger) x.get("logger");
+
+        modelToApprove = modelToApprove.toLowerCase();
+
+        List<AccountBasedLiquidCapability> capabilitiesWithAbility;
+
+        switch(modelToApprove){
+          case "account":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "transaction":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_TRANSACTION, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          default:
+            capabilitiesWithAbility = null;
+            logger.error("Something went wrong with the requested model: " + modelToApprove);
+            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
+        }
+
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApprovers = new HashSet<>();
+        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
+
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        }
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
+
+        for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
+
+          if (  accountMap.hasAccount(x, accountId) ) uniqueApprovers.add(currentUCJ.getSourceId());
+        }
+
+        List uniqueApproversList = new ArrayList(uniqueApprovers);
+        
+        List uniqueApproversListToCache = new ArrayList(uniqueApproversList);
+        getAllApproversCache.put(cacheKey, uniqueApproversListToCache);
+
+        ucjDAO.listen(purgeSink, MLang.TRUE);
+        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
+
+        return uniqueApproversList;
+      } else {
+        List newListFromCache = new ArrayList(getAllApproversCache.get(cacheKey));
+
+        return newListFromCache;
+      }
+      `,
+    },
     {
       name: 'getRolesAndAccounts',
       type: 'List',
@@ -420,7 +527,7 @@ foam.CLASS({
       javaCode: `
     
       String cacheKey = 'u' + String.valueOf(userId);
-      String cache = "getRolesAndAccounts";
+      String cache = "getRolesAndAccountsCache";
 
       Map<String,List> getRolesAndAccountsCache = (Map<String,List>) getCache().get(cache);
 
@@ -505,7 +612,7 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'a' + String.valueOf(accountId);
-      String cache = "getUsersAndRoles";
+      String cache = "getUsersAndRolesCache";
   
       Map<String,List> getUsersAndRolesCache = (Map<String,List>) getCache().get(cache);
   
@@ -589,7 +696,7 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'r' + roleId;
-      String cache = "getUsersAndAccounts";
+      String cache = "getUsersAndAccountsCache";
   
       Map<String,List> getUsersAndAccountsCache = (Map<String,List>) getCache().get(cache);
   
