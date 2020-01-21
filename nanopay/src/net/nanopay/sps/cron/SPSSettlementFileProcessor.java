@@ -66,13 +66,18 @@ public class SPSSettlementFileProcessor implements ContextAgent {
       }
 
       for ( String fileName : fileNames ) {
-        InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/settlement/" + fileName);
-        String input = editFirstRow(x, fileInputStream);
-        InputStream is = new ByteArrayInputStream(input.getBytes());
+        String input = "";
+   	 	  ArraySink arraySink = new ArraySink();
 
-        ArraySink arraySink = new ArraySink();
-        csvSupport.inputCSV(is, arraySink, SPSSettlementFileRecord.getOwnClassInfo());
-
+        try (InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/settlement/" + fileName)) {
+          input = editFirstRow(x, fileInputStream);
+          try (InputStream is = new ByteArrayInputStream(input.getBytes())) {
+              csvSupport.inputCSV(is, arraySink, SPSSettlementFileRecord.getOwnClassInfo());
+          }
+        } catch(IOException e) {
+          logger.error(e);
+        }
+       
         List list = arraySink.getArray();
         for ( Object record : list ) {
           SPSSettlementFileRecord settlementFileRecord = (SPSSettlementFileRecord) record;
