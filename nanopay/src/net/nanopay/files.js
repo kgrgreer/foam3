@@ -5,6 +5,7 @@ FOAM_FILES([
   // Approvable
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/PropertiesToUpdateView', flags: ['web'] },
   { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
