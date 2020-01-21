@@ -34,6 +34,14 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'name',
+    'cashOutFrequency',
+    'denomination',
+    'lowLiquidity',
+    'highLiquidity'
+  ],
+
   //relationship: 1:* LiquiditySettings : DigitalAccount
 
   //ids: ['account'],
@@ -43,7 +51,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      hidden: true
     },
     {
       class: 'String',
@@ -62,20 +71,21 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'cashOutFrequency',
+      label: 'Sweep Frequency',
       factory: function() {
         return net.nanopay.util.Frequency.DAILY;
       },
       documentation: 'Determines how often an automatic cash out can occur.',
       section: 'basicInfo'
     },
-    {	
-      class: 'Reference',	
-      of: 'foam.core.Unit',	
+    {
+      class: 'Reference',
+      of: 'foam.core.Unit',
       name: 'denomination',
       required: true,
-      targetDAOKey: 'currencyDAO',	
-      documentation: `The unit of measure of the payment type. The payment system can handle	
-        denominations of any type, from mobile minutes to stocks.	
+      targetDAOKey: 'currencyDAO',
+      documentation: `The unit of measure of the payment type. The payment system can handle
+        denominations of any type, from mobile minutes to stocks.
       `	,
       section: 'basicInfo',
       updateMode: 'RO',
@@ -94,6 +104,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
+      label: 'Low Threshold',
       section: 'thresholds',
       gridColumns: 6,
       postSet: function(o, n) { n.denomination = this.denomination; },
@@ -159,6 +170,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'highLiquidity',
+      label: 'High Threshold',
       section: 'thresholds',
       gridColumns: 6,
       postSet: function(o, n) { n.denomination = this.denomination; },
