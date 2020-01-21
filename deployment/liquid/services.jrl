@@ -571,6 +571,7 @@ p({
       .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.class)), 
@@ -592,6 +593,7 @@ p({
       .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
       .setOf(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.getOwnClassInfo())
       .setAuthorize(false)
+      .setValidated(true)
       .setDecorator(new foam.dao.FilteredDAO(
         x, 
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.class), 
@@ -659,6 +661,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityRequests")
       .setSeqNo(true)
+      .setValidated(true)
       .setDecorator(dao)
       .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
       .build();

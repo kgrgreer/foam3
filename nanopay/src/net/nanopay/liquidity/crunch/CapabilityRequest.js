@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'CapabilityRequest',
 
   implements: [
+    'foam.core.Validatable',
     'foam.mlang.Expressions',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'foam.nanos.auth.LastModifiedAware'
@@ -15,8 +16,11 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.liquidity.crunch.LiquidCapability',
+    'foam.dao.DAO',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.Map',
+    'java.util.Set',
+    'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
@@ -273,6 +277,23 @@ foam.CLASS({
       code: function(){
         return `(Capability Request #${this.id}) ${this.requestType.label}`
       }
+    },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( getRequestType() == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ) return;
+
+        Map<String, CapabilityAccountData> map = getCapabilityAccountTemplateMap();
+        if ( map == null || map.size() == 0 ) 
+          throw new IllegalStateException("At least one account must be provided in the Account Group Map");
+        
+        DAO dao = (DAO) x.get("localAccountDAO");
+        Set<String> keySet = map.keySet();
+        for ( String key : keySet ) {
+          if ( dao.find(Long.parseLong(key)) == null ) 
+            throw new IllegalStateException("One or more entries of this Account Group Map contains an invalid value for account");
+        }
+      `
     }
   ]
 });
