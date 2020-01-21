@@ -87,6 +87,26 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getAllApprovers',
+      type: 'List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'modelToApprove',
+          type: 'String'
+        },
+        {
+          name: 'accountId',
+          type: 'Long'
+        }
+      ]
+    },
+    {
       name: 'getRolesAndAccounts',
       type: 'List',
       async: true,

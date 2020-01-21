@@ -38,6 +38,7 @@ foam.CLASS({
         cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
         cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
         cache.put("getApproversByLevelCache", new ConcurrentHashMap<String,List>());
+        cache.put("getAllApproversCache", new ConcurrentHashMap<String,List>());
   
         return cache;
       `
@@ -295,6 +296,124 @@ foam.CLASS({
 
       } else {
         List newListFromCache = new ArrayList(getApproversByLevelCache.get(cacheKey));
+
+        return newListFromCache;
+      }
+      `
+    },
+        {
+      name: 'getAllApprovers',
+      type: 'List',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'modelToApprove',
+          type: 'String'
+        }
+      ],
+      javaCode: `  
+      String cacheKey = 'm' + modelToApprove;
+      String cache = "getAllApproversCache";
+
+      Map<String, List> getAllApproversCache = (Map<String, List>) getCache().get(cache);
+
+      if (! getAllApproversCache.containsKey(cacheKey)) {
+        Sink purgeSink = new Sink() {
+          public void put(Object obj, Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+
+          public void remove(Object obj, Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+
+          public void eof() {
+          }
+
+          public void reset(Detachable sub) {
+            purgeCache(cache, cacheKey);
+            sub.detach();
+          }
+        };
+
+        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
+
+        Logger logger = (Logger) x.get("logger");
+
+        modelToApprove = modelToApprove.toLowerCase();
+
+        List<GlobalLiquidCapability> capabilitiesWithAbility;
+
+        switch(modelToApprove){
+          case "liquidcapability":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "rule":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "liquiditysettings":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTINGS, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "user":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          case "capabilityrequest":
+            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
+              MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITYREQUEST, true)
+            ).select(new ArraySink())).getArray();
+            break;
+          default:
+            capabilitiesWithAbility = null;
+            logger.error("Something went wrong with the requested model: " + modelToApprove);
+            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
+        }
+
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApprovers = new HashSet<>();
+        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
+
+        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
+          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        }
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
+
+        for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+          ApproverLevel currentApproverLevel = (ApproverLevel) currentUCJ.getData();
+
+          uniqueApprovers.add(currentUCJ.getSourceId());
+        }
+
+        List uniqueApproversList = new ArrayList(uniqueApprovers);
+        
+        List uniqueApproversListToCache = new ArrayList(uniqueApproversList);
+        getAllApproversCache.put(cacheKey, uniqueApproversListToCache);
+
+        ucjDAO.listen(purgeSink, MLang.TRUE);
+        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
+
+        return uniqueApproversList;
+
+      } else {
+        List newListFromCache = new ArrayList(getAllApproversCache.get(cacheKey));
 
         return newListFromCache;
       }
