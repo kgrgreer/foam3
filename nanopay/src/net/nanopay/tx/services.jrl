@@ -343,6 +343,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setCluster(false)
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
       .setAuthorize(false)
       .build();
@@ -455,6 +456,7 @@ p({
       .setNullify(true)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
       .setRuler(true)
+      .setCluster(false)
       .setRulerDaoKey("securityPlannerDAO")
       .setPm(true)
       .setPipelinePm(true)
