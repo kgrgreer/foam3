@@ -110,7 +110,7 @@ public class TxLimitRuleTest
     Account account = txLimitRule.getSend() ? sourceAccount : destinationAccount;
     String errorMessage = 
       "The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " transaction limit was exceeded with a " + txAmount + " transaction " 
+          + " limit was exceeded with a " + txAmount + " transaction " 
           + (txLimitRule.getSend() ? "from " : "to ")
           + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
           + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :

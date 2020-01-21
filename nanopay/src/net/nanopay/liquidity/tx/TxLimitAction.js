@@ -98,7 +98,7 @@ foam.CLASS({
       // Check the limit
       if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
         throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " transaction limit was exceeded with a " + txAmount + " transaction " 
+          + " limit was exceeded with a " + txAmount + " transaction " 
           + (txLimitRule.getSend() ? "from " : "to ")
           + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
           + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
