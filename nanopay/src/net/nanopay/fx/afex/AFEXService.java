@@ -139,10 +139,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      
+      StringEntity params = null;
 
-      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-      String requestJson = jsonOutputter.stringify(request);
-      StringEntity params =new StringEntity(requestJson); 
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+    	  String requestJson = jsonOutputter.stringify(request);
+          params = new StringEntity(requestJson); 
+      }
+      
 
       httpPost.setEntity(params);
 
@@ -989,9 +993,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-      String requestJson = jsonOutputter.stringify(directDebitRequest);
-      StringEntity params =new StringEntity(requestJson);
+      StringEntity params = null;
+
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(directDebitRequest);
+        params =new StringEntity(requestJson);
+      } catch(Exception e) {
+        logger.error(e);
+      }
 
       httpPost.setEntity(params);
 
@@ -1041,9 +1050,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-      String requestJson = jsonOutputter.stringify(directDebitUnenrollmentRequest);
-      StringEntity params =new StringEntity(requestJson);
+      StringEntity params = null;
+      
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(directDebitUnenrollmentRequest);
+        params = new StringEntity(requestJson);
+      } catch (Exception e) {
+        logger.error(e);
+      }
 
       httpPost.setEntity(params);
 

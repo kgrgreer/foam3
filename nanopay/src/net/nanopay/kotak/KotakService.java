@@ -85,9 +85,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       post.setEntity(new StringEntity(encryptedData, Encoding));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
-      BufferedReader rd = null;
-      try {
-        rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+      try(BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()))) {
         StringBuilder sb = new StringBuilder();
         String line;
         while ( (line = rd.readLine()) != null ) {
@@ -115,7 +113,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       } catch (ParserConfigurationException | SAXException e) {
         logger.error(e);
       } finally {
-        IOUtils.closeQuietly(rd);
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {
@@ -157,9 +154,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       post.setEntity(new StringEntity(encryptedData, Encoding));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
-      BufferedReader rd = null;
-      try {
-        rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+      try (BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));) {
         StringBuilder sb = new StringBuilder();
         String line;
         while ( (line = rd.readLine()) != null ) {
@@ -216,7 +211,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       } catch (ParserConfigurationException | SAXException e) {
         logger.error(e);
       } finally {
-        IOUtils.closeQuietly(rd);
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {

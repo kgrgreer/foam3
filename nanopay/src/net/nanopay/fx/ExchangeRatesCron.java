@@ -81,7 +81,6 @@ public class ExchangeRatesCron
 
     if (count.getValue() == 0) {
       HttpURLConnection conn = null;
-      BufferedReader reader = null;
 
       try {
         URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getId());
@@ -93,9 +92,10 @@ public class ExchangeRatesCron
         conn.setRequestProperty("Accept-Charset", "UTF-8");
 
         StringBuilder builder = sb.get();
-        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-        for ( String line; (line = reader.readLine()) != null; ) {
-          builder.append(line);
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+        	for ( String line; (line = reader.readLine()) != null; ) {
+                builder.append(line);
+              }	
         }
 
         JSONParser parser = x.create(JSONParser.class);
@@ -126,7 +126,6 @@ public class ExchangeRatesCron
       } catch (Throwable t) {
         logger_.warning(this.getClass().getSimpleName(), "fetchRates", currency, "Failed:", t.getMessage(), t);
       } finally  {
-        IOUtils.closeQuietly(reader);
         if (conn != null) {
           conn.disconnect();
         }

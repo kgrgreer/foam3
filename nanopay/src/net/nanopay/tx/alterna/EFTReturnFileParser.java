@@ -26,30 +26,24 @@ public class EFTReturnFileParser extends EFTFileParser
     X x = getX();
     Logger logger = (Logger) x.get("logger");
     List<FObject> ret = new ArrayList<>();
-    BufferedReader reader = null;
+    ClassInfo classInfo = EFTReturnRecord.getOwnClassInfo();
+    List<Object> propertyInfos = new ArrayList<>();
+    propertyInfos.add(classInfo.getAxiomByName("transactionID"));
+    propertyInfos.add(classInfo.getAxiomByName("externalReference"));
+    propertyInfos.add(classInfo.getAxiomByName("returnCode"));
+    propertyInfos.add(classInfo.getAxiomByName("returnDate"));
+    propertyInfos.add(classInfo.getAxiomByName("amount"));
+    propertyInfos.add(classInfo.getAxiomByName("type"));
+    propertyInfos.add(classInfo.getAxiomByName("firstName"));
+    propertyInfos.add(classInfo.getAxiomByName("lastName"));
+    propertyInfos.add(classInfo.getAxiomByName("account"));
+    propertyInfos.add(classInfo.getAxiomByName("bankNumber"));
+    propertyInfos.add(classInfo.getAxiomByName("transitNumber"));
 
-    try {
-      ClassInfo classInfo = EFTReturnRecord.getOwnClassInfo();
-      List<Object> propertyInfos = new ArrayList<>();
-      propertyInfos.add(classInfo.getAxiomByName("transactionID"));
-      propertyInfos.add(classInfo.getAxiomByName("externalReference"));
-      propertyInfos.add(classInfo.getAxiomByName("returnCode"));
-      propertyInfos.add(classInfo.getAxiomByName("returnDate"));
-      propertyInfos.add(classInfo.getAxiomByName("amount"));
-      propertyInfos.add(classInfo.getAxiomByName("type"));
-      propertyInfos.add(classInfo.getAxiomByName("firstName"));
-      propertyInfos.add(classInfo.getAxiomByName("lastName"));
-      propertyInfos.add(classInfo.getAxiomByName("account"));
-      propertyInfos.add(classInfo.getAxiomByName("bankNumber"));
-      propertyInfos.add(classInfo.getAxiomByName("transitNumber"));
-
-      reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-
+    try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       parseFile(ret, reader, classInfo, propertyInfos);
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
       logger.error(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
     }
 
     return ret;
