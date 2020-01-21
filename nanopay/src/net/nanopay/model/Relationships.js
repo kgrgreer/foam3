@@ -147,8 +147,22 @@ foam.RELATIONSHIP({
     section: 'liquiditySettingsSection',
     label: '',
     value: 0,
-    view: {
-      class: 'foam.u2.view.FullReferenceView'
+    view: function(_, X) {
+      const e = foam.mlang.Expressions.create();
+      const LiquiditySettings = net.nanopay.liquidity.LiquiditySettings;
+      const LifecycleState = foam.nanos.auth.LifecycleState;
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: [
+          {
+            heading: 'Liquidity Setting',
+            dao: X.liquiditySettingsDAO
+              .where(e.EQ(LiquiditySettings.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+              .orderBy(LiquiditySettings.NAME)
+          }
+        ]
+      };
     }
   }
 });

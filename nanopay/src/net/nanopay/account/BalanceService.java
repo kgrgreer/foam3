@@ -66,7 +66,9 @@ public class BalanceService
     if (account instanceof AggregateAccount ) {
       //TODO: check cache for balance
       ArrayList children = (ArrayList) ((ArraySink) account.getChildren(getX()).select(new ArraySink())).getArray();
-      for (Object child : children) {
+      int index = 0;
+      while ( index < children.size() ) {
+        Object child = children.get(index);
         if (! (child instanceof AggregateAccount) )
           for (Object a : ((ArrayList) ((ArraySink) ((Account) child).getChildren(getX()).select(new ArraySink())).getArray()))
             children.add(a);
@@ -76,6 +78,7 @@ public class BalanceService
           // something like myCache.cache(child,accBal)
         }
         balance += getExchangeRateService().exchange(((Account) child).getDenomination(), account.getDenomination(), accBal);
+        index++;
       }
       return balance;
     }
