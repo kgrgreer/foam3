@@ -166,14 +166,39 @@ p({
         "class":"foam.nanos.fs.FileDAODecorator"
       }
     ],
-    "cache": true,
-    "cacheType": "FULL"
+    "cacheType":"FULL"
   }
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
-p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "id":"balanceDAO",
+  "client":
+  """
+  {
+    "of":"net.nanopay.account.Balance",
+    "requestResponseCaching":true,
+    "decorators": [{
+      "class":"foam.nanos.fs.FileArrayDAODecorator"
+    }]
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "id":"exchangeRateDAO",
+  "client":
+  """
+  {
+    "of":"net.nanopay.fx.ExchangeRate",
+    "requestResponseCaching":true,
+    "cacheType":"FULL"
+  }
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec", "name":"bareTransactionDAO",
@@ -274,9 +299,6 @@ p({
       .build();
   """
 })
-
-p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
-p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -728,9 +750,7 @@ p({
             "url":"service/transactionDAO"
           }
         }
-      },
-      "cache": true,
-      "cacheType": "FULL"
+      }
     }
   """
 })
@@ -814,6 +834,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("transactionDAO"))
+      .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, null))
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(false)
@@ -821,5 +842,23 @@ p({
       .setRuler(false)
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
+  "client": 
+  """
+  {
+    "of":"net.nanopay.tx.model.Transaction", 
+    "remoteListenerSupport": false, 
+    "serverBox": { 
+      "class":"foam.box.SessionClientBox", 
+      "url":"service/tableViewTransactionDAO", 
+      "delegate": { 
+        "class":"foam.box.TimeoutBox", 
+        "timeout":25000,
+        "delegate": {
+          "class":"foam.box.HTTPBox", 
+          "url":"service/tableViewTransactionDAO"
+        }
+      }
+    }
+  }
+  """
 })
