@@ -198,7 +198,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
-      visibility: 'RO'
+      // visibility: 'RO',
+      visibility: foam.u2.Visibility.HIDDEN,
     },
     {
       class: 'DateTime',
