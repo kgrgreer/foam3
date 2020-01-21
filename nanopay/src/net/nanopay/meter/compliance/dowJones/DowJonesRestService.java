@@ -56,7 +56,6 @@ import java.text.SimpleDateFormat;
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 
     String baseUrl = credentials.getBaseUrl();
-    BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
     HttpClient client = null;
@@ -115,19 +114,20 @@ import java.text.SimpleDateFormat;
 
       int statusCode = response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
-      rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
       StringBuilder res = builders.get();
       String line = "";
-      while ((line = rd.readLine()) != null) {
-        res.append(line);
+      try(BufferedReader rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()))) {
+    	  while ((line = rd.readLine()) != null) {
+    	        res.append(line);
+    	      }
       }
+            
       msg = new DowJonesResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
       return msg;
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(rd);
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
     }

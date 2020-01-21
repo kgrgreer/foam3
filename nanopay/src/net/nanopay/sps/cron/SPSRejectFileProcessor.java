@@ -69,11 +69,12 @@ public class SPSRejectFileProcessor implements ContextAgent {
       for ( String fileName : fileNames ) {
         InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/test/" + fileName);
         String input = editFirstRow(x, fileInputStream);
-        InputStream is = new ByteArrayInputStream(input.getBytes());
-
         ArraySink arraySink = new ArraySink();
-        csvSupport.inputCSV(is, arraySink, SPSRejectFileRecord.getOwnClassInfo());
-
+        try (InputStream is = new ByteArrayInputStream(input.getBytes())) {
+            csvSupport.inputCSV(is, arraySink, SPSRejectFileRecord.getOwnClassInfo());
+        } catch(IOException e) {
+        	logger.error(e);
+        }
         List list = arraySink.getArray();
         for ( Object record : list ) {
           SPSRejectFileRecord spsRejectFileRecord = (SPSRejectFileRecord) record;
