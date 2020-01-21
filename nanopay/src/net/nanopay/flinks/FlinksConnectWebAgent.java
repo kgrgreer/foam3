@@ -48,8 +48,6 @@ public class FlinksConnectWebAgent
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     HttpURLConnection conn = null;
-    BufferedWriter writer = null;
-    BufferedReader reader = null;
 
     try {
       String loginId = req.getParameter("loginId");
@@ -69,21 +67,21 @@ public class FlinksConnectWebAgent
       conn.setDoOutput(true);
       conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
-      writer = new BufferedWriter(new OutputStreamWriter(
-          conn.getOutputStream(), StandardCharsets.UTF_8));
-      writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
-      writer.flush();
-      writer.close();
-
+      try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+          conn.getOutputStream(), StandardCharsets.UTF_8))) {
+    	  writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
+        writer.flush();
+      }
+      
       String line = null;
       int code = conn.getResponseCode();
       StringBuilder builder = sb.get();
 
-      reader = new BufferedReader(new InputStreamReader(
-          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()));
-
-      while ((line = reader.readLine()) != null) {
-        builder.append(line);
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
+    	  while ((line = reader.readLine()) != null) {
+          builder.append(line);
+        }
       }
 
       JSONParser parser = x.create(JSONParser.class);
@@ -102,8 +100,6 @@ public class FlinksConnectWebAgent
 
     } finally {
       if ( conn != null ) conn.disconnect();
-      IOUtils.closeQuietly(writer);
-      IOUtils.closeQuietly(reader);
     }
   }
 }
