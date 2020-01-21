@@ -172,7 +172,7 @@ foam.CLASS({
       HashMap hm = (HashMap<Long,Long>) getMyBalances();
       for ( Transfer tr : transaction.getTransfers() ) {
         long add4 = 0;
-        if (hm.get(tr.getAccount()) != null ) add4 = (Long) tr.getAccount();
+        if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
         hm.put(tr.getAccount(),add4+tr.getAmount());
       }
       if ( transaction.getNext() != null )
@@ -521,7 +521,7 @@ foam.CLASS({
           Transaction tx = (Transaction) transactionDAO.put(ci);
           for ( Transfer tr : tx.getTransfers() ){
             long add3 = 0;
-            if (hm.get(tr.getAccount()) != null ) add3 = (Long) tr.getAccount();
+            if (hm.get(tr.getAccount()) != null ) add3 = (long) hm.get(tr.getAccount());
             hm.put(tr.getAccount(),add3+tr.getAmount());
           }
           getTrackingJob().incrementTopUpCounter(1);
