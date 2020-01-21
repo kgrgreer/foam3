@@ -279,9 +279,13 @@ foam.CLASS({
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-          ApproverLevel currentApproverLevel = (ApproverLevel) currentUCJ.getData();
 
-          if ( currentApproverLevel.getApproverLevel() == level ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() != null ) {
+            ApproverLevel currentApproverLevel = (ApproverLevel) currentUCJ.getData();
+            if ( currentApproverLevel.getApproverLevel() == level ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          } else {
+            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          }
         }
 
         List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
@@ -397,9 +401,12 @@ foam.CLASS({
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-          ApproverLevel currentApproverLevel = (ApproverLevel) currentUCJ.getData();
 
-          uniqueApprovers.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() != null ){
+            uniqueApprovers.add(currentUCJ.getSourceId());
+          } else {
+            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          }
         }
 
         List uniqueApproversList = new ArrayList(uniqueApprovers);
