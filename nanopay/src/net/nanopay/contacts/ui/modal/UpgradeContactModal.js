@@ -9,7 +9,6 @@ foam.CLASS({
     'closeDialog',
     'ctrl',
     'user',
-
   ],
 
   requires: [

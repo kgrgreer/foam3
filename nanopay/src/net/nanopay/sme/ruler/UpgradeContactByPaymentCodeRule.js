@@ -30,9 +30,6 @@ foam.CLASS({
           Contact   oldContact       =   (Contact) oldObj;
           String    paymentCodeValue =   contact.getPaymentCode();
 
-          //check if your own paymentcode
-          //run on create w/ paymentcode should not throw
-
           if ( oldContact != null && paymentCodeValue.equals(oldContact.getPaymentCode()) ) {
             throw new RuntimeException("Cannot add same business");
           }
@@ -51,6 +48,7 @@ foam.CLASS({
             @Override
             public void execute(X x) {
               contact.setOrganization(business.getOrganization());
+              contact.setBusinessName(business.getOrganization());
               contact.setBusinessId(business.getId());
               //Overwrite email, will need refactor with upcoming changes
               contact.setEmail(business.getEmail());

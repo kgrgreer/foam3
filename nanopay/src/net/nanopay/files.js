@@ -869,6 +869,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepTwo', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepThree', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/UpgradeContactModal', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/AddContactByPaymentCodeModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ruler/UpgradeContactByPaymentCodeRule' },
 
   // sme

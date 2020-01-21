@@ -98,6 +98,9 @@ foam.CLASS({
     ^business-list {
       overflow-y: scroll;
     }
+    ^paymentcode-button {
+      margin-top: 16px;
+    }
   `,
 
   constants: [
@@ -162,7 +165,7 @@ foam.CLASS({
       type: 'Int',
       name: 'connectedCount',
       documentation: `
-        The number of connected businesses in the 
+        The number of connected businesses in the
         connctedBusiness dao after filtering.
       `
     },
@@ -170,7 +173,7 @@ foam.CLASS({
       type: 'Int',
       name: 'unconnectedCount',
       documentation: `
-        The number of unconnected businesses in the 
+        The number of unconnected businesses in the
         unconnctedBusiness dao after filtering.
       `
     },
@@ -196,7 +199,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'connectedBusinesses',
       documentation: `
-        This property is to query all connected businesses related to 
+        This property is to query all connected businesses related to
         the current acting business.
       `,
       expression: function(filter) {
@@ -230,7 +233,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'unconnectedBusinesses',
       documentation: `
-        This property is to query all unconnected businesses related to 
+        This property is to query all unconnected businesses related to
         the current acting business.
       `,
       expression: function(filter) {
@@ -291,7 +294,7 @@ foam.CLASS({
       type: 'Boolean',
       name: 'showDefault',
       documentation: `
-        Only show the default searching text when the searching keyword 
+        Only show the default searching text when the searching keyword
         is shorter than 2 chars.
       `,
       expression: function(filter) {
@@ -387,6 +390,11 @@ foam.CLASS({
               .addClass(this.myClass('center'))
               .start(this.CREATE_NEW).end()
             .end()
+            .start()
+              .addClass(this.myClass('center'))
+              .addClass(this.myClass('paymentcode-button'))
+              .start(this.ADD_BY_PAYMENTCODE).end()
+            .end()
           .end()
           .start().show(this.showNoMatch$)
             .addClass(this.myClass('create-new-block'))
@@ -440,6 +448,14 @@ foam.CLASS({
         this.wizard.viewData.isEdit = false;
         X.viewData.isBankingProvided = false;
         X.pushToId('AddContactStepOne');
+      }
+    },
+    {
+      name: 'addByPaymentcode',
+      label: 'Add By Paymentcode',
+      code: function(X) {
+        console.log('open modal')
+        X.pushToId('AddContactByPaymentCode');
       }
     },
     {

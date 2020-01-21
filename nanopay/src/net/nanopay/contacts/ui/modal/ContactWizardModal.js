@@ -184,6 +184,9 @@ foam.CLASS({
         'AddContactStepThree': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
         },
+        'AddContactByPaymentCode': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactByPaymentCodeModal' }
+        },
       };
     },
 
