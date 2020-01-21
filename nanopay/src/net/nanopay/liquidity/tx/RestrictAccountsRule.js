@@ -25,7 +25,6 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'enabled',
     'createdBy'
   ],
 
@@ -61,6 +60,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeSourceChildAccounts',
+      label: 'Include Source Sub-Accounts',
       documentation: 'Whether to include the children of the source account.',
       section: 'basicInfo'
     },
@@ -93,6 +93,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeDestinationChildAccounts',
+      label: 'Include Destination Sub-Accounts',
       documentation: 'Whether to include the children of the destination account.',
       section: 'basicInfo'
     },

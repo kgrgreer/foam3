@@ -8,17 +8,19 @@ foam.CLASS({
 
   properties: [  
     {
+      name: 'isIncluded',
+      label: 'Include in Account Group',
+      class: 'Boolean',
+      value: true
+    },
+    {
       name: 'isCascading',
+      label: 'Apply to Sub-Accounts',
       class: 'Boolean',
       value: true,
       visibilityExpression: function(isIncluded) {
         return ! isIncluded ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
-    },
-    {
-      name: 'isIncluded',
-      class: 'Boolean',
-      value: true
     }
   ],
 });
@@ -35,6 +37,7 @@ foam.CLASS({
   properties: [  
     {
       name: 'approverLevel',
+      label: 'Authorization Level',
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.ApproverLevel',
       javaType: 'net.nanopay.liquidity.crunch.ApproverLevel',
