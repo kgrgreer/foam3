@@ -46,7 +46,6 @@ foam.CLASS({
     'legalName',
     'organization',
     'email',
-    'PEPHIORelated'
   ],
 
   searchColumns: [
@@ -59,7 +58,6 @@ foam.CLASS({
     'lastName',
     'organization',
     'email',
-    'PEPHIORelated'
   ],
 
   properties: [

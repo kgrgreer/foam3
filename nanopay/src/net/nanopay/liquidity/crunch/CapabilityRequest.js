@@ -54,12 +54,18 @@ foam.CLASS({
           return foam.u2.Visibility.RW;
         }
         return foam.u2.Visibility.HIDDEN;
+      },
+      validateObj: function(requestType, accountBasedCapability) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED &&
+             ! accountBasedCapability
+           )
+          return 'Please select a Transactional Role Template';
       }
     },
     {
       class: 'Reference',
       name: 'globalCapability',
-      label: 'Administative Role Template',
+      label: 'Administrative Role Template',
       of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
       visibilityExpression: function(requestType) {
         if ( 
@@ -69,6 +75,12 @@ foam.CLASS({
           return foam.u2.Visibility.RW;
         }
         return foam.u2.Visibility.HIDDEN;
+      },
+      validateObj: function(requestType, globalCapability) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL &&
+             ! globalCapability
+           )
+          return 'Please select an Administrative Role Template';
       }
     },
     {
@@ -127,6 +139,13 @@ foam.CLASS({
         this.capabilityAccountTemplateDAO.find(data).then((template) => {
           this.capabilityAccountTemplateMap = template.accounts;
         });
+      },
+      validateObj: function(isUsingTemplate, requestType, capabilityAccountTemplateChoice, capabilityAccountTemplateMap) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED &&
+             isUsingTemplate &&
+             ( ! capabilityAccountTemplateChoice && Object.keys(capabilityAccountTemplateMap).length == 0 )
+           )
+          return 'Please select an Account Group, or create a new Account Group Template';
       }
     },
     {
@@ -151,6 +170,13 @@ foam.CLASS({
           class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView',
           isCapabilityAccountData: true
         };
+      },
+      validateObj: function(isUsingTemplate, requestType, capabilityAccountTemplateMap, capabilityAccountTemplateChoice) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED &&
+             isUsingTemplate && 
+             ( capabilityAccountTemplateChoice && Object.keys(capabilityAccountTemplateMap).length == 0 )
+           )
+          return 'Please enter a valid Account Group';
       }
     },
     {
@@ -169,6 +195,14 @@ foam.CLASS({
         // }
 
         return foam.u2.Visibility.HIDDEN;
+      },
+      validateObj: function(isUsingTemplate, requestType, accountToAssignTo) {
+        if (
+             requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED &&
+             ! isUsingTemplate &&
+             ! accountToAssignTo
+           )
+          return 'Please select an Account';
       }
     },
     {
