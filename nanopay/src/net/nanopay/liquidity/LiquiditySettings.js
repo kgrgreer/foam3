@@ -131,19 +131,27 @@ foam.CLASS({
       validationTextVisible: true,
       validationStyleEnabled: true,
       validateObj: function(lowLiquidity$enabled, lowLiquidity$rebalancingEnabled, lowLiquidity$resetBalance, lowLiquidity$threshold,
-                          highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold) {
+                          highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold, lowLiquidity$pushPullAccount) {
         if ( this.lowLiquidity.enabled && this.highLiquidity.enabled ) {
           if ( this.lowLiquidity.rebalancingEnabled && this.highLiquidity.rebalancingEnabled ) {
             if ( this.lowLiquidity.resetBalance > this.highLiquidity.threshold ) {
-              return 'High Liquidity threshold should be greater than Low liquidity resetBalance value.';
+              return 'High Liquidity threshold should be greater than Low liquidity reset balance value.';
             }
             if ( this.highLiquidity.resetBalance < this.lowLiquidity.threshold ) {
-              return 'High Liquidity resetBalance should be greater than Low liquidity threshold value.';
+              return 'High Liquidity reset balance should be greater than Low liquidity threshold value.';
             }
           }
           if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
             return 'High Liquidity threshold should be greater than Low liquidity values.';
           }
+        }
+        if ( this.lowLiquidity.rebalancingEnabled ) {
+          if ( this.lowLiquidity.threshold >= this.lowLiquidity.resetBalance ) {
+            return 'Low Liquidity threshold must be less than Low Liquidity reset balance.';
+          }
+        }
+        if ( this.lowLiquidity.rebalancingEnabled && this.lowLiquidity.pushPullAccount == 0 ) {
+          return 'Please select push/pull account.';
         }
       }
     },
@@ -188,17 +196,25 @@ foam.CLASS({
       validationTextVisible: true,
       validationStyleEnabled: true,
       validateObj: function(lowLiquidity$enabled, lowLiquidity$rebalancingEnabled, lowLiquidity$resetBalance, lowLiquidity$threshold,
-                         highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold) {
+                         highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold, highLiquidity$pushPullAccount) {
         if ( this.lowLiquidity.enabled && this.highLiquidity.enabled ) {
           if ( this.lowLiquidity.rebalancingEnabled && this.highLiquidity.rebalancingEnabled ) {
             if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
-              return 'High Liquidity resetBalance should be greater than Low liquidity reset Balance values.';
+              return 'High Liquidity reset balance should be greater than Low liquidity reset balance values.';
             }
           }
           if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
             return 'High Liquidity threshold should be greater than Low liquidity values.';
           }
-      }
+        }
+        if ( this.highLiquidity.rebalancingEnabled ) {
+          if ( this.highLiquidity.threshold <= this.highLiquidity.resetBalance ) {
+            return 'High Liquidity threshold must be greater than High Liquidity reset balance.';
+          }
+        }
+        if ( this.highLiquidity.rebalancingEnabled && this.highLiquidity.pushPullAccount == 0 ) {
+          return 'Please select push/pull account.';
+        }
       }
     },
     {

@@ -71,7 +71,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
       label: 'push/pull account',
-      required: true,
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
