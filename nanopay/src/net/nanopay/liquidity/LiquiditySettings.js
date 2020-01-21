@@ -65,7 +65,19 @@ foam.CLASS({
       name: 'userToEmail',
       required: true,
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
     },
     {
       class: 'Enum',

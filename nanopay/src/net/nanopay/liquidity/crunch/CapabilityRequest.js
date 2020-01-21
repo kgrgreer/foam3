@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'CapabilityRequest',
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
@@ -75,10 +76,11 @@ foam.CLASS({
       class: 'List',
       javaType: 'java.util.List<Long>',
       factory: () => [],
-      view: () => {
+      view: (_, X) => {
         return {
           class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'userDAO'
+          daoKey: 'userDAO',
+          dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
         };
       },
       validateObj: function(users) {

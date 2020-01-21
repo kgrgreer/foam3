@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TxLimitRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'currencyDAO',
     'accountDAO',
@@ -40,12 +44,21 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       targetDAOKey: 'userDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
       documentation: 'The user to limit.',
       name: 'userToLimit',
       section: 'basicInfo',
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      },
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
