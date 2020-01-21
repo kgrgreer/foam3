@@ -138,9 +138,6 @@ foam.CLASS({
           permissions.add("menu.read.liquid.dashboard");
         }
 
-        // add account menu permission if user can view, make or approve account
-        if ( getCanViewAccount() || getCanMakeAccount() || getCanApproveAccount() ) permissions.add("menu.read.liquid.accounts");
-
         // add approver menu permission for approvers
         if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
 
