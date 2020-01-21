@@ -248,9 +248,7 @@ p({
       dao = new foam.nanos.mrac.ClusterClientDAO.Builder(x)
         .setServiceName("transactionDAO")
         .setDelegate(dao)
-        .setMdao(transactionMDao)
         .build();
-      dao = new foam.nanos.mrac.VotingDAO(x, dao);
     }
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);    
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));

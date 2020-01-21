@@ -138,6 +138,7 @@ foam.CLASS({
           try {
             verifyBalance(getX(),getTransaction());
             getOutputDAO().put(getTransaction());
+Thread.sleep(100);
             if ( getPbd() != null )
               ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
             getTrackingJob().incrementTxnCounter(getTxnCount());
