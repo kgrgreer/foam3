@@ -41,6 +41,15 @@ foam.CLASS({
               Map<String, CapabilityAccountData> newMap;
               if ( req.getIsUsingTemplate() ) { 
                 newMap = req.getCapabilityAccountTemplateMap();
+                ApproverLevel newApproverLevel = new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
+
+                for ( String k : newMap.keySet()  ){
+                  CapabilityAccountData cad = newMap.get(k);
+
+                  cad.setApproverLevel(newApproverLevel);
+
+                  newMap.put(k, cad);
+                }
               } else { 
                 CapabilityAccountData data = new CapabilityAccountData.Builder(x)
                   .setIsCascading(false)
@@ -77,6 +86,7 @@ foam.CLASS({
                 ucj.setTargetId(capability.getId());
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
+            /** Commenting out revoke for liquid launch
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
@@ -115,6 +125,7 @@ foam.CLASS({
                   EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
                 )));
               }
+            */
             } else {
               throw new RuntimeException("Invalid CapabilityRequest type");
             }

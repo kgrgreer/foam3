@@ -41,6 +41,36 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations'
     },
     {
+      class: 'Reference',
+      name: 'accountBasedCapability',
+      label: 'Transactional Role Template',
+      of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
+      visibilityExpression: function(requestType) {
+        if ( 
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+          // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+        ) {
+          return foam.u2.Visibility.RW;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'globalCapability',
+      label: 'Administative Role Template',
+      of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+      visibilityExpression: function(requestType) {
+        if ( 
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL
+          // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
+        ) {
+          return foam.u2.Visibility.RW;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
       name: 'users',
       class: 'List',
       javaType: 'java.util.List<Long>',
@@ -62,42 +92,14 @@ foam.CLASS({
       name: 'isUsingTemplate',
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
-          this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
+          this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using an Account Group';
           return foam.u2.Visibility.RW;
         }
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-          this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using a Template';
-          return foam.u2.Visibility.RW;
-        }
+        // if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+        //   this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using an Account Group';
+        //   return foam.u2.Visibility.RW;
+        // }
 
-        return foam.u2.Visibility.HIDDEN;
-      }
-    },
-    {
-      class: 'Reference',
-      name: 'accountBasedCapability',
-      of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-      visibilityExpression: function(requestType) {
-        if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
-        ) {
-          return foam.u2.Visibility.RW;
-        }
-        return foam.u2.Visibility.HIDDEN;
-      }
-    },
-    {
-      class: 'Reference',
-      name: 'globalCapability',
-      of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-      visibilityExpression: function(requestType) {
-        if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
-        ) {
-          return foam.u2.Visibility.RW;
-        }
         return foam.u2.Visibility.HIDDEN;
       }
     },
@@ -106,13 +108,13 @@ foam.CLASS({
       flags: ['js'],
       class: 'Reference',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
-      label: 'Choose Capability Account Template',
+      label: 'Choose Account Group',
       visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
             isUsingTemplate &&
             (
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+              // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
           return foam.u2.Visibility.RW;
@@ -129,13 +131,13 @@ foam.CLASS({
       name: 'capabilityAccountTemplateMap',
       class: 'Map',
       javaType: 'java.util.Map<String, CapabilityAccountData>',
-      label: 'Create New Template Or Customize Chosen Capability Account Template ', 
+      label: 'Create New Template Or Customize Chosen Account Group ', 
       visibilityExpression: function(requestType, isUsingTemplate) {
         if ( 
             isUsingTemplate &&
             (
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+              // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
           return foam.u2.Visibility.RW;
@@ -159,23 +161,38 @@ foam.CLASS({
           this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Assign To';
           return foam.u2.Visibility.RW;
         }
-        if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-          this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
-          return foam.u2.Visibility.RW;
-        }
+        // if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+        //   this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
+        //   return foam.u2.Visibility.RW;
+        // }
 
         return foam.u2.Visibility.HIDDEN;
       }
     },
     {
       name: 'approverLevel',
+      label: 'Transaction Authorization Level (if applicable)',
       class: 'Int',
+      min: 1, 
+      max: 2,
+      value: 1,
+      preSet: function(o, n) {
+        if ( n < 1 || n > 2 ) {
+          if ( n < 1 ) return 1;
+          if ( n > 2 ) return 2;
+        }
+        return n;
+      },
       javaType: 'java.lang.Integer',
-      visibilityExpression: function(requestType, isUsingTemplate) {
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL || 
-          ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED && ! isUsingTemplate )
-        ) 
+      validateObj: function(approverLevel) {
+        if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
+          return this.approverLevelRangeError;
+        }
+      },
+      visibilityExpression: function(requestType) {
+        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
           return foam.u2.Visibility.RW;
+        }
         return foam.u2.Visibility.HIDDEN;
       }
     },
