@@ -199,8 +199,11 @@ foam.CLASS({
                          highLiquidity$enabled, highLiquidity$rebalancingEnabled, highLiquidity$resetBalance, highLiquidity$threshold, highLiquidity$pushPullAccount) {
         if ( this.lowLiquidity.enabled && this.highLiquidity.enabled ) {
           if ( this.lowLiquidity.rebalancingEnabled && this.highLiquidity.rebalancingEnabled ) {
-            if ( this.lowLiquidity.resetBalance > this.highLiquidity.resetBalance ) {
-              return 'High Liquidity reset balance should be greater than Low liquidity reset balance values.';
+            if ( this.lowLiquidity.resetBalance > this.highLiquidity.threshold ) {
+              return 'High Liquidity threshold should be greater than Low liquidity reset balance value.';
+            }
+            if ( this.highLiquidity.resetBalance < this.lowLiquidity.threshold ) {
+              return 'High Liquidity reset balance should be greater than Low liquidity threshold value.';
             }
           }
           if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
