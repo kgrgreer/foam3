@@ -97,7 +97,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(credentials.getApiKey(), "getToken", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "getToken", parseHttpPost(httpPost), false);
       omLogger.log("AFEX getToken starting");
 
       CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
@@ -106,7 +106,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "AFEX get token failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -150,7 +150,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      logMessage(credentials.getApiKey(), "onboardCorporateClient", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "onboardCorporateClient", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
@@ -163,7 +163,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Onboard AFEX corporate client failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -210,7 +210,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Get AFEX Client Account Status failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -262,7 +262,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Retrieve AFEX client account details failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -313,7 +313,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(credentials.getApiKey(), "createBeneficiary", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "createBeneficiary", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX createBeneficiary starting");
 
@@ -324,7 +324,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -377,7 +377,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(credentials.getApiKey(), "updateBeneficiary", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "updateBeneficiary", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX updateBeneficiary starting");
 
@@ -387,7 +387,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Update AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -431,7 +431,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-      logMessage(credentials.getApiKey(), "disableBeneficiary", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "disableBeneficiary", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX disableBeneficiary starting");
 
@@ -441,7 +441,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Disable AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -486,7 +486,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -525,7 +525,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(credentials.getApiKey(), "findBankByNationalID", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "findBankByNationalID", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX findBankByNationalID starting");
 
@@ -535,7 +535,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Find bank by national ID failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -588,7 +588,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Get AFEX value date information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -637,7 +637,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Get AFEX rate failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -690,7 +690,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -734,7 +734,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(request.getClientAPIKey(), "createTrade1", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(request.getClientAPIKey(), "createTrade1", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX createTrade starting");
 
@@ -746,7 +746,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
             logMessage(request.getClientAPIKey(), "createTrade1", response, true);
@@ -757,7 +757,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             nvps.add(new BasicNameValuePair("Note", request.getNote()));
             httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-            logMessage(request.getClientAPIKey(), "createTrade2", EntityUtils.toString(httpPost.getEntity()), false);
+            logMessage(request.getClientAPIKey(), "createTrade2", parseHttpPost(httpPost), false);
             omLogger.log("AFEX createTrade starting");
 
             httpResponse2 = getHttpClient().execute(httpPost);
@@ -765,7 +765,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             omLogger.log("AFEX createTrade completed");
 
             if (httpResponse2.getStatusLine().getStatusCode() / 100 != 2) {
-              String response2 = EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
+              String response2 = parseHttpResponse(httpResponse2);
               String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
                 + httpResponse2.getStatusLine().getReasonPhrase() + " " + response2;
               logger.error(errorMsg2);
@@ -817,7 +817,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Check AFEX trade status failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -859,7 +859,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(request.getClientAPIKey(), "createPayment", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(request.getClientAPIKey(), "createPayment", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX createPayment starting");
 
@@ -870,7 +870,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Create AFEX payment failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -915,7 +915,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "Check AFEX payment status failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -1003,7 +1003,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      logMessage(credentials.getApiKey(), "directDebitEnrollment", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "directDebitEnrollment", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX directDebitEnrollment starting");
 
@@ -1016,7 +1016,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "AFEX directDebitEnrollment  failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -1060,7 +1060,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      logMessage(credentials.getApiKey(), "directDebitUnenrollmentRequest", EntityUtils.toString(httpPost.getEntity()), false);
+      logMessage(credentials.getApiKey(), "directDebitUnenrollmentRequest", parseHttpPost(httpPost)), false);
 
       omLogger.log("AFEX directDebitUnenrollmentRequest starting");
 
@@ -1073,7 +1073,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String response = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+          String response = parseHttpResponse(httpResponse);
           String errorMsg = "AFEX directDebitEnrollment  failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + response;
 
@@ -1107,5 +1107,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     // sb.append(", " + msgType +" : ");
     // sb.append(msg);
     // logger.debug(sb.toString());
-  }  
+  }
+  
+  protected String parseHttpPost(HttpPost httpPost) {
+    // return EntityUtils.toString(httpPost.getEntity())
+    return "";
+  }
+
+  protected String parseHttpResponse(CloseableHttpResponse httpResponse) {
+    // return EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+    return "";
+  }
 }
