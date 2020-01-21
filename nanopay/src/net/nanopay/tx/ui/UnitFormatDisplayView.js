@@ -93,14 +93,14 @@ foam.CLASS({
   }
 
   ^ .spacing {
-    padding-right: /*%INPUTVERTICALPADDING%*/ 6px;
-    padding-left: /*%INPUTVERTICALPADDING%*/ 6px;
+    margin-right: /*%INPUTVERTICALPADDING%*/ 6px;
+    margin-left: /*%INPUTVERTICALPADDING%*/ 6px;
     margin-top: -0.5vh;
   }
 
-  ^ .displayOnly {
-    pointer-events: none;
-    border: inset;
+  ^ .spacingRO {
+    margin-right: /*%INPUTVERTICALPADDING%*/ 6px;
+    margin-left: /*%INPUTVERTICALPADDING%*/ 6px;
   }
   `,
 
@@ -164,7 +164,7 @@ foam.CLASS({
           let endIndex = digMatch[0].length + firstIndex;
           this.preString_ = n.substring(0, firstIndex);
           this.postString_ = n.substring(endIndex);
-          if ( this.controllerMode === foam.u2.ControllerMode.VIEW ) this.disDstAmount = parseFloat(digMatch[0].replace(/,/g, ''));
+          if ( this.controllerMode === foam.u2.ControllerMode.VIEW ) this.txt = digMatch[0];
         }
       }
     },
@@ -179,6 +179,10 @@ foam.CLASS({
             .catch((e) => console.warn(`@postSet.linkCurrency updateData() error: ${e}`));
         }
       }
+    },
+    {
+      class: 'String',
+      name: 'txt'
     },
     {
       class: 'Float',
@@ -249,10 +253,29 @@ foam.CLASS({
       this.addClass(this.myClass())
       .startContext({ data: this })
         .add(this.preString_$)
-        .start(this.DIS_DST_AMOUNT)
-          .addClass('spacing')
-          .enableClass('displayOnly', this.linked, true)
-        .end()
+        .callIfElse( this.controllerMode === foam.u2.ControllerMode.VIEW,
+          function() {
+            // View mode
+            return this.start().add(this.txt$)
+              .addClass('spacingRO')
+            .end();
+          },
+          function() {
+            // linked active state
+            return this.callIfElse(
+              this.linked,
+              function() {
+                return this.start(this.DIS_DST_AMOUNT)
+                  .addClass('spacing')
+                .end();
+              },
+              function() {
+                // not linked, but still updates
+                return this.start().add(this.disDstAmount$)
+                  .addClass('spacingRO')
+                .end();
+              });
+          })
         .add(this.postString_$)
       .endContext();
     },

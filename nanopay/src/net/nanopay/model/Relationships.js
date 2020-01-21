@@ -830,7 +830,8 @@ foam.RELATIONSHIP({
         }).catch((e) => console.warn('validation on Transaction.destinationAccount error:', e.message || e));
       }
     },
-    validateObj: function(dstAccountError) {
+    validateObj: function(dstAccountError, destinationAccount) {
+      if ( destinationAccount == 0 ) return 'please input an account id.';
       return dstAccountError;
     },
     tableCellFormatter: function(value) {
