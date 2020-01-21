@@ -453,7 +453,7 @@ foam.CLASS({
             transactionDAO.put(secCI); // top up the sending security account
             for ( Transfer tr : secCI.getTransfers() ){
               long add1 = 0;
-              if (hm.get(tr.getAccount()) != null ) add1 = (long) tr.getAccount();
+              if (hm.get(tr.getAccount()) != null ) add1 = (long) hm.get(tr.getAccount());
               hm.put(tr.getAccount(),add1+tr.getAmount());
             }
             getTrackingJob().incrementTopUpCounter(1);
