@@ -47,8 +47,8 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
       visibilityExpression: function(requestType) {
         if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+          // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
         ) {
           return foam.u2.Visibility.RW;
         }
@@ -62,8 +62,8 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
       visibilityExpression: function(requestType) {
         if ( 
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ||
-          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
+          requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL
+          // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
         ) {
           return foam.u2.Visibility.RW;
         }
@@ -95,10 +95,10 @@ foam.CLASS({
           this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using an Account Group';
           return foam.u2.Visibility.RW;
         }
-        if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-          this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using an Account Group';
-          return foam.u2.Visibility.RW;
-        }
+        // if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+        //   this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using an Account Group';
+        //   return foam.u2.Visibility.RW;
+        // }
 
         return foam.u2.Visibility.HIDDEN;
       }
@@ -113,8 +113,8 @@ foam.CLASS({
         if ( 
             isUsingTemplate &&
             (
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+              // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
           return foam.u2.Visibility.RW;
@@ -136,8 +136,8 @@ foam.CLASS({
         if ( 
             isUsingTemplate &&
             (
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ||
-              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
+              requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
+              // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
           return foam.u2.Visibility.RW;
@@ -161,10 +161,10 @@ foam.CLASS({
           this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Assign To';
           return foam.u2.Visibility.RW;
         }
-        if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-          this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
-          return foam.u2.Visibility.RW;
-        }
+        // if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
+        //   this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
+        //   return foam.u2.Visibility.RW;
+        // }
 
         return foam.u2.Visibility.HIDDEN;
       }

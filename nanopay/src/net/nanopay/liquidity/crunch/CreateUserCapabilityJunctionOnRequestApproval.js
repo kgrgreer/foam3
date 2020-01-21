@@ -86,6 +86,7 @@ foam.CLASS({
                 ucj.setTargetId(capability.getId());
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
+            /** Commenting out revoke for liquid launch
             } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
               capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
 
@@ -124,6 +125,7 @@ foam.CLASS({
                   EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
                 )));
               }
+            */
             } else {
               throw new RuntimeException("Invalid CapabilityRequest type");
             }
