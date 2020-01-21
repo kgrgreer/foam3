@@ -10,7 +10,6 @@ foam.CLASS({
       name: 'searchColumns',
       value: [
         'type',
-        'status',
         'sourceAccount',
         'destinationAccount',
         'created'
