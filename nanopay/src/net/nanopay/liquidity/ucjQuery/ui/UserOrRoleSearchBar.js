@@ -50,9 +50,11 @@ foam.CLASS({
       postSet: function(_, nu) {
         if ( nu === 'user' ) {
           this.userOrRoleRef.of = foam.nanos.auth.User;
+          this.userOrRoleRef.clearProperty("targetDAOKey");
         }
         if ( nu === 'role' ) {
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
+          this.userOrRoleRef.targetDAOKey = "globalLiquidCapabilityDAO";
         }
       },
     },
