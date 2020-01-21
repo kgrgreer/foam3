@@ -26,6 +26,23 @@ foam.CLASS({
           name: 'key',
           class: 'Reference',
           of: 'net.nanopay.account.Account',
+          view: function(_, X) {
+            const e = foam.mlang.Expressions.create();
+            const Account = net.nanopay.account.Account;
+            const LifecycleState = foam.nanos.auth.LifecycleState;
+            return {
+              class: 'foam.u2.view.RichChoiceView',
+              search: true,
+              sections: [
+                {
+                  heading: 'Accounts',
+                  dao: X.accountDAO
+                    .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                    .orderBy(Account.NAME)
+                }
+              ]
+            };
+          },
           adapt: function(oldVal, newVal) {
             if ( typeof newVal === 'string' ) {
               return parseInt(newVal);

@@ -21,6 +21,18 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "accountDAO",
+          "predicate": {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "net.nanopay.account.Account",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": 1
+            }
+          },
           "defaultColumns": [
             "name",
             "balance",

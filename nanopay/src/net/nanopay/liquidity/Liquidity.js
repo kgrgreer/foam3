@@ -85,8 +85,15 @@ foam.CLASS({
       documentation: 'Account associated to setting.',
       updateMode: 'RO',
       view: function(_, X) {
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
         var dao = foam.dao.ProxyDAO.create({
-          delegate: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
+          delegate: X.accountDAO.where(
+            X.data.AND(
+              X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+              X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+            )
+          )
         });
 
         if ( foam.core.Slot.isInstance(X.denominationToFilterBySlot) ) {

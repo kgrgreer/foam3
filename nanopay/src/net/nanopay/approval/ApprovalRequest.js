@@ -285,8 +285,10 @@ if ( obj == null ) {
           key = key.substring(5, 6).toLowerCase() + key.substring(6);
         }
 
+        var objId = X[key].of.ID.type === 'Long' ? parseInt(this.objId) : this.objId;
+
         X[key]
-          .find(this.objId)
+          .find(objId)
           .then((obj) => {
             if ( obj == null ) {
               throw new Error('Reference object not found.');
