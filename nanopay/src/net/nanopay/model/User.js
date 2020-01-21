@@ -279,6 +279,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
+      storageTransient: true,
       visibility: foam.u2.Visibility.HIDDEN
     }
   ],
