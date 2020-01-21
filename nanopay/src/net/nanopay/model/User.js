@@ -273,7 +273,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: 'RO'
+      visibility: foam.u2.Visibility.HIDDEN
     },
     {
       class: 'FObjectProperty',
