@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   css: `
-  .spaceToRight{
+  ^ .checkBox {
     margin-right: .5vw;
   }
   `,
@@ -53,7 +53,7 @@ foam.CLASS({
         .startContext({ data: this })
           .start()
             .hide(this.doc$.map((d) => ! d))
-            .start(this.AGREED).addClass('spaceToRight')
+            .start(this.AGREED).addClass('checkBox')
               .add(this.doc$.dot('checkboxText'))
               .start('a')
                 .add(this.doc$.dot('title'))
