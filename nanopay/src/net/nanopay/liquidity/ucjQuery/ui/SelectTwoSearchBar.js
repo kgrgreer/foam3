@@ -65,7 +65,6 @@ foam.CLASS({
       },
       value: 'accountAndUser',
       postSet: function(_, nu) {
-        window.testvar = this;
         if ( nu === 'userAndRole' ) {
           this.accountOrUserRef.of = foam.nanos.auth.User;
           this.accountOrUserRef.clearProperty("dao");

@@ -69,13 +69,8 @@ foam.CLASS({
 
         updateDAO();
 
-        propValue.targetDAOKey$.sub(function () {
-          updateDAO();
-        });
-
-        propValue.dao$.sub(function () {
-          updateDAO();
-        });
+        propValue.targetDAOKey$.sub(updateDAO);
+        propValue.dao$.sub(updateDAO);
       }
     },
     function initE() {
