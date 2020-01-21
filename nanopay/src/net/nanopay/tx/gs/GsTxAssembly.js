@@ -418,7 +418,7 @@ Thread.sleep(100);
             return true; 
 
           // Calculate the number of remaining securities and top up the source account
-          long remainder = source.findBalance(x) - txn.getAmount(); // is this the correct account ?
+          long remainder = ((long) source.findBalance(x)) - txn.getAmount(); // is this the correct account ?
           if ( remainder < 0 ) {
             Transaction secCI = new Transaction();
             secCI.setAmount(Math.abs(remainder));
@@ -457,7 +457,7 @@ Thread.sleep(100);
         }
 
         // Create a top up transaction if necessary
-        Long topUp = source.findBalance(x) - txn.getAmount();
+        Long topUp = ((long) source.findBalance(x)) - txn.getAmount();
         if ( topUp < 0 ) {
           Transaction ci = new Transaction.Builder(x)
             .setDestinationAccount(source.getId())
