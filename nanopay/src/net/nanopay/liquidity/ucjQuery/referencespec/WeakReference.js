@@ -23,6 +23,11 @@ foam.CLASS({
       }
     },
     {
+      // TODO: If moved to foam.core, remove class and upgrade with a refinement
+      class: 'foam.dao.DAOProperty',
+      name: 'dao'
+    },
+    {
       name: 'target',
       value: null,
       preSet: function(ol, nu) {
