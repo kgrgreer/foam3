@@ -364,8 +364,6 @@
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
       var changePasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
       var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
-      var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
-      var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
 
       if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
@@ -492,83 +490,6 @@
           }, this.user.twoFactorEnabled$))
         .end()
       .end();
-
-      this
-      .addClass(this.myClass())
-      .start(emailPreferenceProfile)
-        .start('div').addClass('checkbox-Div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice is first seen by the other party").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill requires approval").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill is overdue").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("New Features and updates").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("Unsubscribe all").addClass('unsubscribe-Text').addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .start(this.UPDATE_EMAIL_PREFERENCE).addClass('update-BTN').end()
-        .end()
-      .end();
-
-      this
-      .addClass(this.myClass())
-      .start(notificationPreferenceProfile)
-        .start('div').addClass('checkbox-Div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice is first seen by the other party").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill requires approval").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill is overdue").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("New Features and updates").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("Unsubscribe all").addClass('unsubscribe-Text').addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .start(this.UPDATE_NOTIFICATION_PREFERENCE).addClass('update-BTN').end()
-        .end()
-      .end()
-    .end();
     }
   ],
 
@@ -602,22 +523,6 @@
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
-      }
-    },
-    {
-      name: 'updateEmailPreference',
-      label: 'Update',
-      code: function (X) {
-        var self = this;
-        console.log("UPDATE EMAILS PREFERENCE")
-      }
-    },
-    {
-      name: 'updateNotificationPreference',
-      label: 'Update',
-      code: function (X) {
-        var self = this;
-        console.log("UPDATE NOTIFICATION PREFERENCE")
       }
     },
     {
