@@ -61,7 +61,6 @@ foam.CLASS({
 
         var updateDAO = () => {
           if ( !! propValue.dao ) {
-            console.log("yes the code got here");
             self.choiceView.dao = propValue.dao;
           } else if ( !! propValue.targetDAOKey ) {
             self.choiceView.dao = self.ctrl.__subContext__[propValue.targetDAOKey];
