@@ -40,16 +40,6 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  sections: [
-    {
-      name: '_defaultSection',
-      permissionRequired: true
-    },
-    {
-      name: 'requestDetails'
-    }
-  ],
-
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',

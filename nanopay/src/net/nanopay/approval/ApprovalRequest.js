@@ -42,7 +42,8 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'basicInformation'
+      name: 'basicInformation',
+      isAvailable: () => false
     },
     {
       name: 'requestDetails'
@@ -51,7 +52,8 @@ foam.CLASS({
       name: 'supportDetails'
     },
     {
-      name: '_defaultSection'
+      name: '_defaultSection',
+      isAvailable: () => false
     }
   ],
 
@@ -355,7 +357,6 @@ if ( obj == null ) {
     {
       name: 'referenceObj',
       isDefault: true,
-      section: 'supportDetails',
       label: 'View Reference',
       code: function(X, action) {
         var key = this.daoKey;
