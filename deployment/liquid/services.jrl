@@ -208,8 +208,11 @@ p({
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
+
+    // Add indexes
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_MODIFIED});
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
@@ -217,6 +220,9 @@ p({
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.PARENT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
+    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
+
+    // Set DAO chain
     fm = new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao(x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)
@@ -843,6 +849,7 @@ p({
       .setPipelinePm(false)
       .setPermissioned(false)
       .setRuler(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client": 

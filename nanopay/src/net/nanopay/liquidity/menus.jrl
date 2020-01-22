@@ -72,7 +72,7 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "tableViewTransactionDAO",
+          "daoKey": "transactionDAO",
           "editEnabled": false,
           "deleteEnabled": false, 
           "defaultColumns": [
