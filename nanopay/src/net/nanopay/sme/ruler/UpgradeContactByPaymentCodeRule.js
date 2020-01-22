@@ -27,15 +27,15 @@ foam.CLASS({
           DAO       businessDAO      =   (DAO) x.get("localBusinessDAO");
           Business  loggedInBusiness =   (Business) x.get("user");
           Contact   contact          =   (Contact) obj;
-          String    paymentCode =   contact.getPaymentCode();
+          String    paymentCode      =   contact.getPaymentCode();
 
-          // check if given paymentcode is valid
+          // Check if paymentcode is valid
           PaymentCode validatedPaymentCode = (PaymentCode) paymentCodeDAO.find(paymentCode);
           if ( validatedPaymentCode == null ) {
             throw new RuntimeException("Invalid payment code. Please try again.");
           }
 
-          // check if id associated to payment code is a business
+          // Check if id associated to payment code is a business
           Business business = (Business) businessDAO.find(validatedPaymentCode.getOwner());
           if ( business == null || ((Long) business.getId()).equals(loggedInBusiness.getId())) {
             throw new RuntimeException("Invalid payment code. Please try again.");
@@ -47,7 +47,7 @@ foam.CLASS({
               contact.setOrganization(business.getOrganization());
               contact.setBusinessName(business.getOrganization());
               contact.setBusinessId(business.getId());
-              //Overwriting with business email will need refactoring with coming changes
+              // Overwriting with business email will need refactoring with coming changes
               contact.setEmail(business.getEmail());
             }
           }, "upgrade contact");

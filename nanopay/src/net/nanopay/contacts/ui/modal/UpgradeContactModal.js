@@ -56,7 +56,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paymentCodeValue',
-      documentation: 'This property is payment code data provided by user.',
+      documentation: 'Payment code provided by user.',
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
@@ -66,7 +66,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'keepExistingContact',
-      documentation: 'True when user intends on keep existing contact.',
+      documentation: 'True when user intends on keeping existing contact.',
       value: false,
       view: {
         class: 'foam.u2.CheckBox'
@@ -109,6 +109,16 @@ foam.CLASS({
         .end()
       .end()
     },
+
+    function dec2hex(dec) {
+      return ('0' + dec.toString(16)).substr(-2);
+    },
+
+    function generateTemporaryId() {
+      var array = new Uint8Array((15 || 40) / 2);
+      window.crypto.getRandomValues(array);
+      return Array.from(array, this.dec2hex).join('');
+    }
   ],
 
   actions: [
@@ -116,28 +126,23 @@ foam.CLASS({
       name: 'upgrade',
       label: 'Upgrade',
       code: async function(X) {
-        console.log('button clicked!');
         let { paymentCodeValue, keepExistingContact } = this.data;
-        let contact = keepExistingContact ?
-          this.Contact.create({
-            type: 'Contact',
-            group: 'sme',
-            email: 'temp' + this.data.email,
-            organization: this.data.businessName
-          })
-          :
-          this.data;
+        let contact = keepExistingContact
+          ? this.Contact.create({
+              type: 'Contact',
+              group: 'sme',
+              email: 'temp' + this.generateTemporaryId() + this.data.email,
+              organization: 'temp' + this.generateTemporaryId() + this.data.businessName
+            })
+          : this.data;
         contact.paymentCode = paymentCodeValue;
         contact.createdUsingPaymentCode = true;
         try {
-          let response = await this.user.contacts.put(contact);
-          console.log(response);
-          console.log('done with put');
-          this.ctrl.notify('Success Upgrading Contact!', 'success');
+          await this.user.contacts.put(contact);
+          this.ctrl.notify('Success upgrading contact!', 'success');
           X.closeDialog();
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;
-          console.log(msg);
           this.ctrl.notify(msg, 'error');
         }
       }

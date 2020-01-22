@@ -42,7 +42,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paymentCodeValue',
-      documentation: 'This property is payment code data provided by user.',
+      documentation: 'Payment code provided by user.',
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
@@ -100,9 +100,6 @@ foam.CLASS({
       name: 'AddContactByPaymentCode',
       label: 'Add Contact',
       code: async function(X) {
-        console.log('add contact using paymentcode');
-        console.log(this);
-
         let contact = this.Contact.create({
             type: 'Contact',
             group: 'sme',
@@ -111,16 +108,12 @@ foam.CLASS({
         });
         contact.paymentCode = this.paymentCodeValue;
         contact.createdUsingPaymentCode = true;
-
         try {
-          let response = await this.user.contacts.put(contact);
-          console.log(response);
-          console.log('done with put');
-          this.ctrl.notify('Success Upgrading Contact!', 'success');
+          await this.user.contacts.put(contact);
+          this.ctrl.notify('Contact by payment code added!', 'success');
           X.closeDialog();
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;
-          console.log(msg);
           this.ctrl.notify(msg, 'error');
         }
       }
