@@ -87,7 +87,7 @@ Stores all Exchange Rate info.`,
       name: 'validate',
       javaCode: `
         super.validate(x);
-
+/*
         User sourceOwner = findSourceAccount(x).findOwner(x);
         if ( sourceOwner instanceof Business
           && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
@@ -100,7 +100,7 @@ Stores all Exchange Rate info.`,
           // We throw when the destination account owner failed compliance however
           // we obligate to not expose the fact that the user failed compliance.
           throw new RuntimeException("Receiver needs to pass compliance.");
-        }
+        } Not needed in liquid Ablii specific validations need to be moved to rules. */
       `
     },
     {
