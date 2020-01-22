@@ -3,6 +3,15 @@ foam.CLASS({
   name: 'SelectOneSearchBar',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.User',
+    'net.nanopay.account.Account'
+  ],
+
   // TODO: CSS axiom?
   css: `
     ^query-container {
@@ -68,7 +77,9 @@ foam.CLASS({
         }
         if ( nu === 'user' ) {
           this.queryRef.of = foam.nanos.auth.User;
-          this.queryRef.clearProperty("dao");
+          this.queryRef.dao = this.__context__['userDAO'].where(
+            this.EQ(this.User.GROUP, 'liquidBasic')
+          ).orderBy(this.User.LEGAL_NAME);
           this.queryRef.clearProperty("targetDAOKey");
         }
       },

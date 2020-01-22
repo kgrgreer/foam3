@@ -3,6 +3,14 @@ foam.CLASS({
   name: 'UserOrRoleSearchBar',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.User'
+  ],
+
   css: `
     ^query-container {
       height: 40pt;
@@ -51,9 +59,13 @@ foam.CLASS({
         if ( nu === 'user' ) {
           this.userOrRoleRef.of = foam.nanos.auth.User;
           this.userOrRoleRef.clearProperty("targetDAOKey");
+          this.userOrRoleRef.dao = this.__context__['userDAO'].where(
+            this.EQ(this.User.GROUP, 'liquidBasic')
+          ).orderBy(this.User.LEGAL_NAME);
         }
         if ( nu === 'role' ) {
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
+          this.userOrRoleRef.clearProperty("dao");
           this.userOrRoleRef.targetDAOKey = "globalLiquidCapabilityDAO";
         }
       },
@@ -61,13 +73,17 @@ foam.CLASS({
     {
       name: 'userOrRoleRef',
       class: 'net.nanopay.liquidity.ucjQuery.referencespec.ReferenceSpec'
-    },
+    }
   ],
 
   methods: [
     function initE() {
       var self = this;
       self.userOrRoleRef.of = foam.nanos.auth.User;
+      self.userOrRoleRef.dao = this.__context__['userDAO'].where(
+        this.EQ(this.User.GROUP, 'liquidBasic')
+      ).orderBy(this.User.LEGAL_NAME);
+
       self
         .addClass(self.myClass('query-container'))
         .start()
@@ -77,7 +93,7 @@ foam.CLASS({
           .addClass(self.myClass('radio-view'))
           .add(self.SEARCH_OPTION)
         .end()
-        .add(self.USER_OR_ROLE_REF)
+        .add(self.USER_OR_ROLE_REF);
     }
   ]
-})
+});
