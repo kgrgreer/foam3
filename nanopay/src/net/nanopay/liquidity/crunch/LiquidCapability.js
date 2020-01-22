@@ -84,6 +84,11 @@ foam.CLASS({
       visibility: foam.u2.Visibility.HIDDEN
     },
     {
+      name: 'notes',
+      class: 'String',
+      hidden: true
+    },
+    {
       name: 'users',
       updateMode: 'RO'
     }
@@ -193,29 +198,6 @@ foam.CLASS({
       Class of the information stored in data field of UserCapabilityJunctions, if there is any.
       In this case, it is always a list of Longs representing accountIds, and we should restrict users from accessing this property
       `
-    },
-    {
-      name: 'permissionsGranted',
-      javaFactory: `
-        List<String> permissions = new ArrayList<String>();
-
-        // add dashboard menu permission for account maker/approver
-        if ( getCanViewDashboard() ) {
-          permissions.add("shadowaccount.view");
-          permissions.add("menu.read.liquid.dashboard");
-        }
-
-        // add approver menu permission for approvers
-        if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
-
-        if ( getCanMakeAccount() ) permissions.add("account.make");
-        if ( getCanMakeTransaction() ) permissions.add("transaction.make");
-
-        // add transaction menu permission if user can view, make or approve transaction
-        if ( getCanViewTransaction() || getCanMakeTransaction() || getCanApproveTransaction() ) permissions.add("menu.read.liquid.transactions");
-
-        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
-      `
     }
   ],
 
@@ -275,6 +257,32 @@ foam.CLASS({
                this.canViewTransaction || this.canMakeTransaction || this.canApproveTransaction||
                this.canViewDashboard;
       }
+    },
+    {
+      name: 'getPermissionsGranted',
+      javaType: 'String[]',
+      javaCode: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add dashboard menu permission for account maker/approver
+        if ( getCanViewDashboard() ) {
+          permissions.add("shadowaccount.view");
+          permissions.add("menu.read.liquid.dashboard");
+        }
+
+        // add approver menu permission for approvers
+        if ( getCanApproveTransaction() || getCanApproveAccount() ) permissions.add("menu.read.liquid.approvals");
+
+        if ( getCanMakeAccount() ) permissions.add("account.make");
+        if ( getCanMakeTransaction() ) permissions.add("transaction.make");
+
+        // add transaction menu permission if user can view, make or approve transaction
+        if ( getCanViewTransaction() || getCanMakeTransaction() || getCanApproveTransaction() ) permissions.add("menu.read.liquid.transactions");
+
+
+        // System.out.println("getPermissionsGranted : " + permissions);
+        return ( String[] ) permissions.toArray(new String[0]);
+      `
     }
   ]
 });
@@ -501,50 +509,6 @@ foam.CLASS({
       In this case, it is an Integer representing approver level, or 0 if the capability does not grant 
       an approver role.
       `
-    },
-    {
-      name: 'permissionsGranted',
-      javaFactory: `
-        List<String> permissions = new ArrayList<String>();
-
-        // add approver menu permission for approvers
-        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysettings() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
-
-        // add rules menu permission if user can view, make or approve rules
-        if ( getCanViewRule() || getCanMakeRule() || getCanApproveRule() ) permissions.add("menu.read.liquid.rules");
-
-        // add user menu permission if user can view, make or approve user
-        if ( getCanViewUser() || getCanMakeUser() || getCanApproveUser() ) permissions.add("menu.read.liquid.users");
-
-        // add liquidity settings menu permission if user can view, make or approve liquidity settings
-        if( getCanViewLiquiditysettings() || getCanMakeLiquiditysettings() || getCanApproveLiquiditysettings() ) permissions.add("menu.read.liquid.liquidity");
-
-        // add roles, global liquid capabilities and account based liquid capabilities menu permission if user can view, make or approve a capability
-        if ( getCanViewCapability() || getCanMakeCapability() || getCanApproveCapability() ) {
-          permissions.add("menu.read.liquid.roles");
-          permissions.add("menu.read.liquid.globalliquidcapabilities");
-          permissions.add("menu.read.liquid.accountbasedliquidcapabilities");
-        }
-
-        // add assign capability menu permission if user can make or approve a capability request
-        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.assigncapability");
-
-        // add capability account template menu permission if user can make or approve capability requests
-        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.capabilityaccounttemplates");
-
-        // add role query view menu permission if user can view capability, user and account
-        if ( getCanViewCapability() && getCanViewUser() ) permissions.add("menu.read.liquid.rolequeryview");
-
-        // add file upload permission for file ingesters
-        if ( getCanIngestFile() ) permissions.add("menu.read.liquid.fileupload");
-
-        if ( getCanMakeRule() ) permissions.add("rule.make");
-        if ( getCanMakeUser() ) permissions.add("user.make");
-        if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
-        if ( getCanMakeCapability() ) permissions.add("capability.make");
-
-        return permissions.size() > 0 ? permissions.toArray(new String[0]) : null;
-      `
     }
   ],
 
@@ -594,6 +558,51 @@ foam.CLASS({
                this.canMakeCapabilityrequest || this.canApproveCapabilityrequest ||
                this.canIngestFile;
       }
+    },
+    {
+      name: 'getPermissionsGranted',
+      javaType: 'String[]',
+      javaCode: `
+        List<String> permissions = new ArrayList<String>();
+
+        // add approver menu permission for approvers
+        if ( getCanApproveRule() || getCanApproveUser() || getCanApproveLiquiditysettings() || getCanApproveCapability() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.approvals");
+
+        // add rules menu permission if user can view, make or approve rules
+        if ( getCanViewRule() || getCanMakeRule() || getCanApproveRule() ) permissions.add("menu.read.liquid.rules");
+
+        // add user menu permission if user can view, make or approve user
+        if ( getCanViewUser() || getCanMakeUser() || getCanApproveUser() ) permissions.add("menu.read.liquid.users");
+
+        // add liquidity settings menu permission if user can view, make or approve liquidity settings
+        if( getCanViewLiquiditysettings() || getCanMakeLiquiditysettings() || getCanApproveLiquiditysettings() ) permissions.add("menu.read.liquid.liquidity");
+
+        // add roles, global liquid capabilities and account based liquid capabilities menu permission if user can view, make or approve a capability
+        if ( getCanViewCapability() || getCanMakeCapability() || getCanApproveCapability() ) {
+          permissions.add("menu.read.liquid.roles");
+          permissions.add("menu.read.liquid.globalliquidcapabilities");
+          permissions.add("menu.read.liquid.accountbasedliquidcapabilities");
+        }
+
+        // add assign capability menu permission if user can make or approve a capability request
+        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.assigncapability");
+
+        // add capability account template menu permission if user can make or approve capability requests
+        if ( getCanMakeCapabilityrequest() || getCanApproveCapabilityrequest() ) permissions.add("menu.read.liquid.capabilityaccounttemplates");
+
+        // add role query view menu permission if user can view capability, user and account
+        if ( getCanViewCapability() && getCanViewUser() ) permissions.add("menu.read.liquid.rolequeryview");
+
+        // add file upload permission for file ingesters
+        if ( getCanIngestFile() ) permissions.add("menu.read.liquid.fileupload");
+
+        if ( getCanMakeRule() ) permissions.add("rule.make");
+        if ( getCanMakeUser() ) permissions.add("user.make");
+        if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
+        if ( getCanMakeCapability() ) permissions.add("capability.make");
+
+        return ( String[] ) permissions.toArray(new String[0]);
+      `
     }
   ]
 });

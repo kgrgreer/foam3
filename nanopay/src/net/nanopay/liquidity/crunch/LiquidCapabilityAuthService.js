@@ -56,6 +56,7 @@ foam.CLASS({
           return;
 
         DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
         if ( userCapabilityJunctionDAO == null )
           return;
 
@@ -79,6 +80,7 @@ foam.CLASS({
 
         // Add the purge listener
         userCapabilityJunctionDAO.listen(purgeSink, TRUE);
+        capabilityDAO.listen(purgeSink, TRUE);
         
         // Initialization done
         setInitialized(true);

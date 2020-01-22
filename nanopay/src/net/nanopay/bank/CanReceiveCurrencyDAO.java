@@ -46,7 +46,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     // Given an account id return if this is an account-not aggregate - and its currency.
     // will return account selection validity with response.response
     // and denomination in response.message
-    if ( request.getAccountChoice() > 0 ) return accountSelectionLookUp(request);
+    if ( request.getAccountChoice() > 0 ) return accountSelectionLookUp(x, request);
 
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
@@ -105,18 +105,26 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     return user;
   }
   
-  public CanReceiveCurrency accountSelectionLookUp(CanReceiveCurrency query) {
+  public CanReceiveCurrency accountSelectionLookUp(X x, CanReceiveCurrency query) {
     CanReceiveCurrency response = (CanReceiveCurrency) query.fclone();
     response.setResponse(false);
-    ArraySink accountSink = (ArraySink) accountDAO.where(
-      EQ(net.nanopay.account.Account.ID, query.getAccountChoice())
-      ).select(new ArraySink());
+    ArraySink accountSink = (ArraySink) accountDAO.where(AND(
+      EQ(net.nanopay.account.Account.DELETED, false),
+      EQ(net.nanopay.account.Account.ENABLED, true),
+      EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
+      OR(
+        AND(
+          INSTANCE_OF(net.nanopay.account.DigitalAccount.class),
+          NOT(INSTANCE_OF(net.nanopay.account.AggregateAccount.class))
+        ),
+        INSTANCE_OF(net.nanopay.account.ShadowAccount.class)
+      )
+    )).select(new ArraySink());
+
     if ( accountSink.getArray().size() > 0 ) {
       Account account = (Account)accountSink.getArray().get(0);
-      if ( account.getType() != "Aggregate Account" ) {
-        response.setResponse(true);
-        response.setMessage(account.getDenomination()); // do all accounts have a denomination??
-      }
+      response.setResponse(true);
+      response.setMessage(account.getDenomination());
     }
     return response;
   }

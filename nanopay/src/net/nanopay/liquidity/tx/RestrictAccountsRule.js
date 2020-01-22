@@ -48,7 +48,12 @@ foam.CLASS({
             {
               heading: 'Accounts',
               dao: X.accountDAO
-                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .where(
+                  e.AND(
+                    e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                    foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+                  )
+                )
                 .orderBy(Account.NAME)
             }
           ]
@@ -94,7 +99,12 @@ foam.CLASS({
             {
               heading: 'Accounts',
               dao: X.accountDAO
-                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .where(
+                  e.AND(
+                    e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                    foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+                  )
+                )
                 .orderBy(Account.NAME)
             }
           ]

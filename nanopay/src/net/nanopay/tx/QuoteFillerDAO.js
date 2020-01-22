@@ -28,8 +28,19 @@ foam.CLASS({
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
 
-        quote.setDestinationAccount((Account) txn.findDestinationAccount(x));
+        quote.setDestinationAccount((Account) txn.findDestinationAccount(getX())); // elevate destination account search to system.
         quote.setSourceAccount((Account) txn.findSourceAccount(x));
+
+        if (quote.getSourceAccount() == null )
+          throw new RuntimeException("Unable to access the source account.");
+        if( quote.getDestinationAccount() instanceof net.nanopay.account.AggregateAccount )
+          throw new RuntimeException("Unable to send funds to an aggregate account");
+           if( quote.getSourceAccount() instanceof net.nanopay.account.AggregateAccount )
+                    throw new RuntimeException("Unable to send funds from an aggregate account");
+        if( quote.getDestinationAccount() instanceof net.nanopay.account.SecuritiesAccount && ! ( quote.getSourceAccount() instanceof net.nanopay.account.SecuritiesAccount ) )
+          throw new RuntimeException("Unable to send between Securities and Cash");
+        if( quote.getSourceAccount() instanceof net.nanopay.account.SecuritiesAccount && ! ( quote.getDestinationAccount() instanceof net.nanopay.account.SecuritiesAccount ) )
+          throw new RuntimeException("Unable to send between Cash and Securities");
 
         if ( SafetyUtil.isEmpty(txn.getSourceCurrency()) ) {
           logger.log("Transaction Source Currency not specified, defaulting to source account denomination");
