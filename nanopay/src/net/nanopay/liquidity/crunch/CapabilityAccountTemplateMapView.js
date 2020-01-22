@@ -87,7 +87,8 @@ foam.CLASS({
             return this.isCapabilityAccountData ?
               net.nanopay.liquidity.crunch.CapabilityAccountData.create() :
               net.nanopay.liquidity.crunch.AccountData.create();
-          }
+          },
+          view: 'foam.u2.view.FObjectView'
         }
       ],
       actions: [
