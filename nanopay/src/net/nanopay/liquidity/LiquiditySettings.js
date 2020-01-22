@@ -242,7 +242,7 @@ foam.CLASS({
               return 'High Liquidity reset balance should be greater than Low liquidity threshold value.';
             }
           }
-          if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+          if ( this.lowLiquidity.threshold >= this.highLiquidity.threshold ) {
             return 'High Liquidity threshold should be greater than Low liquidity values.';
           }
         }
