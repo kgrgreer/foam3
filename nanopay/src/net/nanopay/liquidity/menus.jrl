@@ -14,10 +14,10 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounts",
   "label": "Accounts",
-  "handler": 
+  "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
-      "config": 
+      "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "accountDAO",
@@ -74,7 +74,7 @@ p({
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "transactionDAO",
           "editEnabled": false,
-          "deleteEnabled": false, 
+          "deleteEnabled": false,
           "defaultColumns": [
             "summary",
             "lastModified",
@@ -418,13 +418,13 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"liquid.txapprovaltrules",
-  "label":"Transaction Approval By Level",
+  "label":"High Value L2 Rules",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "browseTitle":"Transaction Approval By Level",
-      "createTitle": "Create a New Transaction Approval By Level",
+      "browseTitle":"High Value L2 Rules",
+      "createTitle": "Create a new High Value L2 Rule",
       "daoKey":"ruleDAO",
       "predicate":{
         "class": "foam.mlang.predicate.IsInstanceOf",
