@@ -59,20 +59,19 @@ foam.CLASS({
 
         String permissionPrefix = obj instanceof ShadowAccount ? "shadowaccount" : getPermissionPrefix();
 
-        Long accountId = 
+        Long accountId =
           (
             obj instanceof AccountApprovableAware &&
             ! ( obj instanceof ShadowAccount )
-          ) ? 
-          ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 
+          ) ?
+          ((AccountApprovableAware) obj).getOutgoingAccountRead(x) :
           0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String readPermission = createPermission(permissionPrefix, "view", accountId);
-        String approvePermission = createPermission(permissionPrefix, "approve", accountId);
-        String makePermission = createPermission(permissionPrefix, "make", accountId);
-
-        if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
+        if ( ! (
+          authService.check(x, createPermission(permissionPrefix, "view",    accountId)) ||
+          authService.check(x, createPermission(permissionPrefix, "approve", accountId)) ||
+          authService.check(x, createPermission(permissionPrefix, "make",    accountId)) ) ) {
           throw new AuthorizationException();
         }
       `
