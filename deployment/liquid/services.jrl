@@ -203,7 +203,6 @@ p({
   }
   """
 })
->>>>>>> 71b87d3a08a3d7a63d5bc49794c8291628b23724
 
 p({
   "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",
@@ -229,7 +228,7 @@ p({
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
 
     // Set DAO chain
-    fm = new foam.nanos.analytics.DAOFoldManager.Builder(x)
+    dao = new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao(x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)
       .build();

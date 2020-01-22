@@ -9,7 +9,14 @@ foam.CLASS({
   name: 'ClusterClientTransactionDAO',
   extends: 'foam.nanos.mrac.ClusterClientDAO',
 
-  documentation: 'Marshall put and remove operations to the ClusterServer.',
+  documentation: `Marshall put and remove operations to the ClusterServer.
+This DAO is specific to Transactions. Most models can be re-put without
+side effect.  The transactions fail, for example, if a put is attempted
+on a COMPLETED transaction.  During clustering it is possible for a
+transcation to be persisted to MN, then the Primary fails, the secondary
+timesout or catches an exception, but in this case we should check
+if our MDAO was updated by the MN. It if has been, then no need to
+retry.`,
 
   javaImports: [
     'foam.core.FObject',
@@ -17,8 +24,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
-    'net.nanopay.tx.model.Transaction',
-    'foam.nanos.mrac.*'
+    'foam.nanos.mrac.*',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
