@@ -57,6 +57,10 @@ foam.CLASS({
     ^ .foam-u2-ActionView-refresh span {
       vertical-align: middle;
     }
+
+    ^ .foam-u2-layout-Card {
+      overflow-x: scroll;
+    }
   `,
 
   properties: [
