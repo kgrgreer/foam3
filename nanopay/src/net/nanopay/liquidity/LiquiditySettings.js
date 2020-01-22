@@ -80,7 +80,12 @@ foam.CLASS({
           sections: [
             {
               heading: 'Users',
-              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+              dao: X.userDAO.where(
+                X.data.AND(
+                  X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
+                  X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+                )
+              ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
             }
           ]
         };

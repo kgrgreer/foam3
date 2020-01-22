@@ -84,6 +84,11 @@ foam.CLASS({
       visibility: foam.u2.Visibility.HIDDEN
     },
     {
+      name: 'notes',
+      class: 'String',
+      hidden: true
+    },
+    {
       name: 'users',
       updateMode: 'RO'
     }

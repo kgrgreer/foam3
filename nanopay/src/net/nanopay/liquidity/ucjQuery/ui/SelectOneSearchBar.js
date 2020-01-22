@@ -1,3 +1,5 @@
+// TODO: userDAO predicate and roleDAO predicate in a property
+//       (like how accountDAO is right now)
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery.ui',
   name: 'SelectOneSearchBar',
@@ -8,8 +10,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'net.nanopay.liquidity.crunch.LiquidCapability'
   ],
 
   // TODO: CSS axiom?
@@ -66,19 +70,22 @@ foam.CLASS({
         if ( nu === 'account' ) {
           this.queryRef.of = net.nanopay.account.Account;
           this.queryRef.clearProperty("targetDAOKey");
-          this.queryRef.dao = this.__context__['accountDAO'].where(
-            this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
-          );
+          this.queryRef.dao = this.accountDAO;
         }
         if ( nu === 'role' ) {
           this.queryRef.of = foam.nanos.crunch.Capability;
           this.queryRef.clearProperty("dao");
-          this.queryRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
+          this.queryRef.dao = this.__context__['accountBasedLiquidCapabilityDAO'].where(
+              this.EQ(this.LiquidCapability.LIFECYCLE_STATE, this.LifecycleState.ACTIVE),
+          );
         }
         if ( nu === 'user' ) {
           this.queryRef.of = foam.nanos.auth.User;
           this.queryRef.dao = this.__context__['userDAO'].where(
-            this.EQ(this.User.GROUP, 'liquidBasic')
+            this.AND(
+              this.EQ(this.User.LIFECYCLE_STATE, this.LifecycleState.ACTIVE),
+              this.EQ(this.User.GROUP, 'liquidBasic')
+            )
           ).orderBy(this.User.LEGAL_NAME);
           this.queryRef.clearProperty("targetDAOKey");
         }
@@ -88,6 +95,20 @@ foam.CLASS({
       name: 'queryRef',
       class: 'net.nanopay.liquidity.ucjQuery.referencespec.ReferenceSpec'
     },
+    {
+      name: 'accountDAO',
+      factory: function () {
+        return this.__context__['accountDAO'].where(
+          this.AND(
+            this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE),
+            this.OR(
+              this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+            )
+          )
+        );
+      }
+    }
   ],
 
   methods: [
@@ -95,6 +116,7 @@ foam.CLASS({
       // TODO: inherit initE?
       var self = this;
       self.queryRef.of = net.nanopay.account.Account;
+      this.queryRef.dao = this.accountDAO;
       self
         .addClass(self.myClass('query-container'))
         .start()
