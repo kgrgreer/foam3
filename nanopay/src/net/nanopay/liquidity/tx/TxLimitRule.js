@@ -96,7 +96,7 @@ foam.CLASS({
             if ( account ) {
               this.denomination = account.denomination;
             }
-          }); 
+          });
         }
       }
     },
@@ -134,25 +134,12 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'limit',
       label: 'With Transaction Value More Than',
       section: 'basicInfo',
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
-      },
-      tableCellFormatter: function(value, obj) {
-        if ( obj.denomination ) {
-          obj.currencyDAO.find(obj.denomination).then(function(currency) {
-              if ( currency ) {
-                this.add( currency.format(value) );
-              } else {
-                this.add( value );
-              }
-          }.bind(this));
-        } else {
-          this.add( value );
-        }
       },
       tableWidth: 200,
       validationPredicates: [
@@ -163,7 +150,8 @@ foam.CLASS({
           },
           errorString: 'Limit amount must be greater than 0.'
         }
-      ]
+      ],
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       class: 'Reference',

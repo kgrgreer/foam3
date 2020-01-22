@@ -11,7 +11,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.Liquidity'
   ],
 
   sections: [
@@ -137,10 +138,10 @@ foam.CLASS({
         };
       },
       factory: function() {
-        return net.nanopay.liquidity.Liquidity.create({
+        return this.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
-          denomination: this.denomination
+          denomination$: this.denomination$
         });
       },
       javaFactory: `
@@ -203,10 +204,10 @@ foam.CLASS({
         };
       },
       factory: function() {
-        return net.nanopay.liquidity.Liquidity.create({
+        return this.Liquidity.create({
           rebalancingEnabled: false,
           enabled: false,
-          denomination: this.denomination
+          denomination$: this.denomination$
         });
       },
       javaFactory: `

@@ -134,14 +134,7 @@ foam.CLASS({
           errorString: 'Amount must be greater than 0.'
         }
       ],
-      view: function(_, x) {
-        return {
-          class: 'foam.u2.view.IntView',
-          readView: {
-            class: 'foam.u2.view.TableCellFormatterReadView' ,
-          }
-        };
-      }
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       name: 'predicate',
