@@ -778,7 +778,10 @@ foam.RELATIONSHIP({
             X.data.EQ(net.nanopay.account.Account.ENABLED, true),
             X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
               foam.nanos.auth.LifecycleState.ACTIVE),
-            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+            X.data.OR(
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+            X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
+            )
           )).orderBy(net.nanopay.account.Account.NAME),
           objToChoice: function(a) {
             return [a.id, a.summary];
@@ -847,7 +850,7 @@ foam.RELATIONSHIP({
           if ( responseObj.response ) {
             return setValues(responseObj.message, '');
           }
-          setValues(undefined, 'entered account does not exist');
+          setValues(undefined, 'Account Id entered is either not accepting transactions or does not exist.');
         }).catch((e) => console.warn('validation on Transaction.destinationAccount error:', e.message || e));
       }
     },
