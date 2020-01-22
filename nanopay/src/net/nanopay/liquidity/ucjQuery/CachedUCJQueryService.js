@@ -94,7 +94,10 @@ foam.CLASS({
         for ( int i = 0; i < ucjsForUser.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForUser.get(i);
 
-          roleIdsForUser.add(currentUCJ.getTargetId());
+          // GlobalCapabilities use ApproverLevel as data in the UCJ
+          if ( currentUCJ.getData() instanceof ApproverLevel ){
+            roleIdsForUser.add(currentUCJ.getTargetId());
+          }
         }
 
         List roleIdsForUserToCache = new ArrayList(roleIdsForUser);

@@ -573,6 +573,7 @@ foam.CLASS({
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForUser.get(i);
           String capabilityId = currentUCJ.getTargetId();
 
+          // AccountBasedCapabilities use AccountApproverMap as data in the UCJ
           if ( currentUCJ.getData() instanceof AccountApproverMap ){
             AccountApproverMap currentData = (AccountApproverMap) currentUCJ.getData();
 
