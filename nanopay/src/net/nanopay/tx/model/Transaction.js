@@ -422,7 +422,8 @@ foam.CLASS({
       name: 'referenceNumber',
       createMode: 'HIDDEN',
       visibility: 'RO',
-      label: 'Reference',
+      section: 'basicInfo',
+      label: 'Originating Source',
       includeInDigest: true
     },
      {
@@ -851,7 +852,7 @@ foam.CLASS({
       name: 'lifecycleState',
       createMode: 'HIDDEN',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: 'RO'
+      visibility: foam.u2.Visibility.HIDDEN
     }
   ],
 

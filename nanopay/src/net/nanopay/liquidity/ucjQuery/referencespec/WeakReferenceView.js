@@ -62,7 +62,6 @@ foam.CLASS({
           self.choiceView.dao = self.ctrl.__subContext__[propValue.targetDAOKey];
         }
         propValue.targetDAOKey$.sub(function () {
-          console.log('hey');
           self.choiceView.dao = self.__context__[propValue.targetDAOKey];
         });
       }

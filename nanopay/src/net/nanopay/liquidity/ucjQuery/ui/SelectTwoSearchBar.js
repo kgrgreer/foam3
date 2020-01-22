@@ -31,12 +31,13 @@ foam.CLASS({
       message: 'Search For:',
     },
     {
-      name: 'SEARCHBYCHOICEUSER',
-      message: 'User',
+      name: 'BY',
+      message: 'by ',
     },
+    // TODO: can i18n messages have templates?
     {
-      name: 'SEARCHBYCHOICEROLE',
-      message: 'Role',
+      name: 'BYEND',
+      message: ': ',
     },
   ],
 
@@ -86,20 +87,40 @@ foam.CLASS({
     function initE() {
       // TODO: inherit initE?
       var self = this;
-      self.userOrRoleRef.of = foam.nanos.crunch.Capability;
-      self.userOrRoleRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
-      self.accountOrUserRef.of = foam.nanos.auth.User;
+      self.accountOrUserRef.of = net.nanopay.account.Account;
+      self.userOrRoleRef.of = foam.nanos.auth.User;
       self
         .addClass(self.myClass('query-container'))
         .start()
-          .add(self.SEARCHBY)
+          .add(self.SEARCHFOR)
         .end()
         .start()
           .addClass(self.myClass('radio-view'))
           .add(self.SEARCH_OPTION)
         .end()
+        .add(self.slot(function(accountOrUserRef$of) {
+          return self.E()
+            .add(self.BY)
+            .add(self.refLabelFilter(accountOrUserRef$of.name))
+            .add(self.BYEND)
+        }))
         .add(self.ACCOUNT_OR_USER_REF)
+        .add(self.slot(function(userOrRoleRef$of) {
+          return self.E()
+            .add(self.BY)
+            .add(self.refLabelFilter(userOrRoleRef$of.name))
+            .add(self.BYEND)
+        }))
         .add(self.USER_OR_ROLE_REF)
+        ;
+    },
+
+    function refLabelFilter(str) {
+      str = str.toLowerCase();
+      if ( str === 'capability' ) {
+        str = 'role';
+      }
+      return str;
     }
-  ]
+  ],
 });

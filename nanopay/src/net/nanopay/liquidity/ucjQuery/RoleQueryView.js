@@ -365,9 +365,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.TabChoiceView',
         choices: [
-          ['globalRoles', 'Global Roles'],
-          ['selectTwo', 'Account Roles (Specific)'],
-          ['selectOne', 'Account Roles (Overview)'],
+          ['globalRoles', 'Admin Roles'],
+          // ['selectTwo', 'Account Roles (Specific)'],
+          ['selectOne', 'Transactional Roles'],
         ],
       },
     },

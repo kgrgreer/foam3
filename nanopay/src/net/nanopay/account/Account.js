@@ -180,6 +180,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
+      label: 'Account Number',
       documentation: 'The ID for the account.',
       section: 'administration',
       visibility: 'RO',
@@ -207,7 +208,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      label: 'Account name',
+      label: 'Account Name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {
@@ -305,7 +306,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
         Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
-        
+
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
@@ -333,7 +334,7 @@ foam.CLASS({
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
-        A numeric value representing the available funds in the 
+        A numeric value representing the available funds in the
         bank account converted to home denomination.
       `,
       section: 'balanceDetails',
@@ -437,12 +438,14 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
-      visibility: 'RO'
+      visibility: foam.u2.Visibility.HIDDEN
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
-      name: 'userFeedback'
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.HIDDEN
     }
   ],
 

@@ -5,19 +5,19 @@ foam.ENUM({
   values: [
     {
       name: 'ASSIGN_ACCOUNT_BASED',
-      label: 'Assign Account Based Capability',
+      label: 'Assign Transactional Role',
     },
     {
       name: 'ASSIGN_GLOBAL',
-      label: 'Assign Global Capability',
+      label: 'Assign Admin Role',
     },
     {
       name: 'REVOKE_ACCOUNT_BASED',
-      label: 'Revoke Account Based Capability',
+      label: 'Revoke Transactional Role',
     },
     {
       name: 'REVOKE_GLOBAL',
-      label: 'Revoke Global Capability',
+      label: 'Revoke Admin Role',
     }
   ]
 });

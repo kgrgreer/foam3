@@ -38,7 +38,7 @@ foam.CLASS({
       readPermissionRequired: false,
       tableWidth: 125,
       tableHeaderFormatter: function(axiom) {
-        this.add('Current status');
+        this.add('Status');
       },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
@@ -142,12 +142,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: 'RO'
+      visibility: foam.u2.Visibility.HIDDEN
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
-      name: 'userFeedback'
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.HIDDEN
     }
   ],
 

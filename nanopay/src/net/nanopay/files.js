@@ -5,6 +5,7 @@ FOAM_FILES([
   // Approvable
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/PropertiesToUpdateView', flags: ['web'] },
   { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
@@ -23,6 +24,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
+  { name: 'net/nanopay/tx/ClusterClientTransactionDAO' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/CreatePaymentCode' },
   { name: 'net/nanopay/tx/test/BulkTransactionTest' },

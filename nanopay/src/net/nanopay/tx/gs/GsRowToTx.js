@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.lib.parse.CSVParser',
     'foam.nanos.logger.Logger',
+    'java.util.HashMap',
     'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -68,6 +69,8 @@ foam.CLASS({
           DAO gsTxCsvRowDAO = new foam.dao.SequenceNumberDAO.Builder(x)
             .setDelegate(new foam.dao.MDAO(GsTxCsvRow.getOwnClassInfo()))
             .build();
+          HashMap balanceMap = new HashMap<Long,Long>();
+
           // Add index to MDAO
           ((MDAO) ((foam.dao.ProxyDAO)gsTxCsvRowDAO).getDelegate())
             .addIndex(new foam.core.PropertyInfo[] {
@@ -77,6 +80,14 @@ foam.CLASS({
             .addIndex(new foam.core.PropertyInfo[] {
               net.nanopay.tx.gs.GsTxCsvRow.SEC_QTY
             });
+
+          /* Preload the balance DAO */
+          DAO accountDAO = (DAO) x.get("accountDAO");
+          java.util.List l = (java.util.List) ( (foam.dao.ArraySink) accountDAO.select( new foam.dao.ArraySink() )).getArray();
+          for( Object o : l){
+            Account a = (Account) o;
+            balanceMap.put(a.getId(), a.findBalance(x));
+          }
 
           CSVParser csvParser = new CSVParser(
             net.nanopay.tx.gs.GsTxCsvRow.getOwnClassInfo(),
@@ -106,6 +117,7 @@ foam.CLASS({
                 .setOutputDAO( (DAO) x.get("localTransactionDAO") )
                 .setTrackingJob(finalJob)
                 .setRow1(row1)
+                .setMyBalances(balanceMap)
                 .build();
               if ( i % modulus == 0 || i == rows.size() ) {
                 pbd = (ProgressBarData) pbd.fclone();
@@ -199,13 +211,13 @@ foam.CLASS({
           return;
 
         // Create the source trustee account
-        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,denomination +" Trust Account"));
+        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+denomination));
         if( sourceTrust == null ) {
           logger.info("trustee not found for " + denomination + " ... Generating...");
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(denomination)
-            .setName(denomination +" Trust Account")
+            .setName("Trust Account "+denomination)
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net

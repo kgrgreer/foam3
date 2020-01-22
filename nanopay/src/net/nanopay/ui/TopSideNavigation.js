@@ -193,7 +193,8 @@ foam.CLASS({
                     self.menuSearch = menu.id;
                   })
                   .addClass('sidenav-item-wrapper')
-                    .start().addClass('menu-label')
+                  .start()
+                    .addClass('menu-label')
                     .enableClass('selected-root', slot)
                     .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
                       var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
@@ -203,9 +204,20 @@ foam.CLASS({
                       slot.set(selectedRoot);
                       return selectedRoot;
                     }))
-                    .start('img').addClass('icon')
-                      .attr('src', menu.icon)
-                    .end()
+
+                    // If the menu doesn't have an icon then we use an empty
+                    // span instead. We do this to avoid a broken image icon
+                    // being inserted by the browser in place of the menu icon.
+                    .add(menu.icon$.map(iconURL => {
+                      return iconURL
+                        ? this.E('span')
+                            .start('img')
+                              .addClass('icon')
+                              .attr('src', iconURL)
+                            .end()
+                        : this.E('span').start('span').addClass('icon').end();
+                    }))
+
                     .start('span')
                       .add(menu.label)
                     .end()

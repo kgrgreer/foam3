@@ -45,13 +45,24 @@ implements  ExchangeRateServiceInterface {
 
   @Override
   public long exchange(String u1, String u2, long amount) throws RuntimeException {
-    return (long) Math.floor(amount * getRate(u1,u2));
+    return (long) Math.floor(amount * getRateAndFormat(u1,u2));
   }
 
+
   public double getRate(String u1, String u2) {
-    if (SafetyUtil.equals(u1,u2)) return 1;
+    if (SafetyUtil.equals(u1, u2)) return 1;
     Unit unit1 = findUnit(u1);
     Unit unit2 = findUnit(u2);
+    return getRate(unit1, unit2);
+  }
+  protected double getRateAndFormat(String u1, String u2) {
+    if (SafetyUtil.equals(u1, u2)) return 1;
+    Unit unit1 = findUnit(u1);
+    Unit unit2 = findUnit(u2);
+    return (getRate (unit1, unit2) / Math.pow(10,unit1.getPrecision())) * Math.pow(10,unit2.getPrecision());
+  }
+  protected double getRate(Unit unit1, Unit unit2) {
+
     double rate;
     try {
       rate = getFromDAOs(unit1, unit2);
@@ -62,9 +73,9 @@ implements  ExchangeRateServiceInterface {
       }
       catch(Exception e2) {
         try {
-          if (SafetyUtil.equals(u1,"USD") || SafetyUtil.equals(u2,"USD")) throw new RuntimeException("No rate found");
-          double r1 = getRate(u1, "USD");
-          double r2 = getRate("USD", u2);
+          if (SafetyUtil.equals(unit1.getId(),"USD") || SafetyUtil.equals(unit2.getId(),"USD")) throw new RuntimeException("No rate found");
+          double r1 = getRate(unit1.getId(), "USD");
+          double r2 = getRate("USD", unit2.getId());
           rate = r1 * r2;
         }
         catch(Exception e3){
@@ -72,7 +83,7 @@ implements  ExchangeRateServiceInterface {
         }
       }
     }
-    return (rate / Math.pow(10,unit1.getPrecision())) * Math.pow(10,unit2.getPrecision());
+    return rate;
   }
 
   protected double getFromDAOs(Unit u1, Unit u2) {
