@@ -223,15 +223,15 @@ p({
     transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
 
     // Set DAO chain
-    fm = new foam.nanos.analytics.DAOFoldManager.Builder(x)
+    dao = new foam.nanos.analytics.DAOFoldManager.Builder(x)
       .setDao(x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)
       .build();
-    foldingDAO = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
+    dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
-      .setFm(fm)
+      .setFm(dao)
       .build();
-    dao = new net.nanopay.tx.TransactionDAO(x, foldingDAO);
+    dao = new net.nanopay.tx.TransactionDAO(x, dao);
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
     dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
       .setDelegate(dao)
