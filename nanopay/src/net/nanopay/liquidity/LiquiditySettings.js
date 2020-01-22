@@ -42,6 +42,12 @@ foam.CLASS({
     'highLiquidity'
   ],
 
+  searchColumns: [
+    'name',
+    'cashOutFrequency',
+    'denomination'
+  ],
+
   //relationship: 1:* LiquiditySettings : DigitalAccount
 
   //ids: ['account'],
