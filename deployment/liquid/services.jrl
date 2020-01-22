@@ -245,7 +245,7 @@ p({
       .build();
 
     if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new foam.nanos.mrac.ClusterClientDAO.Builder(x)
+      dao = new net.nanopay.tx.ClusterClientTransactionDAO.Builder(x)
         .setServiceName("transactionDAO")
         .setDelegate(dao)
         .build();
