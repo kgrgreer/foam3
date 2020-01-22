@@ -56,6 +56,12 @@ if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${R
 fi
 
 JAVA_OPTS=""
+
+# load instance specific deployment options
+if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
+    . "${NANOPAY_HOME}/etc/shrc.local"
+fi
+
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
@@ -64,11 +70,6 @@ JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
-
-# load instance specific deployment options
-if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
-    . "${NANOPAY_HOME}/etc/shrc.local"
-fi
 
 if [ ! -z $VERSION ]; then
     JAR="${NANOPAY_HOME}/lib/nanopay-${VERSION}.jar"
