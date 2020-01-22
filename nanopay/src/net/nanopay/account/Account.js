@@ -384,7 +384,8 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
-      visibility: 'RO',
+      // visibility: 'RO',
+      visibility: foam.u2.Visibility.HIDDEN
     },
     {
       class: 'DateTime',

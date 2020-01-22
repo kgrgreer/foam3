@@ -40,6 +40,9 @@ foam.CLASS({
       color: /*%GREY2%*/ #9ba1a6;
       border-right: 1px solid /*%GREY4%*/ #e7eaec;
       background: /*%GREY5%*/ #f5f7fas;
+
+      /* TODO: Remove this after the GS demo. */
+      padding-top: calc(60px + 24px);
     }
     ^ .selected-sub {
       color: /*%BLACK%*/ #1e1f21;
@@ -174,7 +177,8 @@ foam.CLASS({
           .addClass(this.myClass())
           .show(this.loginSuccess$)
           .start().addClass('side-nav-view')
-            .tag(this.MENU_SEARCH)
+            // TODO: Uncomment this after the GS demo.
+            // .tag(this.MENU_SEARCH)
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });

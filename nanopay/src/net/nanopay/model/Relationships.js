@@ -100,13 +100,18 @@ foam.RELATIONSHIP({
     order: 4,
     label: 'Parent Account',
     view: function(_, X) {
+      const e = foam.mlang.Expressions.create();
+      const Account = net.nanopay.account.Account;
+      const LifecycleState = foam.nanos.auth.LifecycleState;
       return {
         class: 'foam.u2.view.RichChoiceView',
         search: true,
         sections: [
           {
             heading: 'Accounts',
-            dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME)
+            dao: X.accountDAO
+              .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+              .orderBy(Account.NAME)
           }
         ]
       };
@@ -142,8 +147,22 @@ foam.RELATIONSHIP({
     section: 'liquiditySettingsSection',
     label: '',
     value: 0,
-    view: {
-      class: 'foam.u2.view.FullReferenceView'
+    view: function(_, X) {
+      const e = foam.mlang.Expressions.create();
+      const LiquiditySettings = net.nanopay.liquidity.LiquiditySettings;
+      const LifecycleState = foam.nanos.auth.LifecycleState;
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: [
+          {
+            heading: 'Liquidity Setting',
+            dao: X.liquiditySettingsDAO
+              .where(e.EQ(LiquiditySettings.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+              .orderBy(LiquiditySettings.NAME)
+          }
+        ]
+      };
     }
   }
 });
@@ -923,12 +942,20 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    visibilityExpression: function(entityId) {
+      return entityId ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'administrative',
+    visibilityExpression: function(approvalRequests) {
+      return approvalRequests ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   }
 });
 

@@ -9,6 +9,10 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'java.util.Map'
   ],
+  
+  searchColumns: [
+    'templateName'
+  ],
 
   properties: [
     {

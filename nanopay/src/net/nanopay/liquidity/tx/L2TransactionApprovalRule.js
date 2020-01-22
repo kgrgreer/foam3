@@ -64,9 +64,22 @@ foam.CLASS({
       label: 'Apply To Account',
       section: 'basicInfo',
       targetDAOKey: 'accountDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.accountDAO
+                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .orderBy(Account.NAME)
+            }
+          ]
+        };
       },
       tableCellFormatter: function(value) {
         var self = this;
@@ -121,14 +134,7 @@ foam.CLASS({
           errorString: 'Amount must be greater than 0.'
         }
       ],
-      view: function(_, x) {
-        return {
-          class: 'foam.u2.view.IntView',
-          readView: {
-            class: 'foam.u2.view.TableCellFormatterReadView' ,
-          }
-        };
-      }
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       name: 'predicate',

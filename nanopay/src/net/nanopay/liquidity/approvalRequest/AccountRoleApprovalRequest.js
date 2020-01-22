@@ -17,6 +17,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'outgoingAccount',
+      section: 'requestDetails',
       tableCellFormatter: function(outgoingAccount) {
         let self = this;
         this.__subSubContext__.accountDAO.find(outgoingAccount).then((account)=> {

@@ -14,6 +14,11 @@ foam.CLASS({
     [
       'view',
       { class: 'net.nanopay.liquidity.ucjQuery.referencespec.ReferenceSpecPropertyView' }
+    ],
+    [
+      'daoFactory',
+      { class: 'Function' }
+      // TODO: update factory when this is changed
     ]
   ],
 
@@ -31,6 +36,7 @@ foam.CLASS({
         },
         configurable: true
       });
+
     }
   ]
 });

@@ -47,14 +47,7 @@ foam.CLASS({
       visibilityExpression: function(enabled) {
         return enabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
-      view: function(_, x) {
-        return {
-          class: 'foam.u2.view.IntView',
-          readView: {
-            class: 'foam.u2.view.TableCellFormatterReadView' ,
-          }
-        };
-      }
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       class: 'UnitValue',
@@ -65,14 +58,7 @@ foam.CLASS({
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       documentation: 'Account balance must match reset amount after liquidity transaction was generated.',
-      view: function(_, x) {
-        return {
-          class: 'foam.u2.view.IntView',
-          readView: {
-            class: 'foam.u2.view.TableCellFormatterReadView' ,
-          }
-        };
-      }
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       class: 'Reference',
@@ -83,10 +69,16 @@ foam.CLASS({
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       documentation: 'Account associated to setting.',
-      updateMode: 'RO',
       view: function(_, X) {
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
         var dao = foam.dao.ProxyDAO.create({
-          delegate: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
+          delegate: X.accountDAO.where(
+            X.data.AND(
+              X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+              X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+            )
+          )
         });
 
         if ( foam.core.Slot.isInstance(X.denominationToFilterBySlot) ) {

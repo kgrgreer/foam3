@@ -37,9 +37,22 @@ foam.CLASS({
       section: 'basicInfo',
       targetDAOKey: 'accountDAO',
       of: 'net.nanopay.account.Account',
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.accountDAO
+                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .orderBy(Account.NAME)
+            }
+          ]
+        };
       },
       tableCellFormatter: function(value) {
         var self = this;
@@ -70,9 +83,22 @@ foam.CLASS({
       section: 'basicInfo',
       targetDAOKey: 'accountDAO',
       of: 'net.nanopay.account.Account',
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.accountDAO
+                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .orderBy(Account.NAME)
+            }
+          ]
+        };
       },
       tableCellFormatter: function(value) {
         var self = this;

@@ -382,9 +382,14 @@ foam.CLASS({
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
-          if (  accountMap.hasAccountByApproverLevel(x, accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() != null ){
+            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
+
+            if (  accountMap.hasAccountByApproverLevel(x, accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          } else {
+            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          }
         }
 
         List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
@@ -488,9 +493,14 @@ foam.CLASS({
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-          AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
 
-          if (  accountMap.hasAccount(x, accountId) ) uniqueApprovers.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() != null ){
+            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
+
+            if (  accountMap.hasAccount(x, accountId) ) uniqueApprovers.add(currentUCJ.getSourceId());
+          } else {
+            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          }
         }
 
         List uniqueApproversList = new ArrayList(uniqueApprovers);
@@ -563,6 +573,7 @@ foam.CLASS({
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForUser.get(i);
           String capabilityId = currentUCJ.getTargetId();
 
+          // AccountBasedCapabilities use AccountApproverMap as data in the UCJ
           if ( currentUCJ.getData() instanceof AccountApproverMap ){
             AccountApproverMap currentData = (AccountApproverMap) currentUCJ.getData();
 

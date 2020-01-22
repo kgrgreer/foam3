@@ -3,6 +3,15 @@ foam.CLASS({
   name: 'SelectTwoSearchBar',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.auth.LifecycleState',
+    'net.nanopay.account.Account'
+  ],
+
   // TODO: CSS axiom?
   css: `
     ^query-container {
@@ -58,16 +67,23 @@ foam.CLASS({
       postSet: function(_, nu) {
         if ( nu === 'userAndRole' ) {
           this.accountOrUserRef.of = foam.nanos.auth.User;
+          this.accountOrUserRef.clearProperty("dao");
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
           this.userOrRoleRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
         }
         if ( nu === 'accountAndUser' ) {
           this.accountOrUserRef.of = net.nanopay.account.Account;
+          this.accountOrUserRef.dao = this.__context__['accountDAO'].where(
+            this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
+          );
           this.userOrRoleRef.of = foam.nanos.auth.User;
           this.userOrRoleRef.clearProperty("targetDAOKey");
         }
         if ( nu === 'accountAndRole' ) {
           this.accountOrUserRef.of = net.nanopay.account.Account;
+          this.accountOrUserRef.dao = this.__context__['accountDAO'].where(
+            this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
+          );
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
           this.userOrRoleRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
         }
@@ -88,6 +104,9 @@ foam.CLASS({
       // TODO: inherit initE?
       var self = this;
       self.accountOrUserRef.of = net.nanopay.account.Account;
+      this.accountOrUserRef.dao = this.__context__['accountDAO'].where(
+        this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
+      );
       self.userOrRoleRef.of = foam.nanos.auth.User;
       self
         .addClass(self.myClass('query-container'))

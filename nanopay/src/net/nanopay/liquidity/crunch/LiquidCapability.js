@@ -82,6 +82,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      name: 'users',
+      updateMode: 'RO'
     }
   ],
 

@@ -46,7 +46,6 @@ foam.CLASS({
     'legalName',
     'organization',
     'email',
-    'PEPHIORelated'
   ],
 
   searchColumns: [
@@ -59,7 +58,25 @@ foam.CLASS({
     'lastName',
     'organization',
     'email',
-    'PEPHIORelated'
+  ],
+
+  sections: [
+    {
+      name: 'personal',
+      title: 'User Information',
+      order: 1
+    },
+    {
+      name: 'business',
+      title: 'Business Information',
+      order: 2
+    },
+    {
+      name: 'administrative',
+      help: 'Properties that are used internally by the system.',
+      permissionRequired: true,
+      order: 3
+    }
   ],
 
   properties: [
@@ -281,6 +298,16 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      class: 'String',
+      name: 'organization',
+      documentation: 'The organization/business associated with the User.',
+      displayWidth: 80,
+      width: 100,
+      tableWidth: 160,
+      section: 'business',
+      label: 'Company Name'
     }
   ],
 

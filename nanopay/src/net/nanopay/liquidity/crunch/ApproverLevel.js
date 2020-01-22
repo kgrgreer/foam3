@@ -4,7 +4,7 @@ foam.CLASS({
   implements: [ 'foam.core.Validatable' ],
 
   messages: [
-    { name: 'approverLevelRangeError', message: 'Approver level must be a value between 0 and 2.' },
+    { name: 'approverLevelRangeError', message: 'Approver level must be a value between 1 and 2.' },
   ],
 
   properties: [
@@ -12,7 +12,7 @@ foam.CLASS({
       name: 'approverLevel',
       class: 'Int',
       javaType: 'java.lang.Integer',
-      min: 0, 
+      min: 1, 
       max: 2,
       validateObj: function(approverLevel) {
         if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
@@ -26,7 +26,7 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( getApproverLevel() < 0 || getApproverLevel() > 2 ) 
+        if ( getApproverLevel() < 1 || getApproverLevel() > 2 ) 
           throw new RuntimeException(approverLevelRangeError);
       `,
     }

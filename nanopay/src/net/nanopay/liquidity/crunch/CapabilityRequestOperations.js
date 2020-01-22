@@ -11,6 +11,7 @@ foam.ENUM({
       name: 'ASSIGN_GLOBAL',
       label: 'Assign Admin Role',
     },
+    /** Hiding revoking for liquid demo
     {
       name: 'REVOKE_ACCOUNT_BASED',
       label: 'Revoke Transactional Role',
@@ -19,6 +20,7 @@ foam.ENUM({
       name: 'REVOKE_GLOBAL',
       label: 'Revoke Admin Role',
     }
+    */
   ]
 });
   

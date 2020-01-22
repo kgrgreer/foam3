@@ -132,7 +132,7 @@ p({
         "propName":"referenceNumber",
         "propValue":{
           "class":"foam.mlang.Constant",
-          "value":"ManuallyCreated"
+          "value":"Manual Entry"
         }
       }
     ]

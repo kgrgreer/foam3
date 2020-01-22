@@ -311,7 +311,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       documentation: `The id of the agent who created the transaction.`,
-      visibility: 'RO',
+      visibility: foam.u2.Visibility.HIDDEN,
+      // visibility: 'RO',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {

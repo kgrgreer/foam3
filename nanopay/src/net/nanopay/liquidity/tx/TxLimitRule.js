@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TxLimitRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'currencyDAO',
     'accountDAO',
@@ -40,12 +44,21 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       targetDAOKey: 'userDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
       documentation: 'The user to limit.',
       name: 'userToLimit',
       section: 'basicInfo',
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      },
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -54,8 +67,22 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.accountDAO
+                .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                .orderBy(Account.NAME)
+            }
+          ]
+        };
       },
       documentation: 'The account to limit.',
       name: 'accountToLimit',
@@ -69,7 +96,7 @@ foam.CLASS({
             if ( account ) {
               this.denomination = account.denomination;
             }
-          }); 
+          });
         }
       }
     },
@@ -107,25 +134,12 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'limit',
       label: 'With Transaction Value More Than',
       section: 'basicInfo',
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
-      },
-      tableCellFormatter: function(value, obj) {
-        if ( obj.denomination ) {
-          obj.currencyDAO.find(obj.denomination).then(function(currency) {
-              if ( currency ) {
-                this.add( currency.format(value) );
-              } else {
-                this.add( value );
-              }
-          }.bind(this));
-        } else {
-          this.add( value );
-        }
       },
       tableWidth: 200,
       validationPredicates: [
@@ -136,7 +150,8 @@ foam.CLASS({
           },
           errorString: 'Limit amount must be greater than 0.'
         }
-      ]
+      ],
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       class: 'Reference',

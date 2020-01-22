@@ -928,6 +928,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
 
    // liquidity ui
+   { name: 'net/nanopay/liquidity/ui/LiquidCurrencyView' },
    { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
    { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
    { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },

@@ -40,16 +40,6 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  sections: [
-    {
-      name: '_defaultSection',
-      permissionRequired: true
-    },
-    {
-      name: 'requestDetails'
-    }
-  ],
-
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
@@ -102,13 +92,23 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'approver',
       section: 'requestDetails',
-      visibility: 'RO',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
-      tableCellFormatter: function(approver) {
+      tableCellFormatter: function(approver, data) {
         let self = this;
-        this.__subSubContext__.userDAO.find(approver).then((user)=> {
+        // If request is REQUESTED, show as Pending
+        // Otherwise, show approver's name
+        if ( data.status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
+          this.add(data.APPROVER_PENDING);
+        } else {
+          this.__subSubContext__.userDAO.find(approver).then((user)=> {
             self.add(user.toSummary());
-        });
+          });
+        }
+      },
+      visibilityExpression: function(approver) {
+        return approver ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -116,7 +116,12 @@ foam.CLASS({
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
       label: 'Action',
-      section: 'requestDetails'
+      section: 'requestDetails',
+      visibilityExpression: function(operation) {
+        return operation ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Reference',
@@ -130,16 +135,17 @@ foam.CLASS({
         });
       },
       section: 'requestDetails',
+      visibilityExpression: function(initiatingUser) {
+        return initiatingUser ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Boolean',
       name: 'isFulfilled',
-      hidden: true
-    },
-    {
-      name: 'memo',
-      hidden: true
-    },
+      visibility: 'HIDDEN'
+    }
   ],
 
   methods: [
@@ -184,6 +190,10 @@ foam.CLASS({
     {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request.'
+    },
+    {
+      name: 'APPROVER_PENDING',
+      message: 'Pending'
     }
   ],
 
@@ -192,11 +202,11 @@ foam.CLASS({
       name: 'approve',
       section: 'requestDetails',
       isAvailable: (initiatingUser, approver, status) => {
-          if (
-            status === net.nanopay.approval.ApprovalStatus.REJECTED ||
-            status === net.nanopay.approval.ApprovalStatus.APPROVED
-          ) {
-        return false;
+        if (
+          status === net.nanopay.approval.ApprovalStatus.REJECTED ||
+          status === net.nanopay.approval.ApprovalStatus.APPROVED
+        ) {
+          return false;
         }
         return initiatingUser !== approver;
       },

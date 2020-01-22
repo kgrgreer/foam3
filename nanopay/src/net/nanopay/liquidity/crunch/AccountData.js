@@ -41,6 +41,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.ApproverLevel',
       javaType: 'net.nanopay.liquidity.crunch.ApproverLevel',
+      visibility: foam.u2.Visibility.HIDDEN,
       factory: function() {
         return net.nanopay.liquidity.crunch.ApproverLevel.create({ approverLevel: 1 });
       },

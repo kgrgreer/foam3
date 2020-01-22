@@ -1,8 +1,11 @@
-  
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'CapabilityAccountTemplateMapView',
   extends: 'foam.u2.view.MapView',
+
+  documentation: `This class works like a container for the data(KeyValueRow).
+  Extends MapView, but overrides most of MapView here.
+  Specific use case is Account Group for Roles - create - liquid.`,
 
   properties: [
     {
@@ -11,11 +14,37 @@ foam.CLASS({
     }
   ],
 
-  exports: [ 'isCapabilityAccountData' ],
+  css: `
+   ^ .accountSelection {
+     width: 40%;
+     margin: 16px;
+   }
+   ^ .propertiesSelection {
+    width: 40%;
+    margin: 16px;
+  }
+  ^ .removeSelection {
+    margin: 14.6vh 2vw 0 0vw;
+  }
+  ^  {
+    border-radius: 6px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    border: solid 1px #e7eaec;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    margin-left: 1vw;
+    margin-bottom: 1vh;
+  }
+  `,
+
+  exports: [
+    'isCapabilityAccountData'
+  ],
 
   classes: [
     {
       name: 'KeyValueRow',
+      documentation: 'This works as an entry in the data set(Map).',
       imports: [
         'mode',
         'view',
@@ -26,6 +55,23 @@ foam.CLASS({
           name: 'key',
           class: 'Reference',
           of: 'net.nanopay.account.Account',
+          view: function(_, X) {
+            const e = foam.mlang.Expressions.create();
+            const Account = net.nanopay.account.Account;
+            const LifecycleState = foam.nanos.auth.LifecycleState;
+            return {
+              class: 'foam.u2.view.RichChoiceView',
+              search: true,
+              sections: [
+                {
+                  heading: 'Accounts',
+                  dao: X.accountDAO
+                    .where(e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+                    .orderBy(Account.NAME)
+                }
+              ]
+            };
+          },
           adapt: function(oldVal, newVal) {
             if ( typeof newVal === 'string' ) {
               return parseInt(newVal);
@@ -36,18 +82,13 @@ foam.CLASS({
         {
           name: 'value',
           class: 'FObjectProperty',
-          view: function(_, X) {
-            if ( X.isCapabilityAccountData )
-              return { 
-                class: 'foam.u2.view.FObjectView',
-                of: 'net.nanopay.liquidity.crunch.CapabilityAccountData' 
-              };
-              
-            return { 
-              class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.liquidity.crunch.AccountData' 
-            };
-          }
+          of: 'net.nanopay.liquidity.crunch.AccountData',
+          factory: function() {
+            return this.isCapabilityAccountData ?
+              net.nanopay.liquidity.crunch.CapabilityAccountData.create() :
+              net.nanopay.liquidity.crunch.AccountData.create();
+          },
+          view: 'foam.u2.view.FObjectView'
         }
       ],
       actions: [
@@ -65,4 +106,43 @@ foam.CLASS({
       ]
     }
   ],
+  methods: [
+    function initE() {
+      var self = this;
+      this
+        .add(this.slot(function(data) {
+          return self.Rows.create()
+            .forEach(Object.entries(data || {}), function(e) {
+              let oldKey = e[0];
+              let row    = self.KeyValueRow.create({ key: e[0], value: e[1] });
+              row.onDetach(row.sub('propertyChange', function() {
+                delete self.data[oldKey];
+                self.data[row.key] = row.value;
+                oldKey = row.key;
+              }));
+              this
+                .startContext({ data: row })
+                  .start(self.Cols).addClass(self.myClass())
+                    .start()
+                      .addClass('accountSelection')
+                      .add(self.KeyValueRow.KEY)
+                    .end()
+                    .start()
+                      .addClass('propertiesSelection')
+                      .add(self.KeyValueRow.VALUE)
+                    .end()
+                    .start()
+                      .addClass('removeSelection')
+                      .tag(self.KeyValueRow.REMOVE, {
+                        buttonStyle: 'SECONDARY',
+                        isDestructive: true
+                      })
+                    .end()
+                  .end()
+                .endContext();
+            });
+        }))
+        .startContext({ data: this }).add(this.ADD_ROW).endContext();
+    }
+  ]
 });
