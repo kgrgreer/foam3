@@ -391,7 +391,7 @@ foam.CLASS({
 
         DigitalAccount da = new DigitalAccount.Builder(x)
           .setDenomination(row.getCurrency())  
-          .setOwner(8005) // liquiddev@nanopay.net
+          .setOwner(1348) // admin@nanopay.net
           .setName(name)
           .build();
         return ((Account) accountDAO.put(da)).getId();
@@ -473,7 +473,7 @@ foam.CLASS({
         // Check if account for topping up needs to be created
         if ( b == null ) {
           b = new BankAccount.Builder(x)
-            .setOwner(8005)  // liquiddev@nanopay.net
+            .setOwner(1348)  // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
@@ -638,7 +638,7 @@ foam.CLASS({
             .setName("Trust Account "+txn.getSourceCurrency())
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
-            .setOwner(8005) // liquiddev@nanopay.net
+            .setOwner(1348) // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
@@ -662,7 +662,7 @@ foam.CLASS({
             .setName(" Trust Account "+ txn.getDestinationCurrency())
             .build();
           BankAccount destBank = new BankAccount.Builder(x)
-            .setOwner(8005) // liquiddev@nanopay.net
+            .setOwner(1348) // admin@nanopay.net
             .setAccountNumber("000000")
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getDestinationCurrency())
