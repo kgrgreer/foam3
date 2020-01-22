@@ -776,7 +776,9 @@ foam.RELATIONSHIP({
           dao: X.accountDAO.where(X.data.AND(
             X.data.EQ(net.nanopay.account.Account.DELETED, false),
             X.data.EQ(net.nanopay.account.Account.ENABLED, true),
-            X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount))
+            X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
+              foam.nanos.auth.LifecycleState.ACTIVE),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
           )).orderBy(net.nanopay.account.Account.NAME),
           objToChoice: function(a) {
             return [a.id, a.summary];

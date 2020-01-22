@@ -6,18 +6,18 @@ p({
   "authenticate": false,
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
-    nuagas = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
-    cache  = new foam.nanos.auth.CachingAuthService(nuagas);
-    capas  = new net.nanopay.liquidity.crunch.LiquidCapabilityAuthService.Builder(x).setDelegate(cache).build();
-    ecas   = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(capas).build();
-    cas    = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(ecas).build();
-    peas   = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(cas).build();
-    laas   = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(peas).build();
-    iplas  = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(laas).build();
-    bas    = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(iplas).build();
-    tfas   = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(bas).build();
-    sas    = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(tfas).build();
-    return sas;
+    auth = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
+    auth = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.CachingAuthService(auth, new String[]{ "signingOfficerJunctionDAO", "blacklistDAO" });
+    auth = new net.nanopay.liquidity.crunch.LiquidCapabilityAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(auth).build();
+    auth = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(auth).build();
+    return auth;
   """,
   "client": """
     {
