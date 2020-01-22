@@ -124,6 +124,11 @@ foam.CLASS({
       }
     },
     {
+      name: 'createdByAgent',
+      visibility: 'HIDDEN',
+      section: 'basicInfo' // Sort of a hack to avoid creating an empty section
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
