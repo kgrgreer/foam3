@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'writeView',
       value: {
         class: 'foam.u2.view.DualView',
-        viewa: { class: 'foam.u2.view.IntView' },
+        viewa: { class: 'foam.u2.IntView', onKey: true },
         viewb: { class: 'foam.u2.view.TableCellFormatterReadView' }
       }
     }
