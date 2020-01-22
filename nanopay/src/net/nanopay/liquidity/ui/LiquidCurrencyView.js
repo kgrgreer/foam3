@@ -3,6 +3,12 @@ foam.CLASS({
   name: 'LiquidCurrencyView',
   extends: 'foam.u2.view.ModeAltView',
 
+  css: `
+    ^ .foam-u2-view-DualView-viewb {
+      min-height: 1.2em;
+    }
+  `,
+
   properties: [
     {
       name: 'readView',
