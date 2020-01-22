@@ -4,8 +4,8 @@ foam.CLASS({
     extends: 'foam.dao.ProxyDAO',
 
     documentation: ` A rule that populates contact's businessId property with
-      the id of the business that shares the same payment code. Triggers when
-      payment code is added to contact.`,
+      the id of the business associated to the given payment code. Triggers when
+      contact's createdUsingPaymentCode property is set to true.`,
 
     implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -27,19 +27,16 @@ foam.CLASS({
           DAO       businessDAO      =   (DAO) x.get("localBusinessDAO");
           Business  loggedInBusiness =   (Business) x.get("user");
           Contact   contact          =   (Contact) obj;
-          Contact   oldContact       =   (Contact) oldObj;
-          String    paymentCodeValue =   contact.getPaymentCode();
+          String    paymentCode =   contact.getPaymentCode();
 
-          if ( oldContact != null && paymentCodeValue.equals(oldContact.getPaymentCode()) ) {
-            throw new RuntimeException("Cannot add same business");
-          }
-
-          PaymentCode paymentCode = (PaymentCode) paymentCodeDAO.find(paymentCodeValue);
-          if ( paymentCode == null ) {
+          // check if given paymentcode is valid
+          PaymentCode validatedPaymentCode = (PaymentCode) paymentCodeDAO.find(paymentCode);
+          if ( validatedPaymentCode == null ) {
             throw new RuntimeException("Invalid payment code. Please try again.");
           }
 
-          Business business = (Business) businessDAO.find(paymentCode.getOwner());
+          // check if id associated to payment code is a business
+          Business business = (Business) businessDAO.find(validatedPaymentCode.getOwner());
           if ( business == null || ((Long) business.getId()).equals(loggedInBusiness.getId())) {
             throw new RuntimeException("Invalid payment code. Please try again.");
           }
@@ -50,7 +47,7 @@ foam.CLASS({
               contact.setOrganization(business.getOrganization());
               contact.setBusinessName(business.getOrganization());
               contact.setBusinessId(business.getId());
-              //Overwrite email, will need refactor with upcoming changes
+              //Overwriting with business email will need refactoring with coming changes
               contact.setEmail(business.getEmail());
             }
           }, "upgrade contact");

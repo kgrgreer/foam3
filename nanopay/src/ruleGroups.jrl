@@ -67,4 +67,21 @@ p({
   }
 })
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
-p({"class":"foam.nanos.ruler.RuleGroup","id":"smeContactUpgrade"})
+p({
+  "class": "foam.nanos.ruler.RuleGroup",
+  "id": "smeContactUpgrade",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.contacts.Contact"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"createdUsingPaymentCode",
+        "propValue": true
+      }
+    ]
+  }
+})

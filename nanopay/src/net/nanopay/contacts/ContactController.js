@@ -75,8 +75,10 @@ foam.CLASS({
             this.Action.create({
               name: 'upgrade',
               label: 'Upgrade Contact',
+              isAvailable: function() {
+                return this.businessId === 0;
+              },
               code: function(X) {
-                console.log('open modal');
                 X.controllerView.add(self.Popup.create().tag({
                   class: 'net.nanopay.contacts.ui.modal.UpgradeContactModal',
                   data: this
