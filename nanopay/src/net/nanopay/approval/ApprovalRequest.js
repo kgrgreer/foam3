@@ -114,6 +114,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'classification',
+      label: 'Approval Type',
       section: 'requestDetails',
       tableWidth: 150,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
@@ -166,7 +167,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'memo',
-      label: 'Notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
       documentation: 'Meant to be used for explanation on why request was approved/rejected'
     },
@@ -281,7 +281,7 @@ if ( obj == null ) {
         if ( ! X[this.daoKey] ) {
           // if DAO doesn't exist in context, change daoKey from localMyDAO
           // (server-side) to myDAO (accessible on front-end)
-          key = key.substring(5,6).toLowerCase() + key.substring(6);
+          key = key.substring(5, 6).toLowerCase() + key.substring(6);
         }
 
         X[key]
@@ -290,7 +290,19 @@ if ( obj == null ) {
             if ( obj == null ) {
               throw new Error('Reference object not found.');
             }
-
+            // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+            // this is for updating object approvals
+            if ( obj.propertiesToUpdate ) {
+              // then here we created custom view to display these properties
+              X.stack.push({
+                class: 'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView',
+                propObject: obj.propertiesToUpdate,
+                title: 'Updated Properties and Changes'
+              });
+              return;
+            }
+            // else pass general view with modeled data for display
+            // this is for create, deleting object approvals
             X.stack.push({
               class: 'foam.comics.v2.DAOSummaryView',
               data: obj,

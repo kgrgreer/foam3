@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.lib.parse.CSVParser',
     'foam.mlang.MLang',
+    'java.util.HashMap',
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -34,7 +35,8 @@ foam.CLASS({
     'net.nanopay.tx.DVPTransaction',
     'net.nanopay.fx.SecurityPrice',
     'net.nanopay.fx.ExchangeRateService',
-    'foam.core.Currency'
+    'foam.core.Currency',
+    'net.nanopay.tx.Transfer'
   ],
 
   constants: [
@@ -62,6 +64,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isInternal',
       value: false,
+    },
+    {
+      class: 'Object',
+      name: 'myBalances'
     },
     {
       class: 'Long',
@@ -137,8 +143,9 @@ foam.CLASS({
         if (! getTrackingJob().getFailed() ){
           try {
             verifyBalance(getX(),getTransaction());
+            addAllTransfers(getTransaction());
             getOutputDAO().put(getTransaction());
-Thread.sleep(100);
+//Thread.sleep(100);
             if ( getPbd() != null )
               ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
             getTrackingJob().incrementTxnCounter(getTxnCount());
@@ -159,6 +166,21 @@ Thread.sleep(100);
           }
           }
         }
+      `
+    },
+    {
+      name: 'addAllTransfers',
+      args: [{ name: 'transaction', type: 'net.nanopay.tx.model.Transaction' }],
+      javaCode: `
+      HashMap hm = (HashMap<Long,Long>) getMyBalances();
+      for ( Transfer tr : transaction.getTransfers() ) {
+        long add4 = 0;
+        if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
+        hm.put(tr.getAccount(),add4+tr.getAmount());
+      }
+      if ( transaction.getNext() != null )
+        for ( Transaction tx : transaction.getNext() )
+          addAllTransfers(tx);
       `
     },
     {
@@ -237,7 +259,7 @@ Thread.sleep(100);
       javaCode: `
       tx = addStatusHistory(tx,stamp);
       setTxnCount(getTxnCount()+1);
-      tx.setReferenceNumber("IngestedTransaction");
+      tx.setReferenceNumber("File Upload");
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -389,6 +411,7 @@ Thread.sleep(100);
       ],
       type: 'Boolean',
       javaCode: `
+        HashMap hm = (HashMap) getMyBalances();
         Logger logger = (Logger) x.get("logger");
 
         // Verify DVP Transactions recursively
@@ -400,7 +423,7 @@ Thread.sleep(100);
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-          txn2.setReferenceNumber("TopUp");
+          txn2.setReferenceNumber("System Generated");
           verifyBalance(x,txn2);
         }  
 
@@ -418,7 +441,10 @@ Thread.sleep(100);
             return true; 
 
           // Calculate the number of remaining securities and top up the source account
-          long remainder = ((long) source.findBalance(x)) - txn.getAmount(); // is this the correct account ?
+
+          long addd = 0;
+          if ( hm.get(source.getId()) != null ) addd = (Long) hm.get(source.getId());
+          long remainder = addd - txn.getAmount(); // is this the correct account ?
           if ( remainder < 0 ) {
             Transaction secCI = new Transaction();
             secCI.setAmount(Math.abs(remainder));
@@ -427,8 +453,13 @@ Thread.sleep(100);
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
-            secCI.setReferenceNumber("TopUp");
+            secCI.setReferenceNumber("System Generated");
             transactionDAO.put(secCI); // top up the sending security account
+            for ( Transfer tr : secCI.getTransfers() ){
+              long add1 = 0;
+              if (hm.get(tr.getAccount()) != null ) add1 = (long) hm.get(tr.getAccount());
+              hm.put(tr.getAccount(),add1+tr.getAmount());
+            }
             getTrackingJob().incrementTopUpCounter(1);
           }
           return true;
@@ -457,7 +488,10 @@ Thread.sleep(100);
         }
 
         // Create a top up transaction if necessary
-        Long topUp = ((long) source.findBalance(x)) - txn.getAmount();
+
+        long add2 = 0;
+        if (hm.get(source.getId()) != null) add2 = (long) hm.get(source.getId());
+        Long topUp = add2 - txn.getAmount();
         if ( topUp < 0 ) {
           Transaction ci = new Transaction.Builder(x)
             .setDestinationAccount(source.getId())
@@ -466,7 +500,7 @@ Thread.sleep(100);
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
-            .setReferenceNumber("TopUp")
+            .setReferenceNumber("System Generated")
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
@@ -484,13 +518,18 @@ Thread.sleep(100);
           checkTrusty(x,ci);
 
           // Complete the cash in transaction
-          Transaction tx = (Transaction) transactionDAO.put(ci);
-          if (tx.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
-            tx = (Transaction) tx.fclone();
-            tx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
-            transactionDAO.put(tx);
-            getTrackingJob().incrementTopUpCounter(1);
+
+
+          if (ci.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
+            ci.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
           }
+          Transaction tx = (Transaction) transactionDAO.put(ci);
+          for ( Transfer tr : tx.getTransfers() ){
+            long add3 = 0;
+            if (hm.get(tr.getAccount()) != null ) add3 = (long) hm.get(tr.getAccount());
+            hm.put(tr.getAccount(),add3+tr.getAmount());
+          }
+          getTrackingJob().incrementTopUpCounter(1);
           return false;
         }
         return true;
@@ -595,13 +634,13 @@ Thread.sleep(100);
           return;
         
         // Create the source trustee account
-        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getSourceCurrency() +" Trust Account"));
+        TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getSourceCurrency()));
         if( sourceTrust == null ) {
           logger.info("trustee not found for " + txn.getSourceCurrency() + " ... Generating...");
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getSourceCurrency())
-            .setName(txn.getSourceCurrency() +" Trust Account")
+            .setName("Trust Account "+txn.getSourceCurrency())
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net
@@ -619,13 +658,13 @@ Thread.sleep(100);
             return;
         
         // Create the destination trustee account
-        TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,txn.getDestinationCurrency() +" Trust Account"));
+        TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getDestinationCurrency()));
         if( destinationTrust == null ) {
           logger.info("trustee not found for " + txn.getDestinationCurrency() + " ... Generating...");
           destinationTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getDestinationCurrency())
-            .setName(txn.getDestinationCurrency() +" Trust Account")
+            .setName(" Trust Account "+ txn.getDestinationCurrency())
             .build();
           BankAccount destBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net

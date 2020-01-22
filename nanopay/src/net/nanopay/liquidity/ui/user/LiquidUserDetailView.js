@@ -48,7 +48,8 @@ foam.CLASS({
                 })
               ]
             }
-          })
+          }),
+          this.User.CAPABILITIES
         ];
       }
     }

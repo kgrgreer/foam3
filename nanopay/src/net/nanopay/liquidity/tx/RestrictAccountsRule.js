@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.mlang.expr.*',
     'foam.mlang.predicate.*',
     'foam.mlang.MLang.*',
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'foam.nanos.logger.Logger'
   ],
 
   requires: [
@@ -24,7 +25,6 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'enabled',
     'createdBy'
   ],
 
@@ -60,6 +60,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeSourceChildAccounts',
+      label: 'Include Source Sub-Accounts',
       documentation: 'Whether to include the children of the source account.',
       section: 'basicInfo'
     },
@@ -92,6 +93,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'includeDestinationChildAccounts',
+      label: 'Include Destination Sub-Accounts',
       documentation: 'Whether to include the children of the destination account.',
       section: 'basicInfo'
     },
@@ -186,7 +188,11 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaGetter: `
-        return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " restricting operation. " + this.getDescription()).build();
+        Logger logger = (Logger) getX().get("logger");
+        if ( logger != null ) {
+          logger.warning(this.getId() + " restricting operation. " + this.getDescription());
+        }
+        return new ExceptionRuleAction.Builder(getX()).setMessage("Operation prevented by business rule: " + this.getId()).build(); // <- seen by users
       `
     }
   ]

@@ -44,8 +44,9 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
-      value: 'CAD'
-    },
+      value: 'CAD',
+      updateMode: 'RO'
+    }
   ],
 
   actions: [

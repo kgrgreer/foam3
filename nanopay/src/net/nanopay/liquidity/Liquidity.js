@@ -25,12 +25,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'rebalancingEnabled',
+      label: 'Automate Sweep',
+      visibilityExpression: function(enabled) {
+        return enabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
       documentation: 'Triggeres automatic transaction on accounts.'
     },
-    {	
+    {
       visibility: 'hidden',
-      class: 'Reference',	
-      of: 'foam.core.Unit',	
+      class: 'Reference',
+      of: 'foam.core.Unit',
       name: 'denomination',
       targetDAOKey: 'currencyDAO',
       storageTransient: true
@@ -40,6 +44,9 @@ foam.CLASS({
       unitPropName: 'denomination',
       name: 'threshold',
       documentation: 'The balance when liquidity should be triggered.',
+      visibilityExpression: function(enabled) {
+        return enabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
       view: function(_, x) {
         return {
           class: 'foam.u2.view.IntView',
@@ -53,6 +60,7 @@ foam.CLASS({
       class: 'UnitValue',
       unitPropName: 'denomination',
       name: 'resetBalance',
+      label: 'Reset balance to',
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -70,8 +78,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
-      label: 'push/pull account',
-      required: true,
+      label: 'Rebalancing Account',
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -90,7 +97,8 @@ foam.CLASS({
                   net.nanopay.account.Account.DENOMINATION,
                   X.denominationToFilterBySlot.get()
                 ),
-                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount))
+                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount))
               )
             );
           }));

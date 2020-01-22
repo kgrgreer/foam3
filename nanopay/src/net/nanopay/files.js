@@ -5,6 +5,7 @@ FOAM_FILES([
   // Approvable
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
+  { name: 'net/nanopay/liquidity/approvalRequest/PropertiesToUpdateView', flags: ['web'] },
   { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
@@ -179,6 +180,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -230,6 +232,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ExchangeRateInterface' },
   { name: 'net/nanopay/fx/ExchangeRateServiceInterface' },
   { name: 'net/nanopay/fx/ClientExchangeRateService' },
+  { name: 'net/nanopay/account/BalanceServiceInterface' },
+  { name: 'net/nanopay/account/ClientBalanceService' },
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
@@ -929,6 +933,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
    { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidityChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
+   { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadowChart' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
@@ -938,6 +943,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/account/Overview' },
    { name: 'net/nanopay/liquidity/ui/account/Balance' },
    { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+   { name: 'net/nanopay/liquidity/ui/account/AccountDetailView' },
+   { name: 'net/nanopay/liquidity/ui/account/AccountDAOUpdateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOBrowserView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOCreateView' },
    { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },

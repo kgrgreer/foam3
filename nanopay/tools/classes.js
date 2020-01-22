@@ -384,6 +384,7 @@ var classes = [
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.ExchangeRate',
   'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.fx.SecurityPrice',
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
@@ -952,6 +953,7 @@ var skeletons = [
   'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
+  'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.liquidity.tx.AccountHierarchy'
 ];
 

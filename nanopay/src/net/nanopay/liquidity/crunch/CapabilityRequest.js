@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'CapabilityRequest', 
+  name: 'CapabilityRequest',
 
   implements: [
     'net.nanopay.liquidity.approvalRequest.ApprovableAware',
@@ -44,20 +44,22 @@ foam.CLASS({
       name: 'users',
       class: 'List',
       javaType: 'java.util.List<Long>',
-      factory: function () {
-        return [];
-      },
+      factory: () => [],
       view: () => {
         return {
           class: 'foam.u2.view.ReferenceArrayView',
           daoKey: 'userDAO'
         };
+      },
+      validateObj: function(users) {
+        if ( users.length == 0 || users.some( u => ! u ) ) {
+          return 'Valid selection required';
+        }
       }
     },
     {
       class: 'Boolean',
       name: 'isUsingTemplate',
-      value: false,
       visibilityExpression: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
           this.IS_USING_TEMPLATE.label = 'Assign to Multiple Accounts Using a Template';
@@ -182,16 +184,25 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       label: 'Status',
-      value: foam.nanos.auth.LifecycleState.PENDING,
-      // TODO: figure out why we can't import controllerMode
-      visibility: foam.u2.Visibility.RO
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateMode: 'RO',
+      readMode: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      // TODO: figure out why we can't import controllerMode
-      visibility: foam.u2.Visibility.RO
+      createMode: 'HIDDEN', 
+      updateMode: 'RO',
+      readMode: 'RO'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.HIDDEN
+    }
   ],
 
   methods: [

@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         X x = (X) obj;
-        AccountHierarchy accountHierarchy = (AccountHierarchy) x.get("accountHierarchy");
+        AccountHierarchy accountHierarchy = (AccountHierarchy) x.get("accountHierarchyService");
         AccountMap accountMap = accountHierarchy.getAccountsFromAccountTemplate(x, findAccountTemplate(x));
 
         return accountMap.getAccounts().containsKey(

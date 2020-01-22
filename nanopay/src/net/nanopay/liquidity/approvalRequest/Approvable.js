@@ -7,6 +7,10 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'Approvable',
 
+  requires: [
+    'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView'
+  ],
+
   properties: [  
     {
       class: 'String',
@@ -15,28 +19,42 @@ foam.CLASS({
         A function of daoKey, objId and a hashed properties to update, to be used
         to distinguish update requests on the same object
       `,
-      required: true
+      required: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
-      name: 'daoKey'
+      name: 'daoKey',
+      visibility: 'HIDDEN'
     },
     {
       class: 'Object',
       javaType: 'Object',
       name: 'objId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'propertiesToUpdate'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.approval.ApprovalStatus',
       name: 'status'
-    },
-    {
-      class: 'Map',
-      name: 'propertiesToUpdate',
-      factory: function(){
-        return {};
-      }
-    },
+    }
   ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function() {
+        var modelString = this.daoKey;
+
+        modelString = modelString.replace('local', '');
+        modelString = modelString.replace('DAO', '');
+
+        return `(${modelString}:${this.objId}) UPDATE`;
+      }
+    }
+  ]
 });

@@ -44,12 +44,19 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'paymentInfo',
+      section: 'amountSelection',
       visibilityExpression: function(fxRate) {
-        return ! fxRate ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
+        if ( ! fxRate || fxRate == 1 ) return foam.u2.Visibility.HIDDEN;
+        return foam.u2.Visibility.RO;
       },
+      view: function (_, X) {
+        return X.data.slot(function(fxRate) {
+          return foam.u2.TextField.create({
+            mode: foam.u2.DisplayMode.RO,
+            data: fxRate != 1 ? `Rate: ${fxRate.toString()}` : 'No Fx'
+          });
+        });
+      }
     },
     {
       name: 'fxExpiry',

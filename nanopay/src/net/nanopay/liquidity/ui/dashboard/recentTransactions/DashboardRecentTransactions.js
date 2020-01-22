@@ -29,7 +29,8 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.comics.v2.DAOBrowserView',
-    'foam.comics.v2.DAOControllerConfig'
+    'foam.comics.v2.DAOControllerConfig',
+    'net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView'
   ],
 
   messages: [
@@ -50,7 +51,7 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({
-          defaultColumns:["id","summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"],
+          defaultColumns:["summary","lastModified","sourceAccount","destinationAccount","destinationCurrency","destinationAmount"],
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
           dao: this.data,
           editEnabled: false,
@@ -72,7 +73,7 @@ foam.CLASS({
               .start()
                 .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
               .end()
-              .start(foam.comics.v2.DAOBrowserView, {
+              .start(net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView, {
                 data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20),
                 config: self.config
               }).end()

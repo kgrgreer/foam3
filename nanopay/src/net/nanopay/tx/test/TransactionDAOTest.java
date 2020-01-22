@@ -167,7 +167,7 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Txn amount cannot be negative");
 
 
-    txn.setAmount((DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 1 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_))+ 1);
+    txn.setAmount( DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_)+ 1);
     txn.setPayeeId(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
@@ -176,8 +176,8 @@ public class TransactionDAOTest
 
     // Test return transactionStatus
     cashIn();
-    long initialBalanceSender = DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
+    long initialBalanceSender =   DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
     Transaction transaction = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(transaction.getStatus() == TransactionStatus.COMPLETED, "transaction is completed");
     test(transaction instanceof DigitalTransaction, "transaction is NONE type");

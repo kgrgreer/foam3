@@ -3,7 +3,10 @@ foam.CLASS({
   name: 'AccountTemplate', 
 
   tableColumns: [
-    'id',
+    'templateName'
+  ],
+
+  searchColumns: [
     'templateName'
   ],
 

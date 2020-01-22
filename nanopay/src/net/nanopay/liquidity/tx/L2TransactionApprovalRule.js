@@ -17,7 +17,6 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'enabled',
     'startAmount'
   ],
 
@@ -31,7 +30,7 @@ foam.CLASS({
     },
     {
       name: 'priority',
-      documentation: 'Prioritize account-based rules over accountTemplate-based rules.',
+      documentation: 'Prioritize account-based rules over account group-based rules.',
       javaGetter: `
         return getUseAccountTemplate() ? 80 : 90;
       `
@@ -54,7 +53,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'useAccountTemplate',
-      documentation: 'Use account template instead of source account if set to true.',
+      label: 'Use Account Group',
+      documentation: 'Use account group instead of source account if set to true.',
       section: 'basicInfo'
     },
     {
@@ -89,7 +89,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.liquidity.crunch.AccountTemplate',
       name: 'accountTemplate',
-      label: 'Apply To Account Template',
+      label: 'Apply To Account Group',
       section: 'basicInfo',
       visibilityExpression: function(useAccountTemplate) {
         return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -100,7 +100,7 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'denomination',
       targetDAOKey: 'currencyDAO',
-      documentation: 'The denomination to apply to when using accountTemplate.',
+      documentation: 'The denomination to apply to when using account group.',
       label: 'Apply To Denomination',
       section: 'basicInfo',
       visibilityExpression: function(useAccountTemplate) {
@@ -110,7 +110,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'startAmount',
-      label: 'Apply to Transactions More Than',
+      label: 'Apply to Transactions Larger Than',
       section: 'basicInfo',
       validationPredicates: [
         {

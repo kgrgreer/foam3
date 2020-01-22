@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'net.nanopay.account.Account',
+    'net.nanopay.account.ShadowAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
@@ -22,6 +23,7 @@ foam.CLASS({
     {
       name: 'createPermission',
       args: [
+        { name: 'permissionPrefix', class: 'String' },
         { name: 'op', class: 'String' },
         { name: 'outgoingAccountId', class: 'Long' }
       ],
@@ -30,7 +32,7 @@ foam.CLASS({
       Return a liquid specific permission string in the form of "{ClassName}.{Operation}.{outgoingAccountId}"
       `,
       javaCode: `
-        String permission = getPermissionPrefix() + "." + op;
+        String permission = permissionPrefix + "." + op;
         if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
         return permission;
       `
@@ -41,7 +43,7 @@ foam.CLASS({
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : 0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("make", accountId);
+        String permission = createPermission(getPermissionPrefix(), "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {
@@ -55,12 +57,20 @@ foam.CLASS({
 
         AuthService authService = (AuthService) x.get("auth");
 
-        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 0;
+        String permissionPrefix = obj instanceof ShadowAccount ? "shadowaccount" : getPermissionPrefix();
+
+        Long accountId = 
+          (
+            obj instanceof AccountApprovableAware &&
+            ! ( obj instanceof ShadowAccount )
+          ) ? 
+          ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 
+          0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String readPermission = createPermission("view", accountId);
-        String approvePermission = createPermission("approve", accountId);
-        String makePermission = createPermission("make", accountId);
+        String readPermission = createPermission(permissionPrefix, "view", accountId);
+        String approvePermission = createPermission(permissionPrefix, "approve", accountId);
+        String makePermission = createPermission(permissionPrefix, "make", accountId);
 
         if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
           throw new AuthorizationException();
@@ -73,7 +83,7 @@ foam.CLASS({
         Long accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : 0;
         accountId = oldObj instanceof Transaction ? ((Transaction) oldObj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("make", accountId);
+        String permission = createPermission(getPermissionPrefix(), "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {
@@ -87,7 +97,7 @@ foam.CLASS({
         Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : 0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String permission = createPermission("make", accountId);
+        String permission = createPermission(getPermissionPrefix(), "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
         if ( ! authService.check(x, permission) ) {

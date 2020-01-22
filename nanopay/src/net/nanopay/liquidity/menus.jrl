@@ -64,7 +64,6 @@ p({
           "editEnabled": false,
           "deleteEnabled": false, 
           "defaultColumns": [
-            "id",
             "summary",
             "lastModified",
             "sourceAccount",
@@ -86,9 +85,7 @@ p({
           },
           "CRUDActionsAuth": {
             "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["transaction.make"],
-            "update": ["transaction.make.%"],
-            "delete": ["transaction.make.%"]
+            "create": ["transaction.make"]
           },
           "filterExportPredicate":
             {
@@ -158,8 +155,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["user.make"],
-        "update": ["user.make.%"],
-        "delete": ["user.make.%"]
+        "update": ["user.make"],
+        "delete": ["user.make"]
       },
       "browseViews": [
         {
@@ -199,8 +196,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["liquiditysettings.make"],
-        "update": ["liquiditysettings.make.%"],
-        "delete": ["liquiditysettings.make.%"]
+        "update": ["liquiditysettings.make"],
+        "delete": ["liquiditysettings.make"]
       }
     }
   },
@@ -239,14 +236,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accounttemplates",
-  "label": "Account Templates for Rules",
+  "label": "Account Groups for Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
-      "browseTitle": "Account Templates for Rules",
-      "createTitle": "Create a New Account Template for Rules",
+      "browseTitle": "Account Groups for Rules",
+      "createTitle": "Create a New Account Group for Rules",
     }
   },
   "order": 3000,
@@ -293,8 +290,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -345,8 +342,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -397,8 +394,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -430,8 +427,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -483,8 +480,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["rule.make"],
-        "update": ["rule.make.%"],
-        "delete": ["rule.make.%"]
+        "update": ["rule.make"],
+        "delete": ["rule.make"]
       }
     }
   },
@@ -580,14 +577,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.globalliquidcapabilities",
-  "label": "Capabilities - Global",
+  "label": "Admin Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "globalLiquidCapabilityDAO",
-      "browseTitle": "Global Liquid Capabilities",
-      "createTitle": "Create a New Global Capability",
+      "browseTitle": "Admin Roles",
+      "createTitle": "Create a New Admin Role",
       "predicate": {
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
@@ -603,8 +600,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capability.make"],
-        "update": ["capability.make.%"],
-        "delete": ["capability.make.%"]
+        "update": ["capability.make"],
+        "delete": ["capability.make"]
       }
     }
   },
@@ -614,14 +611,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.accountbasedliquidcapabilities",
-  "label": "Capabilities for Accounts",
+  "label": "Transactional Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountBasedLiquidCapabilityDAO",
-      "browseTitle": "Liquid Capabilities for Accounts",
-      "createTitle": "Create a New Capability for Accounts",
+      "browseTitle": "Transactional Roles",
+      "createTitle": "Create a Transactional Role",
       "predicate": {
         "class": "foam.mlang.predicate.Eq",
         "arg1": {
@@ -637,8 +634,8 @@ p({
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capability.make"],
-        "update": ["capability.make.%"],
-        "delete": ["capability.make.%"]
+        "update": ["capability.make"],
+        "delete": ["capability.make"]
       }
     }
   },
@@ -648,14 +645,14 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.capabilityaccounttemplates",
-  "label": "Account Templates for Capabilities",
+  "label": "Account Groups for Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityAccountTemplateDAO",
-      "browseTitle": "Account Templates for Capabilities",
-      "createTitle": "Create a New Account Template for Capabilities",
+      "browseTitle": "Account Groups for Roles",
+      "createTitle": "Create a New Account Group for Roles",
     }
   },
   "order": 535,
@@ -665,19 +662,19 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "liquid.assigncapability",
-  "label": "Assign/Revoke Capability",
+  "label": "Role Assignment",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "capabilityRequestDAO",
-      "browseTitle": "Capability Request",
-      "createTitle": "Execute a Capability Request",
+      "browseTitle": "Role Assignment",
+      "createTitle": "Execute a Role Assignment",
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
         "create": ["capabilityrequest.make"],
-        "update": ["capabilityrequest.make.%"],
-        "delete": ["capabilityrequest.make.%"]
+        "update": ["capabilityrequest.make"],
+        "delete": ["capabilityrequest.make"]
       }
     }
   },

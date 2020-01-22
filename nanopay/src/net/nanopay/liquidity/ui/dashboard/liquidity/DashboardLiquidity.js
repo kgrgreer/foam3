@@ -348,16 +348,16 @@ foam.CLASS({
 
         var unit = 'day';
         switch ( this.timeFrame ) {
-          case 'WEEKLY':
+          case this.DateFrequency.WEEKLY:
             unit = 'week';
             break;
-          case 'MONTHLY':
+          case this.DateFrequency.MONTHLY:
             unit = 'month';
             break;
-          case 'QUARTERLY':
+          case this.DateFrequency.QUARTERLY:
             unit = 'quarter';
             break;
-          case 'ANNUALLY':
+          case this.DateFrequency.ANNUALLY:
             unit = 'year';
             break;
           default:
@@ -367,10 +367,7 @@ foam.CLASS({
         var xAxesMap = this.config.options.scales.xAxes[0];
         xAxesMap.time.unit = unit;
         xAxesMap.bounds = 'ticks';
-        // WIP
-        // xAxesMap.ticks.min = this.startDate;
-        // xAxesMap.ticks.max = this.endDate;
-
+        
         var style = {};
         style[a.id] = {
           lineTension: 0,

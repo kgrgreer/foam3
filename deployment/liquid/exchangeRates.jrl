@@ -66,3 +66,4 @@ p({"class":"net.nanopay.fx.ExchangeRate","fromCurrency":"BRL","toCurrency":"USD"
 p({"class":"net.nanopay.fx.ExchangeRate","fromCurrency":"UDI","toCurrency":"USD","rate":0.0534658})
 p({"class":"net.nanopay.fx.ExchangeRate","fromCurrency":"ZAR","toCurrency":"USD","rate":0.0692134})
 p({"class":"net.nanopay.fx.ExchangeRate","fromCurrency":"ILS","toCurrency":"USD","rate":0.289305}))
+p({"class":"net.nanopay.fx.ExchangeRate","fromCurrency":"PLN","toCurrency":"USD","rate":0.26}))
