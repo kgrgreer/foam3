@@ -47,8 +47,9 @@ foam.CLASS({
     }
 
     ^ .backPosition {
-      float: right;
-      margin-right: 2vw;
+      float: left;
+      margin-left: 1.2vw;
+      margin-top: 4vh;
     }
 
   `,
@@ -102,6 +103,12 @@ foam.CLASS({
       this.SUPER();
       this.addClass(this.myClass())
       .start().addClass('titleClass')
+        .start().addClass('backPosition')
+          .tag(this.BACK, {
+            buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+            icon: 'images/back-icon.svg'
+          })
+        .end()
         .start('h1').addClass('titlePosition')
           .add(this.title)
         .end()
@@ -117,10 +124,10 @@ foam.CLASS({
             }))
           .end()
         .end()
-      .end()
-      .start(this.BACK).addClass('backPosition').end();
+      .end();
     }
   ],
+
   actions: [
     {
       name: 'back',
