@@ -69,7 +69,7 @@ public class TransactionBenchmark
     transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
 
-    User admin = (User) userDAO_.find(1);
+    User admin = (User) userDAO_.find(1L);
 
     DAO dao = accountDAO_.where(EQ(BankAccount.ACCOUNT_NUMBER,ADMIN_BANK_ACCOUNT_NUMBER)).limit(1);
     List banks = ((ArraySink) dao.select(new ArraySink())).getArray();
@@ -112,9 +112,9 @@ public class TransactionBenchmark
       accountDAO_.put_(x, bank);
     }
 
-    for ( int i = 1; i < 101; i++ ) {
+    for ( Long i = 1L; i < 101; i++ ) {
       User user = null;
-      int id = 10000 + i;
+      Long id = 10000L + i;
       user = (User) userDAO_.find(id);
       if ( user == null ) {
         user = new User();
@@ -131,7 +131,7 @@ public class TransactionBenchmark
 
     // If we don't use users with verfied emails, the transactions won't go
     // through for those users.
-    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), GT(User.ID, 10000)));
+    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), GT(User.ID, 10000L)));
     users = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
 
     // initial funding of system.
@@ -168,7 +168,7 @@ public class TransactionBenchmark
 
     int fi = (int) (Math.random() * users.size());
     int ti = (int) (Math.random() * users.size());
-    int amount = (int) ((Math.random() + 0.1) * 100);
+    long amount = Double.valueOf((Math.random() + 0.1) * 100L).longValue();
 
     User payer = (User) users.get(fi);
     long payerId = ((User) users.get(fi)).getId();
