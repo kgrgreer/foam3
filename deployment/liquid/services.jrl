@@ -245,7 +245,7 @@ p({
       .build();
 
     if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new net.nanopay.tx.ClusterClientTranscationDAO.Builder(x)
+      dao = new net.nanopay.tx.ClusterClientTransactionDAO.Builder(x)
         .setServiceName("transactionDAO")
         .setDelegate(dao)
         .build();
