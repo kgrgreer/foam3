@@ -49,7 +49,7 @@ foam.CLASS({
       font-weight: 800;
     }
     ^ .submenu {
-      max-height: 204px;
+      height: auto;
       overflow-y: scroll;
       overflow-x: hidden;
       font-size: 14px;
@@ -182,19 +182,24 @@ foam.CLASS({
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
-              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
+              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every((x) => x));
+              
               return this.E()
                 .start()
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
+                      visibilitySlot.value = ! visibilitySlot.value;
                       return;
                     }
                     if ( ! hasChildren.get() ) {
                       self.menuListener(menu.id);
                       self.pushMenu(menu.id);
+                    } else {
+                      visibilitySlot.value = ! visibilitySlot.value;
                     }
                     self.menuSearch = menu.id;
+                    self.menuSearchSelect();
                   })
                   .addClass('sidenav-item-wrapper')
                   .start()
@@ -212,7 +217,7 @@ foam.CLASS({
                     // If the menu doesn't have an icon then we use an empty
                     // span instead. We do this to avoid a broken image icon
                     // being inserted by the browser in place of the menu icon.
-                    .add(menu.icon$.map(iconURL => {
+                    .add(menu.icon$.map((iconURL) => {
                       return iconURL
                         ? this.E('span')
                             .start('img')
@@ -238,9 +243,11 @@ foam.CLASS({
                         .start().addClass(self.myClass('selected-dot')).end()
                         .attrs({ name: subMenu.id })
                         .on('click', function() {
+                          visibilitySlot.value = ! visibilitySlot.value;
                           if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
                             self.pushMenu(subMenu.id);
                             self.menuSearch = menu.id;
+                            self.menuSearchSelect();
                           }
                         })
                         .start('span').add(subMenu.label).end()
@@ -259,7 +266,6 @@ foam.CLASS({
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
 
-        this.menuSearch$.sub(this.menuSearchSelect);
         this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
       }
   ],
