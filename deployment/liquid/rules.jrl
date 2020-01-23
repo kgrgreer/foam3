@@ -356,3 +356,17 @@ p({
   },
   "ruleGroup": "UserCreate"
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Remove accounts from ucjdata on account",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "Remove accounts from ucjdata on account removal",
+  "daoKey": "localAccountDAO",
+  "operation": 2, 
+  "after": true,
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromUcjDataOnAccountRemoval" },
+  "saveHistory": true
+})

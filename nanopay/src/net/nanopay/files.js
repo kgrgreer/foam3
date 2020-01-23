@@ -924,6 +924,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/AddAccountToUserCapabilityJunctionOnCreate' },
    { name: 'net/nanopay/liquidity/crunch/RemoveJunctionsOnCapabilityRemoval' },
    { name: 'net/nanopay/liquidity/crunch/RemoveAccountBasedUCJIfAccountsEmpty' },
+   { name: 'net/nanopay/liquidity/crunch/RemoveAccountFromUcjDataOnAccountRemoval' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
    { name: 'net/nanopay/liquidity/crunch/RootAccounts' },
 

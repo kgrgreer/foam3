@@ -121,6 +121,23 @@ foam.INTERFACE({
           javaType: 'java.util.Map<String, net.nanopay.liquidity.crunch.CapabilityAccountData>'
         }
       ]
+    },
+    {
+      name: 'removeRootFromUser',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'Long'
+        },
+        {
+          name: 'account',
+          type: 'Long'
+        }
+      ]
     }
   ]
 });

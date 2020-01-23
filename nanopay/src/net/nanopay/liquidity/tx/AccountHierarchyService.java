@@ -312,4 +312,18 @@ public class AccountHierarchyService
 
     return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }
+
+  @Override
+  public void removeRootFromUser(X x, long user, long account) {  
+    List<String> userRoots = getViewableRootAccountIds(x, user);
+
+    if ( userRoots.contains(String.valueOf(account)) ) {
+      userToViewableRootAccountsMap_.remove(user);
+      userRoots.removeIf( accountId -> accountId.equals(String.valueOf(account)) );
+
+      DAO dao = (DAO) x.get("rootAccountsDAO");
+      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) userRoots).build();
+      dao.put(obj);
+    }
+  }
 }
