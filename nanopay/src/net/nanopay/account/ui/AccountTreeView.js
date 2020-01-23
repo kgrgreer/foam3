@@ -201,6 +201,11 @@ foam.CLASS({
 
   methods: [
     function initE(){
+      this.accountDAO = this.accountDAO.where(foam.mlang.predicate.Eq.create({
+        arg1: net.nanopay.account.Account.LIFECYCLE_STATE,
+        arg2: foam.nanos.auth.LifecycleState.ACTIVE
+      }));
+
       var self = this;
       this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((roots) => {
         this.rootAccounts = roots;
@@ -461,7 +466,12 @@ foam.CLASS({
           childAccounts.push([account.id, account.toSummary()]);
 
           // at node, get its children
-          var children = await account.getChildren(context).select();
+          var children = await account.getChildren(context)
+            .where(foam.mlang.predicate.Eq.create({
+              arg1: net.nanopay.account.Account.LIFECYCLE_STATE,
+              arg2: foam.nanos.auth.LifecycleState.ACTIVE
+            }))
+            .select();
 
           // return if no children
           if ( ! children.array ) return;
