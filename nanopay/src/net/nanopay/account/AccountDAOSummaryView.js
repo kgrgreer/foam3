@@ -216,8 +216,22 @@ foam.CLASS({
                   .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
                   .start(foam.comics.v2.DAOBrowserView, {
                     data: self.transactionDAO
-                      .where(self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id),
-                                    self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)))
+                      .where(
+                        self.AND(
+                          self.OR
+                          (
+                            self.EQ(
+                              net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id
+                            ),
+                            self.EQ(
+                              net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id
+                            )
+                          ),
+                          self.EQ(
+                            net.nanopay.tx.model.Transaction.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE
+                          )
+                        )
+                      )
                       .orderBy(self.DESC(net.nanopay.tx.model.Transaction.CREATED))
                       .limit(20),
                   })
