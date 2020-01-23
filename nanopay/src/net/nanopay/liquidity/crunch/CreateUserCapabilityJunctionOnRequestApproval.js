@@ -44,9 +44,11 @@ foam.CLASS({
                 ApproverLevel newApproverLevel = new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
 
                 for ( String k : newMap.keySet()  ){
-                  CapabilityAccountData cad = newMap.get(k);
-
-                  cad.setApproverLevel(newApproverLevel);
+                  CapabilityAccountData cad = new CapabilityAccountData.Builder(x)
+                    .setApproverLevel(newApproverLevel)
+                    .setIsIncluded(((AccountData) newMap.get(k)).getIsIncluded())
+                    .setIsCascading(((AccountData) newMap.get(k)).getIsCascading())
+                    .build();
 
                   newMap.put(k, cad);
                 }

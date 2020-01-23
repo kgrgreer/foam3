@@ -16,7 +16,7 @@ public class AccountHierarchyService
   implements AccountHierarchy
 {
   protected Map<String, HashSet<Long>> map_;
-  public Map<Long, ArrayList<String>> userToViewableRootAccountsMap_; // getViewableAccountRoots(x, Long userId) {  }
+  public Map<Long, ArrayList<String>> userToViewableRootAccountsMap_;
 
   public AccountHierarchyService() { }
 
@@ -25,16 +25,28 @@ public class AccountHierarchyService
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     List<Account> ret = new ArrayList<Account>();
-    if ( getUserToViewableRootAccountsMap().get(userId) == null ) return ret;
 
-    Set<String> roots = new HashSet<String>(getUserToViewableRootAccountsMap().get(userId));
+    Set<String> roots = new HashSet<String>(getViewableRootAccountIds(x, userId));
 
     for ( String root : roots ) {
-      ret.add((Account) accountDAO.find(root));
+      ret.add((Account) accountDAO.find(Long.parseLong(root)));
     }
     return ret;
   }
 
+  public List<String> getViewableRootAccountIds(X x, long userId) {
+    if ( ! getUserToViewableRootAccountsMap().containsKey(userId) ) {
+      // if not in map, get from dao and put in map
+      DAO dao = (DAO) x.get("rootAccountsDAO");
+      RootAccounts userRootAccounts = (RootAccounts) (dao.find(userId)).fclone();
+      if ( userRootAccounts == null ) {
+        return new ArrayList<String>();
+      }
+
+      userToViewableRootAccountsMap_.put(userId, (ArrayList<String>) userRootAccounts.getRootAccounts());
+    }
+    return getUserToViewableRootAccountsMap().get(userId);
+  }
 
   protected Map<String, HashSet<Long>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -66,27 +78,9 @@ public class AccountHierarchyService
   }
 
   protected Map<Long, ArrayList<String>> getUserToViewableRootAccountsMap() {
-    if ( userToViewableRootAccountsMap_ != null ) {
-      return userToViewableRootAccountsMap_;
+    if ( userToViewableRootAccountsMap_ == null ) {
+      userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
     }
-
-    userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
-
-    // TODO: figure out a better way to do this
-    // we are putting the journal generated user roots in the services
-    List<String> justRoot = new ArrayList<>();
-    justRoot.add("1103");
-
-    userToViewableRootAccountsMap_.put(Long.parseLong("1348"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8006"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8007"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8015"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8016"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8017"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8018"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8019"), new ArrayList<>(justRoot));
-    userToViewableRootAccountsMap_.put(Long.parseLong("8020"), new ArrayList<>(justRoot));
-
     return userToViewableRootAccountsMap_;
   }
 
@@ -144,11 +138,7 @@ public class AccountHierarchyService
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
     Set<String> accountIds = newMap.keySet();
 
-    ArrayList<String> roots = trackRootAccounts ? 
-    ( getUserToViewableRootAccountsMap().containsKey(user) ? 
-      getUserToViewableRootAccountsMap().get(user) : 
-      new ArrayList<String>() ) : 
-    null;
+    ArrayList<String> roots = trackRootAccounts ? (ArrayList<String>) getViewableRootAccountIds(x, user) : null;
     
     // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
     if ( trackRootAccounts ) {
@@ -184,7 +174,12 @@ public class AccountHierarchyService
     }
     oldMap.putAll(newMap);
 
-    if ( trackRootAccounts ) getUserToViewableRootAccountsMap().put(user, ((ArrayList<String>) roots));
+    if ( trackRootAccounts ) {
+      userToViewableRootAccountsMap_.remove(user);
+      DAO dao = (DAO) x.get("rootAccountsDAO");
+      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) roots).build();
+      dao.put(obj);
+    }
 
     return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
   }
@@ -261,6 +256,9 @@ public class AccountHierarchyService
 
   @Override
   public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
+    ArrayList<String> currentRoots = (ArrayList<String>) getViewableRootAccountIds(x, user);
+    if ( currentRoots == null || currentRoots.size() == 0 ) throw new RuntimeException("Revoke cannot be performed since user does not have any accounts authorized for this capability."); 
+    
     Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
 
     if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
@@ -294,8 +292,6 @@ public class AccountHierarchyService
     }
 
     if ( trackRootAccounts ) {
-      ArrayList<String> currentRoots = new ArrayList<String>(getUserToViewableRootAccountsMap().get(user));
-      if ( currentRoots == null || currentRoots.size() == 0 ) throw new RuntimeException("Revoke cannot be performed since user does not have any accounts authorized for this capability."); 
       for ( String root : roots ) {
         if ( oldMap.containsKey(root) ) {
           List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(root)).getChildren(x).select(new ArraySink())).getArray();
@@ -305,7 +301,10 @@ public class AccountHierarchyService
           currentRoots.remove(root);
         }
       }
-      getUserToViewableRootAccountsMap().put(user, currentRoots);
+      userToViewableRootAccountsMap_.remove(user);
+      DAO dao = (DAO) x.get("rootAccountsDAO");
+      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) currentRoots).build();
+      dao.put(obj);
     }
 
     oldMap.keySet().removeAll(newMap.keySet());

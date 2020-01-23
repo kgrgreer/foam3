@@ -873,3 +873,18 @@ p({
   }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"rootAccountsDAO",
+  "lazy":false,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("rootAccounts")
+      .setOf(net.nanopay.liquidity.crunch.RootAccounts.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.RootAccounts\", \"remoteListenerSupport\": false}"
+})
