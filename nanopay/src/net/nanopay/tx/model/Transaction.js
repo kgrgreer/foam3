@@ -862,7 +862,7 @@ foam.CLASS({
       name: 'doFolds',
       javaCode: `
         for ( Balance b : getBalances() ) {
-          fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+          fm.foldForState(b.getAccount(), getCreated(), b.getBalance());
         }
       `
     },
