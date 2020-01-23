@@ -87,7 +87,8 @@ foam.CLASS({
     'destinationAccount',
     'created',
     'total',
-    'completionDate'
+    'completionDate',
+    'referenceNumber'
   ],
 
   tableColumns: [
@@ -759,6 +760,13 @@ foam.CLASS({
           foam.u2.Visibility.RO :
           foam.u2.Visibility.HIDDEN;
       },
+      factory: function() {
+        var h = [1]; //new net.nanopay.tx.HistoricStatus[1];
+        h[0] = net.nanopay.tx.HistoricStatus.create();
+        h[0].status = this.status;
+        h[0].timeStamp = new Date();
+        return h;
+      },
       javaFactory: `
         net.nanopay.tx.HistoricStatus[] h = new net.nanopay.tx.HistoricStatus[1];
         h[0] = new net.nanopay.tx.HistoricStatus();
@@ -899,6 +907,7 @@ foam.CLASS({
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
       setLifecycleState(other.getLifecycleState());
+      setStatusHistory(other.getStatusHistory());
       `
     },
     {

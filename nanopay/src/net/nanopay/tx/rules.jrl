@@ -211,11 +211,21 @@ p({
   "priority":100,
   "ruleGroup":"StatusHistory",
   "documentation":"When transaction status changes update the status history array with a timestamped entry.",
+  "enabled":true,
   "daoKey":"localTransactionDAO",
   "operation":1,
   "predicate":{
-    "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
-    "propName":"status"
+    "class":"foam.mlang.predicate.OR",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName":"status"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName":"lifecycleState"
+      }
+    ]
   },
   "action":{"class":"net.nanopay.tx.ruler.AddStatusHistoryAction"}
 })
