@@ -478,3 +478,15 @@ p({"class":"net.nanopay.account.TrustAccount","denomination":"ZAR","id":3271,"na
 p({"class":"net.nanopay.account.TrustAccount","denomination":"ZMW","id":3272,"name":"Trust Account ZMW","created":"2020-01-20T19:47:08.921Z","createdBy":1348,"lastModified":"2020-01-20T19:47:08.921Z","lastModifiedBy":1,"owner":101});
 p({"class":"net.nanopay.account.TrustAccount","denomination":"ZWL","id":3273,"name":"Trust Account ZWL","created":"2020-01-20T19:47:08.923Z","createdBy":1348,"lastModified":"2020-01-20T19:47:08.923Z","lastModifiedBy":1,"owner":101});
 
+// Remove the accounts that come from the base nanopay repo.
+r({"class":"net.nanopay.account.TrustAccount","id":1})
+r({"class":"net.nanopay.account.DigitalAccount","id":2})
+r({"class":"net.nanopay.account.DigitalAccount","id":3})
+r({"class":"net.nanopay.account.DigitalAccount","id":4})
+r({"class":"net.nanopay.account.TrustAccount","id":5})
+r({"class":"net.nanopay.account.LoanedTotalAccount","id":171})
+r({"class":"net.nanopay.account.LoanedTotalAccount","id":181})
+r({"class":"net.nanopay.account.DigitalAccount","id":6})
+r({"class":"net.nanopay.bank.CABankAccount","id":111})
+r({"class":"net.nanopay.bank.INBankAccount","id":112})
+r({"class":"net.nanopay.bank.INBankAccount","id":113})
