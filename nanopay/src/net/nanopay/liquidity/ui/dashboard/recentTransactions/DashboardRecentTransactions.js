@@ -23,6 +23,10 @@ foam.CLASS({
     ^card-container {
       padding: 34px 16px;
     }
+
+    ^ .net-nanopay-liquidity-ui-transaction-TransactionDAOBrowserView {
+      border-top: solid 1px #e7eaec;
+    }
   `,
 
   requires: [
