@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.util.Frequency',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   methods: [
@@ -30,7 +31,9 @@ foam.CLASS({
       javaCode: `
         if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction) ) {
           Transaction txn = (Transaction) obj;
-          if ( ! (txn.getStatus() == TransactionStatus.COMPLETED) )
+          if ( ! (txn.getStatus() == TransactionStatus.COMPLETED)  )
+            return;
+          if ( txn.getLifecycleState() != LifecycleState.ACTIVE )
             return;
           LiquidityService ls = (LiquidityService) x.get("liquidityService");
           Account source = txn.findSourceAccount(x);
