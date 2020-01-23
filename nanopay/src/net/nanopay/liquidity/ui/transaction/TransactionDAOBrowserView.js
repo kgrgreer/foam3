@@ -71,10 +71,6 @@ foam.CLASS({
     {
       name: 'LABEL_ACCOUNT_TITLE',
       message: 'Select an account to see associated transactions'
-    },
-    {
-      name: 'LABEL_ACCOUNT_SELECTION',
-      message: 'Select an account'
     }
   ],
 
@@ -111,7 +107,6 @@ foam.CLASS({
       view: function(_, X) {
         sec = [
           {
-            // heading: 'Accounts',
             dao: X.accountDAO.where(X.data.AND( // TODO confirm these filters.***
               X.data.EQ(net.nanopay.account.Account.DELETED, false),
               X.data.EQ(net.nanopay.account.Account.ENABLED, true),
