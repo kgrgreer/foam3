@@ -10,10 +10,12 @@ foam.CLASS({
     'net.nanopay.sme.ui.fileDropZone.FileDropZone',
     'net.nanopay.tx.gs.ProgressBarData',
   ],
+
   implements: [
     'foam.mlang.Expressions',
   ],
-  imports:[
+
+  imports: [
     'window',
     'csvUploadScriptDAO',
     'ProgressBarDAO'
@@ -100,6 +102,10 @@ foam.CLASS({
     box-shadow: none;
   }
 
+  ^ .foam-u2-ActionView-back {
+    margin-top: 16px;
+  }
+
   ^ .foam-u2-ActionView-process {
     width: 100%;
   }
@@ -122,7 +128,7 @@ foam.CLASS({
     { name: 'LABEL_REPORT', message: 'Ingestion Report' }
   ],
 
-  properties:[
+  properties: [
     {
       class: 'String',
       name: 'id_',
@@ -169,12 +175,12 @@ foam.CLASS({
     }
   ],
 
-  methods:[
+  methods: [
     function init() {
       this.csvUploadScriptDAO.find('CSVUploadTest').then((script) => {
         this.scriptToUse = script;
         if ( this.csv ) this.scriptToUse.csv = this.csv;
-      })
+      });
     },
 
     function initE() {
@@ -219,9 +225,9 @@ foam.CLASS({
                 maxSize: 1024
               }).end()
               .add(self.slot(function(uploadedCSVs, progressBarStatus) {
-                if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.')) return self.E();
+                if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.') ) return self.E();
                 return self.E()
-                  .startContext({data: self})
+                  .startContext({ data: self })
                     .add(self.PROCESS)
                   .endContext();
               }))
@@ -243,7 +249,14 @@ foam.CLASS({
                 .end();
             }
           }))
-
+          .add(this.slot(function(id_, report) {
+            if ( id_ != self.LABEL_SELECTOR && report != '' ) {
+              return self.E()
+                .startContext({ data: self })
+                  .add(self.BACK)
+                .endContext();
+            }
+          }))
         .end();
     }
   ],
@@ -253,7 +266,7 @@ foam.CLASS({
       name: 'process',
       label: 'Begin Ingestion',
       isEnabled: function(uploadedCSVs, progressBarStatus) {
-        if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.')) return false;
+        if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.') ) return false;
         return uploadedCSVs.length > 0;
       },
       code: function() {
@@ -264,7 +277,15 @@ foam.CLASS({
           this.scriptToUse.name = this.scriptToUse.run();
         }
       }
+    },
+    {
+      name: 'back',
+      label: 'Upload a New File',
+      code: function() {
+        this.report = '';
+        this.id_ = this.LABEL_SELECTOR;
+        this.progressBarStatus = 'Awaiting File Upload.';
+      }
     }
   ]
-
 });
