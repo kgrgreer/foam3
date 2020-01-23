@@ -81,8 +81,6 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'searchName',
-    'invoiceId',
     'type',
     'status',
     'sourceAccount',
