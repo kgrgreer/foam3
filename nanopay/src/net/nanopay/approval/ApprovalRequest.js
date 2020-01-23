@@ -24,7 +24,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'approvalRequestDAO'
+    'approvalRequestDAO',
+    'ctrl'
   ],
 
   tableColumns: [
@@ -32,7 +33,7 @@ foam.CLASS({
     'description',
     'classification',
     'objId',
-    'referenceObj',
+    'viewReference',
     'approver',
     'status',
     'memo',
@@ -244,11 +245,7 @@ foam.CLASS({
       name: 'token',
       documentation: 'token in email for ‘click to approve’.',
       section: 'basicInformation',
-      visibilityExpression: function(token) {
-        return token ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
-      }
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
@@ -304,7 +301,53 @@ foam.CLASS({
         return getDaoKey() + ": " + getObjId();
       `,
       hidden: true
+    },
+    {
+      class: 'String',
+      name: 'daoKey_',
+      hidden: true,
+      factory: function(o, n) {
+        var key = this.daoKey;
+        var X = this.ctrl.__subContext__;
+        // FIXME: This is hacky
+        if ( ! X[key] ) {
+          // if DAO doesn't exist in context, change daoKey from localMyDAO
+          // (server-side) to myDAO (accessible on front-end)
+          key = key.substring(5, 6).toLowerCase() + key.substring(6);
+        }
+        return key;
+      }
+    },
+    {
+      name: 'referenceObj_',
+      hidden: true,
+      expression: function() {
+        var X = this.ctrl.__subContext__;
+        var objId = X[this.daoKey_].of.ID.type === 'Long' ? parseInt(this.objId) : this.objId;
+
+        X[this.daoKey_]
+          .find(objId)
+          .then((obj) => {
+            if (
+              // if approvalRequest is rejected don't show ViewReference
+              this.status === net.nanopay.approval.ApprovalStatus.REJECTED
+              ||
+              // if approvalRequest is for remove and has been either approved/rejected
+              (this.status === net.nanopay.approval.ApprovalStatus.APPROVED
+                &&
+              this.operation === foam.nanos.ruler.Operations.REMOVE)
+            ) {
+              this.referenceObj_ = '';
+              return;
+            }
+            this.referenceObj_ = obj;
+          })
+          .catch((err) => {
+            console.warn(err.message || err);
+          });
+        return '';
     }
+  }
   ],
 
   methods: [
@@ -355,56 +398,38 @@ if ( obj == null ) {
       tableWidth: 100
     },
     {
-      name: 'referenceObj',
+      name: 'viewReference',
       isDefault: true,
-      label: 'View Reference',
-      code: function(X, action) {
-        var key = this.daoKey;
-
-        // FIXME: This is hacky
-        if ( ! X[this.daoKey] ) {
-          // if DAO doesn't exist in context, change daoKey from localMyDAO
-          // (server-side) to myDAO (accessible on front-end)
-          key = key.substring(5, 6).toLowerCase() + key.substring(6);
-        }
-
-        var objId = X[key].of.ID.type === 'Long' ? parseInt(this.objId) : this.objId;
-
-        X[key]
-          .find(objId)
-          .then((obj) => {
-            if ( obj == null ) {
-              throw new Error('Reference object not found.');
-            }
-            // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
-            // this is for updating object approvals
-            if ( obj.propertiesToUpdate ) {
-              // then here we created custom view to display these properties
-              X.stack.push({
-                class: 'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView',
-                propObject: obj.propertiesToUpdate,
-                title: 'Updated Properties and Changes'
-              });
-              return;
-            }
-            // else pass general view with modeled data for display
-            // this is for create, deleting object approvals
-            X.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: obj,
-              of: obj.cls_,
-              config: foam.comics.v2.DAOControllerConfig.create({
-                daoKey: key,
-                of: obj.cls_,
-                editEnabled: false,
-                createEnabled: false,
-                deleteEnabled: false
-              })
-            });
-          })
-          .catch((err) => {
-            alert(err);
+      isAvailable: function(referenceObj_) {
+        return !! referenceObj_;
+      },
+      code: function(X) {
+        var obj = this.referenceObj_;
+        // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+        // this is for updating object approvals
+        if ( obj.propertiesToUpdate ) {
+          // then here we created custom view to display these properties
+          X.stack.push({
+            class: 'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView',
+            propObject: obj.propertiesToUpdate,
+            title: 'Updated Properties and Changes'
           });
+          return;
+        }
+        // else pass general view with modeled data for display
+        // this is for create, deleting object approvals
+        X.stack.push({
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          of: obj.cls_,
+          config: foam.comics.v2.DAOControllerConfig.create({
+            daoKey: this.daoKey_,
+            of: obj.cls_,
+            editEnabled: false,
+            createEnabled: false,
+            deleteEnabled: false
+          })
+        });
       },
       tableWidth: 100
     }
