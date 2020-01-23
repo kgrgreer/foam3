@@ -211,6 +211,7 @@ p({
   "id": "L2 approval for transaction >= $50,000 - GS06 CASH (USD)",
   "sourceAccount": 1449,
   "startAmount": 5000000,
+  "denomination": "USD",
   "enabled": false,
   "lifecycleState": 1
 })

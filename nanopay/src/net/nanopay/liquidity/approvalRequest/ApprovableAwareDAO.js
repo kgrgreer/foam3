@@ -340,6 +340,11 @@ foam.CLASS({
         // then handle the diff here and attach it into the approval request
         Map updatedProperties = currentObjectInDAO.diff(obj);
 
+        // No change, just returns obj
+        if ( updatedProperties.isEmpty() ) {
+          return obj;
+        }
+
         // change last modified by to be the user
         updatedProperties.put("lastModifiedBy", ((User) x.get("user")).getId());
         DAO approvableDAO = (DAO) getX().get("approvableDAO");
