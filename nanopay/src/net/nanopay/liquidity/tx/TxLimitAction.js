@@ -18,8 +18,7 @@ foam.CLASS({
     'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
     'net.nanopay.tx.ruler.TransactionLimitState',
     'net.nanopay.util.Frequency',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.FXQuote'
+    'net.nanopay.fx.ExchangeRateService',
   ],
 
   methods: [
@@ -49,7 +48,7 @@ foam.CLASS({
 
       // Amount of the transaction in the transaction source currency
       long amount = transaction.getAmount();
-
+      long ruleCurrAmount = amount;
       // Retrieve the currencies
       DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
       Currency transactionCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
@@ -58,18 +57,9 @@ foam.CLASS({
       // Convert to rule currency if necessary
       if ( ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
         User user = (User) x.get("user");
-        FXService fxService = (FXService) x.get("fxService");
+        ExchangeRateService ers = (ExchangeRateService) x.get("exchangeRateService");
         
-        FXQuote fxQuote = fxService.getFXRate(transactionCurrency.getId(), ruleCurrency.getId(), amount, 0l, "Buy", null, user.getId(), null);
-        if (fxQuote.getTargetAmount() == 0l) {
-          Logger logger = (Logger) x.get("logger");
-          logger.warning("FX conversion missing for " + transactionCurrency.getId() + " -> " + ruleCurrency.getId() + ". Skipping aggregation on transaction limit: " + txLimitRule.getId());
-
-          // Skip transaction limit if there is no currency conversion
-          return;
-        }
-
-        amount = fxQuote.getTargetAmount();
+        ruleCurrAmount = ers.exchange(transactionCurrency.getId(), ruleCurrency.getId(), amount);
       }
       
       // Compute the amounts
@@ -96,7 +86,7 @@ foam.CLASS({
       }
 
       // Check the limit
-      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
+      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), ruleCurrAmount) ) {
         throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
           + " limit was exceeded with a " + txAmount + " transaction " 
           + (txLimitRule.getSend() ? "from " : "to ")
