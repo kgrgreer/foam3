@@ -74,8 +74,16 @@ p({
   "ruleGroup": "liquid",
   "documentation": "remove junctions on user removal",
   "daoKey": "localUserDAO",
-  "operation": 2, 
+  "operation": 1, 
   "after": true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":3
+    }
+  },
   "action":{ "class":"foam.nanos.crunch.RemoveJunctionsOnUserRemoval" },
   "saveHistory": true
 })
@@ -90,6 +98,14 @@ p({
   "daoKey": "localCapabilityDAO",
   "operation": 1, 
   "after": true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":3
+    }
+  },
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveJunctionsOnCapabilityRemoval" },
   "saveHistory": true
 })
