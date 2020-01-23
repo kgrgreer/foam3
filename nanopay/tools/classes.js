@@ -872,6 +872,16 @@ var classes = [
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
   'net.nanopay.tx.rbc.RbcTransactionPlanDAO',
   'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
+  'net.nanopay.tx.rbc.RBCTransactionISO20022Util',
+  'net.nanopay.tx.rbc.RbcAssignedClientValue',
+  'net.nanopay.tx.rbc.RbcReferenceNumber',
+  'net.nanopay.tx.rbc.iso20022file.RbcBatchRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcCIRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
+  'net.nanopay.tx.rbc.iso20022file.RbcISO20022File',
+  'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
   
   // Ticket
   'net.nanopay.ticket.SudoTicket',

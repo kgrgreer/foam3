@@ -10,10 +10,13 @@ import foam.core.*;
 import foam.lib.xml.Outputter;
 import foam.nanos.logger.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
@@ -41,6 +44,21 @@ public class ISO20022Util {
     xml = xml.replaceFirst(obj.getClass().getSimpleName(), "Document");
     xml = replaceLast(xml, "Document", obj.getClass().getSimpleName());
     return xml;
+  }
+
+  public FObject fromXML(X x, File file, Class defaultClass) {
+    FObject obj = null;
+    if ( file == null ) return obj;
+    try{
+      FileInputStream inputStream = new FileInputStream(file);
+      XMLInputFactory factory     = XMLInputFactory.newInstance();
+      XMLStreamReader xmlReader   = factory.createXMLStreamReader(inputStream);
+      obj = fromXML(x, xmlReader, defaultClass);
+    } catch (Throwable t) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Error while reading file");
+    }
+    return obj;
   }
 
   public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) {

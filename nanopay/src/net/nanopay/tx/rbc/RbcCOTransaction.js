@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'RbcCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
 
+  implements: [
+    'net.nanopay.tx.rbc.RbcTransaction'
+  ],
+
   properties: [
     {
       name: 'rbcReferenceNumber',
@@ -10,7 +14,7 @@ foam.CLASS({
     },
     {
       name: 'rbcFileCreationNumber',
-      class: 'Int'
+      class: 'Long'
     },
     {
       name: 'rejectReason',

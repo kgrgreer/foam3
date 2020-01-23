@@ -7,6 +7,8 @@ node tools/xsd/index.js net.nanopay.iso20022 \
   pacs.002.001.09.xsd \
   pacs.008.001.06.xsd \
   pacs.028.001.01.xsd \
+  pain.001.001.03.xsd \
+  pain.008.001.02.xsd \
   pain.002.001.03.xsd \
   pain.007.001.07.xsd \
   tsin.004.001.01.xsd

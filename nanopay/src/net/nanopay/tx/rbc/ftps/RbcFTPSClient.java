@@ -3,7 +3,6 @@ package net.nanopay.tx.rbc.ftps;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
-import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPFile;
@@ -43,18 +42,39 @@ public class RbcFTPSClient {
     this.logout();
   }
 
-  public File download(String remotePath) throws IOException {
-    String filename = remotePath.substring(remotePath.lastIndexOf("/") + 1);
-
+  public File downloadLast(String filePath) throws IOException {
+    String filename = filePath.substring(filePath.lastIndexOf("/") + 1);
+    
     this.login();
+    FTPFile[] ftpFiles = this.ls(PAIN_FOLDER);
+    
+
+    String index = String.format("%" + 3 + "s", String.valueOf(ftpFiles.length)).replace(' ', '0');
+    String remotePath = "PAIN." + index + ".pgp";
+
     File file = this.get(remotePath, DOWNLOAD_FOLDER + filename);
     this.logout();
 
     return file;
   }
 
+  public File download(String remote, String local) throws IOException {
+    this.login();
+    File file = this.get(remote, DOWNLOAD_FOLDER + local);
+    this.logout();
+
+    return file;
+  }
+
   /**
-   * Download the non-downloaded files from RBC outbound folder
+   * Download the non-downloaded pain files from RBC outbound pain folder
+   */
+  public List<File> batchDownload() throws IOException {
+    return batchDownload(PAIN_FOLDER);
+  }
+
+  /**
+   * Download the non-downloaded files from supplied RBC folder
    */
   public List<File> batchDownload(String folder) throws IOException {
     if ( ! this.credential.getEnable() ) {
@@ -132,7 +152,8 @@ public class RbcFTPSClient {
 
     FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
 
-    ftpsClient.retrieveFile(remote, fileOutputStream);
+    ftpsClient.retrieveFile(PAIN_FOLDER + remote, fileOutputStream);
+    fileOutputStream.close();
     this.logger.info("Retrieve File : " + this.ftpsClient.getReplyString());
 
     return tmpFile;

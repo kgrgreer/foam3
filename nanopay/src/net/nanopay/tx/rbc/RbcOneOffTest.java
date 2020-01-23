@@ -33,7 +33,7 @@ public class RbcOneOffTest {
     RbcFTPSClient ftpsClient = new RbcFTPSClient(x);
 
     // 1. download the file
-    File downloadFile = ftpsClient.download(remotePath);
+    File downloadFile = ftpsClient.downloadLast(remotePath);
 
     // 2. decrypt the file
     File decrypFile = RbcPGPUtil.decrypt(x, downloadFile);
