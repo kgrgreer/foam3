@@ -8,20 +8,76 @@ foam.CLASS({
   ],
 
   css: `
-    ^centering {
-      text-align: center;
+    ^container-selection {
+      display: flex;
+      flex-direction: row;
+
       width: 100%;
-      padding-top: 1vh;
-      padding-bottom: 1vh;
+
+      box-sizing: border-box;
       border-bottom: solid 1px #e7eaec;
     }
-    ^ .foam-u2-view-RichChoiceView {
-      display: inline-block;
-      position: relative;
-      z-index: 2000;
+
+    ^title {
+      margin: 0;
+      flex: 1 1 0;
+      padding: 16px;
+
+      text-align: center;
+      align-self: center;
+      border-right: solid 1px #e7eaec;
     }
 
+    ^ .property-accountSelection {
+      flex: 3 1 0;
+    }
+
+    ^ .foam-u2-view-RichChoiceView {
+      width: 100%;
+      z-index: 2;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-selection-view {
+      border: none;
+      height: 100%;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-selection-view:hover {
+      cursor: pointer;
+    }
+
+    ^ .foam-u2-view-RichChoiceView .search {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f4f4f9;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-heading {
+      border-bottom: 1px solid #f4f4f9;
+      line-height: 24px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 900;
+      padding: 6px 16px;
+    }
+
+    ^ .DefaultRowView-row {
+      padding: 8px 16px;
+      color: #424242;
+    }
   `,
+
+  messages: [
+    {
+      name: 'LABEL_ACCOUNT_TITLE',
+      message: 'Select an account to see associated transactions'
+    },
+    {
+      name: 'LABEL_ACCOUNT_SELECTION',
+      message: 'Select an account'
+    }
+  ],
+
   properties: [
     {
       name: 'searchColumns',
@@ -55,6 +111,7 @@ foam.CLASS({
       view: function(_, X) {
         sec = [
           {
+            // heading: 'Accounts',
             dao: X.accountDAO.where(X.data.AND( // TODO confirm these filters.***
               X.data.EQ(net.nanopay.account.Account.DELETED, false),
               X.data.EQ(net.nanopay.account.Account.ENABLED, true),
@@ -84,8 +141,8 @@ foam.CLASS({
       this
         .add(this.slot(function(data, config$cannedQueries, searchFilterDAO, accountSelection) {
           return self.E()
-            .startContext({ data: self }).addClass(self.myClass('centering'))
-              .start('h3').add('Select an Account to see associated transactions').end()
+            .startContext({ data: self }).addClass(self.myClass('container-selection'))
+              .start('p').addClass(self.myClass('title')).add(self.LABEL_ACCOUNT_TITLE).end()
               .start(self.ACCOUNT_SELECTION).end()
             .endContext();
         }));
