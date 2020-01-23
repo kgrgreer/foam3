@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   methods: [
@@ -31,8 +32,18 @@ foam.CLASS({
         quote.setDestinationAccount((Account) txn.findDestinationAccount(getX())); // elevate destination account search to system.
         quote.setSourceAccount((Account) txn.findSourceAccount(x));
 
+        //TODO: move this all to rules or something when theres more time
+
         if (quote.getSourceAccount() == null )
           throw new RuntimeException("Unable to access the source account.");
+        if (quote.getDestinationAccount() == null )
+          throw new RuntimeException("Unable to access the destination account.");
+
+        if (quote.getSourceAccount().getLifecycleState() == LifecycleState.DELETED )
+          throw new RuntimeException("Unable to send from deleted account");
+        if (quote.getDestinationAccount().getLifecycleState() == LifecycleState.DELETED )
+          throw new RuntimeException("Unable to send to account "+quote.getDestinationAccount().getId());
+
         if( quote.getDestinationAccount() instanceof net.nanopay.account.AggregateAccount )
           throw new RuntimeException("Unable to send funds to an aggregate account");
            if( quote.getSourceAccount() instanceof net.nanopay.account.AggregateAccount )
