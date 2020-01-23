@@ -1,6 +1,16 @@
 package net.nanopay.tx.bmo;
 
-import foam.core.FObject;
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+
+import foam.core.Currency;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
@@ -12,30 +22,25 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
-import foam.core.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
+import net.nanopay.payment.PADTypeLineItem;
+import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
-import net.nanopay.tx.bmo.eftfile.*;
+import net.nanopay.tx.bmo.eftfile.BmoBatchControl;
+import net.nanopay.tx.bmo.eftfile.BmoBatchHeader;
+import net.nanopay.tx.bmo.eftfile.BmoBatchRecord;
+import net.nanopay.tx.bmo.eftfile.BmoDetailRecord;
+import net.nanopay.tx.bmo.eftfile.BmoEftFile;
+import net.nanopay.tx.bmo.eftfile.BmoFileControl;
+import net.nanopay.tx.bmo.eftfile.BmoFileHeader;
 import net.nanopay.tx.bmo.exceptions.BmoEftFileException;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class BmoEftFileGenerator {
 
@@ -101,26 +106,44 @@ public class BmoEftFileGenerator {
       fileHeader = createFileHeader(originatorID);
       fileHeader.validate(x);
 
-      // batch record
+      // batch record for CI
       List<Transaction> ciTransactions = transactions.stream()
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
+      HashMap<Integer, List<Transaction>> ciGroupTransactions = groupTransactionByType(x, ciTransactions);
+      int ciCount = 0; long ciAmount = 0;
+      for ( Integer type : ciGroupTransactions.keySet() ) {
+        BmoBatchRecord record = createBatchRecord(type, ciGroupTransactions.get(type));
+        if ( record != null ) {
+          records.add(record);
+          ciCount = ciCount + record.getBatchControlRecord().getBatchRecordCount();
+          ciAmount = ciAmount + record.getBatchControlRecord().getBatchAmount();
+        }
+      }
+
+      // batch record for CO
       List<Transaction> coTransactions = transactions.stream()
         .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof BmoVerificationTransaction))
         .collect(Collectors.toList());
+      int coCount = 0; long coAmount = 0;
+      HashMap<Integer, List<Transaction>> coGroupTransactions = groupTransactionByType(x, coTransactions);
+      for ( Integer type : coGroupTransactions.keySet() ) {
+        BmoBatchRecord record = createBatchRecord(type, coGroupTransactions.get(type));
+        if ( record != null ) {
+          records.add(record);
+          coCount = coCount + record.getBatchControlRecord().getBatchRecordCount();
+          coAmount = coAmount + record.getBatchControlRecord().getBatchAmount();
+        }
+      }
 
-      BmoBatchRecord ciBatchRecord = createBatchRecord(ciTransactions);
-      BmoBatchRecord coBatchRecord = createBatchRecord(coTransactions);
-      if ( ciBatchRecord != null ) records.add(ciBatchRecord);
-      if ( coBatchRecord != null ) records.add(coBatchRecord);
       if ( records.size() == 0 )   throw new RuntimeException("No transactions for BMO EFT");
 
       // file control
-      fileControl.setTotalNumberOfD (ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchRecordCount());
-      fileControl.setTotalValueOfD  (ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchAmount());
-      fileControl.setTotalNumberOfC (coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchRecordCount());
-      fileControl.setTotalValueOfC  (coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchAmount());
+      fileControl.setTotalNumberOfD (ciCount);
+      fileControl.setTotalValueOfD  (ciAmount);
+      fileControl.setTotalNumberOfC (coCount);
+      fileControl.setTotalValueOfC  (coAmount);
 
     } catch ( Exception e ) {
       // if any exception occurs here, no transaction will be sent out
@@ -160,7 +183,7 @@ public class BmoEftFileGenerator {
     return fileHeader;
   }
 
-  public BmoBatchRecord createBatchRecord(List<Transaction> transactions) {
+  public BmoBatchRecord createBatchRecord(int PADType, List<Transaction> transactions) {
     if ( transactions == null || transactions.size() == 0 ) {
       return null;
     }
@@ -176,12 +199,16 @@ public class BmoEftFileGenerator {
        */
       BmoBatchHeader batchHeader =           new BmoBatchHeader();
       batchHeader.setBatchPaymentType        (type);
-      batchHeader.setTransactionTypeCode     (clientValue.getTransactionType());
       batchHeader.setPayableDate             (BmoFormatUtil.getCurrentJulianDateEDT());
       batchHeader.setOriginatorShortName     (this.clientValue.getOriginatorShortName());
       batchHeader.setOriginatorLongName      (this.clientValue.getOriginatorLongName());
       batchHeader.setInstitutionIdForReturns (this.clientValue.getInstitutionIdForReturns());
       batchHeader.setAccountNumberForReturns (this.clientValue.getAccountNumberForReturns());
+      if ( PADType != -1 ) {
+        batchHeader.setTransactionTypeCode   (PADType);
+      } else {
+        batchHeader.setTransactionTypeCode   (clientValue.getTransactionType());
+      }
 
       /**
        * batch details
@@ -212,13 +239,13 @@ public class BmoEftFileGenerator {
 
           sum = sum + transaction.getAmount();
           detailRecords.add(detailRecord);
-          ((BmoTransaction)transaction). addHistory("Transaction added to EFT file");
+          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
           tempSuccessHolder.             add(transaction);
 
         } catch ( Exception e ) {
           this.logger.error("Error when add transaction to BMO EFT file", e);
-          ((BmoTransaction)transaction).addHistory(e.getMessage());
+          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent(e.getMessage()).build());
           transaction.setStatus(TransactionStatus.FAILED);
         }
 
@@ -310,7 +337,7 @@ public class BmoEftFileGenerator {
   }
 
   public boolean isValidTransaction(Transaction transaction) {
-    ((BmoTransaction) transaction).addHistory("Transaction picked by BmoEftFileGenerator");
+    transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked by BmoEftFileGenerator").build());
 
     if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction || transaction instanceof BmoVerificationTransaction) ) {
       throw new RuntimeException("Wrong transaction type");
@@ -326,6 +353,24 @@ public class BmoEftFileGenerator {
     }
 
     return true;
+  }
+
+  public HashMap<Integer, List<Transaction>> groupTransactionByType(X x, List<Transaction> transactions) {
+    HashMap<Integer, List<Transaction>> result = new HashMap<>();
+
+    for ( Transaction transaction : transactions ) {
+      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
+
+      if ( ! result.containsKey(type) ) {
+        ArrayList<Transaction> newList = new ArrayList<>();
+        newList.add(transaction);
+        result.put(type, newList);
+      } else {
+        result.get(type).add(transaction);
+      }
+    }
+
+    return result;
   }
 
   public ArrayList<Transaction> getPassedTransactions() {

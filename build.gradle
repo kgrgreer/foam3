@@ -182,10 +182,14 @@ task genJava(type: Exec) {
             includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
             classFiles.add(file("nanopay/tools/classes.js"))
             outputDir = file(project.genJavaDir)
+            onlyIf {
+                !project.hasProperty('foamoptions.skipgenjava')
+            }
         }
     }
     onlyIf {
-        !tasks.incrementalGenTask.state.upToDate
+        !tasks.incrementalGenTask.state.upToDate &&
+        !project.hasProperty('foamoptions.skipgenjava')
     }
     commandLine 'bash', './gen.sh', 'tools/classes.js', "${project.genJavaDir}"
 }

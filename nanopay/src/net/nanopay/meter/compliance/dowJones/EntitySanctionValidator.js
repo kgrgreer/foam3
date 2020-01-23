@@ -8,13 +8,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessDirector',
     'java.util.Calendar',
@@ -44,6 +39,8 @@ foam.CLASS({
             .build();
 
           DowJonesResponse response = dowJonesService.entityNameSearch(x, searchData);
+          ((Logger) x.get("logger")).info("EntitySanctionValidator ran for entity id: " + searchData.getSearchId() + ", entity name: " + searchData.getEntityName());
+
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;

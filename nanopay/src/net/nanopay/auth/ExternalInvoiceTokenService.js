@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
    javaImports: [
-    'foam.core.FObject',
     'foam.dao.*',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -34,20 +33,13 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
-    'java.lang.Object',
-    'java.lang.StringBuilder',
     'java.net.URLEncoder',
-    'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.List',
     'java.util.UUID',
-    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'foam.core.Currency',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -61,9 +53,9 @@ foam.CLASS({
       Logger logger = (Logger) getLogger();
 
       try {
-        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) ) 
+        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) )
           throw new RuntimeException("Required hash map parameters: template");
-        
+
         String template = (String) parameters.get("template");
 
         DAO tokenDAO = (DAO) getTokenDAO();
@@ -100,6 +92,8 @@ foam.CLASS({
         urlStringB.append("#sign-up");
 
         parameters.put("link", urlStringB.toString());
+        parameters.put("name", user.getFirstName());
+        parameters.put("sendTo", user.getEmail());
         EmailsUtility.sendEmailFromTemplate(x, user, message, template, parameters);
 
         return true;
@@ -181,7 +175,7 @@ foam.CLASS({
           // Set token processed to true.
           clone.setProcessed(true);
           tokenDAO.put(clone);
-          
+
           return true;
         } catch (Throwable t) {
           logger.error("Error processing contact token", t);

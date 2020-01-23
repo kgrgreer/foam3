@@ -1,31 +1,35 @@
 package net.nanopay.business;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.UserUserJunction;
-import foam.nanos.auth.token.Token;
-import foam.nanos.http.WebAgent;
-import foam.nanos.notification.email.DAOResourceLoader;
-import foam.nanos.notification.email.EmailTemplate;
-import net.nanopay.model.Business;
+import static foam.mlang.MLang.EQ;
+
+import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.resource.loader.TypedResourceLoader;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.PrintWriter;
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.Map;
-
-import static foam.mlang.MLang.EQ;
+import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.token.Token;
+import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.DAOResourceLoader;
+import foam.nanos.notification.email.EmailTemplate;
+import net.nanopay.model.Business;
+import net.nanopay.onboarding.CreateOnboardingCloneService;
 
 /**
  * When an existing user is invited to join another business, they can click a
@@ -34,7 +38,7 @@ import static foam.mlang.MLang.EQ;
  */
 public class JoinBusinessWebAgent implements WebAgent {
 
-  public EnvironmentConfiguration config_;
+  private EnvironmentConfiguration config_;
 
   @Override
   public void execute(X x) {
@@ -77,9 +81,17 @@ public class JoinBusinessWebAgent implements WebAgent {
 
       // Process the token.
       tokenService.processToken(x, user, tokenUUID);
+
+      CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(x);
+      List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
+
+      if ( onboardings.size() > 0 )
+        createOnboardingCloneService.putOnboardingClone(x, onboardings, token.getUserId());
     } catch (Throwable t) {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
+
+    if ( user == null ) throw new RuntimeException("User not found.");
 
     if ( config_ == null ) {
       config_ = EnvironmentConfigurationBuilder
@@ -114,9 +126,9 @@ public class JoinBusinessWebAgent implements WebAgent {
       try {
         response.addHeader("REFRESH", "2;URL=" + redirect);
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger logger = (Logger) x.get("logger");
+        logger.log(e);
       }
     }
   }
 }
-

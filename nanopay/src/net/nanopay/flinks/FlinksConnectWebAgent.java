@@ -1,18 +1,5 @@
 package net.nanopay.flinks;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.lib.json.JSONParser;
-import foam.lib.json.Outputter;
-import foam.lib.StoragePropertyPredicate;
-import foam.nanos.app.AppConfig;
-import foam.nanos.http.WebAgent;
-import net.nanopay.flinks.model.FlinksAuthRequest;
-import net.nanopay.flinks.model.FlinksResponse;
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -20,6 +7,20 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+
+import foam.core.X;
+import foam.lib.StoragePropertyPredicate;
+import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.nanos.app.AppConfig;
+import foam.nanos.http.WebAgent;
+import net.nanopay.flinks.model.FlinksAuthRequest;
+import net.nanopay.flinks.model.FlinksResponse;
 
 public class FlinksConnectWebAgent
     implements WebAgent
@@ -47,8 +48,6 @@ public class FlinksConnectWebAgent
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     HttpURLConnection conn = null;
-    BufferedWriter writer = null;
-    BufferedReader reader = null;
 
     try {
       String loginId = req.getParameter("loginId");
@@ -68,21 +67,20 @@ public class FlinksConnectWebAgent
       conn.setDoOutput(true);
       conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
-      writer = new BufferedWriter(new OutputStreamWriter(
-          conn.getOutputStream(), StandardCharsets.UTF_8));
-      writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
-      writer.flush();
-      writer.close();
-
+      try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+          conn.getOutputStream(), StandardCharsets.UTF_8))) {
+        writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
+        writer.flush();
+      }
       String line = null;
       int code = conn.getResponseCode();
       StringBuilder builder = sb.get();
 
-      reader = new BufferedReader(new InputStreamReader(
-          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()));
-
-      while ((line = reader.readLine()) != null) {
-        builder.append(line);
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
+        while ((line = reader.readLine()) != null) {
+          builder.append(line);
+        }
       }
 
       JSONParser parser = x.create(JSONParser.class);
@@ -101,8 +99,6 @@ public class FlinksConnectWebAgent
 
     } finally {
       if ( conn != null ) conn.disconnect();
-      IOUtils.closeQuietly(writer);
-      IOUtils.closeQuietly(reader);
     }
   }
 }

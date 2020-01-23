@@ -157,7 +157,7 @@ foam.CLASS({
     {
       name: 'zoomOut',
       isEnabled: function(cview$scale) {
-        return (cview$scale || 0) > 0 && (cview$scale || 0) > 0;
+        return (cview$scale || 0) > 0;
       },
       code: function() {
         this.AnimateTo.create({
@@ -329,7 +329,7 @@ foam.CLASS({
           curr.expanded = true;
         }
 
-        currId = ancestry.pop();
+        var currId = ancestry.pop();
 
         var children = curr.childNodes;
 

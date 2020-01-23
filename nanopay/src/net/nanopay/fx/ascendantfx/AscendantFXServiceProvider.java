@@ -1,60 +1,54 @@
 package net.nanopay.fx.ascendantfx;
 
-import foam.core.Detachable;
-import foam.core.X;
-import foam.core.ContextAwareSupport;
-import foam.dao.AbstractSink;
-import foam.dao.DAO;
-import foam.mlang.MLang;
-import foam.nanos.auth.Address;
-import foam.nanos.auth.Country;
-import foam.nanos.auth.Region;
-import foam.nanos.auth.User;
-import foam.nanos.NanoService;
-import foam.util.SafetyUtil;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import foam.core.Agency;
+import foam.core.ContextAgent;
+import foam.core.ContextAwareSupport;
+import foam.core.Detachable;
+import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.nanos.NanoService;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
-import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
-import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
-import net.nanopay.fx.ascendantfx.model.Deal;
-import net.nanopay.fx.ascendantfx.model.DealDetail;
-import net.nanopay.fx.ascendantfx.model.Direction;
-import net.nanopay.fx.ascendantfx.model.GetPayeeInfoRequest;
-import net.nanopay.fx.ascendantfx.model.GetPayeeInfoResult;
-import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
-import net.nanopay.fx.ascendantfx.model.GetQuoteResult;
-import net.nanopay.fx.ascendantfx.model.Payee;
-import net.nanopay.fx.ascendantfx.model.PayeeDetail;
-import net.nanopay.fx.ascendantfx.model.PayeeOperationRequest;
-import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
-import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
-import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
 import net.nanopay.fx.ExchangeRateStatus;
 import net.nanopay.fx.FXDirection;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.ascendantfx.model.AcceptAndSubmitDealTBAResult;
+import net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest;
+import net.nanopay.fx.ascendantfx.model.AcceptQuoteResult;
+import net.nanopay.fx.ascendantfx.model.Deal;
+import net.nanopay.fx.ascendantfx.model.DealDetail;
+import net.nanopay.fx.ascendantfx.model.Direction;
+import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
+import net.nanopay.fx.ascendantfx.model.GetQuoteResult;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBARequest;
 import net.nanopay.fx.ascendantfx.model.GetQuoteTBAResult;
-import net.nanopay.model.Branch;
-import foam.core.Currency;
-import net.nanopay.payment.Institution;
+import net.nanopay.fx.ascendantfx.model.Payee;
+import net.nanopay.fx.ascendantfx.model.PayeeDetail;
+import net.nanopay.fx.ascendantfx.model.PayeeOperationRequest;
+import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
+import net.nanopay.fx.ascendantfx.model.SubmitDealRequest;
+import net.nanopay.fx.ascendantfx.model.SubmitDealResult;
+import net.nanopay.meter.clearing.ClearingTimeService;
+import net.nanopay.model.Business;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.model.Business;
-
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.NOT;
-import static foam.mlang.MLang.INSTANCE_OF;
-import foam.nanos.logger.Logger;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class AscendantFXServiceProvider extends ContextAwareSupport implements FXService, PaymentService, NanoService {
 
@@ -157,6 +151,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
+    quote = (FXQuote) quote.fclone();
 
     // Check FXDeal has not expired
     validateDealExpiryDate(quote.getExpiryTime());
@@ -256,7 +251,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     if ( null == user ) throw new RuntimeException("Unable to find User " + payeeUserId);
 
     AscendantUserPayeeJunction userPayeeJunction = getAscendantUserPayeeJunction(orgId, payeeUserId);
-    if ( ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
+    if ( userPayeeJunction != null && ! SafetyUtil.isEmpty(userPayeeJunction.getAscendantPayeeId()) ) {
       PayeeOperationRequest ascendantRequest = new PayeeOperationRequest();
       ascendantRequest.setMethodID("AFXEWSPOD");
       ascendantRequest.setOrgID(orgId);
@@ -284,10 +279,25 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
+    if ( (transaction instanceof AscendantFXTransaction) ) {
+      AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction.fclone();
+      ascendantTransaction.setStatus(TransactionStatus.SENT);
+      ((Agency) x.get("threadPool")).submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          submitAFXPayment(x, ascendantTransaction);
+        }
+      }, "");
+      return ascendantTransaction;
+    }
+    return transaction;
+  }
+
+  protected void submitAFXPayment(X x, AscendantFXTransaction transaction) {
     Logger logger = (Logger) this.x.get("logger");
     try {
       if ( (transaction instanceof AscendantFXTransaction) ) {
-        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction;
+        AscendantFXTransaction ascendantTransaction = (AscendantFXTransaction) transaction.fclone();
         User payee = User.findUser(x, ascendantTransaction.getPayeeId());
         if ( null == payee ) throw new RuntimeException("Unable to find User for Payee " + ascendantTransaction.getPayeeId());
 
@@ -314,7 +324,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         ascendantRequest.setQuoteID(Long.parseLong(quote.getExternalId()));
         ascendantRequest.setTotalNumberOfPayment(1);
 
-        String fxDirection = payerHasHoldingAccount ? FXDirection.Sell.getName() :  FXDirection.Buy.getName();
+        String fxDirection = payerHasHoldingAccount ? FXDirection.SELL.getName() :  FXDirection.BUY.getName();
 
         DealDetail[] dealArr = new DealDetail[1];
         DealDetail dealDetail = new DealDetail();
@@ -350,21 +360,34 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         ascendantRequest.setPaymentDetail(dealArr);
 
         SubmitDealResult submittedDealResult = this.ascendantFX.submitDeal(ascendantRequest);
-        if ( null == submittedDealResult ) throw new RuntimeException("No response from AscendantFX");
+        if ( null == submittedDealResult ) {
+          logger.error("No response from AscendantFX");
+          return;
+        }
 
-        if ( submittedDealResult.getErrorCode() != 0 )
-          throw new RuntimeException(submittedDealResult.getErrorMessage());
-
+        if ( submittedDealResult.getErrorCode() != 0 ) {
+          if ( null != submittedDealResult.getErrorMessage() && 
+              submittedDealResult.getErrorMessage().contains("Deal already submitted")) {
+                logger.info(submittedDealResult.getErrorMessage());
+          } else {
+            throw new RuntimeException(submittedDealResult.getErrorMessage());
+          }     
+        }
+          
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
         txn.setReferenceNumber(submittedDealResult.getDealID());
-        return txn;
+        txn.setStatus(TransactionStatus.SENT);
+        ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+        txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
+        ((DAO) x.get("localTransactionDAO")).put_(x, txn);
 
       }
     } catch (Exception e) {
       logger.error("Error submitting payment to AscendantFX.", e);
-      throw new RuntimeException(e);
+      transaction = (AscendantFXTransaction) transaction.fclone();
+      transaction.setStatus(TransactionStatus.DECLINED);
+      ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
     }
-    return transaction;
   }
 
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException{

@@ -142,6 +142,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceSync(X x) {
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+    if ( token != null ) {
+      token = (QuickbooksToken) token.fclone();
+    }
     List<InvoiceResponseItem> successResult = new ArrayList<>();
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
 
@@ -251,8 +254,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     List<BankAccount> bankAccountList = sink.getArray();
 
     for ( BankAccount account: bankAccountList ) {
+      account = (BankAccount) account.fclone();
       account.setIntegrationId("");
-      accountDAO.put(account.fclone());
+      accountDAO.put(account);
     }
 
     return new ResultResponse.Builder(x).setResult(false).setReason("User has been signed out of Quick Books").build();
@@ -394,7 +398,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( accountingException.getErrorCodes() != null ) {
         resultResponse.setErrorCode(accountingException.getErrorCodes());
         resultResponse.setReason(e.getMessage());
-        e.printStackTrace();
         return resultResponse;
       }
 
@@ -410,7 +413,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
         }
 
-        temp.printStackTrace();
         return resultResponse;
       }
     }
@@ -457,10 +459,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existContact instanceof QuickbooksContact ) {
-      if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
+    if ( existContact instanceof QuickbooksContact && 
+       ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
         throw new RuntimeException("skip");
-      }
     }
 
     // existing user
@@ -859,7 +860,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           .setData(data)
           .build());
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger logger = (Logger) x.get("logger");
+        logger.log("Unexpected error fetching atachments",e);
         throw new AccountingException(e.getMessage(), AccountingErrorCodes.INTERNAL_ERROR);
       }
     }).filter(Objects::nonNull)
@@ -879,9 +881,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       type = "Invoice";
       currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getSourceCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getSourceCurrency());
-    }
-
-    if ( quickInvoice.getPayerId() == user.getId() ) {
+    } else {
       type = "Bill";
       currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getDestinationCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getDestinationCurrency());

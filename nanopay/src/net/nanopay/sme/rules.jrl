@@ -13,3 +13,38 @@ p({
     "enabled":true,
     "saveHistory":true
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id": "Send business compliance passed email",
+  "priority": 100,
+  "ruleGroup": "smeBusinessCompliance",
+  "documentation": "Send business compliance passed email to signing officer",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.model.Business"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"compliance",
+        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"compliance",
+        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2},
+        "isNew": false
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

@@ -8,13 +8,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'java.util.Date',
     'static foam.mlang.MLang.*',
   ],
@@ -43,6 +39,8 @@ foam.CLASS({
             .build();
 
           DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
+          ((Logger) x.get("logger")).info("PersonSanctionValidator ran for user id: " + searchData.getSearchId() + ", user name: " + searchData.getFirstName() + " " + searchData.getSurName());
+
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;

@@ -15,15 +15,13 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
+    'bankAdded',
     'auth',
-    'caAccount',
     'closeDialog',
     'countryDAO',
     'ctrl',
-    'isCABank',
     'isConnecting',
     'sendInvite',
-    'usAccount',
     'user'
   ],
 
@@ -31,6 +29,7 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -63,7 +62,8 @@ foam.CLASS({
     { name: 'BANKING_TITLE', message: 'Add business address' },
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
-    { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
+    { name: 'STEP_INDICATOR', message: 'Step 3 of 3' },
+    { name: 'STREET_NUMBER', message: 'Street number can only contain numbers.' }
   ],
 
   properties: [
@@ -96,12 +96,21 @@ foam.CLASS({
           .tag(this.wizard.data.BUSINESS_ADDRESS, {
             customCountryDAO: this.PromisedDAO.create({
               promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                var q = hasPermission
-                  ? this.OR(
-                      this.EQ(this.Country.ID, 'CA'),
-                      this.EQ(this.Country.ID, 'US')
-                    )
-                  : this.EQ(this.Country.ID, 'CA');
+                var q;
+                if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
+                  q = this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US'),
+                    this.EQ(this.Country.ID, 'IN')
+                  );
+                } else if ( hasPermission ) {
+                  q = this.OR(
+                    this.EQ(this.Country.ID, 'CA'),
+                    this.EQ(this.Country.ID, 'US')
+                  );
+                } else {
+                  q = this.EQ(this.Country.ID, 'CA');
+                }
                 return this.countryDAO.where(q);
               })
             })
@@ -118,7 +127,7 @@ foam.CLASS({
     async function addBankAccount() {
       this.isConnecting = true;
       var contact = this.wizard.data;
-      var bankAccount = this.isCABank ? this.caAccount : this.usAccount;
+      var bankAccount = this.wizard.bankAccount;
       bankAccount.owner = this.wizard.data.id;
 
       try {
@@ -151,6 +160,9 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
+        this.wizard.bankAccount = this.BankAccount.create();
+        this.bankAdded = false;
+        this.isConnecting = false;
         if ( X.subStack.depth > 1 ) {
           X.subStack.back();
         } else {
@@ -169,6 +181,11 @@ foam.CLASS({
         var businessAddress = this.wizard.data.businessAddress;
         if ( businessAddress.errors_ ) {
           this.ctrl.notify(businessAddress.errors_[0][1], 'error');
+          return;
+        }
+        var reg = /^\d+$/;
+        if ( ! reg.test(businessAddress.streetNumber) ) {
+          this.ctrl.notify(this.STREET_NUMBER, 'error');
           return;
         }
 

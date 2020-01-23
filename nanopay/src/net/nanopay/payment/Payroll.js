@@ -17,18 +17,20 @@ foam.CLASS({
       class: 'String',
       name: 'timePeriod',
       javaFactory: `
-      Formatter fmt = new Formatter();
-      Calendar cal = Calendar.getInstance();
-      return fmt.format("%tB", cal) + " " + cal.get(Calendar.YEAR);
+      try (Formatter fmt = new Formatter()) {
+        Calendar cal = Calendar.getInstance();
+        return fmt.format("%tB", cal) + " " + cal.get(Calendar.YEAR);
+      }
        `
     },
     {
       class: 'String',
       name: 'note',
       javaFactory: `
-     Formatter fmt = new Formatter();
-     Calendar cal = Calendar.getInstance();
-     return "nanopay " + getTimePeriod() + " Payroll";
+      try (Formatter fmt = new Formatter()) {
+        Calendar cal = Calendar.getInstance();
+        return "nanopay " + getTimePeriod() + " Payroll";
+      }
       `
     },
     {

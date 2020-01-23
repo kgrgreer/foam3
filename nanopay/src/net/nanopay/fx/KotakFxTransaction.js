@@ -4,14 +4,24 @@ foam.CLASS({
   extends: 'net.nanopay.fx.FXTransaction',
 
    javaImports: [
-    'java.util.ArrayList',
-    'java.util.List',
-    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.Transfer'
   ],
 
    documentation: `Kotak transaction that stays in pending until a manual transaction rate is entered`,
+
+   properties: [
+    {
+      name: 'initialStatus',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;',
+    },
+    {
+      name: 'status',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+   ],
 
    methods: [
      {

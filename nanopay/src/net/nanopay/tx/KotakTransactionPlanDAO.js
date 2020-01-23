@@ -26,13 +26,12 @@ foam.CLASS({
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof DigitalAccount
-          && destinationAccount instanceof INBankAccount ) {
-        if ( destinationAccount.getDenomination().equalsIgnoreCase(sourceAccount.getDenomination()) ) {
-          KotakCOTransaction kotakCOTransaction = new KotakCOTransaction.Builder(x).build();
-          kotakCOTransaction.copyFrom(request);
-          kotakCOTransaction.setIsQuoted(true);
-          quote.addPlan(kotakCOTransaction);
-        }
+           && destinationAccount instanceof INBankAccount
+           && destinationAccount.getDenomination().equalsIgnoreCase(sourceAccount.getDenomination()) ) {
+          KotakPaymentTransaction KotakPaymentTransaction = new KotakPaymentTransaction.Builder(x).build();
+          KotakPaymentTransaction.copyFrom(request);
+          KotakPaymentTransaction.setIsQuoted(true);
+          quote.addPlan(KotakPaymentTransaction);
       }
       return super.put_(x, quote);`
     },

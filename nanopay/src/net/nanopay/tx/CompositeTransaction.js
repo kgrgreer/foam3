@@ -18,10 +18,10 @@ foam.CLASS({
         Transaction [] t = tx.getNext();
         txn.setInitialStatus(txn.getStatus());
         txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-        int size = 0;
-        if ( t != null ) {
-          size = t.length;
+        if ( t == null ) {
+          return;
         }
+        int size = t.length;
         Transaction [] t2 = new Transaction [size+1];
         for ( int i = 0; i < tx.getNext().length; i++ ) {
           t2[i] = t[i];

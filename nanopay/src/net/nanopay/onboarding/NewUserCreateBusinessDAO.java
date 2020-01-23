@@ -1,5 +1,13 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
@@ -16,12 +24,6 @@ import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-
 /**
  * When a new user is signing up and wants to create a business, this decorator
  * will create the business for them. Since the user is signing up, they don't
@@ -30,10 +32,10 @@ import static foam.mlang.MLang.EQ;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO localBusinessDAO_;
-  public DAO agentJunctionDAO_;
-  public DAO tokenDAO_;
-  public DAO invitationDAO_;
+  private DAO localBusinessDAO_;
+  private DAO agentJunctionDAO_;
+  private DAO tokenDAO_;
+  private DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -134,6 +136,12 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             ).fclone();
           invitation.setStatus(InvitationStatus.COMPLETED);
           invitationDAO_.inX(businessContext).put(invitation);
+
+          CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(sysContext);
+          List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
+
+          if ( onboardings.size() > 0 )
+            createOnboardingCloneService.putOnboardingClone(sysContext, onboardings, user.getId());
 
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create(external)/update(internal) the user and

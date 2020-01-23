@@ -90,9 +90,9 @@ foam.CLASS({
       ]
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'issueDate',
-      documentation: `The date and time that the invoice was issued (created).`,
+      documentation: `The date that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
       view: { class: 'foam.u2.DateView' },
@@ -119,10 +119,7 @@ foam.CLASS({
         'issueDate',
         'issue',
         'issued'
-      ],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      ]
     },
     {
       class: 'Date',
@@ -130,9 +127,6 @@ foam.CLASS({
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
       aliases: ['dueDate', 'due', 'd', 'issued'],
-      tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
-      },
       tableWidth: 95
     },
     {
@@ -140,12 +134,7 @@ foam.CLASS({
       name: 'paymentDate',
       documentation: `The date and time of when the invoice was paid.`,
       label: 'Received',
-      aliases: ['scheduled', 'paid'],
-      tableCellFormatter: function(date) {
-        if ( date ) {
-          this.add(date.toISOString().substring(0, 10));
-        }
-      }
+      aliases: ['scheduled', 'paid']
     },
     {
       class: 'DateTime',
@@ -157,6 +146,25 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The ID of the User who created the Invoice.`,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The ID of the Agent who created the Invoice.`,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -242,6 +250,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'amount',
+      unitPropName: 'destinationCurrency',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
         deposited into the destination account. If fees or exchange apply, the source amount 
@@ -253,21 +262,6 @@ foam.CLASS({
         'destinationAmount'
       ],
       required: true,
-      tableCellFormatter: function(value, invoice) {
-        // Needed to show amount value for old invoices that don't have destination currency set
-        if ( ! invoice.destinationCurrency ) {
-          this.add(value);
-        }
-        this.__subContext__.currencyDAO
-          .find(invoice.destinationCurrency)
-          .then((currency) => {
-            var formatted = currency.format(value);
-            this.tooltip = formatted;
-            this.start()
-              .add(formatted)
-            .end();
-          });
-      },
       tableWidth: 120,
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -287,16 +281,9 @@ foam.CLASS({
     { // How is this used? - display only?,
       class: 'UnitValue',
       name: 'sourceAmount',
+      unitPropName: 'sourceCurrency',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
-      `,
-      tableCellFormatter: function(value, invoice) {
-        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
-          .then(function(currency) {
-            this.start()
-              .add(currency.format(value))
-            .end();
-        }.bind(this));
-      }
+      `
     },
     {
       class: 'Reference',
@@ -533,20 +520,7 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: foam.dao.PromisedDAO.create({
-                promise: X.publicBusinessDAO
-                  .select(m.MAP(net.nanopay.model.Business.ID))
-                  .then(function(sink) {
-                    return X.user.contacts
-                      .where(
-                        m.OR(
-                          m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array),
-                          m.EQ(net.nanopay.contacts.Contact.BUSINESS_ID, 0)
-                        )
-                      )
-                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-                  })
-              })
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
             }
           ]
         };
@@ -619,7 +593,7 @@ foam.CLASS({
         } else {
           User payee = (User) bareUserDAO.find(
             isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
-          if ( payee == null && contact.getBusinessId() != 0 ) {
+          if ( payee == null && ( contact == null || contact.getBusinessId() != 0 ) ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
           // TODO: Move user checking to user validation service
@@ -633,7 +607,7 @@ foam.CLASS({
         } else {
           User payer = (User) bareUserDAO.find(
             isPayerIdGiven ? this.getPayerId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
-          if ( payer == null && contact.getBusinessId() != 0 ) {
+          if ( payer == null && ( contact == null || contact.getBusinessId() != 0 ) ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           // TODO: Move user checking to user validation service
@@ -651,7 +625,7 @@ foam.CLASS({
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
-        return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
+        // return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
         X.stack.push({

@@ -122,7 +122,7 @@ foam.CLASS({
             .build();
 
           // put to journal
-          journal.put(x, INPUT);
+          journal.put(x, null, dao, INPUT);
 
           // read the line just put
           boolean succeeds = false;
@@ -157,7 +157,7 @@ foam.CLASS({
             .build();
 
           // put to journal
-          journal.put(x, INPUT);
+          journal.put(x, null, dao, INPUT);
 
           // replay journal
           journal.replay(x, dao);
@@ -172,7 +172,7 @@ foam.CLASS({
           test(count.getValue() == 1L, "Replaying journal again should not add another element to DAO");
 
           // verify object stored in DAO matches input
-          User result = (User) dao.find(1000);
+          User result = (User) dao.find(1000l);
           test(1000 == result.getId(), "Stored user id matches 1000");
           test("Kirk".equals(result.getFirstName()), "Stored user first name matches \\"Kirk\\"");
           test("Eaton".equals(result.getLastName()), "Stored user last name matches \\"Eaton\\"");

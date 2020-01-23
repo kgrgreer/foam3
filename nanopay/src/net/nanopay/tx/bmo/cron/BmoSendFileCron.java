@@ -1,5 +1,16 @@
 package net.nanopay.tx.bmo.cron;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -8,9 +19,12 @@ import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
-import foam.nanos.notification.email.EmailMessage;
-import foam.util.Emails.EmailsUtility;
-import net.nanopay.tx.bmo.*;
+import net.nanopay.tx.TransactionEvent;
+import net.nanopay.tx.bmo.BmoEftFileGenerator;
+import net.nanopay.tx.bmo.BmoFormatUtil;
+import net.nanopay.tx.bmo.BmoReportProcessor;
+import net.nanopay.tx.bmo.BmoSFTPClient;
+import net.nanopay.tx.bmo.BmoSFTPCredential;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -21,19 +35,6 @@ import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
 
 public class BmoSendFileCron implements ContextAgent {
 
@@ -83,9 +84,8 @@ public class BmoSendFileCron implements ContextAgent {
     logger.info("Finishing send CI transaction.");
 
     try {
-      Thread.sleep(30 * 1000);
+      Thread.sleep(30L * 1000);
     } catch (InterruptedException e) {
-      e.printStackTrace();
     }
 
     logger.info("Sending CO transactions.");
@@ -124,7 +124,7 @@ public class BmoSendFileCron implements ContextAgent {
 
       // 2. creat the file on the disk
       readyToSend = fileGenerator.createEftFile(eftFile);
-      passedTransaction.forEach(transaction -> ((BmoTransaction)transaction).addHistory("Ready to send."));
+      passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Ready to send.").build()));
 
       // 3. send file through sftp
       if ( ! sftpCredential.getSkipSendFile() ) {
@@ -134,26 +134,26 @@ public class BmoSendFileCron implements ContextAgent {
 
         new BmoSFTPClient(x, sftpCredential).upload(readyToSend);
         passedTransaction.forEach(transaction -> {
-          ((BmoTransaction)transaction).addHistory("Sending...");
+          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Sending...").build());
         });
 
         /* Fetch and process the receipt file, any exception happened during this process, set the transaction status to Failed */
         try {
           File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();
           passedTransaction.forEach(transaction -> {
-            ((BmoTransaction)transaction).addHistory("Downloading receipt...");
+            transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Downloading receipt...").build());
           });
 
           if ( new BmoReportProcessor(x).processReceipt(receipt, eftFile.getHeaderRecord().getFileCreationNumber()) ) {
             passedTransaction.forEach(transaction -> {
-              ((BmoTransaction)transaction).addHistory("Verify receipt...");
+              transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Verify receipt...").build());
             });
           } else {
             throw new BmoSFTPException("Failed when verify receipt.");
           }
         } catch ( Exception e ) {
           passedTransaction.forEach(transaction -> {
-            ((BmoTransaction)transaction).addHistory("Failed when verify receipt.");
+            transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Failed when verify receipt.").build());
             transaction.setStatus(TransactionStatus.FAILED);
           });
           throw e;
@@ -164,7 +164,7 @@ public class BmoSendFileCron implements ContextAgent {
 
       // 4. update the transaction status
       passedTransaction.forEach(transaction -> {
-        ((BmoTransaction)transaction).addHistory("Sent to BMO.");
+        transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Sent to BMO.").build());
         ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());
         transaction.setProcessDate(new Date());
         transaction.setStatus(TransactionStatus.SENT);
@@ -174,7 +174,8 @@ public class BmoSendFileCron implements ContextAgent {
     } catch ( Exception e ) {
       logger.error("BMO EFT : " + e.getMessage(), e);
       BmoFormatUtil.sendEmail(x, "BMO EFT Error during sending EFT file", e);
-      passedTransaction.forEach(transaction -> ((BmoTransaction)transaction).addHistory("Error: " + e.getMessage()));
+      if(passedTransaction != null)
+        passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Error: " + e.getMessage()).build()));
 
       if ( readyToSend != null ) {
         try {

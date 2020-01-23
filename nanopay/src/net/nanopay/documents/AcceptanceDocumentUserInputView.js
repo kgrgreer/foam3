@@ -14,6 +14,12 @@ foam.CLASS({
     'acceptanceDocumentService'
   ],
 
+  css: `
+  ^ .checkBox {
+    margin-right: .5vw;
+  }
+  `,
+
   properties: [
     {
       class: 'String',
@@ -47,7 +53,7 @@ foam.CLASS({
         .startContext({ data: this })
           .start()
             .hide(this.doc$.map((d) => ! d))
-            .start(this.AGREED)
+            .start(this.AGREED).addClass('checkBox')
               .add(this.doc$.dot('checkboxText'))
               .start('a')
                 .add(this.doc$.dot('title'))

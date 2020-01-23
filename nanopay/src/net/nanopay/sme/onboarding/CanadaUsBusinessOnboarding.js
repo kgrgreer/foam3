@@ -52,11 +52,11 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      isAvailable: function(signingOfficer) { return signingOfficer; }
     },
   ],
 
-  properties: [ 
+  properties: [
     {
       name: 'welcome',
       section: 'gettingStartedSection',
@@ -154,17 +154,14 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['signingOfficer','businessFormationDate'],
+          args: ['signingOfficer', 'businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
-                timeMs: 24 * 60 * 60 * 1000
-              })
+              e.LTE(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE, new Date())
             );
           },
-          errorString: 'Business Formation Date must be a date in the past.'
+          errorString: 'Cannot be future dated.'
         }
       ]
     },
@@ -179,9 +176,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ChoiceView',
           placeholder: '- Please select -',
-          dao: X.countryDAO.where(m.OR(
-            m.EQ(foam.nanos.auth.Country.ID, 'CA')
-          )),
+          dao: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')),
           objToChoice: function(a) {
             return [a.id, a.name];
           }

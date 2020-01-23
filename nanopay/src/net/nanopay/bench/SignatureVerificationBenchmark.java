@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.dao.Sink;
+import foam.nanos.logger.Logger;
 import net.nanopay.tx.model.Transaction;
 
 import java.security.PrivateKey;
@@ -42,6 +43,10 @@ public class SignatureVerificationBenchmark
   }
 
   @Override
+  public void teardown(X x, java.util.Map stats) {
+  }
+
+  @Override
   public void execute(X x) {
     try {
       // verify signatures using public key and signature generated in setup
@@ -49,6 +54,8 @@ public class SignatureVerificationBenchmark
       SimpleEntry<Transaction, byte[]> entry = transactions_.get(n);
       entry.getKey().verify(entry.getValue(), sigAlgo_, keypair_.getPublic());
     } catch (Throwable t) {
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       t.printStackTrace();
     }
   }

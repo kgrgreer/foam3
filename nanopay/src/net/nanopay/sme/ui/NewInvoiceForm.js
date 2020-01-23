@@ -69,10 +69,9 @@ foam.CLASS({
       height: 40px;
       border-radius: 0 4px 4px 0;
       outline: none;
-      padding-right: 5px;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 86px);
+      width: calc(100% - 87px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
@@ -82,10 +81,8 @@ foam.CLASS({
       display: inline-block;
       height: 38px;
       vertical-align: top;
-      border-style: solid;
-      border-width: 1px 0 1px 1px;
-      border-color: /*%GREY3%*/ #cbcfd4;
-      border-radius: 4px 0 0 4px;
+      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border-radius: 3px;
     }
     ^ .validation-failure-container {
       font-size: 10px;
@@ -203,7 +200,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'User does not have the ability to exchange funds in this currency.'
+      message: 'You do not have the ability to receive funds in this currency.'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
@@ -514,7 +511,10 @@ foam.CLASS({
                 'image/png': 'PNG',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
                 'application/msword': 'DOC',
-                'application/pdf': 'PDF'
+                'application/pdf': 'PDF',
+                'application/csv': 'CSV',
+                'application/vnd.ms-excel': 'XLS',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX'
               }
             }).end()
             .start().addClass('input-wrapper')
@@ -562,8 +562,6 @@ foam.CLASS({
       if ( partyId && destinationCurrency && this.invoice.contactId ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
-          isRecievable: ! isPayable,
-          payerId: this.invoice.contactId,
           currencyId: destinationCurrency
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {

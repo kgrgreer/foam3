@@ -70,6 +70,11 @@ public class TransactionDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn    = (Transaction) obj;
+
+    if ( SafetyUtil.isEmpty(txn.getId()) || ! txn.getIsQuoted() ) {
+      throw new RuntimeException("Transaction must be quoted and have id set.");
+    }
+
     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
     if ( canExecute(x, txn, oldTxn) ) {
@@ -128,11 +133,7 @@ public class TransactionDAO
       ts = (Transfer[]) all.toArray(new Transfer[0]);
     }
 
-    // TODO: disallow or merge duplicate accounts - see lockAndExecute below.
-    if ( ts.length != 1 ) {
-      validateTransfers(x, txn, ts);
-    }
-    return lockAndExecute(x, txn, ts, 0);
+    return lockAndExecute(x, txn, ts);
   }
 
   void validateTransfers(X x, Transaction txn, Transfer[] ts)
@@ -164,33 +165,38 @@ public class TransactionDAO
   }
 
   /** Sorts array of transfers. **/
-  FObject lockAndExecute(X x, Transaction txn, Transfer[] ts, int i) {
-    // sort to avoid deadlock
-    java.util.Arrays.sort(ts);
+  FObject lockAndExecute(X x, Transaction txn, Transfer[] ts) {
 
-    return lockAndExecute_(x, txn, ts, i);
+    // Combine transfers to the same account
+    HashMap<Long, Transfer> hm = new HashMap();
+
+    for ( Transfer tr : ts ) {
+       if ( hm.get(tr.getAccount()) != null ) {
+         tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+       }
+      hm.put(tr.getAccount(), tr);
+    }
+    Transfer [] newTs = hm.values().toArray(new Transfer[0]);
+
+    // sort the transfer array
+    java.util.Arrays.sort(newTs);
+    // persist condensed transfers
+    txn.setTransfers(newTs);
+    // lock accounts in transfers
+    return lockAndExecute_(x, txn, newTs, 0);
   }
 
   /** Lock each transfer's account then execute the transfers. **/
   FObject lockAndExecute_(X x, Transaction txn, Transfer[] ts, int i) {
-    HashMap<Long, Transfer> hm = new HashMap();
 
-    for ( Transfer tr : ts ) {
-      // REVIEW: as the TODO above suggest, this creates an incorrect transfer list
-      // when transfers to the same account exist.
-      // if ( hm.get(tr.getAccount()) != null ) {
-      //   tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
-      // }
-      hm.put(tr.getAccount(), tr);
-    }
-
-    Transfer [] newTs = hm.values().toArray(new Transfer[0]);
     if ( i > ts.length - 1 ) {
-      return execute(x, txn, newTs);
-    }
+      // validate the transfers we have combined.
+      validateTransfers(x, txn, ts);
 
+      return execute(x, txn, ts);
+    }
     synchronized ( ts[i].getLock() ) {
-      return lockAndExecute_(x, txn, newTs, i + 1);
+      return lockAndExecute_(x, txn, ts, i + 1);
     }
   }
 

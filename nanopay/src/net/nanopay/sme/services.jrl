@@ -4,26 +4,23 @@ p({
   "lazy": false,
   "serve": true,
   "authenticate": false,
-  "serviceScript": 
+  "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setAuthorize(false)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(x.get("localUserDAO"))
       .setDecorator(
         new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
-        new foam.nanos.auth.UserPasswordHashingDAO(x, 
-        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", 
-        new foam.nanos.ruler.RulerDAO(x,
-        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null), "smeBusinessRegistrationDAO")))).build())
+        new foam.nanos.auth.UserPasswordHashingDAO(x,
+        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme",
+        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null)))).build())
+      .setRuler(true)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
       .setValidated(true)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setInnerDAO(x.get("localUserDAO"))
+      .setEnableInterfaceDecorators(false)
       .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .build();
   """,
   "client": """
@@ -108,7 +105,8 @@ p({
       .setJournalName(\"businessOnboardingDAO\").build();
 
     businessOnboardingDAO = new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
-    validatingDAO = new foam.dao.ValidatingDAO(x, businessOnboardingDAO);
+    updateOnboardingDAO = new net.nanopay.onboarding.UpdateOnboardingDAO(x, businessOnboardingDAO);
+    validatingDAO = new foam.dao.ValidatingDAO(x, updateOnboardingDAO);
     return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer(\"businessOnboarding\"));
   """,
   "client": "{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}"
@@ -159,7 +157,8 @@ p({
         .build();
 
     usBusinessOnboarding = new net.nanopay.sme.onboarding.USBusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
-    validatingDAO = new foam.dao.ValidatingDAO(x, usBusinessOnboarding);
+    updateOnboardingDAO = new net.nanopay.onboarding.UpdateOnboardingDAO(x, usBusinessOnboarding);
+    validatingDAO = new foam.dao.ValidatingDAO(x, updateOnboardingDAO);
     return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer("usBusinessOnboarding"));
   """,
   "client":

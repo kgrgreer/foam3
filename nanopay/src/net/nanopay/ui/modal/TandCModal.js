@@ -60,7 +60,7 @@ foam.CLASS({
       var host = ('localhost'===(window.location.hostname))
           ? window.location.hostname + ':'+window.location.port
           : window.location.hostname;
-      path = window.location.protocol + '//' + host + '/';
+      var path = window.location.protocol + '//' + host + '/';
       this
       .start()
         .tag(this.ModalHeader.create({

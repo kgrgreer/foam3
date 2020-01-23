@@ -8,21 +8,15 @@ foam.CLASS({
     Actions are provided for both scenarios (attached or not).
   `,
 
-  implements: [
-    'foam.mlang.Expressions',
-  ],
-
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.payment.Institution',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
     'foam.u2.dialog.Popup'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions',
   ],
 
   imports: [
@@ -117,15 +111,35 @@ foam.CLASS({
       if ( this.isAccountThere ) {
         this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
         let branch = await this.branchDAO.find(this.account.branch);
-        let institution = await this.institutionDAO.find(branch.institution);
-        if ( institution ) {
-          this.abbreviation = institution.abbreviation;
-          this.bankName = institution.name;
+        if ( branch ) {
+          let institution = await this.institutionDAO.find(branch.institution);
+          if ( institution ) {
+            this.abbreviation = institution.abbreviation;
+            this.bankName = institution.name;
+          }
         }
       }
     },
 
+    async function checkDefaultAccount() {
+      await this.user.accounts
+        .find(
+          this.AND(
+            this.OR(
+              this.EQ(this.Account.TYPE, this.BankAccount.name),
+              this.EQ(this.Account.TYPE, this.CABankAccount.name),
+              this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            ),
+            this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
+            this.EQ(this.Account.IS_DEFAULT, true)
+          )
+        ).then((defaultAccount) => {
+          if ( defaultAccount !== null ) this.account = defaultAccount;
+        });
+    },
+
     function initE() {
+      this.checkDefaultAccount();
       this.account$.sub(this.updateBankCard);
       this.getInstitution().then(() => {
         this.add(this.slot((subtitleToUse, isAccountThere) => {

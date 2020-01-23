@@ -137,9 +137,10 @@ public class SendInvitationDAO
     }
 
     args.put("message", invite.getMessage());
-    args.put("senderCompany", currentUser.getBusinessName());
-    args.put("inviterName", currentUser.getBusinessName());
+    args.put("name", invite.getInvitee().label());
+    args.put("senderCompany", currentUser.label());
     args.put("link", url + urlPath);
+    args.put("sendTo", invite.getEmail());
 
     try {
       EmailsUtility.sendEmailFromTemplate(x, currentUser, message, template, args);

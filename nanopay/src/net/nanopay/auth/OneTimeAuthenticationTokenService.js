@@ -20,7 +20,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
     'foam.nanos.auth.AuthorizationException',
@@ -28,16 +27,27 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.session.Session',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'java.io.IOException',
     'java.time.LocalDateTime',
     'java.time.ZoneId',
     'java.time.temporal.ChronoUnit',
-    'java.util.Calendar',
     'java.util.Date',
-    'java.util.List',
     'java.util.UUID',
     'static foam.mlang.MLang.*'
+  ],
+
+  constants: [
+    {
+      name: 'LACKS_SERVICE_PERMISSION',
+      value: "You don't have permission to run authenticationToken service.",
+      type: 'String'
+    },
+    {
+      name: 'LACKS_SESSION_CREATE_PERMISSION',
+      value: "You don't have permission to create a session for that user.",
+      type: 'String'
+    }
   ],
 
   properties: [
@@ -54,7 +64,7 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service.run.authenticationToken") ) {
-          throw new AuthorizationException();
+          throw new AuthorizationException(LACKS_SERVICE_PERMISSION);
         }
 
         DAO localUserDAO = (DAO) x.get("localUserDAO");
@@ -63,9 +73,14 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
-        // Check spid.create.<spid> permission to create an authentication token
-        if ( ! auth.check(x, "spid.create." + user.getSpid()) ) {
-          throw new AuthorizationException();
+        // Check session.create.<spid> permission to create the authentication token
+        if ( ! auth.check(x, "session.create." + user.getSpid()) ) {
+          throw new AuthorizationException(LACKS_SESSION_CREATE_PERMISSION);
+        }
+
+        String tokenUUID = (String) parameters.remove("data");
+        if ( tokenUUID == null ) {
+          tokenUUID = UUID.randomUUID().toString();
         }
 
         DAO tokenDAO = (DAO) getTokenDAO();
@@ -73,18 +88,16 @@ foam.CLASS({
           new Token.Builder(x)
             .setUserId(user.getId())
             .setExpiry(generateExpiryDate())
-            .setData(UUID.randomUUID().toString())
+            .setData(tokenUUID)
             .setParameters(parameters)
             .build()
         );
 
         String callbackUrl = (String) parameters.get("callbackUrl");
         if ( ! SafetyUtil.isEmpty(callbackUrl) ) {
-          try {
-            tokenDAO.where(
-              EQ(Token.ID, token.getId())
-            ).select(new HTTPSink(callbackUrl, foam.nanos.http.Format.JSON));
-          } catch (IOException e) { }
+          tokenDAO.where(
+            EQ(Token.ID, token.getId())
+          ).select(new HTTPSink(callbackUrl, foam.nanos.http.Format.JSON));
         }
         return true;
       `
@@ -109,31 +122,41 @@ foam.CLASS({
           throw new RuntimeException("Token has expired");
         }
 
-        // find user from token
+        // Find user from token
         DAO localUserDAO = (DAO) x.get("localUserDAO");
-        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         User userResult = (User) localUserDAO.find(tokenResult.getUserId());
 
         if ( userResult == null ) {
           throw new RuntimeException("User not found");
         }
 
-        // update the current session
+        // Update user/agent of the current session
         DAO localSessionDAO = (DAO) x.get("localSessionDAO");
-        Session session = x.get(Session.class);
+        Session session = new Session();
+        session.copyFrom(x.get(Session.class));
         session.setUserId(userResult.getId());
         Long businessId = (Long) tokenResult.getParameters().get("businessId");
-        if ( businessId != null ) {
+        if ( businessId > 0 ) {
           session.setUserId(businessId);
           session.setAgentId(userResult.getId());
         }
-        session = (Session) localSessionDAO.put(session);
-        session.setContext(session.applyTo(session.getContext()));
 
-        // set token processed to true
-        tokenResult.setProcessed(true);
-        tokenDAO.put(tokenResult);
-        return true;
+        try {
+          session = (Session) localSessionDAO.put(session);
+          session.setContext(session.applyTo(session.getContext()));
+
+          // Mark the token as processed
+          tokenResult.setProcessed(true);
+          tokenDAO.put(tokenResult);
+          return true;
+        } catch (Exception e) {
+          ((Logger) x.get("logger")).error(
+            String.format(
+              "Failed to process authentication token with id %d.",
+              tokenResult.getId()
+            ), e);
+          return false;
+        }
       `
     },
     {

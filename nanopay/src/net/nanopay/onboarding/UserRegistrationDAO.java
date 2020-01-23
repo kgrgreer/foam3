@@ -32,9 +32,9 @@ public class UserRegistrationDAO
   protected String spid_;
   protected String group_;
 
-  public DAO invitationDAO_;
-  public DAO tokenDAO_;
-  public DAO localBusinessDAO_;
+  private DAO invitationDAO_;
+  private DAO tokenDAO_;
+  private DAO localBusinessDAO_;
 
   public UserRegistrationDAO(X x, String group, DAO delegate) {
     this(x, "nanopay", group, delegate);
@@ -149,6 +149,7 @@ public class UserRegistrationDAO
             Logger logger = (Logger) x.get("logger");
             logger.warning("Business invitation is not in SENT status but is trying to get processed.");
           }
+          invitation = (Invitation) invitation.fclone();
           invitation.setStatus(InvitationStatus.ACCEPTED);
           invitationDAO_.put(invitation);
         }

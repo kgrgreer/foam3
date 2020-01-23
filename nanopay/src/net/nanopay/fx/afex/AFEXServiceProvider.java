@@ -1,18 +1,28 @@
 package net.nanopay.fx.afex;
 
-import foam.core.X;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import foam.core.ContextAwareSupport;
+import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-
-import static foam.mlang.MLang.*;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
@@ -26,20 +36,11 @@ import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
+import net.nanopay.model.PadCapture;
+import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -76,7 +77,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-        if ( afexBusiness != null ) return false;
+        if ( afexBusiness != null ) return true;
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
@@ -166,8 +167,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
               afexBusinessDAO.put(afexBusiness);
-              return true;
             }
+            return true;
           }
         }
       }
@@ -178,6 +179,45 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    if ( afexBusiness ==  null ) {
+      return false;
+    }
+    DAO padDAO = (DAO) x.get("padCaptureDAO");
+    ArraySink sink = new ArraySink();
+    PadCapture pad = null;
+    padDAO.where(EQ(PadCapture.ACCOUNT_NUMBER, bankAccount.getAccountNumber())).select(sink);
+    if ( sink.getArray().size() > 0 ) {
+      pad = (PadCapture) sink.getArray().get(0);
+    } else {
+      return false;
+    }
+    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
+    DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setAccountOwnerFirstName(pad.getFirstName())
+      .setAccountOwnerLastName(pad.getLastName())
+      .setAPIKey(afexBusiness.getApiKey())
+      .setBankDetailsVerified(bankAccount.getStatus() == BankAccountStatus.VERIFIED)
+      .setBankName(bankResponse.getInstitutionName())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+    if ( bankAccount instanceof CABankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+    } else if ( bankAccount instanceof USBankAccount ) {
+      directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
+    }
+
+    String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
+
+    if ( ! directDebitEnrollmentResponse.equals("\"This account is submitted to enroll in Direct Debit.\"") ) {
+      logger_.error("Error creating direct debit account for business " + business.getId(), directDebitEnrollmentRequest, directDebitEnrollmentResponse);
+      return false;
+    }
+    return true;
   }
 
   public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
@@ -300,11 +340,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
     if ( null == bankAddress ) {
-      if ( bankInformation == null ) {
-        throw new RuntimeException("Bank Account Address is null " + bankAccountId );
-      }
       bankAddress = new Address.Builder(x)
-        .setCountryId(bankInformation.getIsoCountryCode())
+        .setCountryId(bankAccount.getCountry())
         .build();
     }
 
@@ -323,7 +360,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         bankRoutingCode = "0" + bankAccount.getBankCode(x) + bankRoutingCode;
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
-      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress());
+      createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress().replace("#", ""));
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
       createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
       createBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
@@ -439,6 +476,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Calendar afexBeneficiaryLastModifiedDate = Calendar.getInstance();
     afexBeneficiaryLastModifiedDate.setTime(afexBeneficiary.getLastModified());
     return (accountLastModifiedDate.after(afexBeneficiaryLastModifiedDate));
+  }
+
+  public boolean directDebitUnenrollment(Business business, BankAccount bankAccount) {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    DirectDebitUnenrollmentRequest unenrollmentRequest = new DirectDebitUnenrollmentRequest.Builder(x)
+      .setAccountNumber(bankAccount.getAccountNumber())
+      .setApiKey(afexBusiness.getApiKey())
+      .setCurrency(bankAccount.getDenomination())
+      .build();
+
+    String response = afexClient.directDebitUnenrollment(unenrollmentRequest);
+
+    return false;
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
@@ -652,7 +702,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return TransactionStatus.DECLINED;
 
       if ( AFEXPaymentStatus.PREPARED_CANCELLED.getLabel().equals(paymentStatus) )
-      return TransactionStatus.DECLINED;      
+        return TransactionStatus.DECLINED;      
 
       return TransactionStatus.SENT;
 
@@ -664,7 +714,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
     if ( bankAccount instanceof CABankAccount ) {
-      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+      String institutionNumber;
+      if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+        DAO institutionDAO = (DAO) x.get("institutionDAO");
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        institutionNumber = institution.getInstitutionNumber();
+      } else {
+        institutionNumber = bankAccount.getInstitutionNumber();
+      }
+      String branchId = SafetyUtil.isEmpty(bankAccount.getBranchId()) ? bankAccount.getRoutingCode(x) : bankAccount.getBranchId();
+      findBankByNationalIDRequest.setNationalID("0" + institutionNumber + branchId);
     } else if ( bankAccount instanceof USBankAccount ) {
       findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
     } else {

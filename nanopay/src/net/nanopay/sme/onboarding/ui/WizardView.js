@@ -76,6 +76,9 @@ foam.CLASS({
     ^ .inner-card {
       padding: 15px 0px;
     }
+    ^ .contents-grow {
+      flex-grow: 1;
+    }
   `,
   properties: [
     {
@@ -150,7 +153,7 @@ foam.CLASS({
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
-              });
+              }).addClass('contents-grow');
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
             .start(self.Cols)
@@ -182,7 +185,9 @@ foam.CLASS({
       code: function() {
         if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' }));
+        dao.put(this.data.clone().copyFrom({ status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+                                             sendInvitation : false
+                                          }));
       }
     }
   ],
@@ -198,7 +203,10 @@ foam.CLASS({
         this.submitted = true;
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
-          put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
+          put(this.data.clone().copyFrom({
+            status : (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
+            sendInvitation : true
+          })).
           then(async () => {
             let user = await x.userDAO.find(x.user.id);
             if ( user ) x.user.onboarded = user.onboarded;
@@ -219,7 +227,10 @@ foam.CLASS({
       label: 'Save & Exit',
       code: function(x) {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' })).
+        dao.put(this.data.clone().copyFrom({
+          status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+          sendInvitation : true
+          })).
           then(function() {
             x.ctrl.notify('Progress saved.');
             x.stack.back();

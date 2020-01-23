@@ -8,8 +8,9 @@ foam.CLASS({
       name: 'runTest',
       type: 'Void',
       javaCode: `
-      test(1 == 1, "This works!");
-      test(1 == 2, "This fails!");
+      int num = 1;
+      test(num == 1, "This works!");
+      test(num == 2, "This fails!");
       `
     }
   ]

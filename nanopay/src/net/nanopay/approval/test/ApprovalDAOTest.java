@@ -1,7 +1,12 @@
 package net.nanopay.approval.test;
 
+import static foam.mlang.MLang.DOT;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NEQ;
+import static foam.mlang.MLang.NEW_OBJ;
+
 import foam.core.Detachable;
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
@@ -11,12 +16,19 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
-import foam.nanos.ruler.*;
+import foam.nanos.ruler.Operations;
+import foam.nanos.ruler.Rule;
+import foam.nanos.ruler.RuleAction;
+import foam.nanos.ruler.RuleGroup;
+import foam.nanos.ruler.RulerDAO;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
-import net.nanopay.approval.*;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.approval.ApprovalDAO;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalRequestUtil;
+import net.nanopay.approval.ApprovalStatus;
+import net.nanopay.approval.AuthenticatedApprovalDAO;
+import net.nanopay.approval.SendGroupRequestApprovalDAO;
 
 public class ApprovalDAOTest
 extends Test {
@@ -120,13 +132,17 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
   private void createUserRule(X ctx) {
     Rule rule = new Rule();
     rule.setId("rule1. testing approval");
+    RuleGroup rg = new RuleGroup();
+    rg.setId("test approval_CREATE");
+    DAO rgDAO = ((DAO) (ctx.get("ruleGroupDAO")));
+    rgDAO.put(rg);
     rule.setRuleGroup("test approval_CREATE");
     rule.setDaoKey("testUserDAO");
     rule.setOperation(Operations.CREATE);
     rule.setAfter(true);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate);
-    RuleAction action = (x, obj, oldObj, ruler, agency) -> {
+    RuleAction action = (x, obj, oldObj, ruler, r, agency) -> {
       initialRequest.setObjId(((User) obj).getId());
       initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
     };
@@ -135,13 +151,16 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
 
     Rule rule2 = new Rule();
     rule2.setId("rule2. testing approval");
+    RuleGroup rg2 = new RuleGroup();
+    rg2.setId("test approval_UPDATE");
+    rgDAO.put(rg2);
     rule2.setRuleGroup("test approval_UPDATE");
     rule2.setDaoKey("testUserDAO");
     rule2.setOperation(Operations.UPDATE);
     rule2.setAfter(false);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate2);
-    RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, agency) -> {
+    RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, r2, agency) -> {
       User user = (User) obj;
       long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassification());
 

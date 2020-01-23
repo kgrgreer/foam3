@@ -4,16 +4,13 @@ foam.CLASS({
   extends: 'net.nanopay.account.ZeroAccount',
 
   javaImports: [
-    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'foam.core.Currency',
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.dao.Sink',
-    'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -88,8 +85,14 @@ foam.CLASS({
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());
 
             for ( int i =0 ; i<accountList.size(); i++ ) {
-              reserveAccs.put( ( (TrustAccount) accountList.get(i) ).findReserveAccount(x) );
+              Account reserveAccount = ((TrustAccount) accountList.get(i)).findReserveAccount(x);
+              if ( reserveAccount != null ) {
+                reserveAccs.put( reserveAccount );
+              } else {
+                logger.warning("ReserveAccount not found for account", accountList.get(i));
+              }
             }
+
             Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.INSTITUTION_NUMBER,institutionNumber));
             List reserveAccsList = ( (ArraySink) reserveAccs.where(
               AND(

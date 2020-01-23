@@ -1,5 +1,11 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NOT;
+import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -11,22 +17,18 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.AbliiTransaction;
 import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.Transfer;
-import net.nanopay.tx.alterna.AlternaCITransaction;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
-import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
 public class TransactionTest
   extends foam.nanos.test.Test {
@@ -42,6 +44,7 @@ public class TransactionTest
 
     testTransactionMethods();
     testAbliiTransaction();
+    testPADType();
     testVerificationTransaction();
     testFXTransaction();
     testLoanTransaction();
@@ -165,6 +168,7 @@ public class TransactionTest
     CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO"))
       .find(AND(EQ(CABankAccount.OWNER, sender_.getId()),INSTANCE_OF(CABankAccount.class)) ).fclone();
     bank.setStatus(BankAccountStatus.UNVERIFIED);
+    bank.setIsDefault(false);
     bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bank).fclone();
 
     BmoVerificationTransaction txn = new BmoVerificationTransaction.Builder(x_)
@@ -177,7 +181,7 @@ public class TransactionTest
 
     test(txn2.getStatus()== TransactionStatus.PENDING,"verification transaction is "+txn.getStatus().toString());
     test(txn2.getTransfers().length == 0 ,"The verification transaction has "+txn.getTransfers().length+" transfers");
-    test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
+    // test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
 
     TransactionQuote tq = new TransactionQuote.Builder(x_)
       .setRequestTransaction(txn)
@@ -197,8 +201,8 @@ public class TransactionTest
       .setPayerId(sender_.getId())
       .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
         .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
-        .setInvoiceId(inv.getId())
-        .setAmount(123)
+      .setInvoiceId(inv.getId())
+      .setAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();
@@ -266,7 +270,7 @@ public class TransactionTest
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber() == txn.getReferenceNumber(),"Reference Number copied in LimitedClone");
+    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
     test(! txn.isActive(), "isActive returns false");
 
@@ -290,6 +294,54 @@ public class TransactionTest
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
     test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
 
+  }
+
+  public void testPADType() {
+    DAO bankDAO = (DAO) x_.get("localAccountDAO");
+    DAO quoteDAO = (DAO) x_.get("localTransactionQuotePlanDAO");
+
+    CABankAccount bankAccount = (CABankAccount) bankDAO.find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)));
+    DigitalAccount digitalAccount = (DigitalAccount) bankDAO.find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
+
+    Transaction txn = new Transaction.Builder(x_)
+      .setAmount(2000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    TransactionQuote tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn = tq.getPlan();
+
+    PADTypeLineItem padTypeLineItem = null;
+    for (TransactionLineItem lineItem : txn.getLineItems()) {
+      if ( lineItem instanceof PADTypeLineItem ) {
+        padTypeLineItem = (PADTypeLineItem) lineItem;
+      }
+    }
+
+    test(padTypeLineItem != null, "pad type line item must be set");
+    if ( padTypeLineItem == null ) return;
+    test(padTypeLineItem.getPadType() <= 0, "Quote plan should not set the default value");
+
+    Transaction txn2 = new Transaction.Builder(x_)
+      .setAmount(3000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    PADTypeLineItem.addTo(txn2, 700);
+    tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn2)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn2 = tq.getPlan();
+
+    test(PADTypeLineItem.getPADTypeFrom(x_, txn2).getId() == 700, "pad type set before quote");
   }
 
   public User addUser(String email) {

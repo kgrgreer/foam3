@@ -15,7 +15,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding'
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
   ],
 
   imports: [
@@ -65,7 +66,7 @@ foam.CLASS({
       color: #525455;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
-      margin-top: 16px;
+      margin-top: 10px;
     }
     ^complete-container {
       margin-top: 24px;
@@ -81,7 +82,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       margin: 0;
-      
+
       font-size: 14px;
       line-height: 1.71;
       color: /*%BLACK%*/ #1e1f21;
@@ -103,7 +104,7 @@ foam.CLASS({
     },
     {
       name: 'TITLE_INTERNATIONAL_CAD',
-      message: 'Unlock US payments'
+      message: 'Unlock International payments'
     },
     {
       name: 'DESCRIPTION_DOMESTIC',
@@ -119,7 +120,7 @@ foam.CLASS({
     },
     {
       name: 'DESCRIPTION_CAD_INTERNATIONAL',
-      message: 'Complete the requirements to unlock US payments. More corridors coming soon!'
+      message: 'Complete the requirements to unlock payments to the US and India!'
     },
     {
       name: 'COMPLETE',
@@ -136,6 +137,10 @@ foam.CLASS({
     {
       name: 'COMING_SOON',
       message: 'Coming soon!'
+    },
+    {
+      name: 'DESCRIPTION_ONBOARDING_INCOMPLETION',
+      message: 'Your on boarding is incomplete. We are waiting for a signing officer to review and submit the requirements.'
     }
   ],
 
@@ -192,7 +197,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'info',
-      expression: function(type) {
+      expression: function(type, businessOnboarding) {
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
           return this.DESCRIPTION_CAD_INTERNATIONAL;
         }
@@ -200,7 +205,16 @@ foam.CLASS({
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
-        return this.isCanadianBusiness ? this.DESCRIPTION_DOMESTIC : this.DESCRIPTION_US_DOMESTIC;
+
+        if ( businessOnboarding.signingOfficer || businessOnboarding.status !== this.OnboardingStatus.SAVED ) {
+          if ( this.isCanadianBusiness ) {
+            return this.DESCRIPTION_DOMESTIC;
+          } else {
+            return this.DESCRIPTION_US_DOMESTIC;
+          }
+        } else if ( ! businessOnboarding.signingOfficer && businessOnboarding.status === this.OnboardingStatus.SAVED ) {
+          return this.DESCRIPTION_ONBOARDING_INCOMPLETION;
+        }
       },
       documentation: `
         The description to be used in the card based on card type
@@ -223,7 +237,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isEmployee'
-    }
+    },
+    'businessOnboarding'
   ],
 
   methods: [

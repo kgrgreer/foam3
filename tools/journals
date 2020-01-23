@@ -42,7 +42,9 @@ menus
 notifications
 notificationTemplates
 payoutOptions
+paymentCodes
 paymentProviders
+PADTypes
 permissions
 prerequisiteCapabilityJunctions
 purposeCodes
@@ -51,6 +53,7 @@ questionnaires
 quickbooksToken
 regions
 reports
+ruleGroups
 rules
 scripts
 securities
@@ -60,6 +63,7 @@ spids
 strategyReferences
 tests
 themes
+ticketStatuses
 transactionfees
 transactionLimits
 transactionPurposes

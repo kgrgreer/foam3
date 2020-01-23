@@ -36,6 +36,9 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
+  'net.nanopay.tx.ruler.MicroDepositSuccessed',
+  'net.nanopay.tx.ruler.MicroDepositFailed',
+  'net.nanopay.tx.ruler.MicroDepositSent',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
@@ -45,18 +48,22 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.RealexPaymentCard',
   'net.nanopay.cico.paymentCard.model.PaymentCardType',
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
+  'net.nanopay.payment.CreatePaymentCode',
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
+  'net.nanopay.payment.PaymentCode',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.payment.Payroll',
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.payment.InstitutionPaymentProvider',
+  'net.nanopay.payment.PADType',
+  'net.nanopay.payment.PADTypeLineItem',
+  'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
-  'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
@@ -81,6 +88,8 @@ var classes = [
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
   'net.nanopay.account.NoChildrenRule',
+  'net.nanopay.account.SecuritiesAccount',
+  'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
@@ -108,6 +117,11 @@ var classes = [
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.BankWeekend',
+  'net.nanopay.bank.DefaultBankAccountRule',
+  'net.nanopay.bank.IsDefaultRule',
+  'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
+  'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
+  'net.nanopay.bank.ruler.AccountAddedNotificationRule',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -182,10 +196,16 @@ var classes = [
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
   'net.nanopay.fx.afex.AFEXPaymentStatus',
-  'net.nanopay.fx.afex.AFEXBankOnboardingDAO',
-  'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitEnrollmentResponse',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
+  'net.nanopay.fx.afex.DirectDebitUnenrollmentResponse',
+  'net.nanopay.fx.afex.AFEXBankOnboardingRule',
+  'net.nanopay.fx.afex.AFEXBankUploadingRule',
+  'net.nanopay.fx.afex.AFEXBankUploadingRule2',
+  'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -208,8 +228,12 @@ var classes = [
   'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
-  'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
+  'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',
 
+  // sme cron
+  'net.nanopay.sme.cron.WelcomeEmailCron',
+  'net.nanopay.sme.cron.SigningOfficerReminderCron',
+  'net.nanopay.sme.cron.OnboardingReminderCron',
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
@@ -228,6 +252,7 @@ var classes = [
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.BusinessRegistration',
   'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
+  'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
@@ -248,6 +273,7 @@ var classes = [
   'net.nanopay.invoice.InvoiceLineItem',
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
+  'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -275,6 +301,16 @@ var classes = [
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
    'net.nanopay.util.Frequency',
+   'net.nanopay.liquidity.tx.BusinessRule',
+   'net.nanopay.liquidity.tx.BusinessRuleAction',
+   'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
+   'net.nanopay.liquidity.tx.BusinessRuleTransactionPredicate',
+   'net.nanopay.liquidity.tx.ExceptionRuleAction',
+   'net.nanopay.liquidity.tx.GenericBusinessRule',
+   'net.nanopay.liquidity.tx.TxLimitAction',
+   'net.nanopay.liquidity.tx.TxLimitEntityType',
+   'net.nanopay.liquidity.tx.TxLimitPredicate',
+   'net.nanopay.liquidity.tx.TxLimitRule',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -348,11 +384,13 @@ var classes = [
   'net.nanopay.tx.HistoricStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
+  'net.nanopay.tx.TransactionEvent',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.GreenfenceTransaction',
   'net.nanopay.tx.InvoiceTransaction',
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SecurityTransaction',
+  'net.nanopay.tx.ruler.IsSecurityQuote',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.BulkTransaction',
@@ -369,6 +407,7 @@ var classes = [
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
+  'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
@@ -377,14 +416,9 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
-  'net.nanopay.tx.ruler.ChangePropertyAction',
-  'net.nanopay.tx.ruler.SendNotification',
-  'net.nanopay.tx.ruler.PropertyEQValue',
-  'net.nanopay.tx.ruler.PropertyNEQValue',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
-  'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -395,6 +429,7 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakPaymentTransaction',
   'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.KotakSplitTransactionPlanDAO',
@@ -410,7 +445,15 @@ var classes = [
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.tx.GenericCIPlanner',
+  'net.nanopay.tx.DVPplanner',
+  'net.nanopay.tx.DVPTransaction',
   'net.nanopay.tx.ParentCompleteToPendingRule',
+  'net.nanopay.tx.FOPplanner',
+  'net.nanopay.tx.BucketTransaction',
+  'net.nanopay.tx.SecurityBucketPlanner',
+  'net.nanopay.tx.Amount',
+  'net.nanopay.tx.GuidTransactionPlanDAO',
+  'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -444,6 +487,7 @@ var classes = [
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
+  'net.nanopay.fx.AddINCurrencyPermissionRule',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -451,6 +495,7 @@ var classes = [
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
   'net.nanopay.fx.KotakFXProvider',
+  'net.nanopay.fx.localfx.NanopayFXService',
 
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
@@ -595,6 +640,7 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.AdminAccessConfig',
   'net.nanopay.meter.Blacklist',
   'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',
@@ -603,6 +649,13 @@ var classes = [
   'net.nanopay.meter.reports.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+
+  // report
+  'net.nanopay.meter.report.AbliiBusinessReport',
+  'net.nanopay.meter.report.AbliiBusinessReportDAO',
+  'net.nanopay.meter.report.TransactionReport',
+  'net.nanopay.meter.report.PaymentReport',
+  'net.nanopay.meter.report.PaymentReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -655,7 +708,6 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.IsRejectedComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
-  'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringBeneficialOwnerComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
@@ -664,12 +716,17 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed',
   'net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified',
+  'net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessCreated',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
   'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
   'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.NotifyIdentityMindResponseError',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -765,6 +822,8 @@ var classes = [
   'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
   'net.nanopay.business.SetBusinessNameDAO',
+  'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
+  'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -799,6 +858,8 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+  'net.nanopay.alarming.OMName',
+  'net.nanopay.alarming.AlarmingUniqueNameDAO',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
@@ -810,7 +871,15 @@ var classes = [
   'net.nanopay.tx.rbc.RbcCOTransaction',
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
   'net.nanopay.tx.rbc.RbcTransactionPlanDAO',
-  'net.nanopay.tx.rbc.ftps.RbcFTPSCredential'
+  'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
+  
+  // Ticket
+  'net.nanopay.ticket.SudoTicket',
+  'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+  'net.nanopay.ticket.SudoTicketApprovalRequestAction',
+  'net.nanopay.ticket.SudoTicketApprovalResponseRule',
+  'net.nanopay.ticket.SudoTicketApprovalResponseAction',
+  'net.nanopay.ticket.test.SudoTicketTest',
 ];
 
 var abstractClasses = [

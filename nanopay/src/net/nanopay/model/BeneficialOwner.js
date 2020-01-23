@@ -53,7 +53,7 @@ foam.CLASS({
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Select...',
+            placeholder: 'Please select...',
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
               return [a.name, a.label];

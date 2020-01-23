@@ -39,10 +39,6 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     Contact toPut = (Contact) obj;
 
-    if ( toPut == null ) {
-      throw new RuntimeException("Cannot put null.");
-    }
-
     if ( toPut.getBusinessId() != 0 && SafetyUtil.equals(toPut.getEmail(), "") ) {
       return super.put_(x, toPut);
     }
@@ -53,6 +49,10 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
       .limit(1)
       .select(sink);
     List data = ((ArraySink) sink).getArray();
+
+    // Disregards the check for objects that are marked as deleted as they do not count as duplicate
+    if ( obj instanceof User && ((User) obj).getDeleted() == true )
+      return super.put_(x, toPut);
 
     if ( data.size() == 1 ) {
       Contact existingContact = (Contact) data.get(0);

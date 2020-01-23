@@ -136,7 +136,7 @@ i = users.get(users.size() - 1).getId() + 1;
 // emails are in order of {admin1, employee1, admin2, employee2, ...}
 // the emails without corresponding passwords will have it set to passwords[0]
 String[] emails = {"user"+i+"@email.com", "employee"+i+"@email.com", "user"+(i+2)+"@email.com", "employee"+(i+2)+"@email.com"};
-String[] passwords = {"AbliiTestUser"}; 
+String[] passwords = {"AbliiTestUser"};
 
 address = new Address();
 address.setCountryId("CA");
@@ -534,7 +534,7 @@ p({
 
       DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
       AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
-      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();      
+      java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
         DAO canadaUsBusinessOnboardingDAO = (DAO)x.get("canadaUsBusinessOnboardingDAO");
@@ -552,13 +552,13 @@ p({
           onboarding.setStatus(OnboardingStatus.SUBMITTED);
           canadaUsBusinessOnboardingDAO.put(onboarding);
         }
-        
+
       } else {
           DAO localGroupDAO = (DAO) x.get("localGroupDAO");
           Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
           Group group = (Group) localGroupDAO.find(business.getGroup());
           if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
-            group.getPermissions(x).add(fxProvisionPermission); 
+            group.getPermissions(x).add(fxProvisionPermission);
           }
 
           Boolean validFields = true;
@@ -583,13 +583,13 @@ p({
 
           if ( business.getAddress().getCountryId().equals("US") && SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ) {
             print("- Business Registration number/ EIN not found. Please set Business Registration number/ EIN and run Script again.");
-            validFields = false; 
+            validFields = false;
           }
 
           if ( SafetyUtil.isEmpty(business.getCountryOfBusinessRegistration())) {
             print("- Country of Business Registration is not set. Please set Country of Business Registration and run script again.");
             validFields = false;
-          }  
+          }
 
           if ( business.getBusinessRegistrationDate() == null ) {
             print("- Business Registration Date is not set. Please set Business Registration Date and run script again.");
@@ -619,11 +619,11 @@ p({
             print("Please complete the above mentioned fields and try again");
             return;
           }
-      } 
+      }
     }
-    
+
     print(" DONE ");
-  
+
   """,
   "output": "",
   "notes": "Please replace businessEmail with the desired Business Email before running script."
@@ -667,7 +667,7 @@ p({
 
         String contactCountryId = contactBusinessAddress == null ?  contact.getBusinessAddress() == null ? "" : contact.getBusinessAddress().getCountryId() : contactBusinessAddress.getCountryId();
         String contactOwnerCountryId = business.getAddress() == null ? "" : business.getAddress().getCountryId();
-       
+
         if ( SafetyUtil.isEmpty(contactCountryId) ) {
           print("Unable to migrate " + contact.getOrganization() + " because the address field is invalid. Check country id." );
           continue;
@@ -678,11 +678,11 @@ p({
           continue;
         }
 
-        BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
-          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} ))) 
+        BankAccount contactBankAccount = contact.getBankAccount() < 1 ?
+          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND(new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contact.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class)} )))
           : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
 
-        BankAccount contactBusinessBankAccount = contactBusiness == null ? null : 
+        BankAccount contactBusinessBankAccount = contactBusiness == null ? null :
          ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
 
         if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
@@ -704,16 +704,16 @@ p({
           })
         );
         if ( afexBeneficiary == null ) {
-          print( contact.getOrganization() + " was not migrated to AFEX " ); 
-        } else { 
-          print( contact.getOrganization() + " was successfully migrated to AFEX "); 
+          print( contact.getOrganization() + " was not migrated to AFEX " );
+        } else {
+          print( contact.getOrganization() + " was successfully migrated to AFEX ");
         }
       }
 
     }
 
     print(" Done ");
-  
+
   """,
   "output": "",
   "notes": "Please replace businessEmail with the desired Business Email before running script."
@@ -753,7 +753,7 @@ p({
         address = new Address();
         address.setCountryId("CA");
     }
-    
+
     if ( ! "CA".equals(address.getCountryId()) && ! "US".equals(address.getCountryId())) {
       count++;
       print("Skipping " + business.getOrganization() + " because it is neither a US or Canadian business.");
@@ -768,9 +768,9 @@ p({
       group = (Group) group.findParent(x);
       if ( group != null && group.getId().endsWith("employee") ) break;
     }
-    if ( group != null ) { 
-      group.getPermissions(x).add(domesticCurrencyPermission); 
-      group.getPermissions(x).add(cadPermission); 
+    if ( group != null ) {
+      group.getPermissions(x).add(domesticCurrencyPermission);
+      group.getPermissions(x).add(cadPermission);
       count++;
     }
   }
@@ -781,13 +781,13 @@ p({
     Group smegroup = groupDAO.find("sme");
     if ( null != smegroup && smegroup.implies(x, new AuthPermission(CAD_PERMISSION)) ) {
       Permission cadPermission = new Permission.Builder(x).setId(CAD_PERMISSION).build();
-      smegroup.getPermissions(x).remove(cadPermission); 
+      smegroup.getPermissions(x).remove(cadPermission);
     }
     print("currency.read.CAD permission was removed from the sme group.");
   } else { print("currency.read.CAD permission was not removed from the sme group because there were issues with " + (businessCount - count) + " businesses."); }
 
   print("DONE");
-  
+
   """,
   "output": ""
 })
@@ -797,7 +797,7 @@ p({
   "id": "Update declined transaction invoices",
   "status": 1,
   "code": """
- 
+
   import foam.dao.DAO;
   import foam.mlang.MLang;
   import foam.dao.ArraySink;
@@ -881,7 +881,7 @@ p({
     } else {
       transaction.setPayerId(invoice.getPayerId());
     }
-    
+
     long invAmount = invoice.getAmount();
     transaction.setInvoiceId(invoice.getId());
     transaction.setAmount(invAmount);
@@ -927,7 +927,7 @@ p({
         Date invPaymentDate = invoice.getPaymentDate();
 
         //Creates transaction only based on invoices scheduled for today.
-        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) ) 
+        if ( dateFormat.format(invPaymentDate).equals(dateFormat.format( getDate(DUE_DATE) )) )
         {
           print(invoice.getId());
           txn = quoteTransaction(invoice);
@@ -938,7 +938,7 @@ p({
             try {
               transactionDAO.put(txn);
               print("Transaction created for Invoice " + invoice.getId());
-              successCount++;           
+              successCount++;
             }
             catch ( Throwable e) {
               print("Failed to put transaction for invoice " + invoice.getId());
@@ -947,7 +947,7 @@ p({
             logger.error(new Object[] {"Failed to put transaction for invoice", e, txn, invoice});
             }
           }
-        } 
+        }
       } catch ( Throwable e) {
         print("Error quoting transaction for invoice " + invoice.getId() + " " + e.getMessage());
         logger.error(new Object[] {"Error quoting transaction for invoice", e, invoice});
@@ -958,9 +958,66 @@ p({
 
   print("Done");
   print("Created " + successCount + " transaction(s)");
-  print("Failed " + failedCount + " transaction(s)");  
+  print("Failed " + failedCount + " transaction(s)");
   """
-}),
+
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "migratePhoneNumbers",
+  "description": "Migrate phone numbers to new phone properties for all users (users, businesses, contacts).",
+  "server": true,
+  "scheduled": false,
+  "code":
+  """
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import net.nanopay.contacts.Contact;
+
+    DAO userDAO = (DAO) x.get("userDAO");
+
+    users = userDAO.select().getArray();
+
+    print( "Phone Number Migration Started!" );
+
+    for( User user : users) {
+      try{
+
+        user = user.fclone();
+        print(" --- Migrating user with id " + user.getId());
+
+        if( user.getPhone() != null ) {
+          user.setPhoneNumber( user.getPhone().getNumber() );
+          user.setPhoneNumberVerified( user.getPhone().getVerified() );
+        }
+
+        if( user.getMobile() != null ) {
+          user.setMobileNumber( user.getMobile().getNumber() );
+          user.setMobileNumberVerified( user.getMobile().getVerified() );
+        }
+
+        if ( user instanceof Contact ) {
+          contact = (Contact) user;
+          if( contact.getBusinessPhone() != null ) {
+            print(contact.getId() + " : Contact");
+            contact.setBusinessPhoneNumber( contact.getBusinessPhone().getNumber() );
+            contact.setBusinessPhoneVerified( contact.getBusinessPhone().getVerified() );
+          }
+        }
+
+        userDAO.put(user);
+      } catch ( Exception e ) {
+        print(" - Migration failed for class : " + user + " having id: " + user.getId() + " Error was : " + e.getMessage());
+      }
+    }
+
+    print("Migration complete.");
+  """
+
+})
 
 p({
   "class": "foam.nanos.script.Script",
@@ -1041,8 +1098,10 @@ p({"class":"foam.nanos.script.Script","id":"Set-base-currency-on-suggested-trans
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "Set up groups and permissions for API (GD)",
+  "id": "APIGroupPermissions",
+  "description": "Set up groups and permissions for API",
   "code": """
+
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
@@ -1051,9 +1110,14 @@ p({
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
 
-    // Please remove DRY_RUN when you want to run this script in GD's instance.
     DRY_RUN = true;
-
+    // Set to true to undo the permission and theme changes made to the "SME" group by this script
+    fixSME = false;
+    
+    // group/spid prefix
+    NAME      = "gd";
+    NAME_LONG = "Grain Discovery";
+    
     if ( DRY_RUN ) {
       print("--------------------");
       print("In DRY_RUN mode");
@@ -1063,13 +1127,13 @@ p({
 
     groupDAO = x.get("groupDAO");
 
-    // Create new gd-ops group
+    // Create new group
     opsGroup = new Group();
-    opsGroup.setId("gd-ops");
+    opsGroup.setId(NAME+"-ops");
     opsGroup.setParent("basicUser");
-    opsGroup.setDefaultMenu("gd-operation");
-    opsGroup.setRootMenu("gd-operation");
-    opsGroup.setDescription("Grain Discovery Operations");
+    opsGroup.setDefaultMenu(NAME+"-operation");
+    opsGroup.setRootMenu(NAME+"-operation");
+    opsGroup.setDescription(NAME_LONG+" Operations");
     
     if ( DRY_RUN ) {
       print("Payment ops group is created.");
@@ -1077,10 +1141,10 @@ p({
       groupDAO.put(opsGroup);
     }
 
-    // Create new gd-api group
+    // Create new api group
     apiGroup = new Group();
-    apiGroup.setId("gd-api");
-    apiGroup.setParent("gd-ops");
+    apiGroup.setId(NAME+"-api");
+    apiGroup.setParent(NAME+"-ops");
     apiGroup.setDescription("API Access");
 
     if ( DRY_RUN ) {
@@ -1089,7 +1153,7 @@ p({
       groupDAO.put(apiGroup);
     }
 
-    // Add permissions to the gd-ops group
+    // Add permissions to the ops group
     ArrayList permissionArray = new ArrayList();
     permissionArray.add("AccountWithDetailModel.read.AccountNumber");
     permissionArray.add("AccountWithDetailModel.read.Holder");
@@ -1100,12 +1164,14 @@ p({
     permissionArray.add("currency.read.*");
     permissionArray.add("foam.nanos.auth.User.permission.viewAccounts");
     permissionArray.add("foam.nanos.auth.User.permission.viewTransactions");
-    permissionArray.add("menu.read.gd-operation");
-    permissionArray.add("menu.read.gd-operation.accounts");
-    permissionArray.add("menu.read.gd-operation.businesses");
-    permissionArray.add("menu.read.gd-operation.transactions");
-    permissionArray.add("menu.read.gd-operation.users");
+    permissionArray.add("menu.read."+NAME+"-operation");
+    permissionArray.add("menu.read."+NAME+"-operation.accounts");
+    permissionArray.add("menu.read."+NAME+"-operation.businesses");
+    permissionArray.add("menu.read."+NAME+"-operation.transactions");
+    permissionArray.add("menu.read."+NAME+"-operation.users");
     permissionArray.add("menu.read.notifications");
+    permissionArray.add("menu.read.report");
+    permissionArray.add("menu.read.report.txnReport");
     permissionArray.add("service.accountDAO");
     permissionArray.add("service.balanceDAO");
     permissionArray.add("service.branchDAO");
@@ -1121,7 +1187,6 @@ p({
     permissionArray.add("service.nSpecDAO");
     permissionArray.add("service.notificationDAO");
     permissionArray.add("service.run.dig");
-    permissionArray.add("service.sessionDAO");
     permissionArray.add("service.transactionDAO");
     permissionArray.add("service.twofactor");
     permissionArray.add("session.read.*");
@@ -1129,16 +1194,18 @@ p({
     permissionArray.add("user.read.*");
     permissionArray.add("service.businessRegistrationDAO");
     permissionArray.add("service.run.authenticationToken");
-    permissionArray.add("spid.create.gd");
+    permissionArray.add("spid.create."+NAME);
+    permissionArray.add("spid.read."+NAME);
+
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");
 
     for ( int i = 0; i < permissionArray.size(); i++ ) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
-      junction.setSourceId("gd-ops");
+      junction.setSourceId(NAME+"-ops");
       junction.setTargetId(permissionArray.get(i));
       if ( DRY_RUN ) {
-        print(permissionArray.get(i) + " permissions are added in gd-ops group.");
+        print(permissionArray.get(i) + " permissions are added in ops group.");
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
@@ -1156,6 +1223,8 @@ p({
       junction.setTargetId(smeRemovePermissionArray.get(i));
       if ( DRY_RUN ) {
         print("'menu.read.sme.accountProfile.*', 'menu.read.sme.main.*' and 'menu.read.sme.quickAction.*' are removed from sme group.");
+      } else if ( fixSME) {
+        groupPermissionJunctionDAO.put(junction);
       } else {
         groupPermissionJunctionDAO.remove(junction);
       }
@@ -1166,6 +1235,8 @@ p({
     smeBusinessJunction.setTargetId("menu.read.sme.*");
     if ( DRY_RUN ) {
       print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
+    }  else if ( fixSME) {
+      groupPermissionJunctionDAO.put(smeBusinessJunction);
     } else {
       groupPermissionJunctionDAO.remove(smeBusinessJunction);
     }
@@ -1198,98 +1269,118 @@ p({
     }
 
     themeDAO = x.get("themeDAO");
-    gdTheme = themeDAO.find(3);
-    gdTheme.setPriority(3);
-    gdTheme.setLogo("images/nanopay_logo_blue.png");
+    theme = themeDAO.find(3);
+    theme.setPriority(3);
+    theme.setLogo("images/nanopay_logo_blue.png");
     if ( DRY_RUN ) {
-      print("GD Theme is created.");
+      print("Theme is created.");
+    } else if ( fixSME ) {
+      theme.setPriority(2);
+      theme.setLogo("images/ablii-logo.svg");
+      themeDAO.put(theme);
     } else {
-      themeDAO.put(gdTheme);
+      themeDAO.put(theme);
     }
 
-    // Create GD SPID
+    // Create SPID
     spidDAO = x.get("serviceProviderDAO");
     ServiceProvider spid = new ServiceProvider.Builder(x)
       .setEnabled(true)
-      .setId("gd")
-      .setDescription("Grain Discovery")
+      .setId(NAME)
+      .setDescription(NAME_LONG)
       .build();
     if ( DRY_RUN ) {
-      print("Grain Discovery SPID created");
+      print(NAME_LONG+" SPID created");
     } else {
       spidDAO.put(spid);
     }
 
-    // Create the Grain Discovery menu
+    // Create the menu
     menuDAO = x.get("menuDAO");
 
     // create parent menu
     menu = new Menu.Builder(x)
       .setEnabled(true)
-      .setDescription("Grain Discovery")
+      .setDescription(NAME_LONG)
       .setHandler(new SubMenu())
       .setLabel("Operations")
-      .setId("gd-operation")
+      .setId(NAME+"-operation")
       .build();
 
     // create account submenu
-    accountDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("accountDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    accountMenuConfig = new DAOControllerConfig();
+    accountMenuConfig.setDaoKey("accountDAO");
+    accountMenuConfig.setCreateEnabled(false);
+    accountMenuConfig.setEditEnabled(false);
+    accountMenuConfig.setDeleteEnabled(false);
+
+    accountDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(accountMenuConfig)
       .build();
     accountMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(accountDaoMenu)
       .setLabel("Accounts")
-      .setId("gd-operation.accounts")
+      .setId(NAME+"-operation.accounts")
       .build();
 
     // create Businesses submenu
-    businessDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("businessDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    businessMenuConfig = new DAOControllerConfig();
+    businessMenuConfig.setDaoKey("businessDAO");
+    businessMenuConfig.setCreateEnabled(false);
+    businessMenuConfig.setEditEnabled(false);
+    businessMenuConfig.setDeleteEnabled(false);
+
+    businessDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(businessMenuConfig)
       .build();
     businessMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(businessDaoMenu)
       .setLabel("Businesses")
-      .setId("gd-operation.businesses")
+      .setId(NAME+"-operation.businesses")
       .build();
 
     // create Transactions submenu
-    txnDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("transactionDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    txnMenuConfig = new DAOControllerConfig();
+    txnMenuConfig.setDaoKey("transactionDAO");
+    txnMenuConfig.setCreateEnabled(false);
+    txnMenuConfig.setEditEnabled(false);
+    txnMenuConfig.setDeleteEnabled(false);
+
+    txnDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(txnMenuConfig)
       .build();
     txnMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(txnDaoMenu)
       .setLabel("Transactions")
-      .setId("gd-operation.transactions")
+      .setId(NAME+"-operation.transactions")
       .build();
 
     // create user submenu
-    userDaoMenu = new DAOMenu.Builder(x)
-      .setDaoKey("userDAO")
-      .setCreateEnabled(false)
-      .setEditEnabled(false)
+    userMenuConfig = new DAOControllerConfig();
+    userMenuConfig.setDaoKey("userDAO");
+    userMenuConfig.setCreateEnabled(false);
+    userMenuConfig.setEditEnabled(false);
+    userMenuConfig.setDeleteEnabled(false);
+
+    userDaoMenu = new DAOMenu2.Builder(x)
+      .setConfig(userMenuConfig)
       .build();
     userMenu = new Menu.Builder(x)
       .setEnabled(true)
-      .setParent("gd-operation")
+      .setParent(NAME+"-operation")
       .setHandler(userDaoMenu)
       .setLabel("Users")
-      .setId("gd-operation.users")
+      .setId(NAME+"-operation.users")
       .build();
 
     if ( DRY_RUN ) {
-      print("GD Menu's Created: Operations, Accounts, Businesses, Transactions, User");
+      print(NAME_LONG+" Menu's Created: Operations, Accounts, Businesses, Transactions, User");
     } else {
       menuDAO.put(menu);
       menuDAO.put(accountMenu);
@@ -1301,7 +1392,179 @@ p({
     print("Done");
   """,
   "output": "",
-  "notes": "This script is for our clients who use our API (Grain Discovery). In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
+  "notes": "This script is for our clients who use our API. In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
+})
+
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Give existing afex business new permissions",
+  "code": """
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import foam.nanos.auth.Address;
+    import foam.nanos.auth.Permission;
+    import foam.nanos.auth.Group;
+    import net.nanopay.model.Business;
+
+    import javax.security.auth.AuthPermission;
+
+    // *******************
+    // *    Functions    *
+    // *******************
+    void addPermissions(Business business) {
+
+      localGroupDAO = x.get("localGroupDAO");
+      String permissionString = "currency.read.";
+      Address businessAddress = business.getAddress();
+      permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
+      Permission permission = new Permission.Builder(x).setId(permissionString).build();
+      Group group = (Group) localGroupDAO.find(business.getGroup());
+      while ( group != null ) {
+        group = (Group) group.findParent(x);
+        if ( group != null && group.getId().endsWith("employee") ) break;
+      }
+      if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
+        group.getPermissions(x).add(permission);
+        print(" - Added " + permissionString);
+        
+        // add permission for USBankAccount strategizer
+        if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d")) ) {
+          permission = new Permission.Builder(x).setId("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d").build();
+          group.getPermissions(x).add(permission);
+          print(" - Added US strategyReference permissions");
+        }
+
+        // add permission for INBankAccount strategizer if country of business is Canada
+        if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b")) && businessAddress.getCountryId().equals("CA") ) {
+          permission = new Permission.Builder(x).setId("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b").build();
+          group.getPermissions(x).add(permission);
+          permission = new Permission.Builder(x).setId("currency.read.INR").build();
+          group.getPermissions(x).add(permission);
+          print(" - Added IN strategyReference and currency.read.IN");
+        }
+      }
+    }
+
+    // *******************
+    // *      Body       *
+    // *******************
+
+    afexBusinessDAO = x.get("afexBusinessDAO");
+    userDAO = x.get("businessDAO");
+    afexBusinessDAO.select(new AbstractSink() {
+      public void put(Object obj, Detachable sub) {
+        Business business = (Business) userDAO.find(obj.getUser());
+        print(business.getId());
+        if ( business != null ) {
+          addPermissions(business);
+        }
+      }
+    });
+    print("Done");
+  """
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"create notification settings for existing users",
+  "description":"Creates notification settings for existing users",
+  "code":"""
+    import foam.nanos.auth.User;
+    import net.nanopay.model.Business;
+    import foam.dao.DAO;
+    import foam.nanos.notification.NotificationSetting;
+    import foam.nanos.notification.EmailSetting;
+    import foam.dao.ArraySink;
+    import static foam.mlang.MLang.*;
+    import foam.mlang.predicate.Predicate;
+    import foam.mlang.sink.Count;
+    
+    user = (User) x.get("user");
+    userDAO = (DAO) x.get("bareUserDAO");
+    agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+    users = userDAO.select(new ArraySink()).getArray();
+    
+    for ( User user : users ) {
+      notificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());
+      emailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());
+      
+      if (notificationSetting.getValue() <= 0) {
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setOwner(user.getId());
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification Setting created for user: " + user.getId());
+      }
+      
+      if ( ! ( user instanceof Business ) ) {
+        if (emailSetting.getValue() <= 0) {
+          emailsetting = new EmailSetting();
+          emailsetting.setOwner(user.getId());
+          notificationSettingDAO.put(emailsetting);
+          print("Email Setting created for user: " + user.getId());
+        }
+      }
+    }
+    
+    junctions = agentJunctionDAO.select(new ArraySink()).getArray();
+    for ( junction : junctions ) {
+      junctionId = new foam.nanos.auth.UserUserJunctionId();
+      junctionId.setSourceId(junction.getSourceId());
+      junctionId.setTargetId(junction.getTargetId());
+      
+      notificationSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        NOT(INSTANCE_OF(EmailSetting.class)),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+      
+      emailSettings = notificationSettingDAO.where(AND(new Predicate [] {
+        INSTANCE_OF(EmailSetting.class),
+        EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+            
+      if ( notificationSettings <= 0 ){
+        notificationSetting = new NotificationSetting();
+        notificationSetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(notificationSetting);
+        print("Notification setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+      
+      if ( emailSettings <= 0 ) {
+        emailsetting = new EmailSetting();
+        emailsetting.setUserJunction(junctionId);
+        notificationSettingDAO.put(emailsetting);
+        print("Email setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+      }
+    }
+    
+    print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "CreatePaymentCode",
+  "code": """
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import net.nanopay.payment.PaymentCode;
+    paymentCodeDAO = x.get("paymentCodeDAO");
+    businessDAO = x.get("localBusinessDAO");
+    businesses = businessDAO.select().getArray();
+    for ( int i = 0 ; i < businesses.size() ; i++ ) {
+      businessId = businesses.get(i).getId();
+      if ( paymentCodeDAO.find(foam.mlang.MLang.EQ(PaymentCode.OWNER, businessId)) == null ) {
+        paymentCode = new PaymentCode.Builder(x).setOwner(businessId).build();
+        paymentCodeDAO.put(paymentCode);
+      }
+    }
+  """
 })
 
 p({

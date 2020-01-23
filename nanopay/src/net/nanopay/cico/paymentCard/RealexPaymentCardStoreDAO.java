@@ -1,5 +1,11 @@
 package net.nanopay.cico.paymentCard;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.UUID;
+
 import com.realexpayments.remote.sdk.RealexClient;
 import com.realexpayments.remote.sdk.RealexException;
 import com.realexpayments.remote.sdk.RealexServerException;
@@ -10,6 +16,7 @@ import com.realexpayments.remote.sdk.domain.payment.PaymentRequest;
 import com.realexpayments.remote.sdk.domain.payment.PaymentRequest.PaymentType;
 import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
 import com.realexpayments.remote.sdk.http.HttpConfiguration;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -17,14 +24,9 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.tx.TxnProcessorUserReference;
-import net.nanopay.cico.paymentCard.model.PaymentCard;
-import net.nanopay.cico.paymentCard.model.RealexPaymentCard;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
-import java.util.List;
-import java.util.UUID;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.AND;
+import net.nanopay.cico.paymentCard.model.RealexPaymentCard;
+import net.nanopay.tx.TxnProcessorUserReference;
 
 public class RealexPaymentCardStoreDAO
   extends ProxyDAO

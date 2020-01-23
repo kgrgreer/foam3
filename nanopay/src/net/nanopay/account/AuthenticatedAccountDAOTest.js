@@ -4,18 +4,15 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.EmptyX',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.MDAO',
     'foam.dao.Sink',
     'foam.nanos.auth.*',
     'foam.util.Auth',
-    'java.lang.Object',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -78,7 +75,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       }
       `
@@ -108,7 +104,6 @@ foam.CLASS({
     }
     return false;
   } catch ( Throwable t ) {
-    t.printStackTrace();
     return false;
   } finally {
     if ( clonedAccount != null ) accountDAO.remove_(user1Context, clonedAccount);
@@ -145,9 +140,8 @@ foam.CLASS({
         test(accountDAO.inX(user1Context).find(account2.getId()) == null, "A user cannot find an account that they do not own.");
       } catch (Throwable t) {
         test(false, "Tests for 'find' failed due to an unexpected exception.");
-        t.printStackTrace();
       } finally {
-        accountDAO.removeAll();
+        accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
       }
       `
     },
@@ -171,11 +165,10 @@ foam.CLASS({
         // Update the account to be USD denominated, assert that the account is now USD
         clonedAccount = (DigitalAccount) putAccount.fclone();
         clonedAccount.setDenomination("USD");
-        accountDAO.put_(user1Context, clonedAccount);
-        FObject updatedPutAccount = accountDAO.find_(user1Context, putAccount.getProperty("id"));
+        accountDAO.put(clonedAccount);
+        FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
         return updatedPutAccount.getProperty("denomination").equals("USD");
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (clonedAccount != null) accountDAO.remove_(user1Context, clonedAccount);
@@ -202,7 +195,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       }
       `
@@ -244,7 +236,6 @@ foam.CLASS({
         }
         return true;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (account1 != null) accountDAO.remove_(user1Context, account1);
@@ -275,7 +266,6 @@ foam.CLASS({
         }
         return false;
       } catch (Throwable t) {
-        t.printStackTrace();
         return false;
       } finally {
         if (account != null) accountDAO.remove_(user1Context, account);
@@ -314,7 +304,6 @@ foam.CLASS({
         test(accountDAO.find_(user1Context, account1.getId()) != null, "When a user calls 'removeAll', accounts owned by other users are not deleted.");
       } catch (Throwable t) {
         test(false, "The 'removeAll' tests failed due to an unexpected exception.");
-        t.printStackTrace();
       }
       `
     }

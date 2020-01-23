@@ -1,28 +1,20 @@
 package net.nanopay.tx;
 
-import foam.core.FObject;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.test.TestUtils;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.FeeTransfer;
-import net.nanopay.tx.Transfer;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static foam.mlang.MLang.*;
 
 public class GreenfenceTransactionTest
   extends foam.nanos.test.Test

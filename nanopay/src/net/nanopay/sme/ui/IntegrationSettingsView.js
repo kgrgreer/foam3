@@ -191,6 +191,15 @@ foam.CLASS({
       float: right;
       font-size: 12px;
       margin-top: 4px;
+      margin-right: 96px;
+    }
+    ^ .failure-icon {
+      margin-right: -77px;
+    }
+    ^ .failure-text-AS {
+      float: right;
+      font-size: 12px;
+      margin-top: 4px;
       margin-right: 40px;
     }
     ^ .failure-text2 {
@@ -284,6 +293,11 @@ foam.CLASS({
             return [account.id, account.name + '-' + account.denomination];
           }
         });
+      },
+      postSet: function(old, nu) {
+        if ( nu != '- Please Select -' ) {
+          this.showPickBankAblii = false;
+        }
       }
     },
     {
@@ -293,6 +307,11 @@ foam.CLASS({
           placeholder: '- Please Select -',
           choices$: X.data.accountingList$
         });
+      },
+      postSet: function(old, nu) {
+        if ( nu != '- Please Select -' ) {
+          this.showPickBank = false;
+        }
       }
     },
     {
@@ -347,7 +366,7 @@ foam.CLASS({
         if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
           this.displayExpiredTokenMessage = true;
         }
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
           } else {
@@ -407,12 +426,12 @@ foam.CLASS({
               .end()
               .start().addClass('hidden').enableClass('show', this.showPickBankAblii$)
                 .addClass('validation-failure-container')
-                .start('img')
+                .start('img').addClass('failure-icon')
                   .addClass('small-error-icon')
                   .attrs({ src: 'images/inline-error-icon.svg' })
                 .end()
                 .start()
-                  .add('Please select a bank account in your accounting software before matching.').addClass('failure-text')
+                  .add('Please select a bank account in Ablii before matching.').addClass('failure-text')
                 .end()
               .end()
               .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
@@ -429,7 +448,7 @@ foam.CLASS({
                   .attrs({ src: 'images/inline-error-icon.svg' })
                 .end()
                 .start().show(this.showPickBank$)
-                  .add('Please select a bank account in your accounting software before matching.').addClass('failure-text')
+                  .add('Please select a bank account in your accounting software before matching.').addClass('failure-text-AS')
                 .end()
                 .start().show(this.showMatchCurrency$)
                   .add('Please select an appropriate bank account in the same currency.').addClass('failure-text2')
@@ -559,16 +578,14 @@ foam.CLASS({
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         let accountingBank = null;
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
-            accountingBank = this.accountingBankAccounts.bankAccountList[i];
-            break;
-          } else if ( this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList || 
+               this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList) {
             accountingBank = this.accountingBankAccounts.bankAccountList[i];
             break;
           }
         }
-
+        if ( ! accountingBank ) return;
         if ( ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
           this.showMatchCurrency = true;
           return;

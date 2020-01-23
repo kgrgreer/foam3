@@ -1,67 +1,30 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakCOTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.cico.COTransaction',
 
-  documentation: `Hold Kotak Bank specific properties`,
+  documentation: 'Adjusts the system digital balance amounts to account for the amount that payment-ops would of manually transfered.',
 
   javaImports: [
-    'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
   ],
 
   properties: [
     {
-      name: 'fxRate',
-      class: 'Double'
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;'
     },
     {
-      class: 'UnitValue',
-      name: 'settlementAmount'
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;'
     },
-    {
-      class: 'String',
-      name: 'kotakMsgId'
-    },
-    {
-      class: 'String',
-      name: 'IFSCCode'
-    },
-    {
-      class: 'String',
-      name: 'chargeBorneBy',
-      documentation: 'BEN (Beneficiary), OUR (Payer), SHA(Shared)'
-    },
-    {
-      class: 'DateTime',
-      name: 'sentDate',
-      documentation: 'Business date when the transaction was sent to Kotak'
-    },
-    {
-      class: 'String',
-      name: 'paymentStatusCode'
-    },
-    {
-      class: 'String',
-      name: 'paymentStatusRem',
-      documentation: 'Status Remarks which contains status description'
-    },
-    {
-      class: 'String',
-      name: 'queryReqId'
-    },
-    {
-      class: 'String',
-      name: 'queryStatusCode'
-    },
-    {
-      class: 'String',
-      name: 'queryStatusDesc'
-    },
-    {
-      class: 'String',
-      name: 'UTRNumber'
-    }
   ],
 
   methods: [
@@ -79,45 +42,7 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-      return false;
-      `
-    },
-    {
-      name: 'limitedCopyFrom',
-      args: [
-        {
-          name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      javaCode: `
-      super.limitedCopyFrom(other);
-      setAmount(((KotakCOTransaction) other).getAmount());
-      setLineItems(((KotakCOTransaction) other).getLineItems());
-      `
-    },
-    {
-      name: 'getPurposeCode',
-      type: 'String',
-      javaCode: `
-      for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof PurposeCodeLineItem ) {
-          return ((PurposeCodeLineItem) item).getPurposeCode();
-        }
-      }
-      return "P1099";
-      `
-    },
-    {
-      name: 'getAccountRelationship',
-      type: 'String',
-      javaCode: `
-      for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof AccountRelationshipLineItem ) {
-          return ((AccountRelationshipLineItem) item).getAccountRelationship();
-        }
-      }
-      return "Employee";
+        return oldTxn != null && oldTxn.getStatus() != TransactionStatus.COMPLETED && getStatus() == TransactionStatus.COMPLETED;
       `
     }
   ]

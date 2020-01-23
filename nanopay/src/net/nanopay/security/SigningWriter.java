@@ -97,7 +97,7 @@ public class SigningWriter
           sig_.update(java.nio.charset.StandardCharsets.UTF_8.encode(str));
         } catch ( java.security.SignatureException s) {
           System.err.println("SigningWriter :: The signature could not be updated! " + s);
-          new RuntimeException(s);
+          throw new RuntimeException(s);
         }
         super.write(str);
       }
@@ -116,7 +116,7 @@ public class SigningWriter
       sig_.update(java.nio.charset.StandardCharsets.UTF_8.encode(lineSeparator_));
     } catch ( java.security.SignatureException s) {
       System.err.println("SigningWriter :: The signature could not be updated! " + s);
-      new RuntimeException(s);
+      throw new RuntimeException(s);
     }
     super.write(lineSeparator_);
   }

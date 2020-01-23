@@ -16,11 +16,11 @@ foam.CLASS({
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.model.SignUp',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.SignInView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -30,7 +30,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
-    'foam.u2.Element',
+    'foam.u2.Element'
   ],
 
   exports: [
@@ -43,9 +43,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'currentAccount',
+    'isIframe',
+    'onboardingUtil',
     'privacyUrl',
-    'termsUrl',
-    'onboardingUtil'
+    'termsUrl'
   ],
 
   imports: [
@@ -203,6 +204,17 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'loginVariables',
+      expression: function(client$smeBusinessRegistrationDAO) {
+        return {
+          dao_: client$smeBusinessRegistrationDAO || null,
+          imgPath: 'images/sign_in_illustration.png',
+          group_: 'sme',
+          countryChoices_: ['CA', 'US']
+        };
+      }
+    },
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
@@ -456,14 +468,33 @@ foam.CLASS({
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
-          this.__subContext__.register(this.SignInView, 'foam.nanos.auth.SignInView');
+          this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
 
           if ( this.loginSuccess ) {
             this.findBalance();
           }
+          if ( ! this.isIframe() ) {
+            this.addClass(this.myClass())
+            .start()
+              .tag(this.topNavigation_)
+              .show(this.slot((loginSuccess) => loginSuccess))
+            .end()
+            .start()
+              .addClass('stack-wrapper')
+              .start({
+                class: 'net.nanopay.ui.banner.Banner',
+                data$: this.bannerData$
+              })
+              .end()
+              .tag({
+                class: 'foam.u2.stack.StackView',
+                data: this.stack,
+                showActions: false
+              })
+            .end();
+          } else {
           this.addClass(this.myClass())
           .start()
-            .tag(this.topNavigation_)
             .show(this.slot((loginSuccess) => loginSuccess))
           .end()
           .start()
@@ -479,51 +510,63 @@ foam.CLASS({
               showActions: false
             })
           .end();
+          }
         });
       });
+    },
+
+    function isIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
     },
 
     function requestLogin() {
       var self = this;
       var locHash = location.hash;
-      var view = { class: 'net.nanopay.sme.ui.SignInView' };
+      var view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
 
       if ( locHash ) {
-        // Don't go to log in screen if going to reset password screen.
+        var searchParams = new URLSearchParams(location.search);
+
         if ( locHash === '#reset' ) {
           view = { class: 'foam.nanos.auth.ChangePasswordView' };
         }
 
-        var searchParams = new URLSearchParams(location.search);
-
-        // Don't go to log in screen if going to sign up password screen.
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
           view = {
-            class: 'net.nanopay.sme.ui.SignUpView',
-            emailField: searchParams.get('email'),
-            disableEmail: !! searchParams.get('email'),
-            signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.has('companyName')
-              ? searchParams.get('companyName')
-              : '',
-            disableCompanyName: searchParams.has('companyName'),
-            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
+            class: 'foam.u2.view.LoginView',
+            mode_: 'SignUp',
+            param: {
+              email: searchParams.get('email'),
+              disableEmail_: searchParams.has('email'),
+              token_: searchParams.get('token'),
+              organization: searchParams.has('companyName')
+                ? searchParams.get('companyName')
+                : '',
+              disableCompanyName_: searchParams.has('companyName'),
+              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
+              firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
+              lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
+              jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
+              phone: searchParams.has('phone') ? searchParams.get('phone') : '',
+            }
           };
         }
 
         // Process auth token
-        if ( locHash === '#auth' && ! self.loginSuccess ) {
+        if ( ! self.loginSuccess && !! searchParams.get('token') ) {
           self.client.authenticationTokenService.processToken(null, null,
-            searchParams.get('token')).then((result) => {
-              if ( result === true ) {
-                location = '/';
-              }
+            searchParams.get('token')).then(() => {
+              location = locHash == '#onboarding' ? '/' : '/' + locHash;
             });
         }
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(view);
+        self.stack.push(view, self);
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -607,7 +650,7 @@ foam.CLASS({
 
         // Pass the customized DOM element into the toast notification
         this.notify(TwoFactorNotificationDOM, 'warning');
-        if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
           return false;

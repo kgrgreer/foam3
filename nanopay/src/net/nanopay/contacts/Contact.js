@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.auth.User',
 
   documentation: `
-    The base model, as part of the Self-Serve project, for representing people who, 
+    The base model, as part of the Self-Serve project, for representing people who,
     although they are not registered on the platform, can still receive invoices from
     platform users.
   `,
@@ -23,15 +23,10 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-    'java.util.Iterator',
-    'java.util.List',
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.account.Account',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
   ],
 
@@ -68,8 +63,8 @@ foam.CLASS({
     },
     {
       name: 'legalName',
-      documentation: `A field for the legal first and last name of the Contact, 
-        if different than the provided first name.  The field will default to first 
+      documentation: `A field for the legal first and last name of the Contact,
+        if different than the provided first name.  The field will default to first
         name, last name.`,
       label: 'Name'
     },
@@ -147,7 +142,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
-      documentation: `The ID for the individual person, or real user, 
+      documentation: `The ID for the individual person, or real user,
         who registers with our platform.`
     },
     {
@@ -160,7 +155,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
-      documentation: `The unique identifier for the bank account of the Contact 
+      documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`
     },
     {
@@ -183,8 +178,8 @@ foam.CLASS({
     {
       name: 'emailVerified',
       value: true,
-      documentation: `Verifies that the email address of the Contact is valid. 
-        If the email address is not verified the transaction validation logic will 
+      documentation: `Verifies that the email address of the Contact is valid.
+        If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `
     },
@@ -197,6 +192,16 @@ foam.CLASS({
         return this.Phone.create();
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'businessPhoneNumber',
+      documentation: 'The phone number of the business.'
+    },
+    {
+      class: 'Boolean',
+      name: 'businessPhoneVerified',
+      writePermissionRequired: true
     }
   ],
 
@@ -248,7 +253,7 @@ foam.CLASS({
 
           if ( this.getBankAccount() != 0 ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
-            
+
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
 
             if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
@@ -318,12 +323,15 @@ foam.CLASS({
       javaCode: `
         Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
         Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
+        Pattern inPosCode = Pattern.compile("^\\\\d{6}(?:[-\\\\s]\\\\d{4})?$");
 
         switch ( countryId ) {
           case "CA":
             return caPosCode.matcher(code).matches();
           case "US":
             return usPosCode.matcher(code).matches();
+          case "IN":
+            return inPosCode.matcher(code).matches();
           default:
             return false;
         }

@@ -53,6 +53,7 @@ public class ApiTestBase extends Test {
       
     // Set the auth header
     String encoding = Base64.getEncoder().encodeToString((user + ":" + password).getBytes("UTF-8"));
+    // Only used for testing
     connection.setRequestProperty("Authorization", "Basic " + encoding);
 
     // Return the connection

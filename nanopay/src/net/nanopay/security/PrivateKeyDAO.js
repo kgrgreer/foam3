@@ -79,6 +79,7 @@ foam.CLASS({
         // A decorator lower down in the chain might have already decoded the private key
         if ( entry.getPrivateKey() != null ) return entry;
 
+        entry = (PrivateKeyEntry) entry.fclone();
         try {
           // initialize cipher for key unwrapping
           KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");

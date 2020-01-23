@@ -357,7 +357,8 @@ foam.CLASS({
                 })
                   .on('click', function() {
                     // Add contact
-                    self.loading ? '' : self.addSelected(business);
+                    if(!self.loading)
+                      self.addSelected(business);
                   })
                 .end();
             })

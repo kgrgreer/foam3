@@ -295,7 +295,7 @@ foam.CLASS({
         var address = this.address;
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
         if ( address.structured ) {
-          if ( ! address.streetNumber || ! address.streetNumber ) {
+          if ( ! address.streetNumber ) {
             view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));
             return;
           }

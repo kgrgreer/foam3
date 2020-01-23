@@ -22,7 +22,6 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'foam.core.Currency',
     'net.nanopay.ui.banner.BannerData',
@@ -30,7 +29,8 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
-    'net.nanopay.ui.NanoConnectStyles'
+    'net.nanopay.ui.NanoConnectStyles',
+    'net.nanopay.ui.ConnectSubMenu'
   ],
 
   imports: [
@@ -55,8 +55,6 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      margin-bottom: 0 !important;
-      overflow-x: hidden;
     }
     .stack-wrapper:after {
       content: "";
@@ -132,6 +130,17 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'loginVariables',
+      expression: function(client$userDAO) {
+        return {
+          dao_: client$userDAO || null,
+          imgPath: '',
+          group: 'basicUser',
+          countryChoices_: [] // empty defaults to entire countryDAO
+        };
+      }
+    },
     'privacyUrl',
     'termsUrl',
     {
@@ -191,6 +200,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
       // adding a listener to track the display width here as well since we don't call super
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
@@ -212,25 +222,44 @@ foam.CLASS({
           this.ModalStyling.create();
 
           this.findBalance();
-          this
-            .addClass(this.myClass())
-            .start()
-              .tag(this.topNavigation_)
-            .end()
-            .start()
-              .addClass('stack-wrapper')
-              .tag({
-                class: 'net.nanopay.ui.banner.Banner',
-                data$: this.bannerData$
-              })
-              .tag(this.StackView, {
-                data: this.stack,
-                showActions: false
-              })
-            .end()
-            .start()
-              .tag(this.footerView_)
-            .end();
+          if ( ! this.isIframe() ){
+            this
+              .addClass(this.myClass())
+              .start()
+                .tag(this.topNavigation_)
+              .end()
+              .start()
+                .addClass('stack-wrapper')
+                .enableClass('login-wrapper', this.loginSuccess$)
+                .tag({
+                  class: 'net.nanopay.ui.banner.Banner',
+                  data$: this.bannerData$
+                })
+                .tag(this.StackView, {
+                  data: this.stack,
+                  showActions: false
+                })
+              .end()
+              .start()
+                .enableClass('footer-wrapper', this.loginSuccess$)
+                .tag(this.footerView_)
+              .end();
+          } else {
+            this
+              .addClass(this.myClass())
+              .start()
+                .addClass('stack-wrapper')
+                .enableClass('login-wrapper', this.loginSuccess$)
+                .tag({
+                  class: 'net.nanopay.ui.banner.Banner',
+                  data$: this.bannerData$
+                })
+                .tag(this.StackView, {
+                  data: this.stack,
+                  showActions: false
+                })
+              .end();
+          }
         });
       });
     },
@@ -281,26 +310,47 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
+      var searchparam = new URLSearchParams(location.search);
 
       // don't go to log in screen if going to reset password screen
-      if ( location.hash != null && location.hash === '#reset' )
+      if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
           self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView.' });
           self.loginSuccess$.sub(resolve);
         });
-
+      }
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' )
+      if ( location.hash != null && location.hash === '#sign-up' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'net.nanopay.auth.ui.SignUpView' });
+          self.stack.push({ class: 'foam.u2.view.LoginView',
+          mode_: 'SignUp',
+          topBarShow_: false,
+          param: {
+            token_: searchparam.get('token'),
+            email: searchparam.get('email'),
+            disableEmail_: searchparam.has('email'),
+            disableCompanyName_: searchparam.has('companyName'),
+            organization: searchparam.get('companyName'),
+            countryChoices_: searchparam.get('countryChoice'),
+            group_: 'basicUser'
+            }
+          }, self);
           self.loginSuccess$.sub(resolve);
         });
-
+      }
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.stack.push({ class: 'foam.u2.view.LoginView', topBarShow_: false, mode_: 'SignIn' }, self);
         self.loginSuccess$.sub(resolve);
       });
-    }
+    },
+
+    function isIframe () {
+          try {
+            return window.self !== window.top;
+          } catch (e) {
+            return true;
+          }
+        }
   ],
 
   listeners: [

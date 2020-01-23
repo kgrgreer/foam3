@@ -1,21 +1,18 @@
 package net.nanopay.tx.bmo;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.nanos.notification.email.EmailMessage;
-import foam.util.Emails.EmailsUtility;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+
+import org.apache.commons.lang3.StringUtils;
+
+import foam.core.X;
+import foam.nanos.notification.email.EmailMessage;
+import foam.util.Emails.EmailsUtility;
 
 public class BmoFormatUtil {
 
@@ -102,7 +99,6 @@ public class BmoFormatUtil {
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(body);
-    DAO email = (DAO) x.get("emailMessageDAO");
-    email.put(message);
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 }

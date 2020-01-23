@@ -109,7 +109,6 @@ foam.CLASS({
         try {
           onboardService.put_(x, onboarding);
         } catch (RuntimeException ex) {
-          ex.printStackTrace();
           threw = true;
         }
 

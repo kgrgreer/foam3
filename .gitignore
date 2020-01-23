@@ -25,6 +25,9 @@ retail/retail.iml
 # CMake
 cmake-build-debug/
 
+# Tmp
+tmp_jce/
+
 # Mongo Explorer plugin:
 .idea/**/mongoSettings.xml
 

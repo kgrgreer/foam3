@@ -7,15 +7,6 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    view: function(_, X) {
-      return foam.u2.view.ChoiceView.create({
-        dao: X.branchDAO,
-        placeholder: '--',
-        objToChoice: function(branch) {
-          return [branch.id, branch.branchId];
-        }
-      });
-    },
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
@@ -96,7 +87,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
-    section: 'accountDetails',
+    section: 'parentSection',
     order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
@@ -106,8 +97,20 @@ foam.RELATIONSHIP({
         placeholder: 'select Parent',
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
-    }
+    },
+    readPermissionRequired: true
   }
+});
+
+// A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.SecuritiesAccount',
+  targetModel: 'net.nanopay.account.SecurityAccount',
+  inverseName: 'SecuritiesAccount',
+  forwardName: 'subAccounts',
+  targetDAOKey: 'accountDAO',
+  sourceDAOKey: 'accountDAO',
+  cardinality: '1:*',
 });
 
 foam.RELATIONSHIP({
@@ -259,7 +262,13 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  sourceProperty: {
+    visibility: 'FINAL',
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+  }
 });
 
 foam.RELATIONSHIP({
@@ -268,8 +277,14 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+  sourceProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -692,7 +707,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
-    visibility: 'RO',
+    visibility: 'FINAL',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
@@ -701,15 +716,14 @@ foam.RELATIONSHIP({
     javaToCSVLabel: `
       outputter.outputValue("Sender User Id");
       outputter.outputValue("Sender Name");
-      outputter.outputValue("Sender Email");
     `,
     javaToCSV: `
       User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
       outputter.outputValue(sender.getId());
       outputter.outputValue(sender.label());
-      outputter.outputValue(sender.getEmail());
-    `
-},
+    `,
+    includeInDigest: true
+  },
 });
 
 foam.RELATIONSHIP({
@@ -724,7 +738,7 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
-    visibility: 'RO',
+    visibility: 'FINAL',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
@@ -733,14 +747,13 @@ foam.RELATIONSHIP({
     javaToCSVLabel: `
       outputter.outputValue("Receiver User Id");
       outputter.outputValue("Receiver Name");
-      outputter.outputValue("Receiver Email");
     `,
     javaToCSV: `
       User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
       outputter.outputValue(receiver.getId());
       outputter.outputValue(receiver.label());
-      outputter.outputValue(receiver.getEmail());
-    `
+    `,
+    includeInDigest: true
   },
 });
 
@@ -845,4 +858,23 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'assetClassDAO',
   targetDAOKey: 'securitiesDAO',
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.TransactionEvent',
+  forwardName: 'transactionEvents',
+  inverseName: 'transaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'transactionEventDAO',
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PaymentCode',
+  forwardName: 'paymentCode',
+  inverseName: 'owner',
+  cardinality: '1:*',
 });

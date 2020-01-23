@@ -130,7 +130,7 @@ foam.CLASS({
       }
 
       if ( length >= 6 ) {
-        e.preventDefault;
+        e.preventDefault();
         return;
       }
 

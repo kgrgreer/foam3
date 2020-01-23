@@ -1,35 +1,32 @@
 package net.nanopay.fx.afex;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.Date;
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import net.nanopay.model.Business;
-import foam.nanos.auth.User;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
+import foam.nanos.auth.Phone;
 import foam.nanos.auth.Region;
+import foam.nanos.auth.User;
 import foam.test.TestUtils;
-import java.util.List;
-import java.util.Date;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
-import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
-import net.nanopay.payment.PaymentService;
-import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
-import foam.mlang.MLang;
-import static foam.mlang.MLang.*;
-import foam.mlang.predicate.Predicate;
-import net.nanopay.fx.ExchangeRateStatus;
-import net.nanopay.fx.FeesFields;
-import net.nanopay.payment.Institution;
-import net.nanopay.model.Branch;
-import foam.nanos.auth.Group;
-import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
-import net.nanopay.admin.model.AccountStatus;
-import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.payment.Institution;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 
 public class AFEXServiceProviderTest
@@ -144,6 +141,7 @@ public class AFEXServiceProviderTest
       business.getSigningOfficers(x).add(user1);
 
     } else {
+      user1 = (User) user1.fclone();
       user1.setAddress(businessAddress);
       user1.setEnabled(true);
       user1.setEmailVerified(true);
@@ -157,6 +155,8 @@ public class AFEXServiceProviderTest
       user2.setLastName("AFEX");
       user2.setGroup("afexpayee2");
       user2.setEmail("testafxpayee20@nanopay.net");
+    } else {
+      user2 = (User) user2.fclone();
     }
 
     user2.setAddress(businessAddress);
@@ -181,6 +181,8 @@ public class AFEXServiceProviderTest
       user1CABankAccount.setDenomination("CAD");
 
       user1CABankAccount.setAddress(bankAddress);
+    } else {
+      user1CABankAccount = (BankAccount) user1CABankAccount.fclone();
     }
 
     user1CABankAccount.setStatus(BankAccountStatus.VERIFIED);
@@ -195,6 +197,8 @@ public class AFEXServiceProviderTest
       user2USBankAccount.setDenomination("USD");
 
       user2USBankAccount.setAddress(bankAddress);
+    } else {
+      user2USBankAccount = (BankAccount) user2USBankAccount.fclone();
     }
     user2USBankAccount.setStatus(BankAccountStatus.VERIFIED);
 

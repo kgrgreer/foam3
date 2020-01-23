@@ -1,5 +1,9 @@
 package net.nanopay.bank;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -10,14 +14,9 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
-import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
-import net.nanopay.model.Business;
-
-import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id
@@ -25,9 +24,9 @@ import static foam.mlang.MLang.*;
  * in that currency.
  */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
-  public DAO userDAO;
-  public DAO bareUserDAO;
-  public DAO accountDAO;
+  protected DAO userDAO;
+  protected DAO bareUserDAO;
+  protected DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);
@@ -44,6 +43,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
+    // Get business if user is contact.
     user = checkUser(x, user, request.getUserId(), request);
     // Checks if the contact has a bank account
     // Needed for a better error message to improve user experience
@@ -70,39 +70,13 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, user.getId())))
       .select(new Count());
-    boolean contactRecieveCurrency = (count.getValue() > 0) && ! request.getIsRecievable();
-
-    // Check if the contact can pay an invoice to the user in the currency our user accepts
-    boolean contactPayCurrency = false;
-    if ( request.getIsRecievable() ) {
-      User payer = (User) bareUserDAO.inX(x).find(request.getPayerId());
-      contactPayCurrency = request.getUserId() == request.getPayerId(); // If user is payer then this check isn't needed.
-      try {
-        payer = checkUser(x, payer, request.getPayerId(), request);
-        if ( payer != null && ! contactPayCurrency ) {
-          AuthService auth = (AuthService) x.get("auth");
-          contactPayCurrency = auth.checkUser(getX(), payer, "currency.read."+ request.getCurrencyId()) && (count.getValue() > 0);
-        }
-      } catch (Exception e) {
-        if ( ! contactPayCurrency ) {
-          Count payerCount = (Count) accountDAO
-            .where(AND(
-              INSTANCE_OF(BankAccount.getOwnClassInfo()),
-              EQ(BankAccount.DELETED, false),
-              EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
-              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-              EQ(Account.OWNER, request.getPayerId())))
-            .select(new Count());
-          contactPayCurrency = (payerCount.getValue() > 0);
-        }
-        
-      }
-    }
+    boolean contactRecieveCurrency = (count.getValue() > 0);
   
-    response.setResponse((contactPayCurrency || contactRecieveCurrency) );
+    response.setResponse(contactRecieveCurrency);
     if ( count.getValue() == 0 ) response.setMessage("We apologize for, this contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
     return response;
   }
+
   public User checkUser(X x, User user, long id, CanReceiveCurrency request) {
     if ( user == null ) {
       throw new RuntimeException("Warning: User " + id + " was not found.");

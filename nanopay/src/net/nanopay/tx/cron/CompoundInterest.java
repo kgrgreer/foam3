@@ -1,15 +1,13 @@
 package net.nanopay.tx.cron;
 
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.ContextAgent;
 import foam.core.Detachable;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import net.nanopay.account.LoanAccount;
-import java.util.List;
-
-import static foam.mlang.MLang.INSTANCE_OF;
 
 /**
  Cronjob applies the amount of interest that each account owes
