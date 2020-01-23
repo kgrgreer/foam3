@@ -38,11 +38,12 @@ public class AccountHierarchyService
     if ( ! getUserToViewableRootAccountsMap().containsKey(userId) ) {
       // if not in map, get from dao and put in map
       DAO dao = (DAO) x.get("rootAccountsDAO");
-      RootAccounts userRootAccounts = (RootAccounts) (dao.find(userId)).fclone();
+      RootAccounts userRootAccounts = (RootAccounts) dao.find(userId);
       if ( userRootAccounts == null ) {
         return new ArrayList<String>();
       }
-
+      
+      userRootAccounts = (RootAccounts) userRootAccounts.fclone();
       userToViewableRootAccountsMap_.put(userId, (ArrayList<String>) userRootAccounts.getRootAccounts());
     }
     return getUserToViewableRootAccountsMap().get(userId);
