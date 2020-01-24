@@ -13,7 +13,8 @@ foam.CLASS({
     'net.nanopay.account.Balance',
     'net.nanopay.account.SecurityAccount',
     'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count'
+    'foam.mlang.sink.Count',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   searchColumns: [
@@ -52,21 +53,6 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         return this.findBalance(this.__subContext__,id);
       },
-      /*tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.securitiesDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
-            })
-        }));
-      },*/
       tableWidth: 145
     },
 
@@ -118,13 +104,13 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.setName(unit+ " subAccount for "+getId());
+        sa.setName(unit + " subAccount for " + getId());
         sa.setSecuritiesAccount(this.getId());
+        sa.setLifecycleState(LifecycleState.ACTIVE);
         DAO accountDAO = (DAO) x.get("accountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
         return sa;
       `
     },
-
   ]
 });
