@@ -944,7 +944,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
    { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
-   { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
    { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
    { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
    { name: 'net/nanopay/liquidity/ui/account/Overview' },
