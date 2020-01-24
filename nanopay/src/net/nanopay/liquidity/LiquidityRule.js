@@ -16,6 +16,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.DigitalTransaction',
@@ -29,7 +30,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction) ) {
+        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction || obj instanceof FXTransaction ) ) {
           Transaction txn = (Transaction) obj;
           if ( ! (txn.getStatus() == TransactionStatus.COMPLETED)  )
             return;
