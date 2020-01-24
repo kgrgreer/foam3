@@ -30,7 +30,7 @@ foam.CLASS({
     ^ .side-nav-view {
       display: inline-block;
       position: fixed;
-      height: 100vh;
+      height: calc(100vh - 60px);
       width: 240px;
       padding-top: 60px;
       overflow-y: scroll;
@@ -41,8 +41,9 @@ foam.CLASS({
       border-right: 1px solid /*%GREY4%*/ #e7eaec;
       background: /*%GREY5%*/ #f5f7fas;
 
-      /* TODO: Remove this after the GS demo. */
+      /* TODO: Remove these after the GS demo. */
       padding-top: calc(60px + 24px);
+      height: calc(100vh - 60px - 24px);
     }
     ^ .selected-sub {
       color: /*%BLACK%*/ #1e1f21;
