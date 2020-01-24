@@ -86,6 +86,8 @@ foam.CLASS({
         ;
     },
     function updateSearch(userOrRoleId) {
+      if ( userOrRoleId === null ) return;
+
       var self = this;
       switch ( self.searchBar.searchOption ) {
       case 'user':
@@ -284,6 +286,9 @@ foam.CLASS({
     function updateSearch() {
       var self = this;
       var queryId = self.queryId;
+
+      if ( queryId === null ) return;
+
       switch ( self.searchBar.searchOption ) {
       case 'account':
         self.accountUcjQueryService.getUsersAndRoles(queryId).then(function (arry) {
