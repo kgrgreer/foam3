@@ -517,7 +517,7 @@ foam.CLASS({
       label: 'Source Amount',
       section: 'amountSelection',
       required: true,
-      gridColumns: 6,
+      gridColumns: 5,
       visibility: 'RO',
       help: `This is the amount to be withdrawn from payer's chosen account (Source Account).`,
       view: function(_, X) {
@@ -627,7 +627,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      gridColumns: 6,
+      gridColumns: 7,
       help: `This is the amount to be transfered to payee's account (destination account).`,
       view: function(_, X) {
         return {
