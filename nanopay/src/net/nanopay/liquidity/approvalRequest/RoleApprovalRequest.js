@@ -93,6 +93,16 @@ foam.CLASS({
       name: 'approver',
       section: 'requestDetails',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
+      view: function(_, X) {
+        if ( X.data.status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
+          return {
+            class: 'foam.u2.view.ValueView',
+            data$: X.data$.map((data) => data.APPROVER_PENDING)
+          };
+        } else {
+          return { class: 'foam.u2.view.ReferencePropertyView' };
+        }
+      },
       tableCellFormatter: function(approver, data) {
         let self = this;
         // If request is REQUESTED, show as Pending
