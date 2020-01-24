@@ -388,6 +388,8 @@ var classes = [
   'net.nanopay.fx.ExchangeRate',
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',
+  'net.nanopay.account.BalanceService',
+  'net.nanopay.account.AccountBalanceDAO',
   'net.nanopay.fx.SecurityPrice',
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',

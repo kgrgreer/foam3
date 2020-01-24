@@ -234,6 +234,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ClientExchangeRateService' },
   { name: 'net/nanopay/account/BalanceServiceInterface' },
   { name: 'net/nanopay/account/ClientBalanceService' },
+  { name: 'net/nanopay/account/BalanceService' },
+  { name: 'net/nanopay/account/AccountBalanceDAO' },
+
 
   { name: 'net/nanopay/fx/client/ClientFXService' },
   { name: 'net/nanopay/fx/FXService' },
