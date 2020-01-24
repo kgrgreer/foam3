@@ -17,9 +17,7 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-        FObject obj = getDelegate().find_(x, id);
-
-        Account account = (Account) getDelegate().put_(x, obj);
+        Account account = (Account) getDelegate().find_(x, id);
         if ( account == null ) {
           return account;
         }
