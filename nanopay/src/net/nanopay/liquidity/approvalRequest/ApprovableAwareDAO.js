@@ -198,10 +198,10 @@ foam.CLASS({
         if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && user.getId() != User.SYSTEM_USER_ID ){
           lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
         } 
-        else if (user.getId() == User.SYSTEM_USER_ID) {
+        else if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && user.getId() == User.SYSTEM_USER_ID ) {
           // Adding log message in case this change breaks something unexpected
           Object primaryKey = obj instanceof foam.core.Identifiable ? ((foam.core.Identifiable)obj).getPrimaryKey() : null;
-          logger.warning("SYSTEM UPDATE - Not automatically setting LifecycleState to ACTIVE for " + obj.getClass().getSimpleName() + ": " + primaryKey);
+          logger.warning("SYSTEM UPDATE - Not automatically setting LifecycleState from PENDING to ACTIVE for " + obj.getClass().getSimpleName() + ": " + primaryKey);
         }
         return super.put_(x,obj);
       }

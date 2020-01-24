@@ -2009,5 +2009,13 @@ p({
       .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.tx.gs.ProgressBarData\"}"
+  "client": 
+  """
+  { 
+    "of":"net.nanopay.tx.gs.ProgressBarData",
+    "cache": false,
+    "ttlPurgeTime": 0,
+    "ttlSelectPurgeTime": 0
+  }
+  """
 })

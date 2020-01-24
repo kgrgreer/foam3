@@ -320,7 +320,7 @@ foam.CLASS({
             function(balance) {
               return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
                 function(curr) {
-                  var displayBalance = curr ? curr.format(balance != null ? balance : 0) : 0;
+                  var displayBalance = curr ? curr.format(balance != null ? balance : 0) : balance;
                   self.tooltip = displayBalance;
                   return displayBalance;
                 })

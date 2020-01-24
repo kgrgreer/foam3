@@ -170,8 +170,7 @@ p({
       {
         "class":"foam.nanos.fs.FileDAODecorator"
       }
-    ],
-    "cacheType":"FULL"
+    ]
   }
   """
 })
@@ -199,8 +198,7 @@ p({
   """
   {
     "of":"net.nanopay.fx.ExchangeRate",
-    "requestResponseCaching":true,
-    "cacheType":"FULL"
+    "requestResponseCaching":true
   }
   """
 })
