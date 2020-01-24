@@ -72,6 +72,7 @@ foam.CLASS({
           PGPPrivateKey pgpPrivateKey = new PGPPrivateKey(publicKey.getPGPPublicKey().getKeyID(), publicKey.getPGPPublicKey().getPublicKeyPacket(), bcpgImp);
 
           PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(pgpPrivateKey);
+          entry = (PrivateKeyEntry) entry.fclone();
           entry.setPrivateKey(privateKey);
           
           return entry;
