@@ -285,6 +285,7 @@ foam.CLASS({
         this.report = '';
         this.id_ = this.LABEL_SELECTOR;
         this.progressBarStatus = 'Awaiting File Upload.';
+        this.uploadedCSVs = [];
       }
     }
   ]
