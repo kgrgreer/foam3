@@ -32,7 +32,7 @@ module.exports = {
           }
 
           if ( this.pattern ) {
-            toReturn +=`foam.util.SafetyUtil.assertPattern(val, "${this.pattern}", "${this.name}");\n`;          
+            toReturn +=`foam.util.SafetyUtil.assertPattern(val, "${this.pattern}", "${this.name}");\n`;
           }
           return toReturn;
         }
