@@ -195,8 +195,13 @@ foam.CLASS({
 
       // system and admins override the approval process
       if ( user != null && ( user.getId() == User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) {
-        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING ){
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && user.getId() != User.SYSTEM_USER_ID ){
           lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
+        } 
+        else if (user.getId() == User.SYSTEM_USER_ID) {
+          // Adding log message in case this change breaks something unexpected
+          Object primaryKey = obj instanceof foam.core.Identifiable ? ((foam.core.Identifiable)obj).getPrimaryKey() : null;
+          logger.warning("SYSTEM UPDATE - Not automatically setting LifecycleState to ACTIVE for " + obj.getClass().getSimpleName() + ": " + primaryKey);
         }
         return super.put_(x,obj);
       }
