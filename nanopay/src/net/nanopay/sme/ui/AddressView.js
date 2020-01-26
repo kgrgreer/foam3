@@ -46,6 +46,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
+      name: 'showValidationText',
+      documentation: 'Use this property if the value of validationTextVisible is situational'
+    },
+    {
+      class: 'Boolean',
       name: 'withoutCountrySelection',
       value: false,
       documentation: `If the value of this property is true, then hide country selection dropdown.`
@@ -73,10 +78,11 @@ foam.CLASS({
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
-        if ( countryId == 'US' ) 
+        if ( countryId === 'US' ) {
           return self.regionDAO.where(
             self.EQ(self.Region.COUNTRY_ID, countryId || '')
           );
+        }
         return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
       });
 
@@ -89,15 +95,16 @@ foam.CLASS({
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.COUNTRY_ID.clone().copyFrom({
-                view: {
-                  class: 'foam.u2.view.ChoiceView',
-                  placeholder: this.PLACE_HOLDER,
-                  dao: this.customCountryDAO,
-                  objToChoice: function(a) {
-                    return [a.id, a.name];
+                  view: {
+                    class: 'foam.u2.view.ChoiceView',
+                    placeholder: this.PLACE_HOLDER,
+                    dao: this.customCountryDAO,
+                    objToChoice: function(a) {
+                      return [a.id, a.name];
+                    },
+                    mode$: this.mode$
                   },
-                  mode$: this.mode$
-                }
+                  validationTextVisible: this.showValidationText
                 })
               })
             .end()
@@ -114,7 +121,8 @@ foam.CLASS({
                     dao$: choices,
                     mode$: this.mode$
                   },
-                  label: this.PROVINCE_LABEL
+                  label: this.PROVINCE_LABEL,
+                  validationTextVisible: this.showValidationText
                 })
               })
             .end()
@@ -125,20 +133,26 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NUMBER
+              prop: this.Address.STREET_NUMBER.clone().copyFrom({
+                validationTextVisible: this.showValidationText
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NAME
+              prop: this.Address.STREET_NAME.clone().copyFrom({
+                validationTextVisible: this.showValidationText
+              })
             })
           .end()
         .end()
         .start().addClass('label-input')
           .tag(this.SectionedDetailPropertyView, {
             data$: this.data$,
-            prop: this.Address.SUITE
+            prop: this.Address.SUITE.clone().copyFrom({
+              validationTextVisible: this.showValidationText
+            })
           })
         .end()
         .start()
@@ -146,13 +160,18 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.CITY
+              prop: this.Address.CITY.clone().copyFrom({
+                validationTextVisible: this.showValidationText
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.POSTAL_CODE.clone().copyFrom({label: this.POSTAL_CODE})
+              prop: this.Address.POSTAL_CODE.clone().copyFrom({
+                label: this.POSTAL_CODE,
+                validationTextVisible: this.showValidationText
+              })
             })
           .end()
         .end();
