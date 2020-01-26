@@ -14,12 +14,15 @@ function install_softhsm {
 }
 
 function create_slot {
-  # Create fresh slot
-  if [[ $DEVELOPMENT_SLOT -eq 0 ]]; then
-    softhsm2-util --init-token --label "development" --so-pin $PIN --pin $PIN --free
-  fi
+  # Check if slot does not exist
+  softhsm2-util --show-slots | grep -q 'development'
+  DEVELOPMENT_SLOT=$?
 
-  printf "INFO :: New slot for development created...\n"
+  # Create fresh slot
+  if [[ $DEVELOPMENT_SLOT -eq 1 ]]; then
+    softhsm2-util --init-token --label "development" --so-pin $PIN --pin $PIN --free
+    printf "INFO :: New slot for development created...\n"
+  fi
 }
 
 function migrate_slot {
@@ -35,11 +38,13 @@ function migrate_slot {
 }
 
 function clean {
-  softhsm2-util --show-slots | grep -q 'development'
-  DEVELOPMENT_SLOT=$?
-  if [[ $DEVELOPMENT_SLOT -eq 0 ]]; then
-    softhsm2-util --delete-token --token "development"
-  fi
+  # softhsm2-util --show-slots | grep -q 'development'
+  # DEVELOPMENT_SLOT=$?
+  # if [[ $DEVELOPMENT_SLOT -eq 0 ]]; then
+  #   softhsm2-util --delete-token --token "development"
+  # fi
+
+  #printf "INFO :: Tokens for development have been deleted.\n"
 
   # Testing token is made by the pkcs11_keystoremanager_test test
   softhsm2-util --show-slots | grep -q 'SecurityTestUtil'
@@ -48,7 +53,7 @@ function clean {
     softhsm2-util --delete-token --token "SecurityTestUtil"
   fi
 
-  printf "INFO :: Tokens for development and testing have been deleted.\n"
+  printf "INFO :: Tokens for testing have been deleted.\n"
 }
 
 function config_setup {
@@ -82,11 +87,11 @@ done
 install_softhsm
 clean
 
-if [[ $CREATE -eq 1 ]]; then
+#if [[ $CREATE -eq 1 ]]; then
   create_slot
-else
+#else
   migrate_slot
-fi
+#fi
 
 config_setup
 

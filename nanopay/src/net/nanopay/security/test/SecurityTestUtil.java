@@ -7,6 +7,9 @@ import foam.nanos.logger.Logger;
 import net.nanopay.security.KeyStoreManager;
 import net.nanopay.security.PKCS12KeyStoreManager;
 
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.IOUtils;
+
 class SecurityTestUtil {
 
   /**
@@ -25,7 +28,7 @@ class SecurityTestUtil {
    * Resets the SoftHSM token for future usage
    * @return true if successfully reset, false otherwise
    */
-  static boolean ResetSoftHSM() {
+  static String ResetSoftHSM() {
     try {
       // delete existing test token, ignoring errors
       new ProcessBuilder("softhsm2-util",
@@ -41,7 +44,7 @@ class SecurityTestUtil {
         "--label", "SecurityTestUtil",
         "--so-pin", "test",
         "--pin", "test")
-        .inheritIO()
+        // .inheritIO()
         .start();
 
       // wait for process to finish
@@ -49,9 +52,10 @@ class SecurityTestUtil {
         throw new RuntimeException("Failed to initialize token: \"SecurityTestUtil\"");
       }
 
-      return true;
+      String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+      return output.substring(output.lastIndexOf(" ")+1);
     } catch ( Throwable t ) {
-      return false;
+      return null;
     }
   }
 

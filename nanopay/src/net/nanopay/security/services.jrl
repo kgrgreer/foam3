@@ -2,13 +2,28 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "keyStoreManager",
   "serviceScript": """
-    import net.nanopay.security.PKCS12KeyStoreManager;
-    return new PKCS12KeyStoreManager.Builder(x)
-      .setKeyStorePath(System.getenv("NANOPAY_HOME\") +"/keys/keystore.p12")
-      .setPassphrasePath(System.getenv("NANOPAY_HOME") + "/keys/passphrase")
-      .build();
+    import net.nanopay.security.PKCS11KeyStoreManager;
+    import java.security.KeyStore;
+    import java.io.*;
+    String hsmToken = null;
+    BufferedReader br = new BufferedReader(new FileReader(\"/opt/nanopay/keys/547ca49cda2957dc997890d2d132d2c8\"));
+    StringBuilder sb = new StringBuilder();
+    String line = br.readLine();
+    while (line != null) {
+      sb.append(line);
+      sb.append(System.lineSeparator());
+      line = br.readLine();
+    }
+    hsmToken = sb.toString().replaceAll(\"(\\\\r|\\\\n)\", \"\");
+    return new PKCS11KeyStoreManager.Builder(x)
+      .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+        public KeyStore.ProtectionParameter getProtectionParameter() {
+          return new KeyStore.PasswordProtection(hsmToken.toCharArray());
+        }
+      }).build();
   """
 })
+
 p({"class":"foam.nanos.boot.NSpec", "name":"CSPViolationsDAO",                 "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setSeqNo(true).setJournalName(\"CSPViolation\").setOf(net.nanopay.security.csp.CSPViolation.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.security.csp.CSPViolation\"}", "description":"DAO containing CSP violation reports that are sent to the server by the clients."})
 
 p({
