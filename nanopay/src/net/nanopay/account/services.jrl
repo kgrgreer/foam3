@@ -89,6 +89,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setPm(true)
+      .setDeletedAware(false)
       .setAuthorize(false)
       .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.account.DebtAccount.class)))
       .setRuler(false)
@@ -104,6 +105,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
+      .setEnableInterfaceDecorators(false)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
       .build();
