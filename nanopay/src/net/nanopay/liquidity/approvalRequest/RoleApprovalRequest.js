@@ -33,7 +33,8 @@ foam.CLASS({
   imports: [
     'currentMenu',
     'stack',
-    'ctrl'
+    'ctrl',
+    'user'
   ],
 
   requires: [
@@ -115,11 +116,31 @@ foam.CLASS({
           });
         }
       },
-      visibilityExpression: function(approver) {
-        return approver ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(status) {
+        if ( status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
+          return foam.u2.Visibility.HIDDEN;
+        }
+
+        return foam.u2.Visibility.RO;
       }
+    },
+    {
+      class: 'String',
+      name: 'pendingApproval',
+      label: 'Approver',
+      section: 'requestDetails',
+      transient: true,
+      value: 'Pending',
+      visibilityExpression: function(status) {
+        if ( status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
+          return foam.u2.Visibility.RO;
+        }
+        return foam.u2.Visibility.HIDDEN;
+      },
+      documentation: `
+        This string will be used to show that the approver is pending without
+        altering the value of Approver. It is also transient.
+      `
     },
     {
       class: 'Enum',
@@ -211,14 +232,14 @@ foam.CLASS({
     {
       name: 'approve',
       section: 'requestDetails',
-      isAvailable: (initiatingUser, approver, status) => {
+      isAvailable: (initiatingUser, user, status) => {
         if (
           status === net.nanopay.approval.ApprovalStatus.REJECTED ||
           status === net.nanopay.approval.ApprovalStatus.APPROVED
         ) {
           return false;
         }
-        return initiatingUser !== approver;
+        return initiatingUser !== user.id;
       },
       code: function() {
         var approvedApprovalRequest = this.clone();
@@ -246,14 +267,14 @@ foam.CLASS({
     {
       name: 'reject',
       section: 'requestDetails',
-      isAvailable: (initiatingUser, approver, status) => {
+      isAvailable: (initiatingUser, user, status) => {
         if (
             status === net.nanopay.approval.ApprovalStatus.REJECTED ||
             status === net.nanopay.approval.ApprovalStatus.APPROVED
           ) {
          return false;
         }
-        return initiatingUser !== approver;
+        return initiatingUser !== user.id;
       },
       code: function() {
         var rejectedApprovalRequest = this.clone();
