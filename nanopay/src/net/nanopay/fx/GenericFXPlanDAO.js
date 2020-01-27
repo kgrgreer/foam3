@@ -63,6 +63,7 @@ foam.CLASS({
       javaCode:`
         FXTransaction f = new FXTransaction();
         f.setLifecycleState(txn.getLifecycleState());
+        f.setReferenceNumber(txn.getReferenceNumber());
         f.setDestinationCurrency(txn.getDestinationCurrency());
         f.setSourceCurrency(txn.getSourceCurrency());
         f.setAmount(txn.getAmount());
