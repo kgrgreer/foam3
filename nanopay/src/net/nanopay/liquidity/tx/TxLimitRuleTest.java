@@ -108,9 +108,12 @@ public class TxLimitRuleTest
     String txAmount = currency.format(transaction.getAmount());
     User user = txLimitRule.getSend() ? sourceUser : destinationUser;
     Account account = txLimitRule.getSend() ? sourceAccount : destinationAccount;
+    long exceeded = transaction.getAmount() - (limit - spent);
     String errorMessage = 
       "The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " limit was exceeded with a " + txAmount + " transaction " 
+          + " limit was exceeded by " 
+          + ( currency != null ? currency.format(exceeded) : String.format("%s", exceeded) )
+          + " transaction " 
           + (txLimitRule.getSend() ? "from " : "to ")
           + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
           + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
