@@ -114,10 +114,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       EQ(net.nanopay.account.Account.ENABLED, true),
       EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
       OR(
-        AND(
-          INSTANCE_OF(net.nanopay.account.DigitalAccount.class),
-          NOT(INSTANCE_OF(net.nanopay.account.AggregateAccount.class))
-        ),
+        CLASS_OF(net.nanopay.account.DigitalAccount.class),
         INSTANCE_OF(net.nanopay.account.ShadowAccount.class)
       )
     )).select(new ArraySink());
