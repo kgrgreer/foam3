@@ -73,8 +73,8 @@ foam.CLASS({
     border-width: 0 4px 5px 4px;
     border-color: transparent transparent white transparent;
     position: relative;
-    left: 0.7vw;
-    bottom: -0.6vh;
+    left: 13px;
+    top: 6px;
     z-index: 0;
     pointer-events:none;
   }
@@ -83,8 +83,8 @@ foam.CLASS({
     border-width: 5px 4px 0 4px;
     border-color: white transparent transparent transparent;
     position: relative;
-    left: 0.7vw;
-    bottom: -0.7vh;
+    left: 13px;
+    top: 7px;
     z-index: 0;
     pointer-events:none;
   }
