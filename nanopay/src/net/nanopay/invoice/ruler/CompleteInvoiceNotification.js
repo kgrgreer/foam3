@@ -8,14 +8,11 @@ foam.CLASS({
 
   javaImports: [
     'java.util.Date',
-    'foam.core.FObject',
     'foam.core.X',
     'foam.core.ContextAgent',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'foam.core.Currency',

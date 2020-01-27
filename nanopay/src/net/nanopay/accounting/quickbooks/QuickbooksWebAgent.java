@@ -83,7 +83,7 @@ public class QuickbooksWebAgent implements WebAgent {
         // This is QuickBooks' API accessing the service.
 
         // On the return point. Checks the company is the same as it returns.
-        if ( tokenStorage.getCsrf().equals(state) ) {
+        if ( tokenStorage != null && tokenStorage.getCsrf().equals(state) ) {
 
           // Save the information we're getting from QuickBooks. We'll need this
           // information when we want to access the API later.
@@ -106,22 +106,23 @@ public class QuickbooksWebAgent implements WebAgent {
         } else {
 
           // Resets tokens.
-          tokenStorage.setAccessToken(" ");
-          tokenStorage.setCsrf(" ");
-          tokenStorage.setRealmId(" ");
-          store.put(tokenStorage);
+          if ( tokenStorage != null ) {
+            tokenStorage.setAccessToken(" ");
+            tokenStorage.setCsrf(" ");
+            tokenStorage.setRealmId(" ");
+            store.put(tokenStorage);
+          }
           resp.sendRedirect("/service/quickbooksWebAgent");
         }
       }
     } catch ( Throwable e ) {
-      e.printStackTrace();
       logger.error(e);
     }
   }
 
   public void sync(X x, HttpServletResponse response) {
     try {
-      response.sendRedirect("/#sme.bank.matching");
+      response.sendRedirect("/#xsme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);

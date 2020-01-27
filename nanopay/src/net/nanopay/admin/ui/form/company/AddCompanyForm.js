@@ -147,7 +147,6 @@ foam.CLASS({
           // Merchant Info
 
           if ( ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
-          ( companyInfo.firstName == null || companyInfo.firstName.trim() == '' ) ||
           ( companyInfo.jobTitle == null || companyInfo.jobTitle.trim() == '' ) ||
           ( companyInfo.email == null || companyInfo.email.trim() == '' ) ||
           ( companyInfo.phoneNumber == null || companyInfo.phoneNumber.trim() == '' ) ||

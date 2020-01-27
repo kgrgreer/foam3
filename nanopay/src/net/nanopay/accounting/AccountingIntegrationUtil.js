@@ -71,6 +71,8 @@ foam.CLASS({
         service = this.quickbooksService;
       }
 
+      if ( ! service ) return;
+
       // contact sync
       let contactResult = await service.contactSync(null);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
@@ -190,7 +192,7 @@ foam.CLASS({
 
       doc.myY = doc.myY + 10;
 
-      for ( item of mismatch ) {
+      for ( let item of mismatch ) {
         data.push({
           businessName: item.existContact.businessName,
           name: item.existContact.firstName + ' ' + item.existContact.lastName,
@@ -213,7 +215,7 @@ foam.CLASS({
         { header: 'Business', dataKey: 'businessName' },
         { header: 'Name', dataKey: 'name' }
       ];
-      for ( key of Object.keys(contactErrors) ) {
+      for ( let key of Object.keys(contactErrors) ) {
         if ( key === 'MISS_ADDRESS' ) {
           if ( contactErrors[key].length !== 0 ) {
               doc.text('Contact Sync Action Required', 14, doc.myY);

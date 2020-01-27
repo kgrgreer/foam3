@@ -152,14 +152,14 @@ foam.CLASS({
         piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
         vprDAO.inX(x).put(piiRequest);
         // Find object from DAO
-        FObject daoRequestObject = vprDAO.find(100);
+        FObject daoRequestObject = vprDAO.find(100l);
         // Modify the object and put it to DAO again
         piiRequest.setViewRequestStatus(PIIRequestStatus.PENDING);
         piiRequest.setCreated(new Date());
         piiRequest.setRequestExpiresAt(new Date());
         vprDAO.inX(x).put(piiRequest);
         // Find the object again
-        FObject modifiedDaoRequestObject = vprDAO.find(100);
+        FObject modifiedDaoRequestObject = vprDAO.find(100l);
         // Confirm that the dao Object was not modified
         test( daoRequestObject.equals(modifiedDaoRequestObject) , "updating an approved request doesn\'t work" );
       `
@@ -182,12 +182,12 @@ foam.CLASS({
         piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
         vprDAO.inX(x).put(piiRequest);
         // Find object from DAO
-        FObject daoRequestObject = vprDAO.find(100);
+        FObject daoRequestObject = vprDAO.find(100l);
         ArrayList downloadedAt = (ArrayList) daoRequestObject.getProperty("downloadedAt");
         // Simulate a download and get the object again
         PIIReportGenerator prg = new PIIReportGenerator();
         prg.addTimeToPIIRequest(x);
-        FObject modifiedDaoRequestObject = vprDAO.find(100);
+        FObject modifiedDaoRequestObject = vprDAO.find(100l);
         ArrayList modifiedDownloadedAt = (ArrayList) modifiedDaoRequestObject.getProperty("downloadedAt");
         // Test that the downloadedAt array is larger than before
         test( downloadedAt.size() < modifiedDownloadedAt.size() , "downloadedAt is modified when a download is triggered" );

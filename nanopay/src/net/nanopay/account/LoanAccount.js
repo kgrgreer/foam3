@@ -15,8 +15,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.InterestTransaction',
     'foam.dao.DAO',
     'foam.mlang.MLang'

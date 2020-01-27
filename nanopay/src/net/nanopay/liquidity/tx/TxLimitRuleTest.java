@@ -1,22 +1,17 @@
 package net.nanopay.liquidity.tx;
 
-import foam.core.X;
 import foam.core.Currency;
-import foam.dao.ArraySink;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
-import net.nanopay.liquidity.tx.TxLimitEntityType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.util.Frequency;
 import net.nanopay.tx.test.TransactionTestUtil;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.util.Frequency;
 
 /*
   Test for TxLimitRule, creates a test rule with a source and destination user.

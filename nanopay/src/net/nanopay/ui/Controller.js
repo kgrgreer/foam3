@@ -29,7 +29,8 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
-    'net.nanopay.ui.NanoConnectStyles'
+    'net.nanopay.ui.NanoConnectStyles',
+    'net.nanopay.ui.ConnectSubMenu'
   ],
 
   imports: [
@@ -199,6 +200,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
       // adding a listener to track the display width here as well since we don't call super
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();

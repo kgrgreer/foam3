@@ -32,11 +32,7 @@ module.exports = {
           }
 
           if ( this.pattern ) {
-            toReturn +=
-`java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("${this.pattern}");
-if ( ! pattern.matcher(val).matches() ) {
-  throw new IllegalArgumentException("${this.name}");
-}\n`;
+            toReturn +=`foam.util.SafetyUtil.assertPattern(val, "${this.pattern}", "${this.name}");\n`;
           }
           return toReturn;
         }

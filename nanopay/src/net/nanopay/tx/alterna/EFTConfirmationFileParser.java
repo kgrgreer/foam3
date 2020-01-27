@@ -25,29 +25,22 @@ public class EFTConfirmationFileParser extends EFTFileParser
     X x = getX();
     Logger logger = (Logger) x.get("logger");
     List<FObject> ret = new ArrayList<>();
-    BufferedReader reader = null;
-
-    try {
-      ClassInfo classInfo = EFTConfirmationFileRecord.getOwnClassInfo();
-      List<Object> propertyInfos = new ArrayList<>();
-      propertyInfos.add(classInfo.getAxiomByName("lineNumber"));
-      propertyInfos.add(classInfo.getAxiomByName("status"));
-      propertyInfos.add(classInfo.getAxiomByName("EFTTransactionId"));
-      propertyInfos.add(classInfo.getAxiomByName("reason"));
-      propertyInfos.add(classInfo.getAxiomByName("PADType"));
-      propertyInfos.add(classInfo.getAxiomByName("transactionCode"));
-      propertyInfos.add(classInfo.getAxiomByName("firstName"));
-      propertyInfos.add(classInfo.getAxiomByName("lastName"));
-      propertyInfos.add(classInfo.getAxiomByName("referenceId"));
-
-      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
+    ClassInfo classInfo = EFTConfirmationFileRecord.getOwnClassInfo();
+    List<Object> propertyInfos = new ArrayList<>();
+    propertyInfos.add(classInfo.getAxiomByName("lineNumber"));
+    propertyInfos.add(classInfo.getAxiomByName("status"));
+    propertyInfos.add(classInfo.getAxiomByName("EFTTransactionId"));
+    propertyInfos.add(classInfo.getAxiomByName("reason"));
+    propertyInfos.add(classInfo.getAxiomByName("PADType"));
+    propertyInfos.add(classInfo.getAxiomByName("transactionCode"));
+    propertyInfos.add(classInfo.getAxiomByName("firstName"));
+    propertyInfos.add(classInfo.getAxiomByName("lastName"));
+    propertyInfos.add(classInfo.getAxiomByName("referenceId"));
+    
+    try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));) {
       parseFile(ret, reader, classInfo, propertyInfos);
-
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
       logger.error(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
     }
 
     return ret;

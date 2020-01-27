@@ -1,6 +1,14 @@
 package net.nanopay.tx;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
@@ -16,18 +24,8 @@ import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import foam.dao.ArraySink;
-import foam.util.SafetyUtil;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
@@ -122,7 +120,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn6.getId())).select(new foam.dao.ArraySink());
     test(sink.getArray().size() == 1, "txn7 is parent to a single transaction");
     txn7 = (Transaction) sink.getArray().get(0);
-    test(txn7 instanceof KotakCOTransaction, "txn7 is a KotakCOTransaction");
+    test(txn7 instanceof KotakPaymentTransaction, "txn7 is a KotakPaymentTransaction");
     test(txn7.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn7 has status PENDING_PARENT_COMPLETED");
     test(SafetyUtil.equals(txn7.getSourceCurrency(), "INR"), "txn7 has source currency INR");
     test(SafetyUtil.equals(txn7.getDestinationCurrency(), "INR"), "txn7 has destination currency INR");

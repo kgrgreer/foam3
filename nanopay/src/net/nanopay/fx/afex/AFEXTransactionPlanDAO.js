@@ -10,11 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.app.Mode',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil',
     'foam.core.FObject',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.Account',
@@ -22,10 +19,7 @@ foam.CLASS({
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.tx.ExpiryLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXLineItem',
@@ -33,12 +27,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.FXTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
-    'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PaymentIdentification3',
-    'foam.core.Currency',
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
@@ -199,7 +188,8 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   } catch ( Exception e) {
 
   }
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
+  if ( date != null )
+    afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
   
   // add invoice fee
   Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());

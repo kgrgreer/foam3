@@ -259,7 +259,7 @@ foam.CLASS({
               .end()
               .call( function() {
                 let contactErrors = self.reportResult.contactErrors;
-                for ( key of Object.keys(contactErrors) ) {
+                for ( let key of Object.keys(contactErrors) ) {
                   if ( contactErrors[key].length !== 0 && key !== 'MISS_ADDRESS' ) {
                     this.showContactError = true;
                     this.start('div').addClass('report-table-container').addClass('contact-tables')
@@ -349,7 +349,7 @@ foam.CLASS({
       this.invoiceCount = 0;
       let myDAO = foam.dao.MDAO.create( { of: this.InvoiceResponseItem } );
 
-      for ( x in arrData ) {
+      for ( let x in arrData ) {
         myDAO.put(this.InvoiceResponseItem.create({
           id: x,
           invoiceNumber: arrData[x].invoiceNumber,

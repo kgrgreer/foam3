@@ -92,7 +92,7 @@ foam.CLASS({
                 return this.signUpStatus === self.ContactStatus.NOT_INVITED;
               },
               isAvailable: async function() {
-                account = await self.accountDAO.find(this.bankAccount);
+                let account = await self.accountDAO.find(this.bankAccount);
                 return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
