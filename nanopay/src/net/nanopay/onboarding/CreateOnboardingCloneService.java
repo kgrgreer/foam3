@@ -18,8 +18,8 @@ import static foam.mlang.MLang.AND;
  */
 
 public class CreateOnboardingCloneService {
-  public DAO businessOnboardingDAO;
-  public DAO uSBusinessOnboardingDAO;
+  private DAO businessOnboardingDAO;
+  private DAO uSBusinessOnboardingDAO;
 
   public CreateOnboardingCloneService(X x) {
     businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");

@@ -5,14 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.Account',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer',
-    'java.util.Arrays',
-    'foam.dao.DAO',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'foam.util.SafetyUtil'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
@@ -68,13 +61,15 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setConfirmationLineNumber(((AlternaCITransaction)other).getConfirmationLineNumber());
-        setReturnCode(((AlternaCITransaction)other).getReturnCode());
-        setReturnDate(((AlternaCITransaction)other).getReturnDate());
-        setReturnType(((AlternaCITransaction)other).getReturnType());
-        setPadType(((AlternaCITransaction)other).getPadType());
-        setTxnCode(((AlternaCITransaction)other).getTxnCode());
-        setDescription(((AlternaCITransaction)other).getDescription());
+        if ( other instanceof AlternaCITransaction ) {
+          setConfirmationLineNumber(((AlternaCITransaction)other).getConfirmationLineNumber());
+          setReturnCode(((AlternaCITransaction)other).getReturnCode());
+          setReturnDate(((AlternaCITransaction)other).getReturnDate());
+          setReturnType(((AlternaCITransaction)other).getReturnType());
+          setPadType(((AlternaCITransaction)other).getPadType());
+          setTxnCode(((AlternaCITransaction)other).getTxnCode());
+          setDescription(((AlternaCITransaction)other).getDescription());
+        }
       `
     },
     {

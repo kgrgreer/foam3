@@ -50,9 +50,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'AddressError', message: 'Street address is invalid' },
-    { name: 'AddressCityError', message: 'City name is invalid' },
-    { name: 'AddressProvinceError', message: 'Invalid province option' },
-    { name: 'AddressPostalCodeError', message: 'Invalid postal code' }
+    { name: 'ADDRESS_ERROR', message: 'Street address is invalid' },
+    { name: 'ADDRESS_CITY_ERROR', message: 'City name is invalid' },
+    { name: 'ADDRESS_PROVINCE_ERROR', message: 'Invalid province option' },
+    { name: 'ADDRESS_POSTAL_ERROR', message: 'Invalid postal code' }
   ]
 });

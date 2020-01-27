@@ -4,14 +4,10 @@ foam.CLASS({
 
     javaImports: [
       'foam.core.X',
-      'foam.nanos.auth.EnabledAware',
-      'foam.nanos.auth.User',
-      'foam.nanos.logger.Logger',
       'foam.dao.DAO',
       'foam.mlang.MLang',
       'foam.dao.AbstractSink',
-      'foam.core.Detachable',
-      'foam.util.SafetyUtil'
+      'foam.core.Detachable'
     ],
 
     tableColumns: [

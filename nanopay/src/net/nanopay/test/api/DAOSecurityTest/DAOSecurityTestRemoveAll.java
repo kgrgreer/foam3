@@ -34,7 +34,6 @@ public class DAOSecurityTestRemoveAll extends DAOSecurityTest {
 
   @Override
   public void runTest(X x) {
-    List<String> ignores = new ArrayList<>();
     testAllDAOs(x, TEST_REMOVE_ALL, "removeAll", Stream.concat(REMOVE_ALL_IGNORES.stream(), GLOBAL_IGNORES.stream()).collect(Collectors.toList()));
   }
 

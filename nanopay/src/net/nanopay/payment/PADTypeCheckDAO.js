@@ -6,32 +6,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
-    'foam.mlang.sink.Count',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Branch',
-    'net.nanopay.payment.Institution',
-    'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PADType',
-    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.bmo.cico.*',
-    'net.nanopay.tx.cico.VerificationTransaction',
-    'net.nanopay.tx.ETALineItem',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'java.util.ArrayList',
-    'java.util.List'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [

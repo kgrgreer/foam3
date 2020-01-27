@@ -17,7 +17,7 @@ import static foam.mlang.MLang.*;
  * know that they have to pick that user's company from the list of companies.
  */
 public class CheckContactExistsDAO extends ProxyDAO {
-  public DAO localUserUserDAO_;
+  private DAO localUserUserDAO_;
 
   public CheckContactExistsDAO(X x, DAO delegate) {
     super(x, delegate);

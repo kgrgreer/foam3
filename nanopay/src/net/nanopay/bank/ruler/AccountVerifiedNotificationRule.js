@@ -35,6 +35,8 @@ foam.CLASS({
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
             Branch currBranch = (Branch) account.findBranch(x);
             String institutionStr = " - ";
+            if ( config == null ) return;
+
             if ( currBranch != null ) {
               Institution currInstitution = (Institution) currBranch.findInstitution(x);
               institutionStr = currInstitution == null ? " - " : ((currInstitution.getAbbreviation() == null  || currInstitution.getAbbreviation().isEmpty()) ? currInstitution.getName() : currInstitution.getAbbreviation());
@@ -44,6 +46,8 @@ foam.CLASS({
             args.put("name",    User.FIRST_NAME);
             args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
             args.put("institution", institutionStr);
+            args.put("userEmail", User.EMAIL);
+            args.put("accountType", account.getType());
         
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")

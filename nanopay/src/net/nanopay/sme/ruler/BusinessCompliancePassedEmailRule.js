@@ -9,12 +9,12 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
+      'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
       'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
-      'foam.nanos.notification.email.EmailMessage',
       'net.nanopay.model.Business',
       'java.util.HashMap',
       'java.util.Map',
@@ -32,17 +32,19 @@ foam.CLASS({
             Address businessAddress = business.getAddress();
 
             if( ! businessAddress.getCountryId().equals("US") ){
-              Logger                  logger       = (Logger) x.get("logger");
-              Group                   group        = business.findGroup(x);
-              String                  url          = group.getUrl().replaceAll("/$", "");
-              EmailMessage            message      = new EmailMessage();
-              Map<String, Object>     args         = new HashMap<>();
+              Logger                  logger         = (Logger) x.get("logger");
+              Group                   group          = business.findGroup(x);
+              AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
+              Map<String, Object>     args           = new HashMap<>();
 
-              message.setTo(new String[]{business.getEmail()});
-              args.put("link",   url + "#sme.main.dashboard");
+              args.put("link",   config.getUrl() + "#sme.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
-
+              
+              if ( group == null ) {
+                logger.error("Error sending compliance-notification-to-user email, group is null.");
+                return;
+              }
               try {
 
                 Notification businessCompliancePassedNotification = new Notification.Builder(x)

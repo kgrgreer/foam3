@@ -65,6 +65,10 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'tradePurposeCodeLimit'
+    },
+    {
+      class: 'Long',
+      name: 'transactionFee'
     }
   ]
 });

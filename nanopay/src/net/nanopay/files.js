@@ -164,6 +164,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -199,6 +200,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/BusinessRegistration' },
   { name: 'net/nanopay/onboarding/BusinessRegistrationAdapterDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -298,6 +302,7 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
@@ -397,6 +402,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/GuidTransactionPlanDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -1038,6 +1044,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/AbliiBusinessReportDAO' },
   { name: 'net/nanopay/meter/report/TransactionReport' },
   { name: 'net/nanopay/meter/report/TransactionReportView' },
+  { name: 'net/nanopay/meter/report/PaymentReport' },
+  { name: 'net/nanopay/meter/report/PaymentReportDAO' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1107,6 +1115,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/AddFXProvisionPayerPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveDomesticCurrencyPermission' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveFXProvisionPayerPermission' },
+  { name: 'net/nanopay/meter/compliance/ruler/NotifyIdentityMindResponseError' },
 
 
   // canadian sanction
@@ -1220,6 +1229,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
+  { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },

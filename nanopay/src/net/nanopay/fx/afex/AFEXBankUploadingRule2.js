@@ -9,18 +9,14 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
-    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Business',
-    'net.nanopay.fx.afex.AFEXServiceProvider',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'java.util.List'
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
    methods: [

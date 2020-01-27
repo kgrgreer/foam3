@@ -130,8 +130,7 @@ foam.CLASS({
         .add(prefix + "-" + txn.type)
         .callIf(txn.type !== 'SummaryTransaction' &&
                 txn.type !== 'ComplianceTransaction', function() {
-          debugger
-          for (lineItem of txn.lineItems) {
+          for ( let lineItem of txn.lineItems ) {
             if (lineItem.requireUserAction) {
               self2.start().add(lineItem).end();
             }
@@ -187,8 +186,8 @@ foam.CLASS({
                   self2
                   .add('Additional transfers: ')
                   .br();
-                  for ( k = 0; k< q.plans[i].transfers.length; k++ ) {
-                    transfer = q.plans[i].transfers[k];
+                  for ( let k = 0; k< q.plans[i].transfers.length; k++ ) {
+                    let transfer = q.plans[i].transfers[k];
                     transfer.account$find.then(function(acc) {
                       if ( acc.owner == self.user.id && transfer.description ) {
                         self

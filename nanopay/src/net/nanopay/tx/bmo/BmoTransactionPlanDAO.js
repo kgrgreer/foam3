@@ -10,21 +10,13 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
-    'foam.mlang.sink.Count',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Branch',
-    'net.nanopay.payment.Institution',
     'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PADType',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.bmo.cico.*',
@@ -32,10 +24,8 @@ foam.CLASS({
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'java.util.ArrayList',
-    'java.util.List'
+    'java.util.ArrayList'
   ],
 
   constants: [
@@ -79,7 +69,7 @@ foam.CLASS({
     Account destinationAccount = quote.getDestinationAccount();
 
     if ( sourceAccount instanceof CABankAccount &&
-      destinationAccount instanceof DigitalAccount ) {
+      destinationAccount instanceof DigitalAccount  && sourceAccount.getOwner() == destinationAccount.getOwner() ) {
       
       if ( ! useBmoAsPaymentProvider(x, (BankAccount) sourceAccount) ) return this.getDelegate().put_(x, obj);
 

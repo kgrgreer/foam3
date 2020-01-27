@@ -1,21 +1,20 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.auth.*;
-import net.nanopay.contacts.Contact;
-import net.nanopay.contacts.ContactStatus;
-import net.nanopay.invoice.model.Invoice;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.GroupPermissionJunction;
+import foam.nanos.auth.Permission;
+import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
 import net.nanopay.model.Business;
-
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
 
 /**
  * When creating a new business, this decorator will create the groups for that
@@ -23,8 +22,8 @@ import static foam.mlang.MLang.OR;
  * user creating the business is in the admin group for the business.
  */
 public class CreateBusinessDAO extends ProxyDAO {
-  public DAO groupDAO;
-  public DAO agentJunctionDAO;
+  private DAO groupDAO;
+  private DAO agentJunctionDAO;
 
   public CreateBusinessDAO(X x, DAO delegate) {
     setX(x);
@@ -94,7 +93,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     List<GroupPermissionJunction> junctions = ((ArraySink) templateGroup.getPermissions(x).getJunctionDAO().where(EQ(GroupPermissionJunction.SOURCE_ID, templateGroup.getId())).select(new ArraySink())).getArray();
 
     for ( GroupPermissionJunction junction : junctions ) {
-      Permission newPermission = new Permission.Builder(x).setId(junction.getTargetId().replaceAll("\\.id\\.", "." + safeBusinessName + ".")).build();
+      Permission newPermission = new Permission.Builder(x).setId(junction.getTargetId().replace(".id.", "." + safeBusinessName + ".")).build();
 
       // Use the system context to pass the auth checks.
       realGroup.getPermissions(getX()).add(newPermission);

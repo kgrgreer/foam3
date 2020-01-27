@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'Dashboard',
   extends: 'foam.u2.Controller',
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
@@ -40,6 +36,7 @@ foam.CLASS({
     'ctrl',
     'group',
     'invoiceDAO',
+    'isIframe',
     'notificationDAO',
     'onboardingUtil',
     'pushMenu',
@@ -57,10 +54,6 @@ foam.CLASS({
     'myDaoNotification'
   ],
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   messages: [
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
@@ -70,7 +63,8 @@ foam.CLASS({
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
-    { name: 'VIEW_ALL', message: 'View all' }
+    { name: 'VIEW_ALL', message: 'View all' },
+    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
   ],
 
   css: `
@@ -103,6 +97,20 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-AbliiActionView-sendPayment {
       width: 200px;
     }
+    ^ .divider-half {
+      font-size: 14px;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      padding: 0 10px;
+      text-align: center;
+      color: #8e9090;
+    }
+    ^ .line {
+      width: 100%;
+      height: 10px;
+      border-bottom: 2px solid #e2e2e3;
+      text-align: center;
+      margin-top: 15px;
+    }
   `,
 
   properties: [
@@ -129,7 +137,7 @@ foam.CLASS({
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
           ))
           .select(this.COUNT()).then((c) => {
-            this.countOverdueAndUpcoming = c.value; 
+            this.countOverdueAndUpcoming = c.value;
           });
         return 0;
       }
@@ -281,17 +289,24 @@ foam.CLASS({
             onboardingStatus: this.onboardingStatus
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
-        var topL = this.Element.create()
-          .start('h2')
-            .add(this.SUBTITLE1)
-          .end()
-          .start()
-            .tag(this.RequireActionView.create({
-              countRequiresApproval$: this.countRequiresApproval$,
-              countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
-              countDepositPayment$: this.countDepositPayment$
-            }))
+        var line = this.Element.create()
+          .start().addClass('line')
+            .start('span')
+              .addClass('divider-half').add(this.UPPER_TXT)
+            .end()
           .end();
+        
+          var topL = this.Element.create()
+            .start('h2')
+              .add(this.SUBTITLE1)
+            .end()
+            .start()
+              .tag(this.RequireActionView.create({
+                countRequiresApproval$: this.countRequiresApproval$,
+                countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+                countDepositPayment$: this.countDepositPayment$
+              }))
+            .end();
 
         var topR = this.Element.create()
           .start()
@@ -402,12 +417,18 @@ foam.CLASS({
           .end();
 
         split.topButtons.add(top);
-        split.leftTopPanel.add(topL);
-        split.leftBottomPanel.add(botL);
-        split.rightTopPanel.add(topR);
-        split.rightBottomPanel.add(botR);
+        split.line.add(line)
+          .hide(this.isIframe());
+        split.leftTopPanel.add(topL)
+          .hide(this.isIframe());
+        split.leftBottomPanel.add(botL)
+          .hide(this.isIframe());
+        split.rightTopPanel.add(topR)
+          .hide(this.isIframe());
+        split.rightBottomPanel.add(botR)
+          .hide(this.isIframe());
 
-        this.addClass(this.myClass()).add(split).end();
+        this.addClass(this.myClass()).add(split);
       });
     }
   ],

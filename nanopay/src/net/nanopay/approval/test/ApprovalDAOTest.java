@@ -1,7 +1,12 @@
 package net.nanopay.approval.test;
 
+import static foam.mlang.MLang.DOT;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NEQ;
+import static foam.mlang.MLang.NEW_OBJ;
+
 import foam.core.Detachable;
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
@@ -11,12 +16,19 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
-import foam.nanos.ruler.*;
+import foam.nanos.ruler.Operations;
+import foam.nanos.ruler.Rule;
+import foam.nanos.ruler.RuleAction;
+import foam.nanos.ruler.RuleGroup;
+import foam.nanos.ruler.RulerDAO;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
-import net.nanopay.approval.*;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.approval.ApprovalDAO;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalRequestUtil;
+import net.nanopay.approval.ApprovalStatus;
+import net.nanopay.approval.AuthenticatedApprovalDAO;
+import net.nanopay.approval.SendGroupRequestApprovalDAO;
 
 public class ApprovalDAOTest
 extends Test {

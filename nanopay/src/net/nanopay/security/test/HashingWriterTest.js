@@ -86,8 +86,10 @@ foam.CLASS({
         try {
           new HashingWriter("ihwdifqnwdf", new StringWriter());
           test(false, "HashingWriter with an invalid algorithm should throw a NoSuchAlgorithmException");
-        } catch ( Throwable t ) {
-          test(t instanceof NoSuchAlgorithmException, "HashingWriter with invalid algorithm throws NoSuchAlgorithmException");
+        } catch (Exception e) {
+        	test(true, "HashingWriter with invalid algorithm throws NoSuchAlgorithmException");
+		} catch ( Throwable t ) {
+          
         }
 
       `

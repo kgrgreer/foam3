@@ -1,5 +1,11 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NOT;
+import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -11,21 +17,18 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
-import net.nanopay.payment.PADType;
 import net.nanopay.payment.PADTypeLineItem;
-import net.nanopay.tx.*;
-import net.nanopay.tx.alterna.AlternaCITransaction;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.alterna.AlternaVerificationTransaction;
+import net.nanopay.tx.AbliiTransaction;
+import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.Transfer;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
-import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
 public class TransactionTest
   extends foam.nanos.test.Test {
@@ -267,7 +270,7 @@ public class TransactionTest
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber() == txn.getReferenceNumber(),"Reference Number copied in LimitedClone");
+    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
     test(! txn.isActive(), "isActive returns false");
 
@@ -321,6 +324,7 @@ public class TransactionTest
     }
 
     test(padTypeLineItem != null, "pad type line item must be set");
+    if ( padTypeLineItem == null ) return;
     test(padTypeLineItem.getPadType() <= 0, "Quote plan should not set the default value");
 
     Transaction txn2 = new Transaction.Builder(x_)

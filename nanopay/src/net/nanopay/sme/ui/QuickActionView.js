@@ -13,7 +13,8 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'menuDAO',
-    'pushMenu'
+    'pushMenu',
+    'loginSuccess'
   ],
 
   requires: [
@@ -33,17 +34,26 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao',
+      expression: function(loginSuccess){
+        return this.menuDAO
+          .orderBy(this.Menu.ORDER)
+          .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
-      var dao = this.menuDAO
-        .orderBy(this.Menu.ORDER)
-        .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
 
       this
         .start()
           .addClass('quick-actions')
-          .select(dao, function(menu) {
+          .select(this.dao$proxy, function(menu) {
             return this.E()
               .addClass('sme-quick-action-wrapper')
               .call(function() {

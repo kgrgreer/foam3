@@ -25,14 +25,14 @@
   </xs:complexType>
   <xs:simpleType name="Direction">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="Buy" />
-      <xs:enumeration value="Sell" />
+      <xs:enumeration value="BUY" />
+      <xs:enumeration value="SELL" />
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="OriginatorType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="Consumer" />
-      <xs:enumeration value="Business" />
+      <xs:enumeration value="CONSUMER" />
+      <xs:enumeration value="BUSINESS" />
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="GetQuoteResult">
@@ -384,7 +384,7 @@
   <xs:simpleType name="DealPostConfirm">
     <xs:restriction base="xs:string">
       <xs:enumeration value="OK" />
-      <xs:enumeration value="Cancel" />
+      <xs:enumeration value="CANCEL" />
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="PostDealConfirmationResult">

@@ -157,11 +157,14 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      super.limitedCopyFrom(other);
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
-      setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
+      if ( other instanceof InvoiceTransaction ) {
+        setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
+      }
       `
     },
     {

@@ -3,15 +3,6 @@ foam.CLASS({
   name: 'BmoCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
 
-  javaImports: [
-    'java.util.ArrayList',
-    'java.util.Arrays',
-    'net.nanopay.tx.bmo.BmoFormatUtil',
-    'net.nanopay.tx.bmo.BmoTransactionHistory',
-    'foam.core.FObject',
-    'java.util.List'
-  ],
-
   implements: [
     'net.nanopay.tx.bmo.cico.BmoTransaction'
   ],
@@ -52,10 +43,12 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
-        setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
-        setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
-        setSettled( ((BmoCOTransaction) other).getSettled() );
+        if ( other instanceof BmoCOTransaction ) {
+          setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
+          setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
+          setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
+          setSettled( ((BmoCOTransaction) other).getSettled() );
+        }
       `
     }
   ]

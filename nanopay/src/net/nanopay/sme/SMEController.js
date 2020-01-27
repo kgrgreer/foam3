@@ -43,9 +43,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'currentAccount',
+    'isIframe',
+    'onboardingUtil',
     'privacyUrl',
-    'termsUrl',
-    'onboardingUtil'
+    'termsUrl'
   ],
 
   imports: [
@@ -472,9 +473,28 @@ foam.CLASS({
           if ( this.loginSuccess ) {
             this.findBalance();
           }
+          if ( ! this.isIframe() ) {
+            this.addClass(this.myClass())
+            .start()
+              .tag(this.topNavigation_)
+              .show(this.slot((loginSuccess) => loginSuccess))
+            .end()
+            .start()
+              .addClass('stack-wrapper')
+              .start({
+                class: 'net.nanopay.ui.banner.Banner',
+                data$: this.bannerData$
+              })
+              .end()
+              .tag({
+                class: 'foam.u2.stack.StackView',
+                data: this.stack,
+                showActions: false
+              })
+            .end();
+          } else {
           this.addClass(this.myClass())
           .start()
-            .tag(this.topNavigation_)
             .show(this.slot((loginSuccess) => loginSuccess))
           .end()
           .start()
@@ -490,8 +510,17 @@ foam.CLASS({
               showActions: false
             })
           .end();
+          }
         });
       });
+    },
+
+    function isIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
     },
 
     function requestLogin() {
@@ -518,15 +547,21 @@ foam.CLASS({
                 ? searchParams.get('companyName')
                 : '',
               disableCompanyName_: searchParams.has('companyName'),
-              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US']
+              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
+              firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
+              lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
+              jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
+              phone: searchParams.has('phone') ? searchParams.get('phone') : '',
             }
           };
         }
 
         // Process auth token
-        if ( locHash === '#auth' && ! self.loginSuccess ) {
+        if ( ! self.loginSuccess && !! searchParams.get('token') ) {
           self.client.authenticationTokenService.processToken(null, null,
-            searchParams.get('token')).then(() => location = '/');
+            searchParams.get('token')).then(() => {
+              location = locHash == '#onboarding' ? '/' : '/' + locHash;
+            });
         }
       }
 

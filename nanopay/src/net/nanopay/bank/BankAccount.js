@@ -16,18 +16,14 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Branch',
     'foam.core.Currency',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.mlang.sink.Count',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Country',
     'foam.nanos.logger.Logger',
     'java.util.List'
   ],
@@ -118,6 +114,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
+      tableWidth: 82,
       section: 'administration',
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
@@ -219,6 +216,7 @@ foam.CLASS({
       documentation: `A URL link to an image of the country's flag. Used for 
         display purposes. This should be set by the child class.
       `,
+      tableWidth: 91,
       section: 'accountDetails',
       visibility: 'RO',
       view: function(_, X) {

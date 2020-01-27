@@ -22,12 +22,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.DigitalAccount',
     'foam.core.Currency'
   ],
 
@@ -176,6 +171,7 @@ foam.CLASS({
       label: 'Account name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
+      tableWidth: 168,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
@@ -215,8 +211,8 @@ foam.CLASS({
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
-      writePermissionRequired: true,
       tableWidth: 127,
+      writePermissionRequired: true,
       section: 'accountDetails',
       order: 3
     },
@@ -224,6 +220,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isDefault',
       documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
+      tableWidth: 87,
       label: 'Set As Default',
       value: false,
       section: 'administration',
@@ -326,6 +323,14 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: 'The ID of the Agent who created the account.',
+      section: 'administration',
+      visibility: 'RO',
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
@@ -348,7 +353,6 @@ foam.CLASS({
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
-      tableWidth: 500,
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,

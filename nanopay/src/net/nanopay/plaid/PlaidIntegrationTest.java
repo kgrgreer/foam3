@@ -74,7 +74,6 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
 
 
     } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 

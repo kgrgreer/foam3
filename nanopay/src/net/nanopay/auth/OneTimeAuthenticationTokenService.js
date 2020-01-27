@@ -20,7 +20,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
     'foam.nanos.auth.AuthorizationException',
@@ -30,13 +29,10 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'java.io.IOException',
     'java.time.LocalDateTime',
     'java.time.ZoneId',
     'java.time.temporal.ChronoUnit',
-    'java.util.Calendar',
     'java.util.Date',
-    'java.util.List',
     'java.util.UUID',
     'static foam.mlang.MLang.*'
   ],

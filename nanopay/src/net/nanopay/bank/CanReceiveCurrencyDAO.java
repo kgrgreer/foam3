@@ -1,5 +1,9 @@
 package net.nanopay.bank;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -10,14 +14,9 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
-import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
-import net.nanopay.model.Business;
-
-import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id
@@ -25,9 +24,9 @@ import static foam.mlang.MLang.*;
  * in that currency.
  */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
-  public DAO userDAO;
-  public DAO bareUserDAO;
-  public DAO accountDAO;
+  protected DAO userDAO;
+  protected DAO bareUserDAO;
+  protected DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);

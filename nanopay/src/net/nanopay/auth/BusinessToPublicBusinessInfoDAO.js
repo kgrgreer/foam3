@@ -15,13 +15,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
-    'foam.nanos.auth.AuthService',
     'foam.util.SafetyUtil',
-    'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.USBankAccount',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
