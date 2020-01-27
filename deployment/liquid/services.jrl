@@ -269,7 +269,7 @@ p({
     dao = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
+    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao, true);
     // dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
     // dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
