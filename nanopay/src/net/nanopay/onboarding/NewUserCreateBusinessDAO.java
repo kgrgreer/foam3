@@ -32,10 +32,10 @@ import net.nanopay.model.InvitationStatus;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO localBusinessDAO_;
-  public DAO agentJunctionDAO_;
-  public DAO tokenDAO_;
-  public DAO invitationDAO_;
+  private DAO localBusinessDAO_;
+  private DAO agentJunctionDAO_;
+  private DAO tokenDAO_;
+  private DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);

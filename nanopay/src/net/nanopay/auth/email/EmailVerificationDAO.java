@@ -34,10 +34,9 @@ public class EmailVerificationDAO
     User result = (User) super.put_(x, obj);
 
     // Send email verification if new registered user's email enabled
-    if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled ) {
-      if ( ! result.getInvited() ) {
-        emailToken_.generateToken(x, result);
-      }
+    if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled &&
+         ! result.getInvited() ) {
+         emailToken_.generateToken(x, result);
     }
 
     return result;

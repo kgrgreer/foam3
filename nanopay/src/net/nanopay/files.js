@@ -164,6 +164,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
+  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },

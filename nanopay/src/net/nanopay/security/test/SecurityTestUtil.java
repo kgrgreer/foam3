@@ -3,6 +3,7 @@ package net.nanopay.security.test;
 import foam.core.X;
 import foam.core.XFactory;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import net.nanopay.security.KeyStoreManager;
 import net.nanopay.security.PKCS12KeyStoreManager;
 
@@ -31,7 +32,6 @@ class SecurityTestUtil {
         "--delete-token", "--token", "SecurityTestUtil")
         .inheritIO().start().waitFor();
     } catch ( Throwable t ) {
-      t.printStackTrace();
     }
 
     try {
@@ -51,7 +51,6 @@ class SecurityTestUtil {
 
       return true;
     } catch ( Throwable t ) {
-      t.printStackTrace();
       return false;
     }
   }

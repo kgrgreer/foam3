@@ -47,53 +47,41 @@ public class HashingIndex
 
   @Override
   public Object wrap(Object state) {
-    ByteArrayOutputStream baos = null;
-    HashingOutputStream hos = null;
-    ObjectOutputStream oos = null;
-    try {
-      // write out object to byte array while calculating hash
-      baos = new ByteArrayOutputStream();
-      hos = new HashingOutputStream(md_.get(), baos);
-      oos = new ObjectOutputStream(hos);
+    try(
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    HashingOutputStream hos = new HashingOutputStream(md_.get(), baos);
+	    ObjectOutputStream oos = new ObjectOutputStream(hos);
+	) {
       oos.writeObject(state);
 
       // return hashed state
       return new HashedState(baos.toByteArray(), hos.digest());
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
-    } finally {
-      IOUtils.closeQuietly(baos);
-      IOUtils.closeQuietly(hos);
-      IOUtils.closeQuietly(oos);
     }
   }
 
   @Override
   public Object unwrap(Object state) {
-    ByteArrayInputStream bais = null;
-    HashingInputStream his = null;
-    ObjectInputStream ois = null;
     try {
       // read in object from byte array while calculating hash
       HashedState hashed = (HashedState) state;
-      bais = new ByteArrayInputStream(hashed.getState());
-      his = new HashingInputStream(md_.get(), bais);
-      ois = new ObjectInputStream(his);
-
-      // verify digest
-      Object original = ois.readObject();
-      if ( ! Arrays.equals(hashed.getDigest(), his.digest()) ) {
-        throw new RuntimeException("Digest verification failed.");
+      Object original;
+      try (
+		  ByteArrayInputStream bais = new ByteArrayInputStream(hashed.getState());
+		  HashingInputStream his = new HashingInputStream(md_.get(), bais);
+		  ObjectInputStream ois = new ObjectInputStream(his)
+	  ) {
+          // verify digest
+    	  original = ois.readObject();
+        if ( ! Arrays.equals(hashed.getDigest(), his.digest()) ) {
+          throw new RuntimeException("Digest verification failed.");
+        }
       }
-
       // return original state
       return original;
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
-    } finally {
-      IOUtils.closeQuietly(bais);
-      IOUtils.closeQuietly(his);
-      IOUtils.closeQuietly(ois);
     }
   }
 }

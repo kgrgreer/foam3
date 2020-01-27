@@ -89,7 +89,7 @@ foam.CLASS({
               invitation.setFirstName(businessOnboarding.getAdminFirstName());
               invitation.setLastName(businessOnboarding.getAdminLastName());
               invitation.setJobTitle(businessOnboarding.getAdminJobTitle());
-              invitation.setPhoneNumber(((Phone)businessOnboarding.getAdminPhone()).getNumber());
+              invitation.setPhoneNumber(businessOnboarding.getAdminPhone());
 
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);

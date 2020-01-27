@@ -73,15 +73,16 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
     HttpClient httpClient = HttpClients.createDefault();
     HttpGet get = new HttpGet(url);
 
-    InputStream in = null;
     XMLStreamReader reader = null;
     try {
       HttpResponse response = httpClient.execute(get);
-      in = response.getEntity().getContent();
-      HashingInputStream his = new HashingInputStream(Hashing.md5(), in);
-      String checksum = his.hash().toString();
-
-      if ( ! Record.datasetChecksum.equals(checksum) ) {
+      try (InputStream in = response.getEntity().getContent()) {
+    	  String checksum;
+          try (HashingInputStream his = new HashingInputStream(Hashing.md5(), in)) {
+        	  checksum = his.hash().toString();
+          }
+          
+          //if ( ! Record.datasetChecksum.equals(checksum) ) {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
@@ -89,8 +90,11 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
           new InputStreamReader(in));
 
         reloadDataset(x, reader);
-        Record.datasetChecksum = checksum;
       }
+        // This value removed because it was a mutable checksum, replace with
+        // something better
+        //Record.datasetChecksum = checksum;
+      //}
     } catch (IOException | XMLStreamException ex) {
       logger.error("Error reloading Canadian sanctions list", ex);
     } finally {
@@ -98,11 +102,6 @@ public class ReloadCanadianSanctionsListCron implements ContextAgent {
         try {
           reader.close();
         } catch (XMLStreamException e) { /* Ignore */ }
-      }
-      if ( in != null ){
-        try {
-          in.close();
-        } catch (IOException e) { /* ignore */ }
       }
     }
   }

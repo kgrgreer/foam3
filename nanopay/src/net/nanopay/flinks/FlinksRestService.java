@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
+import foam.core.X;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,21 +52,23 @@ public class FlinksRestService
   public ResponseMsg serve(RequestMsg msg, String RequestInfo) {
     if ( RequestInfo.equals(AUTHORIZE) ) {
       return authorizeService(msg);
-    } else if ( RequestInfo.equals(CHALLENGE) ) {
+    }
+    if ( RequestInfo.equals(CHALLENGE) ) {
       return challengeService(msg);
-    } if ( RequestInfo.equals(AUTHORIZE_MULTIPLE) ) {
-      return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_SUMMARY) ) {
-      return accountsSummaryService(msg);
-    } else if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
-      return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
-      return accountsDetailService(msg);
-    } else if ( RequestInfo.equals(WAIT_SUMMARY) ) {
-      return null;
-    } else {
+    }
+    if ( RequestInfo.equals(AUTHORIZE_MULTIPLE) ) {
       return null;
     }
+    if ( RequestInfo.equals(ACCOUNTS_SUMMARY) ) {
+      return accountsSummaryService(msg);
+    }
+    if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
+      return null;
+    }
+    if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
+      return accountsDetailService(msg);
+    }
+    return null;
   }
 
   public ResponseMsg authorizeService(RequestMsg msg) {
@@ -139,7 +142,6 @@ public class FlinksRestService
     }
     String address_ = credentials.getUrl() + "/" + credentials.getCustomerId() + "/" + "BankingServices";
 
-    BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
     HttpClient client = null;
@@ -172,37 +174,41 @@ public class FlinksRestService
 
       int statusCode =  response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
-      rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
+      
       StringBuilder res = builders.get();
       String line = "";
-      while ((line = rd.readLine()) != null) {
-        res.append(line);
+      
+      try(BufferedReader rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()))) {
+    	  while ((line = rd.readLine()) != null) {
+    	        res.append(line);
+    	      }
       }
+      
       msg = new ResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
     } finally {
-      IOUtils.closeQuietly(rd);
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
     }
     return msg;
   }
 
-  private void closeSource(InputStream is, OutputStream os, HttpURLConnection connection) {
+  private void closeSource(X x, InputStream is, OutputStream os, HttpURLConnection connection) {
+    Logger logger = (Logger) x.get("logger");
     if ( os != null ) {
       try {
         os.close();
       } catch ( IOException e ) {
-        e.printStackTrace();
+        logger.log(e);
       }
     }
     if ( is != null ) {
       try {
         is.close();
       } catch ( IOException e ) {
-        e.printStackTrace();
+        logger.log(e);
       }
     }
     if ( connection != null ) {

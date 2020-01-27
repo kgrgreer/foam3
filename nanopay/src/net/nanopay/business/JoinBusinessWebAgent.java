@@ -25,6 +25,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
@@ -37,7 +38,7 @@ import net.nanopay.onboarding.CreateOnboardingCloneService;
  */
 public class JoinBusinessWebAgent implements WebAgent {
 
-  public EnvironmentConfiguration config_;
+  private EnvironmentConfiguration config_;
 
   @Override
   public void execute(X x) {
@@ -90,6 +91,8 @@ public class JoinBusinessWebAgent implements WebAgent {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
 
+    if ( user == null ) throw new RuntimeException("User not found.");
+
     if ( config_ == null ) {
       config_ = EnvironmentConfigurationBuilder
         .configuration()
@@ -123,7 +126,8 @@ public class JoinBusinessWebAgent implements WebAgent {
       try {
         response.addHeader("REFRESH", "2;URL=" + redirect);
       } catch (Exception e) {
-        e.printStackTrace();
+        Logger logger = (Logger) x.get("logger");
+        logger.log(e);
       }
     }
   }

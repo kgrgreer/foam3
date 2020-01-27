@@ -8,7 +8,8 @@ foam.CLASS({
   imports: [
     'loginSuccess',
     'notify',
-    'twofactor'
+    'twofactor',
+    'menuDAO'
   ],
 
   requires: [
@@ -237,6 +238,7 @@ foam.CLASS({
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function(result) {
           if ( result ) {
+            self.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE)
             self.loginSuccess = true;
           } else {
             self.incorrectCode = true;

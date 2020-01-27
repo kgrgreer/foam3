@@ -33,7 +33,7 @@ import static foam.mlang.MLang.*;
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
-  public DAO whitelistedEmailDAO_;
+  private DAO whitelistedEmailDAO_;
 
   public BusinessInvitationDAO(X x, DAO delegate) {
     super(x, delegate);

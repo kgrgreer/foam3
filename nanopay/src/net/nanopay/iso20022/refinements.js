@@ -361,7 +361,7 @@ foam.CLASS({
 
                        Phone senderPhone = new Phone();
                        senderPhone.setVerified(true);
-                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                        sender.setPhone(senderPhone);
 
@@ -380,7 +380,7 @@ foam.CLASS({
                        Address senderAddress = new Address();
                        addrLine = "";
 
-                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null |
+                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null ||
                               ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                 senderAddress.setStructured(true);
                                 senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName());
@@ -460,7 +460,7 @@ foam.CLASS({
 
                       Phone receiverPhone = new Phone();
                       receiverPhone.setVerified(true);
-                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                       receiver.setPhone(receiverPhone);
 
@@ -479,7 +479,7 @@ foam.CLASS({
                       Address receiverAddress = new Address();
                       addrLine = "";
 
-                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null |
+                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null ||
                              ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                receiverAddress.setStructured(true);
                                receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName());
@@ -747,11 +747,11 @@ foam.CLASS({
                     //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
                     Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
-                    String cur_txnStatus = null;
+                    TransactionStatus cur_txnStatus = null;
                     String txnStatus  = null;
 
                     if ( txn != null ) {
-                      cur_txnStatus = ((TransactionStatus)txn.getStatus()).getName();
+                      cur_txnStatus = (TransactionStatus)txn.getStatus();
                       System.out.println("txn.getStatus() : " + txn.getStatus());
                       System.out.println("txn.getStatus().getName() : " + txn.getStatus().getName());
 

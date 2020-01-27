@@ -150,23 +150,22 @@ public class SPSProcessor implements ContextAgent {
     try {
       post.setEntity(new UrlEncodedFormEntity(urlParameters));
       CloseableHttpResponse httpResponse = httpClient.execute(post);
-      BufferedReader rd = null;
-      try {
-        if (httpResponse.getStatusLine().getStatusCode() == 200) {
-          rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-          StringBuilder sb = new StringBuilder();
-          String line;
-          while ( (line = rd.readLine()) != null ) {
-            sb.append(line);
-          }
-          response = sb.toString();
-        } else {
-          logger.warning("http status code was not 200");
-        }
-      } finally {
-        IOUtils.closeQuietly(rd);
-        httpResponse.close();
-      }
+      
+      if (httpResponse.getStatusLine().getStatusCode() == 200) {
+    	  try(BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()))) {
+    		  StringBuilder sb = new StringBuilder();
+    	      String line;
+    	      while ( (line = rd.readLine()) != null ) {
+    	        sb.append(line);
+    	      }
+    	      response = sb.toString();
+    	  } finally {
+	        httpResponse.close();
+	      }
+	      
+	    } else {
+	      logger.warning("http status code was not 200");
+	    }
     } catch (IOException e) {
       logger.error(e);
     } finally {

@@ -11,8 +11,6 @@ public class SPSTest implements ContextAgent {
   public void execute(X x) {
     SPSProcessor spsProcessor = x.create(SPSProcessor.class);
 
-    SPSTransaction spsTransaction = new SPSTransaction();
-
     try {
       System.out.println("General Request: " + generateTestGeneralRequest());
       GeneralRequestResponse generalRequestResponse = spsProcessor.GeneralReqService(x, generateTestGeneralRequest());

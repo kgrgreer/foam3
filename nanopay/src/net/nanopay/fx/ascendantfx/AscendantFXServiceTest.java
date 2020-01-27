@@ -112,7 +112,7 @@ public class AscendantFXServiceTest
       branch.setInstitution(institution.getId());
       branch.setAddress(branchAddress);
       DAO branchDAO = (DAO) x_.get("branchDAO");
-      branch = (Branch) branchDAO.put(branch);
+      branchDAO.put(branch);
 
     } else {
       institution = (Institution) institutions.get(0);
@@ -206,7 +206,9 @@ public class AscendantFXServiceTest
       bankAccount.setInstitutionNumber("210000001");
       bankAccount = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bankAccount).fclone();
       Thread.sleep(100); // So test does not fail because both account and afx payee was updated at the same time
-    } catch (InterruptedException ex) {}
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
 
     try {
       ascendantPaymentService.submitPayment(transaction);

@@ -17,14 +17,9 @@ foam.CLASS({
       class: 'String',
       name: 'timePeriod',
       javaFactory: `
-      Formatter fmt = null;
-      try {
-        fmt = new Formatter();
+      try (Formatter fmt = new Formatter()) {
         Calendar cal = Calendar.getInstance();
         return fmt.format("%tB", cal) + " " + cal.get(Calendar.YEAR);
-      } finally {
-        if ( fmt != null )
-          fmt.close();
       }
        `
     },
@@ -32,14 +27,9 @@ foam.CLASS({
       class: 'String',
       name: 'note',
       javaFactory: `
-      Formatter fmt = null;
-      try {
-        fmt = new Formatter();
+      try (Formatter fmt = new Formatter()) {
         Calendar cal = Calendar.getInstance();
         return "nanopay " + getTimePeriod() + " Payroll";
-      } finally {
-        if ( fmt !=null ) 
-          fmt.close();
       }
       `
     },

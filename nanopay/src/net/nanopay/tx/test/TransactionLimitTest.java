@@ -57,11 +57,12 @@ public class TransactionLimitTest extends Test {
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     TestedRule txRule = null;
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName() == "transactionLimits" ) {
+      if ( testedRule.getName().equals("transactionLimits") ) {
         txRule = testedRule;
         break;
       }
     }
+    if ( txRule == null ) return;
     test(((TransactionLimitProbeInfo)txRule.getProbeInfo()).getRemainingLimit() == 10000, "Remaining limit is 10000");
     test(txRule != null, "Probe for transaction limit was found");
     test(txRule.getPassed(), "Transaction is to go through successfully");
@@ -71,7 +72,7 @@ public class TransactionLimitTest extends Test {
     probe.clearAppliedRules();
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName() == "transactionLimits" ) {
+      if ( testedRule.getName().equals("transactionLimits") ) {
         txRule = testedRule;
         break;
       }

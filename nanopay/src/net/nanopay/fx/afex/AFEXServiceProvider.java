@@ -702,7 +702,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return TransactionStatus.DECLINED;
 
       if ( AFEXPaymentStatus.PREPARED_CANCELLED.getLabel().equals(paymentStatus) )
-      return TransactionStatus.DECLINED;      
+        return TransactionStatus.DECLINED;      
 
       return TransactionStatus.SENT;
 

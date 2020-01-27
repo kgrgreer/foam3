@@ -31,6 +31,7 @@ foam.CLASS({
 
   properties: [
     'topButtons',
+    'line',
     'leftTopPanel',
     'leftBottomPanel',
     'rightTopPanel',
@@ -42,6 +43,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag('div', null, this.topButtons$)
+        .tag('div', null, this.line$)
         .start()
           .addClass('two-column-grid')
           .start()

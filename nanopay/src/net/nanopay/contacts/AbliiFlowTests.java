@@ -7,6 +7,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.test.Test;
 import foam.util.Auth;
 import net.nanopay.account.Account;
@@ -84,7 +85,8 @@ extends Test
     } catch ( IllegalStateException ise ) {
       // Exceptions may be thrown if contacs/users are deleted before invoices,
       // as Invoide deletion does invoke some of the invoice validation logic.
-      ise.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(ise);
     }
   }
 

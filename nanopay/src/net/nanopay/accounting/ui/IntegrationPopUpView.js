@@ -237,7 +237,7 @@ foam.CLASS({
       }
       if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
         this.add(this.NotificationMessage.create({ message: this.TokenExpired, type: 'error' }));
-      } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
+      } else if ( ! this.accountingBankAccounts.result && ! ( this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) ) {
         this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
       }
       if ( this.accountingBankAccounts ) {
@@ -340,17 +340,16 @@ foam.CLASS({
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
         let accountingBank = null;
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
-            accountingBank = this.accountingBankAccounts.bankAccountList[i];
-            break;
-          } else if ( this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList ) {
+        for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList || 
+               this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList) {
             accountingBank = this.accountingBankAccounts.bankAccountList[i];
             break;
           }
         }
+        if ( ! accountingBank ) return;
 
-        if ( accountingBank && ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
+        if ( ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
           this.showMatchCurrency = true;
           return;
         }

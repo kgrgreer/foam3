@@ -114,10 +114,11 @@ public class BankAccountVerifierService
         User currentUser = null;
         try {
           currentUser = (User) userDAO.find(bankAccount.getOwner());
-          if ( currentUser == null ) return;
         } catch (Exception e) {
-          e.printStackTrace();
+          Logger logger = (Logger) x.get("logger");
+          logger.log(e);
         }
+        if ( currentUser == null ) return;
 
         List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
             EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
@@ -145,7 +146,6 @@ public class BankAccountVerifierService
     } catch(Exception e) {
       Logger logger = (Logger) x.get("logger");
       logger.error("AUTO DEPOSIT TO --- FAILED" );
-      e.printStackTrace();
     }
 
   }

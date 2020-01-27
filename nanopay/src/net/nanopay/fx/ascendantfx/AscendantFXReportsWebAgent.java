@@ -123,8 +123,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       srcFiles[4] = generateCompanyDirectorsList(x, business);
       // srcFiles[4] = getUSBankAccountProof(x, business);
       // srcFiles[5] = getBeneficialOwnersDoc(x, business);
-      int signingOfficerReportLength = signingOfficerReports == null ? 0 : signingOfficerReports.length;
-      int signingOfficerIdLength     = signingOfficerIDs == null ? 0 : signingOfficerIDs.length;
+      int signingOfficerReportLength = signingOfficerReports.length;
+      int signingOfficerIdLength     = signingOfficerIDs.length;
       System.arraycopy(signingOfficerReports, 0, srcFiles, 6, signingOfficerReportLength);
       System.arraycopy(signingOfficerIDs, 0, srcFiles, 6 + signingOfficerReportLength, signingOfficerIdLength);
 
@@ -1027,10 +1027,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
-    ZipOutputStream zipos = null;
-    FileInputStream is = null;
-    try {
-      zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+    try(ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()))) {
       zipos.setMethod(ZipOutputStream.DEFLATED);
 
       for (File file : srcFiles) {
@@ -1039,23 +1036,19 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
-        try ( DataOutputStream os = new DataOutputStream(zipos) ) {
-          is = new FileInputStream(file);
+        try ( 
+          DataOutputStream os = new DataOutputStream(zipos);
+          FileInputStream is =  new FileInputStream(file)
+        ) {
           byte[] b = new byte[100];
           int length;
           while ((length = is.read(b)) != -1) {
             os.write(b, 0, length);
           }
-          is.close();
-          zipos.closeEntry();
-          os.flush();
         }
       }
     } catch (Exception e) {
       logger.error(e);
-    } finally {
-      IOUtils.closeQuietly(zipos);
-      IOUtils.closeQuietly(is);
     }
   }
 }

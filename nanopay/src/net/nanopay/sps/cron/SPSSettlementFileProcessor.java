@@ -66,13 +66,18 @@ public class SPSSettlementFileProcessor implements ContextAgent {
       }
 
       for ( String fileName : fileNames ) {
-        InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/settlement/" + fileName);
-        String input = editFirstRow(x, fileInputStream);
-        InputStream is = new ByteArrayInputStream(input.getBytes());
+        String input = "";
+   	 	  ArraySink arraySink = new ArraySink();
 
-        ArraySink arraySink = new ArraySink();
-        csvSupport.inputCSV(is, arraySink, SPSSettlementFileRecord.getOwnClassInfo());
-
+        try (InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/settlement/" + fileName)) {
+          input = editFirstRow(x, fileInputStream);
+          try (InputStream is = new ByteArrayInputStream(input.getBytes())) {
+              csvSupport.inputCSV(is, arraySink, SPSSettlementFileRecord.getOwnClassInfo());
+          }
+        } catch(IOException e) {
+          logger.error(e);
+        }
+       
         List list = arraySink.getArray();
         for ( Object record : list ) {
           SPSSettlementFileRecord settlementFileRecord = (SPSSettlementFileRecord) record;
@@ -135,19 +140,19 @@ public class SPSSettlementFileProcessor implements ContextAgent {
   private String editFirstRow(X x, InputStream is) {
     String line;
     StringBuilder sb = new StringBuilder();
-    BufferedReader br = null;
     Logger logger = (Logger) x.get("logger");
 
-    try {
-      br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-
+    try(BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       if ( (line = br.readLine()) != null ) {
-        line = line.replaceAll(" ", "_")
-          .replaceAll("/", "_")
-          .replaceAll("\\+", "_")
-          .replaceAll("#", "Num")
-          .replaceAll("\\(", "")
-          .replaceAll("\\)", "");
+        // TODO: verify that the input file contains backslash escapes;
+        //       this used to be a call to replaceAll so it's possible regex
+        //       parsing of strings was assumed erroneously.
+        line = line.replace(" ", "_")
+          .replace("/", "_")
+          .replace("+", "_")
+          .replace("#", "Num")
+          .replace("(", "")
+          .replace(")", "");
         sb.append(line).append("\n");
       }
 
@@ -157,14 +162,6 @@ public class SPSSettlementFileProcessor implements ContextAgent {
 
     } catch (IOException e) {
       logger.error(e);
-    } finally {
-      if ( br != null ) {
-        try {
-          br.close();
-        } catch (IOException e) {
-          logger.error(e);
-        }
-      }
     }
 
     return sb.toString();
