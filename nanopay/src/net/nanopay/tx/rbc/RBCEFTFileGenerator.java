@@ -48,8 +48,8 @@ public class RBCEFTFileGenerator {
   Logger              logger;
   RbcFTPSCredential   rbcCredential;
 
-  public static final String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_iso/send/";
-  public static final String SEND_FAILED = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_iso/send_failed/";
+  public static final String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/send/";
+  public static final String SEND_FAILED = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/send_failed/";
 
   public RBCEFTFileGenerator(X x) {
     this.x = x;

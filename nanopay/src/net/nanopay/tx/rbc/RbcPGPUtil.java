@@ -13,8 +13,8 @@ import java.security.NoSuchProviderException;
 
 public class RbcPGPUtil {
 
-  public static final String ENCRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/encrypt/";
-  public static final String DECRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/decrypt/";
+  public static final String ENCRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/encrypt/";
+  public static final String DECRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/decrypt/";
 
   public static File encrypt(X x, File fileToEncrypt) throws IOException, NoSuchProviderException, PGPException {
     File outputFile = new File(ENCRYPT_FOLDER + fileToEncrypt.getName());

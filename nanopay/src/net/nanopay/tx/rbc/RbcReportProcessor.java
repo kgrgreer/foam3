@@ -21,7 +21,7 @@ import java.io.File;
 
 public class RbcReportProcessor {
 
-  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/";
+  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
   private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
   private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
