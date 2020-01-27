@@ -48,6 +48,9 @@ p({
     .footer-wrapper {
       margin-left: 250px;
     }
+    .foam-u2-ActionView-export {
+      display: none;
+    }
   """
 })
 
