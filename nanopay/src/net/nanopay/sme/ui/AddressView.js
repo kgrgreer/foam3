@@ -47,6 +47,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showValidationText',
+      value: true,
       documentation: 'Use this property if the value of validationTextVisible is situational'
     },
     {
