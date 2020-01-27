@@ -229,19 +229,6 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setDestinationCurrency("INR");
     txn.setAmount(200);
-
-    // REVIEW: plan.next are not saved properly when going
-    // through transactionDAO directly.  Only saved when
-    // explicitly quoting and then submitting plan.
-    //    txn = (Transaction) txnDAO.put_(x, txn);
-    TransactionQuote quote = new TransactionQuote();
-    quote.setRequestTransaction(txn);
-    quote = (TransactionQuote) planDAO.put_(x, quote);
-    Transaction plan = quote.getPlan();
-    test( plan != null, "plan returned.");
-    test( plan.getNext().length > 0, "plan.hasNext. found: "+plan.getNext().length );
-    txn = (Transaction) txnDAO.put_(x, plan);
-
-    test( txn.getId() != null, "createTxn has id. found: "+txn.getId());
+    txn = (Transaction) txnDAO.put_(x, txn);
   }
 }
