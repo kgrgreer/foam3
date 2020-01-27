@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.fs.File',
+    'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.io.ByteArrayInputStream',
@@ -88,12 +89,24 @@ foam.CLASS({
                     invoiceDAO.put(invoice);
                   }
                 } catch (Throwable t) {
-                  logger.error(" Error getting trade confirmation for AfexTransaction " + transaction.getId(), t);
+                  String msg = "Error getting trade confirmation for AfexTransaction " + transaction.getId();
+                  logger.error(msg, t);
+                  Notification notification = new Notification.Builder(x)
+                    .setTemplate("NOC")
+                    .setBody(msg + " " + t.getMessage())
+                    .build();
+                    ((DAO) x.get("localNotificationDAO")).put(notification);
                 }
               }
 
             } catch (Throwable t) {
-              logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
+              String msg = "Error getting trade confirmation for AfexTransaction " + transaction.getId();
+              logger.error(msg, t);
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(msg + " " + t.getMessage())
+                .build();
+                ((DAO) x.get("localNotificationDAO")).put(notification);
             }
           }
         }

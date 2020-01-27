@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
@@ -67,9 +68,16 @@ foam.CLASS({
                 // update transaction
                 ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
               } catch (Throwable t) {
-                logger.error(" Error submitting payment for AfexTransaction " + transaction.getId(), t);
+                String msg = "Error submitting payment for AfexTransaction " + transaction.getId();
+                logger.error(msg, t);
                 transaction.setStatus(TransactionStatus.DECLINED);
                 ((DAO) x.get("localTransactionDAO")).put_(x, transaction);
+
+                Notification notification = new Notification.Builder(x)
+                  .setTemplate("NOC")
+                  .setBody(msg + " " + t.getMessage())
+                  .build();
+                  ((DAO) x.get("localNotificationDAO")).put(notification);
               }
           }
         }
