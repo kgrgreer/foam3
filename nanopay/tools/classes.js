@@ -386,6 +386,7 @@ var classes = [
   'net.nanopay.fx.interac.model.RequiredDocumentFields',
   'net.nanopay.fx.ExchangeRateStatus',
   'net.nanopay.fx.ExchangeRate',
+  'net.nanopay.fx.ExchangeRateService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.account.BalanceService',

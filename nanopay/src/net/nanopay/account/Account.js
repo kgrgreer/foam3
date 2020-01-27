@@ -17,9 +17,10 @@ foam.CLASS({
 
   imports: [
     'homeDenomination',
-    'fxService',
+    'exchangeRateService',
     'user',
-    'balanceService'
+    'balanceService',
+    'currencyDAO'
   ],
 
   javaImports: [
@@ -313,21 +314,16 @@ foam.CLASS({
       tableWidth: 145,
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
-
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr ? curr.format(balance != null ? balance : 0) : balance;
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.currencyDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
             })
-        }));
+          }));
+        }))
       }
-    },
+
+  },
     {
       class: 'UnitValue',
       unitPropName: 'homeDenomination',
@@ -342,25 +338,14 @@ foam.CLASS({
       visibility: 'RO',
       tableWidth: 145,
       tableCellFormatter: function(value, obj, axiom) {
-        var self = this;
-
-        this.add(
-          obj.slot(homeDenomination => {
-            return Promise.all([
-              obj.denomination == homeDenomination ?
-                Promise.resolve(1) :
-                obj.fxService.getFXRate(obj.denomination, homeDenomination,
-                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
-              obj.findBalance(self.__subSubContext__),
-              self.__subSubContext__.currencyDAO.find(homeDenomination)
-            ]).then(arr => {
-              let [r, b, c] = arr;
-              var displayBalance = c.format(Math.floor((b || 0) * r));
-              self.tooltip = displayBalance;
-              return displayBalance;
+      var self = this;
+        this.add(obj.slot(function(denomination, homeDenomination, balance) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.exchangeRateService.exchangeFormat(denomination, homeDenomination, balance).then((result) => {
+              return self.E().add(result);
             })
-          })
-        );
+          }));
+        }))
       }
     },
     {

@@ -198,7 +198,8 @@ p({
   """
   {
     "of":"net.nanopay.fx.ExchangeRate",
-    "requestResponseCaching":true
+    "requestResponseCaching":true,
+    "cache": true
   }
   """
 })
@@ -688,7 +689,7 @@ p({
   "client":
     """
       {
-        "class":"net.nanopay.fx.ClientExchangeRateService",
+        "class":"net.nanopay.fx.ExchangeRateService",
         "delegate": {
           "class":"foam.box.SessionClientBox",
           "delegate": {
