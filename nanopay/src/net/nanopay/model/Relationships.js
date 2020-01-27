@@ -160,6 +160,7 @@ foam.RELATIONSHIP({
       const LifecycleState = foam.nanos.auth.LifecycleState;
       return {
         class: 'foam.u2.view.RichChoiceView',
+        allowClearingSelection: true,
         search: true,
         sections: [
           {
