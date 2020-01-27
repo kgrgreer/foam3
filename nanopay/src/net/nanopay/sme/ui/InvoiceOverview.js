@@ -171,7 +171,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21 !important;
     }
     ^ .net-nanopay-invoice-ui-modal-RecordPaymentModal {
-      overflow: scroll;
+      overflow: auto;
     }
   `,
 
