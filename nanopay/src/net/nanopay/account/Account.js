@@ -213,7 +213,7 @@ foam.CLASS({
       `,
       tableWidth: 127,
       writePermissionRequired: true,
-      section: 'accountDetails',
+      section: 'administration',
       order: 3
     },
     {
