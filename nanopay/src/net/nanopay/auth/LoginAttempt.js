@@ -26,10 +26,10 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'EMail',
-      name: 'email',
-      label: 'Email address',
-      documentation: 'The email address that was used in the login attempt.',
+      class: 'String',
+      name: 'loginIdentifier',
+      label: 'Login Identifier',
+      documentation: 'The username or email address that was used in the login attempt.',
       visibility: 'RO'
     },
     {

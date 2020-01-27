@@ -35,10 +35,10 @@ foam.CLASS({
         HttpServletRequest request = x.get(HttpServletRequest.class);
         String ipAddress = request.getRemoteAddr();
         loginAttempt.setIpAddress(ipAddress);
-        loginAttempt.setEmail(email);
+        loginAttempt.setLoginIdentifier(id);
 
         try {
-          User user = super.login(x, email, password);
+          User user = super.login(x, id, password);
           loginAttempt.setLoginAttemptedFor(user.getId());
           loginAttempt.setGroup(user.getGroup());
           loginAttempt.setLoginSuccessful(true);

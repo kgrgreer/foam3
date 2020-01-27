@@ -22,6 +22,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
 
     'java.util.Date',
     'java.util.Calendar',
@@ -58,7 +59,7 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, email, password);
+        return login_(x, id, password);
       `
     },
     {
@@ -81,7 +82,7 @@ foam.CLASS({
       ],
       javaCode: `
         // check login attempts
-        foam.nanos.auth.User user = getUserByEmail(x, id);
+        foam.nanos.auth.User user = getUser(x, id);
 
         if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
@@ -132,8 +133,8 @@ foam.CLASS({
       `
     },
     {
-      name: 'getUserByEmail',
-      documentation: 'Convenience method to get a user by email',
+      name: 'getUser',
+      documentation: 'Convenience method to get a user by username or email',
       type: 'foam.nanos.auth.User',
       args: [
         {
@@ -141,7 +142,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'email',
+          name: 'id',
           type: 'String'
         }
       ],
@@ -151,7 +152,10 @@ foam.CLASS({
           .inX(x)
           .find(
             AND(
-              EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()),
+              OR(
+                EQ(foam.nanos.auth.User.EMAIL, id.toLowerCase()),
+                EQ(foam.nanos.auth.User.USER_NAME, id)
+              ),
               EQ(foam.nanos.auth.User.LOGIN_ENABLED, true)
             )
           );

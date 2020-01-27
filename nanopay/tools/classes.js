@@ -254,6 +254,9 @@ var classes = [
   'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
+  // sign up
+  'net.nanopay.sme.ruler.CheckUserNameAvailabilityRule',
+
   // banner
   'net.nanopay.ui.banner.BannerData',
   'net.nanopay.ui.banner.BannerMode',
