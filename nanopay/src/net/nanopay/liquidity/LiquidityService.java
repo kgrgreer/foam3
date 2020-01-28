@@ -236,9 +236,9 @@ public class LiquidityService
       }
     } catch (Exception e) {
       Notification notification = new Notification();
-      notification.setEmailName("Failure to Rebalance");
+      notification.setNotificationType("Failure to Rebalance");
       notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
-      notification.setEmailIsEnabled(true);
+      notification.setEmailIsEnabled(false);
       notification.setUserId(ls.getUserToEmail());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
