@@ -26,7 +26,9 @@ foam.CLASS({
   requires: [
     'foam.core.Currency',
     'foam.core.Unit',
-    'net.nanopay.exchangeable.Security'
+    'net.nanopay.exchangeable.Security',
+    'net.nanopay.fx.ExchangeRate',
+    'net.nanopay.fx.SecurityPrice'
   ],
 
   methods: [
@@ -199,6 +201,12 @@ foam.CLASS({
         var rate;
         if (this.Currency.isInstance(u1)) {
           if (this.Currency.isInstance(u2)) {
+            // Accessing the ExchangeRate class to compile the ExchangeRateId
+            // which is required on the next line. Keep this line in here or
+            // the ExchangeRateId class will not be modeled and generated on 
+            // the fly.
+            var pre = net.nanopay.fx.ExchangeRate.create();
+
             var id = net.nanopay.fx.ExchangeRateId.create();
             id.fromCurrency = u1.id;
             id.toCurrency = u2.id;
@@ -209,7 +217,13 @@ foam.CLASS({
             throw new Error('Rate Not Found for: '+ u1.id + ' and ' + u2.id);
           }
           if (this.Security.isInstance(u2) ) {
-            var id = new net.nanopay.fx.SecurityPriceId.create();
+            // Accessing the SecurityPrice class to compile the ExchangeRateId
+            // which is required on the next line. Keep this line in here or
+            // the SecurityPriceId class will not be modeled and generated on 
+            // the fly.
+            var pre = net.nanopay.fx.SecurityPrice.create();
+
+            var id = net.nanopay.fx.SecurityPriceId.create();
             id.security = u2.id;
             id.currency = u1.id;
             var sp = await this.securityPriceDAO.find(id);
@@ -221,7 +235,13 @@ foam.CLASS({
         }
         if ( this.Security.isInstance(u1)) {
           if (this.Currency.isInstance(u2)) {
-            var id = new net.nanopay.fx.SecurityPriceId.create();
+            // Accessing the SecurityPrice class to compile the ExchangeRateId
+            // which is required on the next line. Keep this line in here or
+            // the SecurityPriceId class will not be modeled and generated on 
+            // the fly.
+            var pre = net.nanopay.fx.SecurityPrice.create();
+
+            var id = net.nanopay.fx.SecurityPriceId.create();
             id.security = u1.id;
             id.currency = u2.id;
             var sp = await this.securityPriceDAO.find(id);
