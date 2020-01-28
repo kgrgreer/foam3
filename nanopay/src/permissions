@@ -353,7 +353,7 @@ p({"class":"foam.nanos.auth.Permission","id":"whitelistedEmail.update.*","descri
 p({"class":"foam.nanos.auth.Permission","id":"notification.create","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"notification.read.*","description":""})]
 p({"class":"foam.nanos.auth.Permission","id":"notification.update.*","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"notificationsetting.create,"description":"Permission to create notification settings."})
+p({"class":"foam.nanos.auth.Permission","id":"notificationsetting.create","description":"Permission to create notification settings."})
 p({"class":"foam.nanos.auth.Permission","id":"notificationsetting.delete.*","description":"Permission to delete every notification setting."})
 p({"class":"foam.nanos.auth.Permission","id":"notificationsetting.read.*","description":"Permission to see every notification setting."})
 p({"class":"foam.nanos.auth.Permission","id":"notificationsetting.update.*","description":"Permission to update every notification setting."})
