@@ -23,7 +23,7 @@ foam.CLASS({
     },
     {
       name: 'file',
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'net.nanopay.tx.rbc.iso20022file.RbcISO20022File'
     },
     {
@@ -34,6 +34,7 @@ foam.CLASS({
       name: 'transmissionHeader',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
+      transient: true
     },
   ],
 });

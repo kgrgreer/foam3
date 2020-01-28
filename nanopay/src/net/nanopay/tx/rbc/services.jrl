@@ -38,3 +38,22 @@ p({
   """, 
   "client": "{\"of\":\"net.nanopay.tx.rbc.RbcReferenceNumber\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec", 
+  "name": "rbcBatchRecordDAO",                       
+  "lazy": false,  
+  "serve": true, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("rbcBatch")
+      .setOf(net.nanopay.tx.rbc.iso20022file.RbcBatchRecord.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"net.nanopay.tx.rbc.iso20022file.RbcBatchRecord\"}"
+})

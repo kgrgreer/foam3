@@ -45,6 +45,7 @@ public class RBCEFTFileGenerator {
   X                   x;
   DAO                 currencyDAO;
   DAO                 rbcISOFileDAO;
+  DAO                 rbcBatchRecordDAO;
   Logger              logger;
   RbcFTPSCredential   rbcCredential;
 
@@ -55,6 +56,7 @@ public class RBCEFTFileGenerator {
     this.x = x;
     this.currencyDAO    = (DAO) x.get("currencyDAO");
     this.rbcISOFileDAO  = (DAO) x.get("rbcISOFileDAO");
+    this.rbcBatchRecordDAO  = (DAO) x.get("rbcBatchRecordDAO");
     this.rbcCredential  = (RbcFTPSCredential) x.get("rbcFTPSCredential");
     this.logger         = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
   }
@@ -64,8 +66,9 @@ public class RBCEFTFileGenerator {
    * @param batch the RbcBatchRecord Object created from initFile method
    * @return list of real file object
    */
-  public File createFile(RbcISO20022File isoFile) {
+  public File createFile(long fileId) {
     File file = null;
+    RbcISO20022File isoFile = (RbcISO20022File) rbcISOFileDAO.find(fileId);
     if ( isoFile != null ) {
       try {
         file = new File(SEND_FOLDER + isoFile.getFileName() + "_" + Instant.now().toEpochMilli());
@@ -121,7 +124,7 @@ public class RBCEFTFileGenerator {
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
-        // Initial put to dao to get unique id
+      // Initial put to dao to get unique id
       RbcISO20022File ciFile = new RbcISO20022File();
       ciFile = (RbcISO20022File) rbcISOFileDAO.inX(x).put(ciFile);      
       try{
@@ -134,7 +137,7 @@ public class RBCEFTFileGenerator {
           content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
           ciFile.setContent(content);
           ciFile.setFileCreationTimeEDT(getCurrentDateTimeEDT());
-          ciRecords.setFile(ciFile);
+          ciRecords.setFile(ciFile.getId());
           batch.setCiRecords(ciRecords);
           ciCount = Integer.parseInt(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getNumberOfTransactions());
           ciAmount = fromDecimal(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getControlSum());
@@ -164,7 +167,7 @@ public class RBCEFTFileGenerator {
           content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
           coFile.setContent(content);
           coFile.setFileCreationTimeEDT (getCurrentDateTimeEDT());
-          coRecords.setFile(coFile);
+          coRecords.setFile(coFile.getId());
           batch.setCoRecords(coRecords);
           coCount = Integer.parseInt(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getNumberOfTransactions());
           coAmount = fromDecimal(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getControlSum());
@@ -183,6 +186,8 @@ public class RBCEFTFileGenerator {
       batchControl.setTotalValueOfC  (coAmount);
       batch.setBatchControl(batchControl);
       batch.setBatchCreationTimeEDT(getCurrentDateTimeEDT());
+
+      rbcBatchRecordDAO.inX(x).put(batch);
 
     } catch ( Exception e ) {
       // if any exception occurs here, no transaction will be sent out

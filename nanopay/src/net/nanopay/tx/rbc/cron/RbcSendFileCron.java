@@ -149,7 +149,7 @@ public class RbcSendFileCron implements ContextAgent {
       try{
         readyToSend = generator.createEncryptedFile(generator.createFile(records.getFile()));
         if ( readyToSend != null ) {
-          processedTransactions = send(x, readyToSend, processedTransactions, records.getFile().getId());
+          processedTransactions = send(x, readyToSend, processedTransactions, records.getFile());
         }
       } catch ( Exception e ) {
         processedTransactions.forEach(transaction -> {

@@ -14,7 +14,8 @@ foam.CLASS({
     {
       name: 'creditMsg',
       class: 'FObjectProperty',
-      of: 'net.nanopay.iso20022.Pain00100103'
+      of: 'net.nanopay.iso20022.Pain00100103',
+      transient: true
     },
   ],
 

@@ -31,4 +31,22 @@ foam.CLASS({
       class: 'Boolean'
     }
   ],
+  methods: [
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          type: 'net.nanopay.tx.model.Transaction'
+        },
+      ],
+      javaCode: `
+        super.limitedCopyFrom(other);
+        setRbcReferenceNumber( ((RbcCOTransaction) other).getRbcReferenceNumber() );
+        setRbcFileCreationNumber( ((RbcCOTransaction) other).getRbcFileCreationNumber() );
+        setRejectReason( ((RbcCOTransaction) other).getRejectReason() );
+        setSettled( ((RbcCOTransaction) other).getSettled() );
+      `
+    }
+  ]
 });
