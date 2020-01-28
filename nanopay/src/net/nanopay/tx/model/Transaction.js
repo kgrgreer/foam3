@@ -434,8 +434,7 @@ foam.CLASS({
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
 
         // Outputting two columns: "amount", "Currency"
-          // Hacky way of making get_(obj) into String below
-        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(currency.formatPrecision(get_(obj)));
         outputter.outputValue(srcCurrency);
       `,
       javaToCSVLabel: `
@@ -532,7 +531,7 @@ foam.CLASS({
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
 
         // Outputting two columns: "amount", "Currency"
-        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(currency.formatPrecision(get_(obj)));
         outputter.outputValue(dstCurrency);
       `,
       javaToCSVLabel: `
