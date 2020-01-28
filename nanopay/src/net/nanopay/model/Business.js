@@ -382,7 +382,11 @@ foam.CLASS({
     {
       name: 'email',
       validateObj: function() {}
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'sector',
+    },
  ],
 
   javaImports: [
