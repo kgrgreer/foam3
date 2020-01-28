@@ -1,1 +1,2 @@
 p({"class":"net.nanopay.invoice.test.BillingInvoicesCronTest", "id":"BillingInvoicesCronTest"})
+p({"class":"net.nanopay.invoice.test.invoiceHistoryAuthorizerTest","id":"invoiceHistoryAuthorizerTest","description":"Tests invoiceHistoryDAO security"})
