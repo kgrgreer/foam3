@@ -254,13 +254,7 @@ foam.CLASS({
       this.closeDialog();
       location.hash = 'sme.main.banking';
 
-      if ( this.plaidResponseItem != null ) {
-        this.ctrl.stack.back();
-      } else {
-        this.ctrl.stack.push({
-          class: 'net.nanopay.bank.BankAccountController'
-        });
-      }
+      this.ctrl.stack.back();
     }
   ],
 
