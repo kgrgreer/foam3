@@ -75,6 +75,10 @@ foam.CLASS({
         var dao = foam.dao.ProxyDAO.create({
           delegate: X.accountDAO.where(
             X.data.AND(
+              X.data.EQ(
+                net.nanopay.account.Account.DENOMINATION,
+                X.denominationToFilterBySlot.get()
+              ),
               X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
               X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
             )
@@ -98,6 +102,7 @@ foam.CLASS({
 
         return foam.u2.view.RichChoiceView.create({
           search: true,
+          choosePlaceholder: 'Select a denomination then choose from accounts...',
           sections: [
             { dao: dao }
           ]

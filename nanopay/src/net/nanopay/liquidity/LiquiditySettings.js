@@ -186,7 +186,7 @@ foam.CLASS({
           }
         }
         if ( this.lowLiquidity.rebalancingEnabled && this.lowLiquidity.pushPullAccount == 0 ) {
-          return 'Please select push/pull account.';
+          return 'Please select push/pull account based off denomination.';
         }
       }
     },
@@ -252,7 +252,7 @@ foam.CLASS({
           }
         }
         if ( this.highLiquidity.rebalancingEnabled && this.highLiquidity.pushPullAccount == 0 ) {
-          return 'Please select push/pull account.';
+          return 'Please select push/pull account based off denomination.';
         }
       }
     },
