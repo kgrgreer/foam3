@@ -808,8 +808,12 @@ foam.RELATIONSHIP({
     visibility: 'FINAL',
     section: 'paymentInfoSource',
     tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value)
-        .then((account) => account ? account.name : value));
+      this.add(value);
+
+      this.__subSubContext__.accountDAO.find(value).then((account) => {
+        this.removeChild(value.toString());
+        this.add(account.name);
+      });
     },
     javaToCSVLabel: `
       outputter.outputValue("Sender User Id");
@@ -869,8 +873,12 @@ foam.RELATIONSHIP({
       return dstAccountError;
     },
     tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value)
-        .then((account) => account ? account.name : value));
+      this.add(value);
+
+      this.__subSubContext__.accountDAO.find(value).then((account) => {
+        this.removeChild(value.toString());
+        this.add(account.name);
+      });
     },
     javaToCSVLabel: `
       outputter.outputValue("Receiver User Id");
