@@ -772,8 +772,7 @@ foam.RELATIONSHIP({
     required: true,
     postSet: function(_, n) {
       this.accountDAO.find(n).then((a) => {
-        if ( a )
-        {
+        if ( a ) {
           this.sourceCurrency = a.denomination;
         }
       });
@@ -787,8 +786,11 @@ foam.RELATIONSHIP({
             X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
               foam.nanos.auth.LifecycleState.ACTIVE),
             X.data.OR(
-            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-            X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
+              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+              X.data.AND(
+                X.data.EQ(X.data.user.group, 'admin'),
+                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
+              )
             )
           )).orderBy(net.nanopay.account.Account.NAME),
           objToChoice: function(a) {
