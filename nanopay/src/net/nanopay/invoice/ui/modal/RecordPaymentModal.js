@@ -140,7 +140,7 @@ foam.CLASS({
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
-          .start(this.NOTE).end()
+          .start(this.NOTE, { placeholder: '(i.e. What method of payment was it paid in?)' }).end()
         .end()
         .start()
           .addClass('button-container')
