@@ -85,12 +85,8 @@ foam.CLASS({
       name: 'firstName',
       validateObj: function(firstName) {
         if ( !! firstName ) {
-          var containsDigitRegex = /\d/;
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
             return 'First name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(firstName) ) {
-            return 'First name cannot contain numbers.';
           }
         }
       }
@@ -103,12 +99,8 @@ foam.CLASS({
       name: 'lastName',
       validateObj: function(lastName) {
         if ( !! lastName ) {
-          var containsDigitRegex = /\d/;
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
             return 'Last name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(lastName) ) {
-            return 'Last name cannot contain numbers.';
           }
         }
       }
@@ -216,8 +208,6 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        String containsDigitRegex = ".*\\\\d.*";
-
         if ( getBusinessId() != 0 ) {
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
           Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
@@ -235,12 +225,8 @@ foam.CLASS({
 
           if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
-            throw new IllegalStateException("First name cannot contain numbers.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {
-            throw new IllegalStateException("Last name cannot contain numbers.");
           } else  if ( this.getBusinessId() == 0 && SafetyUtil.isEmpty(this.getEmail()) ) {
             throw new IllegalStateException("Email is required.");
           } else if ( ! isValidEmail ) {
