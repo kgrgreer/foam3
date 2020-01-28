@@ -165,7 +165,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO localUserDAO = (DAO) getLocalUserDAO();
         return (User) ((DAO) getLocalUserDAO())
           .inX(x)
           .find(

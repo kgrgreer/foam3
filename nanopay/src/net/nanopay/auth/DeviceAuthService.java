@@ -38,12 +38,12 @@ public class DeviceAuthService
   }
 
   @Override
-  public User login(X x, String email, String password) throws AuthenticationException {
-    if ( ! email.startsWith("device-") ) {
-      return super.login(x, email, password);
+  public User login(X x, String id, String password) throws AuthenticationException {
+    if ( ! id.startsWith("device-") ) {
+      return super.login(x, id, password);
     }
 
-    String serialNumber = email.split("device-")[1];
+    String serialNumber = id.split("device-")[1];
     if (  SafetyUtil.isEmpty(serialNumber) ) {
       throw new RuntimeException("Invalid serial number");
     }

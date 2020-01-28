@@ -40,11 +40,20 @@ public class BCryptAuthService
   }
 
   @Override
-  public User login(X x, String email, String password) throws AuthenticationException {
+  public User login(X x, String id, String password) throws AuthenticationException {
     try {
-      return super.login(x, email, password);
+      return super.login(x, id, password);
     } catch (Throwable t) {
-      User user = (User) userDAO_.inX(x).find(EQ(User.EMAIL, email.toLowerCase()));
+      User user = (User) userDAO_
+        .find(
+          AND(
+            OR(
+              EQ(User.EMAIL, id.toLowerCase()),
+              EQ(User.USER_NAME, id)
+            ),
+            EQ(User.LOGIN_ENABLED, true)
+          )
+        );
       if ( user == null ) {
         throw new AuthenticationException("User not found");
       }

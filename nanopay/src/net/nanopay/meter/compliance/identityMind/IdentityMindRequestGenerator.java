@@ -62,7 +62,7 @@ public class IdentityMindRequestGenerator {
       .setEntityId(user.getId())
       .setDaoKey("localUserDAO")
       .setMan(Long.toString(login.getLoginAttemptedFor()))
-      .setTea(login.getLoginIdentifier())
+      .setTea(user.getEmail())
       .setIp(login.getIpAddress())
       .setBfn(prepareString(user.getFirstName()))
       .setBln(prepareString(user.getLastName()))
