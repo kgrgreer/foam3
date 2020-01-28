@@ -96,7 +96,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.fx.FXProvider',
       name: 'fxProvider',
-      documentation: 'Exchange Rate Provider'
+      documentation: 'Exchange Rate Provider',
+      targetDAOKey: 'serviceProviderDAO',
     },
     {
       class: 'Long',
