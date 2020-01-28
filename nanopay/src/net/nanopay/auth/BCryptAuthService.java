@@ -12,6 +12,8 @@ import foam.util.Password;
 import org.mindrot.jbcrypt.BCrypt;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.OR;
 
 /**
  * BCryptAuthService
