@@ -1,0 +1,30 @@
+// empty line
+
+p({
+  "class":"net.nanopay.auth.UserCreateServiceProviderURLRule",
+  "id":"UserCreateServiceProviderURLRule",
+  "priority":100,
+  "ruleGroup":"user",
+  "documentation":"Set ServiceProvider on User Create based on AppConfig URL",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "action":{
+    "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"
+  }
+})
+
+p({
+  "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction",
+  "id":"UserCreateServiceProviderURLRuleAction",
+  "priority":100,
+  "ruleGroup":"user",
+  "documentation":"Set ServiceProvider on User Create based on AppConfig URL",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "after":false,
+  "enabled":true,
+  "saveHistory":false
+})
