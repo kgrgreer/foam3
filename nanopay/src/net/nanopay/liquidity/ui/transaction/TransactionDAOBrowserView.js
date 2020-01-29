@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TransactionDAOBrowserView',
   extends: 'foam.comics.v2.DAOBrowserView',
 
+  imports: [
+    'notify'
+  ],
+
   exports: [
     'searchColumns'
   ],
@@ -71,6 +75,10 @@ foam.CLASS({
     {
       name: 'LABEL_ACCOUNT_TITLE',
       message: 'Select an account to see associated transactions'
+    },
+    {
+      name: 'NO_TRANSACTIONS',
+      message: 'Selected account has no transactions.'
     }
   ],
 
@@ -133,6 +141,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      this.accountSelection$.sub(this.fetchTransactionCount);
       this.addClass(this.myClass());
       this
         .add(this.slot(function(data, config$cannedQueries, searchFilterDAO, accountSelection) {
@@ -143,6 +152,16 @@ foam.CLASS({
             .endContext();
         }));
         this.SUPER();
+    },
+  ],
+
+  listeners: [
+    function fetchTransactionCount() {
+      this.predicatedDAO.select(this.COUNT()).then((count) => {
+        if ( count.value === 0 ) {
+          this.notify(this.NO_TRANSACTIONS);
+        }
+      });
     }
   ]
 });
