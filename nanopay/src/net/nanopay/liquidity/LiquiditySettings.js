@@ -259,7 +259,9 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: 'Last modified date'
+      documentation: 'Last modified date',
+      createMode: 'HIDDEN',
+      visibility: 'RO'
     },
     {
       class: 'foam.core.Enum',

@@ -18,3 +18,22 @@ p({
   "enabled":true,
   "saveHistory":false
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"prevent liquidity push/pull equal to current account",
+  "priority":100,
+  "ruleGroup":"Liquidity",
+  "documentation":"if the user adds liquidity settings to an account that is listed on the liquidity setting as having push pull equal to that account, throw an error.",
+  "daoKey":"localAccountDAO",
+  "operation":1,
+  "predicate":{
+    "class":"net.nanopay.liquidity.ruler.AccountLSValidationPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.liquidity.tx.ExceptionRuleAction",
+    "message":"Cannot apply liquidity setting to account, please check the push/pull account on the setting"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false
+})

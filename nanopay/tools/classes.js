@@ -344,6 +344,7 @@ var classes = [
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.ruler.IsSystemOrAdminUser',
    'net.nanopay.liquidity.ruler.LogoutUserOnAssignmentAction',
+   'net.nanopay.liquidity.ruler.AccountLSValidationPredicate',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
