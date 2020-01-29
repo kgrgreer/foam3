@@ -64,18 +64,22 @@ foam.CLASS({
         };
         for ( prop in n ) {
           if ( prop ) {
+            let propName = capitalize(prop.split(/(?=[A-Z])/).join(' '));
             if ( typeof n[prop] === 'string' ) {
-              let propName = capitalize(prop.split(/(?=[A-Z])/).join(' '));
               this.propList_.push({ name: propName, value: n[prop] });
               sizeOfContainer += 50;
             } else {
-              for ( nestedProp in n[prop].instance_ ) {
-                if ( nestedProp ) {
-                  let propName = capitalize(prop.split(/(?=[A-Z])/).join(' '));
-                  let nestedPropName = capitalize(nestedProp.split(/(?=[A-Z])/).join(' '));
-                  this.propList_.push({ name: `${propName} -> ${nestedPropName}`, value: n[prop][nestedProp] });
-                  sizeOfContainer += 50;
+              if ( n[prop].instance_ ) {
+                for ( nestedProp in n[prop].instance_ ) {
+                  if ( nestedProp ) {
+                    let nestedPropName = capitalize(nestedProp.split(/(?=[A-Z])/).join(' '));
+                    this.propList_.push({ name: `${propName} -> ${nestedPropName}`, value: n[prop][nestedProp] });
+                    sizeOfContainer += 50;
+                  }
                 }
+              } else {
+                this.propList_.push({ name: propName, value: n[prop] });
+                sizeOfContainer += 50;
               }
             }
           }
