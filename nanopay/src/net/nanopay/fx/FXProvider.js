@@ -10,12 +10,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      value: 'nanopay'
     },
     {
       class: 'String',
       name: 'name',
-      value: 'Nanopay Provider',
       documentation: 'Name of the FX Provider.'
     }
   ]

@@ -145,3 +145,20 @@ p({
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXCredientials",         "lazy":false, "serve":false, "service":{"class":"net.nanopay.fx.ascendantfx.AscendantFXCredientials"}})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"AFEXLogDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.AFEXLog.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexLogs\").build();","client":"{\"of\":\"net.nanopay.fx.afex.AFEXLog\"}" })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxProviderDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.FXProvider.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("fxProviders")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.FXProvider\"}"
+})
