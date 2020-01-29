@@ -33,7 +33,7 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
@@ -123,12 +123,13 @@ foam.CLASS({
 
           User user = (User) x.get("user");
           User agent = (User) x.get("agent");
-          ApprovalRequest approvalRequest = new RoleApprovalRequest.Builder(x)
+          ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
             .setOperation(Operations.CREATE)
             .setInitiatingUser(agent != null ? agent.getId() : user.getId())
+            .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)
             .build();
@@ -208,7 +209,7 @@ foam.CLASS({
           )
         ).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
-            RoleApprovalRequest approvalRequest = (RoleApprovalRequest) obj;
+            AccountRoleApprovalRequest approvalRequest = (AccountRoleApprovalRequest) obj;
             approvalRequest.setIsFulfilled(true);
             approvalRequestDAO.inX(x).put(approvalRequest);
           }

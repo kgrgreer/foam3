@@ -7,9 +7,11 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'net.nanopay.liquidity.approvalRequest.Approvable',
     'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+    'foam.dao.DAO'
   ],
 
   methods: [
@@ -62,6 +64,23 @@ foam.CLASS({
 
         if ( user.getId() == request.getInitiatingUser() ){
           throw new AuthorizationException("You cannot approve your own request");
+        }
+
+        Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
+
+        String className;
+        if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
+          String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
+          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase(); 
+        } else {
+          className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
+        }
+        
+        String permission = createPermission(className, "approve", accountId);
+        AuthService authService = (AuthService) x.get("auth");
+
+        if ( ! authService.check(x, permission) ) {
+          throw new AuthorizationException();
         }
       `
     },
