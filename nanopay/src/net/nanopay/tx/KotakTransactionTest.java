@@ -182,6 +182,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
       user.setFirstName("Francis");
       user.setLastName("Filth");
       user.setEmailVerified(true);
+      user.setGroup("business");
     }
     return ((User) userDAO.put_(x, user));
   }

@@ -90,6 +90,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       user = new User();
       user.setFirstName("payroll");
       user.setLastName("payer");
+      user.setGroup("business");
       user.setEmail(PAYER_EMAIL);
       user.setEmailVerified(true);
       user = (User) userDAO.put_(x, user);
@@ -111,6 +112,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       user.setFirstName(firstName);
       user.setLastName("Filth");
       user.setEmailVerified(true);
+      user.setGroup("business");
       user = (User) userDAO.put_(x, user);
     }
     long userId = user.getId();

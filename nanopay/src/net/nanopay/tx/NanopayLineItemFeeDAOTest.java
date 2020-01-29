@@ -33,7 +33,6 @@ public class NanopayLineItemFeeDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
-  protected User payer_ ;
   protected User payee_;
   protected User feeUser_;
   protected CABankAccount payeeBankAccount_;

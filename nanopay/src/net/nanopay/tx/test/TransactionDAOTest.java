@@ -75,7 +75,7 @@ public class TransactionDAOTest
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
-      sender_.setGroup("basicUser");
+      sender_.setGroup("business");
       sender_.setFirstName("Francis");
       sender_.setLastName("Filth");
     }
@@ -90,7 +90,7 @@ public class TransactionDAOTest
     }
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
-    receiver_.setGroup("basicUser");
+    receiver_.setGroup("business");
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();

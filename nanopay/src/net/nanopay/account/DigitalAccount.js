@@ -10,7 +10,6 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.DigitalAccountService',
     'foam.core.Currency',
-
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -21,10 +20,10 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-
     'java.util.List'
   ],
 
@@ -78,7 +77,8 @@ foam.CLASS({
         }
         static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
           Logger logger = (Logger) x.get("logger");
-          DigitalAccount account;
+          DigitalAccount account = null;
+
           // Select currency of user's country.
           String denomination = currency;
           if ( denomination == null ) {
@@ -109,6 +109,12 @@ foam.CLASS({
                 )
               );
             if ( account == null ) {
+              AuthService auth = (AuthService) x.get("auth");
+              if ( instance == null &&
+                   ! auth.checkUser(x, user, "digitalaccount.default.create") ) {
+                return account;
+              }
+
               account = instance == null ? new DigitalAccount() : instance;
               account.setDenomination(denomination);
               account.setIsDefault(true);

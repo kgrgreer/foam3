@@ -1,0 +1,2 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"digitalaccount.default.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"digitalaccount.default.create"})

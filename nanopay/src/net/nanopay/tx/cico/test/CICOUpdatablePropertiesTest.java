@@ -70,6 +70,7 @@ public class CICOUpdatablePropertiesTest
       sender_.setFirstName("Francis");
       sender_.setLastName("Filth");
       sender_.setEmail("cicotesting@nanopay.net");
+      sender_.setGroup("business");
     }
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);

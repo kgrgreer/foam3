@@ -40,9 +40,8 @@ foam.CLASS({
       javaCode: `
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
-    Group group = setupGroup(x);
-    User sender = setupUser(x, group, "sender");
-    User receiver = setupUser(x, group, "receiver");
+    User sender = setupUser(x, "sender");
+    User receiver = setupUser(x, "receiver");
     Account sourceBank = setupBankAccount(x, sender);
     Account destinationBank = setupBankAccount(x, receiver);
 
@@ -157,30 +156,11 @@ foam.CLASS({
       `
     },
     {
-      name: 'setupGroup',
-      args: [
-        {
-          name: 'x',
-          type: 'X'
-        },
-      ],
-      javaType: 'Group',
-      javaCode: `
-    Group group = new Group();
-    group.setId(this.getClass().getSimpleName());
-    return (Group) ((DAO) x.get("localGroupDAO")).put_(x, group);
-    `
-    },
-    {
       name: 'setupUser',
       args: [
         {
           name: 'x',
           type: 'X'
-        },
-        {
-          name: 'group',
-          type: 'Group'
         },
         {
           name: 'name',
@@ -190,10 +170,10 @@ foam.CLASS({
       javaType: 'User',
       javaCode: `
     User user = new User();
-    user.setGroup(group.getId());
+    user.setGroup("business");
     user.setFirstName(name);
     user.setLastName(name);
-    user.setEmail(name+"."+group.getId()+"@nanopay.net");
+    user.setEmail(name+".business@nanopay.net");
     user.setEmailVerified(true);
     user.setStatus(AccountStatus.ACTIVE);
     user.setCompliance(ComplianceStatus.PASSED);
