@@ -424,9 +424,9 @@ foam.CLASS({
           verifyBalance(x,txn2);
         }  
 
-        DAO accountDAO = ((DAO) x.get("accountDAO"));
+        DAO accountDAO = ((DAO) x.get("localAccountDAO"));
         DAO currencyDAO = ((DAO) x.get("currencyDAO"));
-        DAO transactionDAO = ((DAO) x.get("transactionDAO"));        
+        DAO transactionDAO = ((DAO) x.get("localTransactionDAO"));
 
         Account source = txn.findSourceAccount(x);
 

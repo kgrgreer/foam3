@@ -82,7 +82,7 @@ foam.CLASS({
             });
 
           /* Preload the balance DAO */
-          DAO accountDAO = (DAO) x.get("accountDAO");
+          DAO accountDAO = (DAO) x.get("localAccountDAO");
           java.util.List l = (java.util.List) ( (foam.dao.ArraySink) accountDAO.select( new foam.dao.ArraySink() )).getArray();
           for( Object o : l){
             Account a = (Account) o;

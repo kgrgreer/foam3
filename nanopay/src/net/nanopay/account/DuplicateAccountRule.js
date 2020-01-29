@@ -24,7 +24,7 @@ foam.CLASS({
       javaCode: `
         if ( (obj instanceof ShadowAccount || obj instanceof DigitalAccount) ) {
           Account account = (Account) obj;
-          Count count = (Count) ((DAO) x.get("accountDAO"))
+          Count count = (Count) ((DAO) x.get("localAccountDAO"))
             .where(
               AND(
                 EQ(Account.NAME, account.getName()),

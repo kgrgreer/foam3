@@ -35,7 +35,7 @@ foam.CLASS({
       ],
       type: 'long[]',
       javaCode: `
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
         long[] balance = new long[id.length];
         for ( int i=0; i < id.length; i++ ) {
           Account account = (Account) accountDAO.find(id[i]);
@@ -80,7 +80,7 @@ foam.CLASS({
       ],
       type: 'long',
       javaCode: `
-        Account account = (Account) ((DAO) x.get("accountDAO")).find(id);
+        Account account = (Account) ((DAO) x.get("localAccountDAO")).find(id);
         return findBalance_(x, account);
       `
     },
