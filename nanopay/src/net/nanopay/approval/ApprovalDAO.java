@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
+import foam.nanos.auth.User;
 import foam.nanos.ruler.Operations;
 import net.nanopay.liquidity.approvalRequest.RoleApprovalRequest;
 
@@ -51,8 +52,16 @@ public class ApprovalDAO
     DAO dao = (DAO) x.get(request.getDaoKey());
     FObject found = dao.inX(x).find(request.getObjId()).fclone();
 
-    if ( request instanceof RoleApprovalRequest && ((RoleApprovalRequest) request).getOperation() == Operations.REMOVE ){
-      dao.inX(x).remove(found);
+    if ( request instanceof RoleApprovalRequest ) {
+      DAO userDAO = (DAO) x.get("localUserDAO");
+      User initiatingUser = (User) userDAO.find(((RoleApprovalRequest) request).getInitiatingUser());
+      X initiatingUserX = x.put("user", initiatingUser);
+
+      if ( ((RoleApprovalRequest) request).getOperation() == Operations.REMOVE ) {
+        dao.inX(initiatingUserX).remove(found);
+      } else {
+        dao.inX(initiatingUserX).put(found);
+      }
     } else {
       dao.inX(x).put(found);
     }
