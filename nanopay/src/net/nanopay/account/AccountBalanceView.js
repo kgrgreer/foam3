@@ -98,7 +98,7 @@ foam.CLASS({
                   .end()
                   .start()
                     .addClass(this.myClass('balance'))
-                    .add(`${balance} ${currency.emoji}`)
+                    .add(`${balance}`)
                   .end()
                   .start().addClass(this.myClass('balance-note'))
                     .add(homeDenomination === data$denomination ? self.HOME_BALANCE_NOTE : self.LOCAL_BALANCE_NOTE)
