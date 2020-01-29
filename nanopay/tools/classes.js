@@ -343,6 +343,7 @@ var classes = [
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
    'net.nanopay.liquidity.ruler.IsSystemOrAdminUser',
+   'net.nanopay.liquidity.ruler.LogoutUserOnAssignmentAction',
    'net.nanopay.liquidity.tx.BusinessRule',
    'net.nanopay.liquidity.tx.BusinessRuleAction',
    'net.nanopay.liquidity.tx.BusinessRuleNotificationAction',
@@ -596,6 +597,7 @@ var classes = [
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
+  'net.nanopay.auth.ruler.LogoutUserAction',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 

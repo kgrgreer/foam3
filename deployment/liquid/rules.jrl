@@ -53,6 +53,25 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"Logout Users on CapabilityRequest Approval",
+  "priority": 110,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "Logout users on capabilityrequest approval",
+  "daoKey": "capabilityRequestDAO",
+  "operation": 3,
+  "after": true,
+  "predicate":{
+    "class":"net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate",
+  },
+  "action" : {
+    "class": "net.nanopay.liquidity.ruler.LogoutUserOnAssignmentAction"
+  },
+  "saveHistory": true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"Update account-based ucj data on account create",
   "priority": 100,
   "enabled":true,
