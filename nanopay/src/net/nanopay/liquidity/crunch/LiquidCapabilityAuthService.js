@@ -64,17 +64,14 @@ foam.CLASS({
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             cache.clear();
-            sub.detach();
           }
           public void remove(Object obj, Detachable sub) {
             cache.clear();
-            sub.detach();
           }
           public void eof() {
           }
           public void reset(Detachable sub) {
             cache.clear();
-            sub.detach();
           }
         };
 
