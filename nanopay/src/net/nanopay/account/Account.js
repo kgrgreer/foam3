@@ -61,7 +61,7 @@ foam.CLASS({
           e.OR(
             e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
             e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
-            e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
             foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
           )
         );
