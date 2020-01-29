@@ -86,6 +86,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Card',
@@ -215,7 +216,8 @@ foam.CLASS({
                 .start(self.CardBorder).addClass(self.myClass('transactions-table'))
                   .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: self.transactionDAO
+                    config: self.DAOControllerConfig.create({ 
+                      dao: self.transactionDAO
                       .where(
                         self.AND(
                           self.OR
@@ -234,6 +236,15 @@ foam.CLASS({
                       )
                       .orderBy(self.DESC(net.nanopay.tx.model.Transaction.CREATED))
                       .limit(20),
+                      defaultColumns: [
+                        "summary",
+                        "lastModified",
+                        "sourceAccount",
+                        "destinationAccount",
+                        "destinationCurrency",
+                        "destinationAmount"
+                      ]
+                    }),
                   })
                   .end()
                 .end();
