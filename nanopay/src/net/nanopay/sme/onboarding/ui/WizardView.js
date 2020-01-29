@@ -213,6 +213,7 @@ foam.CLASS({
             // Invalidate auth cache to register new permissions on group.
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
+            location.hash = 'sme.main.dashboard';
             window.location.reload();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
