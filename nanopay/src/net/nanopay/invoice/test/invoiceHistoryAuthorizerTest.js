@@ -43,7 +43,7 @@ foam.CLASS({
         DAO invoiceDAO = (DAO) x.get("invoiceDAO");
         DAO bareUserDAO = (DAO) x.get("bareUserDAO");
         Invoice invoice = new Invoice();
-        HistoryRecord historyRecord = new HistoryRecord();
+        HistoryRecord historyRecord = null;
         boolean threw;
 
         payerUser.setId(1);
@@ -59,30 +59,29 @@ foam.CLASS({
         invoice.setPayerId(payerUser.getId());
         invoice = (Invoice) invoiceDAO.put(invoice);
 
-        historyRecord.setObjectId(invoice.getId());
-        historyRecord = (HistoryRecord) invoiceHistoryDAO.inX(x).put(historyRecord);
+        historyRecord = (HistoryRecord) ((ArraySink) invoiceHistoryDAO.inX(x).where(
+          EQ(HistoryRecord.OBJECT_ID, invoice.getId())
+        ).select(new ArraySink())).getArray().get(0);
 
         x = x.put("user", payerUser);
 
         ArraySink invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).where(
-          EQ(HistoryRecord.OBJECT_ID, historyRecord.getObjectId())
+          EQ(HistoryRecord.OBJECT_ID, invoice.getId())
         ).select(new ArraySink());
 
-        test( invoiceHistoryTestSink.getArray().size() == 2 , "Users can view the invoice history for invoices where they are the payee.");
+        test(invoiceHistoryTestSink.getArray().size() == 1 , "Users can view the invoice history for invoices where they are the payee.");
 
         x = x.put("user", payeeUser);
         invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).where(
-          EQ(HistoryRecord.OBJECT_ID, historyRecord.getObjectId())
+          EQ(HistoryRecord.OBJECT_ID, invoice.getId())
         ).select(new ArraySink());
 
-        test( invoiceHistoryTestSink.getArray().size() == 2 , "Users can view the invoice history for invoices where they are the payer.");
+        test(invoiceHistoryTestSink.getArray().size() == 1 , "Users can view the invoice history for invoices where they are the payer.");
 
         x = x.put("user", unrelatedUser);
-        invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).where(
-          EQ(HistoryRecord.OBJECT_ID, historyRecord.getObjectId())
-        ).select(new ArraySink());
+        invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).select(new ArraySink());
 
-        test( invoiceHistoryTestSink.getArray().size() == 0, "User from different buisness can not view invoice");
+        test(invoiceHistoryTestSink.getArray().size() == 0, "Users cannot view the history of invoices that they are not the payee or payer of.");
 
         threw = false;
         try {
@@ -91,7 +90,7 @@ foam.CLASS({
           threw = true;
         }
 
-        test( threw , "Non Admin/System group user can't update HistoryRecord in invoiceHistroyDAO");
+        test(threw , "Non Admin/System group user can't update HistoryRecord in invoiceHistroyDAO");
 
         threw = false;
         try {
@@ -100,7 +99,7 @@ foam.CLASS({
           threw = true;
         }
 
-        test( threw, "Non Admin/System group user can't delete HistoryRecord from invoiceHistroyDAO");
+        test(threw, "Non Admin/System group user can't delete HistoryRecord from invoiceHistroyDAO");
 
         threw = false;
         HistoryRecord historyRecord1 = new HistoryRecord();
@@ -110,7 +109,7 @@ foam.CLASS({
           threw = true;
         }
 
-        test( threw, "Non Admin/System group user can't add HistoryRecord to invoiceHistroyDAO");
+        test(threw, "Non Admin/System group user can't add HistoryRecord to invoiceHistroyDAO");
 
         x = x.put("user", adminUser);
         threw = false;
@@ -120,15 +119,15 @@ foam.CLASS({
           threw = true;
         }
 
-        test( ! threw, "Admin user can delete historyRecord");
+        test(! threw, "Admin user can delete historyRecord");
 
         threw = false;
         try {
           invoiceHistoryDAO.inX(x).put(historyRecord1);
         } catch ( AuthorizationException e) {
-          threw =true;
+          threw = true;
         }
-        test( ! threw, "Admin user can add history record to invoiceHistoryDAO");
+        test(! threw, "Admin user can add history record to invoiceHistoryDAO");
 
         threw = false;
         try {

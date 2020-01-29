@@ -35,7 +35,8 @@ foam.CLASS({
         User user = (User) x.get("user");
 
         Invoice invoice = (Invoice) invoiceDAO.find(((HistoryRecord) obj).getObjectId());
-        if ( invoice == null ) return;
+        if ( invoice == null )
+          throw new AuthorizationException("Invoice not found! Access to its history is prohibited.");
         if ( (invoice.getPayeeId() != user.getId()) && (invoice.getPayerId() != user.getId()) ){
           throw new AuthorizationException();
         }
@@ -74,7 +75,7 @@ foam.CLASS({
       name: 'checkGlobalRemove',
       javaCode: `
         AuthService authService = (AuthService) x.get("auth");
-        return authService.check(x, "invoicehistory.read.*");
+        return authService.check(x, "invoicehistory.remove.*");
       `
     }
   ],
