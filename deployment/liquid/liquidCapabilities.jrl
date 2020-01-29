@@ -16,7 +16,7 @@ p({
   "canApproveCapabilityrequest": true,
   "canIngestFile": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Treasury Cash Manager (Global)"
+  "id": "Treasury Cash Manager (Admin)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -26,7 +26,7 @@ p({
   "canApproveTransaction": true,
   "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Treasury Cash Manager (Account-Based)"
+  "id": "Treasury Cash Manager (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -36,7 +36,7 @@ p({
   "canViewTransaction": true,
   "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Operational Administrator (Account-Based)"
+  "id": "Operational Administrator (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -55,7 +55,7 @@ p({
   "canMakeCapabilityrequest": true,
   "canApproveCapabilityrequest": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Operational Administrator (Global)"
+  "id": "Operational Administrator (Admin)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -64,7 +64,7 @@ p({
   "canMakeTransaction": true,
   "canApproveTransaction": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Treasurer / Risk Manager (Account-Based)"
+  "id": "Treasurer / Risk Manager (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -75,5 +75,5 @@ p({
   "canApproveLiquiditysettings":true,
   "canViewCapability": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Treasurer / Risk Manager (Global)"
+  "id": "Treasurer / Risk Manager (Admin)"
 })

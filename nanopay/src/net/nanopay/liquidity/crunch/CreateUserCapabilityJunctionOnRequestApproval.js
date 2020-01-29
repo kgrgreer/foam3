@@ -63,7 +63,7 @@ foam.CLASS({
               }
               
               if ( newMap == null || newMap.size() == 0 ) 
-                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+                throw new RuntimeException("User cannot be assigned to a transactional capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
 
@@ -105,7 +105,7 @@ foam.CLASS({
               }
 
               if ( newMap == null || newMap.size() == 0 ) 
-                throw new RuntimeException("User cannot be assigned to an account-based capability without providing account");
+                throw new RuntimeException("User cannot be assigned to a transactional capability without providing account");
 
               AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
 
