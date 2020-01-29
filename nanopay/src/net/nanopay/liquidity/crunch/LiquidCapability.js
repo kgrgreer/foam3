@@ -574,6 +574,8 @@ foam.CLASS({
           String permObj = permissionComponents[0];
           String permOperation = permissionComponents[1];
 
+          if ( "liquidcapability".equals(permObj) ) permObj = "capability";
+
           String permToProperty = "can" + permOperation.substring(0, 1).toUpperCase() + permOperation.substring(1) + permObj.substring(0, 1).toUpperCase() + permObj.substring(1);
 
           return (Boolean) getProperty(permToProperty);
