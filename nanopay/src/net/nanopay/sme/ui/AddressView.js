@@ -148,14 +148,6 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().addClass('label-input')
-          .tag(this.SectionedDetailPropertyView, {
-            data$: this.data$,
-            prop: this.Address.SUITE.clone().copyFrom({
-              validationTextVisible: this.showValidationText
-            })
-          })
-        .end()
         .start()
           .addClass('two-column')
           .start().addClass('label-input')
@@ -175,6 +167,14 @@ foam.CLASS({
               })
             })
           .end()
+        .end()
+        .start().addClass('label-input')
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.Address.SUITE.clone().copyFrom({
+              validationTextVisible: this.showValidationText
+            })
+          })
         .end();
     }
   ]

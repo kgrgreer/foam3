@@ -440,7 +440,7 @@ foam.CLASS({
                 arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
               }), 0);
           },
-          errorString: 'Please select job title.'
+          errorString: 'Please enter a Job Title.'
         }
       ]
     },

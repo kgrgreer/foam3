@@ -33,24 +33,6 @@ foam.CLASS({
       align-items: center;
       justify-content: flex-end;
     }
-    ^ .foam-u2-ActionView-delete,
-    ^ .foam-u2-ActionView-delete:hover {
-      border-radius: 4px;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      background: #f91c1c;
-      color: white;
-      vertical-align: middle;
-    }
-    ^ .foam-u2-ActionView-delete:hover {
-      opacity: 0.9;
-    }
-    ^ .foam-u2-ActionView-cancel,
-    ^ .foam-u2-ActionView-cancel:hover {
-      background: none;
-      color: #525455;
-      border: none;
-      box-shadow: none;
-    }
   `,
 
   messages: [
@@ -78,8 +60,8 @@ foam.CLASS({
         .start()
           .addClass('buttons')
           .startContext({ data: this })
-            .add(this.CANCEL)
-            .add(this.DELETE)
+            .tag(this.CANCEL, { buttonStyle: 'TERTIARY' })
+            .tag(this.DELETE, { isDestructive: true })
           .endContext()
         .end();
     },
