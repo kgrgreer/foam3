@@ -17,7 +17,7 @@ foam.CLASS({
     net.nanopay.model.Business.ORGANIZATION,
     net.nanopay.model.Business.ADDRESS,
     net.nanopay.model.Business.EMAIL,
-    net.nanopay.model.Business.SECTOR
+    net.nanopay.model.Business.JOB_TITLE,
   ].map((p) => p.clone().copyFrom({ visibility: foam.u2.Visibility.RO })),
 
   axioms: [
@@ -34,7 +34,7 @@ foam.CLASS({
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
-            setSector(businessSector);
+            setJobTitle(businessSector.getName());
             // Emails are not to be public.  CPF-1523
             // setEmail(business.getEmail());
           }

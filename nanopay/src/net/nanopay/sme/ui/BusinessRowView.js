@@ -122,7 +122,7 @@ foam.CLASS({
                 if ( data ) {
                   var city = data.address.city;
                   var region = data.address.regionId;
-                  let industry = data.sector.name;
+                  let industry = data.jobTitle;
                   if ( city && region ) {
                     return `${industry} • ${city}, ${region}`;
                   } else if ( region ) {
