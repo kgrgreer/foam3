@@ -111,8 +111,8 @@ foam.CLASS({
         if ( data.status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
           this.add(data.APPROVER_PENDING);
         } else {
-          this.__subSubContext__.userDAO.find(approver).then((user)=> {
-            self.add(user.toSummary());
+          this.__subSubContext__.userDAO.find(approver).then(user => {
+            self.add(user ? user.toSummary() : `User #${approver}`);
           });
         }
       },
@@ -161,8 +161,8 @@ foam.CLASS({
       label: 'Requestor',
       tableCellFormatter: function(initiatingUser) {
         let self = this;
-        this.__subSubContext__.userDAO.find(initiatingUser).then((user)=> {
-          self.add(user.toSummary());
+        this.__subSubContext__.userDAO.find(initiatingUser).then(user => {
+          self.add(user ? user.toSummary() : `User #${initiatingUser}`);
         });
       },
       section: 'requestDetails',
