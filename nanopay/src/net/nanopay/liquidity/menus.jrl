@@ -20,7 +20,7 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "accountDAO",
+          "daoKey": "tableViewAccountDAO",
           "predicate": {
             "class": "foam.mlang.predicate.Eq",
             "arg1": {

@@ -101,6 +101,9 @@ foam.CLASS({
         if ( account == null ) {
           throw new RuntimeException("Account is null");
         }
+        if ( account instanceof BrokerAccount ) {
+          return 0;
+        }
         long balance = 0;
         ExchangeRateService exchangeRateService = (ExchangeRateService) getX().get("exchangeRateService");
         DAO balanceDAO = (DAO) x.get("balanceDAO");

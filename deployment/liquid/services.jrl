@@ -148,10 +148,6 @@ p({
   "serve":true,
   "serviceScript":
   """
-    dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
-      .setX(x)
-      .setDelegate(null)
-      .build();
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
@@ -159,7 +155,6 @@ p({
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("account").build())
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
-      .setDecorator(dao)
       .build();
   """,
   "client":
@@ -891,4 +886,48 @@ p({
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.RootAccounts\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewAccountDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
+      .setX(x)
+      .setDelegate(null)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .setInnerDAO(x.get("accountDAO"))
+      .setDecorator(dao)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPermissioned(false)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": 
+  """
+    {
+      "of": "net.nanopay.account.Account", 
+      "remoteListenerSupport": false, 
+      "serverBox": { 
+        "class": "foam.box.SessionClientBox", 
+        "url": "service/tableViewAccountDAO", 
+        "delegate": { 
+          "class": "foam.box.TimeoutBox", 
+          "timeout": 25000,
+          "delegate": {
+            "class": "foam.box.HTTPBox", 
+            "url": "service/tableViewAccountDAO"
+          }
+        }
+      }
+    }
+  """
 })
