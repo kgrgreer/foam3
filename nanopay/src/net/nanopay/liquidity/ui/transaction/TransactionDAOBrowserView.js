@@ -113,7 +113,8 @@ foam.CLASS({
               X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
               X.data.OR(
                 foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
+                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+                X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
               ))).orderBy(net.nanopay.account.Account.NAME),
             objToChoice: function(a) {
               return [a.id, a.summary];

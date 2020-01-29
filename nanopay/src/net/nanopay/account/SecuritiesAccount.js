@@ -41,21 +41,7 @@ foam.CLASS({
       section: 'accountDetails',
       value: 'USD',
       order: 3,
-    },
-    {
-    // balance of all sub accounts I suppose
-      class: 'Long',
-      name: 'balance',
-      label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the bank account.',
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return this.findBalance(this.__subContext__,id);
-      },
-      tableWidth: 145
-    },
-
+    }
   ],
 
   methods: [

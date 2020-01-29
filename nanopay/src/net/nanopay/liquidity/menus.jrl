@@ -426,9 +426,26 @@ p({
       "browseTitle":"High Value L2 Rules",
       "createTitle": "Create a new High Value L2 Rule",
       "daoKey":"ruleDAO",
-      "predicate":{
-        "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
+      "predicate": {
+        "class": "foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.IsInstanceOf",
+            "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "net.nanopay.liquidity.tx.BusinessRule",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          }
+        ]
       },
       "defaultColumns": [
         "id",
