@@ -9,11 +9,11 @@ foam.CLASS({
     {
       name: 'config',
       class: 'FObjectArray',
-      of: 'ServiceProviderURL',
+      of: 'net.nanopay.auth.ServiceProviderURL',
       factory: function(){
         return  [];
       },
-      javaFactory: 'return new String[0];'
+      javaFactory: 'return new ServiceProviderURL[0];'
     }
   ]
 });

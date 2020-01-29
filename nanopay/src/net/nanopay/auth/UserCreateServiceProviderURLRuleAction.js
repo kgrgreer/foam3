@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
@@ -28,8 +29,9 @@ foam.CLASS({
       javaCode: `
         final ServiceProviderURL spu_ = new ServiceProviderURL();
 
-        ServiceProviderURLRule myRule = (ServiceProviderURLRule) rule;
-        if ( myRule.getConfig().size() == 0 ) {
+        UserCreateServiceProviderURLRule myRule = (UserCreateServiceProviderURLRule) rule;
+        if ( myRule.getConfig() == null ||
+             myRule.getConfig().length == 0 ) {
           return;
         }
         AppConfig app = (AppConfig) x.get("appConfig");
@@ -57,7 +59,7 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             Logger logger = new PrefixLogger(new Object[] {this.getClass().getSimpleName()}, (Logger) x.get("logger"));
-            ServiceProviderURLRule myRule = (ServiceProviderURLRule) rule;
+            UserCreateServiceProviderURLRule myRule = (UserCreateServiceProviderURLRule) rule;
 
             User user = (User) obj;
             user.setSpid(spu_.getSpid());

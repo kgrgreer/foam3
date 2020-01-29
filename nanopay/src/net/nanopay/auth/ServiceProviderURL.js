@@ -12,7 +12,8 @@ foam.CLASS({
     {
       name: 'spid',
       class: 'Reference',
-      of: 'foam.nanos.auth.ServiceProvider'
+      of: 'foam.nanos.auth.ServiceProvider',
+      required: true
     },
     {
       name: 'urls',
@@ -21,24 +22,8 @@ foam.CLASS({
       factory: function(){
         return  [];
       },
-      javaFactory: 'return new String[0];'
-    },
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `
-      return ! SafetyUtil.isEmpty(getSpid()) &&
-             getUrls().size() > 0;
-      `
+      javaFactory: 'return new String[0];',
+      required: true
     },
   ]
 });

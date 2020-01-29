@@ -1,10 +1,8 @@
-// empty line
-
 p({
   "class":"net.nanopay.auth.UserCreateServiceProviderURLRule",
   "id":"UserCreateServiceProviderURLRule",
   "priority":100,
-  "ruleGroup":"user",
+  "ruleGroup":"UserCreate",
   "documentation":"Set ServiceProvider on User Create based on AppConfig URL",
   "daoKey":"localUserDAO",
   "operation":0,
@@ -17,14 +15,18 @@ p({
 })
 
 p({
-  "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction",
-  "id":"UserCreateServiceProviderURLRuleAction",
-  "priority":100,
-  "ruleGroup":"user",
-  "documentation":"Set ServiceProvider on User Create based on AppConfig URL",
-  "daoKey":"localUserDAO",
-  "operation":0,
-  "after":false,
-  "enabled":true,
-  "saveHistory":false
+  "class":"net.nanopay.auth.UserCreateServiceProviderURLRule",
+  "id":"UserCreateServiceProviderURLRule",
+  "config":[
+    {
+      "class":"net.nanopay.auth.ServiceProviderURL",
+      "spid":"nanopay",
+      "urls":["app.ablii.com"]
+    },
+    {
+      "class":"net.nanopay.auth.ServiceProviderURL",
+      "spid":"gd",
+      "urls":["gd.ablii.com"]
+    }
+  ]
 })

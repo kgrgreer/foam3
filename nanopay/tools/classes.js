@@ -536,6 +536,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.auth.ServiceProviderURL',
+  'net.nanopay.auth.UserCreateServiceProviderURLRule',
+  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
   // PII
   'net.nanopay.security.pii.PII',

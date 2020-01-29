@@ -1,0 +1,16 @@
+p({
+  "class":"net.nanopay.auth.UserCreateServiceProviderURLRule",
+  "id":"UserCreateServiceProviderURLRule",
+  "config":[
+    {
+      "class":"net.nanopay.auth.ServiceProviderURL",
+      "spid":"nanopay",
+      "urls":["ablii"]
+    },
+    {
+      "class":"net.nanopay.auth.ServiceProviderURL",
+      "spid":"gd",
+      "urls":["gd"]
+    }
+  ]
+})
