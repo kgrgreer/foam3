@@ -231,10 +231,9 @@ foam.CLASS({
     'bankAccount',
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
-
-    ,'businessRegistrationDate'
-    ,'countryOfBusinessRegistration'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   methods: [
@@ -274,11 +273,8 @@ foam.CLASS({
         )
       );
 
-      await this.businessDAO.find(this.user.id).then((o) => {
-        this.onboardingStatus = this.user.onboarded;
-        this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
-        this.businessRegistrationDate = o.businessRegistrationDate;
-      });
+      this.user = await this.businessDAO.find(this.user.id);
+      this.onboardingStatus = this.user.onboarded;
     },
 
     function initE() {
@@ -287,6 +283,11 @@ foam.CLASS({
       this.getUserAccounts().then(() => {
         var self = this;
         var split = this.DashboardBorder.create();
+
+        this.businessDAO.find(this.user.id).then((o) => {
+          this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+          this.businessRegistrationDate = o.businessRegistrationDate;
+        });
 
         var top = this.Element.create()
           .start('h1')
@@ -298,8 +299,8 @@ foam.CLASS({
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
             onboardingStatus: this.onboardingStatus,
-            businessRegistrationDate: this.user.businessRegistrationDate,
-            countryOfBusinessRegistration: this.user.countryOfBusinessRegistration
+            businessRegistrationDate$: this.businessRegistrationDate$,
+            countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
         var line = this.Element.create()

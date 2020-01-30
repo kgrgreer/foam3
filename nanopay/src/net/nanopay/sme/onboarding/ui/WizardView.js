@@ -208,9 +208,12 @@ foam.CLASS({
             sendInvitation : true
           })).
           then(async () => {
-            let user = await x.userDAO.find(x.user.id);
-            if ( user ) x.user.onboarded = user.onboarded;
-            // Invalidate auth cache to register new permissions on group.
+            await x.userDAO.find(x.user.id).then((o) => {
+              x.user.onboarded = o.onboarded;
+              x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+              x.user.businessRegistrationDate = o.businessRegistrationDate;
+            });
+
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.stack.back();
