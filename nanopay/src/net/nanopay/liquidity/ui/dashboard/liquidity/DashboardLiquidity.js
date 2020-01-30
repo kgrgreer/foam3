@@ -43,10 +43,15 @@ foam.CLASS({
 
     ^ .property-account {
       display: inline-block;
+      min-width: 240px;
     }
 
     ^ .property-timeFrame {
       display: inline-block;
+    }
+
+    ^ .property-endDate {
+      padding: 0;
     }
 
     ^card-header-title {
@@ -76,6 +81,10 @@ foam.CLASS({
     {
       name: 'CARD_HEADER',
       message: 'LIQUIDITY',
+    },
+    {
+      name: 'LABEL_DISCLAIMER',
+      message: 'A future date will not be reflected on the graph'
     }
   ],
 
@@ -83,13 +92,19 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'liquidityFilteredAccountDAO',
       name: 'account',
-      factory: function() {
-        this.liquidityFilteredAccountDAO.limit(1).select().then(a => {
-          if ( a.array.length ) this.account = a.array[0].id;
-        });
-        return net.nanopay.account.Account.ID.value;
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.data.liquidityFilteredAccountDAO
+            },
+          ],
+          search: true,
+          searchPlaceholder: 'Search...'
+        };
       }
     },
     {
@@ -114,15 +129,17 @@ foam.CLASS({
           endDate = this.timeFrame.endExpr.f(new Date(endDate.getTime() + 1));
         }
         this.endDate = endDate;
-        this.startDate = undefined;
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function () { return new Date() },
-      preSet: function(_, n) {
+      visibility: 'RO',
+      view: { class: 'foam.u2.DateView' }, // Override ModeAltView
+      factory: function() { return new Date(); },
+      preSet: function(o, n) {
         n = n || new Date();
+        if ( n > new Date() ) return o;
         return this.timeFrame.endExpr.f(n.getTime() > Date.now() ? new Date() : n);
       }
     },
@@ -217,7 +234,8 @@ foam.CLASS({
             data: this,
             prop: this.END_DATE
           })
-        .end();
+        .end()
+        .start('p').addClass('disclaimer').add(this.LABEL_DISCLAIMER).end();
     }
   ],
 
@@ -367,7 +385,7 @@ foam.CLASS({
         var xAxesMap = this.config.options.scales.xAxes[0];
         xAxesMap.time.unit = unit;
         xAxesMap.bounds = 'ticks';
-        
+
         var style = {};
         style[a.id] = {
           lineTension: 0,

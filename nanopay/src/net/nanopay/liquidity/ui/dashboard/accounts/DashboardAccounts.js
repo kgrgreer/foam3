@@ -51,6 +51,10 @@ foam.CLASS({
       line-height: 1.2;
       margin-bottom: 4px;
     }
+
+    ^ .net-nanopay-account-AccountDAOBrowserView-browse-view-container {
+      margin: 0;
+    }
   `,
 
   requires: [

@@ -60,6 +60,42 @@ foam.CLASS({
     ^ .foam-u2-layout-Card {
       overflow-x: scroll;
     }
+
+    ^ .foam-u2-view-RichChoiceView {
+      width: 100%;
+      z-index: 3;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-selection-view:hover {
+      cursor: pointer;
+    }
+
+    ^ .foam-u2-view-RichChoiceView .search {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f4f4f9;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-heading {
+      border-bottom: 1px solid #f4f4f9;
+      line-height: 24px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 900;
+      padding: 6px 16px;
+    }
+
+    ^ .DefaultRowView-row {
+      padding: 8px 16px;
+      color: #424242;
+    }
+
+    ^ .disclaimer {
+      margin: 0;
+      margin-top: 8px;
+      font-size: 12px;
+      font-style: italic;
+    }
   `,
 
   properties: [
