@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'UserCreateServiceProviderURLRuleAction',
@@ -16,8 +22,6 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.PrefixLogger',
     'foam.util.SafetyUtil',
     'java.net.URL',
     'java.net.MalformedURLException',
@@ -58,12 +62,9 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            Logger logger = new PrefixLogger(new Object[] {this.getClass().getSimpleName()}, (Logger) x.get("logger"));
             UserCreateServiceProviderURLRule myRule = (UserCreateServiceProviderURLRule) rule;
-
             User user = (User) obj;
             user.setSpid(spu_.getSpid());
-            logger.debug("user", user.getFirstName(), "spid", spu_.getSpid());
           }
         }, "Service Provider URL");
       `
