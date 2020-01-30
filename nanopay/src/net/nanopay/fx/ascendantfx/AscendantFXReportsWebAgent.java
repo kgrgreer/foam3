@@ -696,7 +696,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
-    Image img = null;
+    ArrayList<Image> imgs = new ArrayList<Image>();
 
     Logger logger = (Logger) x.get("logger");
 
@@ -709,12 +709,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     accountDAO.orderBy(DESC(BankAccount.CREATED))
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId()),
         NEQ(Account.DELETED, true))).select(bankAccountsSink);
 
     java.util.List<BankAccount> bankAccounts =  bankAccountsSink.getArray();
-    if ( bankAccounts.size() < 1 ) return null;
 
     String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
@@ -803,11 +801,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        if ( usBankAccount.getVoidCheckImage() != null ) {
+          try {
+            foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+            IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
+            Blob blob = getDelegate().find_(getX(), voidCheck.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          } catch (Exception e) {
+            logger.error(e);
+          }
+        }
+
         try {
-          foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
-          IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
-          Blob blob = getDelegate().find_(getX(), voidCheck.getId());
-          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+          foam.nanos.fs.File supportingDocs[] = usBankAccount.getSupportingDocuments();
+          for ( foam.nanos.fs.File doc : supportingDocs ) {
+            IdentifiedBlob idBlob = (IdentifiedBlob) doc.getData();
+            Blob blob = getDelegate().find_(getX(), idBlob.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          }
         } catch (Exception e) {
           logger.error(e);
         }
@@ -818,11 +829,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
-      if ( img != null ) {
-        img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
-        - document.rightMargin(), 200);
-        document.add(new ListItem("Bank void check:"));
-        document.add(img);
+      document.add(new ListItem("Supporting documents:"));
+      if ( imgs != null ) {
+        for ( Image img : imgs) {
+          img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
+          - document.rightMargin(), 200);
+          document.add(img);
+        }
       }
       document.add(Chunk.NEWLINE);
     }
@@ -1016,7 +1029,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
 
-  private void downloadZipFile(X x, Business business, File[] srcFiles) {
+ private void downloadZipFile(X x, Business business, File[] srcFiles) {
     HttpServletResponse response = x.get(HttpServletResponse.class);
     Logger              logger   = (Logger) x.get("logger");
 
@@ -1027,7 +1040,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
-    try(ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()))) {
+    DataOutputStream os = null;
+    ZipOutputStream zipos = null;
+    try {
+      zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
       zipos.setMethod(ZipOutputStream.DEFLATED);
 
       for (File file : srcFiles) {
@@ -1036,19 +1052,22 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
-        try ( 
-          DataOutputStream os = new DataOutputStream(zipos);
-          FileInputStream is =  new FileInputStream(file)
-        ) {
-          byte[] b = new byte[100];
-          int length;
-          while ((length = is.read(b)) != -1) {
-            os.write(b, 0, length);
-          }
+        os = new DataOutputStream(zipos);
+        FileInputStream is = new FileInputStream(file);
+        byte[] b = new byte[100];
+        int length;
+        while((length = is.read(b))!= -1){
+          os.write(b, 0, length);
         }
+        is.close();
+        zipos.closeEntry();
+        os.flush();
       }
     } catch (Exception e) {
       logger.error(e);
+    } finally {
+      IOUtils.closeQuietly(os);
+      IOUtils.closeQuietly(zipos);
     }
   }
 }

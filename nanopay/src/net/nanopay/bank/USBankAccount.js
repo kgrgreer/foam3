@@ -69,6 +69,11 @@ foam.CLASS({
       documentation: 'void check image for this bank account',
     },
     {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'supportingDocuments',
+      documentation: 'Supporting documents to verify bank account'
+    },
+    {
       name: 'branchId',
       label: 'ACH Routing Number',
       section: 'accountDetails',
