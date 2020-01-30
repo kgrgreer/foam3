@@ -41,8 +41,16 @@ public class ApprovalDAO
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
 
+        if ( request.getStatus() == ApprovalStatus.REJECTED ) return request;
+
         //puts object to its original dao
-        rePutObject(x, request);
+        try {
+          rePutObject(x, request);
+        } catch ( Exception e ) {
+          request.setStatus(ApprovalStatus.REQUESTED);
+          getDelegate().put(request);
+          throw new RuntimeException(e);
+        }
       }
     }
     return request;

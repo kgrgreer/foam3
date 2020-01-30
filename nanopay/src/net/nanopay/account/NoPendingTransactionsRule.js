@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
     'net.nanopay.account.DigitalAccount',
@@ -26,11 +27,9 @@ foam.CLASS({
           count = (Count) ((DAO) x.get("localTransactionDAO"))
             .where(
               AND(
+                EQ(Transaction.SOURCE_ACCOUNT, digitalAccount.getId()),
                 OR(
-                  EQ(Transaction.DESTINATION_ACCOUNT, digitalAccount.getId()),
-                  EQ(Transaction.SOURCE_ACCOUNT, digitalAccount.getId())
-                ),
-                OR(
+                  EQ(Transaction.LIFECYCLE_STATE, LifecycleState.PENDING),
                   EQ(Transaction.STATUS, TransactionStatus.PENDING),
                   EQ(Transaction.STATUS, TransactionStatus.SCHEDULED),
                   EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
