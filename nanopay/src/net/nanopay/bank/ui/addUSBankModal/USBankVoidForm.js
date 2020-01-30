@@ -189,7 +189,7 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'voidCheckFile',
+      name: 'supportingDocuments',
       factory: function() {
         return this.bank.supportingDocuments ? this.bank.supportingDocuments : [];
       },
@@ -238,7 +238,7 @@ foam.CLASS({
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE2).end()
           .start({
             class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.voidCheckFile$,
+            files$: this.supportingDocuments$,
             title: this.DROP_ZONE_TITLE,
             supportedFormats: {
               'image/jpg': 'JPG',
@@ -279,7 +279,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( this.voidCheckFile.length === 0 ) {
+      if ( this.supportingDocuments.length === 0 ) {
         ctrl.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }
