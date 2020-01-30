@@ -66,6 +66,11 @@ foam.CLASS({
       width: 300px;
       float: right;
     }
+    ^ .net-nanopay-sme-ui-MoneyFlowRejectView-void-img {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 10px;
+    }
   `,
 
   properties: [
