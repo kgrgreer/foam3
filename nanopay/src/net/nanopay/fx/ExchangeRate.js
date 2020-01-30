@@ -70,7 +70,6 @@ foam.CLASS({
       class: 'String',
       name: 'dealReferenceNumber',
       documentation: 'Reference number associated to exchange rate acceptance.',
-      javaFactory: 'return java.util.UUID.randomUUID().toString().replace("-", "");'
     },
     {
       class: 'Long',
