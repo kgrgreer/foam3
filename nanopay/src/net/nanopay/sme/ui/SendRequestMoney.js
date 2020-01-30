@@ -61,7 +61,8 @@ foam.CLASS({
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.dialog.Popup',
   ],
 
   axioms: [
@@ -624,6 +625,18 @@ foam.CLASS({
           return;
         }
         this.subStack.back();
+      }
+    },
+    {
+      name: 'reject',
+      isAvailable: function(waitForApprove) {
+        return waitForApprove;
+      },
+      code: function(X) {
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+          invoice: this.invoice
+        }));
       }
     },
   ]
