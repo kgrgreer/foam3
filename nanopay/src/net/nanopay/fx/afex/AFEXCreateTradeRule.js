@@ -43,14 +43,12 @@ foam.CLASS({
             return;
           }
           
-          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+          AFEXTransaction transaction = (AFEXTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) getX().get("afexServiceProvider");
           if ( transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               int result = afexService.createTrade(transaction);
               transaction.setAfexTradeResponseNumber(result);
-              // update transaction
-              ((DAO) getX().get("localTransactionDAO")).put_(getX(), transaction);
 
               if ( transaction.getAfexTradeResponseNumber() != 0 ) {
                 try {
@@ -69,7 +67,6 @@ foam.CLASS({
     
                   File pdf = (File) fileDAO.inX(x).put(thePDF);
                   transaction.addLineItems(new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
-                  ((DAO) x.get("transactionDAO")).inX(x).put(transaction.fclone());
                 
                   // Append file to related invoice.
                   Transaction root = transaction.findRootTransaction(x, transaction);
