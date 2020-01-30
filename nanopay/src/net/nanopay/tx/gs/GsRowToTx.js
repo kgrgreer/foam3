@@ -40,23 +40,19 @@ foam.CLASS({
         // ---- parse file into GsTxCsvRow Objects ...
         GSReportAssembly finalJob = new GSReportAssembly(x);
         finalJob.setFilename(filename);
-        IngestionReport report = new IngestionReport();
-        ProgressBarData pbd = new ProgressBarData ();
+        ProgressBarData pbd = new ProgressBarData();
         pbd.setId(progId);
-        report.setId(progId+"report");
-        pbd.setName("Ingestion Of: " + filename);
-        report.setName(progId+"report");
+        pbd.setName(filename);
         finalJob.setStartTime(System.currentTimeMillis());
         pbd.setStatus("Reading CSV...");
         DAO progressBarDAO = (DAO) x.get("ProgressBarDAO");
-        finalJob.setReport(report);
+        finalJob.setProgressBarData(pbd);
         AsyncAssemblyLine transactionProcessor = new AsyncAssemblyLine(x);
-        if ( ! filename.contains(".csv") ){
+        if ( ! filename.contains(".csv") ) {
           logger.info(" ** Non CSV file uploaded... ");
           finalJob.setFailed(true);
           finalJob.setFailText("Unable to Process File.\\nFile is not a csv. ");
-        }
-        else {
+        } else {
           java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int)blob.getSize());
           blob.read(os, 0, blob.getSize());
           foam.lib.parse.StringPStream ps = new foam.lib.parse.StringPStream(os.toString());

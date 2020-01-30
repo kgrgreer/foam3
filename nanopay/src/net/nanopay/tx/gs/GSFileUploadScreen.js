@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'View for downloading Alterna CSV',
 
   requires: [
+    'foam.dao.AbstractDAO',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.script.CsvUploadScript',
     'net.nanopay.sme.ui.fileDropZone.FileDropZone',
     'net.nanopay.tx.gs.ProgressBarData',
@@ -34,19 +36,6 @@ foam.CLASS({
     color: #1e1f21;
   }
 
-  ^heading {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.33;
-    color: #1e1f21;
-  }
-
-  ^instructions {
-    margin-bottom: 8px;
-  }
-
   ^container-card {
     border-radius: 6px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
@@ -54,8 +43,12 @@ foam.CLASS({
     background-color: #ffffff;
     padding: 16px;
   }
+  
+  ^container-card + ^container-card {
+    margin-top: 16px;
+  }
 
-  ^ .property-id_ {
+  ^ .property-pbdBeingReviewedId_ {
     margin-bottom: 24px;
   }
 
@@ -86,32 +79,7 @@ foam.CLASS({
   }
 
   ^ .foam-u2-ActionView-process {
-    width: 135px;
-    height: 50px;
-    border-radius: 2px;
-    background: /*%PRIMARY3%*/ #406dea;
-    color: white;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: none;
-    cursor: pointer;
-    line-height: 50px;
-    font-size: 14px;
-    font-weight: normal;
-    box-shadow: none;
-  }
-
-  ^ .foam-u2-ActionView-back {
-    margin-top: 16px;
-  }
-
-  ^ .foam-u2-ActionView-process {
     width: 100%;
-  }
-
-  ^ .foam-u2-ActionView-process:hover {
-    opacity: 0.9;
   }
 
   ^report {
@@ -119,24 +87,37 @@ foam.CLASS({
     line-height: 1.5;
   }
 
+  ^upload-new-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+
+  ^upload-new-container > button {
+    margin-left: 16px;
+  }
   `,
 
   messages: [
     { name: 'TITLE', message: 'Settlement CSV File Upload' },
-    { name: 'LABEL_CHOOSE', message: 'Choose a current or previously ingested instance:' },
-    { name: 'LABEL_SELECTOR', message: '< New Ingestion >' },
-    { name: 'LABEL_REPORT', message: 'Ingestion Report' }
+    { name: 'OLD_HEADING', message: 'Review Previously Ingested Files' },
+    { name: 'IN_PROGRESS_HEADING', message: 'Ingestion In Progress' },
+    { name: 'FINISHED_MSG', message: 'Ingestion Finished' },
+    { name: 'LOADING_MSG', message: 'Loading...' }
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'id_',
+      name: 'pbdBeingReviewedId_',
       view: function(args, X) {
+        const e = foam.mlang.ExpressionsSingleton.create();
+        const ProgressBarData = net.nanopay.tx.gs.ProgressBarData;
         return {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.LABEL_SELECTOR,
-          dao: X.ProgressBarDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.tx.gs.IngestionReport))),
+          placeholder: 'Select a previously ingested file...',
+          dao: X.ProgressBarDAO.where(e.HAS(ProgressBarData.REPORT)),
           objToChoice: function(a) {
             return [a.id, a.name];
           }
@@ -161,17 +142,34 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'progressBarValue',
-      value: '0%'
-    },
-    {
-      class: 'String',
-      name: 'progressBarStatus',
-      value: 'Awaiting File Upload.'
-    },
-    {
-      class: 'String',
       name: 'report'
+    },
+    {
+      name: 'currentInterval_',
+      documentation: `Keep track of the polling interval so we can stop it.`
+    },
+    {
+      class: 'Boolean',
+      name: 'checkingIfInProgress_',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'ingestionInProgress_',
+      documentation: `
+        True if there is an ingestion happening right now. If there is, we don't
+        want the user to be able to start a new one. Only one can happen at a
+        time.
+      `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.ProgressBarData',
+      name: 'pbdInProgress_'
+    },
+    {
+      class: 'String',
+      name: 'pbdInProgressId_'
     }
   ],
 
@@ -181,83 +179,134 @@ foam.CLASS({
         this.scriptToUse = script;
         if ( this.csv ) this.scriptToUse.csv = this.csv;
       });
+      this.onDetach(this.pbdBeingReviewedId_$.sub(this.loadReport.bind(this)));
+      this.updatePollingLoop();
+      this.onDetach(this.stopPolling.bind(this));
     },
 
     function initE() {
       var self = this;
 
-      var timeout = setInterval(() => {
-        this.ProgressBarDAO.find(this.id_).then((data) => {
-          if ( data != null ) {
-            this.progressBarStatus = data.status;
-            this.progressBarValue = data.state + '%';
-          }
-          else {
-            this.progressBarStatus = 'Awaiting File Upload.';
-            this.progressBarValue = '0%';
-          }
-        });
-        this.ProgressBarDAO.find(this.id_ + 'report').then((data) => {
-          if ( data != null ) {
-            this.report = data.report;
-          } else {
-            this.report = '';
-          }
-        });
-      }, 1000);
-
-      this.onDetach(function() {
-        clearInterval(timeout);
-      }.bind(this));
-
       this.SUPER();
       this.addClass(this.myClass())
         .start('p').addClass(this.myClass('title')).add(this.TITLE).end()
-        .start().addClass(this.myClass('container-card'))
-          .start('p').addClass(this.myClass('instructions')).add(this.LABEL_CHOOSE).end()
-          .add(this.ID_)
-          .add(this.slot(function(report) {
-            if ( ! report ) {
-              return self.E().start(self.FileDropZone, {
-                files$: self.uploadedCSVs$,
-                supportedFormats: { 'csv': 'CSV' },
-                isMultipleFiles: false,
-                maxSize: 1024
-              }).end()
-              .add(self.slot(function(uploadedCSVs, progressBarStatus) {
-                if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.') ) return self.E();
-                return self.E()
-                  .startContext({ data: self })
-                    .add(self.PROCESS)
-                  .endContext();
-              }))
-              .add(self.slot(function(progressBarStatus) {
-                return progressBarStatus.includes('Awaiting File Upload.') ? self.E() :
-                  self.E().start('p').add(self.progressBarStatus$).end()
-                    .start().addClass('progress-bar')
-                      .start().addClass('back')
-                        .start().addClass('front').style({ width: self.progressBarValue$ })
-                        .end()
-                      .end()
-                    .end();
-              }));
-            } else {
-              return self.E()
-                .start('p').addClass(self.myClass('heading')).add(self.LABEL_REPORT).end()
-                .start().addClass(this.myClass('container-card'))
-                  .start('p').addClass(self.myClass('report')).add(report).end()
-                .end();
-            }
+        .start()
+          .addClass(this.myClass('container-card'))
+          .show(this.checkingIfInProgress_$)
+          .add(this.LOADING_MSG)
+        .end()
+        .start()
+          .addClass(this.myClass('container-card'))
+          .show(this.slot(function(ingestionInProgress_, checkingIfInProgress_) {
+            return ! ingestionInProgress_ && ! checkingIfInProgress_;
           }))
-          .add(this.slot(function(id_, report) {
-            if ( id_ != self.LABEL_SELECTOR && report != '' ) {
-              return self.E()
-                .startContext({ data: self })
-                  .add(self.BACK)
-                .endContext();
-            }
+          .tag(self.FileDropZone, {
+            files$: self.uploadedCSVs$,
+            supportedFormats: { 'csv': 'CSV' },
+            isMultipleFiles: false,
+            maxSize: 1024
+          })
+          .startContext({ data: self }).tag(self.PROCESS).endContext()
+        .end()
+        .start()
+          .addClass(this.myClass('container-card'))
+          .show(this.slot(function(ingestionInProgress_, checkingIfInProgress_) {
+            return ingestionInProgress_ && ! checkingIfInProgress_;
+          }))
+          .start('h2').add(this.IN_PROGRESS_HEADING).end()
+          .start('p').add(self.pbdInProgress_$.map((pbd) => pbd ? pbd.name : '')).end()
+          .start('p').add(self.pbdInProgress_$.map((pbd) => pbd ? pbd.status : '')).end()
+          .start()
+            .addClass('progress-bar')
+            .start()
+              .addClass('back')
+              .start()
+                .addClass('front')
+                .style({ width: self.pbdInProgress_$.map((pbd) => pbd ? pbd.state + '%' : '0%') })
+              .end()
+            .end()
+          .end()
+        .end()
+        .start()
+          .addClass(this.myClass('container-card'))
+          .start('h2').add(this.OLD_HEADING).end()
+          .add(this.PBD_BEING_REVIEWED_ID_)
+          .add(this.slot(function(report) {
+            if ( ! report ) return this.E();
+
+            return self.E()
+              .start('p').addClass(self.myClass('report')).add(report).end()
           }))
         .end();
+    },
+
+    function poll() {
+      /**
+       * Ask the server for an update on the currently selected file ingestion.
+       * This has to handle two cases:
+       *   1. We don't know if there's a file ingestion in progress or not,
+       *   2. We just started a file ingestion and want to track it
+       */
+      this.ProgressBarDAO.find(
+        this.OR(
+          this.EQ(this.ProgressBarData.ID, this.pbdInProgressId_),
+          this.NOT(this.HAS(this.ProgressBarData.REPORT))
+        )
+      )
+        .then((pbd) => {
+          if ( pbd == null ) return; // Keep polling.
+
+          if ( pbd.report ) {
+            // We're finished ingesting the one we started.
+
+            // Force the dropdown of previously ingested files to update so that
+            // it includes the one that just finished.
+            this.ProgressBarDAO.cmd(this.AbstractDAO.RESET_CMD);
+
+            this.add(this.NotificationMessage.create({ message: this.FINISHED_MSG }));
+            this.ingestionInProgress_ = false;
+            this.pbdBeingReviewedId_ = this.pbdInProgressId_;
+            this.pbdInProgress_ = null;
+            this.pbdInProgressId_ = '';
+            this.uploadedCSVs = [];
+            return;
+          }
+
+          if ( ! this.ingestionInProgress_ ) this.ingestionInProgress_ = true;
+          this.pbdInProgress_ = pbd;
+          this.pbdInProgressId_ = pbd.id;
+        })
+        .catch(this.stopPolling.bind(this))
+        .finally(() => this.checkingIfInProgress_ = false);
+    },
+
+    function loadReport() {
+      /**
+       * Load the report for a previously ingested file.
+       */
+      this.ProgressBarDAO.find(this.pbdBeingReviewedId_).then((pbd) => {
+        this.report = pbd ? pbd.report : '';
+      });
+    },
+
+    function stopPolling() {
+      /**
+       * Cleanup method.
+       */
+      if ( this.currentInterval_ ) clearInterval(this.currentInterval_);
+      this.currentInterval_ = null;
+    }
+  ],
+
+  listeners: [
+    function updatePollingLoop() {
+      /**
+       * There's an ingestion in progress and we want to start polling the
+       * server to track it.
+       */
+      this.stopPolling();
+      this.checkingIfInProgress_ = true;
+      this.currentInterval_ = setInterval(this.poll.bind(this), 1000);
     }
   ],
 
@@ -265,27 +314,16 @@ foam.CLASS({
     {
       name: 'process',
       label: 'Begin Ingestion',
-      isEnabled: function(uploadedCSVs, progressBarStatus) {
-        if ( uploadedCSVs.length === 0 || ! progressBarStatus.includes('Awaiting File Upload.') ) return false;
-        return uploadedCSVs.length > 0;
-      },
+      isEnabled: (uploadedCSVs) => uploadedCSVs.length > 0,
       code: function() {
+        this.ingestionInProgress_ = true;
         if ( this.scriptToUse && this.csv ) {
-          this.scriptToUse.progressId = foam.uuid.randomGUID();
+          this.pbdInProgressId_ = this.scriptToUse.progressId = foam.uuid.randomGUID();
+          this.pbdInProgress_ = this.ProgressBarData.create({ status: this.LOADING_MSG });
           this.scriptToUse.filename = this.uploadedCSVs[0].filename;
-          this.id_ = this.scriptToUse.progressId;
           this.scriptToUse.name = this.scriptToUse.run();
         }
-      }
-    },
-    {
-      name: 'back',
-      label: 'Upload a New File',
-      code: function() {
-        this.report = '';
-        this.id_ = this.LABEL_SELECTOR;
-        this.progressBarStatus = 'Awaiting File Upload.';
-        this.uploadedCSVs = [];
+        this.updatePollingLoop();
       }
     }
   ]

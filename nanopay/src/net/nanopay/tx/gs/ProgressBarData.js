@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'ProgressBarData',
   plural: 'PBDs',
+
   properties: [
     {
       class: 'String',
@@ -30,7 +31,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status'
+    },
+    {
+      class: 'String',
+      name: 'report'
     }
   ]
-
-})
+});
