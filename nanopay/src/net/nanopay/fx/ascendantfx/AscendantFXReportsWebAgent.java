@@ -696,7 +696,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
-    Image img = null;
+    ArrayList<Image> imgs = new ArrayList<Image>();
 
     Logger logger = (Logger) x.get("logger");
 
@@ -709,12 +709,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     accountDAO.orderBy(DESC(BankAccount.CREATED))
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId()),
         NEQ(Account.DELETED, true))).select(bankAccountsSink);
 
     java.util.List<BankAccount> bankAccounts =  bankAccountsSink.getArray();
-    if ( bankAccounts.size() < 1 ) return null;
 
     String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
@@ -807,7 +805,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
           IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
           Blob blob = getDelegate().find_(getX(), voidCheck.getId());
-          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+          imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+        } catch (Exception e) {
+          logger.error(e);
+        }
+        try {
+          foam.nanos.fs.File supportingDocs[] = usBankAccount.getSupportingDocuments();
+          for ( foam.nanos.fs.File doc : supportingDocs ) {
+            IdentifiedBlob idBlob = (IdentifiedBlob) doc.getData();
+            Blob blob = getDelegate().find_(getX(), idBlob.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          }
         } catch (Exception e) {
           logger.error(e);
         }
@@ -818,11 +826,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
-      if ( img != null ) {
-        img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
-        - document.rightMargin(), 200);
-        document.add(new ListItem("Bank void check:"));
-        document.add(img);
+      if ( imgs != null ) {
+        for ( Image img : imgs) {
+          img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
+          - document.rightMargin(), 200);
+          document.add(new ListItem("supporting documents:"));
+          document.add(img);
+        }
       }
       document.add(Chunk.NEWLINE);
     }
