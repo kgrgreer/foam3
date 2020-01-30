@@ -491,6 +491,9 @@ foam.CLASS({
       class: 'String',
       name: 'referenceId',
       documentation: `The unique identifier for sent and received form email.`,
+      factory: function() {
+        return foam.uuid.randomGUID();
+      },
       javaFactory: `
         return UUID.randomUUID().toString();
       `
