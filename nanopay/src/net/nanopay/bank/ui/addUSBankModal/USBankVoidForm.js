@@ -194,7 +194,7 @@ foam.CLASS({
         return this.bank.supportingDocuments ? this.bank.supportingDocuments : [];
       },
       postSet: function(_, n) {
-        this.bank.supportingDocuments = Array.from(n);
+        this.bank.supportingDocuments = n;
       }
     },
     'skip'
