@@ -14,6 +14,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.CLASS_OF;
 
 /**
  * BCryptAuthService
@@ -53,7 +54,7 @@ public class BCryptAuthService
               EQ(User.EMAIL, id.toLowerCase()),
               EQ(User.USER_NAME, id)
             ),
-            EQ(User.LOGIN_ENABLED, true)
+            CLASS_OF(User.class)
           )
         );
       if ( user == null ) {
