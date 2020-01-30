@@ -23,6 +23,7 @@ exchangeRates
 emailTemplates
 exportDriverRegistrys
 fundTransferSystems
+fxProviders
 groupPermissionJunctions
 groups
 htmlDoc
