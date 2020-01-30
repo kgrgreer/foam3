@@ -122,6 +122,12 @@ foam.CLASS({
          if (invoice.paymentMethod == this.PaymentStatus.VOID) {
           this.notify(this.VOID_SUCCESS, 'success');
           X.closeDialog();
+          if ( X.currentMenu.label !== 'Payables' ) {
+            X.stack.push({
+              class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
+              invoice: this.invoice
+            })
+          }
          }
         }).catch((err) => {
          if ( err ) this.notify(this.VOID_ERROR, 'error');
