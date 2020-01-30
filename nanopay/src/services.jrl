@@ -168,7 +168,13 @@ p({
       .setOf(net.nanopay.model.BusinessSector.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.model.BusinessSector\"}"
+  "client":
+  """
+    {
+      "cache":true,
+      "of":"net.nanopay.model.BusinessSector"
+    }
+  """
 })
 
 p({
