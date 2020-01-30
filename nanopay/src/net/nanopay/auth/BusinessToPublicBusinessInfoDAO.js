@@ -30,7 +30,7 @@ foam.CLASS({
 
         if ( business == null ) return null;
         
-        return new PublicBusinessInfo(business);
+        return new PublicBusinessInfo(x, business);
       `
     },
     {
@@ -41,7 +41,7 @@ foam.CLASS({
           public void put(Object o, Detachable d) {
             Business business = (Business) o;
             if ( isPublic(x, business) ) {
-              PublicBusinessInfo bInfo = new PublicBusinessInfo(business);
+              PublicBusinessInfo bInfo = new PublicBusinessInfo(x, business);
               getDelegate().put(bInfo, d);
             }
           }
