@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'PublicBusinessInfo',
 
-  documentation: "Represents a public subset of a business's properties.",
+  documentation: `Represents a public subset of a business's properties.`,
 
   javaImports: [
     'net.nanopay.model.Business',
@@ -17,7 +17,7 @@ foam.CLASS({
     net.nanopay.model.Business.ORGANIZATION,
     net.nanopay.model.Business.ADDRESS,
     net.nanopay.model.Business.EMAIL,
-    net.nanopay.model.Business.JOB_TITLE,
+    net.nanopay.model.Business.BUSINESS_SECTOR_ID,
   ].map((p) => p.clone().copyFrom({ visibility: foam.u2.Visibility.RO })),
 
   axioms: [
@@ -34,9 +34,7 @@ foam.CLASS({
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
-            setJobTitle(businessSector.getName());
-            // Emails are not to be public.  CPF-1523
-            // setEmail(business.getEmail());
+            setBusinessSectorId(business.getBusinessSectorId());
           }
         `);
       },

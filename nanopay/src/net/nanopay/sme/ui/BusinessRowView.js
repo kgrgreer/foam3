@@ -10,6 +10,7 @@ foam.CLASS({
   documentation: 'A single row in a list of businesses.',
 
   imports: [
+    'businessSectorDAO',
     'contactDAO',
     'user'
   ],
@@ -118,11 +119,12 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('business-location'))
-              .add(this.slot(function(data) {
+              .add(this.slot(async function(data) {
                 if ( data ) {
+                  var businessSector = await this.businessSectorDAO.find(data.businessSectorId);
                   var city = data.address.city;
                   var region = data.address.regionId;
-                  let industry = data.jobTitle;
+                  let industry = businessSector.name;
                   if ( city && region ) {
                     return `${industry} • ${city}, ${region}`;
                   } else if ( region ) {
