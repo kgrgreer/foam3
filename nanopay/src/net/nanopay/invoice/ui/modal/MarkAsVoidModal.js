@@ -121,14 +121,14 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
         this.invoiceDAO.put(this.invoice).then((invoice) => {
-         if (invoice.paymentMethod == this.PaymentStatus.VOID) {
+         if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           this.notify(this.VOID_SUCCESS, 'success');
           X.closeDialog();
-          if ( X.currentMenu.label !== 'Payables' ) {
+          if ( X.currentMenu.id == 'sme.quickAction.send' ) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
               invoice: this.invoice
-            })
+            });
           }
          }
         }).catch((err) => {
