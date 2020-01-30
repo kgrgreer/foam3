@@ -1,7 +1,6 @@
 /**
  * @license
  * Copyright 2020 nanopay Inc. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
