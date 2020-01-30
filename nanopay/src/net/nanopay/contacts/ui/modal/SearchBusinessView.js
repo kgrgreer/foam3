@@ -427,6 +427,7 @@ foam.CLASS({
         this.closeDialog();
         this.loading = false;
       }).catch( err => {
+        this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
         this.closeDialog();
         this.loading = false;
       })
