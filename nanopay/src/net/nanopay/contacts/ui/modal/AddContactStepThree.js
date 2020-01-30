@@ -109,7 +109,17 @@ foam.CLASS({
                     this.EQ(this.Country.ID, 'US')
                   );
                 } else {
-                  q = this.EQ(this.Country.ID, 'CA');
+                  return this.auth.check(null, 'currency.read.INR').then((inrPermission) => {
+                    if ( inrPermission ) {
+                      q = this.OR(
+                        this.EQ(this.Country.ID, 'CA'),
+                        this.EQ(this.Country.ID, 'IN')
+                      );
+                    } else {
+                      q = this.EQ(this.Country.ID, 'CA');
+                    }
+                    return this.countryDAO.where(q);
+                  });
                 }
                 return this.countryDAO.where(q);
               })

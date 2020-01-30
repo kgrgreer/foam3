@@ -274,6 +274,8 @@ var classes = [
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
+  'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
+  'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -494,7 +496,6 @@ var classes = [
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
-  'net.nanopay.fx.KotakFXProvider',
   'net.nanopay.fx.localfx.NanopayFXService',
 
   'net.nanopay.fx.GetFXQuote',
@@ -536,6 +537,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.auth.ServiceProviderURL',
+  'net.nanopay.auth.UserCreateServiceProviderURLRule',
+  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
   // PII
   'net.nanopay.security.pii.PII',
