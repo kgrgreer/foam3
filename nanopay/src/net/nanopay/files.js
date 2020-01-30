@@ -880,6 +880,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BusinessDirector' },
   { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/MoneyFlowRejectView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
   { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/DashboardBorder', flags: ['web'] },
