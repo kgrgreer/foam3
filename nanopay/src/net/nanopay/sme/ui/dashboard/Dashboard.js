@@ -232,6 +232,9 @@ foam.CLASS({
     'userHasPermissionsForAccounting',
     'businessOnboarding',
     'onboardingStatus'
+
+    ,'businessRegistrationDate'
+    ,'countryOfBusinessRegistration'
   ],
 
   methods: [
@@ -270,8 +273,12 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
-      this.user = await this.businessDAO.find(this.user.id);
-      this.onboardingStatus = this.user.onboarded;
+
+      await this.businessDAO.find(this.user.id).then((o) => {
+        this.onboardingStatus = this.user.onboarded;
+        this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+        this.businessRegistrationDate = o.businessRegistrationDate;
+      });
     },
 
     function initE() {
@@ -290,7 +297,9 @@ foam.CLASS({
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
-            onboardingStatus: this.onboardingStatus
+            onboardingStatus: this.onboardingStatus,
+            businessRegistrationDate: this.user.businessRegistrationDate,
+            countryOfBusinessRegistration: this.user.countryOfBusinessRegistration
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
         var line = this.Element.create()
@@ -299,7 +308,7 @@ foam.CLASS({
               .addClass('divider-half').add(this.UPPER_TXT)
             .end()
           .end();
-        
+
           var topL = this.Element.create()
             .start('h2')
               .add(this.SUBTITLE1)
