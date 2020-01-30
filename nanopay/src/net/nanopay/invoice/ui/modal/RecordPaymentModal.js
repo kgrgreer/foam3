@@ -52,6 +52,7 @@ foam.CLASS({
     { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
     { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
+    { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
     { name: 'NOTE_LABEL', message: 'Notes' }
@@ -140,7 +141,7 @@ foam.CLASS({
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
-          .start(this.NOTE).end()
+          .start(this.NOTE, { placeholder: this.PLACEHOLDER_TEXT }).end()
         .end()
         .start()
           .addClass('button-container')

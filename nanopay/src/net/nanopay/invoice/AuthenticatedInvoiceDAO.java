@@ -108,7 +108,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     public void put(Object obj, foam.core.Detachable sub) {
       Invoice invoice = (Invoice) obj;
       if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
-          ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) ) {
+          ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
+          ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) ) {
         getDelegate().put(obj, sub);
       }
     }
