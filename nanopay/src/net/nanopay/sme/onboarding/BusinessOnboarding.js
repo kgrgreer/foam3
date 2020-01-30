@@ -440,7 +440,7 @@ foam.CLASS({
                 arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
               }), 0);
           },
-          errorString: 'Please select job title.'
+          errorString: 'Please enter a Job Title.'
         }
       ]
     },
@@ -605,7 +605,7 @@ foam.CLASS({
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao,
-          showValidationText: X.data.signingOfficer
+          showValidation: X.data.signingOfficer
         };
       },
       autoValidate: false,
@@ -734,7 +734,7 @@ foam.CLASS({
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao,
-          showValidationText: X.data.signingOfficer
+          showValidation: X.data.signingOfficer
         };
       },
       autoValidate: false,
