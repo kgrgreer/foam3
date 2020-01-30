@@ -217,6 +217,8 @@ foam.CLASS({
                   .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
                   .start(foam.comics.v2.DAOBrowserView, {
                     config: self.DAOControllerConfig.create({ 
+                      editEnabled: false,
+                      deleteEnabled: false,
                       dao: self.transactionDAO
                       .where(
                         self.AND(
