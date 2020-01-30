@@ -13,20 +13,3 @@ p({
     "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"
   }
 })
-
-p({
-  "class":"net.nanopay.auth.UserCreateServiceProviderURLRule",
-  "id":"UserCreateServiceProviderURLRule",
-  "config":[
-    {
-      "class":"net.nanopay.auth.ServiceProviderURL",
-      "spid":"nanopay",
-      "urls":["app.ablii.com"]
-    },
-    {
-      "class":"net.nanopay.auth.ServiceProviderURL",
-      "spid":"gd",
-      "urls":["gd.ablii.com"]
-    }
-  ]
-})

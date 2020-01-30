@@ -5,12 +5,18 @@ p({
     {
       "class":"net.nanopay.auth.ServiceProviderURL",
       "spid":"nanopay",
-      "urls":["ablii"]
+      "urls":[
+        "ablii",
+        "app.ablii.com"
+      ]
     },
     {
       "class":"net.nanopay.auth.ServiceProviderURL",
       "spid":"gd",
-      "urls":["gd"]
+      "urls":[
+        "gd",
+        "gd.ablii.com"
+      ]
     }
   ]
 })
