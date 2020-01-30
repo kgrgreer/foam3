@@ -22,7 +22,7 @@ public class RbcFTPSClient {
   public static final String PGP_FOLDER = "outbound/3EPK/";
   public static final String PAIN_FOLDER = "outbound/XG02/";
 
-  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/download/";
+  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/download/";
 
 
   /**
@@ -47,10 +47,9 @@ public class RbcFTPSClient {
     
     this.login();
     FTPFile[] ftpFiles = this.ls(PAIN_FOLDER);
-    
 
     String index = String.format("%" + 3 + "s", String.valueOf(ftpFiles.length)).replace(' ', '0');
-    String remotePath = "PAIN." + index + ".pgp";
+    String remotePath = PAIN_FOLDER + "PAIN." + index + ".pgp";
 
     File file = this.get(remotePath, DOWNLOAD_FOLDER + filename);
     this.logout();
@@ -152,7 +151,7 @@ public class RbcFTPSClient {
 
     FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
 
-    ftpsClient.retrieveFile(PAIN_FOLDER + remote, fileOutputStream);
+    ftpsClient.retrieveFile(remote, fileOutputStream);
     fileOutputStream.close();
     this.logger.info("Retrieve File : " + this.ftpsClient.getReplyString());
 

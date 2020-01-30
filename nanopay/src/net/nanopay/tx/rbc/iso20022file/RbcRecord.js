@@ -13,12 +13,7 @@ foam.CLASS({
       name: 'transactions',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
-      javaFactory: 'return new Transaction[0];'
-    },
-    {
-      name: 'failedTransactions',
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.model.Transaction',
+      transient: true,
       javaFactory: 'return new Transaction[0];'
     },
     {

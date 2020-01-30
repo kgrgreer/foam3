@@ -112,8 +112,14 @@ public class ISO20022Util {
             PropertyInfo prop = (PropertyInfo) cInfo.getAxiomByName(propMap.get(reader.getLocalName()));
             if ( prop != null ) {
               Class objClass = prop.getValueClass();
+              
               if (Enum.class.isAssignableFrom(objClass)) {
                 prop.set(obj, enumFromXML(x, reader, objClass));
+              } else if ( String[].class.equals(objClass) ) {
+                prop.set(obj, stringArrFromXML(x, reader, prop.getShortName()));
+                if ( reader.getLocalName().equals(startTag) ) {
+                  return obj;
+                }
               } else if (objClass.isArray()) {
                 prop.set(obj, arrayFromXML(x, reader, objClass));
               } else if ( FObject.class.isAssignableFrom(objClass) ) {
@@ -168,7 +174,8 @@ public class ISO20022Util {
 
   public Object arrayFromXML(X x, XMLStreamReader reader, Class defaultClass) {
     List objList = new ArrayList();
-    if ( defaultClass == null ) return objList;
+    if ( defaultClass == null ) return objList.toArray();
+
     defaultClass = defaultClass.getComponentType();
     FObject obj = copyFromXML(x, reader, (FObject) x.create(defaultClass));
     objList.add(obj);
@@ -194,6 +201,33 @@ public class ISO20022Util {
       logger.error("Premature end of xml file while reading property");
     }
     return obj;
+  }
+
+  public Object[] stringArrFromXML(X x, XMLStreamReader reader, String propName) {
+    List objList = new ArrayList();
+    try {
+      while ( reader.hasNext() ) {
+        System.out.println("getEventType: " + reader.getEventType());
+        switch ( reader.getEventType() ) {
+          case XMLStreamConstants.START_ELEMENT:
+            if ( ! propName.equals(reader.getLocalName()) ) return objList.toArray();
+            reader.next();
+            objList.add(reader.getText()); 
+            break;
+          case XMLStreamConstants.END_ELEMENT:
+            if ( ! propName.equals(reader.getLocalName()) ) return objList.toArray();
+            break;
+        }
+        reader.next();
+      }
+    } catch (XMLStreamException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+    } catch (IllegalStateException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+    }
+    return objList.toArray();
   }
 
   public Map getObjectPropertyInfoMap(X x, FObject obj, Map propMap) {

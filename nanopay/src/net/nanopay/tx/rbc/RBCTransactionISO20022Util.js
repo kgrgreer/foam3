@@ -139,7 +139,6 @@ foam.CLASS({
       // Credit Transfer Transaction Information
       List<net.nanopay.iso20022.CreditTransferTransactionInformation10> cdtTrfTxInfList = new ArrayList<>();
       List<Transaction> processedTransactions = new ArrayList<>();
-      List<Transaction> failedTransactions = new ArrayList<>();
       for( Transaction txn : transactions ) {
         try{
           isValidTransaction(txn);
@@ -260,7 +259,7 @@ foam.CLASS({
           logger.error("Error when add transaction to RBC ISO20022 file", e);
           txn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent(e.getMessage()).build());
           txn.setStatus(TransactionStatus.FAILED);
-          failedTransactions.add(txn);
+          ((DAO) x.get("localtransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )
@@ -280,7 +279,6 @@ foam.CLASS({
 
       coRecords.setCreditMsg(pain00100103Msg);
       coRecords.setTransactions(processedTransactions.toArray(new Transaction[processedTransactions.size()]));
-      coRecords.setFailedTransactions(failedTransactions.toArray(new Transaction[failedTransactions.size()]));
       return coRecords;
       `
     },
@@ -383,7 +381,6 @@ foam.CLASS({
       // Direct Debit Information
       List<net.nanopay.iso20022.DirectDebitTransactionInformation9> drctDbtTxInfList = new ArrayList<>();
       List<Transaction> processedTransactions = new ArrayList<>();
-      List<Transaction> failedTransactions = new ArrayList<>();
       for( Transaction txn : transactions ) {
         try{
           isValidTransaction(txn);
@@ -513,7 +510,7 @@ foam.CLASS({
           logger.error("Error when add transaction to RBC ISO20022 file", e);
           txn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent(e.getMessage()).build());
           txn.setStatus(TransactionStatus.FAILED);
-          failedTransactions.add(txn);
+          ((DAO) x.get("localtransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )
@@ -533,7 +530,6 @@ foam.CLASS({
 
       ciRecords.setDebitMsg(msg);
       ciRecords.setTransactions(processedTransactions.toArray(new Transaction[processedTransactions.size()]));
-      ciRecords.setFailedTransactions(failedTransactions.toArray(new Transaction[failedTransactions.size()]));
 
       return ciRecords;
       `

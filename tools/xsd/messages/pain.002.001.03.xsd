@@ -732,12 +732,10 @@
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="StatusReason6Choice">
-        <xs:sequence>
             <xs:choice>
                 <xs:element name="Cd" type="ExternalStatusReason1Code"/>
                 <xs:element name="Prtry" type="Max35Text"/>
             </xs:choice>
-        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="StatusReasonInformation8">
         <xs:sequence>

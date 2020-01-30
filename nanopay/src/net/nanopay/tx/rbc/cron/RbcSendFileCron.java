@@ -165,19 +165,14 @@ public class RbcSendFileCron implements ContextAgent {
       if ( readyToSend != null ) {
         try {
           FileUtils.moveFile(readyToSend, new File(RBCEFTFileGenerator.SEND_FAILED +
-            readyToSend.getName() + "_" + Instant.now().toEpochMilli()));
+            readyToSend.getName()));
         } catch (IOException ex) {
-          logger.error("RBC CI Transactions ERROR", e);
+          logger.error("RBC Transactions ERROR", e);
         }
       }
     } finally {
       if ( SEND_LOCK.isLocked() ) {
         SEND_LOCK.unlock();
-      }
-
-      if ( records != null ) {
-        // Add transactions that failed to be added to records so we can update them to failed later
-        processedTransactions.addAll(Arrays.asList(records.getFailedTransactions()));
       }
     }
     return processedTransactions;

@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 
+import org.apache.commons.io.FileUtils;
+
 public class RbcPGPUtil {
 
   public static final String ENCRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/encrypt/";
@@ -20,7 +22,12 @@ public class RbcPGPUtil {
     File outputFile = new File(ENCRYPT_FOLDER + fileToEncrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    PGPKeyUtil.encryptFile(x, fileToEncrypt, "rbc-pgpkey", fileOutputStream);
+    try{
+      PGPKeyUtil.encryptFile(x, fileToEncrypt, "rbc-pgpkey", fileOutputStream);
+    } catch(Exception e) {
+      FileUtils.deleteQuietly(outputFile);
+      throw e;
+    }
 
     return outputFile;
   }
@@ -29,7 +36,12 @@ public class RbcPGPUtil {
     File outputFile = new File(DECRYPT_FOLDER + fileToDecrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    PGPKeyUtil.decryptFile(x, new FileInputStream(fileToDecrypt), fileOutputStream, "nanopay-rbc-pgpkey");
+    try{
+      PGPKeyUtil.decryptFile(x, new FileInputStream(fileToDecrypt), fileOutputStream, "nanopay-rbc-pgpkey");
+    } catch(Exception e) {
+      FileUtils.deleteQuietly(outputFile);
+      throw e;
+    }
 
     return outputFile;
   }
