@@ -54,7 +54,10 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode:  `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
-        if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
+        if ( user != null && 
+             ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) && 
+             ((RoleApprovalRequest) newObj).getIsFulfilled() ) 
+          return;
 
         RoleApprovalRequest request = (RoleApprovalRequest) oldObj;
 
