@@ -22,7 +22,8 @@ foam.CLASS({
     'hasSaveOption',
     'hasNextOption',
     'hasExitOption',
-    'hasBackOption'
+    'hasBackOption',
+    'waitForApprove',
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -171,7 +172,12 @@ foam.CLASS({
     // Method passed in to be used when the wizard is complete.
     'onComplete',
 
-    'pushView'
+    'pushView',
+    {
+      class: 'Boolean',
+      name: 'waitForApprove',
+      value: false
+    }
   ],
 
   methods: [
@@ -275,6 +281,11 @@ foam.CLASS({
                       });
                   }
                 }))
+                .tag(self.REJECT, {
+                  label: 'Reject',
+                  buttonStyle: 'SECONDARY',
+                  size: 'LARGE'
+                })
                 .tag(self.GO_NEXT, {
                   label$: self.nextLabel$,
                   size: 'LARGE'
@@ -372,6 +383,12 @@ foam.CLASS({
         // TODO: Implement a save function or it has be overwritten
         X.stack.back();
       }
-    }
+    },
+    {
+      name: 'reject',
+      isAvailable: function(waitForApprove) {
+        return waitForApprove;
+      }
+    },
   ]
 });
