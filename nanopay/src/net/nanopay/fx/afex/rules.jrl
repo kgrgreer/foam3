@@ -202,7 +202,7 @@ p({
   "predicate":{
     "class":"net.nanopay.fx.afex.AFEXSubmitPaymentPredicate",
   },
-  "action":{
+  "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXSubmitPaymentRule"
   },
   "enabled":true,
