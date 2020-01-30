@@ -99,7 +99,7 @@ foam.CLASS({
       type: 'long',
       javaCode: `
         if ( account == null ) {
-          throw new RuntimeException("Account is null");
+          return 0;
         }
         if ( account instanceof BrokerAccount ) {
           return 0;
