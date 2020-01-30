@@ -5,7 +5,8 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'userDAO'
+    'userDAO',
+    'theme'
   ],
 
   css: `
@@ -133,7 +134,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass(this.myClass('header'))
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
+          .start({ class: 'foam.u2.tag.Image', data: self.theme.largeLogo || self.theme.logo }).addClass(this.myClass('logo')).end()
           .startContext({ data: this })
             .start()
               .tag(this.SAVE_AND_EXIT, {
