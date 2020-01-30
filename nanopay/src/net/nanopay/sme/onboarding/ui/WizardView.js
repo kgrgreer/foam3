@@ -176,7 +176,7 @@ foam.CLASS({
             .end()
           .endContext()
         .end();
-   }
+    }
   ],
   listeners: [
     {
