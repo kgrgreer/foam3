@@ -628,9 +628,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'reject',
-      isAvailable: function(waitForApprove) {
-        return waitForApprove;
+      name: 'otherOption',
+      label: 'Reject',
+      isAvailable: function(haveOtherOption) {
+        return haveOtherOption;
       },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({

@@ -26,7 +26,7 @@ foam.CLASS({
     'hasNextOption',
     'hasExitOption',
     'hasBackOption',
-    'waitForApprove'
+    'haveOtherOption'
   ],
 
   methods: [

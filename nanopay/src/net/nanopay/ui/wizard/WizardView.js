@@ -23,7 +23,7 @@ foam.CLASS({
     'hasNextOption',
     'hasExitOption',
     'hasBackOption',
-    'waitForApprove',
+    'haveOtherOption',
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -119,6 +119,12 @@ foam.CLASS({
       name: 'hasBackOption',
       value: true
     },
+    // display the OtherOption button
+    {
+      class: 'Boolean',
+      name: 'haveOtherOption',
+      value: false
+    },
 
     // Label for the back button
     {
@@ -172,12 +178,7 @@ foam.CLASS({
     // Method passed in to be used when the wizard is complete.
     'onComplete',
 
-    'pushView',
-    {
-      class: 'Boolean',
-      name: 'waitForApprove',
-      value: false
-    }
+    'pushView'
   ],
 
   methods: [
@@ -281,8 +282,7 @@ foam.CLASS({
                       });
                   }
                 }))
-                .tag(self.REJECT, {
-                  label: 'Reject',
+                .tag(self.OTHER_OPTION, {
                   buttonStyle: 'SECONDARY',
                   size: 'LARGE'
                 })
@@ -385,9 +385,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'reject',
-      isAvailable: function(waitForApprove) {
-        return waitForApprove;
+      name: 'otherOption',
+      label: 'other',
+      isAvailable: function(haveOtherOption) {
+        return haveOtherOption;
       }
     },
   ]
