@@ -80,14 +80,6 @@ foam.CLASS({
     ^ .contents-grow {
       flex-grow: 1;
     }
-    ^ .net-nanopay-sme-onboarding-ui-WizardView-footer {
-      height: 75px;
-      border-top: solid 1px #edf0f5;
-      padding: 0px 128px;
-    }
-    ^ .foam-u2-layout-Cols {
-      align-items: center;
-    }
   `,
   properties: [
     {
