@@ -31,6 +31,29 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'sourceCurrency',
+      aliases: ['sourceDenomination'],
+      section: 'paymentInfoSource',
+      gridColumns: 5,
+      visibility: 'RO',
+      factory: function() {
+        return this.ctrl.homeDenomination ? 'fail' : 'NANO.TO';
+      },
+      javaFactory: `
+        return "NANO.TO";
+      `,
+      includeInDigest: true,
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.securitiesDAO,
+          objToChoice: function(unit) {
+            return [unit.id, unit.id];
+          }
+        });
+      }
+    },
+    {
       class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
@@ -113,6 +136,54 @@ foam.CLASS({
         outputter.outputValue("Destination Amount");
         outputter.outputValue("Destination Security");
       `
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      createMode: 'HIDDEN',
+      section: 'basicInfo',
+      visibilityExpression: function(summary) {
+        return summary ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      },
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of Transactions.
+      `,
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.slot(function(
+            sourceCurrency,
+            destinationCurrency,
+            securitiesDAO,
+            homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
+          ) {
+            return Promise.all([
+              securitiesDAO.find(sourceCurrency),
+              securitiesDAO.find(destinationCurrency)
+            ]).then(([srcCurrency, dstCurrency]) => {
+              let output = '';
+
+              if ( sourceCurrency === destinationCurrency ) {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+              } else {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+                output += ' → ';
+                output += dstCurrency
+                            ? dstCurrency.format(obj.destinationAmount)
+                            : `${obj.destinationAmount} ${destinationCurrency}`;
+              }
+
+              if ( obj.payer && obj.payee ) {
+                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
+              }
+
+              return output;
+            });
+        }));
+      },
+      tableWidth: 250,
     },
   ],
 
