@@ -6,6 +6,7 @@ var classes = [
   'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.auth.ExternalInvoiceTokenService',
+  'net.nanopay.cico.model.EFTFileStatus',
   'net.nanopay.cico.model.EFTReturnRecord',
   'net.nanopay.cico.model.EFTConfirmationFileRecord',
   'net.nanopay.cico.model.EFTReturnFileCredentials',

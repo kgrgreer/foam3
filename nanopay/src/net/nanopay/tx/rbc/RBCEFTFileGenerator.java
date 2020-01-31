@@ -66,9 +66,8 @@ public class RBCEFTFileGenerator {
    * @param batch the RbcBatchRecord Object created from initFile method
    * @return list of real file object
    */
-  public File createFile(long fileId) {
+  public File createFile(RbcISO20022File isoFile) {
     File file = null;
-    RbcISO20022File isoFile = (RbcISO20022File) rbcISOFileDAO.find(fileId);
     if ( isoFile != null ) {
       try {
         file = new File(SEND_FOLDER + isoFile.getFileName() + "_" + Instant.now().toEpochMilli());

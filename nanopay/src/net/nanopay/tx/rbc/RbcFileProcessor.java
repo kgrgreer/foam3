@@ -1,0 +1,146 @@
+package net.nanopay.tx.rbc;
+
+import foam.core.X;
+import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
+import foam.util.SafetyUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.Date;
+
+import net.nanopay.iso20022.ISO20022Util;
+import net.nanopay.iso20022.Pain00200103;
+import net.nanopay.cico.model.EFTFileStatus;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.bmo.BmoFormatUtil;
+import net.nanopay.tx.rbc.exceptions.RbcFTPSException;
+import net.nanopay.tx.rbc.exceptions.RbcIsoFileException;
+import net.nanopay.tx.rbc.ftps.RbcFTPSClient;
+import net.nanopay.tx.rbc.iso20022file.RbcISO20022File;
+import net.nanopay.tx.rbc.RbcPGPUtil;
+import net.nanopay.tx.TransactionEvent;
+
+import org.apache.commons.io.FileUtils;
+
+
+public class RbcFileProcessor {
+
+  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/";
+  private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
+  private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
+  private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
+  private static final String ARCHIVE_DOWNLOAD_FOLDER = PATH + "/archive/download/";
+  private static final String ARCHIVE_SENT_FOLDER = PATH + "/archive/sent/";
+  public static final String  SEND_FAILED_FOLDER = PATH + "/send/failed/";
+
+  private X x;
+  private DAO transactionDAO;
+  private Logger logger;
+  RbcFTPSClient rbcFTPSClient;
+  protected static ReentrantLock SEND_LOCK = new ReentrantLock();
+
+  public RbcFileProcessor(X x) {
+    this.x          = x;
+    logger          = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
+    transactionDAO  = (DAO) x.get("localTransactionDAO");
+    rbcFTPSClient   = new RbcFTPSClient(x);
+  }
+
+  /**
+   * Convert RbcISO20022File to File and send 
+   */
+  public boolean send(long fileId) {
+    boolean isSent = false;
+    RbcISO20022File isoFile = (RbcISO20022File) rbcISOFileDAO.inX(x).find(fileId);
+    if ( isoFile == null ) return isSent;
+    isoFile = (RbcISO20022File)isoFile.fclone();
+    try{
+      File readyTosend = createEncryptedFile(createFile(isoFile));
+      send(readyTosend);
+      isSent = true;
+      isoFile.setStatus(EFTFileStatus.SENT);
+      isoFile.setFailureReason(""); // clear just in case it faile previously
+    } catch ( Exception e ) {
+      logger.error("RBC Sending file failed: " + e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "RBC sending file failed " + isoFile.getFileName(), e);
+      isoFile.setStatus(EFTFileStatus.FAILED);
+      isoFile.setFailureReason(e.getMessage());
+    } finally {
+      ((DAO) x.get("rbcISOFileDAO")).inX(x).put(isoFile);
+    }
+    return isSent;
+  }
+
+  /**
+   * Process the receipt report
+   */
+  protected void send(File file) {
+    if ( file == null ) return;
+                    
+    /* we will need to lock the sending process. We want to make sure only send one file at a time.*/
+    SEND_LOCK.lock();
+
+    /* Sending file to RBC */
+    try {
+      // TODO implement Alarms
+      rbcFTPSClient.send(file);
+
+      /* Move sent file to archive */
+      try {
+        FileUtils.moveFile(file, new File(ARCHIVE_SENT_FOLDER + file.getName()));
+      } catch (IOException ex) {
+        logger.error("RBC error archiving sent file: " + file.getName(), ex);
+      }
+    } catch ( Exception e ) {
+      logger.error("RBC Sending file failed: " + e.getMessage(), e);
+      try {
+        FileUtils.moveFile(file, new File(SEND_FAILED_FOLDER + file.getName()));
+      } catch (IOException ex) {
+        logger.error("RBC error moving file to retry flder", e);
+      }
+      throw new RbcIsoFileException("RBC Sending file failed " + e.getMessage(), e);
+    } finally {
+      if ( SEND_LOCK.isLocked() ) {
+        SEND_LOCK.unlock();
+      }
+    }
+  }
+
+  /**
+   * Encrypt file. Return the encrypted file
+   */
+  protected File createEncryptedFile(File file) throws RbcIsoFileException{
+    if ( file == null ) return null;
+    File encrypted = null;
+    try{
+      encrypted = new RBCEFTFileGenerator(x).createEncryptedFile(file);
+    } catch ( Exception e ) {
+      logger.error("RBC Encrypting file : " + e.getMessage(), e);
+      throw new RbcIsoFileException("RBC Encrypting file", e);
+    } 
+    return encrypted;
+  }
+
+  /**
+   * Encrypt file. Return the encrypted file
+   */
+  protected File createFile(RbcISO20022File isoFile) throws RbcIsoFileException{
+    if ( isoFile == null ) return null;
+    File file = null;
+    try{
+      file = new RBCEFTFileGenerator(x).createFile(isoFile);
+    } catch ( Exception e ) {
+      logger.error("RBC creating file : " + e.getMessage(), e);
+      throw new RbcIsoFileException("RBC creating file", e);
+    } 
+    return file;
+  }
+   
+}

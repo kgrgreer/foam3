@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,11 +26,11 @@ import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.exceptions.RbcFTPSException;
-import net.nanopay.tx.rbc.ftps.RbcFTPSClient;
 import net.nanopay.tx.rbc.iso20022file.RbcBatchRecord;
 import net.nanopay.tx.rbc.iso20022file.RbcCIRecord;
 import net.nanopay.tx.rbc.iso20022file.RbcCORecord;
 import net.nanopay.tx.rbc.iso20022file.RbcRecord;
+import net.nanopay.tx.rbc.RbcFileProcessor;
 import net.nanopay.tx.rbc.RBCEFTFileGenerator;
 import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
@@ -45,19 +44,16 @@ import org.apache.commons.io.FileUtils;
 
 public class RbcSendFileCron implements ContextAgent {
 
-  protected static ReentrantLock SEND_LOCK = new ReentrantLock();
-  protected RbcFTPSClient rbcFTPSClient;
   protected Logger logger;
+  DAO transactionDAO;
 
   @Override
   public void execute(X x) {
 
-    rbcFTPSClient = new RbcFTPSClient(x);
-
     /**
      * get transactions
      */
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    transactionDAO = (DAO) x.get("localTransactionDAO");
     logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
 
     Predicate condition1 = MLang.OR(
@@ -70,19 +66,23 @@ public class RbcSendFileCron implements ContextAgent {
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
+    Predicate condition3 = MLang.OR(
+      MLang.EQ(RbcCITransaction.RBC_FILE_CREATION_NUMBER, 0),
+      MLang.EQ(RbcCOTransaction.RBC_FILE_CREATION_NUMBER, 0)
+    );
+
     ArraySink sink = (ArraySink) transactionDAO.where(
-      MLang.AND(condition1, condition2)
+      MLang.AND(condition1, condition2, condition3)
     ).select(new ArraySink());
     List<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
-    List<Transaction> processedTransactions = new ArrayList<>();
 
     try{
-      transactions = transactions.stream().map(transaction -> (Transaction)transaction.fclone()).collect(Collectors.toList());
       RBCEFTFileGenerator generator = new RBCEFTFileGenerator(x);
       // Get Batch Records
       RbcBatchRecord batch = null;
       try {
         logger.info("transactions count after clone " + transactions.size());
+        transactions.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Ready to generate AFT file.").build()));
         batch = generator.createBatch(transactions);
       } catch ( Exception e ) {
         logger.error("RBC Batch Error : " + e.getMessage(), e);
@@ -90,141 +90,54 @@ public class RbcSendFileCron implements ContextAgent {
       }
       
       if ( batch != null ) {
+        transactions.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Ready to process AFT file.").build()));
         // Process CI Transactions
-        List<Transaction> processedCITransactions = null;
         try{
-          processedCITransactions = processRecords(x, batch.getCiRecords());
-          processedTransactions.addAll(processedCITransactions);
+          processRecords(x, batch.getCiRecords());
         } catch ( Exception e ) {
           logger.error("RBC CI Transaction Records : " + e.getMessage(), e);
-          BmoFormatUtil.sendEmail(x, "RBC Error processing CITransaction records.", e); // TODO
         }
 
         logger.info("Finishing send CI transaction.");
         try {
-          Thread.sleep(30 * 1000);
+          Thread.sleep(3000);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
 
         // Process CO Transactions
         logger.info("processing CO transactions.");
-        List<Transaction> processedCOTransactions = null;
         try{
-          processedCOTransactions = processRecords(x, batch.getCoRecords());
-          processedTransactions.addAll(processedCOTransactions);
+          processRecords(x, batch.getCoRecords());
         } catch ( Exception e ) {
           logger.error("RBC CO Transaction Records : " + e.getMessage(), e);
-          BmoFormatUtil.sendEmail(x, "RBC Error processing COTransaction records.", e); // TODO
         }
+
         logger.info("Finishing send CO transaction.");
       }
     } catch ( Exception e ) {
       logger.error("RBC ISO20022 : " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "RBC EFT Error creating ISO20022 Batch files.", e);
-    } finally {
-      if ( SEND_LOCK.isLocked() ) {
-        SEND_LOCK.unlock();
-      }
-      
-      // update the transaction
-      for ( Transaction transaction : processedTransactions ) {
-        try {
-          transactionDAO.inX(x).put(transaction);
-        } catch ( Exception e ) {
-          logger.error("Transaction " + transaction.getId() + " updated failed, please update manually", e);
-          BmoFormatUtil.sendEmail(x, "Transaction " + transaction.getId() + " updated failed, please update manually", e); // TODO
-        }
-      }
-    }
+    } 
   }
 
-  protected List<Transaction> processRecords(X x, RbcRecord records) {
-    RBCEFTFileGenerator generator = new RBCEFTFileGenerator(x);
-    File readyToSend = null;
-    List<Transaction> processedTransactions = new ArrayList<>();
-    try{
-      if ( records == null ) throw new Exception("No records found..");
-      processedTransactions = Arrays.asList(records.getTransactions());
-      try{
-        readyToSend = generator.createEncryptedFile(generator.createFile(records.getFile()));
-        if ( readyToSend != null ) {
-          processedTransactions = send(x, readyToSend, processedTransactions, records.getFile());
-        }
-      } catch ( Exception e ) {
-        processedTransactions.forEach(transaction -> {
-            transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Error: " + e.getMessage()).build());
-            transaction.setStatus(TransactionStatus.FAILED);
-          });
-        throw e;
-      }  
-    } catch ( Exception e ) {
-      logger.error("RBC Transaction Record Error : " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "RBC ISO20022 Error during sending file", e); // TODO
-
-      if ( readyToSend != null ) {
-        try {
-          FileUtils.moveFile(readyToSend, new File(RBCEFTFileGenerator.SEND_FAILED +
-            readyToSend.getName()));
-        } catch (IOException ex) {
-          logger.error("RBC Transactions ERROR", e);
-        }
-      }
-    } finally {
-      if ( SEND_LOCK.isLocked() ) {
-        SEND_LOCK.unlock();
-      }
-    }
-    return processedTransactions;
-  }
-
-  protected List<Transaction> send(X x, File file, List<Transaction> processedTransactions, long fileId) {
-    try{
-      processedTransactions.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Ready to send.").build()));
-                    
-      /* we will need to lock the sending process. We want to make sure only send one file at a time.*/
-      SEND_LOCK.lock();
-
-      /* Sending file to RBC */
-      try{
-        rbcFTPSClient.send(file);
-        processedTransactions.forEach(transaction -> {
-          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Sending...").build());
-        });
-      } catch ( Exception e ) {
-        throw new RbcFTPSException("Failed sending file via FTPS.");
-      }
+  protected void processRecords(X x, RbcRecord records) {
+    if ( records == null ) return;
+    List<Transaction> transactions = Arrays.asList(records.getTransactions());
+    transactions = transactions.stream().map(transaction -> (Transaction)transaction.fclone()).collect(Collectors.toList());
     
-      /* Fetch and process the receipt file, any exception happened during this process, set the transaction status to Failed */
-      try {
-
-        processedTransactions.forEach(transaction -> {
-          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Downloading receipt...").build());
-        });
-
-        if ( new RbcReportProcessor(x).processReceipt(x, fileId) ) {
-        processedTransactions.forEach(transaction -> {
-          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Verified receipt...").build());
-          transaction.setStatus(TransactionStatus.SENT);
-          ((RbcTransaction)transaction).setRbcFileCreationNumber(fileId);
-          transaction.setProcessDate(new Date());
-        });
-        } else {
-          throw new RbcFTPSException("Failed when verify receipt.");
-        }
-      } catch ( Exception e ) {
-        throw new RbcFTPSException("Failed when verifying receipt.");
-      }
-
-      SEND_LOCK.unlock();
+    /* Send file to RBC */
+    try{
+      new RbcFileProcessor(x).send(records.getFile());  
     } catch ( Exception e ) {
-      processedTransactions.forEach(transaction -> {
-        transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Failed while processing records with message: " + e.getMessage()).build());
-        transaction.setStatus(TransactionStatus.FAILED);
+      logger.error("RBC send file failed.", e);
+    } finally {
+      transactions.forEach(transaction -> {
+        transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("File sent").build());
+        ((RbcTransaction)transaction).setRbcFileCreationNumber(records.getFile());
+        transaction.setProcessDate(new Date());
+        transactionDAO.inX(x).put(transaction);
       });
     }
-
-    return processedTransactions;
 
   }
 
