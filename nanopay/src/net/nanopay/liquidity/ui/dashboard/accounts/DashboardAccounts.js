@@ -90,7 +90,11 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({
-          defaultColumns: ["name","balance","homeBalance"],
+          defaultColumns: [
+            ['name', { tableWidth: undefined }],
+            ['balance', { tableWidth: 200 }],
+            ['homeBalance', { tableWidth: 200 }]
+          ],
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
           dao: this.tableViewAccountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
             this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
