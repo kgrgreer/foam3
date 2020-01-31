@@ -53,7 +53,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
-      value: 'CREATE',
+      value: 'CREATE_OR_UPDATE',
       visibility: 'RO',
     },
     {
