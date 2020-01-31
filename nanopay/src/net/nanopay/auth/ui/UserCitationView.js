@@ -43,7 +43,7 @@ foam.CLASS({
         .start()
           .start()
             .addClass(this.myClass('company'))
-            .add(this.data.businessName || this.data.organization || '')
+            .add(this.data.operatingBusinessName || this.data.organization || this.data.businessName || '')
           .end()
           .start()
             .addClass(this.myClass('name'))

@@ -40,9 +40,11 @@ foam.CLASS({
               this.fullObject$.map((obj) => {
                 var formatted = '';
                 if ( obj ) {
-                  formatted += obj.organization || obj.businessName;
+                  formatted += obj.operatingBusinessName
+                    || obj.organization
+                    || obj.businessName;
                   if ( obj.legalName && obj.legalName.trim() ) {
-                    formatted += ` (${obj.legalName})`; 
+                    formatted += ` (${obj.legalName})`;
                   }
                 }
                 return formatted;

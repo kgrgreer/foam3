@@ -126,9 +126,7 @@ foam.CLASS({
         name of the person at that business, depending on what is available.
       `,
       expression: function(invoice, isPayable_) {
-        return isPayable_ ?
-            (invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label()) :
-            (invoice.payer.businessName ? invoice.payer.businessName : invoice.payer.label());
+        return isPayable_ ? invoice.payee.label() : invoice.payer.label();
       }
     },
     {
