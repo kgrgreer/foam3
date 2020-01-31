@@ -148,7 +148,8 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     section: 'accountsSection',
-    label: ''
+    label: '',
+    updateMode: 'RO'
   },
   targetProperty: {
     section: 'liquiditySettingsSection',
