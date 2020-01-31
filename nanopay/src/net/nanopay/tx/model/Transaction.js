@@ -167,18 +167,32 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Pending',
       predicateFactory: function(e) {
-        return e.EQ(
-          net.nanopay.tx.model.Transaction.STATUS,
-          net.nanopay.tx.model.TransactionStatus.PENDING);
+        return e.OR(
+          e.EQ(
+            net.nanopay.tx.model.Transaction.STATUS,
+            net.nanopay.tx.model.TransactionStatus.PENDING
+          ),
+          e.EQ(
+            net.nanopay.tx.model.Transaction.LIFECYCLE_STATE,
+            foam.nanos.auth.LifecycleState.PENDING
+          )
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Completed',
       predicateFactory: function(e) {
-        return e.EQ(
-          net.nanopay.tx.model.Transaction.STATUS,
-          net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        return e.AND(
+          e.EQ(
+            net.nanopay.tx.model.Transaction.STATUS,
+            net.nanopay.tx.model.TransactionStatus.COMPLETED
+          ),
+          e.EQ(
+            net.nanopay.tx.model.Transaction.LIFECYCLE_STATE,
+            foam.nanos.auth.LifecycleState.ACTIVE
+          )
+        )
       }
     }
   ],
