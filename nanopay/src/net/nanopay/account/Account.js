@@ -311,7 +311,7 @@ foam.CLASS({
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
-      tableWidth: 145,
+      tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
         this.add(obj.slot(function(denomination) {
@@ -336,7 +336,7 @@ foam.CLASS({
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
-      tableWidth: 145,
+      tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
       var self = this;
         this.add(obj.slot(function(denomination, homeDenomination, balance) {
