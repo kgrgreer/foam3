@@ -520,7 +520,7 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.STATUS)
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.OPERATING_BUSINESS_NAME)
             }
           ]
         };
