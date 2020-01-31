@@ -533,9 +533,9 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.REG_EXP(
-                net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_PHONE,
+                net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_PHONE,
                 /^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
           errorString: 'Invalid phone number.'
