@@ -344,7 +344,7 @@ foam.CLASS({
       postSet: function() {
         if ( this.signingOfficer ) {
           this.adminJobTitle = this.jobTitle;
-          this.adminPhone = this.phone;
+          this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
         } else {
           this.adminJobTitle = '';
@@ -519,28 +519,44 @@ foam.CLASS({
         this.owner1.jobTitle = this.adminJobTitle;
       }
     },
-    foam.nanos.auth.User.PHONE.clone().copyFrom({
+    {
+      class: 'PhoneNumber',
       name: 'adminPhone',
       section: 'homeAddressSection',
-      label: '',
-      autoValidate: false,
+      label: 'Phone Number',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       },
-      createMode: 'RW'
-    }),
+      validationPredicates: [
+        {
+          args: ['adminPhone', 'signingOfficer'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.REG_EXP(
+                net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_PHONE,
+                /^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+            );
+          },
+          errorString: 'Invalid phone number.'
+        },
+      ]
+    },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
       section: 'homeAddressSection',
-      view: function(args, X) {
-        // Temporarily only allow businesses in Canada to sign up.
+      view: function(_, X) {
+        // Temporarily only allow businesses in Canada and US to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),
+          m.EQ(foam.nanos.auth.Country.ID, 'US')));
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao
+          customCountryDAO: dao,
+          showValidation: X.data.signingOfficer
         };
       },
+      autoValidation: false,
       validationPredicates: [
         {
           // Temporarily only allow businesses in Canada to sign up.
@@ -577,7 +593,6 @@ foam.CLASS({
           errorString: 'Invalid address.'
         }
       ],
-      validationTextVisible: true
     }),
     {
       name: 'signingOfficerEmailInfo',
@@ -660,15 +675,17 @@ foam.CLASS({
       name: 'businessAddress',
       label: '',
       section: 'businessAddressSection',
-      view: function(args, X) {
-        // Temporarily only allow businesses in Canada to sign up.
+      view: function(_, X) {
+        // Temporarily only allow businesses in US to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'US'))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'US'));
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao
+          customCountryDAO: dao,
+          showValidation: X.data.signingOfficer
         };
       },
+      autoValidate: false,
       validationPredicates: [
         {
           // Temporarily only allow businesses in Canada to sign up.
@@ -705,7 +722,6 @@ foam.CLASS({
           errorString: 'Invalid address.'
         }
       ],
-      validationTextVisible: true
     }),
     net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
