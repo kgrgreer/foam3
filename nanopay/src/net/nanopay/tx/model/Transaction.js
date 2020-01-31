@@ -19,6 +19,7 @@ foam.CLASS({
     'complianceHistoryDAO',
     'ctrl',
     'currencyDAO',
+    'securitiesDAO',
     'group',
     'homeDenomination',
     'stack?',
