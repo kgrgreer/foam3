@@ -69,44 +69,55 @@ foam.CLASS({
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       documentation: 'Account associated to setting.',
-      view: function(_, X) {
-        const Account = net.nanopay.account.Account;
-        const LifecycleState = foam.nanos.auth.LifecycleState;
-        var dao = foam.dao.ProxyDAO.create({
-          delegate: X.accountDAO.where(
-            X.data.AND(
-              X.data.EQ(
-                net.nanopay.account.Account.DENOMINATION,
-                X.denominationToFilterBySlot.get()
-              ),
-              X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
-              X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
-            )
-          )
+      tableCellFormatter: function(value, obj, axiom) {
+        obj.pushPullAccount$find.then((account) => {
+          this.add(account.toSummary());
+        }).catch(() => {
+          this.add(value);
         });
-
-        if ( foam.core.Slot.isInstance(X.denominationToFilterBySlot) ) {
-          this.onDetach(X.denominationToFilterBySlot.sub(function() {
-            dao.delegate = X.accountDAO.where(
+      },
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: { class: 'foam.u2.view.TableCellFormatterReadView' },
+        writeView: function(_, X) {
+          const Account = net.nanopay.account.Account;
+          const LifecycleState = foam.nanos.auth.LifecycleState;
+          var dao = foam.dao.ProxyDAO.create({
+            delegate: X.accountDAO.where(
               X.data.AND(
                 X.data.EQ(
                   net.nanopay.account.Account.DENOMINATION,
                   X.denominationToFilterBySlot.get()
                 ),
                 X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
-                X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount))
+                X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
               )
-            );
-          }));
-        }
+            )
+          });
 
-        return foam.u2.view.RichChoiceView.create({
-          search: true,
-          choosePlaceholder: 'Select a denomination then choose from accounts...',
-          sections: [
-            { dao: dao }
-          ]
-        }, X);
+          if ( foam.core.Slot.isInstance(X.denominationToFilterBySlot) ) {
+            this.onDetach(X.denominationToFilterBySlot.sub(function() {
+              dao.delegate = X.accountDAO.where(
+                X.data.AND(
+                  X.data.EQ(
+                    net.nanopay.account.Account.DENOMINATION,
+                    X.denominationToFilterBySlot.get()
+                  ),
+                  X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                  X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount))
+                )
+              );
+            }));
+          }
+
+          return foam.u2.view.RichChoiceView.create({
+            search: true,
+            choosePlaceholder: 'Select a denomination then choose from accounts...',
+            sections: [
+              { dao: dao }
+            ]
+          }, X);
+        }
       }
     }
   ]
