@@ -81,7 +81,7 @@ foam.CLASS({
           args = new HashMap<>();
           try {
             args.put("name", User.FIRST_NAME);
-            args.put("business", business.getBusinessName());
+            args.put("business", business.getOperatingBusinessName());
             args.put(
               "businessRegistrationLink",
               "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/983084"
