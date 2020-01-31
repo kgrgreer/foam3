@@ -46,34 +46,41 @@ foam.CLASS({
         txLimitRule.getCurrentLimits().put(key, limitState);
       }
 
-      // Amount of the transaction in the transaction source currency
-      long amount = transaction.getAmount();
-      long ruleCurrAmount = amount;
       // Retrieve the currencies
       DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
       Currency transactionCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
       Currency ruleCurrency = (Currency) currencyDAO.find(txLimitRule.getDenomination());
 
+      // Amount of the transaction in the transaction source currency
+      long amount = transaction.getAmount();
+      if ( !txLimitRule.getSend() && 
+         ( transaction.getDestinationAmount() >= 0) && 
+         ( transaction.getDestinationCurrency() != null ) )
+      {
+        amount = transaction.getDestinationAmount();  
+        transactionCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+      }
+
       // Convert to rule currency if necessary
       if ( ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
-        User user = (User) x.get("user");
-        ExchangeRateService ers = (ExchangeRateService) x.get("exchangeRateService");
-        
-        ruleCurrAmount = ers.exchange(transactionCurrency.getId(), ruleCurrency.getId(), amount);
+        try {
+          ExchangeRateService ers = (ExchangeRateService) x.get("exchangeRateService");
+          amount = ers.exchange(transactionCurrency.getId(), ruleCurrency.getId(), amount);
+        } catch (Exception e) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("FX conversion missing. Cannot apply rule " + txLimitRule.getId(), e);
+
+          // Do not continue to apply rule since the amount cannot be added to the limitState
+          return;
+        }
       }
-      
-      // Compute the amounts
-      String availableLimit = (ruleCurrency != null) ?
-        ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
-        String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
-      String txAmount = (transactionCurrency != null) ?
-        transactionCurrency.format(amount) :
-        String.format("%s", amount);
-      Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
-      User user = account.findOwner(x);
 
       // Add information if this is a probe
       if ( testedRule != null ) {
+        String availableLimit = (ruleCurrency != null) ?
+          ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
+          String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
+        Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
         testedRule.setProbeInfo(
           new TransactionLimitProbeInfo.Builder(x)
             .setRemainingLimit(txLimitRule.getLimit() - limitState.getSpent())
@@ -86,18 +93,12 @@ foam.CLASS({
       }
 
       // Check the limit
-      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), ruleCurrAmount) ) {
-        long exceeded = amount - (txLimitRule.getLimit() - limitState.getSpent());
-        throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " limit was exceeded by " 
-          + ( transactionCurrency != null ? transactionCurrency.format(exceeded) : String.format("%s", exceeded) )
-          + " transaction " 
-          + (txLimitRule.getSend() ? "from " : "to ")
-          + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
-          + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact your administrator.");
+      if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
+        throw new RuntimeException("The " + 
+          txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+          txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+          (txLimitRule.getSend() ? "sending" : "receiving") + 
+          " limit was exceeded.");
       }
 
       // Note: there is a race condition here between the check call above and the updateSpent call below

@@ -102,24 +102,12 @@ public class TxLimitRuleTest
     transaction.setStatus(TransactionStatus.COMPLETED);
 
     // Compute the error message
-    DAO currencyDAO = ((DAO) x.get("currencyDAO"));
-    Currency currency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-    String availableLimit = currency.format(limit - spent);
-    String txAmount = currency.format(transaction.getAmount());
-    User user = txLimitRule.getSend() ? sourceUser : destinationUser;
-    Account account = txLimitRule.getSend() ? sourceAccount : destinationAccount;
-    long exceeded = transaction.getAmount() - (limit - spent);
     String errorMessage = 
-      "The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " limit was exceeded by " 
-          + ( currency != null ? currency.format(exceeded) : String.format("%s", exceeded) )
-          + " transaction " 
-          + (txLimitRule.getSend() ? "from " : "to ")
-          + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
-          + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact your administrator.";
+          "The " + 
+          txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+          txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+          (txLimitRule.getSend() ? "sending" : "receiving") + 
+          " limit was exceeded.";
 
     // make sure transaction throws expected RuntimeException
     test(
