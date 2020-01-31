@@ -53,7 +53,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Contact.ORGANIZATION.clone().copyFrom({
+            this.Contact.OPERATING_BUSINESS_NAME.clone().copyFrom({
               tableWidth: undefined
             }),
             'signUpStatus',

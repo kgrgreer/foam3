@@ -180,6 +180,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'operatingBusinessName',
+      label: 'Company',
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.

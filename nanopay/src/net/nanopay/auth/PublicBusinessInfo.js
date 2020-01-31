@@ -10,6 +10,7 @@ foam.CLASS({
 
   properties: [
     net.nanopay.model.Business.ID,
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME,
     net.nanopay.model.Business.BUSINESS_NAME,
     net.nanopay.model.Business.ORGANIZATION,
     net.nanopay.model.Business.ADDRESS,
@@ -25,6 +26,7 @@ foam.CLASS({
               throw new RuntimeException("PublicBusinessInfo was given a null argument.");
             };
             setId(business.getId());
+            setOperatingBusinessName(business.getOperatingBusinessName());
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
