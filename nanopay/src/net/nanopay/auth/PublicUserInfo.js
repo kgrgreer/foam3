@@ -34,6 +34,13 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
       name: 'businessName',
       documentation: `The name of the business associated with the public
         information of a User.`,
@@ -94,19 +101,23 @@ foam.CLASS({
     {
       name: 'label',
       code: function() {
-        return this.organization
-          ? this.organization
-          : this.businessName
-            ? this.businessName
-            : this.firstName
-              ? this.lastName
-                ? `${this.firstName} ${this.lastName}`
-                : this.firstName
-              : 'Unknown';
+        return this.operatingBusinessName
+          ? this.operatingBusinessName
+          : this.organization
+            ? this.organization
+            : this.businessName
+              ? this.businessName
+              : this.firstName
+                ? this.lastName
+                  ? `${this.firstName} ${this.lastName}`
+                  : this.firstName
+                : 'Unknown';
       },
       type: 'String',
       javaCode: `
-        return ! SafetyUtil.isEmpty(this.getOrganization())
+      return ! SafetyUtil.isEmpty(this.getOperatingBusinessName())
+        ? this.getOperatingBusinessName()
+        : ! SafetyUtil.isEmpty(this.getOrganization())
           ? this.getOrganization()
           : ! SafetyUtil.isEmpty(this.getBusinessName())
             ? this.getBusinessName()
@@ -128,6 +139,7 @@ foam.CLASS({
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
+            setOperatingBusinessName(user.getOperatingBusinessName());
             setOrganization(user.getOrganization());
             setBusinessName(user.getBusinessName());
             setEmail(user.getEmail());
