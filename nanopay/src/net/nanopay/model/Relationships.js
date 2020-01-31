@@ -773,7 +773,10 @@ foam.RELATIONSHIP({
     required: true,
     postSet: function(_, n) {
       this.accountDAO.find(n).then((a) => {
-        if ( a ) {
+        // NOTES:
+        // DigitalAccounts are used for creation of txn, which is where we wanted the below functionality
+        // Security accounts break with the below functionality
+        if ( a && net.nanopay.account.DigitalAccount.isInstance(a) ) {
           this.sourceCurrency = a.denomination;
         }
       });
