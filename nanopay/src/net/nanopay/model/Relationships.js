@@ -771,13 +771,6 @@ foam.RELATIONSHIP({
     help: `Set this to the account you would like to withdraw funds from.`,
     gridColumns: 7,
     required: true,
-    postSet: function(_, n) {
-      this.accountDAO.find(n).then((a) => {
-        if ( a ) {
-          this.sourceCurrency = a.denomination;
-        }
-      });
-    },
     view: function(_, X) {
       sec = [
         {
