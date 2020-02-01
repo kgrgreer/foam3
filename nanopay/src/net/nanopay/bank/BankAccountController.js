@@ -96,11 +96,11 @@ foam.CLASS({
                   self.notify(self.DELETE_DEFAULT, 'error');
                   return;
                 }
-                self.user.accounts.remove(this).then(() =>{
-                  self.notify(self.SUCCESSFULLY_DELETED);
-                }).catch((err) => {
-                  self.notify(self.UNABLE_TO_DELETE, 'error');
-                });
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.user.accounts,
+                  data: this
+                }));
               }
             }),
             foam.core.Action.create({
