@@ -39,13 +39,15 @@ public class RbcRetryFileCron implements ContextAgent {
     for ( RbcISO20022File file : files ) {
       /* Send file to RBC */
       try{
-        new RbcFileProcessor(x).send(file.getId());  
+        file = new RbcFileProcessor(x).send(file.getId());  
       } catch ( Exception e ) {
         logger.error("RBC send file failed.", e);
       } finally {
-        file = (RbcISO20022File) file.fclone();
-        file.setRetries(file.getRetries() + 1);
-        rbcISOFileDAO.inX(x).put(file);
+        if ( file != null ) {
+          file = (RbcISO20022File) file.fclone();
+          file.setRetries(file.getRetries() + 1);
+          rbcISOFileDAO.inX(x).put(file);
+        }
       }
     }
   }

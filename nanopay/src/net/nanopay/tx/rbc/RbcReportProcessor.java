@@ -333,12 +333,8 @@ public class RbcReportProcessor {
       String code = SafetyUtil.isEmpty(reason.getReason().getCd()) ? reason.getReason().getPrtry() : reason.getReason().getCd();
       str.append(code);
       str.append(" : ");
-      System.out.println(" Getting additionla information");
       if( null != reason.getAdditionalInformation() ) {
-        System.out.println(" reason.getAdditionalInformation() is not null ");
-        System.out.println(" reason.getAdditionalInformation() val by index " + reason.getAdditionalInformation()[0] );
         for ( String additionalInfo : reason.getAdditionalInformation() ) {
-          System.out.println(" reason.getAdditionalInformation() has valur " + additionalInfo);
           str.append(additionalInfo);
           str.append(" ");
         }

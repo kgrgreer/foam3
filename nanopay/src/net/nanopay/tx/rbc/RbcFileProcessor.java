@@ -56,10 +56,11 @@ public class RbcFileProcessor {
   /**
    * Convert RbcISO20022File to File and send 
    */
-  public boolean send(long fileId) {
+  public RbcISO20022File send(long fileId) {
     boolean isSent = false;
+    DAO rbcISOFileDAO = (DAO) x.get("rbcISOFileDAO");
     RbcISO20022File isoFile = (RbcISO20022File) rbcISOFileDAO.inX(x).find(fileId);
-    if ( isoFile == null ) return isSent;
+    if ( isoFile == null ) return isoFile;
     isoFile = (RbcISO20022File)isoFile.fclone();
     try{
       File readyTosend = createEncryptedFile(createFile(isoFile));
@@ -73,9 +74,9 @@ public class RbcFileProcessor {
       isoFile.setStatus(EFTFileStatus.FAILED);
       isoFile.setFailureReason(e.getMessage());
     } finally {
-      ((DAO) x.get("rbcISOFileDAO")).inX(x).put(isoFile);
+      rbcISOFileDAO.inX(x).put(isoFile);
     }
-    return isSent;
+    return isoFile;
   }
 
   /**

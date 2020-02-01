@@ -91,7 +91,7 @@ foam.CLASS({
       net.nanopay.iso20022.Party6Choice debtorId = new net.nanopay.iso20022.Party6Choice();
       net.nanopay.iso20022.OrganisationIdentification4  debtorOrgId = new net.nanopay.iso20022.OrganisationIdentification4();
       net.nanopay.iso20022.GenericOrganisationIdentification1 debtorOthr = new net.nanopay.iso20022.GenericOrganisationIdentification1();
-      debtorOthr.setIdentification(rbcValues.getGradServiceAccountNUmber()); // Grads Service Account Number supplied by RBC
+      debtorOthr.setIdentification(rbcValues.getPDSAccountNumber()); // Grads Service Account Number supplied by RBC
       net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice schmeNm = new net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice();
       schmeNm.setCd("BANK");
       debtorOthr.setSchemeName(schmeNm);
@@ -346,7 +346,7 @@ foam.CLASS({
       net.nanopay.iso20022.Party6Choice creditorId = new net.nanopay.iso20022.Party6Choice();
       net.nanopay.iso20022.OrganisationIdentification4  creditorOrgId = new net.nanopay.iso20022.OrganisationIdentification4();
       net.nanopay.iso20022.GenericOrganisationIdentification1 creditorOthr = new net.nanopay.iso20022.GenericOrganisationIdentification1();
-      creditorOthr.setIdentification(rbcValues.getGradServiceAccountNUmber()); // Grads Service Account Number supplied by RBC
+      creditorOthr.setIdentification(rbcValues.getPAPAccountNumber()); // Grads Service Account Number supplied by RBC
       net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice schmeNm = new net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice();
       schmeNm.setCd("BANK");
       creditorOthr.setSchemeName(schmeNm);
