@@ -49,13 +49,12 @@ foam.CLASS({
             args.put("userEmail", User.EMAIL);
             args.put("accountType", account.getType());
 
-            String emailName = account.getType().equals("USBankAccount") ? "verifiedBank_US" : "verifiedBank";
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")
                     .setNotificationType("BankNotifications")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
-                    .setEmailName(emailName)
+                    .setEmailName("verifiedBank")
                     .build();
             owner.doNotify(x, verifiedNotification);
           }
