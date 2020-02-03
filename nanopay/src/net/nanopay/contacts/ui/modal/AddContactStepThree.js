@@ -139,6 +139,7 @@ foam.CLASS({
       var contact = this.wizard.data;
       var bankAccount = this.wizard.bankAccount;
       bankAccount.owner = this.wizard.data.id;
+      bankAccount.externalBankAccount = true;
 
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
