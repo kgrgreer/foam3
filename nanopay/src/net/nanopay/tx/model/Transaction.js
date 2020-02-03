@@ -449,10 +449,10 @@ foam.CLASS({
       label: 'Sender',
       section: 'paymentInfoSource',
       createMode: 'HIDDEN',
-      visibilityExpression: function(payer) {
-        return payer ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(payer, referenceNumber) {
+        if ( referenceNumber == 'Manual Entry' && payer )
+          return foam.u2.Visibility.RO;
+        return foam.u2.Visibility.HIDDEN;
       },
       view: function(_, x) {
         return {
@@ -476,10 +476,10 @@ foam.CLASS({
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
-      visibilityExpression: function(payee) {
-        return payee ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(payee, referenceNumber) {
+         if ( referenceNumber == 'Manual Entry' && payee )
+           return foam.u2.Visibility.RO;
+         return foam.u2.Visibility.HIDDEN;
       },
       section: 'paymentInfoDestination',
       createMode: 'HIDDEN',
@@ -534,7 +534,7 @@ foam.CLASS({
       required: true,
       gridColumns: 5,
       visibility: 'RO',
-      help: `This is the amount to be withdrawn from payer's chosen account (Source Account).`,
+      help: `This is the amount withdrawn from the payer's chosen account (Source Account).`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
@@ -643,7 +643,7 @@ foam.CLASS({
       name: 'destinationAmount',
       label: 'Destination Amount',
       gridColumns: 7,
-      help: `This is the amount to be transfered to payee's account (destination account).`,
+      help: `This is the amount sent to payee's account (destination account).`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
