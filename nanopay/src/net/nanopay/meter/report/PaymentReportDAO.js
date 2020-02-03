@@ -89,12 +89,11 @@ foam.CLASS({
         transactionDAO.where(newPredicate).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             Transaction transaction = (Transaction) obj;
-            PaymentReport pr = null;
             try {
               User sender = ((Account) transaction.findSourceAccount(x)).findOwner(x);
               User receiver = ((Account) transaction.findDestinationAccount(x)).findOwner(x);
 
-              pr = new PaymentReport.Builder(x)
+              PaymentReport pr = new PaymentReport.Builder(x)
                 .setInvoiceId(transaction.getInvoiceId())
                 .setStatus(transaction.getStatus())
                 .setState(transaction.getState(x))
@@ -114,10 +113,10 @@ foam.CLASS({
                 .setDestinationAmount(transaction.getDestinationAmount())
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
+                decoratedSink.put(pr, null);
             } catch (Exception e ){
               logger.error("Failed to generate payment report for transaction " + transaction.getId(), e);
             }
-            decoratedSink.put(pr, null);
           }
         });
 
