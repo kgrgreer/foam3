@@ -255,6 +255,12 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      class: 'Boolean',
+      name: 'externalBankAccount',
+      documentation: `Returns the bank account address from the Address model.`,
+      value: false
     }
   ],
   methods: [
