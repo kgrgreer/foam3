@@ -45,7 +45,7 @@ foam.CLASS({
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
         user = (User) user.fclone();
 
-        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true ) {
           if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null
                 && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail()) ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
@@ -94,10 +94,10 @@ foam.CLASS({
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
             }
-          }
 
-          businessOnboarding.setSendInvitation(false);
-          return getDelegate().put_(x, businessOnboarding);
+            businessOnboarding.setSendInvitation(false);
+            return getDelegate().put_(x, businessOnboarding);
+          }
         }
 
         BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
@@ -109,6 +109,10 @@ foam.CLASS({
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
+        }
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         Session session = x.get(Session.class);

@@ -47,7 +47,7 @@ foam.CLASS({
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true ) {
           if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail())) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
@@ -95,10 +95,10 @@ foam.CLASS({
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
             }
-          }
 
-          businessOnboarding.setSendInvitation(false);
-          return getDelegate().put_(x, businessOnboarding);
+            businessOnboarding.setSendInvitation(false);
+            return getDelegate().put_(x, businessOnboarding);
+          }
         }
 
         // ACCEPTANCE DOCUMENTS
