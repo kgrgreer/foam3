@@ -144,6 +144,7 @@ public class RbcFTPSClient {
       this.logger.info("File type : " + this.ftpsClient.getReplyString());
     } catch(IOException e) {
       omLogger.log("RBC login failed");
+      logger.error("RBC Login failed ", e);
       throw e;
     }
 
@@ -158,6 +159,7 @@ public class RbcFTPSClient {
       ftpsClient.storeFile(remote, new FileInputStream(new File(local)));
     } catch(IOException e) {
       omLogger.log("RBC send file failed");
+      logger.error("RBC send file failed ", e);
       throw e;
     }
     
@@ -178,6 +180,7 @@ public class RbcFTPSClient {
       fileOutputStream.close();
     } catch(IOException e) {
       omLogger.log("RBC download file failed");
+      logger.error("RBC download file failed ", e);
       throw e;
     }
 
