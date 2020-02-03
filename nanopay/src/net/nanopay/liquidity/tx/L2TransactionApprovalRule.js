@@ -123,6 +123,18 @@ foam.CLASS({
       section: 'basicInfo',
       visibilityExpression: function(useAccountTemplate) {
         return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO,
+              heading: 'Currencies'
+            }
+          ]
+        };
       }
     },
     {
