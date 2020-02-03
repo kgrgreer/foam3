@@ -79,6 +79,26 @@ foam.CLASS({
         Used in Ablii when inviting someone who is not on the platform to join a
         Business.
       `
+    },
+    {
+      class: 'String',
+      name: 'firstName',
+      documentation: 'Ablii signing officer\'s firstName'
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      documentation: 'Ablii signing officer\'s lastName'
+    },
+    {
+      class: 'String',
+      name: 'jobTitle',
+      documentation: 'Ablii signing officer\'s jobTitle'
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'Ablii signing officer\'s phoneNumber'
     }
   ]
 });

@@ -12,6 +12,7 @@ global.FOAM_FLAGS = {
   node: true,
   java: true,
   swift: true,
+  debug: true,
 };
 
 require(npRoot + 'foam2/src/foam.js');

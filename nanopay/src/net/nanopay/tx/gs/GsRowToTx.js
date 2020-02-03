@@ -4,16 +4,12 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'foam.dao.MDAO',
     'foam.dao.DAO',
-    'foam.dao.EasyDAO',
     'foam.util.SafetyUtil',
     'foam.lib.parse.CSVParser',
     'foam.mlang.MLang',

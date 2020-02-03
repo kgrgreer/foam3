@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import net.nanopay.meter.reports.AbstractReport;
 import net.nanopay.tx.BulkTransaction;
 import net.nanopay.tx.DigitalTransaction;
@@ -66,6 +67,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       long ciAmountCAD = 0;
       long coAmountCAD = 0;
       long totalFee = 0;
+      int totalCount = 0;
 
       List<Transaction> transactionList = ((ArraySink) txnDAO
         .where(
@@ -106,11 +108,13 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
             if (currency.getId().equals("CAD")) {
               if (txn instanceof CITransaction) {
-                ciAmountCAD = ciAmountCAD + txn.getAmount();
+                ciAmountCAD += txn.getAmount();
               } else if (txn instanceof COTransaction) {
-                coAmountCAD = coAmountCAD + txn.getAmount();
-              } else if (txn instanceof DigitalTransaction) {
-                totalFee = totalFee + txn.getCost();
+                coAmountCAD += txn.getAmount();
+              } else if ( txn instanceof DigitalTransaction &&
+                          txn.getCost() > 0 ) {
+                  totalCount += 1;
+                  totalFee += txn.getCost();
               }
             }
             break;
@@ -120,64 +124,71 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
       Currency currencyCAD = (Currency) currencyDAO.find("CAD");
 
-      String sumCIString = this.buildCSVLine(
-        11,
-        "",
-        "",
-        "",
+      String sumCIString = this.customCSVLine(
         "Total CI Amount",
-        "",
-        "",
         StringEscapeUtils.escapeCsv(currencyCAD.format(ciAmountCAD)),
-        currencyCAD.getId(),
-        "",
-        "",
-        ""
+        currencyCAD.getId()
       );
 
-      String sumCOString = this.buildCSVLine(
-        11,
-        "",
-        "",
-        "",
+      String sumCOString = this.customCSVLine(
         "Total CO Amount",
-        "",
-        "",
         StringEscapeUtils.escapeCsv(currencyCAD.format(coAmountCAD)),
-        currencyCAD.getId(),
-        "",
-        "",
-        ""
+        currencyCAD.getId()
       );
 
-      String sumFee = currencyCAD.format(totalFee);
-      if ( totalFee <= MIN_MONTHLY_PAYMENT ) {
-        sumFee = sumFee
-          + "(Minimum Payment: " + currencyCAD.format(MIN_MONTHLY_PAYMENT) + ")";
+      String sumFeeString = this.customCSVLine(
+        "Total Transaction Fee",
+        StringEscapeUtils.escapeCsv(currencyCAD.format(totalFee)),
+        currencyCAD.getId()
+      );
+
+      String minFeeString = new String();
+      if ( MIN_MONTHLY_PAYMENT > totalFee ) {
+        minFeeString = this.customCSVLine(
+          "Minimum Monthly Payment",
+          StringEscapeUtils.escapeCsv(currencyCAD.format(MIN_MONTHLY_PAYMENT)),
+          currencyCAD.getId()
+        );
       }
 
-      String sumFeeString = this.buildCSVLine(
-        11,
-        "",
-        "",
-        "",
-        "Total Fee",
-        "",
-        "",
-        "",
-        "",
-        StringEscapeUtils.escapeCsv(sumFee),
-        currencyCAD.getId(),
-        ""
+      String totalDue = this.customCSVLine(
+        "Total Due",
+        StringEscapeUtils.escapeCsv(currencyCAD.format(totalFee > MIN_MONTHLY_PAYMENT ? totalFee : MIN_MONTHLY_PAYMENT)),
+        currencyCAD.getId()
       );
 
       writer.write(sumCIString);
       writer.write(sumCOString);
       writer.write(sumFeeString);
+
+      if ( MIN_MONTHLY_PAYMENT > totalFee ) {
+        writer.write(minFeeString);
+      }
+
+      writer.write(totalDue);
+
       writer.flush();
       writer.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     }
+  }
+
+  private String customCSVLine(String title, String amount, String currency) {
+    return this.buildCSVLine(
+      11,
+      "",
+      "",
+      "",
+      title,
+      "",
+      "",
+      amount,
+      currency,
+      "",
+      "",
+      ""
+    );
   }
 }

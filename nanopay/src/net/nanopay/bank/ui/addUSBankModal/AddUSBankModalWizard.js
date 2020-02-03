@@ -98,12 +98,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       this.viewData.user = this.user;
-      this.onDetach(() => {
-        if ( this.onDismiss ) this.onDismiss();
-        this.stack.push({
-          class: 'net.nanopay.sme.ui.dashboard.Dashboard'
-        });
-      });
       if ( this.plaidResponseItem && this.plaidResponseItem.account ) {
         this.bank = this.plaidResponseItem.account;
       }

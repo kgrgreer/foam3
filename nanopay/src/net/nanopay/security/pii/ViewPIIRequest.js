@@ -30,6 +30,12 @@ foam.CLASS({
       documentation: 'User who created the request'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: 'Agent who created the request'
+    },
+    {
       name: 'created',
       class: 'DateTime',
     },

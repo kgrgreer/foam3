@@ -258,7 +258,6 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-        String containsDigitRegex = ".*\\\\d.*";
         boolean isValidEmail = true;
 
         String firstName = this.getFirstName().trim();
@@ -274,12 +273,8 @@ foam.CLASS({
 
         if ( firstName.length() > NAME_MAX_LENGTH ) {
           throw new IllegalStateException("First name cannot exceed 70 characters.");
-        } else if ( Pattern.matches(containsDigitRegex, firstName) ) {
-          throw new IllegalStateException("First name cannot contain numbers.");
         } else if ( lastName.length() > NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Last name cannot exceed 70 characters.");
-        } else if ( Pattern.matches(containsDigitRegex, lastName) ) {
-          throw new IllegalStateException("Last name cannot contain numbers.");
         } else  if ( SafetyUtil.isEmpty(email) ) {
           throw new IllegalStateException("Email is required.");
         } else if ( SafetyUtil.isEmpty(firstName) ) {
@@ -384,7 +379,8 @@ foam.CLASS({
                 if ( contact != null && contact.getBusinessId() == 0 ) {
                   user = (User) bareUserDAO.find(AND(
                     EQ(User.EMAIL, contact.getEmail()),
-                    NOT(INSTANCE_OF(Contact.class))));
+                    NOT(INSTANCE_OF(Contact.class)),
+                    EQ(User.DELETED, false)));
                   if ( user == null ) { // when a real user is not present the the transaction is to an external user.
                     user = contact;
                   }
@@ -393,9 +389,7 @@ foam.CLASS({
                 } else {
                   user = (User) bareUserDAO.find(userId);
                 }
-              } catch(Exception e) {
-                e.printStackTrace();
-              }
+              } catch(Exception e) {}
               return user;
             }
         `);

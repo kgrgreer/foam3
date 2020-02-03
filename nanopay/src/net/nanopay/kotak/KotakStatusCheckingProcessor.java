@@ -11,7 +11,7 @@ import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
 import net.nanopay.kotak.model.reversal.Rev_DetailType;
 import net.nanopay.kotak.model.reversal.Reversal;
-import net.nanopay.tx.KotakCOTransaction;
+import net.nanopay.tx.KotakPaymentTransaction;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -28,24 +28,24 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
 
     transactionDAO
       .where(AND(
-        INSTANCE_OF(KotakCOTransaction.class),
+        INSTANCE_OF(KotakPaymentTransaction.class),
         EQ(Transaction.STATUS, TransactionStatus.SENT)
       )).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
 
-        getStatus(x, ((KotakCOTransaction) obj));
+        getStatus(x, ((KotakPaymentTransaction) obj));
 
       }
     });
   }
 
-  public void getStatus(X x, KotakCOTransaction kotakCOTxn) {
+  public void getStatus(X x, KotakPaymentTransaction kotakCOTxn) {
     DAO    transactionDAO = (DAO) x.get("localTransactionDAO");
     Logger logger         = (Logger) x.get("logger");
     KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
 
-    kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) kotakCOTxn).fclone();
+    kotakCOTxn = (KotakPaymentTransaction) ((KotakPaymentTransaction) kotakCOTxn).fclone();
 
     try {
 
@@ -104,14 +104,17 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
           case "Txn_Hold": // Transaction kept on hold by bank
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Hold.").build());
+            sendNotification(x, "Kotak payment on hold. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
           case "Txn_Not_Found": // Transaction Not Found
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Not_Found.").build());
+            sendNotification(x, "Kotak payment not found. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
           case "System Error": // Some exceptions in processing
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("System Error.").build());
+            sendNotification(x, "System error has occurred for a Kotak payment. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
             break;
         }
       }
@@ -125,8 +128,9 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
 
   private void sendNotification(X x, String body) {
     Notification notification = new Notification.Builder(x)
-      .setTemplate("KotakStatusChecking")
-      .setBody(body)
+      .setNotificationType(body)
+      .setGroupId("payment-ops")
+      .setEmailIsEnabled(true)
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);

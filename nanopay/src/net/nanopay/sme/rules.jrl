@@ -19,7 +19,7 @@ p({
   "priority": 100,
   "ruleGroup": "smeBusinessCompliance",
   "documentation": "Send business compliance passed email to signing officer",
-  "daoKey": "localBusinessDAO",
+  "daoKey": "localUserDAO",
   "operation": 3,
   "after": true,
   "predicate": {

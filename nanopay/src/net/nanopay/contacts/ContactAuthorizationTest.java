@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.*;
+import foam.nanos.logger.Logger;
 import foam.test.TestUtils;
 import foam.util.Auth;
 
@@ -34,28 +35,28 @@ public class ContactAuthorizationTest
     resetTestData(x);
     Put_Update_Own(businessUserContext_);
     resetTestData(x);
-    Put_Update_Other_Business();
+    Put_Update_Other_Business(x);
     resetTestData(x);
     Find_Own(businessUserContext_);
     resetTestData(x);
-    Find_Other_Business();
+    Find_Other_Business(x);
     resetTestData(x);
     Remove_Own(businessUserContext_);
     resetTestData(x);
-    Remove_Other_Business();
+    Remove_Other_Business(x);
     resetTestData(x);
-    Select_Business();
+    Select_Business(x);
     resetTestData(x);
-    RemoveAll_Business();
+    RemoveAll_Business(x);
 
     resetTestData(x);
-    Find_Other_Admin();
+    Find_Other_Admin(x);
     resetTestData(x);
-    Remove_Other_Admin();
+    Remove_Other_Admin(x);
     resetTestData(x);
-    Select_Admin();
+    Select_Admin(x);
     resetTestData(x);
-    RemoveAll_Admin();
+    RemoveAll_Admin(x);
   }
 
   /**
@@ -95,7 +96,8 @@ public class ContactAuthorizationTest
       otherBusinessUserContext_ = Auth.sudo(x, otherBusinessUser_);
     } catch (Throwable t) {
       test(false, "Unexpected error setting up the testing data.");
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
     }
   }
 
@@ -122,10 +124,10 @@ public class ContactAuthorizationTest
       Contact result = (Contact) user.getContacts(x).put_(x, contact);
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == testLastName_;
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals(testLastName_);
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -141,7 +143,8 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Put_Create shouldn't throw an unexpected error.");
     }
   }
@@ -164,10 +167,10 @@ public class ContactAuthorizationTest
       result = (Contact) user.getContacts(x).put_(x, result);
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == "Married";
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals("Married");
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -183,12 +186,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Put_Update_Own shouldn't throw an unexpected error.");
     }
   }
 
-  private void Put_Update_Other_Business() {
+  private void Put_Update_Other_Business(X x) {
     try {
       // Create a contact to put.
       Contact contact = new Contact.Builder(businessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -214,7 +218,8 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Put_Update_Other_Business shouldn't throw an unexpected error.");
     }
   }
@@ -233,10 +238,10 @@ public class ContactAuthorizationTest
       Contact findResult = (Contact) user.getContacts(x).find_(x, putResult.getId());
 
       // Conditions to check.
-      boolean emailMatches = findResult.getEmail() == testEmail_;
-      boolean firstNameMatches = findResult.getFirstName() == testFirstName_;
-      boolean lastNameMatches = findResult.getLastName() == testLastName_;
-      boolean organizationMatches = findResult.getOrganization() == testOrganization_;
+      boolean emailMatches = findResult.getEmail().equals(testEmail_);
+      boolean firstNameMatches = findResult.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = findResult.getLastName().equals(testLastName_);
+      boolean organizationMatches = findResult.getOrganization().equals(testOrganization_);
       boolean ownerMatches = findResult.getOwner() == user.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -252,12 +257,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Find_Own shouldn't throw an unexpected error.");
     }
   }
 
-  private void Find_Other_Admin() {
+  private void Find_Other_Admin(X x) {
     try {
       // Create a contact to put.
       Contact contact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -272,10 +278,10 @@ public class ContactAuthorizationTest
       Contact result = (Contact) contactDAO.find_(adminUserContext_, putResult.getId());
 
       // Conditions to check.
-      boolean emailMatches = result.getEmail() == testEmail_;
-      boolean firstNameMatches = result.getFirstName() == testFirstName_;
-      boolean lastNameMatches = result.getLastName() == testLastName_;
-      boolean organizationMatches = result.getOrganization() == testOrganization_;
+      boolean emailMatches = result.getEmail().equals(testEmail_);
+      boolean firstNameMatches = result.getFirstName().equals(testFirstName_);
+      boolean lastNameMatches = result.getLastName().equals(testLastName_);
+      boolean organizationMatches = result.getOrganization().equals(testOrganization_);
       boolean ownerMatches = result.getOwner() == businessUser_.getId();
 
       // Helpful print statements to track down what went wrong.
@@ -291,12 +297,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Find_Other_Admin shouldn't throw an unexpected error.");
     }
   }
 
-  private void Find_Other_Business() {
+  private void Find_Other_Business(X x) {
     try {
       // Create a contact to put.
       Contact contact = new Contact.Builder(businessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -318,7 +325,8 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Find_Other_Business shouldn't throw an unexpected error.");
     }
   }
@@ -342,12 +350,13 @@ public class ContactAuthorizationTest
       test(findResult == null, "Users in group " + user.getGroup() + " can remove their own contacts.");
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Remove_Own shouldn't throw an unexpected error.");
     }
   }
 
-  private void Remove_Other_Admin() {
+  private void Remove_Other_Admin(X x) {
     try {
       // Create a contact to put.
       Contact contact = new Contact.Builder(adminUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -367,12 +376,13 @@ public class ContactAuthorizationTest
       test(findResult.getDeleted(), "Admin users can remove other users' contacts.");
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Remove_Other_Admin shouldn't throw an unexpected error.");
     }
   }
 
-  private void Remove_Other_Business() {
+  private void Remove_Other_Business(X x) {
     try {
       // Create a contact to put.
       Contact contact = new Contact.Builder(businessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -394,12 +404,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Remove_Other_Business shouldn't throw an unexpected error.");
     }
   }
 
-  private void Select_Admin() {
+  private void Select_Admin(X x) {
     try {
       // Create a contact for the other business to put.
       Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -426,12 +437,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Select_Admin shouldn't throw an unexpected error.");
     }
   }
 
-  private void Select_Business() {
+  private void Select_Business(X x) {
     try {
       // Create a contact for the other business to put.
       Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -458,12 +470,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Select_Business shouldn't throw an unexpected error.");
     }
   }
 
-  private void RemoveAll_Admin() {
+  private void RemoveAll_Admin(X x) {
     try {
       // Create a contact for other business to put.
       Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -493,12 +506,13 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "RemoveAll_Admin shouldn't throw an unexpected error.");
     }
   }
 
-  private void RemoveAll_Business() {
+  private void RemoveAll_Business(X x) {
     try {
       // Create a contact for the other business to put.
       Contact otherBusinessContact = new Contact.Builder(otherBusinessUserContext_).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -528,7 +542,8 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "RemoveAll_Business shouldn't throw an unexpected error.");
     }
   }
@@ -560,7 +575,8 @@ public class ContactAuthorizationTest
       );
     } catch (Throwable t) {
       System.out.println(t.getMessage());
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
       test(false, "Put_Update_Own shouldn't throw an unexpected error.");
     }
   }

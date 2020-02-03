@@ -4,17 +4,20 @@ foam.CLASS({
 
   documentation: 'model for Flinks Security Challenges',
 
-  constants: [
+  axioms: [
     {
-      javaType: 'java.util.HashSet<String>',
-      name: 'SUPPORTED_TYPES',
-      javaValue: `new java.util.HashSet() {{
-        add("QuestionAndAnswer");
-        add("MultipleChoice");
-        add("MultipleChoiceMultipleAnswers");
-        add("ImageSelection");
-        add("TextOrCall");
-      }};`
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+        protected static final java.util.Set<String> SUPPORTED_TYPES = (java.util.Set<String>) java.util.Collections.unmodifiableSet(foam.util.Arrays.asSet(new String[] {
+          "QuestionAndAnswer",
+          "MultipleChoice",
+          "MultipleChoiceMultipleAnswers",
+          "ImageSelection",
+          "TextOrCall"
+        }));
+        `);
+      }
     }
   ],
 
@@ -40,7 +43,7 @@ foam.CLASS({
       javaThrows: [ 'java.lang.Exception' ],
       javaCode: `
         String type = getType();
-        if (!SUPPORTED_TYPES.contains(type)) {
+        if ( ! SUPPORTED_TYPES.contains(type) ) {
           throw new java.lang.Exception("Unsupported security challenge type: " + type);
         }
       `

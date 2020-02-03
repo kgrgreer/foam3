@@ -1,22 +1,19 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
-import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
-import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.Transfer;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
-import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
 public class TransactionTestUtil {
 

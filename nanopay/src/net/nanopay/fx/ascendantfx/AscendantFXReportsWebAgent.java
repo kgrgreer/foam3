@@ -1,16 +1,50 @@
 package net.nanopay.fx.ascendantfx;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.DESC;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NEQ;
+
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import foam.blob.Blob;
-import foam.blob.FileBlob;
 import foam.blob.BlobService;
+import foam.blob.FileBlob;
 import foam.blob.IdentifiedBlob;
 import foam.blob.ProxyBlobService;
 import foam.core.X;
-import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
@@ -27,29 +61,19 @@ import net.nanopay.documents.AcceptanceDocument;
 import net.nanopay.documents.UserAcceptanceDocument;
 import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
-import net.nanopay.model.*;
+import net.nanopay.model.BeneficialOwner;
+import net.nanopay.model.Branch;
+import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
+import net.nanopay.model.BusinessSector;
+import net.nanopay.model.BusinessType;
+import net.nanopay.model.IdentificationType;
+import net.nanopay.payment.Institution;
+import net.nanopay.plaid.PlaidResultReport;
 import net.nanopay.sme.onboarding.BusinessOnboarding;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.sme.onboarding.OnboardingStatus;
 import net.nanopay.sme.onboarding.USBusinessOnboarding;
-import net.nanopay.payment.Institution;
-import net.nanopay.plaid.PlaidResultReport;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import static foam.mlang.MLang.*;
 
 public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebAgent {
 
@@ -99,8 +123,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       srcFiles[4] = generateCompanyDirectorsList(x, business);
       // srcFiles[4] = getUSBankAccountProof(x, business);
       // srcFiles[5] = getBeneficialOwnersDoc(x, business);
-      int signingOfficerReportLength = signingOfficerReports == null ? 0 : signingOfficerReports.length;
-      int signingOfficerIdLength     = signingOfficerIDs == null ? 0 : signingOfficerIDs.length;
+      int signingOfficerReportLength = signingOfficerReports.length;
+      int signingOfficerIdLength     = signingOfficerIDs.length;
       System.arraycopy(signingOfficerReports, 0, srcFiles, 6, signingOfficerReportLength);
       System.arraycopy(signingOfficerIDs, 0, srcFiles, 6 + signingOfficerReportLength, signingOfficerIdLength);
 
@@ -517,7 +541,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
 
-      if ( null != signingOfficer.getIdentification() 
+      if ( null != signingOfficer.getIdentification()
         && signingOfficer.getIdentification().getIdentificationTypeId() != 0 ) {
         IdentificationType idType = (IdentificationType) identificationTypeDAO
           .find(signingOfficer.getIdentification().getIdentificationTypeId());
@@ -538,7 +562,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("Identification number: " + identificationNumber));
         list.add(new ListItem("Issue date: " + issueDate));
         list.add(new ListItem("Expiration date: " + expirationDate));
-        
+
       }
 
       document.add(list);
@@ -596,29 +620,28 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-          String suiteNumber = beneficialOwner.getAddress().getSuite();
-          String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
-          String city = beneficialOwner.getAddress().getCity();
-          String province = beneficialOwner.getAddress().getRegionId();
-          String country = beneficialOwner.getAddress().getCountryId();
-          String postalCode = beneficialOwner.getAddress().getPostalCode();
+
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
           dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
           String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
-          document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           list.add(new ListItem("First name: " + firstName));
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-          list.add(new ListItem("Suite No: " + suiteNumber));
-          list.add(new ListItem("Residential street address: " + streetAddress));
-          list.add(new ListItem("City: " + city));
-          list.add(new ListItem("State/Province: " + province));
-          list.add(new ListItem("Country: " + country));
-          list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-          list.add(new ListItem("Date of birth: " + dateOfBirth));
+
+          if ( beneficialOwner.getAddress() != null ) {
+            list.add(new ListItem("Suite No: " + beneficialOwner.getAddress().getSuite()));
+            list.add(new ListItem("Residential street address: " + beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName()));
+            list.add(new ListItem("City: " + beneficialOwner.getAddress().getCity()));
+            list.add(new ListItem("State/Province: " + beneficialOwner.getAddress().getRegionId()));
+            list.add(new ListItem("Country: " + beneficialOwner.getAddress().getCountryId()));
+            list.add(new ListItem("ZIP/Postal Code: " + beneficialOwner.getAddress().getPostalCode()));
+            list.add(new ListItem("Date of birth: " + dateOfBirth));
+          }
+
+          document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
@@ -673,7 +696,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
-    Image img = null;
+    ArrayList<Image> imgs = new ArrayList<Image>();
 
     Logger logger = (Logger) x.get("logger");
 
@@ -686,12 +709,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     accountDAO.orderBy(DESC(BankAccount.CREATED))
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId()),
         NEQ(Account.DELETED, true))).select(bankAccountsSink);
 
     java.util.List<BankAccount> bankAccounts =  bankAccountsSink.getArray();
-    if ( bankAccounts.size() < 1 ) return null;
 
     String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
@@ -780,11 +801,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        if ( usBankAccount.getVoidCheckImage() != null ) {
+          try {
+            foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+            IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
+            Blob blob = getDelegate().find_(getX(), voidCheck.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          } catch (Exception e) {
+            logger.error(e);
+          }
+        }
+
         try {
-          foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
-          IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
-          Blob blob = getDelegate().find_(getX(), voidCheck.getId());
-          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+          foam.nanos.fs.File supportingDocs[] = usBankAccount.getSupportingDocuments();
+          for ( foam.nanos.fs.File doc : supportingDocs ) {
+            IdentifiedBlob idBlob = (IdentifiedBlob) doc.getData();
+            Blob blob = getDelegate().find_(getX(), idBlob.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          }
         } catch (Exception e) {
           logger.error(e);
         }
@@ -795,9 +829,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
-      if ( img != null ) {
-        document.add(new ListItem("Bank void check:"));
-        document.add(img);
+      document.add(new ListItem("Supporting documents:"));
+      if ( imgs != null ) {
+        for ( Image img : imgs) {
+          img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
+          - document.rightMargin(), 200);
+          document.add(img);
+        }
       }
       document.add(Chunk.NEWLINE);
     }
@@ -991,7 +1029,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
 
-  private void downloadZipFile(X x, Business business, File[] srcFiles) {
+ private void downloadZipFile(X x, Business business, File[] srcFiles) {
     HttpServletResponse response = x.get(HttpServletResponse.class);
     Logger              logger   = (Logger) x.get("logger");
 
@@ -1015,7 +1053,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
         os = new DataOutputStream(zipos);
-        InputStream is = new FileInputStream(file);
+        FileInputStream is = new FileInputStream(file);
         byte[] b = new byte[100];
         int length;
         while((length = is.read(b))!= -1){

@@ -288,7 +288,7 @@ foam.CLASS({
         `,
       section: 'business',
       factory: function() {
-        return this.SuggestedUserTransactionInfo.create();
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' },
     },
@@ -513,8 +513,6 @@ foam.CLASS({
           boolean hasNewGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
           if ( isUpdatingSelf ) {
             throw new AuthorizationException("You cannot change your own group.");
-          } else if ( ! hasUserEditPermission ) {
-            throw new AuthorizationException("You do not have permission to change that business's group.");
           } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
             throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           }

@@ -7,23 +7,20 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setAuthorize(false)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(x.get("localUserDAO"))
       .setDecorator(
         new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
         new foam.nanos.auth.UserPasswordHashingDAO(x,
         new net.nanopay.onboarding.UserRegistrationDAO(x, "sme",
-        new foam.nanos.ruler.RulerDAO(x,
-        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null), "smeBusinessRegistrationDAO")))).build())
+        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, null)))).build())
+      .setRuler(true)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
       .setValidated(true)
-      .setLastModifiedAware(false)
-      .setLastModifiedByAware(false)
-      .setCreatedAware(false)
-      .setCreatedByAware(false)
-      .setInnerDAO(x.get("localUserDAO"))
+      .setEnableInterfaceDecorators(false)
       .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .build();
   """,
   "client": """

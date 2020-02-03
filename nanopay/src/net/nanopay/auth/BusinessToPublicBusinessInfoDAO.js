@@ -15,13 +15,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
-    'foam.nanos.auth.AuthService',
     'foam.util.SafetyUtil',
-    'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.USBankAccount',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
@@ -34,7 +30,7 @@ foam.CLASS({
 
         if ( business == null ) return null;
         
-        return new PublicBusinessInfo(business);
+        return new PublicBusinessInfo(x, business);
       `
     },
     {
@@ -45,7 +41,7 @@ foam.CLASS({
           public void put(Object o, Detachable d) {
             Business business = (Business) o;
             if ( isPublic(x, business) ) {
-              PublicBusinessInfo bInfo = new PublicBusinessInfo(business);
+              PublicBusinessInfo bInfo = new PublicBusinessInfo(x, business);
               getDelegate().put(bInfo, d);
             }
           }

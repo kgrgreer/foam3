@@ -144,7 +144,7 @@ foam.CLASS({
         { title: 'Accounts', subtitle: 'Select your account' },
         { title: 'PAD Authorization', subtitle: 'Pre-Authorized Debit' },
         { title: 'Done' },
-      ],
+      ];
       this.views = {
         FlinksInstitutionForm: { step: 1, label: 'Institution', view: { class: 'net.nanopay.flinks.view.form.FlinksInstitutionForm' }, start: true },
         FlinksConnectForm: { step: 2, label: 'Connect', view: { class: 'net.nanopay.flinks.view.form.FlinksConnectForm' } },

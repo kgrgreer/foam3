@@ -179,7 +179,17 @@ foam.CLASS({
         var model = X.pad;
         if ( model.isConnecting ) return;
         if ( ! model.validateInputs() ) return;
-        model.capturePADAndPutBankAccounts();
+
+        model.capturePADAndPutBankAccounts().then(() => {
+          this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
+
+          X.closeDialog();
+
+          location.hash = 'sme.main.banking';
+          this.stack.push({
+            class: 'net.nanopay.bank.BankAccountController'
+          })
+        });
       }
     }
   ]

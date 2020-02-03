@@ -1,35 +1,31 @@
 package net.nanopay.fx;
 
-import foam.core.ContextAgent;
-import foam.core.Detachable;
-import foam.core.X;
-import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.lib.json.JSONParser;
-import foam.mlang.MLang;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.GT;
-import foam.mlang.sink.Count;
-import foam.nanos.pm.PM;
-import foam.nanos.logger.Logger;
-import net.nanopay.fx.ExchangeRate;
-import net.nanopay.fx.FixerIOExchangeRate;
-import net.nanopay.fx.FXProvider;
-import foam.core.Currency;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
 import org.apache.commons.io.IOUtils;
+
+import foam.core.ContextAgent;
+import foam.core.Currency;
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.lib.json.JSONParser;
+import foam.mlang.sink.Count;
+import foam.nanos.logger.Logger;
+import foam.nanos.pm.PM;
 
 
 /**
@@ -85,7 +81,6 @@ public class ExchangeRatesCron
 
     if (count.getValue() == 0) {
       HttpURLConnection conn = null;
-      BufferedReader reader = null;
 
       try {
         URL url = new URL("https://api.exchangeratesapi.io/latest?base="+currency.getId());
@@ -97,9 +92,10 @@ public class ExchangeRatesCron
         conn.setRequestProperty("Accept-Charset", "UTF-8");
 
         StringBuilder builder = sb.get();
-        reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-        for ( String line; (line = reader.readLine()) != null; ) {
-          builder.append(line);
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+        	for ( String line; (line = reader.readLine()) != null; ) {
+                builder.append(line);
+              }	
         }
 
         JSONParser parser = x.create(JSONParser.class);
@@ -123,13 +119,13 @@ public class ExchangeRatesCron
           exchangeRate.setExpirationDate(calendar.getTime());
           exchangeRate.setValueDate(new Date());
           exchangeRate.setFxProvider(fxProvider.getId());
-          exchangeRateDAO_.put(exchangeRate);
+          if ( ! (targetCurrency.equals("INR") && sourceCurrency.equals("CAD")) ) 
+            exchangeRateDAO_.put(exchangeRate);
 
         }
       } catch (Throwable t) {
         logger_.warning(this.getClass().getSimpleName(), "fetchRates", currency, "Failed:", t.getMessage(), t);
       } finally  {
-        IOUtils.closeQuietly(reader);
         if (conn != null) {
           conn.disconnect();
         }

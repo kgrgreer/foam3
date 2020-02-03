@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id', 'user', 'acceptedDocument', 'createdBy'
+      'id', 'user', 'acceptedDocument', 'createdBy', 'createdByAgent'
   ],
 
   properties: [
@@ -56,6 +56,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      documentation: 'User who created the entry'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
       documentation: 'User who created the entry'
     },
     {

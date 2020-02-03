@@ -4,15 +4,11 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
-    'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
@@ -28,8 +24,6 @@ foam.CLASS({
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.payment.PADType',
     'net.nanopay.payment.PADTypeLineItem'
   ],
 

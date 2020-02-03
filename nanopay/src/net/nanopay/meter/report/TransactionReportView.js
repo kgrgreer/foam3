@@ -22,6 +22,12 @@ foam.CLASS({
     'transactionDAO'
   ],
 
+  css: `
+    ^ .property-txnReportDAO {
+      width: 1600px;
+    }
+  `,
+
   properties: [
     {
       class: 'Date',

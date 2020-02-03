@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canadian Bank Account',
+  label: 'Canada',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -143,7 +143,7 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 500,
+      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((institution, institutionDAO) => {

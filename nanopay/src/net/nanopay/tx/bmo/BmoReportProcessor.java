@@ -1,9 +1,21 @@
 package net.nanopay.tx.bmo;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
@@ -14,16 +26,6 @@ import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
 

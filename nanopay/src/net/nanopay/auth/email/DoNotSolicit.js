@@ -87,6 +87,22 @@ foam.CLASS({
       }
     },
     {
+      documentation: `The id of the agent who created the transaction.`,
+      name: 'createdByAgent',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
       documentation: 'Last modified date.',
       name: 'lastModified',
       class: 'DateTime',

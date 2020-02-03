@@ -124,3 +124,19 @@ p({
   "order":20,
   "parent":"report"
 })
+
+// PaymentReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.paymentReport",
+  "label":    "Payment Report",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu",
+    "daoKey": "paymentReportDAO",
+    "title": "Payment Report",
+    "createEnabled": false,
+    "editEnabled":   false
+  },
+  "order":30,
+  "parent":"report"
+})

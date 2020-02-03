@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
    javaImports: [
-    'foam.core.FObject',
     'foam.dao.*',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -34,20 +33,13 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
-    'java.lang.Object',
-    'java.lang.StringBuilder',
     'java.net.URLEncoder',
-    'java.text.NumberFormat',
     'java.text.SimpleDateFormat',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.List',
     'java.util.UUID',
-    'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
-    'foam.core.Currency',
     'net.nanopay.contacts.Contact'
   ],
 

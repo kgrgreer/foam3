@@ -5,7 +5,8 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'userDAO'
+    'userDAO',
+    'theme'
   ],
 
   css: `
@@ -76,6 +77,9 @@ foam.CLASS({
     ^ .inner-card {
       padding: 15px 0px;
     }
+    ^ .contents-grow {
+      flex-grow: 1;
+    }
   `,
   properties: [
     {
@@ -130,7 +134,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start().addClass(this.myClass('header'))
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
+          .start({ class: 'foam.u2.tag.Image', data: self.theme.largeLogo || self.theme.logo }).addClass(this.myClass('logo')).end()
           .startContext({ data: this })
             .start()
               .tag(this.SAVE_AND_EXIT, {
@@ -150,7 +154,7 @@ foam.CLASS({
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
-              });
+              }).addClass('contents-grow');
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
             .start(self.Cols)
@@ -182,9 +186,10 @@ foam.CLASS({
       code: function() {
         if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({ status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
-                                             sendInvitation : false
-                                          }));
+        dao.put(this.data.clone().copyFrom({
+          status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+          sendInvitation: false
+        }));
       }
     }
   ],
@@ -201,13 +206,16 @@ foam.CLASS({
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({
-            status : (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
-            sendInvitation : true
+            status: (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
+            sendInvitation: true
           })).
           then(async () => {
-            let user = await x.userDAO.find(x.user.id);
-            if ( user ) x.user.onboarded = user.onboarded;
-            // Invalidate auth cache to register new permissions on group.
+            await x.userDAO.find(x.user.id).then((o) => {
+              x.user.onboarded = o.onboarded;
+              x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+              x.user.businessRegistrationDate = o.businessRegistrationDate;
+            });
+
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.stack.back();
@@ -225,8 +233,8 @@ foam.CLASS({
       code: function(x) {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
         dao.put(this.data.clone().copyFrom({
-          status : (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
-          sendInvitation : true
+          status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
+          sendInvitation: true
           })).
           then(function() {
             x.ctrl.notify('Progress saved.');

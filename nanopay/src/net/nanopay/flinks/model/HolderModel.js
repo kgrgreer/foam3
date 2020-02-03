@@ -42,7 +42,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'PhoneError', message: 'Invalid phone number' }
+    { name: 'EMAIL_ERROR', message: 'Invalid email address' },
+    { name: 'PHONE_ERROR', message: 'Invalid phone number' }
   ]
 });

@@ -33,7 +33,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: overlay;
     }
     ^content {
       position: relative;
@@ -252,6 +252,9 @@ foam.CLASS({
 
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
+      location.hash = 'sme.main.banking';
+
+      this.ctrl.stack.back();
     }
   ],
 
@@ -274,6 +277,7 @@ foam.CLASS({
         if ( model.isConnecting ) return;
 
         if ( ! model.validateInputs() ) return;
+
         model.capturePADAndPutBankAccounts();
       }
     }

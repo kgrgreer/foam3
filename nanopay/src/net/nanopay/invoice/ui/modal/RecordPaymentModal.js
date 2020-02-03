@@ -52,6 +52,7 @@ foam.CLASS({
     { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
     { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
+    { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
     { name: 'NOTE_LABEL', message: 'Notes' }
@@ -111,11 +112,9 @@ foam.CLASS({
       margin-top: 20px;
       float: right;
     }
-    ^ .currency-view {
-      color: #9ba1a6 !important;
-      background-color: #f5f7fa !important;
-      border: 1px solid #cbcfd4 !important;
-    }
+    ^ .foam-u2-CurrencyView {
+      width: 100%;
+    } 
   `,
   
   methods: [
@@ -138,11 +137,11 @@ foam.CLASS({
         .start()
           .start().addClass('label').add(this.AMOUNT_LABEL).end()
           .start(this.CURRENCY_TYPE, { mode$: this.mode$ }).end()
-          .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).enableClass('currency-view', this.mode$.map((v)=> v === foam.u2.DisplayMode.DISABLED)).end()
+          .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).end()
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
-          .start(this.NOTE).end()
+          .start(this.NOTE, { placeholder: this.PLACEHOLDER_TEXT }).end()
         .end()
         .start()
           .addClass('button-container')

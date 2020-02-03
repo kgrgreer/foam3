@@ -22,33 +22,22 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.model.Business',
-    'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.HistoricStatus',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
@@ -65,10 +54,10 @@ foam.CLASS({
     {
       name: 'STATUS_BLACKLIST',
       javaType: 'Set<TransactionStatus>',
-      javaValue: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-        add(TransactionStatus.REFUNDED);
-        add(TransactionStatus.PENDING);
-      }});`
+      javaValue: `Collections.unmodifiableSet(foam.util.Arrays.asSet(new Object[] {
+        TransactionStatus.REFUNDED,
+        TransactionStatus.PENDING
+      }));`
     }
   ],
 
@@ -230,6 +219,15 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
+      name: 'createdLegacy',
+      documentation: `The date the transaction was created for transaction before status history.`,
+      visibility: 'HIDDEN',
+      section: 'basicInfo',
+      storageTransient: true,
+      shortName: 'created'
+    },
+    {
+      class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
@@ -240,8 +238,19 @@ foam.CLASS({
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
-      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
+      getter: function() {
+        return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
+      },
+      javaGetter: `
+        if ( getCreatedLegacy() != null ) {
+          return getCreatedLegacy();
+        }
+        return getStatusHistory()[0].getTimeStamp();
+      `,
       javaFactory: `
+        if ( getCreatedLegacy() != null ) {
+          return getCreatedLegacy();
+        }
         if ( getStatusHistory().length > 0 ) {
           return getStatusHistory()[0].getTimeStamp();
         }
@@ -255,6 +264,23 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: `The id of the user who created the transaction.`,
+      visibility: 'RO',
+      section: 'basicInfo',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The id of the agent who created the transaction.`,
       visibility: 'RO',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
@@ -428,8 +454,7 @@ foam.CLASS({
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
 
         // Outputting two columns: "amount", "Currency"
-          // Hacky way of making get_(obj) into String below
-        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(currency.formatPrecision(get_(obj)));
         outputter.outputValue(srcCurrency);
       `,
       javaToCSVLabel: `
@@ -526,7 +551,7 @@ foam.CLASS({
         foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(dstCurrency);
 
         // Outputting two columns: "amount", "Currency"
-        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(currency.formatPrecision(get_(obj)));
         outputter.outputValue(dstCurrency);
       `,
       javaToCSVLabel: `

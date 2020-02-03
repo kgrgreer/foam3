@@ -120,7 +120,8 @@ foam.CLASS({
       super.validate(x);
       Logger logger = (Logger) x.get("logger");
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+      Account account = findDestinationAccount(x);
+      if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
         logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
@@ -228,16 +229,22 @@ foam.CLASS({
             }
           }
 
-          BankAccount bankAccount = (BankAccount) findDestinationAccount(x);
-          if ( bankAccount == null ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.warning(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (findDestinationAccount).", this);
-            bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(getDestinationAccount());
-            if ( bankAccount == null ) {
-              logger.error(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (localAccountDAO)", this);
+          Account destAccount = findDestinationAccount(x);
+          TrustAccount trustAccount;
+          if ( destAccount instanceof TrustAccount ) {
+            trustAccount = (TrustAccount) destAccount;
+          } else {
+            BankAccount bankAccount = (BankAccount) destAccount;
+            if (bankAccount == null) {
+              Logger logger = (Logger) x.get("logger");
+              logger.warning(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (findDestinationAccount).", this);
+              bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(getDestinationAccount());
+              if (bankAccount == null) {
+                logger.error(this.getClass().getSimpleName(), "createTransfers", getId(), "destination account", getDestinationAccount(), "not found (localAccountDAO)", this);
+              }
             }
+            trustAccount = TrustAccount.find(x, bankAccount, getInstitutionNumber());
           }
-          TrustAccount trustAccount = TrustAccount.find(x, bankAccount, getInstitutionNumber());
           all.add(new Transfer.Builder(x)
             .setDescription(trustAccount.getName()+" Cash-Out")
             .setAccount(trustAccount.getId())

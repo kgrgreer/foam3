@@ -47,7 +47,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     for( long payeeId : payeeIds ) {
       Transaction txn = (Transaction) txnDAO.find(
         AND(
-          EQ(Transaction.SOURCE_ACCOUNT, PAYER_ACCOUNT),
+          EQ(Transaction.SOURCE_ACCOUNT, DigitalAccount.findDefault(x, (User) userDAO.find(PAYER_ID), "CAD").getId()),
           EQ(Transaction.DESTINATION_ACCOUNT, DigitalAccount.findDefault(x, (User) userDAO.find(payeeId), "CAD").getId()),
           EQ(Transaction.AMOUNT, amount)
         )

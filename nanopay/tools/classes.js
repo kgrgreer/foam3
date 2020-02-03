@@ -278,6 +278,8 @@ var classes = [
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
+  'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
+  'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -433,6 +435,7 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakPaymentTransaction',
   'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.KotakSplitTransactionPlanDAO',
@@ -455,6 +458,7 @@ var classes = [
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
+  'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
@@ -496,7 +500,6 @@ var classes = [
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
-  'net.nanopay.fx.KotakFXProvider',
   'net.nanopay.fx.localfx.NanopayFXService',
 
   'net.nanopay.fx.GetFXQuote',
@@ -538,6 +541,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.auth.ServiceProviderURL',
+  'net.nanopay.auth.UserCreateServiceProviderURLRule',
+  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -654,6 +660,8 @@ var classes = [
   'net.nanopay.meter.report.AbliiBusinessReport',
   'net.nanopay.meter.report.AbliiBusinessReportDAO',
   'net.nanopay.meter.report.TransactionReport',
+  'net.nanopay.meter.report.PaymentReport',
+  'net.nanopay.meter.report.PaymentReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',

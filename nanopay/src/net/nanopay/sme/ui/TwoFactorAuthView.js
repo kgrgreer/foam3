@@ -71,6 +71,7 @@ foam.CLASS({
     ^ .validation-input .property-twoFactorToken {
       width: 125px;
       margin-right: 10px;
+      margin-bottom: 10px;
     }
     ^ .foam-u2-ActionView-enableTwoFactor {
       width: 96px;

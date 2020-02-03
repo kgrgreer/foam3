@@ -1,5 +1,14 @@
 package net.nanopay.liquidity;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.SUM;
+
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.dao.AbstractSink;
@@ -7,7 +16,6 @@ import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
-import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
@@ -15,20 +23,12 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.approval.ApprovalRequest;
 import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.tx.CompletedTransactionDAO;
 import net.nanopay.tx.ComplianceTransaction;
-import net.nanopay.util.Frequency;
-import net.nanopay.liquidity.Liquidity;
-import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.text.NumberFormat;
-import java.util.HashMap;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.util.Frequency;
 
 public class LiquidityService
   extends    ContextAwareSupport

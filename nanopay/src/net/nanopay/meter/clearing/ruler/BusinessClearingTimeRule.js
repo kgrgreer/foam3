@@ -60,7 +60,7 @@ foam.CLASS({
                 .getClearingTimes().values().stream().reduce(0, Integer::sum);
               if ( totalClearingTime < 0 ) {
                 String message = String.format(
-                  "Rule %d (duration: %d) causes transaction %s total clearing time: %d.",
+                  "Rule %s (duration: %d) causes transaction %s total clearing time: %d.",
                   getId(), getDuration(), transaction.getId(), totalClearingTime);
                 ((Logger) x.get("logger")).info(message, this, transaction);
               }

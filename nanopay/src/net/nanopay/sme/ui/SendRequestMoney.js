@@ -452,7 +452,7 @@ foam.CLASS({
             let tem = await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            if ( error.message.includes("exceed")) {
+            if ( error.message && error.message.includes('exceed') ) {
               this.notify(error.message, 'error');
             } else {
               this.notify(this.TRANSACTION_ERROR + this.type, 'error');

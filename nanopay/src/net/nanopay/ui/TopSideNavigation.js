@@ -184,7 +184,6 @@ foam.CLASS({
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
-                      slot.set(! slot.get());
                       return;
                     }
                     if ( ! hasChildren.get() ) {
@@ -192,16 +191,16 @@ foam.CLASS({
                       self.pushMenu(menu.id);
                     }
                     self.menuSearch = menu.id;
-                    slot.set(! slot.get());
                   })
                   .addClass('sidenav-item-wrapper')
                     .start().addClass('menu-label')
                     .enableClass('selected-root', slot)
                     .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
                       var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
-                        currentMenu != null &&
-                        currentMenu.id == menu.id ||
-                        currentMenu.parent == menu.id;
+                        currentMenu != null && (
+                          currentMenu.id == menu.id ||
+                          currentMenu.parent == menu.id
+                        );
                       slot.set(selectedRoot);
                       return selectedRoot;
                     }))

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'US Bank Account',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -67,6 +67,11 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'supportingDocuments',
+      documentation: 'Supporting documents to verify bank account'
     },
     {
       name: 'branchId',
@@ -139,7 +144,7 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 500,
+      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((branch, branchDAO) => {

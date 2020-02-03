@@ -16,8 +16,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'java.util.ArrayList',
     'java.util.List',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.AggregateAccount',
     'net.nanopay.fx.ExchangeRate',
   ],
 

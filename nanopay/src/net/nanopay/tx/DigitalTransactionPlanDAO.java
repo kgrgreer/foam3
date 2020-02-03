@@ -11,9 +11,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
 
 public class DigitalTransactionPlanDAO extends ProxyDAO {
 
@@ -26,8 +24,8 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
-   if ( quote.getSourceAccount() instanceof DigitalAccount && quote.getDestinationAccount() instanceof DigitalAccount ) {
-      if (SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
+   if ( quote.getSourceAccount() instanceof DigitalAccount && quote.getDestinationAccount() instanceof DigitalAccount &&
+        SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
         Transaction dt;
         if ( ! ( txn instanceof DigitalTransaction ) ) {
           dt = new DigitalTransaction.Builder(x).build();
@@ -37,7 +35,6 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         }
         dt.setIsQuoted(true);
         quote.addPlan(dt);
-      }
     }
     return super.put_(x, quote);
   }
