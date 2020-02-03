@@ -258,8 +258,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'externalBankAccount',
-      documentation: `Returns the bank account address from the Address model.`,
+      name: 'isExternalBankAccount',
+      documentation: `return true if bank account is created through add external contact.`,
       value: false
     }
   ],
