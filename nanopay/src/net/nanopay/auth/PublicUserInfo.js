@@ -5,6 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
     'foam.util.SafetyUtil',
   ],
 
@@ -34,16 +35,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'operatingBusinessName',
-      documentation: `The business name displayed to the public. This may differ
-        from the organization name.`,
+      name: 'businessName',
+      documentation: `The name of the business associated with the public
+        information of a User.`,
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
-      name: 'businessName',
-      documentation: `The name of the business associated with the public
-        information of a User.`,
+      name: 'operatingBusinessName',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -136,10 +138,13 @@ foam.CLASS({
         cls.extras.push(`
           public PublicUserInfo(User user) {
             if ( user == null ) return;
+            if ( user instanceof Business ) {
+              Business business = (Business) user;
+              setOperatingBusinessName(business.getOperatingBusinessName());
+            }
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
-            setOperatingBusinessName(user.getOperatingBusinessName());
             setOrganization(user.getOrganization());
             setBusinessName(user.getBusinessName());
             setEmail(user.getEmail());

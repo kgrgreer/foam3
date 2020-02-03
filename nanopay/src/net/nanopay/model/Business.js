@@ -55,6 +55,15 @@ foam.CLASS({
       width: 50
     },
     {
+      class: 'String',
+      name: 'operatingBusinessName',
+      label: 'Company',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
+      section: 'business'
+    },
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',

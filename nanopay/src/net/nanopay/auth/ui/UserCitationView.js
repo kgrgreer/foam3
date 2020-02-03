@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'UserCitationView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'publicBusinessDAO'
+  ],
+
   documentation: 'A single row in a list of users.',
 
   css: `
@@ -37,19 +41,28 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this
         .addClass(this.myClass())
         .start()
           .start()
             .addClass(this.myClass('company'))
-            .add(this.data.operatingBusinessName || this.data.organization || this.data.businessName || '')
+            .add(await this.getCompanyName())
           .end()
           .start()
             .addClass(this.myClass('name'))
             .add(this.data.legalName)
           .end()
         .end();
+    },
+    async function getCompanyName() {
+      let obj = this.data;
+      if ( ! obj.businessId ) {
+        return obj.organization;
+      } else {
+        var business = await this.publicBusinessDAO.find(obj.businessId);
+        return business.label();
+      }
     }
   ]
 });

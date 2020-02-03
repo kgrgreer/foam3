@@ -26,7 +26,7 @@ foam.CLASS({
               throw new RuntimeException("PublicBusinessInfo was given a null argument.");
             };
             setId(business.getId());
-            setOperatingBusinessName(business.getOperatingBusinessName());
+            setOperatingBusinessName(business.label());
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
@@ -37,4 +37,22 @@ foam.CLASS({
       },
     },
   ],
+  methods: [
+    {
+      name: 'label',
+      code: function() {
+        return this.operatingBusinessName
+          ? this.operatingBusinessName
+          : this.organization
+            ? this.organization
+            : this.businessName
+              ? this.businessName
+              : this.firstName
+                ? this.lastName
+                  ? `${this.firstName} ${this.lastName}`
+                  : this.firstName
+                : 'Unknown';
+      }
+    }
+  ]
 });

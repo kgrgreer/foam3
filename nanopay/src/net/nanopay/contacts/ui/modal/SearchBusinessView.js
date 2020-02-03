@@ -421,7 +421,6 @@ foam.CLASS({
     async function addSelected(business) {
       this.loading = true
       newContact = this.Contact.create({
-        operatingBusinessName: business.operatingBusinessName,
         organization: business.organization,
         businessName: business.organization,
         businessId: business.id,

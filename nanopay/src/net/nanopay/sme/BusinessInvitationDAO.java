@@ -173,7 +173,7 @@ public class BusinessInvitationDAO
         .build();
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
-    args.put("business", business.getOperatingBusinessName());
+    args.put("business", business.label());
     args.put("sendTo", invite.getEmail());
 
     // Encoding business name and email to handle special characters.

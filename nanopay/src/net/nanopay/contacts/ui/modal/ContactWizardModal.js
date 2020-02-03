@@ -196,7 +196,6 @@ foam.CLASS({
       this.isConnecting = true;
 
       try {
-        this.data.operatingBusinessName = this.data.organization;
         this.data = await this.user.contacts.put(this.data);
         if ( this.isEdit ) {
           this.ctrl.notify(this.CONTACT_UPDATED);

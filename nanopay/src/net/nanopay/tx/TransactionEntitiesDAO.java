@@ -88,7 +88,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
         TransactionEntity entity = new TransactionEntity(payer);
         String businessName = entity.getBusinessName();
         if ( SafetyUtil.isEmpty(businessName) ) {
-          businessName = payer.getOperatingBusinessName();
+          businessName = payer.getBusinessName();
         }
         if ( SafetyUtil.isEmpty(businessName) ) {
           businessName = payer.getOrganization();
@@ -110,7 +110,7 @@ public class TransactionEntitiesDAO extends ProxyDAO
         TransactionEntity entity = new TransactionEntity(payee);
         String businessName = entity.getBusinessName();
         if ( SafetyUtil.isEmpty(businessName) ) {
-          businessName = payee.getOperatingBusinessName();
+          businessName = payee.getBusinessName();
         }
         if ( SafetyUtil.isEmpty(businessName) ) {
           businessName = payee.getOrganization();
