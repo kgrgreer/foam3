@@ -387,6 +387,14 @@ foam.CLASS({
         who last modified this account.`,
       section: 'administration',
       visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
     },
     {
       class: 'String',

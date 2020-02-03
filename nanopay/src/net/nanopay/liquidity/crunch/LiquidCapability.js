@@ -91,6 +91,24 @@ foam.CLASS({
     {
       name: 'users',
       updateMode: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      createMode: 'HIDDEN',
+      updateMode: 'RO',
+      readMode: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.userDAO
+          .find(value)
+          .then((user) => {
+            this.add(user.label());
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      },
     }
   ],
 

@@ -61,6 +61,16 @@ foam.CLASS({
       },
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.userDAO
+          .find(value)
+          .then((user) => {
+            this.add(user.label());
+          })
+          .catch((error) => {
+            this.add(value);
+          });
       }
     },
     {

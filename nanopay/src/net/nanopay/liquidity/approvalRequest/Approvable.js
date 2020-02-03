@@ -7,11 +7,7 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'Approvable',
 
-  requires: [
-    'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView'
-  ],
-
-  properties: [  
+  properties: [
     {
       class: 'String',
       name: 'id',

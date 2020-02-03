@@ -317,6 +317,25 @@ foam.CLASS({
       readMode: 'RO'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      createMode: 'HIDDEN',
+      updateMode: 'RO',
+      readMode: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.userDAO
+          .find(value)
+          .then((user) => {
+            this.add(user.label());
+          })
+          .catch((error) => {
+            console.log('user: ' + value +' error last mod capR: ' + error);
+            this.add(value);
+          });
+      },
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',

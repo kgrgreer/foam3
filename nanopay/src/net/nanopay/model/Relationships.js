@@ -99,6 +99,14 @@ foam.RELATIONSHIP({
     section: 'parentSection',
     order: 4,
     label: 'Parent Account',
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.accountDAO
+        .find(value)
+        .then((account) => this.add(account.summary))
+        .catch((error) => {
+          this.add(value);
+        });
+    },
     view: function(_, X) {
       const e = foam.mlang.Expressions.create();
       const Account = net.nanopay.account.Account;
@@ -155,6 +163,14 @@ foam.RELATIONSHIP({
     section: 'liquiditySettingsSection',
     label: '',
     value: 0,
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.liquiditySettingsDAO
+        .find(value)
+        .then((liquidSetting) => this.add(liquidSetting.name))
+        .catch((error) => {
+          this.add(value);
+        });
+    },
     view: function(_, X) {
       const e = foam.mlang.Expressions.create();
       const LiquiditySettings = net.nanopay.liquidity.LiquiditySettings;
@@ -768,7 +784,8 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
-    help: `Set this to the account you would like to withdraw funds from.`,
+    help: `Set this to the account you would like to withdraw funds from.
+    Selection of shadow accounts is only available for admin of group.`,
     gridColumns: 7,
     required: true,
     postSet: function(_, n) {

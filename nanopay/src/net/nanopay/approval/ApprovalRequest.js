@@ -412,6 +412,8 @@ if ( obj == null ) {
           X.stack.push({
             class: 'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView',
             propObject: obj.propertiesToUpdate,
+            objId: obj.objId,
+            daoKey: obj.daoKey,
             title: 'Updated Properties and Changes'
           });
           return;

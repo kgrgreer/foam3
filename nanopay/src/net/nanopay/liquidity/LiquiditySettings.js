@@ -73,6 +73,14 @@ foam.CLASS({
       required: true,
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
       section: 'basicInfo',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
       view: (_, X) => {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -238,7 +246,7 @@ foam.CLASS({
           function(curr) {
             var highLiquidity = curr ? curr.format(obj.highLiquidity.threshold != null ? obj.highLiquidity.threshold : 0) : obj.highLiquidity.threshold;
             self.add(highLiquidity);
-          })
+          });
       },
       validationTextVisible: true,
       validationStyleEnabled: true,
@@ -273,6 +281,22 @@ foam.CLASS({
       documentation: 'Last modified date',
       createMode: 'HIDDEN',
       visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who last modified this account.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
     },
     {
       class: 'foam.core.Enum',
