@@ -178,6 +178,18 @@ foam.CLASS({
       required: true,
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO,
+              heading: 'Currencies'
+            }
+          ]
+        };
       }
     },
     {

@@ -894,6 +894,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/ruler/IsSystemOrAdminUser' },
    { name: 'net/nanopay/liquidity/ruler/LogoutUserOnAssignmentAction' },
+   { name: 'net/nanopay/liquidity/ruler/LogoutUserOnCapabilityUpdateAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRule' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleAction' },
    { name: 'net/nanopay/liquidity/tx/BusinessRuleNotificationAction' },
