@@ -143,24 +143,25 @@ foam.CLASS({
     },
     {
       name: 'menuSearch',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: '',
-              dao: X.menuDAO
-            },
-          ],
-          search: true,
-          searchPlaceholder: 'Search...',
-          selectionView: { class: 'net.nanopay.ui.MenuChoiceSelection' },
-          rowView: { class: 'net.nanopay.ui.MenuRowView' }
-        };
-      },
-      factory: function() {
-        return this.currentMenu;
-      }
+      value: ''
+      // view: function(_, X) {
+      //   return {
+      //   class: 'foam.u2.view.RichChoiceView',
+      //     sections: [
+      //       {
+      //         heading: '',
+      //         dao: X.menuDAO
+      //       },
+      //     ],
+      //     search: true,
+      //     searchPlaceholder: 'Search...',
+      //     selectionView: { class: 'net.nanopay.ui.MenuChoiceSelection' },
+      //     rowView: { class: 'net.nanopay.ui.MenuRowView' }
+      //   };
+      // },
+      // factory: function() {
+      //   return this.currentMenu;
+      // }
     }
   ],
 
@@ -174,15 +175,24 @@ foam.CLASS({
           .addClass(this.myClass())
           .show(this.loginSuccess$)
           .start().addClass('side-nav-view')
-            .tag(this.MENU_SEARCH)
-            .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
-              var slot = foam.core.SimpleSlot.create({ value: false });
-              var hasChildren = foam.core.SimpleSlot.create({ value: false });
-              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
-              return this.E()
-                .start()
+            .add(self.MENU_SEARCH.clone().copyFrom({ view: {
+              class: 'foam.u2.view.TextField',
+              onKey: true
+            } }))
+            .add(this.slot(function(menuSearch) {
+              return self.E().select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
+                var slot = foam.core.SimpleSlot.create({ value: false });
+                var viewChildren = foam.core.SimpleSlot.create({ value: false});
+                var hasChildren = foam.core.SimpleSlot.create({ value: false });
+                var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
+                var searchVisibily = menu.label.includes(menuSearch);
+                return self.E()
+                  .start()
+                  .show(searchVisibily)
                   .attrs({ name: menu.label })
                   .on('click', function() {
+                    viewChildren.set(!viewChildren.get());
+
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
                       return;
                     }
@@ -190,7 +200,7 @@ foam.CLASS({
                       self.menuListener(menu.id);
                       self.pushMenu(menu.id);
                     }
-                    self.menuSearch = menu.id;
+                    //self.menuSearch = menu.id;
                   })
                   .addClass('sidenav-item-wrapper')
                     .start().addClass('menu-label')
@@ -215,17 +225,20 @@ foam.CLASS({
 
                   .start()
                     .addClass('submenu')
-                    .show(visibilitySlot)
+                    .show(viewChildren)
                     .select(self.dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
+                      var subMenuSearchVisibility = subMenu.label.includes(menuSearch);                      
+                      searchVisibily = searchVisibily || subMenuSearchVisibility;
                       hasChildren.set(true);
                       var e = this.E()
+                      .show(subMenuSearchVisibility)
                         .addClass(self.myClass('submenu-item'))
                         .start().addClass(self.myClass('selected-dot')).end()
                         .attrs({ name: subMenu.id })
                         .on('click', function() {
                           if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
                             self.pushMenu(subMenu.id);
-                            self.menuSearch = menu.id;
+                            //self.menuSearch = menu.id;
                           }
                         })
                         .start('span').add(subMenu.label).end()
@@ -239,12 +252,85 @@ foam.CLASS({
                     })
                   .end()
                 .end();
-            })
+                //return self.E().start().add(menu.label).end();
+              });//.start().add(menuSearch).end();
+            }))
+            // .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
+            //   var slot = foam.core.SimpleSlot.create({ value: false });
+            //   var hasChildren = foam.core.SimpleSlot.create({ value: false });
+            //   var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
+            //   return this.E()
+            //     .start()
+            //     //.show(searchVisibilySlot)
+            //       .attrs({ name: menu.label })
+            //       .on('click', function() {
+            //         if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
+            //           return;
+            //         }
+            //         if ( ! hasChildren.get() ) {
+            //           self.menuListener(menu.id);
+            //           self.pushMenu(menu.id);
+            //         }
+            //         self.menuSearch = menu.id;
+            //       })
+            //       .addClass('sidenav-item-wrapper')
+            //         .start().addClass('menu-label')
+            //         .enableClass('selected-root', slot)
+            //         .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
+            //           var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
+            //             currentMenu != null && (
+            //               currentMenu.id == menu.id ||
+            //               currentMenu.parent == menu.id
+            //             );
+            //           slot.set(selectedRoot);
+            //           return selectedRoot;
+            //         }))
+            //         .start('img').addClass('icon')
+            //           .attr('src', menu.icon)
+            //         .end()
+            //         .start('span')
+            //           .add(menu.label)
+            //         .end()
+            //         .start().enableClass('up-arrow', visibilitySlot).end()
+            //       .end()
+
+            //       .start()
+            //         .addClass('submenu')
+            //         .show(visibilitySlot)
+            //         .select(self.dao_.where(self.EQ(self.Menu.PARENT, menu.id)), function(subMenu) {
+
+            //           self.searchVisibilySlot = self.searchVisibilySlot || subMenu.label.includes(self.menuSearch);
+                      
+
+            //           hasChildren.set(true);
+            //           var e = this.E()
+            //           .show()
+            //             .addClass(self.myClass('submenu-item'))
+            //             .start().addClass(self.myClass('selected-dot')).end()
+            //             .attrs({ name: subMenu.id })
+            //             .on('click', function() {
+            //               if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
+            //                 self.pushMenu(subMenu.id);
+            //                 self.menuSearch = menu.id;
+            //               }
+            //             })
+            //             .start('span').add(subMenu.label).end()
+            //             .enableClass('selected-sub', self.currentMenu$.map((currentMenu) => {
+            //               return currentMenu != null && currentMenu.id === subMenu.id;
+            //             }));
+
+            //           if ( self.currentMenu == subMenu ) self.subMenu = e;
+
+            //           return e;
+            //         })
+            //       .end()
+            //     .end();
+            // })
           .end()
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
 
-        this.menuSearch$.sub(this.menuSearchSelect);
+        //this.menuSearch$.sub(this.menuSearchSelect);
         this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
       }
   ],
