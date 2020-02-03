@@ -115,7 +115,7 @@ foam.CLASS({
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
             } catch (Exception e ){
-              logger.error("Failed to generate payment report for transaction " + transaction.getId(), transaction);
+              logger.error("Failed to generate payment report for transaction " + transaction.getId(), e);
             }
             decoratedSink.put(pr, null);
           }
