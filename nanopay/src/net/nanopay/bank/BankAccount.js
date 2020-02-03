@@ -10,22 +10,24 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'institutionDAO',
     'branchDAO'
   ],
 
   javaImports: [
-    'net.nanopay.account.Account',
     'foam.core.Currency',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*',
     'foam.dao.ArraySink',
-    'foam.nanos.auth.User',
+    'foam.dao.DAO',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.account.Account',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -51,7 +53,11 @@ foam.CLASS({
       permissionRequired: true
     }
   ],
-  
+
+  messages: [
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
+  ],
+
   properties: [
     {
       name: 'name',
@@ -255,6 +261,17 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      class: 'String',
+      name: 'label',
+      getter: function() {
+        var self = this;
+        return this.country$find.then((country) => {
+          if ( ! country ) return;
+          return `${ country.name } ${ self.BANK_ACCOUNT_LABEL } (${ self.denomination })`;
+        });
+      }
     }
   ],
   methods: [
