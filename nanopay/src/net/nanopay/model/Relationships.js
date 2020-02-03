@@ -789,14 +789,17 @@ foam.RELATIONSHIP({
     gridColumns: 7,
     required: true,
     postSet: function(_, n) {
-      this.accountDAO.find(n).then((a) => {
-        // NOTES:
-        // DigitalAccounts are used for creation of txn, which is where we wanted the below functionality
-        // Security accounts break with the below functionality
-        if ( a && net.nanopay.account.DigitalAccount.isInstance(a) ) {
-          this.sourceCurrency = a.denomination;
-        }
-      });
+      // only want this postSet to fire off when we are creating txns not viewing
+      if ( this.mode == 'create' ){
+        this.accountDAO.find(n).then((a) => {
+          // NOTES:
+          // DigitalAccounts are used for creation of txn, which is where we wanted the below functionality
+          // Security accounts break with the below functionality
+          if ( a && net.nanopay.account.DigitalAccount.isInstance(a) ) {
+            this.sourceCurrency = a.denomination;
+          }
+        });
+      }
     },
     view: function(_, X) {
       sec = [
@@ -828,13 +831,21 @@ foam.RELATIONSHIP({
     createMode: 'RW',
     visibility: 'FINAL',
     section: 'paymentInfoSource',
-    tableCellFormatter: function(value) {
+    tableCellFormatter: function(value, obj) {
       this.add(value);
 
-      this.__subSubContext__.accountDAO.find(value).then((account) => {
+      // TODO: Temporary fix for now since we need to figure out integrations
+      // we have to show the CICOTransactions from shadows but don't have access to view
+      // the bank accounts
+      if ( net.nanopay.tx.cico.CITransaction.isInstance(obj) ){
         this.removeChild(value.toString());
-        this.add(account.name);
-      });
+        this.add('External Bank Account');
+      } else {
+        this.__subSubContext__.accountDAO.find(value).then((account) => {
+          this.removeChild(value.toString());
+          this.add(account.name);
+        });
+      }
     },
     javaToCSVLabel: `
       outputter.outputValue("Sender User Id");
@@ -893,13 +904,21 @@ foam.RELATIONSHIP({
       if ( destinationAccount == 0 ) return 'please input an account id.';
       return dstAccountError;
     },
-    tableCellFormatter: function(value) {
+    tableCellFormatter: function(value, obj) {
       this.add(value);
 
-      this.__subSubContext__.accountDAO.find(value).then((account) => {
+      // TODO: Temporary fix for now since we need to figure out integrations
+      // we have to show the CICOTransactions from shadows but don't have access to view
+      // the bank accounts
+      if ( net.nanopay.tx.cico.COTransaction.isInstance(obj) ){
         this.removeChild(value.toString());
-        this.add(account.name);
-      });
+        this.add('External Bank Account');
+      } else {
+        this.__subSubContext__.accountDAO.find(value).then((account) => {
+          this.removeChild(value.toString());
+          this.add(account.name);
+        });
+      }
     },
     javaToCSVLabel: `
       outputter.outputValue("Receiver User Id");

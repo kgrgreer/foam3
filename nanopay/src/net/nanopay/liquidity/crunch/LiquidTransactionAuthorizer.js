@@ -12,7 +12,9 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction'
   ],
 
   methods: [
@@ -76,6 +78,11 @@ foam.CLASS({
         Long accountId = ((Transaction) obj).getDestinationAccount();
         String readPermission = createPermission(getPermissionPrefix(), "view", accountId);
         AuthService authService = (AuthService) x.get("auth");
+
+        // TODO: need to integrate after once we figure out integration
+        if ( obj instanceof CITransaction || obj instanceof COTransaction ){
+          return;
+        }
 
         if ( ! authService.check(x, readPermission) ) {
           super.authorizeOnRead(x, obj);
