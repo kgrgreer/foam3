@@ -495,9 +495,6 @@ foam.CLASS({
           } else {
           this.addClass(this.myClass())
           .start()
-            .show(this.slot((loginSuccess) => loginSuccess))
-          .end()
-          .start()
             .addClass('stack-wrapper')
             .start({
               class: 'net.nanopay.ui.banner.Banner',
