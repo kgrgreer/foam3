@@ -45,14 +45,12 @@ public class RbcFileProcessor {
   private Logger logger;
   RbcFTPSClient rbcFTPSClient;
   protected static ReentrantLock SEND_LOCK = new ReentrantLock();
-  private OMLogger omLogger;
 
   public RbcFileProcessor(X x) {
     this.x          = x;
     logger          = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     transactionDAO  = (DAO) x.get("localTransactionDAO");
     rbcFTPSClient   = new RbcFTPSClient(x);
-    omLogger = (OMLogger) x.get("OMLogger");
   }
 
   /**
@@ -92,12 +90,8 @@ public class RbcFileProcessor {
 
     /* Sending file to RBC */
     try {
-      
-      omLogger.log("RBC send file starting");
 
       rbcFTPSClient.send(file);
-
-      omLogger.log("RBC send file complete");
 
       /* Move sent file to archive */
       try {
@@ -107,7 +101,6 @@ public class RbcFileProcessor {
       }
     } catch ( Exception e ) {
       logger.error("RBC Sending file failed: " + e.getMessage(), e);
-      omLogger.log("RBC send file failed");
       try {
         FileUtils.moveFile(file, new File(SEND_FAILED_FOLDER + file.getName()));
       } catch (IOException ex) {
