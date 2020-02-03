@@ -272,9 +272,6 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
-
-      //this.user = await this.businessDAO.find(this.user.id);
-//      this.onboardingStatus = this.user.onboarded;
     },
 
     function initE() {
