@@ -122,6 +122,7 @@ public class RestrictAccountChildrenRuleTest
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
     transaction_.setIsQuoted(true);
+    transaction_.setReferenceNumber("Manual Entry");
 
     test(
       TestUtils.testThrows(

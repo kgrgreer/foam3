@@ -39,7 +39,7 @@ foam.CLASS({
           LiquidityService ls = (LiquidityService) x.get("liquidityService");
           Account source = txn.findSourceAccount(x);
           Account destination = txn.findDestinationAccount(x);
-          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction ) {
+          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction || txn instanceof FXTransaction ) {
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {

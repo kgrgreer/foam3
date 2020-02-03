@@ -471,14 +471,11 @@ foam.CLASS({
         return x.balanceService.findBalance(x,this.id);
       },
       javaCode: `
-      //TODO: make it use service
+        //TODO: use the balance service. for some reason rule engine can't get it in its context so until thats figured out.. this is what its gotta be. this function will be broken for aggregate and securitiesAccounts until then.
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
-          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
           return balance.getBalance();
-        } else {
-          // ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
       `

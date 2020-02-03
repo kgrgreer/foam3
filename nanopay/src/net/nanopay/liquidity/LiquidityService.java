@@ -11,6 +11,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
+import net.nanopay.account.BalanceService;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.approval.ApprovalRequest;
 import net.nanopay.approval.ApprovalStatus;
@@ -38,6 +39,7 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
+  protected BalanceService balanceService_;
 
   protected Logger getLogger() {
     if ( logger_ == null ) {
@@ -50,6 +52,11 @@ public class LiquidityService
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
 
     return accountDAO_;
+  }
+  protected BalanceService getBalanceService() {
+    if ( balanceService_ == null ) balanceService_ = (BalanceService) getX().get("balanceService");
+
+    return balanceService_;
   }
 
   protected DAO getLiquiditySettingsDAO() {
@@ -87,7 +94,8 @@ public class LiquidityService
   }
 
   public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
-    long pendingBalance = (long) account.findBalance(getX());
+    //TODO: use this: long pendingBalance =  getBalanceService().findBalance_(getX(),account);
+    long pendingBalance =  account.findBalance(getX());
     pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(
         OR(

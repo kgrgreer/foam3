@@ -98,6 +98,7 @@ public class RestrictAccountsRuleTest
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
     transaction_.setIsQuoted(true);
+    transaction_.setReferenceNumber("Manual Entry");
 
     // make sure transaction throws expected RuntimeException
     test(
