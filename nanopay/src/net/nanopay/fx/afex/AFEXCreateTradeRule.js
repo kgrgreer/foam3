@@ -11,7 +11,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.blob.BlobService',
-    'foam.core.ContextAwareAgent',
+    'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.fs.File',
@@ -34,21 +34,24 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-      agency.submit(x, new ContextAwareAgent() {
+      agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
 
-          Logger logger = (Logger) getX().get("logger");
+          Logger logger = (Logger) x.get("logger");
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }
           
-          AFEXTransaction transaction = (AFEXTransaction) obj;
-          AFEXServiceProvider afexService = (AFEXServiceProvider) getX().get("afexServiceProvider");
+          DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
+          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+          
+          AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           if ( transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               int result = afexService.createTrade(transaction);
               transaction.setAfexTradeResponseNumber(result);
+              transactionDAO.put(transaction);
 
               if ( transaction.getAfexTradeResponseNumber() != 0 ) {
                 try {
@@ -67,6 +70,7 @@ foam.CLASS({
     
                   File pdf = (File) fileDAO.inX(x).put(thePDF);
                   transaction.addLineItems(new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
+                  transactionDAO.put(transaction);
                 
                   // Append file to related invoice.
                   Transaction root = transaction.findRootTransaction(x, transaction);
