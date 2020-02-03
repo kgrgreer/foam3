@@ -105,7 +105,7 @@ foam.CLASS({
       label: 'Securities Accounts',
       predicateFactory: function(e) {
         return e.AND(
-          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
+          e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
           e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
           e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
         )
