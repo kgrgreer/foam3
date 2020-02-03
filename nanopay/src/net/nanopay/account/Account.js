@@ -377,6 +377,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       documentation: `
         When using a reference to the accountDAO, the labels associated with it will show
         a chosen property rather than the first alphabetical string property. In this
@@ -391,6 +392,18 @@ foam.CLASS({
         }
         return output;
       },
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(getDenomination());
+        sb.append(")");
+        if ( getName().length() == 0 ) {
+          sb.append(getDesc());
+        } else {
+          sb.append(getName());
+        }
+        return sb.toString();
+      `
     },
     {
       name: 'findBalance',
