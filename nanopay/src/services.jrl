@@ -279,7 +279,7 @@ p({
     dao = new PublicUserInfoDAO(x, false, "payerId", "payer", dao);
     dao = new PublicUserInfoDAO(x, false, "payeeId", "payee", dao);
     dao = new InvoiceToContactDAO(x, dao);
-    dao = new HistoryDAO(x, \"localInvoiceHistoryDAO\", dao);
+    dao = new HistoryDAO(x, "localInvoiceHistoryDAO", dao);
     dao = new AuthenticatedInvoiceDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
