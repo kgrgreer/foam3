@@ -110,7 +110,7 @@ foam.CLASS({
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
-      `	,
+      `,
       section: 'basicInfo',
       updateMode: 'RO',
       postSet: function(o, n) {
@@ -122,7 +122,18 @@ foam.CLASS({
             if ( high != null ) high.denomination_ = (String) val;
             Liquidity low = this.getLowLiquidity();
             if ( low != null ) low.denomination_ = (String) val;
-      `
+      `,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO
+            }
+          ]
+        };
+      }
     },
     {
       class: 'FObjectProperty',
