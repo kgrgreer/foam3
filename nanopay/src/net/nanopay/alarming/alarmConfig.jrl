@@ -22,4 +22,4 @@ p({"class":"net.nanopay.alarming.AlarmConfig","id":18,"name":"AFEX checkPaymentS
 // RBC
 p({"class":"net.nanopay.alarming.AlarmConfig","id":19,"name":"RBC Send File","preRequest":"RBC send file starting","postRequest":"RBC send file complete","timeOutRequest":"RBC send file failed","alarmValue":90,"sendEmail":false})
 p({"class":"net.nanopay.alarming.AlarmConfig","id":20,"name":"RBC Download File","preRequest":"RBC download file starting","postRequest":"RBC download file complete","timeOutRequest":"RBC download file failed","alarmValue":90,"sendEmail":false})
-p({"class":"net.nanopay.alarming.AlarmConfig","id":21,"name":"RBC Login","preRequest":"RBC login starting","postRequest":"RBC login complete","timeOutRequest":"RBC login failed","alarmValue":90,"sendEmail":false})
+p({"class":"net.nanopay.alarming.AlarmConfig","id":21,"name":"RBC Login","preRequest":"RBC login starting","postRequest":"RBC login complete","timeOutRequest":"RBC login failed","alarmValue":90,"monitorType":1,"sendEmail":false})
