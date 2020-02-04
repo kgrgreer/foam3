@@ -40,7 +40,7 @@ foam.CLASS({
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-            args.put("business", owner.getLabel());
+            args.put("business", owner.label());
 
             Notification deletedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been deleted.")
