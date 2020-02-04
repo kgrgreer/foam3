@@ -14,7 +14,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
