@@ -67,8 +67,18 @@ foam.CLASS({
               tableWidth: 115
             }),
             this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),
-            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 115 }),
-            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.ISSUE_DATE.clone().copyFrom({
+               tableWidth: 115,
+               tableCellFormatter: function(_, invoice) {
+                 this.add(self.styleDate(invoice.issueDate));
+               }
+             }),
+            this.Invoice.DUE_DATE.clone().copyFrom({
+               tableWidth: 115,
+               tableCellFormatter: function(_, invoice) {
+                 this.add(self.styleDate(invoice.dueDate));
+               }
+            }),
             this.Invoice.STATUS.clone().copyFrom({ tableWidth: 115 }),
             'invoiceFile'
           ],
@@ -170,6 +180,24 @@ foam.CLASS({
             });
           }
         });
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'styleDate',
+      code: function(date) {
+        let convertedDate = date.toISOString().substring(0, 10).split('-');
+        let outDate = '';
+        outDate += (convertedDate[1].charAt(0) !== '0')
+          ? convertedDate[1] : convertedDate[1].charAt(1);
+        outDate += '/';
+        outDate += (convertedDate[2].charAt(0) !== '0')
+          ? convertedDate[2] : convertedDate[2].charAt(1);
+        outDate += '/';
+        outDate += convertedDate[0];
+        return outDate;
       }
     }
   ],
