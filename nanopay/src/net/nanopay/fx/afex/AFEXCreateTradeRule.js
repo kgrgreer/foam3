@@ -44,7 +44,7 @@ foam.CLASS({
           }
           
           DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
-          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+          AFEXTransaction transaction = (AFEXTransaction) obj;
           
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           if ( transaction.getAfexTradeResponseNumber() == 0 ) {

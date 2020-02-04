@@ -40,7 +40,7 @@ foam.CLASS({
             return;
           }
           
-          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+          AFEXTransaction transaction = (AFEXTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           if (transaction.getStatus() == TransactionStatus.PENDING 
