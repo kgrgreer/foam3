@@ -431,7 +431,7 @@ foam.CLASS({
 
         if ( businessAddress != null &&
              SafetyUtil.equals(businessAddress.getRegionId(), "QC") &&
-             ! auth.check("*") ) {
+             ! auth.check(getX(), "*") ) {
           throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
