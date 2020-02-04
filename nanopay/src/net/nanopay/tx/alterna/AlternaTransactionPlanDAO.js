@@ -9,8 +9,6 @@ foam.CLASS({
   name: 'AlternaTransactionPlanDAO',
   extends: 'net.nanopay.tx.cico.CABankTransactionPlanDAO',
 
-  documentation: ``,
-
   implements: [
     'foam.nanos.auth.EnabledAware'
   ],
