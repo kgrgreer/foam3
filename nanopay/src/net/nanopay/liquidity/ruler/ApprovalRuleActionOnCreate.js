@@ -209,9 +209,11 @@ foam.CLASS({
           )
         ).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
+            X system = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
+
             AccountRoleApprovalRequest approvalRequest = (AccountRoleApprovalRequest) obj;
             approvalRequest.setIsFulfilled(true);
-            approvalRequestDAO.inX(x).put(approvalRequest);
+            approvalRequestDAO.inX(system).put(approvalRequest);
           }
         });
       `
