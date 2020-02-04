@@ -79,7 +79,8 @@ foam.CLASS({
       this.nextLabel = this.isApproving
         ? this.APPROVE_INVOICE_LABEL
         : this.SUBMIT_LABEL;
-      this.haveOtherOption = this.isApproving ? true : false;
+      this.hasOtherOption = this.isApproving ? true : false;
+      this.optionLabel = 'Reject';
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           .start({

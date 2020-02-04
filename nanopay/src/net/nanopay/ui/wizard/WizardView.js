@@ -23,7 +23,8 @@ foam.CLASS({
     'hasNextOption',
     'hasExitOption',
     'hasBackOption',
-    'haveOtherOption',
+    'hasOtherOption',
+    'optionLabel',
   ],
 
   documentation: 'View that handles multi step procedures.',
@@ -122,7 +123,7 @@ foam.CLASS({
     // display the OtherOption button
     {
       class: 'Boolean',
-      name: 'haveOtherOption',
+      name: 'hasOtherOption',
       value: false
     },
 
@@ -152,6 +153,13 @@ foam.CLASS({
       class: 'String',
       name: 'nextLabel',
       value: 'Next'
+    },
+
+    // Label for the other option button
+    {
+      class: 'String',
+      name: 'optionLabel',
+      value: 'Other'
     },
 
     // When set to true, all circles in the overview will be filled in
@@ -284,6 +292,7 @@ foam.CLASS({
                 }))
                 .tag(self.OTHER_OPTION, {
                   buttonStyle: 'SECONDARY',
+                  label$: self.optionLabel$,
                   size: 'LARGE'
                 })
                 .tag(self.GO_NEXT, {
@@ -386,9 +395,8 @@ foam.CLASS({
     },
     {
       name: 'otherOption',
-      label: 'other',
-      isAvailable: function(haveOtherOption) {
-        return haveOtherOption;
+      isAvailable: function(hasOtherOption) {
+        return hasOtherOption;
       }
     },
   ]
