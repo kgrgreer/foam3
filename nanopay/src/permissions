@@ -545,3 +545,4 @@ p({"class":"foam.nanos.auth.Permission","id":"padcapture.create","description":"
 p({"class":"foam.nanos.auth.Permission","id":"service.purposeCodeDAO","description":"Permission to access purposeCodeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.businessonboarding.section.signingOfficerQuestionSection","description":"Permission to access businessOnboarding signing officer section"})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.usbusinessonboarding.section.signingOfficerQuestionSection","description":"Permission to access usBusinessOnboarding signing officer section"})
+p({"class":"foam.nanos.auth.Permission","id":"file.read.*","description":"Permission to read all attachment files"})
