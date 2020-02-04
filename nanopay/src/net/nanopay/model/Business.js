@@ -558,8 +558,9 @@ foam.CLASS({
 
         // Gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
-          .where(EQ(UserUserJunction.TARGET_ID, getId()))
-          .select(new ArraySink())).getArray();
+        .where(AND(
+          EQ(UserUserJunction.TARGET_ID, getId()),
+          EQ(UserUserJunction.GROUP, getGroup()))).select(new ArraySink())).getArray();
 
         for( UserUserJunction businessUserJunction : businessUserJunctions ) {
           User businessUser = (User) userDAO.find(businessUserJunction.getSourceId());
