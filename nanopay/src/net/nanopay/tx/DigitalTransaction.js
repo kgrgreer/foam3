@@ -5,16 +5,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'java.util.List',
-    'java.util.ArrayList',
-    'foam.nanos.auth.LifecycleState'
+    'net.nanopay.admin.model.ComplianceStatus',
 ],
 
   properties: [
