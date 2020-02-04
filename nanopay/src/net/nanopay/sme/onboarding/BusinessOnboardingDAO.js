@@ -45,7 +45,7 @@ foam.CLASS({
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
         user = (User) user.fclone();
 
-        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true ) {
           if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null
                 && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail()) ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
@@ -94,16 +94,13 @@ foam.CLASS({
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
             }
-          }
 
-          businessOnboarding.setSendInvitation(false);
-          return getDelegate().put_(x, businessOnboarding);
+            businessOnboarding.setSendInvitation(false);
+            return getDelegate().put_(x, businessOnboarding);
+          }
         }
 
         BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
-
-        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && ( old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ||  old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SAVED ) ) return getDelegate().put_(x, businessOnboarding);
 
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {

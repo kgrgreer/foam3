@@ -9,8 +9,12 @@ foam.CLASS({
 
   css: `
     ^ .body-paragraph {
-      color: #525455;
+      width: 418px;
+      height: 96px;
+      font-family: Lato;
+      font-size: 16px;
       line-height: 1.5;
+      color: #525455;
     }
     ^two-factor-block {
       margin-top: 40px;
@@ -39,9 +43,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'IOS_NAME', message: 'iOS' },
+    { name: 'AUTHENTICATOR', message: 'Google Authenticator' },
     { name: 'ANDROID_NAME', message: 'Android' },
-    { name: 'TWO_FACTOR_INSTR1', message: 'Download and use your Google Authenticator ' },
+    { name: 'TWO_FACTOR_INSTR1', message: 'Download and use your ' },
     { name: 'TWO_FACTOR_INSTR2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
   ],
 
@@ -55,25 +59,11 @@ foam.CLASS({
             .start('span')
               .add(this.TWO_FACTOR_INSTR1)
               .start('a').addClass(this.myClass('two-factor-link'))
-                .add(this.IOS_NAME)
+                .add(this.AUTHENTICATOR)
                 .attrs({ href: this.IOS_LINK, target: '_blank' })
-              .end()
-              .add(' or ')
-              .start('a').addClass(this.myClass('two-factor-link'))
-                .add(this.ANDROID_NAME)
-                .attrs({ href: this.ANDROID_LINK, target: '_blank' })
               .end()
               .add(this.TWO_FACTOR_INSTR2)
             .end()
-          .end()
-          .start('a').addClass(this.myClass('two-factor-link'))
-            .add(this.IOS_LABEL)
-            .attrs({ href: this.IOS_LINK, target: '_blank' })
-          .end()
-          .br()
-          .start('a').addClass(this.myClass('two-factor-link'))
-            .add(this.ANDROID_LABEL)
-            .attrs({ href: this.ANDROID_LINK, target: '_blank' })
           .end()
           .start({
             class: 'net.nanopay.sme.ui.TwoFactorAuthView',

@@ -280,7 +280,7 @@ p({
     dao = new PublicUserInfoDAO(x, false, "payerId", "payer", dao);
     dao = new PublicUserInfoDAO(x, false, "payeeId", "payee", dao);
     dao = new InvoiceToContactDAO(x, dao);
-    dao = new HistoryDAO(x, "invoiceHistoryDAO", dao);
+    dao = new HistoryDAO(x, "localInvoiceHistoryDAO", dao);
     dao = new AuthenticatedInvoiceDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
@@ -887,19 +887,28 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "invoiceHistoryDAO",
-  "serve": true,
+  "name": "localInvoiceHistoryDAO",
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(true)
-      .setAuthorizer(new net.nanopay.invoice.InvoiceHistoryAuthorizer())
       .setSeqNo(true)
+      .setAuthorize(false)
       .setJournalName("invoiceHistory")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqPropertyName("seqNo")
       .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
       .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "invoiceHistoryDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.nanos.auth.AuthorizationDAO(x, (foam.dao.DAO) x.get("localInvoiceHistoryDAO"), new net.nanopay.invoice.InvoiceHistoryAuthorizer());
   """,
   "client": "{\"of\":\"foam.dao.history.HistoryRecord\"}"
 })
