@@ -396,7 +396,7 @@ foam.CLASS({
         StringBuilder sb = new StringBuilder();
         sb.append("(");
         sb.append(getDenomination());
-        sb.append(")");
+        sb.append(") ");
         if ( getName().length() == 0 ) {
           sb.append(getDesc());
         } else {
