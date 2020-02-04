@@ -16,7 +16,6 @@ foam.CLASS({
       width: 100%;
       display: flex;
       z-index: 10001;
-      position: fixed;
       background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       font-family: Roboto, Helvetica, sans-serif;
