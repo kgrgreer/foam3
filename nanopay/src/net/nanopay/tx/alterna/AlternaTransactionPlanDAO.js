@@ -21,7 +21,6 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
