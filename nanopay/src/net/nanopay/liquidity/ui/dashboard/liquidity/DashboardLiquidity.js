@@ -123,6 +123,9 @@ foam.CLASS({
         }
         return startDate;
       },
+      preSet: function(o, n) {
+        return n > new Date() ? o : n;
+      },
       postSet: function(_, n) {
         var endDate = n || new Date();
         for ( var i = 0 ; i < this.timeFrame.numBarGraphPoints ; i++ ) {
