@@ -18,3 +18,6 @@ p({"class":"net.nanopay.alarming.AlarmConfig","id":15,"name":"AFEX createTrade",
 p({"class":"net.nanopay.alarming.AlarmConfig","id":16,"name":"AFEX checkTradeStatus","preRequest":"AFEX checkTradeStatus starting","postRequest":"AFEX checkTradeStatus complete","timeOutRequest":"AFEX checkTradeStatus timeout","alarmValue":90,"sendEmail":false})
 p({"class":"net.nanopay.alarming.AlarmConfig","id":17,"name":"AFEX createPayment","preRequest":"AFEX createPayment starting","postRequest":"AFEX createPayment complete","timeOutRequest":"AFEX createPayment timeout","alarmValue":90,"sendEmail":false})
 p({"class":"net.nanopay.alarming.AlarmConfig","id":18,"name":"AFEX checkPaymentStatus","preRequest":"AFEX checkPaymentStatus starting","postRequest":"AFEX createPaycheckPaymentStatusment complete","timeOutRequest":"AFEX checkPaymentStatus timeout","alarmValue":90,"sendEmail":false})
+
+// Transaction
+p({"class":"net.nanopay.alarming.AlarmConfig","id":19,"name":"Transaction Alarm","monitorType":3,"sendEmail":false,"alarmReasonType":5,"manual":true})

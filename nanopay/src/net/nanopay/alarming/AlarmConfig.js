@@ -107,6 +107,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sendEmail',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'manual',
+      value: false
     }
   ]
 });
