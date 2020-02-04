@@ -553,7 +553,7 @@ foam.CLASS({
         if ( this.user.address.countryId === 'CA' ) {
           return ! errors && ! isLoading;
         } else {
-          return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
+          return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
             return cadPerm && ! errors && ! isLoading;
           });
         }
