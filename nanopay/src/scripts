@@ -1112,7 +1112,7 @@ p({
     import foam.nanos.menu.SubMenu;
 
     DRY_RUN = true;
-    // Set to true to undo the permission and theme changes made to the "SME" group by this script
+    // For fix me, Set to true to undo the permission and ui changes made to the "SME" group using this script
     fixSME = false;
     
     // group/spid prefix
@@ -1268,20 +1268,6 @@ p({
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
-    }
-
-    themeDAO = x.get("themeDAO");
-    theme = themeDAO.find(Long.valueOf(3));
-    theme.setPriority(Long.valueOf(3));
-    theme.setLogo("images/nanopay_logo_blue.png");
-    if ( DRY_RUN ) {
-      print("Theme is created.");
-    } else if ( fixSME ) {
-      theme.setPriority(Long.valueOf(2));
-      theme.setLogo("images/ablii-logo.svg");
-      themeDAO.put(theme);
-    } else {
-      themeDAO.put(theme);
     }
 
     // Create SPID
