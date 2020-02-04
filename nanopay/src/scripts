@@ -1257,6 +1257,7 @@ p({
     smeAddPermissionArray.add("menu.read.sme.main.banking");
     smeAddPermissionArray.add("menu.read.sme.main.dashboard");
     smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
+    smeAddPermissionArray.add("menu.read.sme.accountProfile.signout");
 
     for (int i = 0; i < smeAddPermissionArray.size(); i++) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
