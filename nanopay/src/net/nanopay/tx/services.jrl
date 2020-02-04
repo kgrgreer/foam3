@@ -99,7 +99,6 @@ p({
     import net.nanopay.tx.TransactionDAO;
     import net.nanopay.security.HashingJDAO;
     import net.nanopay.security.RandomNonceDAO;
-    import net.nanopay.fx.afex.AFEXTransactionDAO;
     import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
     MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
