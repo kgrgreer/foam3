@@ -10,6 +10,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'foam.dao.MDAO',
     'foam.dao.DAO',
+    'java.util.List',
     'foam.util.SafetyUtil',
     'foam.lib.parse.CSVParser',
     'foam.mlang.MLang',
@@ -25,7 +26,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.gs.ProgressBarData',
     'foam.util.concurrent.SyncAssemblyLine',
-    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine'
   ],
 
   methods: [

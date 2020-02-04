@@ -6,7 +6,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'net.nanopay.tx.model.Transaction',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
   methods: [

@@ -6,6 +6,8 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;

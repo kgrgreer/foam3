@@ -7,7 +7,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   searchColumns: [

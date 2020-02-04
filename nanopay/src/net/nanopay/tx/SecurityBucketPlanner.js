@@ -8,7 +8,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
 

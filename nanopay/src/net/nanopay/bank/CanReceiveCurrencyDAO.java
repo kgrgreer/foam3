@@ -1,9 +1,5 @@
 package net.nanopay.bank;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -17,6 +13,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
+import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id

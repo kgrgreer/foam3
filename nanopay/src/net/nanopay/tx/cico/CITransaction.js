@@ -13,6 +13,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'foam.nanos.auth.LifecycleState'
   ],
   properties: [
     {

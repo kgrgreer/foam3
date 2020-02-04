@@ -16,7 +16,8 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'java.util.List',
+    'foam.nanos.auth.AuthService'
   ],
 
   implements: [
