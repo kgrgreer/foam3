@@ -1,8 +1,12 @@
 package net.nanopay.partners;
 
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
+
+import java.util.Date;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
@@ -12,20 +16,13 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.util.Auth;
-import net.nanopay.contacts.Contact;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
-
-import java.util.Date;
-
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
 
 public class AuthenticatedInvitationDAO
   extends ProxyDAO
 {
-  public AuthService auth_ = null;
+  private AuthService auth_ = null;
 
   public AuthenticatedInvitationDAO(X x, DAO delegate) {
     setX(x);

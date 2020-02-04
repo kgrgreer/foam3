@@ -1,12 +1,14 @@
 package net.nanopay.contacts;
 
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.test.Test;
-import foam.test.TestUtils;
 import foam.util.Auth;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -19,8 +21,6 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.util.List;
 
 public class AbliiFlowTests
 extends Test
@@ -85,7 +85,8 @@ extends Test
     } catch ( IllegalStateException ise ) {
       // Exceptions may be thrown if contacs/users are deleted before invoices,
       // as Invoide deletion does invoke some of the invoice validation logic.
-      ise.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(ise);
     }
   }
 

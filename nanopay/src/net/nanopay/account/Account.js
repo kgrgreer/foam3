@@ -24,13 +24,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.DigitalAccount',
     'foam.core.Currency'
   ],
 

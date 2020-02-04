@@ -121,7 +121,6 @@ public class BlacklistTest extends Test {
       Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
     } catch (Throwable t) {
-      t.printStackTrace();
       test(false, "Unexpected exception putting transaction before business passes compliance: " + t);
     }
 

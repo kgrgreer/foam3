@@ -49,7 +49,7 @@ foam.CLASS({
     ^ .invoice-note {
       display: inline-block;
       max-height: 260px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));

@@ -88,21 +88,21 @@ foam.CLASS({
         }
 
         // find user from token
-        user = (User) userDAO.find_(x, result.getUserId());
-        if ( user == null ) {
+        User newUser = (User) userDAO.find_(x, result.getUserId());
+        if ( newUser == null ) {
           throw new RuntimeException("User not found");
         }
 
-        Phone phone = user.getPhone();
+        Phone phone = newUser.getPhone();
         if ( phone.getVerified() ) {
           throw new RuntimeException("Phone already verified");
         }
 
         // update phone to verified
-        user = (User) user.fclone();
+        newUser = (User) newUser.fclone();
         phone.setVerified(true);
-        user.setPhone(phone);
-        userDAO.put_(x, user);
+        newUser.setPhone(phone);
+        userDAO.put_(x, newUser);
 
         // update token
         result = (Token) result.fclone();

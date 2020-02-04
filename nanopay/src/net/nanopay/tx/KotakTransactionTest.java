@@ -1,6 +1,14 @@
 package net.nanopay.tx;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
@@ -16,18 +24,8 @@ import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import foam.dao.ArraySink;
-import foam.util.SafetyUtil;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;

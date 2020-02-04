@@ -5,14 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.Account',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer',
-    'java.util.Arrays',
-    'foam.dao.DAO',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'foam.util.SafetyUtil'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [

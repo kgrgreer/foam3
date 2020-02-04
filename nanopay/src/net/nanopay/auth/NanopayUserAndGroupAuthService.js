@@ -16,7 +16,6 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
-    'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.session.Session',
@@ -27,7 +26,6 @@ foam.CLASS({
     'java.util.HashMap',
 
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.passwordutil.PasswordEntropy',
     'net.nanopay.model.Business',
 
     'static foam.mlang.MLang.AND',

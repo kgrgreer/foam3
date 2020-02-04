@@ -1,5 +1,7 @@
 package net.nanopay.onboarding.email;
 
+import java.util.HashMap;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
@@ -9,10 +11,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
-import java.util.HashMap;
 import net.nanopay.admin.model.AccountStatus;
-import net.nanopay.contacts.Contact;
-import net.nanopay.model.Business;
 
 public class RegistrationSubmissionEmailDAO
   extends ProxyDAO

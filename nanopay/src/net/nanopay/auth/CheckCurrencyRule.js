@@ -7,10 +7,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthService',
-    'net.nanopay.account.Account'
+    'foam.nanos.auth.AuthService'
   ],
 
   messages: [

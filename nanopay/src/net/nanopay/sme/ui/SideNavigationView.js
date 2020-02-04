@@ -15,7 +15,8 @@ foam.CLASS({
     'menuDAO',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'loginSuccess'
   ],
 
   requires: [
@@ -165,7 +166,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
-      factory: function() {
+      expression: function(loginSuccess) {
         return this.menuDAO
           .orderBy(this.Menu.ORDER)
           .where(
@@ -185,7 +186,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
+      
       this.addClass(this.myClass())
         .start()
           .addClass('side-nav')
@@ -221,7 +222,7 @@ foam.CLASS({
           .start()
             .addClass('divider-line-2')
           .end()
-          .select(this.dao, function(menu) {
+          .select(this.dao$proxy, function(menu) {
             return this.E()
               .call(function() {
                 this

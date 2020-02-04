@@ -31,8 +31,6 @@ public class AuthenticatedPIIRequestDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
-    ViewPIIRequest viewPIIRequest = (ViewPIIRequest) obj;
-    AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
       throw new AuthenticationException();

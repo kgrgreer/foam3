@@ -13,10 +13,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.DAO',
-    'net.nanopay.tx.ruler.BusinessLimitPredicate',
-    'net.nanopay.tx.ruler.TransactionLimitRuleAction',
     'net.nanopay.tx.ruler.TransactionLimitState',
     'static foam.mlang.MLang.*',
   ],

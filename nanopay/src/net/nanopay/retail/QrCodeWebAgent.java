@@ -2,6 +2,7 @@ package net.nanopay.retail;
 
 import foam.core.X;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import io.nayuki.qrcodegen.QrCode;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +51,8 @@ public class QrCodeWebAgent
       QrCode qr = QrCode.encodeText(builder.toString(), QrCode.Ecc.MEDIUM);
       writer.write(qr.toSvgString(4));
     } catch (Throwable t) {
-      t.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(t);
     }
   }
 }

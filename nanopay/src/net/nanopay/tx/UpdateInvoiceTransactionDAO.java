@@ -1,29 +1,27 @@
 package net.nanopay.tx;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import static foam.mlang.MLang.EQ;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.FXSummaryTransaction;
-import net.nanopay.fx.afex.AFEXTransaction;
+import net.nanopay.fx.FXTransaction;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.alterna.CsvUtil;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
-import net.nanopay.fx.FXTransaction;
-
-import java.util.*;
 
 public class UpdateInvoiceTransactionDAO extends ProxyDAO {
 
@@ -42,15 +40,14 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
 
     Transaction transaction = (Transaction) obj;
 
-    if ( SafetyUtil.isEmpty(transaction.getId()) &&
-      ( transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
-    ) {
+    if ( (transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 )) &&
+      ((DAO) x.get("localTransactionDAO")).find(transaction.getId()) == null ) {
       transaction = (Transaction) super.put_(x, obj);
 
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
-        // Invoice status should be processing as default when the trasaction is created
+        // Invoice status should be processing as default when the transaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         // AscendantFXTransaction has its own completion date
         if ( transaction instanceof AscendantFXTransaction ) {
@@ -70,6 +67,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       && ( transaction instanceof CITransaction ||
            transaction instanceof COTransaction ||
            transaction instanceof FXTransaction ||
+           transaction instanceof KotakPaymentTransaction ||
            transaction instanceof ComplianceTransaction )
     ) {
       transaction.setInvoiceId(getRoot(x, transaction).getInvoiceId());
@@ -82,6 +80,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
          ! ( transaction instanceof CITransaction ||
              transaction instanceof COTransaction ||
              transaction instanceof FXTransaction ||
+             transaction instanceof KotakPaymentTransaction ||
              transaction instanceof ComplianceTransaction ) ) {
       return getDelegate().put_(x, obj);
     }

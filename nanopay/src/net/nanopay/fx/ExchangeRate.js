@@ -24,6 +24,15 @@ foam.CLASS({
 
   ids: [ 'fromCurrency', 'toCurrency' ],
 
+  searchColumns: [
+    'expirationDate',
+    'fromCurrency',
+    'fxProvider',
+    'id',
+    'rate',
+    'toCurrency'
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -96,7 +105,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.fx.FXProvider',
       name: 'fxProvider',
-      documentation: 'Exchange Rate Provider'
+      documentation: 'Exchange Rate Provider',
+      targetDAOKey: 'fxProviderDAO',
     },
     {
       class: 'Long',

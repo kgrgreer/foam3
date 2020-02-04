@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
+import foam.nanos.logger.Logger;
 import net.nanopay.meter.reports.AbstractReport;
 import net.nanopay.tx.BulkTransaction;
 import net.nanopay.tx.DigitalTransaction;
@@ -110,11 +111,10 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
                 ciAmountCAD += txn.getAmount();
               } else if (txn instanceof COTransaction) {
                 coAmountCAD += txn.getAmount();
-              } else if (txn instanceof DigitalTransaction) {
-                if ( txn.getCost() > 0 ) {
+              } else if ( txn instanceof DigitalTransaction &&
+                          txn.getCost() > 0 ) {
                   totalCount += 1;
                   totalFee += txn.getCost();
-                }
               }
             }
             break;
@@ -170,7 +170,8 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
       writer.flush();
       writer.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      Logger logger = (Logger) x.get("logger");
+      logger.log(e);
     }
   }
 

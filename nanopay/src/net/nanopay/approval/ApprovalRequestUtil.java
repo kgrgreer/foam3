@@ -66,8 +66,9 @@ public class ApprovalRequestUtil {
           }
         }
       );
-    } finally {
+    } catch (Exception e){
       return tester.getState();
     }
+    return tester.getState();
   }
 }

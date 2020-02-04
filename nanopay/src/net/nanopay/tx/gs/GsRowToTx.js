@@ -3,10 +3,15 @@ foam.CLASS({
   name: 'GsRowToTx',
 
   javaImports: [
-    'foam.dao.DAO',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.TrustAccount',
     'foam.dao.MDAO',
-    'java.util.List',
-    'foam.dao.EasyDAO',
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
+    'foam.lib.parse.CSVParser',
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
     'foam.util.SafetyUtil',

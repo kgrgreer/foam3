@@ -49,7 +49,7 @@ p({
   "serve":true,
   "serviceScript":
   """
-    foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x, 
+    foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x,
       new foam.nanos.auth.PermissionedPropertyDAO(x, 
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
           new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")),
@@ -69,6 +69,9 @@ p({
   {
     "of":"net.nanopay.account.Account",
     "decorators": [
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      },
       {
         "class":"foam.nanos.fs.FileDAODecorator"
       }

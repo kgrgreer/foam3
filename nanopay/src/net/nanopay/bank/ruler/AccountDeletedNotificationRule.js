@@ -33,6 +33,7 @@ foam.CLASS({
             Group          group = owner.findGroup(x);
             AppConfig     config = group != null ? (AppConfig) group.getAppConfig(x) : null;
 
+            if ( config == null ) return;
             if ( owner instanceof Contact ) return;
 
             HashMap<String, Object> args = new HashMap<>();

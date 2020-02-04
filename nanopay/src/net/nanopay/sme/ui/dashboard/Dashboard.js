@@ -40,6 +40,7 @@ foam.CLASS({
     'ctrl',
     'group',
     'invoiceDAO',
+    'isIframe',
     'notificationDAO',
     'onboardingUtil',
     'pushMenu',
@@ -57,10 +58,6 @@ foam.CLASS({
     'myDaoNotification'
   ],
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   messages: [
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
@@ -70,7 +67,8 @@ foam.CLASS({
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
-    { name: 'VIEW_ALL', message: 'View all' }
+    { name: 'VIEW_ALL', message: 'View all' },
+    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
   ],
 
   css: `
@@ -102,6 +100,20 @@ foam.CLASS({
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-sendPayment {
       width: 200px;
+    }
+    ^ .divider-half {
+      font-size: 14px;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      padding: 0 10px;
+      text-align: center;
+      color: #8e9090;
+    }
+    ^ .line {
+      width: 100%;
+      height: 10px;
+      border-bottom: 2px solid #e2e2e3;
+      text-align: center;
+      margin-top: 15px;
     }
   `,
 
@@ -219,7 +231,9 @@ foam.CLASS({
     'bankAccount',
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   methods: [
@@ -258,6 +272,7 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
+
       this.user = await this.businessDAO.find(this.user.id);
       this.onboardingStatus = this.user.onboarded;
     },
@@ -269,6 +284,11 @@ foam.CLASS({
         var self = this;
         var split = this.DashboardBorder.create();
 
+        this.businessDAO.find(this.user.id).then((o) => {
+          this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+          this.businessRegistrationDate = o.businessRegistrationDate;
+        });
+
         var top = this.Element.create()
           .start('h1')
             .add(this.TITLE)
@@ -278,20 +298,29 @@ foam.CLASS({
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
-            onboardingStatus: this.onboardingStatus
+            onboardingStatus: this.onboardingStatus,
+            businessRegistrationDate$: this.businessRegistrationDate$,
+            countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
-        var topL = this.Element.create()
-          .start('h2')
-            .add(this.SUBTITLE1)
-          .end()
-          .start()
-            .tag(this.RequireActionView.create({
-              countRequiresApproval$: this.countRequiresApproval$,
-              countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
-              countDepositPayment$: this.countDepositPayment$
-            }))
+        var line = this.Element.create()
+          .start().addClass('line')
+            .start('span')
+              .addClass('divider-half').add(this.UPPER_TXT)
+            .end()
           .end();
+
+          var topL = this.Element.create()
+            .start('h2')
+              .add(this.SUBTITLE1)
+            .end()
+            .start()
+              .tag(this.RequireActionView.create({
+                countRequiresApproval$: this.countRequiresApproval$,
+                countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+                countDepositPayment$: this.countDepositPayment$
+              }))
+            .end();
 
         var topR = this.Element.create()
           .start()
@@ -402,12 +431,18 @@ foam.CLASS({
           .end();
 
         split.topButtons.add(top);
-        split.leftTopPanel.add(topL);
-        split.leftBottomPanel.add(botL);
-        split.rightTopPanel.add(topR);
-        split.rightBottomPanel.add(botR);
+        split.line.add(line)
+          .hide(this.isIframe());
+        split.leftTopPanel.add(topL)
+          .hide(this.isIframe());
+        split.leftBottomPanel.add(botL)
+          .hide(this.isIframe());
+        split.rightTopPanel.add(topR)
+          .hide(this.isIframe());
+        split.rightBottomPanel.add(botR)
+          .hide(this.isIframe());
 
-        this.addClass(this.myClass()).add(split).end();
+        this.addClass(this.myClass()).add(split);
       });
     }
   ],
