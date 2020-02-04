@@ -186,7 +186,8 @@ foam.CLASS({
             business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
           }
 
-          business.setOnboarded(true);
+          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
+            business.setOnboarded(true);
 
           if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
             business.setCompliance(ComplianceStatus.REQUESTED);
