@@ -7,7 +7,8 @@ p({
       "spid":"nanopay",
       "urls":[
         "ablii",
-        "app.ablii.com"
+        "app.ablii.com",
+        "portal.nanopay.net"
       ]
     },
     {
@@ -15,7 +16,8 @@ p({
       "spid":"gd",
       "urls":[
         "gd",
-        "gd.ablii.com"
+        "gd.ablii.com",
+        "gd.sandbox.ablii.com"
       ]
     }
   ]
