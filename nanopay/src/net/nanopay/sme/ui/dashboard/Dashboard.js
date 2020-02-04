@@ -272,9 +272,6 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
-
-      this.user = await this.businessDAO.find(this.user.id);
-      this.onboardingStatus = this.user.onboarded;
     },
 
     function initE() {
@@ -285,6 +282,7 @@ foam.CLASS({
         var split = this.DashboardBorder.create();
 
         this.businessDAO.find(this.user.id).then((o) => {
+          this.onboardingStatus = o.onboarded;
           this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
           this.businessRegistrationDate = o.businessRegistrationDate;
         });
@@ -298,7 +296,7 @@ foam.CLASS({
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
-            onboardingStatus: this.onboardingStatus,
+            onboardingStatus$: this.onboardingStatus$,
             businessRegistrationDate$: this.businessRegistrationDate$,
             countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard

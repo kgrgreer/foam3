@@ -40,7 +40,7 @@ foam.CLASS({
             args.put("sendTo", User.EMAIL);
 
             Notification notification = new Notification.Builder(x)
-            .setBody(acc.getAccountNumber() + " is processing ")
+            .setBody(acc.toSummary() + " is processing ")
             .setNotificationType("bankNotifications")
             .setEmailName("micro-deposit-sent")
             .setEmailArgs(args)

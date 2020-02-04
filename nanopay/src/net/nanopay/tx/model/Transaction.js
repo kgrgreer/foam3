@@ -219,6 +219,15 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
+      name: 'createdLegacy',
+      documentation: `The date the transaction was created for transaction before status history.`,
+      visibility: 'HIDDEN',
+      section: 'basicInfo',
+      storageTransient: true,
+      shortName: 'created'
+    },
+    {
+      class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
@@ -229,8 +238,19 @@ foam.CLASS({
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
       },
-      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
+      getter: function() {
+        return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
+      },
+      javaGetter: `
+        if ( getCreatedLegacy() != null ) {
+          return getCreatedLegacy();
+        }
+        return getStatusHistory()[0].getTimeStamp();
+      `,
       javaFactory: `
+        if ( getCreatedLegacy() != null ) {
+          return getCreatedLegacy();
+        }
         if ( getStatusHistory().length > 0 ) {
           return getStatusHistory()[0].getTimeStamp();
         }

@@ -35,6 +35,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'appConfig',
     'auth',
     'ctrl',
@@ -249,6 +250,8 @@ foam.CLASS({
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
       }
+
+      this.setChosenBankAccount();
     },
     function initE() {
       let self = this;
@@ -507,6 +510,21 @@ foam.CLASS({
         })
       );
       return quote.plan;
+    },
+    async function setChosenBankAccount() {
+      this.chosenBankAccount = this.viewData.bankAccount = await this.accountDAO.find(
+        this.AND(
+          this.INSTANCE_OF(this.BankAccount),
+          this.EQ(this.BankAccount.IS_DEFAULT, true),
+          this.EQ(this.BankAccount.DENOMINATION, this.isPayable ? this.invoice.destinationCurrency : this.invoice.sourceCurrency)
+        )
+      );
+
+      if ( this.isPayable ) {
+        this.invoice.account = this.chosenBankAccount;
+      } else {
+        this.invoice.destinationAccount = this.chosenBankAccount;
+      }
     }
   ],
 

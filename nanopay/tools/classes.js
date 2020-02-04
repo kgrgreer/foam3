@@ -206,6 +206,10 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  'net.nanopay.fx.afex.AFEXCreateTradePredicate',
+  'net.nanopay.fx.afex.AFEXCreateTradeRule',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -537,6 +541,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.auth.ServiceProviderURL',
+  'net.nanopay.auth.UserCreateServiceProviderURLRule',
+  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
   // PII
   'net.nanopay.security.pii.PII',
