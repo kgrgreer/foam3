@@ -206,7 +206,6 @@ p({"class":"foam.nanos.auth.Permission","id":"service.execute.exportDriverRegist
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.feeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.flinksAuth"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.groupDAO"})
-p({"class":"foam.nanos.auth.Permission","id":"service.execute.historyDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.http"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httpBlobService"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httpFileService","description":""})
