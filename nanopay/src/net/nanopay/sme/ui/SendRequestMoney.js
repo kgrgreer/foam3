@@ -423,7 +423,9 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        this.invoice = await this.invoiceDAO.put(this.invoice);
+        if ( ! this.isApproving ) {
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        }
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put): ' + error.message);
         this.notify(this.INVOICE_ERROR + this.type, 'error');
