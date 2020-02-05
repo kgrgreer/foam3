@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'UserSelectionView',
   extends: 'foam.u2.Element',
 
+  imports: [
+    'publicBusinessDAO'
+  ],
+
   css: `
     ^ {
       display: flex;
@@ -37,12 +41,12 @@ foam.CLASS({
           .addClass(this.myClass())
           .start().addClass('styleHolder_NameField')
             .add(this.data ?
-              this.fullObject$.map((obj) => {
+              this.fullObject$.map(async (obj) => {
                 var formatted = '';
                 if ( obj ) {
-                  formatted += obj.organization || obj.businessName;
+                  formatted += await this.getCompanyName();
                   if ( obj.legalName && obj.legalName.trim() ) {
-                    formatted += ` (${obj.legalName})`; 
+                    formatted += ` (${obj.legalName})`;
                   }
                 }
                 return formatted;
@@ -55,6 +59,15 @@ foam.CLASS({
               '')
           .end()
         .end();
+    },
+    async function getCompanyName() {
+      let obj = this.fullObject;
+      if ( ! obj.businessId ) {
+        return obj.organization;
+      } else {
+        var business = await this.publicBusinessDAO.find(obj.businessId);
+        return business.label();
+      }
     }
   ]
 });

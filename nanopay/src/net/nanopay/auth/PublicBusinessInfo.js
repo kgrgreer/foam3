@@ -13,6 +13,7 @@ foam.CLASS({
 
   properties: [
     net.nanopay.model.Business.ID,
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME,
     net.nanopay.model.Business.BUSINESS_NAME,
     net.nanopay.model.Business.ORGANIZATION,
     net.nanopay.model.Business.ADDRESS,
@@ -31,6 +32,7 @@ foam.CLASS({
             DAO businessSectorDAO = (DAO) x.get("businessSectorDAO");
             BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
             setId(business.getId());
+            setOperatingBusinessName(business.label());
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
@@ -40,4 +42,22 @@ foam.CLASS({
       },
     },
   ],
+  methods: [
+    {
+      name: 'label',
+      code: function() {
+        return this.operatingBusinessName
+          ? this.operatingBusinessName
+          : this.organization
+            ? this.organization
+            : this.businessName
+              ? this.businessName
+              : this.firstName
+                ? this.lastName
+                  ? `${this.firstName} ${this.lastName}`
+                  : this.firstName
+                : 'Unknown';
+      }
+    }
+  ]
 });

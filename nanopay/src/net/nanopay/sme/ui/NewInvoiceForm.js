@@ -140,7 +140,7 @@ foam.CLASS({
       margin-left: 30px;
       text-decoration: underline;
     }
-    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view, 
+    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view,
     ^ .error-box {
       border-color: #f91c1c;
       background: #fff6f6;
@@ -594,4 +594,3 @@ foam.CLASS({
     }
   ]
 });
-

@@ -178,14 +178,6 @@ foam.CLASS({
       section: 'administrative'
     },
     {
-      class: 'String',
-      name: 'operatingBusinessName',
-      documentation: `The business name displayed to the public. This may differ
-        from the organization name.`,
-          // Is displayed on client if present taking place of organziation name.
-      section: 'business'
-    },
-    {
       class: 'Boolean',
       name: 'thirdParty',
       documentation: `Determines whether the User is taking instructions from and/or acting

@@ -2,8 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.invoice.model',
   name: 'Invoice',
 
-  documentation: `The base model for presenting and monitoring transactional 
-    documents between Users, and to Users, and ensuring the terms of their 
+  documentation: `The base model for presenting and monitoring transactional
+    documents between Users, and to Users, and ensuring the terms of their
     trading agreements are met.
   `,
 
@@ -79,7 +79,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purchaseOrder',
-      documentation: `The identifying number from the purchase order as stated 
+      documentation: `The identifying number from the purchase order as stated
         on the invoice.
       `,
       label: 'PO #',
@@ -189,7 +189,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      documentation: `The ID of the individual person, or real user, 
+      documentation: `The ID of the individual person, or real user,
         who last modified the Invoice.`,
     },
     {
@@ -201,7 +201,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
-      documentation: `Returns the name of the party receiving the payment from the 
+      documentation: `Returns the name of the party receiving the payment from the
         Public User Info model.`,
       hidden: true
     },
@@ -209,7 +209,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
-      documentation: `Returns the name of the party making the payment from the 
+      documentation: `Returns the name of the party making the payment from the
         Public User Info model.`,
       hidden: true
     },
@@ -252,8 +252,8 @@ foam.CLASS({
       name: 'amount',
       unitPropName: 'destinationCurrency',
       documentation: `
-        The amount transferred or paid as per the invoice. The amount of money that will be 
-        deposited into the destination account. If fees or exchange apply, the source amount 
+        The amount transferred or paid as per the invoice. The amount of money that will be
+        deposited into the destination account. If fees or exchange apply, the source amount
         may have to be adjusted.
       `,
       aliases: [
@@ -267,7 +267,7 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Invoice)obj).getDestinationCurrency();
         Currency currency = (Currency) currencyDAO.find(dstCurrency);
-        
+
         // Outputting two columns: "amount", "destination Currency"
         outputter.outputValue(currency.format(get_(obj)));
         outputter.outputValue(dstCurrency);
@@ -306,7 +306,7 @@ foam.CLASS({
       class: 'String',
       name: 'destinationCurrency',
       value: 'CAD',
-      documentation: `The currency of the bank account into which funds are to 
+      documentation: `The currency of the bank account into which funds are to
         be deposited.
       `
     },
@@ -314,7 +314,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       value: 'CAD',
-      documentation: `The currency of the bank account from which funds are to be 
+      documentation: `The currency of the bank account from which funds are to be
         withdrawn.`,
     },
     {
@@ -357,7 +357,7 @@ foam.CLASS({
       aliases: [
         'sourceAccount'
       ],
-      documentation: `As the invoiced account, this is the bank account from which 
+      documentation: `As the invoiced account, this is the bank account from which
         funds will be withdrawn to pay an invoice.
       `
     },
@@ -365,8 +365,8 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
-      documentation: `A list of the types of status for an invoice regarding payment. This 
-        is a calculated property used to determine whether an invoice is unpaid, 
+      documentation: `A list of the types of status for an invoice regarding payment. This
+        is a calculated property used to determine whether an invoice is unpaid,
         void, pending, paid, scheduled, or overdue.
       `,
       transient: true,
@@ -469,7 +469,7 @@ foam.CLASS({
         StringBuilder sb = new StringBuilder();
         foam.nanos.fs.File[] filesList = get_(obj);
         foam.nanos.fs.File file;
-  
+
         sb.append("[");
         for(int i = 0; i < filesList.length; i++ ) {
           if ( i != 0 ) sb.append(",");
@@ -483,7 +483,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
-      documentation: `Determines whether an email has been sent to the Payer 
+      documentation: `Determines whether an email has been sent to the Payer
         informing them that the payment they scheduled is due.`,
       value: false
     },
@@ -509,7 +509,7 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
       value: 0,
-      documentation: `The unique identifier for the Contact, representing people who, 
+      documentation: `The unique identifier for the Contact, representing people who,
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
       view: function(_, X) {

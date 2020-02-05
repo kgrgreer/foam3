@@ -5,6 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
     'foam.util.SafetyUtil',
   ],
 
@@ -37,6 +38,14 @@ foam.CLASS({
       name: 'businessName',
       documentation: `The name of the business associated with the public
         information of a User.`,
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -94,19 +103,23 @@ foam.CLASS({
     {
       name: 'label',
       code: function() {
-        return this.organization
-          ? this.organization
-          : this.businessName
-            ? this.businessName
-            : this.firstName
-              ? this.lastName
-                ? `${this.firstName} ${this.lastName}`
-                : this.firstName
-              : 'Unknown';
+        return this.operatingBusinessName
+          ? this.operatingBusinessName
+          : this.organization
+            ? this.organization
+            : this.businessName
+              ? this.businessName
+              : this.firstName
+                ? this.lastName
+                  ? `${this.firstName} ${this.lastName}`
+                  : this.firstName
+                : 'Unknown';
       },
       type: 'String',
       javaCode: `
-        return ! SafetyUtil.isEmpty(this.getOrganization())
+      return ! SafetyUtil.isEmpty(this.getOperatingBusinessName())
+        ? this.getOperatingBusinessName()
+        : ! SafetyUtil.isEmpty(this.getOrganization())
           ? this.getOrganization()
           : ! SafetyUtil.isEmpty(this.getBusinessName())
             ? this.getBusinessName()
@@ -125,6 +138,10 @@ foam.CLASS({
         cls.extras.push(`
           public PublicUserInfo(User user) {
             if ( user == null ) return;
+            if ( user instanceof Business ) {
+              Business business = (Business) user;
+              setOperatingBusinessName(business.getOperatingBusinessName());
+            }
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());

@@ -114,7 +114,7 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('business-name'))
               .add(this.slot(function(data) {
-                return data ? data.organization : '';
+                return data ? data.label() : '';
               }))
             .end()
             .start()

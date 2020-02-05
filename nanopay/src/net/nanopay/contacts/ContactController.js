@@ -26,7 +26,8 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'stack',
-    'user'
+    'user',
+    'publicBusinessDAO',
   ],
 
   constants: [
@@ -53,8 +54,20 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Contact.ORGANIZATION.clone().copyFrom({
-              tableWidth: undefined
+            foam.core.Property.create({
+              name: 'company',
+              label: 'Company',
+              tableCellFormatter: function(X, obj) {
+                if ( ! obj.businessId ) {
+                  this.start().add(obj.organization).end();
+                } else {
+                  self.publicBusinessDAO
+                    .find(obj.businessId)
+                    .then( (business) =>
+                      this.start().add(business.label()).end()
+                  );
+                }
+              }
             }),
             'signUpStatus',
             foam.core.Property.create({
