@@ -1,6 +1,16 @@
 package net.nanopay.tx.bmo;
 
-import foam.core.FObject;
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+
+import foam.core.Currency;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
@@ -12,33 +22,25 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
-import foam.core.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.payment.PADType;
 import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
-import net.nanopay.tx.bmo.eftfile.*;
+import net.nanopay.tx.bmo.eftfile.BmoBatchControl;
+import net.nanopay.tx.bmo.eftfile.BmoBatchHeader;
+import net.nanopay.tx.bmo.eftfile.BmoBatchRecord;
+import net.nanopay.tx.bmo.eftfile.BmoDetailRecord;
+import net.nanopay.tx.bmo.eftfile.BmoEftFile;
+import net.nanopay.tx.bmo.eftfile.BmoFileControl;
+import net.nanopay.tx.bmo.eftfile.BmoFileHeader;
 import net.nanopay.tx.bmo.exceptions.BmoEftFileException;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class BmoEftFileGenerator {
 

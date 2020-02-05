@@ -5,11 +5,9 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
-import net.nanopay.account.TrustAccount;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
-import net.nanopay.tx.model.Transaction;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
@@ -50,10 +48,10 @@ public class RandomDepositBankAccountDAO
 
     // TODO: prevent a user from submitting their own status
     // generate random deposit amount and set in bank account model
-    FObject ret = super.put_(x, account);
     if ( newAccount && BankAccountStatus.UNVERIFIED.equals(account.getStatus()) ) {
       long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
       account.setRandomDepositAmount(randomDepositAmount);
+      super.put_(x, account);
       User user = (User) x.get("user");
 
       // create new transaction and store
@@ -72,7 +70,7 @@ public class RandomDepositBankAccountDAO
       getTransactionDAO().put_(x, transaction);
     }
 
-    return ret;
+    return super.put_(x, account);
   }
 
   public boolean isUseBMO() {

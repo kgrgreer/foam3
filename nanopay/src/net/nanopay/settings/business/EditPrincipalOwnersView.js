@@ -1094,14 +1094,14 @@ foam.CLASS({
         });
       }
 
-      principleOwner.firstName = this.firstNameField,
-      principleOwner.middleName = this.middleNameField,
-      principleOwner.lastName = this.lastNameField,
-      principleOwner.email = this.emailAddressField,
+      principleOwner.firstName = this.firstNameField;
+      principleOwner.middleName = this.middleNameField;
+      principleOwner.lastName = this.lastNameField;
+      principleOwner.email = this.emailAddressField;
       principleOwner.phone = this.Phone.create({
         number: this.phoneCountryCodeField + this.phoneNumberField
-      }),
-      principleOwner.birthday = this.birthdayField,
+      });
+      principleOwner.birthday = this.birthdayField;
       principleOwner.address = this.Address.create({
         streetNumber: this.streetNumberField,
         streetName: this.streetNameField,
@@ -1110,8 +1110,8 @@ foam.CLASS({
         postalCode: this.postalCodeField,
         countryId: this.countryField,
         regionId: this.provinceField
-      }),
-      principleOwner.jobTitle = this.jobTitleField,
+      });
+      principleOwner.jobTitle = this.jobTitleField;
 
       // TODO?: Maybe add a loading indicator?
       this.principalOwnersDAO.put(principleOwner).then(function(npo) {

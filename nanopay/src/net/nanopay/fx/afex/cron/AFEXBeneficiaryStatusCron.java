@@ -1,19 +1,21 @@
 package net.nanopay.fx.afex.cron;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.nanopay.fx.afex.*;
+import net.nanopay.fx.afex.AFEXBeneficiary;
+import net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction;
+import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXServiceProvider;
+import net.nanopay.fx.afex.FindBeneficiaryResponse;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
 
 public class AFEXBeneficiaryStatusCron implements ContextAgent {
   private DAO afexBeneficiaryDAO;

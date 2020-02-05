@@ -1,26 +1,19 @@
 package net.nanopay.tx.cico.test;
 
-import foam.core.FObject;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.X;
 import foam.dao.DAO;
-import foam.dao.ArraySink;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
-import foam.test.TestUtils;
-import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
-
-import java.util.List;
 
 public class CICOUpdatablePropertiesTest
   extends foam.nanos.test.Test

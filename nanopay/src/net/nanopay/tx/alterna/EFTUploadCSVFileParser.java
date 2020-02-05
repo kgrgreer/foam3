@@ -27,31 +27,24 @@ public class EFTUploadCSVFileParser extends EFTFileParser
     X x = getX();
     Logger logger = (Logger) x.get("logger");
     List<FObject> ret = new ArrayList<>();
-    BufferedReader reader = null;
+    ClassInfo classInfo = AlternaFormat.getOwnClassInfo();
+    List<Object> propertyInfos = new ArrayList<>();
+    propertyInfos.add(classInfo.getAxiomByName("padType"));
+    propertyInfos.add(classInfo.getAxiomByName("firstName"));
+    propertyInfos.add(classInfo.getAxiomByName("lastName"));
+    propertyInfos.add(classInfo.getAxiomByName("transitNumber"));
+    propertyInfos.add(classInfo.getAxiomByName("bankNumber"));
+    propertyInfos.add(classInfo.getAxiomByName("accountNumber"));
+    propertyInfos.add(classInfo.getAxiomByName("amountDollar"));
+    propertyInfos.add(classInfo.getAxiomByName("txnType"));
+    propertyInfos.add(classInfo.getAxiomByName("txnCode"));
+    propertyInfos.add(classInfo.getAxiomByName("processDate"));
+    propertyInfos.add(classInfo.getAxiomByName("reference"));
 
-    try {
-      ClassInfo classInfo = AlternaFormat.getOwnClassInfo();
-      List<Object> propertyInfos = new ArrayList<>();
-      propertyInfos.add(classInfo.getAxiomByName("padType"));
-      propertyInfos.add(classInfo.getAxiomByName("firstName"));
-      propertyInfos.add(classInfo.getAxiomByName("lastName"));
-      propertyInfos.add(classInfo.getAxiomByName("transitNumber"));
-      propertyInfos.add(classInfo.getAxiomByName("bankNumber"));
-      propertyInfos.add(classInfo.getAxiomByName("accountNumber"));
-      propertyInfos.add(classInfo.getAxiomByName("amountDollar"));
-      propertyInfos.add(classInfo.getAxiomByName("txnType"));
-      propertyInfos.add(classInfo.getAxiomByName("txnCode"));
-      propertyInfos.add(classInfo.getAxiomByName("processDate"));
-      propertyInfos.add(classInfo.getAxiomByName("reference"));
-
-      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
+    try(BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
       parseFile(ret, reader, classInfo, propertyInfos);
-
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
       logger.error(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
     }
 
     return ret;

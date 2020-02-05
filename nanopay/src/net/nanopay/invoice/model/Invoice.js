@@ -90,9 +90,9 @@ foam.CLASS({
       ]
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'issueDate',
-      documentation: `The date and time that the invoice was issued (created).`,
+      documentation: `The date that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
       view: { class: 'foam.u2.DateView' },
@@ -491,6 +491,9 @@ foam.CLASS({
       class: 'String',
       name: 'referenceId',
       documentation: `The unique identifier for sent and received form email.`,
+      factory: function() {
+        return foam.uuid.randomGUID();
+      },
       javaFactory: `
         return UUID.randomUUID().toString();
       `
@@ -593,7 +596,7 @@ foam.CLASS({
         } else {
           User payee = (User) bareUserDAO.find(
             isPayeeIdGiven ? this.getPayeeId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
-          if ( payee == null && contact.getBusinessId() != 0 ) {
+          if ( payee == null && ( contact == null || contact.getBusinessId() != 0 ) ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
           // TODO: Move user checking to user validation service
@@ -607,7 +610,7 @@ foam.CLASS({
         } else {
           User payer = (User) bareUserDAO.find(
             isPayerIdGiven ? this.getPayerId() : contact.getBusinessId() != 0 ? contact.getBusinessId() : contact.getId());
-          if ( payer == null && contact.getBusinessId() != 0 ) {
+          if ( payer == null && ( contact == null || contact.getBusinessId() != 0 ) ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
           // TODO: Move user checking to user validation service
@@ -625,7 +628,7 @@ foam.CLASS({
       label: 'Pay now',
       isAvailable: function(status) {
         return false;
-        return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
+        // return status !== this.InvoiceStatus.PAID && this.lookup('net.nanopay.interac.ui.etransfer.TransferWizard', true);
       },
       code: function(X) {
         X.stack.push({

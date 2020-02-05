@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: `Hold AFEX specific properties`,
 
   javaImports: [
-    'com.itextpdf.html2pdf.HtmlConverter',
     'foam.blob.BlobService',
     'foam.core.X',
     'foam.dao.DAO',
@@ -22,14 +21,11 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.io.ByteArrayInputStream',
-    'java.io.ByteArrayOutputStream',
-    'java.io.IOException',
     'java.io.InputStream',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.model.Business',
     'foam.core.Currency',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',

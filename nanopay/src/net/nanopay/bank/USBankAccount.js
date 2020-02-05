@@ -69,6 +69,11 @@ foam.CLASS({
       documentation: 'void check image for this bank account',
     },
     {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'supportingDocuments',
+      documentation: 'Supporting documents to verify bank account'
+    },
+    {
       name: 'branchId',
       label: 'ACH Routing Number',
       section: 'accountDetails',
@@ -139,7 +144,7 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 500,
+      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((branch, branchDAO) => {

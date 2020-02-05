@@ -11,18 +11,10 @@ foam.CLASS({
 
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.account.Debtable',
-    'net.nanopay.account.DebtAccount',
-
-
+    'net.nanopay.account.Debtable'
   ],
 
   methods: [

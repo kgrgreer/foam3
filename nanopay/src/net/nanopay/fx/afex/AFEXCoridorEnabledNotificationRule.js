@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
@@ -20,7 +19,6 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
-    'javax.security.auth.AuthPermission',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.EQ'
 

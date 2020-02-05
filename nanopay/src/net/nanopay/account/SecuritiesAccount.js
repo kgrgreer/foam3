@@ -6,14 +6,8 @@ foam.CLASS({
   documentation: 'The base model for creating and managing all Security accounts.',
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.SecurityAccount',
     'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count',
     'foam.nanos.auth.LifecycleState'
   ],
 

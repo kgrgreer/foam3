@@ -4,6 +4,7 @@ import foam.blob.HashingInputStream;
 import foam.blob.HashingOutputStream;
 import foam.dao.index.Index;
 import foam.dao.index.ProxyIndex;
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,11 +47,11 @@ public class HashingIndex
 
   @Override
   public Object wrap(Object state) {
-    try {
-      // write out object to byte array while calculating hash
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      HashingOutputStream hos = new HashingOutputStream(md_.get(), baos);
-      ObjectOutputStream oos = new ObjectOutputStream(hos);
+    try(
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    HashingOutputStream hos = new HashingOutputStream(md_.get(), baos);
+	    ObjectOutputStream oos = new ObjectOutputStream(hos);
+	) {
       oos.writeObject(state);
 
       // return hashed state
@@ -65,16 +66,18 @@ public class HashingIndex
     try {
       // read in object from byte array while calculating hash
       HashedState hashed = (HashedState) state;
-      ByteArrayInputStream bais = new ByteArrayInputStream(hashed.getState());
-      HashingInputStream his = new HashingInputStream(md_.get(), bais);
-      ObjectInputStream ois = new ObjectInputStream(his);
-
-      // verify digest
-      Object original = ois.readObject();
-      if ( ! Arrays.equals(hashed.getDigest(), his.digest()) ) {
-        throw new RuntimeException("Digest verification failed.");
+      Object original;
+      try (
+		  ByteArrayInputStream bais = new ByteArrayInputStream(hashed.getState());
+		  HashingInputStream his = new HashingInputStream(md_.get(), bais);
+		  ObjectInputStream ois = new ObjectInputStream(his)
+	  ) {
+          // verify digest
+    	  original = ois.readObject();
+        if ( ! Arrays.equals(hashed.getDigest(), his.digest()) ) {
+          throw new RuntimeException("Digest verification failed.");
+        }
       }
-
       // return original state
       return original;
     } catch ( Throwable t ) {

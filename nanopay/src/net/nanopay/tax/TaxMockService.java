@@ -1,13 +1,13 @@
 package net.nanopay.tax;
 
-import foam.core.*;
-import foam.nanos.auth.User;
-import foam.nanos.auth.Address;
-import foam.dao.DAO;
-import foam.core.FObject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import foam.core.X;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.mlang.MLang;
-import java.util.*;
 
 public class TaxMockService implements TaxService
 {

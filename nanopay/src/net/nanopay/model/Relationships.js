@@ -7,15 +7,6 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    view: function(_, X) {
-      return foam.u2.view.ChoiceView.create({
-        dao: X.branchDAO,
-        placeholder: '--',
-        objToChoice: function(branch) {
-          return [branch.id, branch.branchId];
-        }
-      });
-    },
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {

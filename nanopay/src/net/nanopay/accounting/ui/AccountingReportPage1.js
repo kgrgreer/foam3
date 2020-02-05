@@ -250,7 +250,7 @@ foam.CLASS({
       let myData = this.reportResult.successContact;
       let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
 
-      for ( x in myData ) {
+      for ( let x in myData ) {
         myDAO.put(this.ContactResponseItem.create({
           id: x,
           businessName: myData[x].businessName,
@@ -282,7 +282,7 @@ foam.CLASS({
     function initContactWarnings() {
       let myData = this.reportResult.contactErrors;
       let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
-      for ( key in myData ) {
+      for ( let key in myData ) {
         if ( key === 'MISS_ADDRESS' ) {
           for ( x in myData[key] ) {
             myDAO.put(this.ContactResponseItem.create({

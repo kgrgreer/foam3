@@ -43,9 +43,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'currentAccount',
+    'isIframe',
+    'onboardingUtil',
     'privacyUrl',
-    'termsUrl',
-    'onboardingUtil'
+    'termsUrl'
   ],
 
   imports: [
@@ -474,10 +475,10 @@ foam.CLASS({
           }
           if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
-            .start()
-              .tag(this.topNavigation_)
-              .show(this.slot((loginSuccess) => loginSuccess))
-            .end()
+            .add(this.loginSuccess$.map((loginSuccess) => {
+              if ( ! loginSuccess ) return null;
+              return this.E().tag(this.topNavigation_);
+            }))
             .start()
               .addClass('stack-wrapper')
               .start({
@@ -493,9 +494,6 @@ foam.CLASS({
             .end();
           } else {
           this.addClass(this.myClass())
-          .start()
-            .show(this.slot((loginSuccess) => loginSuccess))
-          .end()
           .start()
             .addClass('stack-wrapper')
             .start({

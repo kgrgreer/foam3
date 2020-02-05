@@ -8,14 +8,10 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.documents.AcceptanceDocumentService',
-    'net.nanopay.model.Business',
-    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding'
+    'net.nanopay.model.Business'
   ],
 
   methods: [

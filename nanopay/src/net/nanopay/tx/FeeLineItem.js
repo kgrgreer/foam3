@@ -6,11 +6,5 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'FeeLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
-
-  javaImports: [
-    'foam.dao.DAO',
-    'net.nanopay.account.Account',
-    'net.nanopay.tx.model.Transaction'
-  ]
+  extends: 'net.nanopay.tx.TransactionLineItem'
 });

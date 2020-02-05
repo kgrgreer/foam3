@@ -12,9 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'foam.dao.DAO'
   ],
 
   methods: [
