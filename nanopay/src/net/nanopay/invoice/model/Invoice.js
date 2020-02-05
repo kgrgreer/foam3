@@ -115,6 +115,9 @@ foam.CLASS({
           issueDateIsSet_ = true;
         }
       `,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.issueDate.toISOString().substring(0, 10));
+      },
       aliases: [
         'issueDate',
         'issue',
@@ -126,6 +129,9 @@ foam.CLASS({
       name: 'dueDate',
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.dueDate.toISOString().substring(0, 10));
+      },
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableWidth: 95
     },

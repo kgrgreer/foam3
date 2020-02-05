@@ -1101,17 +1101,18 @@ p({
   "id": "APIGroupPermissions",
   "description": "Set up groups and permissions for API",
   "code": """
-
+    import foam.comics.v2.DAOControllerConfig;
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
     import foam.nanos.auth.ServiceProvider;
     import foam.nanos.menu.DAOMenu;
+    import foam.nanos.menu.DAOMenu2;
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
 
     DRY_RUN = true;
-    // Set to true to undo the permission and theme changes made to the "SME" group by this script
+    // For fix me, Set to true to undo the permission and ui changes made to the "SME" group using this script
     fixSME = false;
     
     // group/spid prefix
@@ -1256,6 +1257,7 @@ p({
     smeAddPermissionArray.add("menu.read.sme.main.banking");
     smeAddPermissionArray.add("menu.read.sme.main.dashboard");
     smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
+    smeAddPermissionArray.add("menu.read.sme.accountProfile.signout");
 
     for (int i = 0; i < smeAddPermissionArray.size(); i++) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
@@ -1266,20 +1268,6 @@ p({
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
-    }
-
-    themeDAO = x.get("themeDAO");
-    theme = themeDAO.find(3);
-    theme.setPriority(3);
-    theme.setLogo("images/nanopay_logo_blue.png");
-    if ( DRY_RUN ) {
-      print("Theme is created.");
-    } else if ( fixSME ) {
-      theme.setPriority(2);
-      theme.setLogo("images/ablii-logo.svg");
-      themeDAO.put(theme);
-    } else {
-      themeDAO.put(theme);
     }
 
     // Create SPID

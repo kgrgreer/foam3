@@ -520,6 +520,20 @@ foam.CLASS({
         )
       );
 
+      if ( ! this.chosenBankAccount ) {
+        let srcCurrency = this.user.countryOfBusinessRegistration === 'CA' ? 'CAD' : 'USD';
+        this.chosenBankAccount = this.viewData.bankAccount = await this.accountDAO.find(
+          this.AND(
+            this.INSTANCE_OF(this.BankAccount),
+            this.EQ(this.BankAccount.IS_DEFAULT, true),
+            this.EQ(this.BankAccount.DENOMINATION, srcCurrency)
+          )
+        );
+      }
+
+      if ( ! this.chosenBankAccount ) {
+        return;
+      }
       if ( this.isPayable ) {
         this.invoice.account = this.chosenBankAccount;
       } else {
