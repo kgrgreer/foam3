@@ -33,11 +33,14 @@ foam.CLASS({
           agency.submit(getX(), new ContextAgent() {
             @Override
             public void execute(X x) {
+              // COMPLETED and DECLINED cannot change.
+              txn.setStatus(TransactionStatus.COMPLETED);
+
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
                 .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
-                .setName("Reversal of: "+txn.getId())
+                .setName("Reversal of DECLINED: "+txn.getId())
                 .setIsQuoted(true)
                 .setAssociateTransaction(txn.getId())
                 .build();
@@ -46,7 +49,7 @@ foam.CLASS({
                 ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
-              //email Support about failure.
+                //email Support about failure.
                 Notification notification = new Notification();
                 notification.setEmailIsEnabled(true);
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
