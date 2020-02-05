@@ -23,7 +23,7 @@ public class BankAccountValidator
     BankAccount account = (BankAccount) obj;
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
-    if ( accountDAO.find(account) == null && ! account.getIsExternalBankAccount() ) {
+    if ( accountDAO.find(account) == null ) {
       // validation for a new account.
       // validations live in thier respective models.
       account.validate(x);
