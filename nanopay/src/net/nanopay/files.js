@@ -522,7 +522,6 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/model/PlaidError' },
   { name: 'net/nanopay/plaid/ui/PlaidView', flags: ['web'] },
 
-  { name: 'net/nanopay/cico/model/EFTFileStatus' },
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
   { name: 'net/nanopay/cico/service/ClientBankAccountVerifierService' },
@@ -540,6 +539,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/cico/EFTFileStatus' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
   { name: 'net/nanopay/tx/AccountRelationship' },
   { name: 'net/nanopay/tx/AccountRelationshipLineItem' },

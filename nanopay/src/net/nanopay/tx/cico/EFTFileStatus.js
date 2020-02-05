@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.cico.model',
+  package: 'net.nanopay.tx.cico',
   name: 'EFTFileStatus',
 
   documentation: 'Status for EFT/AFT file. Purpose of the status is tom indicate the state of EFT/AFT files. ',

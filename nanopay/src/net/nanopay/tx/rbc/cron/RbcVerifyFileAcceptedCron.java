@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.nanopay.cico.model.EFTFileStatus;
+import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.tx.rbc.iso20022file.RbcISO20022File;
 import net.nanopay.tx.rbc.RbcReportProcessor;
 

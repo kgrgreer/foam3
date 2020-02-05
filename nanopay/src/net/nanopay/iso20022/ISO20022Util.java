@@ -12,6 +12,7 @@ import foam.nanos.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ISO20022Util {
     return xml;
   }
 
-  public FObject fromXML(X x, File file, Class defaultClass) {
+  public FObject fromXML(X x, File file, Class defaultClass) throws XMLStreamException, FileNotFoundException {
     FObject obj = null;
     if ( file == null ) return obj;
     try{
@@ -56,12 +57,13 @@ public class ISO20022Util {
       obj = fromXML(x, xmlReader, defaultClass);
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }
     return obj;
   }
 
-  public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) {
+  public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) throws XMLStreamException, RuntimeException {
     FObject obj = null;
     if ( defaultClass == null ) return null;
     try {
@@ -78,27 +80,30 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", ex);
+      throw ex;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }
     return obj;
   }
 
-  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) {
+  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) throws XMLStreamException {
     FObject obj = null;
     try {
       if ( defaultClass == null ) return null;
       obj = copyFromXML(x, xmlr, (FObject) x.create(defaultClass));
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }
     return obj;
   }
 
-  public FObject copyFromXML(X x, XMLStreamReader reader, FObject obj) {
+  public FObject copyFromXML(X x, XMLStreamReader reader, FObject obj) throws XMLStreamException, RuntimeException {
     Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
     String startTag = reader.getLocalName();
     boolean pause = false;
@@ -143,12 +148,12 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
-      ex.printStackTrace();
+      logger.error("Error while reading file", ex);
+      throw ex;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
-      t.printStackTrace();
+      logger.error("Error while reading file", t);
+      throw t;
     }  
     return obj;  
   }
@@ -179,12 +184,12 @@ public class ISO20022Util {
     }
   }
 
-  public Object[] arrayFromXML(X x, XMLStreamReader reader, Class defaultClass, String propName) {
+  public Object[] arrayFromXML(X x, XMLStreamReader reader, Class defaultClass, String propName) throws XMLStreamException, IllegalStateException {
     List objList = new ArrayList();
     if ( defaultClass == null ) return objList.toArray();
     defaultClass = defaultClass.getComponentType();
-    try{
-      while( reader.hasNext() ){
+    try {
+      while ( reader.hasNext() ){
         FObject obj = copyFromXML(x, reader, (FObject) x.create(defaultClass));
         objList.add(obj);
         reader.nextTag();
@@ -192,16 +197,18 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
     } catch (IllegalStateException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+      logger.error("Premature end of xml file while reading property " ,propName, ex.getMessage(), ex);
+      throw ex;
     }
 
     return objList.toArray();
   }
 
-  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) {
+  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) throws XMLStreamException {
     FObject obj = null;
     if ( defaultClass == null ) return obj;
     try {
@@ -217,12 +224,13 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+      logger.error("Premature end of xml file while reading property " + ex.getMessage(), ex);
+      throw ex;
     }
     return obj;
   }
 
-  public Object[] stringArrFromXML(X x, XMLStreamReader reader, String propName) {
+  public Object[] stringArrFromXML(X x, XMLStreamReader reader, String propName) throws XMLStreamException, IllegalStateException {
     List objList = new ArrayList();
     try {
       while ( reader.hasNext() ) {
@@ -240,10 +248,12 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
     } catch (IllegalStateException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property " + ex.getMessage());
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
     }
     return objList.toArray();
   }

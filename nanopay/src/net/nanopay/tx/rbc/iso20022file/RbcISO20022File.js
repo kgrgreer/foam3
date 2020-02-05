@@ -33,7 +33,7 @@ foam.CLASS({
     {
       name: 'status',
       class: 'foam.core.Enum',
-      of: 'net.nanopay.cico.model.EFTFileStatus',
+      of: 'net.nanopay.tx.cico.EFTFileStatus',
       // view: function(_, x) {
       //   return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       // },

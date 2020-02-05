@@ -7,6 +7,7 @@ import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 
 import java.math.BigDecimal;
 import java.io.File;
@@ -145,7 +146,12 @@ public class RBCEFTFileGenerator {
           rbcISOFileDAO.inX(x).remove(ciFile);
         }
       } catch ( Exception e ) {
-        this.logger.error("Error creating RBC ISO20022 file", e); // TODO: Notification
+        this.logger.error("Error creating RBC ISO20022 file", e); 
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody("RBC Failed to create batch record for CI Transactions: " + e.getMessage() )
+        .build();
+        ((DAO) x.get("localNotificationDAO")).put(notification);
       }
 
       // // create Pain00100103 for COTransaction
@@ -175,7 +181,12 @@ public class RBCEFTFileGenerator {
           rbcISOFileDAO.inX(x).remove(coFile);
         }
       } catch ( Exception e ) {
-        this.logger.error("Error creating RBC ISO20022 file", e); // TODO: Notification
+        this.logger.error("Error creating RBC ISO20022 file", e);
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody("RBC Failed to create batch record for CO Transactions: " + e.getMessage() )
+        .build();
+        ((DAO) x.get("localNotificationDAO")).put(notification);
       }
 
       // batch control
@@ -190,7 +201,7 @@ public class RBCEFTFileGenerator {
 
     } catch ( Exception e ) {
       // if any exception occurs here, no transaction will be sent out
-      this.logger.error("Error when init rbc ISO20022 file");
+      this.logger.error("Error when init rbc ISO20022 file", e.getMessage(), e);
       throw new RbcIsoFileException("Error when init rbc ISO20022 file", e);
     }
 

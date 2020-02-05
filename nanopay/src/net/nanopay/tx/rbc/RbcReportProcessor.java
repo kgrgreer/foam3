@@ -12,8 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import javax.xml.stream.XMLStreamException;
 
-import net.nanopay.cico.model.EFTFileStatus;
+import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.iso20022.ISO20022Util;
 import net.nanopay.iso20022.Pain00200103;
 import net.nanopay.tx.model.Transaction;
@@ -55,8 +56,8 @@ public class RbcReportProcessor {
     File folder = new File(RbcFTPSClient.DOWNLOAD_FOLDER);   
     for (File file : folder.listFiles()) {
       if ( file.isDirectory() ) continue;
-      try{
-        if( null != RbcPGPUtil.decrypt(x, file) ) {
+      try {
+        if ( null != RbcPGPUtil.decrypt(x, file) ) {
           FileUtils.moveFile(file, new File(ARCHIVE_FOLDER +
           file.getName()));
         }
@@ -110,7 +111,7 @@ public class RbcReportProcessor {
    * Process the receipt file
    */
   public boolean processReceipt(File file, long fileId) {
-    if (file == null) return false;
+    if ( file == null ) return false;
 
     try {
       ISO20022Util driver = new ISO20022Util();
@@ -141,7 +142,7 @@ public class RbcReportProcessor {
       if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() 
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return;
 
-      for( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
+      for ( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
         processAcceptedTransactions(paymentInfo, fileId);
       }
     } catch (Exception e) {
@@ -171,7 +172,7 @@ public class RbcReportProcessor {
   /**
    * Process reports from RBC
    */
-  public void processReports() throws IOException {
+  public void processReports() throws IOException, XMLStreamException {
     File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
     for (File file : folder.listFiles()) {
       if ( file.isDirectory() ) continue;
@@ -187,7 +188,7 @@ public class RbcReportProcessor {
   /**
    * Process single report from RBC
    */
-  public void processReport(File file) throws IOException {
+  public void processReport(File file) throws IOException, XMLStreamException {
     ISO20022Util driver = new ISO20022Util();
     Pain00200103 pain = null;
     try {

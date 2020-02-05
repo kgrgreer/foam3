@@ -16,7 +16,7 @@ import java.util.Date;
 
 import net.nanopay.iso20022.ISO20022Util;
 import net.nanopay.iso20022.Pain00200103;
-import net.nanopay.cico.model.EFTFileStatus;
+import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.bmo.BmoFormatUtil;
