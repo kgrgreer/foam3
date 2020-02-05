@@ -1142,6 +1142,7 @@ foam.CLASS({
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
+          return;
         } else if ( ! this.signingOfficer && newV ) {
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
@@ -1149,7 +1150,11 @@ foam.CLASS({
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-        } else if ( ! newV ) {
+          return;
+        }
+
+        if ( this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName
+          && this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName ) {
           this.clearProperty('owner1');
         }
 
