@@ -194,6 +194,7 @@ foam.CLASS({
           }
 
           localBusinessDAO.put(business);
+
         }
 
         return getDelegate().put_(x, businessOnboarding);
