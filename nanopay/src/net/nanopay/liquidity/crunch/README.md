@@ -1,5 +1,38 @@
 # Liquified Crunch
 
+- LiquidCapability
+- AccountApproverMap
+- AccountData
+- CapabilityAccountData
+- AccountMap
+- AccountTemplate
+- CapabilityAccountTemplate (this and the 2 things above are basically the same thing)
+- ApproverLevel
+- CapabilityAccountTemplateMapView do not need doc
+- CapabilityRequest
+- CapabilityRequestOperation 
+- RootAccounts
+- AccountHierarchyService
+
+Enum : 
+- CapabilityRequestOperation
+
+Authorizers/etc :
+- LiquidApprovalRequestAuthorizer
+- LiquidAuthorizer
+- LiquidCapabilityAuthService ( not necessary)
+- LiquidTransactionAuthorizer
+
+Rules : 
+- AddAccountToUserCapabilityJunctionOnCreate
+- AddChildAccountToMakerOnAccountApproval
+- CreateUserCapabilityJunctionOnRequestApproval
+- RemoveAccountFromUcjDataOnAccountRemoval
+- RemoveAccountBasedUCJIfAccountsEmpty
+- RemoveJunctionsOnCapabilityRemoval
+
+
+
 ## LiquidCapability.js
 
 ### LiquidCapability

@@ -2,6 +2,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8007,
   "targetId": "Treasury Cash Manager (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -12,6 +13,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8007,
   "targetId": "Treasury Cash Manager (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -1643,6 +1645,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8018,
   "targetId": "Treasury Cash Manager (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -1653,6 +1656,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8018,
   "targetId": "Treasury Cash Manager (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -3284,6 +3288,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8017,
   "targetId": "Operational Administrator (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -3294,6 +3299,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8017,
   "targetId": "Operational Administrator (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -4925,6 +4931,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8006,
   "targetId": "Operational Administrator (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -4935,6 +4942,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8006,
   "targetId": "Operational Administrator (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -6566,6 +6574,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8015,
   "targetId": "Operational Administrator (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -6576,6 +6585,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8015,
   "targetId": "Operational Administrator (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -8207,6 +8217,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8019,
   "targetId": "Operational Administrator (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -8217,6 +8228,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8019,
   "targetId": "Operational Administrator (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -9848,6 +9860,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8016,
   "targetId": "Full Access (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -9858,6 +9871,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8016,
   "targetId": "Full Access (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -11489,6 +11503,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8021,
   "targetId": "Full Access (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -11499,6 +11514,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8021,
   "targetId": "Full Access (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -13130,6 +13146,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8022,
   "targetId": "Full Access (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -13140,6 +13157,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8022,
   "targetId": "Full Access (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -14771,6 +14789,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8023,
   "targetId": "Full Access (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -14781,6 +14800,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8023,
   "targetId": "Full Access (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -16412,6 +16432,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8024,
   "targetId": "Full Access (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 1,
@@ -16422,6 +16443,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8024,
   "targetId": "Full Access (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
@@ -18053,6 +18075,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8020,
   "targetId": "Treasury Cash Manager (Admin)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.ApproverLevel",
     "approverLevel": 2,
@@ -18063,6 +18086,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "sourceId": 8020,
   "targetId": "Treasury Cash Manager (Transactional)",
+  "status": 1,
   "data": {
     "class": "net.nanopay.liquidity.crunch.AccountApproverMap",
     "accounts": {
