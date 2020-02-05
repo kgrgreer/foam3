@@ -11,25 +11,37 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 
+import org.apache.commons.io.FileUtils;
+
 public class RbcPGPUtil {
 
-  public static final String ENCRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/encrypt/";
-  public static final String DECRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/decrypt/";
+  public static final String ENCRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/encrypt/";
+  public static final String DECRYPT_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/decrypt/";
 
   public static File encrypt(X x, File fileToEncrypt) throws IOException, NoSuchProviderException, PGPException {
-    File outputFile = new File(ENCRYPT_FOLDER + fileToEncrypt.getName() + ".encrypted." + System.currentTimeMillis() );
+    File outputFile = new File(ENCRYPT_FOLDER + fileToEncrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    PGPKeyUtil.encryptFile(x, fileToEncrypt, "rbc-pgpkey", fileOutputStream);
+    try{
+      PGPKeyUtil.encryptFile(x, fileToEncrypt, "rbc-pgpkey", fileOutputStream);
+    } catch(Exception e) {
+      FileUtils.deleteQuietly(outputFile);
+      throw e;
+    }
 
     return outputFile;
   }
 
   public static File decrypt(X x, File fileToDecrypt) throws Exception {
-    File outputFile = new File(DECRYPT_FOLDER + fileToDecrypt.getName() + ".encrypted." + System.currentTimeMillis() );
+    File outputFile = new File(DECRYPT_FOLDER + fileToDecrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    PGPKeyUtil.decryptFile(x, new FileInputStream(fileToDecrypt), fileOutputStream, "nanopay-rbc-pgpkey");
+    try{
+      PGPKeyUtil.decryptFile(x, new FileInputStream(fileToDecrypt), fileOutputStream, "nanopay-rbc-pgpkey");
+    } catch(Exception e) {
+      FileUtils.deleteQuietly(outputFile);
+      throw e;
+    }
 
     return outputFile;
   }

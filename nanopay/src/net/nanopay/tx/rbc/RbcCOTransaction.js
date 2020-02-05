@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'RbcCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
 
+  implements: [
+    'net.nanopay.tx.rbc.RbcTransaction'
+  ],
+
   properties: [
     {
       name: 'rbcReferenceNumber',
@@ -10,7 +14,7 @@ foam.CLASS({
     },
     {
       name: 'rbcFileCreationNumber',
-      class: 'Int'
+      class: 'Long'
     },
     {
       name: 'rejectReason',
@@ -27,4 +31,22 @@ foam.CLASS({
       class: 'Boolean'
     }
   ],
+  methods: [
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          type: 'net.nanopay.tx.model.Transaction'
+        },
+      ],
+      javaCode: `
+        super.limitedCopyFrom(other);
+        setRbcReferenceNumber( ((RbcCOTransaction) other).getRbcReferenceNumber() );
+        setRbcFileCreationNumber( ((RbcCOTransaction) other).getRbcFileCreationNumber() );
+        setRejectReason( ((RbcCOTransaction) other).getRejectReason() );
+        setSettled( ((RbcCOTransaction) other).getSettled() );
+      `
+    }
+  ]
 });

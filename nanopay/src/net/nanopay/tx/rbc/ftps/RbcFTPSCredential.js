@@ -28,6 +28,14 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'port'
-    }
+    },
+    {
+      class: 'String',
+      name: 'networkGatewayId'
+    },
+    {
+      class: 'String',
+      name: 'networkGatewayClientId'
+    },
   ]
 });

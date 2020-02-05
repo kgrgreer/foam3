@@ -10,10 +10,14 @@ import foam.core.*;
 import foam.lib.xml.Outputter;
 import foam.nanos.logger.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
@@ -43,7 +47,23 @@ public class ISO20022Util {
     return xml;
   }
 
-  public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) {
+  public FObject fromXML(X x, File file, Class defaultClass) throws XMLStreamException, FileNotFoundException {
+    FObject obj = null;
+    if ( file == null ) return obj;
+    try{
+      FileInputStream inputStream = new FileInputStream(file);
+      XMLInputFactory factory     = XMLInputFactory.newInstance();
+      XMLStreamReader xmlReader   = factory.createXMLStreamReader(inputStream);
+      obj = fromXML(x, xmlReader, defaultClass);
+    } catch (Throwable t) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Error while reading file", t);
+      throw t;
+    }
+    return obj;
+  }
+
+  public FObject fromXML(X x, XMLStreamReader reader, Class defaultClass) throws XMLStreamException, RuntimeException {
     FObject obj = null;
     if ( defaultClass == null ) return null;
     try {
@@ -60,44 +80,58 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", ex);
+      throw ex;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }
     return obj;
   }
 
-  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) {
+  public FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) throws XMLStreamException {
     FObject obj = null;
     try {
       if ( defaultClass == null ) return null;
       obj = copyFromXML(x, xmlr, (FObject) x.create(defaultClass));
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }
     return obj;
   }
 
-  public FObject copyFromXML(X x, XMLStreamReader reader, FObject obj) {
+  public FObject copyFromXML(X x, XMLStreamReader reader, FObject obj) throws XMLStreamException, RuntimeException {
     Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
     String startTag = reader.getLocalName();
+    boolean pause = false;
     setAttributeValue(x, reader, obj);
     try {
       while ( reader.hasNext() ) {
-        int eventType;
-        eventType = reader.next();
-        switch ( eventType ) {
+        if ( ! pause ) reader.next();
+        pause = false;
+        switch ( reader.getEventType()  ) {
           case XMLStreamConstants.START_ELEMENT:
             ClassInfo cInfo = obj.getClassInfo();
             PropertyInfo prop = (PropertyInfo) cInfo.getAxiomByName(propMap.get(reader.getLocalName()));
             if ( prop != null ) {
               Class objClass = prop.getValueClass();
+              
               if (Enum.class.isAssignableFrom(objClass)) {
                 prop.set(obj, enumFromXML(x, reader, objClass));
+              } else if ( String[].class.equals(objClass) ) {
+                prop.set(obj, stringArrFromXML(x, reader, prop.getShortName()));
+                if ( reader.getLocalName().equals(startTag) ) {
+                  return obj;
+                }
               } else if (objClass.isArray()) {
-                prop.set(obj, arrayFromXML(x, reader, objClass));
+                prop.set(obj, arrayFromXML(x, reader, objClass, prop.getShortName()));
+                pause = true; // Needed to pause reading of next() since we already did that to know if there are more elements in the array
+                if ( reader.getLocalName().equals(startTag) ) {
+                  return obj;
+                } 
               } else if ( FObject.class.isAssignableFrom(objClass) ) {
                 prop.set(obj, createObj(x, reader, objClass));
               } else {
@@ -114,10 +148,12 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", ex);
+      throw ex;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Error while reading file");
+      logger.error("Error while reading file", t);
+      throw t;
     }  
     return obj;  
   }
@@ -148,16 +184,31 @@ public class ISO20022Util {
     }
   }
 
-  public Object arrayFromXML(X x, XMLStreamReader reader, Class defaultClass) {
+  public Object[] arrayFromXML(X x, XMLStreamReader reader, Class defaultClass, String propName) throws XMLStreamException, IllegalStateException {
     List objList = new ArrayList();
-    if ( defaultClass == null ) return objList;
+    if ( defaultClass == null ) return objList.toArray();
     defaultClass = defaultClass.getComponentType();
-    FObject obj = copyFromXML(x, reader, (FObject) x.create(defaultClass));
-    objList.add(obj);
+    try {
+      while ( reader.hasNext() ){
+        FObject obj = copyFromXML(x, reader, (FObject) x.create(defaultClass));
+        objList.add(obj);
+        reader.nextTag();
+        if ( ! reader.getLocalName().equals(propName) ) break;
+      }
+    } catch (XMLStreamException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
+    } catch (IllegalStateException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property " ,propName, ex.getMessage(), ex);
+      throw ex;
+    }
+
     return objList.toArray();
   }
 
-  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) {
+  public Object enumFromXML(X x, XMLStreamReader reader, Class defaultClass) throws XMLStreamException {
     FObject obj = null;
     if ( defaultClass == null ) return obj;
     try {
@@ -173,9 +224,38 @@ public class ISO20022Util {
       }
     } catch (XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property");
+      logger.error("Premature end of xml file while reading property " + ex.getMessage(), ex);
+      throw ex;
     }
     return obj;
+  }
+
+  public Object[] stringArrFromXML(X x, XMLStreamReader reader, String propName) throws XMLStreamException, IllegalStateException {
+    List objList = new ArrayList();
+    try {
+      while ( reader.hasNext() ) {
+        switch ( reader.getEventType() ) {
+          case XMLStreamConstants.START_ELEMENT:
+            if ( ! propName.equals(reader.getLocalName()) ) return objList.toArray();
+            reader.next();
+            objList.add(reader.getText()); 
+            break;
+          case XMLStreamConstants.END_ELEMENT:
+            if ( ! propName.equals(reader.getLocalName()) ) return objList.toArray();
+            break;
+        }
+        reader.next();
+      }
+    } catch (XMLStreamException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
+    } catch (IllegalStateException ex) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Premature end of xml file while reading property ", propName, ex.getMessage(), ex);
+      throw ex;
+    }
+    return objList.toArray();
   }
 
   public Map getObjectPropertyInfoMap(X x, FObject obj, Map propMap) {

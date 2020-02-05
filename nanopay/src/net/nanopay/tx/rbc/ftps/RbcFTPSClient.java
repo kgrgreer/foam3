@@ -3,7 +3,7 @@ package net.nanopay.tx.rbc.ftps;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
-import org.apache.commons.beanutils.MethodUtils;
+import foam.nanos.om.OMLogger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPFile;
@@ -19,11 +19,12 @@ public class RbcFTPSClient {
   Logger logger;
   FTPSClient ftpsClient;
   RbcFTPSCredential credential;
+  private OMLogger omLogger;
 
   public static final String PGP_FOLDER = "outbound/3EPK/";
   public static final String PAIN_FOLDER = "outbound/XG02/";
 
-  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_eft/download/";
+  public static final String DOWNLOAD_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/download/";
 
 
   /**
@@ -43,18 +44,38 @@ public class RbcFTPSClient {
     this.logout();
   }
 
-  public File download(String remotePath) throws IOException {
-    String filename = remotePath.substring(remotePath.lastIndexOf("/") + 1);
-
+  public File downloadLast(String filePath) throws IOException {
+    String filename = filePath.substring(filePath.lastIndexOf("/") + 1);
+    
     this.login();
+    FTPFile[] ftpFiles = this.ls(PAIN_FOLDER);
+
+    String index = String.format("%" + 3 + "s", String.valueOf(ftpFiles.length)).replace(' ', '0');
+    String remotePath = PAIN_FOLDER + "PAIN." + index + ".pgp";
+
     File file = this.get(remotePath, DOWNLOAD_FOLDER + filename);
     this.logout();
 
     return file;
   }
 
+  public File download(String remote, String local) throws IOException {
+    this.login();
+    File file = this.get(remote, DOWNLOAD_FOLDER + local);
+    this.logout();
+
+    return file;
+  }
+
   /**
-   * Download the non-downloaded files from RBC outbound folder
+   * Download the non-downloaded pain files from RBC outbound pain folder
+   */
+  public List<File> batchDownload() throws IOException {
+    return batchDownload(PAIN_FOLDER);
+  }
+
+  /**
+   * Download the non-downloaded files from supplied RBC folder
    */
   public List<File> batchDownload(String folder) throws IOException {
     if ( ! this.credential.getEnable() ) {
@@ -97,32 +118,52 @@ public class RbcFTPSClient {
     this.ftpsClient = ftpsClient == null ? new FTPSClient("TLS", false) : ftpsClient;
     this.logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     this.credential = (RbcFTPSCredential) this.x.get("rbcFTPSCredential");
+    this.omLogger = (OMLogger) x.get("OMLogger");
   }
 
   public boolean login() throws IOException {
+    boolean result = false;
+    omLogger.log("RBC login starting");
+    
+    try {
+      this.ftpsClient.connect(credential.getHost());
+      this.logger.info("Connect : " + this.ftpsClient.getReplyString());
 
-    this.ftpsClient.connect(credential.getHost());
-    this.logger.info("Connect : " + this.ftpsClient.getReplyString());
+      result = this.ftpsClient.login(credential.getUsername(), credential.getPassword());
+      this.logger.info("Login : " + this.ftpsClient.getReplyString());
 
-    boolean result = this.ftpsClient.login(credential.getUsername(), credential.getPassword());
-    this.logger.info("Login : " + this.ftpsClient.getReplyString());
+      ftpsClient.enterLocalPassiveMode();
 
-    ftpsClient.enterLocalPassiveMode();
+      ftpsClient.execPBSZ(0);
+      this.logger.info("PBSZ : " + this.ftpsClient.getReplyString());
 
-    ftpsClient.execPBSZ(0);
-    this.logger.info("PBSZ : " + this.ftpsClient.getReplyString());
+      ftpsClient.execPROT("P");
+      this.logger.info("PROT : " + this.ftpsClient.getReplyString());
 
-    ftpsClient.execPROT("P");
-    this.logger.info("PROT : " + this.ftpsClient.getReplyString());
+      ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);
+      this.logger.info("File type : " + this.ftpsClient.getReplyString());
+    } catch(IOException e) {
+      omLogger.log("RBC login failed");
+      this.logger.error("RBC Login failed ", e);
+      throw e;
+    }
 
-    ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);
-    this.logger.info("File type : " + this.ftpsClient.getReplyString());
+    omLogger.log("RBC login complete");
 
     return result;
   }
 
   public void put(String local, String remote) throws IOException {
-    ftpsClient.storeFile(remote, new FileInputStream(new File(local)));
+    omLogger.log("RBC send file starting");
+    try {
+      ftpsClient.storeFile(remote, new FileInputStream(new File(local)));
+    } catch(IOException e) {
+      omLogger.log("RBC send file failed");
+      this.logger.error("RBC send file failed ", e);
+      throw e;
+    }
+    
+    omLogger.log("RBC send file complete");
     this.logger.info(this.ftpsClient.getReplyString());
   }
 
@@ -132,7 +173,18 @@ public class RbcFTPSClient {
 
     FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
 
-    ftpsClient.retrieveFile(remote, fileOutputStream);
+    omLogger.log("RBC download file starting");
+
+    try {
+      ftpsClient.retrieveFile(remote, fileOutputStream);
+      fileOutputStream.close();
+    } catch(IOException e) {
+      omLogger.log("RBC download file failed");
+      this.logger.error("RBC download file failed ", e);
+      throw e;
+    }
+
+    omLogger.log("RBC download file complete");
     this.logger.info("Retrieve File : " + this.ftpsClient.getReplyString());
 
     return tmpFile;
