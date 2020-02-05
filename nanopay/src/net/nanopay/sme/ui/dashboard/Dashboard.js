@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'Dashboard',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
@@ -227,7 +231,9 @@ foam.CLASS({
     'bankAccount',
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   methods: [
@@ -266,8 +272,6 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
-      this.user = await this.businessDAO.find(this.user.id);
-      this.onboardingStatus = this.user.onboarded;
     },
 
     function initE() {
@@ -276,6 +280,12 @@ foam.CLASS({
       this.getUserAccounts().then(() => {
         var self = this;
         var split = this.DashboardBorder.create();
+
+        this.businessDAO.find(this.user.id).then((o) => {
+          this.onboardingStatus = o.onboarded;
+          this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
+          this.businessRegistrationDate = o.businessRegistrationDate;
+        });
 
         var top = this.Element.create()
           .start('h1')
@@ -286,7 +296,9 @@ foam.CLASS({
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
-            onboardingStatus: this.onboardingStatus
+            onboardingStatus$: this.onboardingStatus$,
+            businessRegistrationDate$: this.businessRegistrationDate$,
+            countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
         var line = this.Element.create()
@@ -295,7 +307,7 @@ foam.CLASS({
               .addClass('divider-half').add(this.UPPER_TXT)
             .end()
           .end();
-        
+
           var topL = this.Element.create()
             .start('h2')
               .add(this.SUBTITLE1)

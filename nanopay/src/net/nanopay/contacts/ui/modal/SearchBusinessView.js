@@ -357,7 +357,7 @@ foam.CLASS({
                 })
                   .on('click', function() {
                     // Add contact
-                    if(!self.loading)
+                    if( ! self.loading )
                       self.addSelected(business);
                   })
                 .end();
@@ -411,7 +411,7 @@ foam.CLASS({
         .end();
     },
 
-    async function addSelected(business) {
+    function addSelected(business) {
       this.loading = true
       newContact = this.Contact.create({
         organization: business.organization,
@@ -422,14 +422,15 @@ foam.CLASS({
         group: 'sme'
       });
 
-      try {
-        await this.user.contacts.put(newContact);
+      this.user.contacts.put(newContact).then(() => {
         this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
         this.closeDialog();
-      } catch (err) {
+        this.loading = false;
+      }).catch( err => {
         this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
-      }
-      this.loading = false;
+        this.closeDialog();
+        this.loading = false;
+      })
     }
   ],
 

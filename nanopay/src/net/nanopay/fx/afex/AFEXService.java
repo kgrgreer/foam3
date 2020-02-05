@@ -1050,6 +1050,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     // sb.append(" - ");
     // sb.append(httpResponse.getStatusLine().getReasonPhrase());
     // sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+    EntityUtils.consumeQuietly(httpResponse.getEntity());
     return sb.toString();
   }
 }

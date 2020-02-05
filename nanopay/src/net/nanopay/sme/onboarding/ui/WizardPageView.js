@@ -10,7 +10,6 @@ foam.CLASS({
   css: `
     ^ {
       height: 92%;
-      border-bottom: solid 1px #edf0f5;
     }
 
     ^sections-container {
