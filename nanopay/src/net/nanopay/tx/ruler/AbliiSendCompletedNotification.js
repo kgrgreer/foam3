@@ -72,7 +72,7 @@ foam.CLASS({
               Notification senderNotification = new Notification();
               senderNotification.setUserId(sender.getId());
               senderNotification.setBody(notificationMsg);
-              senderNotification.setNotificationType("Transaction Initiated");
+              senderNotification.setNotificationType("Latest_Activity");
               senderNotification.setIssuedDate(invoice.getIssueDate());
               try {
                 notificationDAO.put_(x, senderNotification);
@@ -84,7 +84,7 @@ foam.CLASS({
                 Notification receiverNotification = new Notification();
                 receiverNotification.setUserId(receiver.getId());
                 receiverNotification.setBody(receiver_notificationMsg);
-                receiverNotification.setNotificationType("Transaction Initiated");
+                receiverNotification.setNotificationType("Latest_Activity");
                 receiverNotification.setIssuedDate(invoice.getIssueDate());
                 try {
                   notificationDAO.put_(x, receiverNotification);
