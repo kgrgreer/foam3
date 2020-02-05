@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'UserSelectionView',
   extends: 'foam.u2.Element',
 
-  imports: [
-    'publicBusinessDAO'
-  ],
-
   css: `
     ^ {
       display: flex;
@@ -34,7 +30,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       return this
         .start()
         .attrs({ name: "userSelectionView" })
@@ -44,7 +40,7 @@ foam.CLASS({
               this.fullObject$.map(async (obj) => {
                 var formatted = '';
                 if ( obj ) {
-                  formatted += await this.getCompanyName();
+                  formatted += await obj.label();
                   if ( obj.legalName && obj.legalName.trim() ) {
                     formatted += ` (${obj.legalName})`;
                   }
@@ -59,15 +55,6 @@ foam.CLASS({
               '')
           .end()
         .end();
-    },
-    async function getCompanyName() {
-      let obj = this.fullObject;
-      if ( ! obj.businessId ) {
-        return obj.organization;
-      } else {
-        var business = await this.publicBusinessDAO.find(obj.businessId);
-        return business.label();
-      }
     }
   ]
 });

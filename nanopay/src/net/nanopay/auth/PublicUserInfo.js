@@ -9,6 +9,10 @@ foam.CLASS({
     'foam.util.SafetyUtil',
   ],
 
+  imports: [
+    'contactDAO'
+  ],
+
   tableColumns: [
     'id', 'firstName', 'lastName', 'organization', 'email'
   ],
@@ -102,7 +106,11 @@ foam.CLASS({
   methods: [
     {
       name: 'label',
-      code: function() {
+      code: async function() {
+        if ( this.type === 'Contact' ) {
+          let contact = await this.contactDAO.find(this.id);
+          return await contact.label();
+        }
         return this.operatingBusinessName
           ? this.operatingBusinessName
           : this.organization
