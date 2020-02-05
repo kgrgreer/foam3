@@ -219,6 +219,7 @@ foam.CLASS({
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.stack.back();
+            window.location.reload();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
