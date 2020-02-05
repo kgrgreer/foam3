@@ -421,6 +421,7 @@ foam.CLASS({
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
           txn2.setReferenceNumber("System Generated");
+          txn2 = walk_(txn2,txn.getCreated().getTime());
           verifyBalance(x,txn2);
         }  
 
@@ -450,6 +451,10 @@ foam.CLASS({
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
             secCI.setReferenceNumber("System Generated");
+            TransactionQuote quote = new TransactionQuote();
+            quote.setRequestTransaction(secCI);
+            secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+            secCI = walk_(secCI,txn.getCreated().getTime());
             transactionDAO.put(secCI); // top up the sending security account
             for ( Transfer tr : secCI.getTransfers() ){
               long add1 = 0;
@@ -518,6 +523,11 @@ foam.CLASS({
           if (ci.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
             ci.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
           }
+
+          TransactionQuote quote = new TransactionQuote();
+          quote.setRequestTransaction(ci);
+          ci = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+          ci = walk_(ci,txn.getCreated().getTime());
           Transaction tx = (Transaction) transactionDAO.put(ci);
           for ( Transfer tr : tx.getTransfers() ){
             long add3 = 0;

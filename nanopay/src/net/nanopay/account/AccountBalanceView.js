@@ -60,7 +60,8 @@ foam.CLASS({
   ],
   imports: [
     'transactionDAO',
-    'homeDenomination'
+    'homeDenomination',
+    'balanceService'
   ],
 
   messages: [
@@ -86,7 +87,7 @@ foam.CLASS({
         .add(self.slot(function(data, data$denomination, homeDenomination) {
           return data && data$denomination && Promise.all([
             data.denomination$find,
-            data.findBalance(self.__context__)
+           self.balanceService.findBalance(self.__context__, data.id)
           ]).then(arr => {
             var currency = arr[0];
             var balance = currency.format(arr[1]);
