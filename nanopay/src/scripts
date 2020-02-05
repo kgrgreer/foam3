@@ -1550,3 +1550,29 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "ChangeTransactionNotificationType",
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.notification.Notification;
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import static foam.mlang.MLang.*;
+
+    notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
+    notificationDAO.where(AND(new Predicate[] {
+      EQ(Notification.NOTIFICATION_TYPE, "Transaction Initiated"),
+    })).select(new AbstractSink() {
+      public void put(Object obj, Detachable sub) {
+    notification = obj.fclone();
+    notification.setNotificationType("Latest_Activity");
+    notificationDAO.put(notification);
+    }});
+  """
+})

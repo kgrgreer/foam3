@@ -189,6 +189,7 @@ foam.CLASS({
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
+            this.EQ( this.Notification.NOTIFICATION_TYPE, 'Latest_Activity'),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
                 this.user.disabledTopics))
