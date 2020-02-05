@@ -1567,7 +1567,10 @@ p({
 
     notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
     notificationDAO.where(AND(new Predicate[] {
-      EQ(Notification.NOTIFICATION_TYPE, "Transaction Initiated"),
+      OR(new Predicate[] {
+        EQ(Notification.NOTIFICATION_TYPE, "Transaction Initiated"),
+        EQ(Notification.NOTIFICATION_TYPE, "BusinessCompliancePassed"),
+      })
     })).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         notification = obj.fclone();
