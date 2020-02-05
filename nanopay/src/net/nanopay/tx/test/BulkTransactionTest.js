@@ -185,6 +185,7 @@ foam.CLASS({
       javaCode: `
     User user = new User();
     user.setGroup(group.getId());
+    user.setSpid("nanopay");
     user.setFirstName(name);
     user.setLastName(name);
     user.setEmail(name+"."+group.getId()+"@nanopay.net");
