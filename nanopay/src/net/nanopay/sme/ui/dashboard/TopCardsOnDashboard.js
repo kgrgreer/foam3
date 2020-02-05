@@ -73,8 +73,8 @@ foam.CLASS({
     border-width: 0 4px 5px 4px;
     border-color: transparent transparent white transparent;
     position: relative;
-    left: 0.7vw;
-    bottom: -0.6vh;
+    left: 13px;
+    top: 6px;
     z-index: 0;
     pointer-events:none;
   }
@@ -83,8 +83,8 @@ foam.CLASS({
     border-width: 5px 4px 0 4px;
     border-color: white transparent transparent transparent;
     position: relative;
-    left: 0.7vw;
-    bottom: -0.7vh;
+    left: 13px;
+    top: 7px;
     z-index: 0;
     pointer-events:none;
   }
@@ -106,13 +106,11 @@ foam.CLASS({
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
     'bankAccount',
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-    },
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   messages: [
@@ -120,9 +118,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.internationalPaymentEnabled = this.user.businessRegistrationDate && this.user.countryOfBusinessRegistration;
-    },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
@@ -139,8 +134,8 @@ foam.CLASS({
                 }))
               .end()
               .start('span').hide(this.isIframe())
-                .add(this.slot((onboardingStatus, internationalPaymentEnabled, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && internationalPaymentEnabled, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((onboardingStatus, businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && (businessRegistrationDate && countryOfBusinessRegistration), businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
             .end();
@@ -159,8 +154,8 @@ foam.CLASS({
                 }))
               .end()
               .start('span').hide(this.isIframe())
-                .add(this.slot((internationalPaymentEnabled, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled, isEmployee: true, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && (businessRegistrationDate && countryOfBusinessRegistration), isEmployee: true, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
             .end();

@@ -258,7 +258,6 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-        String containsDigitRegex = ".*\\\\d.*";
         boolean isValidEmail = true;
 
         String firstName = this.getFirstName().trim();
@@ -274,12 +273,8 @@ foam.CLASS({
 
         if ( firstName.length() > NAME_MAX_LENGTH ) {
           throw new IllegalStateException("First name cannot exceed 70 characters.");
-        } else if ( Pattern.matches(containsDigitRegex, firstName) ) {
-          throw new IllegalStateException("First name cannot contain numbers.");
         } else if ( lastName.length() > NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Last name cannot exceed 70 characters.");
-        } else if ( Pattern.matches(containsDigitRegex, lastName) ) {
-          throw new IllegalStateException("Last name cannot contain numbers.");
         } else  if ( SafetyUtil.isEmpty(email) ) {
           throw new IllegalStateException("Email is required.");
         } else if ( SafetyUtil.isEmpty(firstName) ) {
