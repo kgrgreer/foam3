@@ -1133,8 +1133,8 @@ foam.CLASS({
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
       label: '',
-      postSet: function(_, n) {
-        if ( this.signingOfficer && this.userOwnsPercent ) {
+      postSet: function(_, newV) {
+        if ( this.signingOfficer && newV ) {
           this.userId$find.then((user) => {
             this.owner1.firstName = user.firstName;
             this.owner1.lastName = user.lastName;
@@ -1143,21 +1143,17 @@ foam.CLASS({
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-        } else if ( ! this.signingOfficer && this.userOwnsPercent ) {
+        } else if ( ! this.signingOfficer && newV ) {
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
           this.owner1.jobTitle = this.adminJobTitle;
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-        } else if ( ! this.userOwnsPercent ) {
+        } else if ( ! newV ) {
           this.clearProperty('owner1');
         }
 
-        if ( this.owner1.firstName === this.firstName && this.owner1.lastName === this.lastName && foam.util.equals(this.owner1.birthday, this.birthday) ) {
-          // to fix a problem that comes from cloning which resets owner1
-          this.clearProperty('owner1');
-        }
         this.clearProperty('ownershipPercent');
       },
       visibilityExpression: function(amountOfOwners) {
