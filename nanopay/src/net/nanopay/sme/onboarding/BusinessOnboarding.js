@@ -1270,13 +1270,23 @@ foam.CLASS({
       ]
     },
     {
+      name: 'noBeneficialOwners',
+      section: 'reviewOwnersSection',
+      label: 'There are no beneficial owners with 25% or more ownership listed.',
+      visibility: 'RO',
+      documentation: 'If amountOfOwners property is zero, this message will be display',
+      visibilityExpression: function(amountOfOwners) {
+        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      },
+    },
+    {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
       visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer && amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1285,12 +1295,7 @@ foam.CLASS({
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
-                e.GT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
-              ),
-              e.AND(
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
               ),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
@@ -1306,7 +1311,7 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'dualPartyAgreementCAD',
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
+      visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       validationPredicates: [
