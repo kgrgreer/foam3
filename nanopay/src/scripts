@@ -1570,9 +1570,9 @@ p({
       EQ(Notification.NOTIFICATION_TYPE, "Transaction Initiated"),
     })).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
-    notification = obj.fclone();
-    notification.setNotificationType("Latest_Activity");
-    notificationDAO.put(notification);
+        notification = obj.fclone();
+        notification.setNotificationType("Latest_Activity");
+        notificationDAO.put(notification);
     }});
   """
 })
