@@ -10,6 +10,8 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.Account',
@@ -30,7 +32,9 @@ foam.CLASS({
             DAO accountDAO = (DAO) x.get("accountDAO");
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
-            
+            Group       group      = user.findGroup(x);
+            AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
+
             HashMap<String, Object> args = new HashMap<>();
             args.put("name", User.FIRST_NAME);
             args.put("institution", acc.getInstitutionNumber());
@@ -38,6 +42,7 @@ foam.CLASS({
             args.put("accountType", acc.getType());
             args.put("userEmail", User.EMAIL);
             args.put("sendTo", User.EMAIL);
+            args.put("link", config.getUrl());
 
             Notification notification = new Notification.Builder(x)
             .setBody(acc.getAccountNumber() + "micro deposit has been verified")
