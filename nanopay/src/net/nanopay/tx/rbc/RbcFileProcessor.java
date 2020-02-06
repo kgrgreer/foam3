@@ -32,14 +32,6 @@ import org.apache.commons.io.FileUtils;
 
 public class RbcFileProcessor {
 
-  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/";
-  private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
-  private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
-  private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
-  private static final String ARCHIVE_DOWNLOAD_FOLDER = PATH + "/archive/download/";
-  private static final String ARCHIVE_SENT_FOLDER = PATH + "/archive/sent/";
-  public static final String  SEND_FAILED_FOLDER = PATH + "/send/failed/";
-
   private X x;
   private DAO transactionDAO;
   private Logger logger;
@@ -93,19 +85,8 @@ public class RbcFileProcessor {
 
       rbcFTPSClient.send(file);
 
-      /* Move sent file to archive */
-      try {
-        FileUtils.moveFile(file, new File(ARCHIVE_SENT_FOLDER + file.getName()));
-      } catch (IOException ex) {
-        logger.error("RBC error archiving sent file: " + file.getName(), ex);
-      }
     } catch ( Exception e ) {
       logger.error("RBC Sending file failed: " + e.getMessage(), e);
-      try {
-        FileUtils.moveFile(file, new File(SEND_FAILED_FOLDER + file.getName()));
-      } catch (IOException ex) {
-        logger.error("RBC error moving file to retry flder", e);
-      }
       throw new RbcIsoFileException("RBC Sending file failed " + e.getMessage(), e);
     } finally {
       if ( SEND_LOCK.isLocked() ) {
@@ -139,7 +120,7 @@ public class RbcFileProcessor {
       file = new RBCEFTFileGenerator(x).createFile(isoFile);
     } catch ( Exception e ) {
       logger.error("RBC creating file : " + e.getMessage(), e);
-      throw new RbcIsoFileException("RBC creating file", e);
+      throw new RbcIsoFileException("RBC creating file " + e.getMessage(), e);
     } 
     return file;
   }

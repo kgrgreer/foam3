@@ -10,7 +10,9 @@ import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.Notification;
 
 import java.math.BigDecimal;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.security.NoSuchProviderException;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +29,8 @@ import net.nanopay.iso20022.Pain00100103;
 import net.nanopay.iso20022.Pain00800102;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.EFTFileStatus;
+import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.exceptions.RbcFTPSException;
@@ -50,9 +54,6 @@ public class RBCEFTFileGenerator {
   Logger              logger;
   RbcFTPSCredential   rbcCredential;
 
-  public static final String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/send/";
-  public static final String SEND_FAILED = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/send_failed/";
-
   public RBCEFTFileGenerator(X x) {
     this.x = x;
     this.currencyDAO    = (DAO) x.get("currencyDAO");
@@ -68,19 +69,18 @@ public class RBCEFTFileGenerator {
    * @return list of real file object
    */
   public File createFile(RbcISO20022File isoFile) {
-    File file = null;
-    if ( isoFile != null ) {
-      try {
-        file = new File(SEND_FOLDER + isoFile.getFileName() + "_" + Instant.now().toEpochMilli());
-        FileUtils.touch(file);
-        FileUtils.writeStringToFile(file, isoFile.getContent(), false);
-      } catch (IOException e) {
-        this.logger.error("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
-        throw new RbcFTPSException("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
-      }
+    if ( isoFile == null ) return null; 
+    
+    try {
+      /* create and store in FileDAO */
+      InputStream in = new ByteArrayInputStream(isoFile.getContent().getBytes());
+      foam.nanos.fs.File file =  EFTFileUtil.storeEFTFile(this.x, in, isoFile.getFileName()
+        , Long.valueOf(isoFile.getContent().getBytes().length), "text/plain");
+      return EFTFileUtil.getFile(x, file);
+    } catch (Throwable e) {
+      this.logger.error("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
+      throw new RbcFTPSException("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
     }
-
-    return file;
   }
 
   /**
@@ -141,6 +141,7 @@ public class RBCEFTFileGenerator {
           batch.setCiRecords(ciRecords);
           ciCount = Integer.parseInt(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getNumberOfTransactions());
           ciAmount = fromDecimal(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getControlSum());
+          ciFile.setStatus(EFTFileStatus.GENERATED);
           rbcISOFileDAO.inX(x).put(ciFile);
         } else {
           rbcISOFileDAO.inX(x).remove(ciFile);
@@ -176,6 +177,7 @@ public class RBCEFTFileGenerator {
           batch.setCoRecords(coRecords);
           coCount = Integer.parseInt(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getNumberOfTransactions());
           coAmount = fromDecimal(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getControlSum());
+          coFile.setStatus(EFTFileStatus.GENERATED);
           rbcISOFileDAO.inX(x).put(coFile);
         } else{
           rbcISOFileDAO.inX(x).remove(coFile);

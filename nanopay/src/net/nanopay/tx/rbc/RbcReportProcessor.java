@@ -15,6 +15,7 @@ import java.util.Date;
 import javax.xml.stream.XMLStreamException;
 
 import net.nanopay.tx.cico.EFTFileStatus;
+import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.iso20022.ISO20022Util;
 import net.nanopay.iso20022.Pain00200103;
 import net.nanopay.tx.model.Transaction;
@@ -30,12 +31,6 @@ import org.apache.commons.io.FileUtils;
 
 
 public class RbcReportProcessor {
-
-  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/rbc_aft/";
-  private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
-  private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
-  private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
-  private static final String ARCHIVE_FOLDER = PATH + "/archive/download/";
 
   private X x;
   private DAO transactionDAO;
@@ -57,10 +52,8 @@ public class RbcReportProcessor {
     for (File file : folder.listFiles()) {
       if ( file.isDirectory() ) continue;
       try {
-        if ( null != RbcPGPUtil.decrypt(x, file) ) {
-          FileUtils.moveFile(file, new File(ARCHIVE_FOLDER +
-          file.getName()));
-        }
+        EFTFileUtil.storeEFTFile(x, file, "text/plain"); // Store file downloaded from RBC
+        if ( null != RbcPGPUtil.decrypt(x, file) ) FileUtils.deleteQuietly(file);
       } catch (Exception e) {
         this.logger.error("Error decrypting file: " + file.getName(), e);
       }
@@ -123,7 +116,8 @@ public class RbcReportProcessor {
       // Confirm - ACTC status should occur at least once per batch - 
       if ( null != grpInfo.getGroupStatus() && net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) { 
         processTransactionReciepts(pain.getCstmrPmtStsRpt(), fileId);
-        FileUtils.moveFile(file, new File(RECEIPT_PROCESSED_FOLDER + "/" + fileId + "/" +  file.getName() + Instant.now().toEpochMilli()));
+        // Store receipt processed
+        EFTFileUtil.storeEFTFile(x, file, fileId + "_receipt","text/plain"); 
         return true;
       }
     } catch (Exception e) {
@@ -202,15 +196,11 @@ public class RbcReportProcessor {
       } else {
         processPaymentReport(pain.getCstmrPmtStsRpt());
       }
-      // Move file to processed
-      FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + "/" + getFileId(pain.getCstmrPmtStsRpt()) + "/" + file.getName() + Instant.now().toEpochMilli()));
+      // Store report file processed
+      String filename = getFileId(pain.getCstmrPmtStsRpt()) + "_report";
+      EFTFileUtil.storeEFTFile(x, file, filename,"text/plain"); 
     } catch (Exception e) {
-      this.logger.error("Error when processing the receipt file. ", e);
-      // Move file to processed
-      if( pain != null ) {
-        FileUtils.moveFile(file, new File(REPORT_PROCESSED_FAILED_FOLDER + "/" + getFileId(pain.getCstmrPmtStsRpt()) + "/" + file.getName() + Instant.now().toEpochMilli()));
-      }
-      
+      this.logger.error("Error when processing the report file. ", e);
       throw e;
     }
   }

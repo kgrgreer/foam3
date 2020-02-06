@@ -6,9 +6,9 @@ foam.ENUM({
 
   values: [
     {
-      name: 'PENDING',
-      label: 'Pending',
-      documentation: 'EFT/AFT File has not been picked for sending out.',
+      name: 'GENERATED',
+      label: 'Generated',
+      documentation: 'EFT/AFT File has been generated and ready for sending out.',
       ordinal: 0
     },
     {
@@ -28,6 +28,12 @@ foam.ENUM({
       label: 'Failed',
       documentation: 'EFT/AFT File failed while sending out.',
       ordinal: 3
+    },
+    {
+      name: 'REJECTED',
+      label: 'Rejected',
+      documentation: 'EFT/AFT File was rejected or not accepted.',
+      ordinal: 4
     },
   ]
 });
