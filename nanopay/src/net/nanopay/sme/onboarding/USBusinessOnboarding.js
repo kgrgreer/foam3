@@ -1522,6 +1522,10 @@ foam.CLASS({
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
+        this.owner1.showValidation$ = this.signingOfficer$;
+        this.owner2.showValidation$ = this.signingOfficer$;
+        this.owner3.showValidation$ = this.signingOfficer$;
+        this.owner4.showValidation$ = this.signingOfficer$;
       }
     }
   ]
