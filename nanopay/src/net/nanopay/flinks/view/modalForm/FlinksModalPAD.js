@@ -160,6 +160,10 @@ foam.CLASS({
         this.ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
+        location.hash = 'sme.main.banking';
+        this.stack.push({
+          class: 'net.nanopay.bank.BankAccountController'
+        })
       }
     }
   ],
@@ -180,16 +184,7 @@ foam.CLASS({
         if ( model.isConnecting ) return;
         if ( ! model.validateInputs() ) return;
 
-        model.capturePADAndPutBankAccounts().then(() => {
-          this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
-
-          X.closeDialog();
-
-          location.hash = 'sme.main.banking';
-          this.stack.push({
-            class: 'net.nanopay.bank.BankAccountController'
-          })
-        });
+        model.capturePADAndPutBankAccounts();
       }
     }
   ]
