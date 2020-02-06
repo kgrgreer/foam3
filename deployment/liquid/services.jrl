@@ -227,7 +227,7 @@ p({
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_MODIFIED});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LIFECYCLE_STATE});
-    transactionMDao.addIndex(new foam.core.cPropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.TYPE});
