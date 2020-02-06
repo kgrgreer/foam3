@@ -37,7 +37,7 @@ foam.CLASS({
               User receiver = (User) localUserDAO.find(tx.findDestinationAccount(x).getOwner());
 
               DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
-              Currency currency = (Currency) currencyDAO.find(tx.getDestinationCurrency());
+              Currency currency = (Currency) currencyDAO.find(tx.getSourceCurrency());
 
               StringBuilder sb = new StringBuilder(sender.label())
                 .append(" just initiated a payment to ")
