@@ -267,8 +267,10 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",              "lazy":false,  "serviceScript":
-  """
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionDAO",
+  "lazy":false,
+  "serviceScript": """
     // TODO: Will make our own liquid rules journal and then re-enable the rule engine
     dao = new foam.nanos.ruler.RulerDAO(x, x.get("bareTransactionDAO"), "localTransactionDAO");
     dao = new net.nanopay.tx.SaveChainedTransactionDAO(x, dao);
@@ -280,7 +282,7 @@ p({
       .build();
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao, true);
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
-    """
+  """
 })
 p({
   "class":"foam.nanos.boot.NSpec",

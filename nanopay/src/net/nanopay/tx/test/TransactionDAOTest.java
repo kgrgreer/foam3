@@ -208,7 +208,7 @@ public class TransactionDAOTest
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction remains in status COMPLETED" );
     Long balance = (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    test( senderInitialBalance  == balance, "After transaction is declined balance is reverted. initialBalance: "+senderInitialBalance +" balance: "+balance );
+    test( senderInitialBalance +tx.getAmount() == balance, "After transaction is 'attempted' DECLINED from COMPLETED balance is unchanged. initialBalance: "+(senderInitialBalance + tx.getAmount()) +" balance: "+balance );
   }
 
   public void testCashOut() {

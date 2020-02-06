@@ -488,6 +488,7 @@ p({
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setAuthorize(false)
     .setServiceProviderAware(true)
+    .setDeletedAware(false)
     .build();
   """,
   "client": """

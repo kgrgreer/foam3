@@ -210,7 +210,6 @@ p({"class":"foam.nanos.auth.Permission","id":"service.execute.exportDriverRegist
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.feeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.flinksAuth"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.groupDAO"})
-p({"class":"foam.nanos.auth.Permission","id":"service.execute.historyDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.http"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httpBlobService"})
 p({"class":"foam.nanos.auth.Permission","id":"service.execute.httpFileService","description":""})
@@ -555,3 +554,4 @@ p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.eca7cf8e-82
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.dfce5b83-3861-4fcd-9196-93da05f9a931","description":"Permission to see ShadowAccount account type in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.businessonboarding.section.signingOfficerQuestionSection","description":"Permission to access businessOnboarding signing officer section"})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.sme.onboarding.usbusinessonboarding.section.signingOfficerQuestionSection","description":"Permission to access usBusinessOnboarding signing officer section"})
+p({"class":"foam.nanos.auth.Permission","id":"file.read.*","description":"Permission to read all attachment files"})

@@ -82,7 +82,7 @@ public class AFEXServiceProviderTest
 
   private void setUpTest() {
     Address businessAddress = new Address();
-    businessAddress.setCountryId("CA");
+    businessAddress.setCountryId("US");
     businessAddress.setStreetName("Avenue Rd");
     businessAddress.setStreetNumber("123");
     businessAddress.setPostalCode("M1M1M1");
