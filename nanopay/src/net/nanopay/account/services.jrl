@@ -120,7 +120,6 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setEnableInterfaceDecorators(false)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
       .setEnableInterfaceDecorators(false)
