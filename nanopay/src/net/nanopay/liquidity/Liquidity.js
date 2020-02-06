@@ -32,8 +32,8 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'resetBalance',
-      visibilityExpression: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(rebalancingEnabled) {
+        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       documentation: 'Account balance must match reset amount after liquidity transaction was generated.'
     },
@@ -42,8 +42,8 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
       label: 'push/pull account',
-      visibilityExpression: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(rebalancingEnabled) {
+        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       documentation: 'Account associated to setting.',
       view: function(_, X) {

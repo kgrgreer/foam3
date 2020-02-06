@@ -18,7 +18,7 @@ foam.CLASS({
     net.nanopay.model.Business.ADDRESS,
     net.nanopay.model.Business.EMAIL,
     net.nanopay.model.Business.BUSINESS_SECTOR_ID,
-  ].map((p) => p.clone().copyFrom({ visibility: foam.u2.Visibility.RO })),
+  ].map((p) => p.clone().copyFrom({ visibility: foam.u2.DisplayMode.RO })),
 
   axioms: [
     {

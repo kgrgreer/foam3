@@ -7,22 +7,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'confirmationLineNumber',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnCode',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnType',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
   ],
   methods: [

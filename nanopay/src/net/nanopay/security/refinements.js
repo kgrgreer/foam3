@@ -12,7 +12,7 @@ foam.CLASS({
       class: 'Short',
       name: 'loginAttempts',
       value: 0,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'administrative'
     },
     {

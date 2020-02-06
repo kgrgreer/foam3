@@ -252,7 +252,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'administrative'
     }
   ]
@@ -264,10 +264,10 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
   },
   targetProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
   }
 });
 
@@ -278,11 +278,11 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   }
 });
@@ -303,11 +303,11 @@ foam.RELATIONSHIP({
   inverseName: 'partnered',
   junctionDAOKey: 'partnerJunctionDAO',
   sourceProperty: {
-    createMode: 'HIDDEN',
+    createVisibility: 'HIDDEN',
     section: 'administrative'
   },
   targetProperty: {
-    createMode: 'HIDDEN',
+    createVisibility: 'HIDDEN',
     section: 'administrative'
   }
 });
@@ -624,7 +624,7 @@ foam.RELATIONSHIP({
   forwardName: 'signingOfficers',
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   sourceProperty: {
-    createMode: 'HIDDEN',
+    createVisibility: 'HIDDEN',
     section: 'business'
   },
   targetProperty: { hidden: true },
@@ -707,7 +707,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
@@ -738,7 +738,7 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
-    visibility: 'FINAL',
+    updateVisibility: 'RO',
     section: 'paymentInfo',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.accountDAO.find(value)
@@ -791,8 +791,8 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   },
   sourceProperty: {
     readPermissionRequired: true,
@@ -810,8 +810,8 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   },
   sourceProperty: {
     readPermissionRequired: true,
@@ -829,8 +829,8 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   },
   sourceProperty: {
     readPermissionRequired: true,

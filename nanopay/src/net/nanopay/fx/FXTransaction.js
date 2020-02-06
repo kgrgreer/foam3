@@ -37,10 +37,10 @@ Stores all Exchange Rate info.`,
       name: 'fxRate',
       class: 'Double',
       section: 'paymentInfo',
-      visibilityExpression: function(fxRate) {
+      visibility: function(fxRate) {
         return ! fxRate ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
+          foam.u2.DisplayMode.HIDDEN :
+          foam.u2.DisplayMode.RO;
       },
     },
     {

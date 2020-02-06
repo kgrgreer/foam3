@@ -73,7 +73,7 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL,
+      updateVisibility: 'RO',
       tableWidth: 110
     },
     {

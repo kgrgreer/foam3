@@ -45,8 +45,8 @@ foam.CLASS({
       documentation: 'The user to limit.',
       name: 'userToLimit',
       section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'USER') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -59,8 +59,8 @@ foam.CLASS({
       documentation: 'The account to limit.',
       name: 'accountToLimit',
       section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -73,8 +73,8 @@ foam.CLASS({
       documentation: 'The business to limit.',
       name: 'businessToLimit',
       section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'BUSINESS') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'BUSINESS') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -82,7 +82,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       label: 'Apply Limit When',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',

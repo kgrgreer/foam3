@@ -319,7 +319,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
@@ -533,10 +533,10 @@ foam.CLASS({
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',
       section: 'paymentInfo',
-      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+      visibility: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
+          foam.u2.DisplayMode.HIDDEN :
+          foam.u2.DisplayMode.RO;
       },
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;
@@ -600,10 +600,10 @@ foam.CLASS({
       class: 'String',
       name: 'destinationCurrency',
       label: 'Destination Currency',
-      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+      visibility: function(sourceCurrency, destinationCurrency) {
         return sourceCurrency == destinationCurrency ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
+          foam.u2.DisplayMode.HIDDEN :
+          foam.u2.DisplayMode.RO;
       },
       section: 'paymentInfo',
       value: 'CAD'
@@ -632,10 +632,10 @@ foam.CLASS({
       name: 'scheduled',
       class: 'DateTime',
       section: 'basicInfo',
-      visibilityExpression: function(scheduled) {
+      visibility: function(scheduled) {
         return scheduled ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -672,10 +672,10 @@ foam.CLASS({
       class: 'DateTime',
       name: 'scheduledTime',
       section: 'basicInfo',
-      visibilityExpression: function(scheduledTime) {
+      visibility: function(scheduledTime) {
         return scheduledTime ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `The scheduled date when transaction should be processed.`
     },

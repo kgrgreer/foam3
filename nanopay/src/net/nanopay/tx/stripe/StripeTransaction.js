@@ -21,7 +21,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'notes',
-      visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.DisplayMode.RO,
       documentation: 'Transaction notes'
     },
     {

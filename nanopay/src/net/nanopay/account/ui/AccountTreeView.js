@@ -118,8 +118,8 @@ foam.CLASS({
       class: 'Reference',
       name: 'accounts',
       of: 'net.nanopay.account.Account',
-      visibilityExpression: function(canvasContainer) {
-        return !! canvasContainer ? foam.u2.Visibility.RW : foam.u2.Visibility.RO;
+      visibility: function(canvasContainer) {
+        return !! canvasContainer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO;
       },
       postSet: function(_, n){
         this.scrollToAccount(n);

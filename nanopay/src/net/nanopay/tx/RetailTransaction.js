@@ -18,7 +18,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'tip',
       label: 'Tip',
-      visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.DisplayMode.RO,
       tableCellFormatter: function(tip, X) {
         var formattedAmount = tip/100;
         this
@@ -30,7 +30,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'total',
-      visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.DisplayMode.RO,
       label: 'Total Amount',
       transient: true,
       expression: function(amount, tip) {
@@ -61,12 +61,12 @@ foam.CLASS({
       of: 'net.nanopay.retail.model.Device',
       name: 'deviceId',
       swiftType: 'Int?',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'challenge',
-      visibility: foam.u2.Visibility.RO,
+      visibility: foam.u2.DisplayMode.RO,
       documentation: `Randomly generated challenge.
       Used as an identifier (along with payee/payer and amount and device id) for a retail trasnaction,
       used in the merchant app and is transfered to the mobile applications as a property of the QrCode.

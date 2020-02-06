@@ -67,7 +67,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
