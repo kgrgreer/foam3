@@ -1,12 +1,12 @@
 # Liquified Crunch
 
 - LiquidCapability
-- AccountApproverMap
 - AccountData
 - CapabilityAccountData
+- AccountApproverMap
 - AccountMap
 - AccountTemplate
-- CapabilityAccountTemplate (this and the 2 things above are basically the same thing)
+- CapabilityAccountTemplate (this and the 3 things above are basically the same thing)
 - ApproverLevel
 - CapabilityAccountTemplateMapView do not need doc
 - CapabilityRequest
