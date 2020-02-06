@@ -35,7 +35,6 @@ foam.CLASS({
       javaCode: `
           User userClone;
           userClone = (User) user.fclone();
-
           return userClone;
       `
     }

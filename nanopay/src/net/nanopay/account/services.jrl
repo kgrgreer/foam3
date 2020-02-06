@@ -34,7 +34,8 @@ p({
       .setAuthorize(false)
       .setPm(true)
       .setSeqNo(true)
-      .setDeletedAware(true)
+      .setDeletedAware(false)
+      .setOf(Account.getOwnClassInfo())
       .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
@@ -52,7 +53,7 @@ p({
     foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x,
       new foam.nanos.auth.PermissionedPropertyDAO(x, 
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
-          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
+          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")),
             new net.nanopay.bank.BankAccountValidator()))));
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
@@ -103,6 +104,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setPm(true)
+      .setDeletedAware(false)
       .setAuthorize(false)
       .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.account.DebtAccount.class)))
       .setEnableInterfaceDecorators(false)
@@ -118,6 +120,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
+      .setEnableInterfaceDecorators(false)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
       .setEnableInterfaceDecorators(false)

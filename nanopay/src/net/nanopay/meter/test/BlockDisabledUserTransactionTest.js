@@ -51,6 +51,7 @@ foam.CLASS({
         } else {
           user = (User) user.fclone();
         }
+        user.setGroup("business");
         user.setStatus(status);
         return (User) userDAO_.put(user).fclone();
       `

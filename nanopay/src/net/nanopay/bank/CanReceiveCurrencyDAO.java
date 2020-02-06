@@ -1,9 +1,5 @@
 package net.nanopay.bank;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -17,6 +13,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
+import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id
@@ -40,6 +37,13 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
     CanReceiveCurrency request = (CanReceiveCurrency) obj;
+
+    // Reusing this service for a liquid requirement:
+    // Given an account id return if this is an account-not aggregate - and its currency.
+    // will return account selection validity with response.response
+    // and denomination in response.message
+    if ( request.getAccountChoice() > 0 ) return accountSelectionLookUp(x, request);
+
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
@@ -97,6 +101,29 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     return user;
   }
   
+  public CanReceiveCurrency accountSelectionLookUp(X x, CanReceiveCurrency query) {
+    CanReceiveCurrency response = (CanReceiveCurrency) query.fclone();
+    response.setResponse(false);
+    ArraySink accountSink = (ArraySink) accountDAO.where(AND(
+      EQ(net.nanopay.account.Account.DELETED, false),
+      EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+      EQ(net.nanopay.account.Account.ENABLED, true),
+      EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
+      OR(
+        CLASS_OF(net.nanopay.account.DigitalAccount.class),
+        INSTANCE_OF(net.nanopay.account.ShadowAccount.class)
+      )
+    )).select(new ArraySink());
+
+    if ( accountSink.getArray().size() > 0 ) {
+      Account account = (Account)accountSink.getArray().get(0);
+      response.setResponse(true);
+      response.setMessage(account.getDenomination());
+    }
+    return response;
+  }
+
+
   @Override
   public FObject find_(X x, Object id) {
     return null;
