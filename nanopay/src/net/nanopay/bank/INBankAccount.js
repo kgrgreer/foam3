@@ -74,6 +74,13 @@ foam.CLASS({
             return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^\w{11}$/);
           },
           errorString: 'IFSC Code must be 11 digits long.'
+        },
+        {
+          args: ['ifscCode'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.bank.INBankAccount.IFSC_CODE, /^[A-Za-z]{4}0[A-z0-9a-z]{6}$/);
+          },
+          errorString: 'IFSC Code must be in the following format four letters, 0, 6 numbers. eg: ABCD0123456.'
         }
       ],
       section: 'accountDetails'
