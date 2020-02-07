@@ -18,6 +18,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'bannerizeCompliance',
     'closeDialog',
     'ctrl',
     'flinksAuth',
@@ -161,9 +162,10 @@ foam.CLASS({
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
         location.hash = 'sme.main.banking';
+        this.bannerizeCompliance();
         this.stack.push({
           class: 'net.nanopay.bank.BankAccountController'
-        })
+        });
       }
     }
   ],
