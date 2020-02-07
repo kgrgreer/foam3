@@ -117,7 +117,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'maxSize',
-      value: 8,
+      value: 15,
       documentation: 'Dictates maximum file size in MB (Megabyte).'
     },
     {
