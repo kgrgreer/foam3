@@ -1441,8 +1441,7 @@ foam.CLASS({
 
         if (
           oldObj != null &&
-          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
-          oldObj.getSigningOfficer()
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
