@@ -161,6 +161,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.uSBusinessOnboardingDAO","
 p({"class":"foam.nanos.auth.Permission","id":"service.canadaUsBusinessOnboardingDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessSectorDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.canReceiveCurrencyDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.getDefaultCurrencyDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.complianceItemDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.currencyDAO","description":""})

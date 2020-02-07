@@ -12,6 +12,8 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'getDefaultCurrencyDAO',
+    'currencyDAO',
     'ctrl',
     'errors',
     'invoice',
@@ -31,6 +33,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.Popup',
@@ -252,9 +255,9 @@ foam.CLASS({
     {
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
-      expression: function(invoice) {
-        return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
-      }
+      // expression: function(invoice) {
+      //   return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
+      // }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -339,6 +342,7 @@ foam.CLASS({
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
+      
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
       } else {
@@ -548,8 +552,10 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onContactIdChange() {
-      this.checkUser(this.invoice.destinationCurrency);
+    async function onContactIdChange() {
+      // this.checkUser(this.invoice.destinationCurrency);
+      await this.setDefaultCurrency();
+      // debugger;
     },
     function onCurrencyTypeChange() {
       this.selectedCurrency = this.currencyType.id;
@@ -578,6 +584,18 @@ foam.CLASS({
     function setCoordinates(e) {
       this.xPosition = e.x + this.TOOLTIP_OFFSET;
       this.yPosition = e.y + this.TOOLTIP_OFFSET;
+    },
+    async function setDefaultCurrency() {
+      var request = this.GetDefaultCurrency.create({
+        contactId: this.invoice.contactId
+      });
+      var responseObj = await this.getDefaultCurrencyDAO.put(request);
+      if ( responseObj.response ) {
+        var currency = await this.currencyDAO.find(responseObj.response);
+        this.currencyType = currency;
+        this.selectedCurrency = this.currencyType.id;
+        this.invoice.destinationCurrency = currency.id;
+      }
     }
   ],
 
