@@ -24,6 +24,7 @@ foam.CLASS({
     'onComplete',
     'plaidService',
     'padCaptureDAO',
+    'pushMenu',
     'user',
     'validateAccountNumber',
     'validateRoutingNumber'
@@ -254,7 +255,7 @@ foam.CLASS({
       this.closeDialog();
       location.hash = 'sme.main.banking';
 
-      this.ctrl.stack.back();
+      this.pushMenu('sme.main.banking');
     }
   ],
 
