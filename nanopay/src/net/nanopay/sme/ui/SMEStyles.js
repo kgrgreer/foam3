@@ -193,8 +193,8 @@ foam.CLASS({
     }
 
     .carrot {
-      width: 0; 
-      height: 0; 
+      width: 0;
+      height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-top: 5px solid white;
@@ -1030,6 +1030,17 @@ foam.CLASS({
 
     .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
       transform: translate(-100%, 16px);
+    }
+
+    /* signIn & signUp */
+    .foam-u2-detail-VerticalDetailView {
+      width: 58%;
+    }
+    .title-top {
+      padding-bottom: 2vh;
+    }
+    .center-footer {
+      width: 58%;
     }
   `
 });
