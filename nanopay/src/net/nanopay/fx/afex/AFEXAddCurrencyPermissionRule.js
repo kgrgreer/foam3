@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
+    'java.util.Date',
     'java.util.HashMap',
     'java.util.Map',
     'javax.security.auth.AuthPermission',
@@ -139,6 +140,7 @@ foam.CLASS({
               .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("compliance-notification-to-user")
+              .setIssuedDate(new Date())
               .build();
 
           business.doNotify(x, notification);

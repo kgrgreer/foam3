@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'java.util.Date',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
@@ -55,6 +56,7 @@ foam.CLASS({
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("verifiedBank")
+                    .setIssuedDate(new Date())
                     .build();
             owner.doNotify(x, verifiedNotification);
           }
