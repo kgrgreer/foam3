@@ -1033,7 +1033,7 @@ foam.CLASS({
     }
 
     /* signIn & signUp */
-    .foam-u2-detail-VerticalDetailView {
+    .foam-u2-view-LoginView .foam-u2-detail-VerticalDetailView {
       width: 78%;
     }
     .title-top {
