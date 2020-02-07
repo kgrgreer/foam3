@@ -18,6 +18,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'bannerizeCompliance',
     'bank',
     'ctrl',
     'isConnecting',
@@ -252,6 +253,7 @@ foam.CLASS({
 
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
+      this.bannerizeCompliance();
       location.hash = 'sme.main.banking';
 
       this.ctrl.stack.back();
