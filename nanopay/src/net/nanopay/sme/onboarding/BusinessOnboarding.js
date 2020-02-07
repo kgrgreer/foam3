@@ -567,10 +567,7 @@ foam.CLASS({
           errorString: 'Please select job title.'
         }
       ],
-      validationTextVisible: true,
-      postSet: function(_, n) {
-        this.owner1.jobTitle = this.adminJobTitle;
-      }
+      validationTextVisible: true
     },
     {
       class: 'PhoneNumber',
