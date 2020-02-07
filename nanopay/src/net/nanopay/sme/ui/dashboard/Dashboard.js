@@ -274,19 +274,12 @@ foam.CLASS({
         )
       );
     },
-
     function initE() {
       this.ctrl.bannerizeCompliance();
       this.SUPER();
       this.getUserAccounts().then(() => {
         var self = this;
         var split = this.DashboardBorder.create();
-
-        this.businessDAO.find(this.user.id).then((o) => {
-          this.onboardingStatus = o.onboarded;
-          this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
-          this.businessRegistrationDate = o.businessRegistrationDate;
-        });
 
         var top = this.Element.create()
           .start('h1')
