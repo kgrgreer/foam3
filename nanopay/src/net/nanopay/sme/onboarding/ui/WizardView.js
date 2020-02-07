@@ -211,15 +211,19 @@ foam.CLASS({
           })).
           then(async () => {
             await x.userDAO.find(x.user.id).then((o) => {
+              x.user = o;
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
             });
 
+            await x.userDAO.find(x.agent.id).then((agent) => {
+              x.agent = agent;
+            });
+
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.stack.back();
-            window.location.reload();
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
