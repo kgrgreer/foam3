@@ -17,7 +17,7 @@ public class HashedFObjectParser
     setDelegate(new Parser() {
       private Parser parser1 = new FObjectParser(defaultClass);
       private Parser parser2 = new Seq1(1,
-        new Optional(new Literal(",")),
+        new Optional(Literal.create(",")),
         new FObjectParser(net.nanopay.security.MessageDigest.class));
 
       @Override

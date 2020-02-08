@@ -12,14 +12,14 @@ public class HexStringArrayParser
       new Alt(
         new NullParser(),
         new Seq1(3,
-          new Whitespace(),
-          new Literal("["),
-          new Whitespace(),
+          Whitespace.instance(),
+          Literal.create("["),
+          Whitespace.instance(),
           new Repeat(
             new HexStringParser(),
-            new Seq0(new Whitespace(), new Literal(","), new Whitespace())),
-          new Whitespace(),
-          new Literal("]"))
+            new Seq0(Whitespace.instance(), Literal.create(","), Whitespace.instance())),
+          Whitespace.instance(),
+          Literal.create("]"))
       ));
   }
 

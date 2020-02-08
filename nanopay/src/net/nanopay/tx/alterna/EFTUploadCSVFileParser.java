@@ -62,7 +62,7 @@ public class EFTUploadCSVFileParser extends EFTFileParser
       ps.setString(line);
 
       FObject obj = (FObject) classInfo.getObjClass().newInstance();
-      Parser parser = new Repeat(new CSVStringParser(), new Literal(","));
+      Parser parser = new Repeat(new CSVStringParser(), Literal.create(","));
       PStream ps1 = ps.apply(parser, null);
       if ( ps1 == null ) throw new RuntimeException("format error");
 
