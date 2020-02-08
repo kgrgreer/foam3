@@ -14,10 +14,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'bankAccountVerification',
+    'bannerizeCompliance',
     'ctrl',
-    'user',
-    'accountDAO'
+    'onComplete',
+    'user'
   ],
 
   css: `
@@ -159,6 +161,7 @@ foam.CLASS({
         }
         // Force the view to update.
         this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.bannerizeCompliance();
         this.closeDialog();
       }
     }

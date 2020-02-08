@@ -100,7 +100,7 @@ foam.CLASS({
           .end();
       }
     },
-],
+  ],
 
   methods: [
     {
@@ -121,7 +121,7 @@ foam.CLASS({
         TransactionLineItem[] lineItems = getLineItems();
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
+          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
           for ( int j = 0; j < transfers.length; j++ ) {
             transfers[j].setAmount((long)(transfers[j].getAmount()*0.01*getServiceCompleted()));
             all.add(transfers[j]);
@@ -144,6 +144,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      //TODO: move this to a rule. before merge
       super.executeAfterPut(x, oldTxn);
       createChild(x, oldTxn);
       `
@@ -157,11 +158,14 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      super.limitedCopyFrom(other);
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
-      setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
+      if ( other instanceof InvoiceTransaction ) {
+        setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
+      }
       `
     },
     {

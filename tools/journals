@@ -1,5 +1,6 @@
 acceptanceDocuments
 accounts
+accountTemplates
 alarmConfig
 ascendantfxusers
 ascendantUserPayeeJunctions
@@ -11,6 +12,7 @@ businessSectors
 businessTypes
 complianceItems
 capabilities
+capabilityRequests
 clearingTimes
 corridors
 countries
@@ -38,7 +40,9 @@ lineItemFees
 lineItemTax
 lineItemTypeAccounts
 lineItemTypes
+liquidCapabilities
 liquiditySettings
+liquidUserCapabilityJunctions
 menus
 notifications
 notificationTemplates
@@ -54,6 +58,7 @@ questionnaires
 quickbooksToken
 regions
 reports
+rootAccounts
 ruleGroups
 rules
 scripts

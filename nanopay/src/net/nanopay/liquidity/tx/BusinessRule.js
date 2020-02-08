@@ -4,6 +4,10 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
+  implements: [
+    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+  ],
+
   documentation: 'Business rule base class.',
 
   javaImports: [
@@ -27,13 +31,14 @@ foam.CLASS({
       name: 'id',
       section: 'basicInfo',
       label: 'Rule Name',
-      tableWidth: 750
+      tableWidth: 400
     },
     {
       name: 'enabled',
+      readPermissionRequired: false,
       tableWidth: 125,
       tableHeaderFormatter: function(axiom) {
-        this.add('Current status');
+        this.add('Status');
       },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
@@ -48,7 +53,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
-      value: 'CREATE',
+      value: 'CREATE_OR_UPDATE',
       visibility: 'RO',
     },
     {
@@ -95,6 +100,98 @@ foam.CLASS({
     {
       name: 'validity',
       hidden: true
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: 'The date and time of when the account was created in the system.',
+      visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: 'The ID of the User who created the account.',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.__subContext__.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.label() ) {
+              this.add(user.label());
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
+      name: 'createdByAgent',
+      visibility: 'HIDDEN',
+      section: 'basicInfo' // Sort of a hack to avoid creating an empty section
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'The date and time of when the account was last changed in the system.',
+      visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who last modified this account.`,
+      visibility: 'RO',
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.HIDDEN
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        String id = (String) getId();
+        return id;
+      `
+    },
+    {
+      name: 'toSummary',
+      documentation: `When using a reference to the roleDAO, the labels associated
+        to it will show a chosen property rather than the first alphabetical string
+        property. In this case, we are using the name.
+      `,
+      code: function(x) {
+        return this.id;
+      }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        if (this.getRuleGroup() == null ||
+            this.getRuleGroup() == "") {
+              throw new IllegalStateException("Rule group must be set");
+        }
+      `
     }
   ]
 });

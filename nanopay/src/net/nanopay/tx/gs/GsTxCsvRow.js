@@ -1,3 +1,13 @@
+var optionalDoubleCSVMapping = `
+  foam.core.PropertyInfo prop = this;
+  map.put(getName(), new foam.lib.csv.FromCSVSetter() {
+    public void set(foam.core.FObject obj, String str) {
+      if ( "".equals(str) ) str = "0";
+      prop.set(obj, fromString(str));
+    }
+  });
+`;
+
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'GsTxCsvRow',
@@ -68,7 +78,8 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'SecQty'
+      name: 'SecQty',
+      javaFromCSVLabelMapping: optionalDoubleCSVMapping
     },
     {
       class: 'String',

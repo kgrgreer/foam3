@@ -36,4 +36,8 @@ foam.ENUM({
       ordinal: 4
     },
   ]
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> b61dbdaf1bb420ac7e961b8792d622eacf46cb14
