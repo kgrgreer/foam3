@@ -71,7 +71,6 @@ foam.CLASS({
                 userNotification.setUserId(user.getId());
                 userNotification.setBody(notificationMsg);
                 userNotification.setNotificationType("Latest_Activity");
-                userNotification.setIssuedDate(iv.getIssueDate());
                 try {
                   notificationDAO.put_(x, userNotification);
                 }
@@ -83,7 +82,6 @@ foam.CLASS({
                 payerNotification.setUserId(payer.getId());
                 payerNotification.setBody(payer_notificationMsg);
                 payerNotification.setNotificationType("Latest_Activity");
-                payerNotification.setIssuedDate(iv.getIssueDate());
                 try {
                   notificationDAO.put_(x, payerNotification);
                 }

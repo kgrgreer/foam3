@@ -7,16 +7,16 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.core.ContextAgent',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -73,7 +73,6 @@ foam.CLASS({
               senderNotification.setUserId(sender.getId());
               senderNotification.setBody(notificationMsg);
               senderNotification.setNotificationType("Latest_Activity");
-              senderNotification.setIssuedDate(invoice.getIssueDate());
               try {
                 notificationDAO.put_(x, senderNotification);
               }
@@ -85,7 +84,6 @@ foam.CLASS({
                 receiverNotification.setUserId(receiver.getId());
                 receiverNotification.setBody(receiver_notificationMsg);
                 receiverNotification.setNotificationType("Latest_Activity");
-                receiverNotification.setIssuedDate(invoice.getIssueDate());
                 try {
                   notificationDAO.put_(x, receiverNotification);
                 }
