@@ -6,12 +6,12 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
-    'foam.nanos.session.Session',
-    'foam.nanos.auth.User',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.AuthorizationException',
-    'net.nanopay.model.Branch',
-    'foam.core.X'
+    'foam.nanos.auth.User',
+    'foam.nanos.session.Session',
+    'net.nanopay.model.Branch'
   ],
 
   methods: [
@@ -20,14 +20,12 @@ foam.CLASS({
       javaCode: `
 
       User smeUser = new User();
-      User adminUser = new User();
       User nonSmeUser = new User();
       Branch testBranch = new Branch();
-      
+
       boolean threw;
 
       smeUser.setGroup("sme");
-      adminUser.setGroup("admin");
       nonSmeUser.setGroup("");
 
       DAO branchDAO = (DAO) x.get("branchDAO");
@@ -35,7 +33,6 @@ foam.CLASS({
 
       smeUser = (User) bareUserDAO.put(smeUser);
       nonSmeUser = (User) bareUserDAO.put(nonSmeUser);
-      adminUser = (User) bareUserDAO.put(adminUser);
 
       Session smeUserSession = new Session.Builder(x)
         .setUserId(smeUser.getId())
@@ -62,21 +59,22 @@ foam.CLASS({
       }
       test(! threw, "Sme user can view branch");
 
-      threw = true;
+      threw = false;
       try {
+        testBranch.setClearingSystemIdentification("foo"); // Set an arbitrary property.
         branchDAO.inX(smeContext).put(testBranch);
       } catch ( AuthorizationException e ) {
-        threw = false;
+        threw = true;
       }
-      test(! threw, "Sme user can not update branch");
+      test(threw, "Sme user can not update branch");
 
-      threw = true;
+      threw = false;
       try {
         branchDAO.inX(smeContext).remove(testBranch);
       } catch ( AuthorizationException e ) {
-        threw = false;
+        threw = true;
       }
-      test(! threw, "Sme user can not delete branch");
+      test(threw, "Sme user can not delete branch");
 
       Session nonSmeUserSession = new Session.Builder(x)
         .setUserId(nonSmeUser.getId())
@@ -116,15 +114,9 @@ foam.CLASS({
       }
       test(threw, "Non sme user can't delete branch");
 
-      Session adminUserSession = new Session.Builder(x)
-        .setUserId(adminUser.getId())
-        .build();
-
-      X adminContext = adminUserSession.applyTo(x);
-
       threw = false;
       try {
-        branchDAO.inX(adminContext).put(testBranch);
+        branchDAO.inX(x).put(testBranch);
       } catch ( AuthorizationException e ) {
         threw = true;
       }
@@ -132,7 +124,7 @@ foam.CLASS({
 
       threw = false;
       try {
-        branchDAO.inX(adminContext).find(testBranch);
+        branchDAO.inX(x).find(testBranch);
       } catch ( AuthorizationException e ) {
         threw = true;
       }
@@ -140,7 +132,7 @@ foam.CLASS({
 
       threw = false;
       try {
-        branchDAO.inX(adminContext).put(testBranch);
+        branchDAO.inX(x).put(testBranch);
       } catch ( AuthorizationException e ) {
         threw = true;
       }
@@ -148,7 +140,7 @@ foam.CLASS({
 
       threw = false;
       try {
-        branchDAO.inX(adminContext).remove(testBranch);
+        branchDAO.inX(x).remove(testBranch);
       } catch ( AuthorizationException e ) {
         threw = true;
       }
