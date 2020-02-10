@@ -5,7 +5,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.lib.PropertyPredicate',
     'foam.core.PropertyInfo',
     'java.util.Iterator',
     'foam.dao.DAO',
@@ -349,17 +348,10 @@ foam.CLASS({
 
         List<String> storageTransientPropertyNames = new ArrayList<>();
 
-        PropertyPredicate isPropStorageTransient = new PropertyPredicate() {
-          @Override
-          public boolean propertyPredicateCheck(X x, String of, PropertyInfo prop) {
-            return prop.getStorageTransient();
-          }
-        };
-
         while ( allProperties.hasNext() ){
           PropertyInfo prop = (PropertyInfo) allProperties.next();
 
-          if ( isPropStorageTransient.propertyPredicateCheck(getX(), obj.getClassInfo().toString().toLowerCase(), prop)){
+          if ( prop.getStorageTransient() ){
             storageTransientPropertyNames.add(prop.getName());
           }
         }
