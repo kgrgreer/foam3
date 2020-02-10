@@ -5,6 +5,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.lib.PropertyPredicate',
+    'foam.core.PropertyInfo',
+    'java.util.Iterator',
     'foam.dao.DAO',
     'java.util.Map',
     'java.util.List',
@@ -342,8 +345,31 @@ foam.CLASS({
           throw new RuntimeException("Something went wrong used an invalid lifecycle status for create!");
         }
       } else {
+        Iterator allProperties = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class).iterator();
+
+        List<String> storageTransientPropertyNames = new ArrayList<>();
+
+        PropertyPredicate isPropStorageTransient = new PropertyPredicate() {
+          @Override
+          public boolean propertyPredicateCheck(X x, String of, PropertyInfo prop) {
+            return prop.getStorageTransient();
+          }
+        };
+
+        while ( allProperties.hasNext() ){
+          PropertyInfo prop = (PropertyInfo) allProperties.next();
+
+          if ( isPropStorageTransient.propertyPredicateCheck(getX(), obj.getClassInfo().toString().toLowerCase(), prop)){
+            storageTransientPropertyNames.add(prop.getName());
+          }
+        }
+
         // then handle the diff here and attach it into the approval request
         Map updatedProperties = currentObjectInDAO.diff(obj);
+
+        for ( int i = 0; i < storageTransientPropertyNames.size(); i++ ){
+          updatedProperties.remove(storageTransientPropertyNames.get(i));
+        }
 
         // No change, just returns obj
         if ( updatedProperties.isEmpty() ) {
