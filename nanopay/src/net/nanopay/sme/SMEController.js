@@ -622,8 +622,16 @@ foam.CLASS({
         this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
       }
 
+      if ( accountArray ) {
+        for ( i =0; i < accountArray.length; i++ ) {
+          if ( accountArray[i].status == this.BankAccountStatus.VERIFIED ) {
+            this.verifiedAccount = true;
+          }
+        }
+      }
+
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray);
+        return complianceStatus.condition(user, accountArray, this.verifiedAccount);
       });
 
       if ( toastElement ) {
