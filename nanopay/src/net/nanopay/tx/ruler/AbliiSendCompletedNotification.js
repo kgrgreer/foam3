@@ -16,7 +16,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'java.util.Date',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -74,7 +73,6 @@ foam.CLASS({
               senderNotification.setUserId(sender.getId());
               senderNotification.setBody(notificationMsg);
               senderNotification.setNotificationType("Latest_Activity");
-              senderNotification.setIssuedDate(new Date());
               try {
                 notificationDAO.put_(x, senderNotification);
               }
@@ -86,7 +84,6 @@ foam.CLASS({
                 receiverNotification.setUserId(receiver.getId());
                 receiverNotification.setBody(receiver_notificationMsg);
                 receiverNotification.setNotificationType("Latest_Activity");
-                receiverNotification.setIssuedDate(new Date());
                 try {
                   notificationDAO.put_(x, receiverNotification);
                 }

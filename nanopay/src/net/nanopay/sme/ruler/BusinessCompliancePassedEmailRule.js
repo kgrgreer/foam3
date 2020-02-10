@@ -16,7 +16,6 @@ foam.CLASS({
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'net.nanopay.model.Business',
-      'java.util.Date',
       'java.util.HashMap',
       'java.util.Map',
       'static foam.mlang.MLang.*'
@@ -55,7 +54,6 @@ foam.CLASS({
                   .setEmailIsEnabled(true)
                   .setEmailArgs(args)
                   .setEmailName("compliance-notification-to-user")
-                  .setIssuedDate(new Date())
                   .build();
 
                 business.doNotify(x, businessCompliancePassedNotification);
