@@ -6,25 +6,18 @@ foam.CLASS({
   documentation: 'Digital Account. Default to monetary denomination.',
 
   javaImports: [
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.DigitalAccountService',
     'foam.core.Currency',
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.mlang.MLang',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'java.util.List',
+    'foam.nanos.auth.AuthService'
   ],
 
   implements: [

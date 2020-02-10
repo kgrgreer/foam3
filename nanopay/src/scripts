@@ -1100,17 +1100,18 @@ p({
   "id": "APIGroupPermissions",
   "description": "Set up groups and permissions for API",
   "code": """
-
+    import foam.comics.v2.DAOControllerConfig;
     import foam.nanos.auth.Group;
     import foam.nanos.auth.GroupPermissionJunction;
     import foam.nanos.auth.Permission;
     import foam.nanos.auth.ServiceProvider;
     import foam.nanos.menu.DAOMenu;
+    import foam.nanos.menu.DAOMenu2;
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
 
     DRY_RUN = true;
-    // Set to true to undo the permission and theme changes made to the "SME" group by this script
+    // For fix me, Set to true to undo the permission and ui changes made to the "SME" group using this script
     fixSME = false;
     
     // group/spid prefix
@@ -1255,6 +1256,7 @@ p({
     smeAddPermissionArray.add("menu.read.sme.main.banking");
     smeAddPermissionArray.add("menu.read.sme.main.dashboard");
     smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
+    smeAddPermissionArray.add("menu.read.sme.accountProfile.signout");
 
     for (int i = 0; i < smeAddPermissionArray.size(); i++) {
       GroupPermissionJunction junction = new GroupPermissionJunction();
@@ -1265,20 +1267,6 @@ p({
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
-    }
-
-    themeDAO = x.get("themeDAO");
-    theme = themeDAO.find(3);
-    theme.setPriority(3);
-    theme.setLogo("images/nanopay_logo_blue.png");
-    if ( DRY_RUN ) {
-      print("Theme is created.");
-    } else if ( fixSME ) {
-      theme.setPriority(2);
-      theme.setLogo("images/ablii-logo.svg");
-      themeDAO.put(theme);
-    } else {
-      themeDAO.put(theme);
     }
 
     // Create SPID
@@ -1418,33 +1406,30 @@ p({
 
       localGroupDAO = x.get("localGroupDAO");
       String permissionString = "currency.read.";
-      Address businessAddress = business.getAddress();
-      permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
-      Permission permission = new Permission.Builder(x).setId(permissionString).build();
+      country = business.getCountryOfBusinessRegistration();
+      Permission permission = null;
       Group group = (Group) localGroupDAO.find(business.getGroup());
       while ( group != null ) {
         group = (Group) group.findParent(x);
         if ( group != null && group.getId().endsWith("employee") ) break;
       }
-      if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
-        group.getPermissions(x).add(permission);
-        print(" - Added " + permissionString);
-        
+      if ( group != null ) {
+
         // add permission for USBankAccount strategizer
-        if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d")) ) {
+        if ( group != null && ! group.implies(x, new AuthPermission("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d")) ) {
           permission = new Permission.Builder(x).setId("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d").build();
           group.getPermissions(x).add(permission);
-          print(" - Added US strategyReference permissions");
+          print(business.getId() + " - Added US strategyReference permissions");
         }
 
         // add permission for INBankAccount strategizer if country of business is Canada
-        if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b")) && businessAddress.getCountryId().equals("CA") ) {
-          permission = new Permission.Builder(x).setId("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b").build();
-          group.getPermissions(x).add(permission);
-          permission = new Permission.Builder(x).setId("currency.read.INR").build();
-          group.getPermissions(x).add(permission);
-          print(" - Added IN strategyReference and currency.read.IN");
-        }
+        //if ( group != null && ! group.implies(x, new AuthPermission("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b")) && country.equals("CA") ) {
+        //  permission = new Permission.Builder(x).setId("strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b").build();
+        //  group.getPermissions(x).add(permission);
+        //  permission = new Permission.Builder(x).setId("currency.read.INR").build();
+        //  group.getPermissions(x).add(permission);
+        //  print(business.getId() + " - Added IN strategyReference and currency.read.IN");
+        //}
       }
     }
 
@@ -1457,7 +1442,6 @@ p({
     afexBusinessDAO.select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Business business = (Business) userDAO.find(obj.getUser());
-        print(business.getId());
         if ( business != null ) {
           addPermissions(business);
         }
@@ -1563,5 +1547,34 @@ p({
         paymentCodeDAO.put(paymentCode);
       }
     }
+  """
+})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "ChangeTransactionNotificationType",
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.notification.Notification;
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import static foam.mlang.MLang.*;
+
+    notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
+    notificationDAO.where(AND(new Predicate[] {
+      OR(new Predicate[] {
+        EQ(Notification.NOTIFICATION_TYPE, "Transaction Initiated"),
+        EQ(Notification.NOTIFICATION_TYPE, "BusinessCompliancePassed"),
+      })
+    })).select(new AbstractSink() {
+      public void put(Object obj, Detachable sub) {
+        notification = obj.fclone();
+        notification.setNotificationType("Latest_Activity");
+        notificationDAO.put(notification);
+    }});
   """
 })

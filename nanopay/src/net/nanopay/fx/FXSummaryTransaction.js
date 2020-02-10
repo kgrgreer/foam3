@@ -6,14 +6,7 @@ foam.CLASS({
   documentation: `Transaction used as a summary to for AFEX BMO transactions`,
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
-    'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [

@@ -9,21 +9,15 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Phone',
     'foam.nanos.session.Session',
-    'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
-    'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -53,7 +47,7 @@ foam.CLASS({
         USBusinessOnboarding old = (USBusinessOnboarding) getDelegate().find_(x, obj);
 
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true ) {
           if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail())) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
 
@@ -96,15 +90,15 @@ foam.CLASS({
               invitation.setFirstName(businessOnboarding.getAdminFirstName());
               invitation.setLastName(businessOnboarding.getAdminLastName());
               invitation.setJobTitle(businessOnboarding.getAdminJobTitle());
-              invitation.setPhoneNumber(((Phone)businessOnboarding.getAdminPhone()).getNumber());
+              invitation.setPhoneNumber(businessOnboarding.getAdminPhone());
 
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
             }
-          }
 
-          businessOnboarding.setSendInvitation(false);
-          return getDelegate().put_(x, businessOnboarding);
+            businessOnboarding.setSendInvitation(false);
+            return getDelegate().put_(x, businessOnboarding);
+          }
         }
 
         // ACCEPTANCE DOCUMENTS
@@ -192,7 +186,8 @@ foam.CLASS({
             business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
           }
 
-          business.setOnboarded(true);
+          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
+            business.setOnboarded(true);
 
           if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
             business.setCompliance(ComplianceStatus.REQUESTED);

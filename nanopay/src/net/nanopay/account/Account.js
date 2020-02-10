@@ -24,13 +24,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.DigitalAccount',
     'foam.core.Currency'
   ],
 
@@ -459,7 +453,16 @@ foam.CLASS({
         return output;
       },
       javaCode: `
-        return "(" + getId() + ") " + getName();
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(getDenomination());
+        sb.append(") ");
+        if ( getName().length() == 0 ) {
+          sb.append(getDesc());
+        } else {
+          sb.append(getName());
+        }
+        return sb.toString();
       `
     },
     {

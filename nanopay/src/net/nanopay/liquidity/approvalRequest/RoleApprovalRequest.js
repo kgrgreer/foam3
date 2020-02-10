@@ -33,7 +33,6 @@ foam.CLASS({
   imports: [
     'currentMenu',
     'stack',
-    'ctrl',
     'user'
   ],
 

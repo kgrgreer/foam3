@@ -1,11 +1,13 @@
 package net.nanopay.accounting.xero;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.xero.api.OAuthAccessToken;
 import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
 import com.xero.api.XeroClient;
-import com.xero.model.Organisation;
-import com.xero.models.accounting.Organisations;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
@@ -15,10 +17,6 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.accounting.IntegrationCode;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * When the user hits the "Connect" button in Ablii for Xero, they're

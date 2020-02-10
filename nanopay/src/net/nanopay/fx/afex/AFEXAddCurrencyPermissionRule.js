@@ -66,7 +66,7 @@ foam.CLASS({
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
                 Group group = (Group) localGroupDAO.find(business.getGroup());
                 while ( group != null ) {
-                  group = (Group) group.findParent(x);
+                  group = group.findParent(x);
                   if ( group != null && group.getId().endsWith("employee") ) break;
                 }
                 if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
@@ -75,7 +75,7 @@ foam.CLASS({
                     sendUserNotification(x, business);
 
                     // add permission for USBankAccount strategizer
-                    if ( null != group && ! group.implies(x, new AuthPermission("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d")) ) {
+                    if ( ! group.implies(x, new AuthPermission("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d")) ) {
                       permission = new Permission.Builder(x).setId("strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d").build();
                       group.getPermissions(x).add(permission);
                     }
@@ -108,7 +108,7 @@ foam.CLASS({
       javaCode:`
         Map<String, Object>  args           = new HashMap<>();
         Group                group          = business.findGroup(x);
-        AppConfig            config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
+        AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
@@ -121,6 +121,8 @@ foam.CLASS({
 
         try {
 
+          if ( group == null ) throw new RuntimeException("Group is null");
+
           Notification notification = business.getAddress().getCountryId().equals("CA") ?
             new Notification.Builder(x)
               .setBody("AFEX Business can make international payments.")
@@ -131,8 +133,8 @@ foam.CLASS({
               .setEmailName("international-payments-enabled-notification")
               .build() :
             new Notification.Builder(x)
-              .setBody("Business Passed Compliance")
-              .setNotificationType("BusinessCompliancePassed")
+              .setBody("This business can now make international payments")
+              .setNotificationType("Latest_Activity")
               .setGroupId(group.toString())
               .setEmailIsEnabled(true)
               .setEmailArgs(args)

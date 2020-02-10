@@ -40,10 +40,6 @@ foam.CLASS({
       color: /*%GREY2%*/ #9ba1a6;
       border-right: 1px solid /*%GREY4%*/ #e7eaec;
       background: /*%GREY5%*/ #f5f7fas;
-
-      /* TODO: Remove these after the GS demo. */
-      padding-top: calc(60px + 24px);
-      height: calc(100vh - 60px - 24px);
     }
     ^ .selected-sub {
       color: /*%BLACK%*/ #1e1f21;
@@ -178,8 +174,7 @@ foam.CLASS({
           .addClass(this.myClass())
           .show(this.loginSuccess$)
           .start().addClass('side-nav-view')
-            // TODO: Uncomment this after the GS demo.
-            // .tag(this.MENU_SEARCH)
+            .tag(this.MENU_SEARCH)
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
@@ -190,7 +185,6 @@ foam.CLASS({
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
-                      visibilitySlot.value = ! visibilitySlot.value;
                       return;
                     }
                     if ( ! hasChildren.get() ) {
@@ -200,7 +194,6 @@ foam.CLASS({
                       visibilitySlot.value = ! visibilitySlot.value;
                     }
                     self.menuSearch = menu.id;
-                    self.menuSearchSelect();
                   })
                   .addClass('sidenav-item-wrapper')
                   .start()
@@ -208,9 +201,10 @@ foam.CLASS({
                     .enableClass('selected-root', slot)
                     .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
                       var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
-                        currentMenu != null &&
-                        currentMenu.id == menu.id ||
-                        currentMenu.parent == menu.id;
+                        currentMenu != null && (
+                          currentMenu.id == menu.id ||
+                          currentMenu.parent == menu.id
+                        );
                       slot.set(selectedRoot);
                       return selectedRoot;
                     }))

@@ -16,8 +16,9 @@ p({
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
     inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
-    
-    dao = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x).build();
+    dao = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
+      .build();
     dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);
     dao.setUseBMO(true);
@@ -27,7 +28,7 @@ p({
     dao = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(Account.getOwnClassInfo())
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
       .setInnerDAO(inner)
       .setDecorator(dao)
       .setAuthorize(false)
@@ -49,7 +50,7 @@ p({
   "serve":true,
   "serviceScript":
   """
-    foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x, 
+    foam.dao.DAO dao = new net.nanopay.account.AuthenticatedAccountDAO(x,
       new foam.nanos.auth.PermissionedPropertyDAO(x, 
         new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
           new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")),
@@ -62,6 +63,17 @@ p({
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setRuler(false)
+      .setServiceProviderAware(true)
+      .setServiceProviderAwarePropertyInfos(
+        new java.util.HashMap() {{
+          put(
+            net.nanopay.account.Account.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.account.Account.OWNER
+            }
+          );
+        }}
+      ) 
       .build();
   """,
   "client":
@@ -69,6 +81,9 @@ p({
   {
     "of":"net.nanopay.account.Account",
     "decorators": [
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      },
       {
         "class":"foam.nanos.fs.FileDAODecorator"
       }
@@ -92,7 +107,7 @@ p({
       .setDeletedAware(false)
       .setAuthorize(false)
       .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.account.DebtAccount.class)))
-      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """
 })
@@ -105,9 +120,9 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setEnableInterfaceDecorators(false)
       .setOf(net.nanopay.account.DebtAccount.getOwnClassInfo())
       .setInnerDAO(x.get("localDebtAccountDAO"))
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.account.DebtAccount\"}"

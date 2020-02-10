@@ -19,7 +19,7 @@ foam.CLASS({
       console.log("find method balanceadpater account dao");
     },
     function find(id) {
-     balance = this.balanceDAO.where(this.AND(
+      var balance = this.balanceDAO.where(this.AND(
         this.EQ(net.nanopay.account.Balance.ACCOUNT_ID, id),
         this.EQ(net.nanopay.account.Balance.CURRENCY_CODE, this.currentAccount)
       )).select().then(function(result){

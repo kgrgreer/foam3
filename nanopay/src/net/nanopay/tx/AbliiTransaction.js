@@ -10,19 +10,10 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
-    'java.lang.StringBuilder',
-    'net.nanopay.account.Account',
-    'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   messages: [

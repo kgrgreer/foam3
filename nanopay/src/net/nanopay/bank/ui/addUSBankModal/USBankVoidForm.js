@@ -137,7 +137,7 @@ foam.CLASS({
     { name: 'ACC', message: 'ACH Account No.' },
     { name: 'LABEL_NICKNAME', message: 'Nickname' },
     { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
-    { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK HERE' },
+    { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK OR STATEMENT HERE' },
     { name: 'ERROR_INVALID_ROUTING', message: 'Invalid ACH Routing No.' },
     { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid ACH Account No.' },
     { name: 'ERROR_INVALID_NICKNAME', message: 'Invalid nickname' },
@@ -189,14 +189,12 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'voidCheckFile',
+      name: 'supportingDocuments',
       factory: function() {
-        return this.bank.voidCheckImage ? [this.bank.voidCheckImage] : [];
+        return this.bank.supportingDocuments ? this.bank.supportingDocuments : [];
       },
       postSet: function(_, n) {
-        if ( n.length > 0 ) {
-          this.bank.voidCheckImage = n[0];
-        }
+        this.bank.supportingDocuments = Array.from(n);
       }
     },
     'skip'
@@ -204,7 +202,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-
       if ( this.skip ) {
         this.next();
       }
@@ -241,7 +238,7 @@ foam.CLASS({
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE2).end()
           .start({
             class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.voidCheckFile$,
+            files$: this.supportingDocuments$,
             title: this.DROP_ZONE_TITLE,
             supportedFormats: {
               'image/jpg': 'JPG',
@@ -250,8 +247,7 @@ foam.CLASS({
               'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
               'application/msword': 'DOC',
               'application/pdf': 'PDF'
-            },
-            isMultipleFiles: false
+            }
           }).end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
@@ -283,7 +279,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( this.voidCheckFile.length === 0 ) {
+      if ( this.supportingDocuments.length === 0 ) {
         ctrl.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }

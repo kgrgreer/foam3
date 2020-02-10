@@ -440,10 +440,9 @@ public class LianLianPayService
     Session session = null;
     ChannelSftp channel = null;
 
-    try {
-      // create signing input stream with private key using SHA1 as the algorithm
-      SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
-          new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)));
+    // create signing input stream with private key using SHA1 as the algorithm
+    try( SigningInputStream sis = new SigningInputStream("SHA1withRSA", privateKey_,
+            new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)))) {
 
       // establish new sftp session
       JSch jsch = new JSch();

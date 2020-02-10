@@ -111,10 +111,9 @@ public class FlinksAuthService
 
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( httpCode == 203 ) {
-          if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
-            decodeMsg((FlinksMFAResponse) feedback);
-          }
+        if ( httpCode == 203 &&
+             "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
+             decodeMsg((FlinksMFAResponse) feedback);
         }
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
@@ -240,19 +239,17 @@ public class FlinksAuthService
     if ( ! directory.exists() ) {
       directory.mkdirs();
     }
-    BufferedOutputStream bffout = null;
     relativePath =  relativePath + sep + fileName;
     String fileLocation = storeRoot_ + sep + relativePath;
     try {
       byte[] encodeBytes = encode.getBytes("UTF-8");
       byte[] decodeBytes = Base64.getDecoder().decode(encodeBytes);
       File file = new File(fileLocation);
-      bffout = new BufferedOutputStream(new FileOutputStream(file));
-      bffout.write(decodeBytes);
+      try(BufferedOutputStream bffout = new BufferedOutputStream(new FileOutputStream(file))) {
+    	  bffout.write(decodeBytes);  
+      }
     } catch (Throwable t) {
       throw new RuntimeException(t);
-    } finally {
-      IOUtils.closeQuietly(bffout);
     }
     //relative path
     return relativePath;
@@ -260,19 +257,17 @@ public class FlinksAuthService
   //TODO: ? thread issue
   protected String fetchFromFile(String path) {
     String filePath = storeRoot_ + sep + path;
-    BufferedInputStream bffin = null;
     String ret = null;
     try {
       File file = new File(filePath);
       byte fileContent[] = new byte[(int) file.length()];
-      bffin = new BufferedInputStream(new FileInputStream(file));
-      bffin.read(fileContent);
+      try(BufferedInputStream bffin  = new BufferedInputStream(new FileInputStream(file))) {
+    	  bffin.read(fileContent);
+      }    
       byte[] bytes2 = Base64.getEncoder().encode(fileContent);
       ret = new String(bytes2, "UTF-8");
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
-    } finally {
-      IOUtils.closeQuietly(bffin);
     }
     return ret;
   }

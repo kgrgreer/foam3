@@ -9,16 +9,12 @@ foam.CLASS({
   name: 'AlternaTransactionPlanDAO',
   extends: 'net.nanopay.tx.cico.CABankTransactionPlanDAO',
 
-  documentation: ``,
-
   implements: [
     'foam.nanos.auth.EnabledAware'
   ],
 
   javaImports: [
-    'foam.nanos.auth.EnabledAware',
     'foam.nanos.logger.Logger',
-    'static foam.mlang.MLang.*',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
@@ -30,10 +26,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PADType',
-    'net.nanopay.payment.PADTypeLineItem',
     'java.util.ArrayList',
-    'java.util.List'
+    'net.nanopay.payment.PADTypeLineItem'
   ],
 
   constants: [

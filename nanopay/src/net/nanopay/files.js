@@ -169,6 +169,9 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
+  { name: 'net/nanopay/auth/ServiceProviderURL' },
+  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRule' },
+  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRuleAction' },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -324,7 +327,11 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
-
+  { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
+  { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
+  { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
+  { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
+  
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
@@ -662,6 +669,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceReceivedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/history/InvoiceApprovedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotification' },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },

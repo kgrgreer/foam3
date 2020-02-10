@@ -42,7 +42,7 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        return true;
+        return oldTxn != null && oldTxn.getStatus() != TransactionStatus.COMPLETED && getStatus() == TransactionStatus.COMPLETED;
       `
     }
   ]

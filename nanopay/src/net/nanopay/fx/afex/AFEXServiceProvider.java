@@ -1,18 +1,28 @@
 package net.nanopay.fx.afex;
 
-import foam.core.X;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import foam.core.ContextAwareSupport;
+import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-
-import static foam.mlang.MLang.*;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
@@ -27,21 +37,11 @@ import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
 import net.nanopay.model.PadCapture;
+import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -80,11 +80,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
         if ( afexBusiness != null ) return true;
 
+        User signingOfficer = getSigningOfficer(this.x, business);
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        if ( hasFXProvisionPayerPermission) {
+        if ( hasFXProvisionPayerPermission && isFXEnrolled(business, signingOfficer) ) {
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
-          User signingOfficer = getSigningOfficer(this.x, business);
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
 
@@ -180,6 +180,23 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public boolean isFXEnrolled(Business business, User signingOfficer) {
+    Address businessAddress = business.getAddress();
+    if ( businessAddress == null || SafetyUtil.isEmpty(businessAddress.getCountryId()) ) return false;
+
+    if ( "US".equals(businessAddress.getCountryId()) ) return true;
+
+    if ( signingOfficer == null  ) return false;
+
+    DAO canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+    CanadaUsBusinessOnboarding c = (CanadaUsBusinessOnboarding) canadaUsBusinessOnboardingDAO.find(AND(
+      EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficer.getId()),
+      EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()),
+      EQ(CanadaUsBusinessOnboarding.STATUS, net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED)
+    ));
+    return c != null;
   }
 
   public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
@@ -703,7 +720,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return TransactionStatus.DECLINED;
 
       if ( AFEXPaymentStatus.PREPARED_CANCELLED.getLabel().equals(paymentStatus) )
-      return TransactionStatus.DECLINED;      
+        return TransactionStatus.DECLINED;      
 
       return TransactionStatus.SENT;
 

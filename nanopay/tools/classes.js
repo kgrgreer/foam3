@@ -209,6 +209,10 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  'net.nanopay.fx.afex.AFEXCreateTradePredicate',
+  'net.nanopay.fx.afex.AFEXCreateTradeRule',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
+  'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -277,6 +281,8 @@ var classes = [
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
+  'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
+  'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -559,7 +565,6 @@ var classes = [
   'net.nanopay.fx.FXAccepted',
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
-  'net.nanopay.fx.KotakFXProvider',
   'net.nanopay.fx.localfx.NanopayFXService',
 
   'net.nanopay.fx.GetFXQuote',
@@ -602,6 +607,9 @@ var classes = [
   'net.nanopay.auth.ruler.LogoutUserAction',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.auth.ServiceProviderURL',
+  'net.nanopay.auth.UserCreateServiceProviderURLRule',
+  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -680,6 +688,7 @@ var classes = [
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
+  'net.nanopay.test.BranchDAOAuthorizationTest',
   'net.nanopay.test.BusinessSectorDAOTest',
 
   'net.nanopay.test.ModelledTest',

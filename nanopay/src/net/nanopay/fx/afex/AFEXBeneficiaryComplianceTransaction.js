@@ -6,10 +6,7 @@ foam.CLASS({
   documentation: `Transaction to be created specifically for AFEX Beneficiaries, to stop payments from being created until a beneficiary is approved`,
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
