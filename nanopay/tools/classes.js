@@ -51,6 +51,7 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.CreatePaymentCode',
   'net.nanopay.payment.Institution',
+  'net.nanopay.payment.InstitutionAuthorizerTest',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentCode',
   'net.nanopay.payment.PaymentService',
