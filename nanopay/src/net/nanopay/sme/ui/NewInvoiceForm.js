@@ -253,11 +253,12 @@ foam.CLASS({
   properties: [
     'type',
     {
+      class: 'String',
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
-      // expression: function(invoice) {
-      //   return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
-      // }
+      expression: function(invoice) {
+        return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -553,13 +554,12 @@ foam.CLASS({
 
   listeners: [
     async function onContactIdChange() {
-      // this.checkUser(this.invoice.destinationCurrency);
       await this.setDefaultCurrency();
-      // debugger;
+      this.checkUser(this.currencyType);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.id;
-      this.checkUser(this.currencyType.id);
+      this.selectedCurrency = this.currencyType;
+      this.checkUser(this.currencyType);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
@@ -591,10 +591,9 @@ foam.CLASS({
       });
       var responseObj = await this.getDefaultCurrencyDAO.put(request);
       if ( responseObj.response ) {
-        var currency = await this.currencyDAO.find(responseObj.response);
-        this.currencyType = currency;
-        this.selectedCurrency = this.currencyType.id;
-        this.invoice.destinationCurrency = currency.id;
+        this.currencyType = responseObj.response;
+        this.selectedCurrency = responseObj.response;
+        this.invoice.destinationCurrency = responseObj.response;
       }
     }
   ],
