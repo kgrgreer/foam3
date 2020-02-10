@@ -35,5 +35,12 @@ p({
       .setInnerDAO(x.get("localContactDAO"))
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.contacts.Contact",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })
