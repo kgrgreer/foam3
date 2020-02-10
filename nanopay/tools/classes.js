@@ -961,7 +961,6 @@ var classes = [
   'net.nanopay.tx.rbc.iso20022file.RbcCIRecord',
   'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
   'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
-  'net.nanopay.tx.rbc.iso20022file.RbcISO20022File',
   'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
   
   // Ticket

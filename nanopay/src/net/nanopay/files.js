@@ -578,11 +578,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
-<<<<<<< HEAD
-=======
   { name: 'net/nanopay/tx/cico/EFTFile' },
   { name: 'net/nanopay/tx/cico/EFTFileGenerator' },
->>>>>>> b61dbdaf1bb420ac7e961b8792d622eacf46cb14
   { name: 'net/nanopay/tx/cico/EFTFileStatus' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
   { name: 'net/nanopay/tx/AccountRelationship' },
@@ -1391,7 +1388,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcCIRecord' },
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcCORecord' },
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcBatchControl' },
-  { name: 'net/nanopay/tx/rbc/iso20022file/RbcISO20022File' },
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 

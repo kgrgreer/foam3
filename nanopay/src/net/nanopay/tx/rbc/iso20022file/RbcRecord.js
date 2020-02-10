@@ -17,15 +17,6 @@ foam.CLASS({
       javaFactory: 'return new Transaction[0];'
     },
     {
-      name: 'file',
-      class: 'Reference',
-      of: 'net.nanopay.tx.rbc.iso20022file.RbcISO20022File'
-    },
-    {
-      name: 'fileCreationTimeEDT',
-      class: 'String'
-    },
-    {
       name: 'transmissionHeader',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',

@@ -9,31 +9,21 @@ import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.Date;
 
-import net.nanopay.iso20022.ISO20022Util;
-import net.nanopay.iso20022.Pain00200103;
+import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.cico.EFTFileStatus;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.rbc.exceptions.RbcFTPSException;
-import net.nanopay.tx.rbc.exceptions.RbcIsoFileException;
+import net.nanopay.tx.rbc.exceptions.RbcEftFileException;
 import net.nanopay.tx.rbc.ftps.RbcFTPSClient;
-import net.nanopay.tx.rbc.iso20022file.RbcISO20022File;
 import net.nanopay.tx.rbc.RbcPGPUtil;
-import net.nanopay.tx.TransactionEvent;
-
-import org.apache.commons.io.FileUtils;
 
 
 public class RbcFileProcessor {
 
   private X x;
-  private DAO transactionDAO;
   private Logger logger;
   RbcFTPSClient rbcFTPSClient;
   protected static ReentrantLock SEND_LOCK = new ReentrantLock();
@@ -41,34 +31,35 @@ public class RbcFileProcessor {
   public RbcFileProcessor(X x) {
     this.x          = x;
     logger          = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
-    transactionDAO  = (DAO) x.get("localTransactionDAO");
     rbcFTPSClient   = new RbcFTPSClient(x);
   }
 
   /**
-   * Convert RbcISO20022File to File and send 
+   * Convert EFTFile to java File and send 
    */
-  public RbcISO20022File send(long fileId) {
-    boolean isSent = false;
-    DAO rbcISOFileDAO = (DAO) x.get("rbcISOFileDAO");
-    RbcISO20022File isoFile = (RbcISO20022File) rbcISOFileDAO.inX(x).find(fileId);
-    if ( isoFile == null ) return isoFile;
-    isoFile = (RbcISO20022File)isoFile.fclone();
+  public void send(EFTFile eftFile) {
+    if ( eftFile == null ) return;
+
+    DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
     try{
-      File readyTosend = createEncryptedFile(createFile(isoFile));
-      send(readyTosend);
-      isSent = true;
-      isoFile.setStatus(EFTFileStatus.SENT);
-      isoFile.setFailureReason(""); // clear just in case it faile previously
+      foam.nanos.fs.File file = (foam.nanos.fs.File) fileDAO.find(eftFile.getFile());
+      if ( file == null ) 
+        throw new RuntimeException("RBC unable to find in file system for EFT File: " + eftFile.getFileName());
+      
+      send(createEncryptedFile(EFTFileUtil.getFile(x, file)));
+      eftFile.setStatus(EFTFileStatus.SENT);
+      eftFile.setFailureReason(""); // clear just in case it faile previously
+      
     } catch ( Exception e ) {
-      logger.error("RBC Sending file failed: " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "RBC sending file failed " + isoFile.getFileName(), e);
-      isoFile.setStatus(EFTFileStatus.FAILED);
-      isoFile.setFailureReason(e.getMessage());
+      logger.error("BMO Sending file failed: " + e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "BMO sending file failed " + eftFile.getFileName(), e);
+      eftFile.setStatus(EFTFileStatus.FAILED);
+      eftFile.setFailureReason(e.getMessage());
+      eftFile.setRetries(eftFile.getRetries() + 1);
+      throw e;
     } finally {
-      rbcISOFileDAO.inX(x).put(isoFile);
+      ((DAO) x.get("eftFileDAO")).inX(x).put(eftFile);
     }
-    return isoFile;
   }
 
   /**
@@ -87,7 +78,7 @@ public class RbcFileProcessor {
 
     } catch ( Exception e ) {
       logger.error("RBC Sending file failed: " + e.getMessage(), e);
-      throw new RbcIsoFileException("RBC Sending file failed " + e.getMessage(), e);
+      throw new RbcEftFileException("RBC Sending file failed " + e.getMessage(), e);
     } finally {
       if ( SEND_LOCK.isLocked() ) {
         SEND_LOCK.unlock();
@@ -98,31 +89,16 @@ public class RbcFileProcessor {
   /**
    * Encrypt file. Return the encrypted file
    */
-  protected File createEncryptedFile(File file) throws RbcIsoFileException{
+  protected File createEncryptedFile(File file) throws RbcEftFileException{
     if ( file == null ) return null;
     File encrypted = null;
     try{
       encrypted = new RBCEFTFileGenerator(x).createEncryptedFile(file);
     } catch ( Exception e ) {
       logger.error("RBC Encrypting file : " + e.getMessage(), e);
-      throw new RbcIsoFileException("RBC Encrypting file", e);
+      throw new RbcEftFileException("RBC Encrypting file", e);
     } 
     return encrypted;
-  }
-
-  /**
-   * Encrypt file. Return the encrypted file
-   */
-  protected File createFile(RbcISO20022File isoFile) throws RbcIsoFileException{
-    if ( isoFile == null ) return null;
-    File file = null;
-    try{
-      file = new RBCEFTFileGenerator(x).createFile(isoFile);
-    } catch ( Exception e ) {
-      logger.error("RBC creating file : " + e.getMessage(), e);
-      throw new RbcIsoFileException("RBC creating file " + e.getMessage(), e);
-    } 
-    return file;
   }
    
 }

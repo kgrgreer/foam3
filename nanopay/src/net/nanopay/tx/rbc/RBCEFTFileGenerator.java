@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,57 +30,71 @@ import net.nanopay.iso20022.Pain00100103;
 import net.nanopay.iso20022.Pain00800102;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.EFTFile;
+import net.nanopay.tx.cico.EFTFileGenerator;
 import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.exceptions.RbcFTPSException;
-import net.nanopay.tx.rbc.exceptions.RbcIsoFileException;
+import net.nanopay.tx.rbc.exceptions.RbcEftFileException;
 import net.nanopay.tx.rbc.ftps.RbcFTPSCredential;
 import net.nanopay.tx.rbc.iso20022file.RbcBatchRecord;
 import net.nanopay.tx.rbc.iso20022file.RbcBatchControl;
 import net.nanopay.tx.rbc.iso20022file.RbcCIRecord;
 import net.nanopay.tx.rbc.iso20022file.RbcCORecord;
-import net.nanopay.tx.rbc.iso20022file.RbcISO20022File;
 import net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader;
 import net.nanopay.tx.TransactionEvent;
 import org.apache.commons.io.FileUtils;
 
-public class RBCEFTFileGenerator {
+public class RBCEFTFileGenerator implements EFTFileGenerator {
 
   X                   x;
-  DAO                 currencyDAO;
-  DAO                 rbcISOFileDAO;
-  DAO                 rbcBatchRecordDAO;
+  DAO                 eftFileDAO;
   Logger              logger;
   RbcFTPSCredential   rbcCredential;
+  private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
   public RBCEFTFileGenerator(X x) {
     this.x = x;
-    this.currencyDAO    = (DAO) x.get("currencyDAO");
-    this.rbcISOFileDAO  = (DAO) x.get("rbcISOFileDAO");
-    this.rbcBatchRecordDAO  = (DAO) x.get("rbcBatchRecordDAO");
+    this.eftFileDAO  = (DAO) x.get("eftFileDAO");
     this.rbcCredential  = (RbcFTPSCredential) x.get("rbcFTPSCredential");
     this.logger         = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
   }
 
   /**
-   * Create the real file objects and save it into the disk.
-   * @param batch the RbcBatchRecord Object created from initFile method
-   * @return list of real file object
+   * Create the real file object and save it into the disk.		
+   * @param transactions a list of transactins to be sent
+   * @return an EFTFile model
    */
-  public File createFile(RbcISO20022File isoFile) {
-    if ( isoFile == null ) return null; 
+  public EFTFile generate(List<Transaction> transactions) {
+    try {
+      EFTFile eftFile = createEFTFile(transactions);
+      eftFile.setFile(createFile(eftFile).getId());
+      eftFile.setProvider(4); // TODO set provider appropriately
+      return (EFTFile) ((DAO) this.x.get("eftFileDAO")).put(eftFile);
+    } catch (Throwable t) {
+      this.logger.error("RBC Error generating EFT File. " + t.getMessage(), t);
+      throw new RbcEftFileException("RBC Error generating EFT File. " + t.getMessage(), t);
+    }
+  }
+
+  /**
+   * Create the real file object and save it into the disk.
+   * @param eftFile the EFTFile Object created from createEFTFile method
+   * @return the real file object
+   */
+  public foam.nanos.fs.File createFile(EFTFile eftFile) {
+    if ( eftFile == null ) return null; 
     
     try {
       /* create and store in FileDAO */
-      InputStream in = new ByteArrayInputStream(isoFile.getContent().getBytes());
-      foam.nanos.fs.File file =  EFTFileUtil.storeEFTFile(this.x, in, isoFile.getFileName()
-        , Long.valueOf(isoFile.getContent().getBytes().length), "text/plain");
-      return EFTFileUtil.getFile(x, file);
+      InputStream in = new ByteArrayInputStream(eftFile.getContent().getBytes());
+      return EFTFileUtil.storeEFTFile(this.x, in, eftFile.getFileName()
+        , Long.valueOf(eftFile.getContent().getBytes().length), "text/plain");
     } catch (Throwable e) {
-      this.logger.error("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
-      throw new RbcFTPSException("Error when create rbc iso20022 file with name - " + isoFile.getFileName(), e);
+      this.logger.error("Error when create rbc eft file with name - " + eftFile.getFileName(), e);
+      throw new RbcFTPSException("Error when create rbc eft file with name - " + eftFile.getFileName(), e);
     }
   }
 
@@ -102,112 +117,85 @@ public class RBCEFTFileGenerator {
     return encFile;
   }
 
-  /**
-   * Convert the transaction into the RbcISO20022File
-   * @param transactions
-   * @return
-   */
-  public RbcBatchRecord createBatch(List<Transaction> transactions) {
-    RbcTransmissionHeader         transmissionHeader      = null;
-    RbcBatchRecord                batch                   = new RbcBatchRecord();
-    RbcBatchControl               batchControl            = new RbcBatchControl();
-    RBCTransactionISO20022Util    transactionISO20022Util = new RBCTransactionISO20022Util();
-    int coCount = 0; long coAmount = 0;
-    int ciCount = 0; long ciAmount = 0;
+  protected EFTFile createEFTFile(List<Transaction> transactions) {
 
-    try {
-      // file transmission header
-      transmissionHeader = transmissionHeader(rbcCredential);
-
-      // // create Pain00800102 for CITransaction
-      List<Transaction> ciTransactions = transactions.stream()
-        .filter(transaction -> transaction instanceof CITransaction)
-        .collect(Collectors.toList());
-
-      // Initial put to dao to get unique id
-      RbcISO20022File ciFile = new RbcISO20022File();
-      ciFile = (RbcISO20022File) rbcISOFileDAO.inX(x).put(ciFile);      
-      try{
-        RbcCIRecord ciRecords = transactionISO20022Util.generateCIRecords(x, ciTransactions.toArray(new Transaction[ciTransactions.size()]), String.valueOf(ciFile.getId()));
-        if( ciRecords != null && ciRecords.getDebitMsg() != null ){
-          ciRecords.setTransmissionHeader(transmissionHeader);
-          ciFile.setFileName(ciFile.getId() + "-debit-" + ".txt");
-          String content = ciRecords.toPain00800102XML();          
-          content = replaceInbetweenTag(content, "<ReqdColltnDt>", "</ReqdColltnDt>"); // TODO an Ugly hack pending when ISODate outputter is fixed
-          content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
-          ciFile.setContent(content);
-          ciFile.setFileCreationTimeEDT(getCurrentDateTimeEDT());
-          ciRecords.setFile(ciFile.getId());
-          batch.setCiRecords(ciRecords);
-          ciCount = Integer.parseInt(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getNumberOfTransactions());
-          ciAmount = fromDecimal(ciRecords.getDebitMsg().getCstmrDrctDbtInitn().getGroupHeader().getControlSum());
-          ciFile.setStatus(EFTFileStatus.GENERATED);
-          rbcISOFileDAO.inX(x).put(ciFile);
-        } else {
-          rbcISOFileDAO.inX(x).remove(ciFile);
-        }
-      } catch ( Exception e ) {
-        this.logger.error("Error creating RBC ISO20022 file", e); 
-        Notification notification = new Notification.Builder(x)
-          .setTemplate("NOC")
-          .setBody("RBC Failed to create batch record for CI Transactions: " + e.getMessage() )
-        .build();
-        ((DAO) x.get("localNotificationDAO")).put(notification);
-      }
-
-      // // create Pain00100103 for COTransaction
-      List<Transaction> coTransactions = transactions.stream()
-        .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof RbcVerificationTransaction))
-        .collect(Collectors.toList());
-      
-      // Initial put to dao to get unique id
-      RbcISO20022File coFile = new RbcISO20022File();
-      coFile = (RbcISO20022File) rbcISOFileDAO.inX(x).put(coFile);
-      try{
-        RbcCORecord coRecords = transactionISO20022Util.generateCORecords(x, coTransactions.toArray(new Transaction[coTransactions.size()]), String.valueOf(coFile.getId()));
-        if( coRecords != null && coRecords.getCreditMsg() != null ){
-          coRecords.setTransmissionHeader(transmissionHeader);
-          coFile.setFileName(coFile.getId() + "-credit-" + ".txt");
-          String content = coRecords.toPain00100103XML();          
-          content = replaceInbetweenTag(content, "<ReqdExctnDt>", "</ReqdExctnDt>"); // TODO an Ugle hack pending when ISODate outputter is fixed
-          content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
-          coFile.setContent(content);
-          coFile.setFileCreationTimeEDT (getCurrentDateTimeEDT());
-          coRecords.setFile(coFile.getId());
-          batch.setCoRecords(coRecords);
-          coCount = Integer.parseInt(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getNumberOfTransactions());
-          coAmount = fromDecimal(coRecords.getCreditMsg().getCstmrCdtTrfInitn().getGroupHeader().getControlSum());
-          coFile.setStatus(EFTFileStatus.GENERATED);
-          rbcISOFileDAO.inX(x).put(coFile);
-        } else{
-          rbcISOFileDAO.inX(x).remove(coFile);
-        }
-      } catch ( Exception e ) {
-        this.logger.error("Error creating RBC ISO20022 file", e);
-        Notification notification = new Notification.Builder(x)
-          .setTemplate("NOC")
-          .setBody("RBC Failed to create batch record for CO Transactions: " + e.getMessage() )
-        .build();
-        ((DAO) x.get("localNotificationDAO")).put(notification);
-      }
-
-      // batch control
-      batchControl.setTotalNumberOfD (ciCount);
-      batchControl.setTotalValueOfD  (ciAmount);
-      batchControl.setTotalNumberOfC (coCount);
-      batchControl.setTotalValueOfC  (coAmount);
-      batch.setBatchControl(batchControl);
-      batch.setBatchCreationTimeEDT(getCurrentDateTimeEDT());
-
-      rbcBatchRecordDAO.inX(x).put(batch);
-
-    } catch ( Exception e ) {
-      // if any exception occurs here, no transaction will be sent out
-      this.logger.error("Error when init rbc ISO20022 file", e.getMessage(), e);
-      throw new RbcIsoFileException("Error when init rbc ISO20022 file", e);
+    if ( transactions == null || transactions.isEmpty() ) {
+      return null;
     }
 
-    return batch;
+    try {
+      EFTFile eftFile = null;
+      if ( transactions.get(0) instanceof CITransaction ) {
+        eftFile = createCIEFTFile(transactions);
+      } else {
+        eftFile = createCOEFTFile(transactions);
+      }
+      return eftFile;
+    } catch ( Exception e ) {
+      this.passedTransactions.clear();
+      logger.error("Error when creating EFT File: " + e.getMessage(), e);
+      return null;
+    }
+  }
+
+  protected EFTFile createCIEFTFile(List<Transaction> ciTransactions) {
+    RBCTransactionISO20022Util transactionISO20022Util = new RBCTransactionISO20022Util();
+    try {
+      EFTFile eftFile = new EFTFile();
+      eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile); 
+      RbcCIRecord ciRecords = transactionISO20022Util.generateCIRecords(x, ciTransactions.toArray(new Transaction[ciTransactions.size()]), String.valueOf(eftFile.getId()));
+      if( ciRecords != null && ciRecords.getDebitMsg() != null ){
+        ciRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
+        this.passedTransactions.addAll(Arrays.asList(ciRecords.getTransactions()));
+        eftFile.setFileName(eftFile.getId() + "-debit" + ".txt");
+        String content = ciRecords.toPain00800102XML();          
+        content = replaceInbetweenTag(content, "<ReqdColltnDt>", "</ReqdColltnDt>"); // TODO an Ugly hack pending when ISODate outputter is fixed
+        content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
+        eftFile.setContent(content);
+        eftFile.setFileCreationTimeEDT(getCurrentDateTimeEDT());
+        return (EFTFile) eftFileDAO.inX(x).put(eftFile);
+      } else {
+        eftFileDAO.inX(x).remove(eftFile);
+      }
+    } catch (Exception e) {
+      this.logger.error("Error creating RBC EFT file", e); 
+      Notification notification = new Notification.Builder(x)
+        .setTemplate("NOC")
+        .setBody("RBC Failed to create EFT File for CI Transactions: " + e.getMessage() )
+      .build();
+      ((DAO) x.get("localNotificationDAO")).put(notification);
+    }
+    return null;
+  }
+
+  protected EFTFile createCOEFTFile(List<Transaction> coTransactions) {
+    RBCTransactionISO20022Util    transactionISO20022Util = new RBCTransactionISO20022Util();
+    try{
+      EFTFile eftFile = new EFTFile();
+      eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile);
+      RbcCORecord coRecords = transactionISO20022Util.generateCORecords(x, coTransactions.toArray(new Transaction[coTransactions.size()]), String.valueOf(eftFile.getId()));
+      if( coRecords != null && coRecords.getCreditMsg() != null ){
+        coRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
+        this.passedTransactions.addAll(Arrays.asList(coRecords.getTransactions()));
+        eftFile.setFileName(eftFile.getId() + "-credit" + ".txt");
+        String content = coRecords.toPain00100103XML();          
+        content = replaceInbetweenTag(content, "<ReqdExctnDt>", "</ReqdExctnDt>"); // TODO an Ugle hack pending when ISODate outputter is fixed
+        content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
+        eftFile.setContent(content);
+        eftFile.setFileCreationTimeEDT (getCurrentDateTimeEDT());
+        return (EFTFile) eftFileDAO.inX(x).put(eftFile);
+      } else{
+        eftFileDAO.inX(x).remove(eftFile);
+      }
+    } catch (Exception e) {
+      this.logger.error("Error creating RBC EFT file", e); 
+      Notification notification = new Notification.Builder(x)
+        .setTemplate("NOC")
+        .setBody("RBC Failed to create EFT File for CO Transactions: " + e.getMessage() )
+      .build();
+      ((DAO) x.get("localNotificationDAO")).put(notification);
+    }
+    return null;
   }
 
   /**
@@ -247,6 +235,10 @@ public class RBCEFTFileGenerator {
     String result = sb.toString();
     System.out.println(result);
     return result;
+  }
+
+  public ArrayList<Transaction> getPassedTransactions() {
+    return passedTransactions;
   }
 
 }

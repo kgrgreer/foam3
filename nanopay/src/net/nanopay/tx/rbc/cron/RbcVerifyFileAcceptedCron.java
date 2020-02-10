@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.cico.EFTFileStatus;
-import net.nanopay.tx.rbc.iso20022file.RbcISO20022File;
 import net.nanopay.tx.rbc.RbcReportProcessor;
 
 
@@ -28,15 +28,15 @@ public class RbcVerifyFileAcceptedCron implements ContextAgent {
     /**
      * get sent files
      */
-    DAO rbcISOFileDAO = (DAO) x.get("rbcISOFileDAO");
+    DAO eftileDAO = (DAO) x.get("eftileDAO");
     logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
 
-    ArraySink sink = (ArraySink) rbcISOFileDAO.where(
-      MLang.EQ(RbcISO20022File.STATUS, EFTFileStatus.SENT)
+    ArraySink sink = (ArraySink) eftileDAO.where(
+      MLang.EQ(EFTFile.STATUS, EFTFileStatus.SENT)
     ).select(new ArraySink());
-    List<RbcISO20022File> files = (ArrayList<RbcISO20022File>) sink.getArray();
+    List<EFTFile> files = (ArrayList<EFTFile>) sink.getArray();
 
-    for ( RbcISO20022File file : files ) {
+    for ( EFTFile file : files ) {
       /* Verify file was accepted and valid */
       try {
         new RbcReportProcessor(x).processReceipt(file);
