@@ -131,7 +131,7 @@ foam.CLASS({
 
         threw = false;
         try {
-          invoiceHistoryDAO.inX(x).inX(x).put(historyRecord1);
+          invoiceHistoryDAO.inX(x).put(historyRecord1);
         } catch ( AuthorizationException e ) {
           threw = true;
         }
