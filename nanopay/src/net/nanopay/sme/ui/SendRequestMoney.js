@@ -517,11 +517,13 @@ foam.CLASS({
     },
     async function populatePayerIdOrPayeeId() {
       try {
-        var contact = await this.user.contacts.find(this.invoice.contactId);
-        if ( this.isPayable ) {
-          this.invoice.payeeId = contact.businessId || contact.id;
-        } else {
-          this.invoice.payerId = contact.businessId || contact.id;
+        if ( ! this.invoice.payee || ! this.invoice.payer ) {
+          var contact = await this.user.contacts.find(this.invoice.contactId);
+          if ( this.isPayable ) {
+            this.invoice.payeeId = contact.businessId || contact.id;
+          } else {
+            this.invoice.payerId = contact.businessId || contact.id;
+          }
         }
       } catch (err) {
         if ( this.invoice.payerId && this.invoice.payeeId && err.id == 'foam.nanos.auth.AuthorizationException' ) return;
