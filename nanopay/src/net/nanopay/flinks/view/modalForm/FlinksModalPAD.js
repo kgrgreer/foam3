@@ -26,6 +26,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'stack',
     'user'
   ],
 

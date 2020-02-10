@@ -53,11 +53,10 @@ foam.CLASS({
     }
 
     ^ progress[value]::-webkit-progress-value {
-      background-color: #604aff;
+      background-color: /*%PRIMARY3%*/ #604aff;
       -webkit-transition: all 0.1s ease-in;
       transition: all 0.1s ease-in;
     }
-
     ^ .net-nanopay-sme-onboarding-ui-WizardView-sections {
       flex-grow: 1;
     }
