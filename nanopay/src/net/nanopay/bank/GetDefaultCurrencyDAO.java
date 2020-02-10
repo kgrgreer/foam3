@@ -12,9 +12,6 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.mlang.sink.Count;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
 
@@ -23,7 +20,6 @@ import net.nanopay.contacts.Contact;
  * object and it will return the default currency of that contact.
  */
 public class GetDefaultCurrencyDAO extends ProxyDAO {
-//   protected DAO userDAO;
   protected DAO accountDAO;
   protected DAO contactDAO;
 
@@ -41,32 +37,19 @@ public class GetDefaultCurrencyDAO extends ProxyDAO {
     GetDefaultCurrency request = (GetDefaultCurrency) obj;
     Contact            contact = (Contact) contactDAO.inX(x).find(request.getContactId());
     GetDefaultCurrency response = (GetDefaultCurrency) request.fclone();
+    Long id = (contact.getBusinessId() != 0) ? contact.getBusinessId() : contact.getId();
 
-    if ( contact.getBusinessId() != 0 ) {
-        BankAccount bankAccount = (BankAccount) accountDAO
-        .find(
-          AND(
-            EQ(Account.ENABLED, true),
-            EQ(Account.DELETED, false),
-            EQ(BankAccount.OWNER, contact.getBusinessId()),
-            INSTANCE_OF(BankAccount.class),
-            EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-          )
-        );
-        response.setResponse(bankAccount.getDenomination());
-    } else {
-        BankAccount bankAccount = (BankAccount) accountDAO
-        .find(
-          AND(
-            EQ(Account.ENABLED, true),
-            EQ(Account.DELETED, false),
-            EQ(BankAccount.OWNER, contact.getId()),
-            INSTANCE_OF(BankAccount.class),
-            EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-          )
-        );
-        if ( bankAccount != null ) response.setResponse(bankAccount.getDenomination());
-    }
+    BankAccount bankAccount = (BankAccount) accountDAO
+      .find(
+        AND(
+          EQ(Account.ENABLED, true),
+          EQ(Account.DELETED, false),
+          EQ(BankAccount.OWNER, id),
+          INSTANCE_OF(BankAccount.class),
+          EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+        )
+      );
+    if ( bankAccount != null ) response.setResponse(bankAccount.getDenomination());
     return response;
   }
 
