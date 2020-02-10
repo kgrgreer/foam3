@@ -129,7 +129,24 @@ p({
   }
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"branchDAO",                        "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"branches\").setSeqNo(true).setOf(net.nanopay.model.Branch.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.model.Branch\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "branchDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("branches")
+      .setSeqNo(true)
+      .setOf(net.nanopay.model.Branch.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.model.Branch\"}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -271,7 +288,7 @@ p({
     import net.nanopay.invoice.InvoiceNotificationDAO;
     import net.nanopay.invoice.AutoDepositPendingAcceptance;
     import net.nanopay.invoice.PreventRemoveInvoiceDAO;
-    
+
     dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).build();
     dao = new net.nanopay.invoice.PreventRemoveInvoiceDAO(x, dao);
     dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build();
@@ -302,7 +319,7 @@ p({
             }
           );
         }}
-      ) 
+      )
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\",\"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}",
@@ -1728,9 +1745,9 @@ p({
   "serviceScript":"""
     import foam.nanos.notification.email.SMTPEmailService;
     import foam.nanos.notification.email.EmailService;
-    import foam.nanos.notification.email.NullEmailService; 
-    import foam.nanos.notification.email.ProxyEmailService; 
-    
+    import foam.nanos.notification.email.NullEmailService;
+    import foam.nanos.notification.email.ProxyEmailService;
+
     // When configuring email, remove this NullEmailService and use
     // the SMTPEmailService after configuring host, and user details
     return new ProxyEmailService.Builder(x)
@@ -2000,7 +2017,7 @@ p({
   "lazy": true,
   "serve": true,
   "serviceScript": "
-    return new foam.dao.EasyDAO.Builder(x) 
+    return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
       .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
@@ -2030,9 +2047,9 @@ p({
       .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
       .build();
   """,
-  "client": 
+  "client":
   """
-  { 
+  {
     "of":"net.nanopay.tx.gs.ProgressBarData",
     "cache": false,
     "ttlPurgeTime": 0,
