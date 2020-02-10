@@ -41,8 +41,7 @@ foam.CLASS({
       threw = false;
       try {
         institutionDAO.inX(smeContext).put(institution);
-      }
-      catch ( AuthorizationException e ) {
+      } catch ( AuthorizationException e ) {
         threw = true;
       }
       test(! threw, "Sme user can add institution");
