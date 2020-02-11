@@ -1460,20 +1460,24 @@ foam.CLASS({
       name: 'init',
       code: function() {
         this.userId$find.then((user) => {
-          if ( this.signingOfficer && this.userOwnsPercent ) {
+          if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
-            this.owner1.firstName = user.firstName;
-            this.owner1.lastName = user.lastName;
-            this.owner1.jobTitle = user.jobTitle;
-          } else if ( ! this.signingOfficer && this.userOwnsPercent ) {
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            }
+          } else if ( ! this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
-            this.owner1.firstName = this.adminFirstName;
-            this.owner1.lastName = this.adminLastName;
-            this.owner1.jobTitle = this.adminJobTitle;
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = this.adminFirstName;
+              this.owner1.lastName = this.adminLastName;
+              this.owner1.jobTitle = this.adminJobTitle;
+            }
           } else if ( ! this.userOwnsPercent ) {
             this.clearProperty('owner1');
           }
