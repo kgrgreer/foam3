@@ -7,6 +7,7 @@ foam.CLASS({
     implements: ['foam.nanos.ruler.RuleAction'],
 
     javaImports: [
+      'java.util.Date',
       'foam.core.FObject',
       'foam.core.X',
       'foam.core.ContextAgent',
@@ -71,7 +72,7 @@ foam.CLASS({
                 userNotification.setUserId(user.getId());
                 userNotification.setBody(notificationMsg);
                 userNotification.setNotificationType("Latest_Activity");
-                userNotification.setIssuedDate(iv.getIssueDate());
+                userNotification.setIssuedDate(new Date());
                 try {
                   notificationDAO.put_(x, userNotification);
                 }
@@ -83,7 +84,7 @@ foam.CLASS({
                 payerNotification.setUserId(payer.getId());
                 payerNotification.setBody(payer_notificationMsg);
                 payerNotification.setNotificationType("Latest_Activity");
-                payerNotification.setIssuedDate(iv.getIssueDate());
+                payerNotification.setIssuedDate(new Date());
                 try {
                   notificationDAO.put_(x, payerNotification);
                 }
