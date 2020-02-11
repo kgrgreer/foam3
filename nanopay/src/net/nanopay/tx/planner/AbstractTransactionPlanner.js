@@ -96,6 +96,22 @@ foam.CLASS({
         quote.addPlan(txn);
       `
     },
+    {
+      name: 'subPlan',
+      documentation: 'Takes care of recursive transactionQuotePlanDAO calls',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        DAO d = (DAO) x.get("localTransactionQuotePlanDAO");
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(txn);
+        quote = (TransactionQuote) d.put(quote);
+        return quote.getPlan();
+      `
+    },
   ]
 });
 

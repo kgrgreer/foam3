@@ -87,7 +87,7 @@ foam.CLASS({
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
-      List<Transaction> transactionPlans = new ArrayList<Transaction>();
+      List<Transaction> transactionPlans = new ArrayList<Transaction>(3);
       for ( Object aTransaction : quote.getPlans() ) {
         try {
           validateTransactionChain(x, (Transaction) aTransaction);          

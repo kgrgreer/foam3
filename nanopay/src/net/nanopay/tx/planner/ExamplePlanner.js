@@ -24,6 +24,14 @@ foam.CLASS({
 
   This section should not include any checks for whether or not to run this planner on a transaction. This should be
   done within a predicate that is applied to the planner rule. Don't forget to take advantage of generic predicates!
+
+  Useful functions:
+
+      addTransfer(id of account (Long), amount of transfer (Long) : adds a transfer to the transaction plan
+
+      subPlan(x, Transaction to sub plan) : makes it easy to build split planners. can call TransactionQuotePlanDAO
+      and receive the best transaction in one line.
+
 */
   methods: [
     {
@@ -47,7 +55,11 @@ foam.CLASS({
         //we can get additional things from the DAO because we have x.
         Account myAccount = (Account) ((DAO) x.get("accountDAO")).find(EQ(Account.NAME,"Michal's Account"));
 
-        // order of transfer creation does not matter.
+        //If this planner is a split planner, it can also recursively plan its sub parts with the subPlan function.
+        Transaction dt2 = subPlan(x, dt);
+        dt.setNext(dt2);
+
+        // order of transfer creation does not matter. It will always be added to the returned transaction.
         addTransfer(myAccount.getId(), 1l);
 
         // Simply return the transaction you wish to add as a plan and the rest is taken care of for you.
