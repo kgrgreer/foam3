@@ -9,8 +9,15 @@ foam.CLASS({
     'foam.dao.DAO'
   ],
 
+  imports: [
+    'securitiesDAO'
+  ],
+
   searchColumns: [
-    'name', 'id', 'denomination', 'type'
+    'name',
+    'id',
+    'denomination',
+    'type'
   ],
 
   tableColumns: [
@@ -36,76 +43,47 @@ foam.CLASS({
       class: 'Long',
       name: 'balance',
       label: 'Balance (local)',
+      section: 'balanceDetails',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
+      tableCellFormatter: function(value, obj, axiom) {
         var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.securitiesDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.securitiesDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
             })
-        }));
+          }));
+        }))
       },
       tableWidth: 145
-    },
-    {
-      class: 'Long',
-      name: 'marketValue',
-      documentation: 'the current market value of this security account',
-      storageTransient: true,
-      visibility: 'RO',
-      tableWidth: 145
-      //TODO: display the market value.. balance * unit value in some home currency.
-    },
-    {
-      class: 'Long',
-      name: 'homeBalance',
-      label: 'Balance (home)',
-      documentation: `
-        replace the table cell formatter to return just regular balance. since we dont use this for securities.
-      `,
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return this.balance;
-      },
-      tableWidth: 145
-    },
-  ],
-
-  methods: [
-    {
-      name: 'findBalance',
-      type: 'Any',
-      async: true,
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
-      },
-      javaCode: `
-        DAO balanceDAO = (DAO) x.get("balanceDAO");
-        Balance balance = (Balance) balanceDAO.find(this.getId());
-        if ( balance != null ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
-          return balance.getBalance();
-        } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
-        }
-        return 0L;
-      `
     }
+  ],
+  methods: [
+  {
+        name: 'validateAmount',
+        documentation: `Allows a specific value to be used to perform a balance operation.
+          For example: Trust accounts can be negative.`,
+        args: [
+          {
+            name: 'x',
+            type: 'Context'
+          },
+          {
+            name: 'balance',
+            type: 'net.nanopay.account.Balance'
+          },
+          {
+            name: 'amount',
+
+            type: 'Long'
+          }
+        ],
+        javaCode: `
+          long bal = balance == null ? 0L : balance.getBalance();
+        `
+      },
   ]
+
 });

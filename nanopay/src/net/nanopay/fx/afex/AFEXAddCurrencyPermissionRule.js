@@ -133,8 +133,8 @@ foam.CLASS({
               .setEmailName("international-payments-enabled-notification")
               .build() :
             new Notification.Builder(x)
-              .setBody("Business Passed Compliance")
-              .setNotificationType("BusinessCompliancePassed")
+              .setBody("This business can now make international payments")
+              .setNotificationType("Latest_Activity")
               .setGroupId(group.toString())
               .setEmailIsEnabled(true)
               .setEmailArgs(args)

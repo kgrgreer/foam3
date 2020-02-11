@@ -49,6 +49,10 @@ foam.CLASS({
       documentation: `
         Response message to the client.
       `
+    },
+    {
+      class: 'Long',
+      name: 'accountChoice'
     }
   ]
 });

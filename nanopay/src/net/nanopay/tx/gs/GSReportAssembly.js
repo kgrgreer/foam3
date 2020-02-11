@@ -1,0 +1,118 @@
+foam.CLASS({
+  package: 'net.nanopay.tx.gs',
+  name: 'GSReportAssembly',
+  extends: 'foam.util.concurrent.AbstractAssembly',
+
+  implements: [
+    'foam.core.ContextAware'
+  ],
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'startTime',
+    },
+    {
+      class: 'String',
+      name: 'uuidReport'
+    },
+    {
+      class: 'String',
+      name: 'filename'
+    },
+    {
+      class: 'Long',
+      name: 'txnCounter',
+      synchronized: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.gs.ProgressBarData',
+      name: 'progressBarData'
+    },
+    {
+      class: 'String',
+      name: 'failedRows',
+    },
+    {
+      class: 'Long',
+      name: 'topUpCounter',
+      synchronized: true
+    },
+    {
+      class: 'Boolean',
+      name: 'failed',
+      value: false,
+      synchronized: true
+    },
+    {
+      class: 'String',
+      name: 'failText',
+      synchronized: true
+    }
+  ],
+  methods: [
+    {
+      name: 'startJob',
+      javaCode: `
+        // no-op
+      `
+    },
+    {
+      name: 'executeJob',
+      javaCode: `
+        // no-op
+      `
+    },
+    {
+      name: 'endJob',
+      javaCode: `
+        Long elapsed = System.currentTimeMillis() - getStartTime();
+
+        if ( getFailed() ){
+          getProgressBarData().setReport(getFailText());
+        } else {
+          getProgressBarData().setReport(
+            "Ingestion took: " +
+            (elapsed / 60000) +
+            " minutes and " +
+            ((elapsed % 60000) / 1000) +
+            " seconds\\nTop up transactions created: " +
+            getTopUpCounter() +
+            "\\nTransactions Created from file: " +
+            getTxnCounter() +
+            "\\nFailed rows: " +
+            getFailedRows()
+          );
+        }
+
+        foam.dao.DAO dao = (foam.dao.DAO) getX().get("ProgressBarDAO");
+        dao.put(getProgressBarData());
+      `
+    },
+    {
+      name: 'incrementTxnCounter',
+      synchronized: true,
+      args: [{name: 'amount', type: 'Long'}],
+      javaCode: `
+        setTxnCounter(getTxnCounter() + amount);
+      `
+    },
+    {
+      name: 'incrementTopUpCounter',
+      synchronized: true,
+      args: [{name: 'amount', type: 'Long'}],
+      javaCode: `
+        setTopUpCounter(getTopUpCounter() + amount);
+      `
+    },
+    {
+      name: 'addToFailed',
+      synchronized: true,
+      args: [{name: 'addition', type: 'String'}],
+      javaCode: `
+        setFailedRows(getFailedRows() + addition);
+      `
+    }
+  ]
+})

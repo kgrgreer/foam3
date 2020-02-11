@@ -89,13 +89,37 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'parentSection',
     order: 4,
+    label: 'Parent Account',
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.accountDAO
+        .find(value)
+        .then((account) => this.add(account.summary))
+        .catch((error) => {
+          this.add(value);
+        });
+    },
     view: function(_, X) {
-      var E = foam.mlang.Expressions.create();
+      const e = foam.mlang.Expressions.create();
+      const Account = net.nanopay.account.Account;
+      const LifecycleState = foam.nanos.auth.LifecycleState;
       return {
-        class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
-        placeholder: 'select Parent',
-        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: [
+          {
+            heading: 'Accounts',
+            dao: X.accountDAO
+              .where(
+                e.AND(
+                  e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                  e.OR(
+                    e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+                    foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+                  )
+                )
+              ).orderBy(Account.NAME)
+          }
+        ]
       };
     },
     readPermissionRequired: true
@@ -104,9 +128,9 @@ foam.RELATIONSHIP({
 
 // A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`
 foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.account.SecuritiesAccount',
-  targetModel: 'net.nanopay.account.SecurityAccount',
-  inverseName: 'SecuritiesAccount',
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  inverseName: 'securitiesAccount',
   forwardName: 'subAccounts',
   targetDAOKey: 'accountDAO',
   sourceDAOKey: 'accountDAO',
@@ -123,14 +147,38 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     section: 'accountsSection',
-    label: ''
+    label: '',
+    updateMode: 'RO'
   },
   targetProperty: {
     section: 'liquiditySettingsSection',
     label: '',
     value: 0,
-    view: {
-      class: 'foam.u2.view.FullReferenceView'
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.liquiditySettingsDAO
+        .find(value)
+        .then((liquidSetting) => this.add(liquidSetting.name))
+        .catch((error) => {
+          this.add(value);
+        });
+    },
+    view: function(_, X) {
+      const e = foam.mlang.Expressions.create();
+      const LiquiditySettings = net.nanopay.liquidity.LiquiditySettings;
+      const LifecycleState = foam.nanos.auth.LifecycleState;
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        allowClearingSelection: true,
+        search: true,
+        sections: [
+          {
+            heading: 'Liquidity Setting',
+            dao: X.liquiditySettingsDAO
+              .where(e.EQ(LiquiditySettings.LIFECYCLE_STATE, LifecycleState.ACTIVE))
+              .orderBy(LiquiditySettings.NAME)
+          }
+        ]
+      };
     }
   }
 });
@@ -156,7 +204,7 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.ui.UserRowView' },
         sections: [
           {
-            dao: X.userDAO,
+            dao: X.userDAO
           }
         ],
       });
@@ -264,10 +312,20 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: {
-    visibility: 'FINAL',
+    visibilityExpression: function(parent) {
+      return parent ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    },
+    createMode: 'HIDDEN'
   },
   targetProperty: {
-    visibility: 'FINAL',
+    visibilityExpression: function(children) {
+      return children ?
+        foam.u2.Visibility.FINAL :
+        foam.u2.Visibility.HIDDEN;
+    },
+    createMode: 'HIDDEN'
   }
 });
 
@@ -278,11 +336,21 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
-    visibility: 'FINAL',
+    createMode: 'HIDDEN',
+    visibilityExpression: function(associateTransaction) {
+      return associateTransaction ?
+        foam.u2.Visibility.FINAL :
+        foam.u2.Visibility.HIDDEN;
+    },
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
-    visibility: 'FINAL',
+    createMode: 'HIDDEN',
+    visibilityExpression: function(associatedTransactions) {
+      return associatedTransactions ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    },
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   }
 });
@@ -707,11 +775,68 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   targetProperty: {
+    help: `Set this to the account you would like to withdraw funds from.
+    Selection of shadow accounts is only available for admin of group.`,
+    gridColumns: 7,
+    required: true,
+    postSet: function(_, n) {
+      // only want this postSet to fire off when we are creating txns not viewing
+      if ( this.mode == 'create' ){
+        this.accountDAO.find(n).then((a) => {
+          // NOTES:
+          // DigitalAccounts are used for creation of txn, which is where we wanted the below functionality
+          // Security accounts break with the below functionality
+          if ( a && net.nanopay.account.DigitalAccount.isInstance(a) ) {
+            this.sourceCurrency = a.denomination;
+          }
+        });
+      }
+    },
+    view: function(_, X) {
+      sec = [
+        {
+          dao: X.accountDAO.where(X.data.AND(
+            X.data.EQ(net.nanopay.account.Account.DELETED, false),
+            X.data.EQ(net.nanopay.account.Account.ENABLED, true),
+            X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
+              foam.nanos.auth.LifecycleState.ACTIVE),
+            X.data.OR(
+              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+              X.data.AND(
+                X.data.EQ(X.data.user.group, 'admin'),
+                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
+              )
+            )
+          )).orderBy(net.nanopay.account.Account.NAME),
+          objToChoice: function(a) {
+            return [a.id, a.summary];
+          }
+        }
+      ];
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: sec
+      };
+    },
+    createMode: 'RW',
     visibility: 'FINAL',
-    section: 'paymentInfo',
-    tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value)
-        .then((account) => account.name ? account.name : value));
+    section: 'paymentInfoSource',
+    tableCellFormatter: function(value, obj) {
+      this.add(value);
+
+      // TODO: Temporary fix for now since we need to figure out integrations
+      // we have to show the CICOTransactions from shadows but don't have access to view
+      // the bank accounts
+      if ( net.nanopay.tx.cico.CITransaction.isInstance(obj) ){
+        this.removeChild(value.toString());
+        this.add('External Bank Account');
+      } else {
+        this.__subSubContext__.accountDAO.find(value).then((account) => {
+          this.removeChild(value.toString());
+          this.add(account.name);
+        });
+      }
     },
     javaToCSVLabel: `
       outputter.outputValue("Sender User Id");
@@ -738,11 +863,53 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: { visibility: 'RO' },
   targetProperty: {
+    help: `Please input your payee's account id. Confirm account id with contact externally.`,
+    gridColumns: 7,
+    required: true,
+    createMode: 'RW',
+    view: { class: 'foam.u2.view.IntView' },
     visibility: 'FINAL',
-    section: 'paymentInfo',
-    tableCellFormatter: function(value) {
-      this.add(this.__subSubContext__.accountDAO.find(value)
-        .then((account) => account.name ? account.name : value));
+    section: 'paymentInfoDestination',
+    postSet: function(o, n) {
+      if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
+        // setup
+        var setValues = (value, txt) => {
+          this.destinationCurrency = value;
+          this.dstAccountError = txt;
+        };
+        if ( n == 0 ) setValues(undefined, 'please input an account id.');
+        var x = this.__subContext__;
+        if ( ! x.canReceiveCurrencyDAO ) setValues(undefined, 'issue loading service.');
+
+        // check
+        var request = this.CanReceiveCurrency.create({ accountChoice: n });
+        x.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+          if ( responseObj.response ) {
+            return setValues(responseObj.message, '');
+          }
+          setValues(undefined, 'Account Id entered is either not accepting transactions or does not exist.');
+        }).catch((e) => console.warn('validation on Transaction.destinationAccount error:', e.message || e));
+      }
+    },
+    validateObj: function(dstAccountError, destinationAccount) {
+      if ( destinationAccount == 0 ) return 'please input an account id.';
+      return dstAccountError;
+    },
+    tableCellFormatter: function(value, obj) {
+      this.add(value);
+
+      // TODO: Temporary fix for now since we need to figure out integrations
+      // we have to show the CICOTransactions from shadows but don't have access to view
+      // the bank accounts
+      if ( net.nanopay.tx.cico.COTransaction.isInstance(obj) ){
+        this.removeChild(value.toString());
+        this.add('External Bank Account');
+      } else {
+        this.__subSubContext__.accountDAO.find(value).then((account) => {
+          this.removeChild(value.toString());
+          this.add(account.name);
+        });
+      }
     },
     javaToCSVLabel: `
       outputter.outputValue("Receiver User Id");
@@ -829,12 +996,20 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
   targetProperty: {
-    readMode: 'RO',
-    updateMode: 'RO'
+    visibilityExpression: function(entityId) {
+      return entityId ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'administrative',
+    visibilityExpression: function(approvalRequests) {
+      return approvalRequests ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
   }
 });
 
@@ -847,7 +1022,15 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: { visibility: 'RO' },
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    visibilityExpression: function(complianceResponses) {
+      return complianceResponses.length > 0 ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    },
+  }
 });
 
 foam.RELATIONSHIP({
@@ -869,6 +1052,14 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    visibilityExpression: function(transactionEvents) {
+      return transactionEvents.length > 0 ?
+        foam.u2.Visibility.RO :
+        foam.u2.Visibility.HIDDEN;
+    }
+  }
 });
 
 foam.RELATIONSHIP({

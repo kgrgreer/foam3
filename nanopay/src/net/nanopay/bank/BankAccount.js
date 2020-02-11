@@ -18,10 +18,10 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'foam.core.Currency',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
     'foam.nanos.logger.Logger',
@@ -314,24 +314,6 @@ foam.CLASS({
         // length
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
-        }
-
-        // already exists
-        User user = (User) x.get("user");
-
-        ArraySink accountSink = (ArraySink) user.getAccounts(x)
-          .where(
-            AND(
-             EQ(Account.ENABLED, true),
-             INSTANCE_OF(BankAccount.class)
-            )
-          )
-          .select(new ArraySink());
-        List<BankAccount> userAccounts = accountSink.getArray();
-        for ( BankAccount account : userAccounts ) {
-          if ( account.getName().toLowerCase().equals(this.getName().toLowerCase()) ) {
-            throw new IllegalStateException("Bank account with same name already registered.");
-          }
         }
       `
     }

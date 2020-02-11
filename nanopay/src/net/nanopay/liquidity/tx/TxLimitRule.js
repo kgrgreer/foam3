@@ -3,8 +3,13 @@ foam.CLASS({
   name: 'TxLimitRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'currencyDAO',
+    'accountDAO',
   ],
 
   javaImports: [
@@ -14,9 +19,7 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'enabled',
     'applyLimitTo',
-    'send',
     'limit',
     'period'
   ],
@@ -28,53 +31,95 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.tx.TxLimitEntityType',
       name: 'applyLimitTo',
+      label: 'Applies To',
       section: 'basicInfo',
       tableWidth: 125,
-      tableHeaderFormatter: function(axiom) {
-        this.add('Entity Type');
-      },
       value: 'ACCOUNT'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       targetDAOKey: 'userDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
       documentation: 'The user to limit.',
       name: 'userToLimit',
       section: 'basicInfo',
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      },
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.userDAO
+          .find(value)
+          .then((user) => {
+            this.add(user.label());
+          })
+          .catch((error) => {
+            this.add(value);
+          });
       }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
+      view: function(_, X) {
+        const e = foam.mlang.Expressions.create();
+        const Account = net.nanopay.account.Account;
+        const LifecycleState = foam.nanos.auth.LifecycleState;
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.accountDAO
+                .where(
+                  e.AND(
+                    e.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                    foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+                  )
+                )
+                .orderBy(Account.NAME)
+            }
+          ]
+        };
       },
       documentation: 'The account to limit.',
       name: 'accountToLimit',
       section: 'basicInfo',
       visibilityExpression: function(applyLimitTo) {
         return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      postSet: function(o, n) {
+        if ( this.applyLimitTo == 'ACCOUNT' ) {
+          this.accountDAO.find(n).then((account)=>{
+            if ( account ) {
+              this.denomination = account.denomination;
+            }
+          });
+        }
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      targetDAOKey: 'businessDAO',
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
-      documentation: 'The business to limit.',
-      name: 'businessToLimit',
+      class: 'Boolean',
+      documentation: 'Whether to include the children of the account.',
+      name: 'includeChildAccounts',
       section: 'basicInfo',
       visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'BUSINESS') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        // We do not want this for GS R2 demo, so hiding it for now
+        // return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        return foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -100,27 +145,24 @@ foam.CLASS({
       }
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'limit',
       label: 'With Transaction Value More Than',
       section: 'basicInfo',
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
       },
-      tableCellFormatter: function(value, obj) {
-        if ( obj.denomination ) {
-          obj.currencyDAO.find(obj.denomination).then(function(currency) {
-              if ( currency ) {
-                this.add( currency.format(value) );
-              } else {
-                this.add( value );
-              }
-          }.bind(this));
-        } else {
-          this.add( value );
-        }
-      },
       tableWidth: 200,
+      validationPredicates: [
+        {
+          args: ['limit'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.liquidity.tx.TxLimitRule.LIMIT, 0);
+          },
+          errorString: 'Limit amount must be greater than 0.'
+        }
+      ],
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
     {
       class: 'Reference',
@@ -129,17 +171,30 @@ foam.CLASS({
       targetDAOKey: 'currencyDAO',
       documentation: 'The unit of measure of the transaction limit.',
       section: 'basicInfo',
+      required: true,
+      visibilityExpression: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO,
+              heading: 'Currencies'
+            }
+          ]
+        };
+      }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
-      value: 'DAILY',
+      value: 'PER_TRANSACTION',
       section: 'basicInfo',
-      label: 'Over Timeframe',
-      tableHeaderFormatter: function(axiom) {
-        this.add('Period');
-      },
+      label: 'Frequency',
       tableWidth: 200,
     },
     {
@@ -175,6 +230,33 @@ foam.CLASS({
         return new java.util.HashMap<String, TransactionLimitState>();
       `,
       documentation: 'Stores map of objects and current running limits.'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        // make sure all validation from super class passes
+        super.validate(x);
+
+        // Check that the proper ID is set
+        if (this.getApplyLimitTo() == TxLimitEntityType.USER &&
+            this.getUserToLimit() == 0) {
+              throw new IllegalStateException("User to limit must be set");
+        }
+        else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
+                 this.getAccountToLimit() == 0) {
+              throw new IllegalStateException("Account to limit must be set");
+        }
+      `
     }
   ]
 });

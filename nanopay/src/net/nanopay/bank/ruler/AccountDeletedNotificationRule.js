@@ -44,7 +44,7 @@ foam.CLASS({
 
             Notification deletedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been deleted.")
-                    .setNotificationType("BankNotifications")
+                    .setNotificationType("Latest_Activity")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("deletedBank")

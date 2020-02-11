@@ -1,0 +1,21 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Logout user on user delete",
+  "priority": 100,
+  "enabled": true,
+  "ruleGroup": "auth",
+  "documentation": "remove sessions on user removal",
+  "daoKey": "localUserDAO",
+  "operation": 1, 
+  "after": true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"lifecycleState",
+    "propValue":{
+      "class":"foam.nanos.auth.LifecycleState",
+      "ordinal":3
+    }
+  },
+  "action":{ "class":"net.nanopay.auth.ruler.LogoutUserAction" },
+  "saveHistory": true
+})

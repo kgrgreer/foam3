@@ -8,7 +8,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
 
@@ -16,6 +18,9 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+      agency.submit(x, new ContextAgent() {
+                                  @Override
+                                  public void execute(X x) {
         TransactionQuote txq = (TransactionQuote) obj;
         BucketTransaction tx = (BucketTransaction) txq.getRequestTransaction();
         CompositeTransaction comp = new CompositeTransaction.Builder(x).build();
@@ -36,7 +41,8 @@ foam.CLASS({
         tx.setIsQuoted(true);
         tx.setTransfers(null);
         tx.addNext(comp);
-        txq.addPlan(tx);
+        txq.setPlan(tx);
+        }}, "Security Bucket Transaction Planner");
       `
     },
   ]
