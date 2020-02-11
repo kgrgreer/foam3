@@ -14,7 +14,9 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
     'static foam.mlang.MLang.EQ',
-    'java.util.UUID'
+    'java.util.UUID',
+    'java.util.List',
+    'java.util.ArrayList'
   ],
 
   properties: [
@@ -34,8 +36,7 @@ foam.CLASS({
     {
       name: 'myTransfers_',
       class: 'List',
-      javaType: 'ArrayList<net.nanopay.tx.Transfer>',
-      javaFactory: `return new ArrayList();`
+      javaFactory: 'return new ArrayList<Transfer>();'
     }
   ],
 
@@ -45,8 +46,8 @@ foam.CLASS({
       documentation: 'applyAction of the rule is called by rule engine',
       javaCode: `
         TransactionQuote q = (TransactionQuote) obj;
-        Transaction t = obj.getRequestTransaction();
-        savePlan(plannerLogic(x, q, t.freeze(), agency), q);
+        Transaction t = q.getRequestTransaction();
+        savePlan(plannerLogic(x, q, ((Transaction) t.freeze()), agency), q); //this freeze will likely need to go at beginning of Planner stack instead.
       `
     },
     {
@@ -68,11 +69,14 @@ foam.CLASS({
       name: 'addTransfer',
       documentation: 'helper function for adding transfers to Transaction',
       args: [
-        { name: 'Account', type: 'Long' },
-        { name: 'Amount', type: 'Long' }
+        { name: 'account', type: 'Long' },
+        { name: 'amount', type: 'Long' }
       ],
       javaCode: `
-        setMyTransfers_(getMyTransfers_().add(new Transfer.Builder(x).setAccount(Account).setAmount(Amount).build()));
+        Transfer t = new Transfer();
+        t.setAccount(account);
+        t.setAmount(amount);
+        getMyTransfers_().add(t);
       `
     },
     {
