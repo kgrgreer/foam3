@@ -944,6 +944,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/AddChildAccountToMakerOnAccountApproval' },
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
    { name: 'net/nanopay/liquidity/crunch/RootAccounts' },
+   { name: 'net/nanopay/liquidity/crunch/RemoveDeletedAccountFromAccountTemplate' },
 
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/LiquidCurrencyView' },
