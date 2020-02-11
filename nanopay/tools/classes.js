@@ -102,6 +102,7 @@ var classes = [
   'net.nanopay.bank.PKBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
+  'net.nanopay.bank.GetDefaultCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
