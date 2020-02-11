@@ -51,6 +51,7 @@ var classes = [
   'net.nanopay.cico.paymentCard.model.PaymentCardNetwork',
   'net.nanopay.payment.CreatePaymentCode',
   'net.nanopay.payment.Institution',
+  'net.nanopay.payment.InstitutionAuthorizerTest',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentCode',
   'net.nanopay.payment.PaymentService',
@@ -344,6 +345,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.RemoveAccountFromUcjDataOnAccountRemoval',
    'net.nanopay.liquidity.crunch.AddChildAccountToMakerOnAccountApproval',
    'net.nanopay.liquidity.crunch.RootAccounts',
+   'net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',

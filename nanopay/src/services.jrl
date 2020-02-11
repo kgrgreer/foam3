@@ -835,7 +835,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setRuler(false)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .setSeqNo(true)
       .setJournalName("institutions")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
