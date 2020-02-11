@@ -37,7 +37,7 @@
 
 ## Note on UserCapabilityJunctions (UCJ) from User to These Two Types of LiquidCapabilities
 - When a user is assigned some Capability, i.e., an ucj is created, there is usually some type of data stored in the ucj, which can be a piece of document, a signature, or any piece of info required to grant a user the capability in question. 
-- In the case of LiquidCapabilities, the 'data' represents more 'specific' information level of access that a user is granted.
+- In the case of LiquidCapabilities, the 'data' represents more 'specific' information for level of access that a user is granted.
 - In an ucj object where the Capability is instanceof AccountBasedLiquidCapability, the data is a map, where the keys are all the accounts for which the user is granted this capability, and the values include the approverlevel granted to the user for each specific account, if this capability were to grant the user the ability to 'approve' some object
 - In an ucj object where the Capability is instanceof GlobalLiquidCapability, the data is simply an 'ApproverLevel' object, which represents the approverLevel granted to the user for that capability, if that capability were to grant the user the ability to 'approve' some object
 
