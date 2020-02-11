@@ -348,18 +348,18 @@ foam.CLASS({
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
 
-          this.userId$find.then((user) => {
-            this.owner1.firstName = user.firstName;
-            this.owner1.lastName = user.lastName;
-            this.owner1.jobTitle = user.jobTitle;
-          });
+//          this.userId$find.then((user) => {
+//            this.owner1.firstName = user.firstName;
+//            this.owner1.lastName = user.lastName;
+//            this.owner1.jobTitle = user.jobTitle;
+//          });
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
 
-          this.owner1.firstName = this.adminFirstName;
-          this.owner1.lastName = this.adminLastName;
-          this.owner1.jobTitle = this.adminJobTitle;
+//          this.owner1.firstName = this.adminFirstName;
+//          this.owner1.lastName = this.adminLastName;
+//          this.owner1.jobTitle = this.adminJobTitle;
         }
       }
     },
@@ -639,10 +639,7 @@ foam.CLASS({
           },
           errorString: 'Please enter first name with least 1 character.'
         }
-      ],
-      postSet: function() {
-        this.owner1.firstName = this.adminFirstName;
-      }
+      ]
     },
     {
       class: 'String',
@@ -651,10 +648,7 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6,
-      postSet: function() {
-        this.owner1.lastName = this.adminLastName;
-      }
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -1147,7 +1141,7 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       label: '',
       postSet: function(_, newV) {
-        if ( this.signingOfficer && newV ) {
+        if ( this.signingOfficer && this.userOwnsPercent && newV ) {
           this.userId$find.then((user) => {
             this.owner1.firstName = user.firstName;
             this.owner1.lastName = user.lastName;
@@ -1157,7 +1151,7 @@ foam.CLASS({
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
           return;
-        } else if ( ! this.signingOfficer && newV ) {
+        } else if ( ! this.signingOfficer && this.userOwnsPercent && newV ) {
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
           this.owner1.jobTitle = this.adminJobTitle;
@@ -1529,20 +1523,22 @@ foam.CLASS({
       name: 'init',
       code: function() {
         this.userId$find.then((user) => {
-          if ( this.signingOfficer ) {
+          if ( this.signingOfficer && this.userOwnsPercent ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
             this.owner1.firstName = user.firstName;
             this.owner1.lastName = user.lastName;
             this.owner1.jobTitle = user.jobTitle;
-          } else {
+          } else if ( ! this.signingOfficer && this.userOwnsPercent ) {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
             this.owner1.firstName = this.adminFirstName;
             this.owner1.lastName = this.adminLastName;
             this.owner1.jobTitle = this.adminJobTitle;
+          } else if ( ! userOwnsPercent ) {
+            this.clearProperty('owner1');
           }
         });
         this.owner1.showValidation$ = this.signingOfficer$;
