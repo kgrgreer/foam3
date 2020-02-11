@@ -17,7 +17,7 @@ import foam.core.X;
 import foam.lib.StoragePropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
-import foam.nanos.app.AppConfig;
+import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import net.nanopay.flinks.model.FlinksAuthRequest;
 import net.nanopay.flinks.model.FlinksResponse;
@@ -44,7 +44,6 @@ public class FlinksConnectWebAgent
 
   @Override
   public void execute(X x) {
-    AppConfig config = (AppConfig) x.get("appConfig");
     HttpServletRequest req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     HttpURLConnection conn = null;
@@ -87,8 +86,9 @@ public class FlinksConnectWebAgent
       FlinksResponse response = (FlinksResponse)
           parser.parseString(builder.toString(), FlinksResponse.class);
 
+      String appUrl = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
       builder.setLength(0);
-      builder.append(config.getUrl())
+      builder.append(appUrl)
           .append("service/appRedirect")
           .append("?loginId=").append(loginId)
           .append("&requestId=").append(response.getRequestId());

@@ -6,7 +6,6 @@ foam.CLASS({
   javaImports: [
     'com.google.gson.Gson',
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
     'foam.core.FObject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
@@ -100,10 +99,8 @@ foam.CLASS({
         BufferedReader reader = null;
 
         try {
-          AppConfig config = (AppConfig) x.get("appConfig");
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
           DAO userDAO = (DAO) x.get("localUserDAO");
-          String url = config.getUrl().replaceAll("/$", "");
 
           // get current user from session
           Session session = x.get(Session.class);
@@ -118,6 +115,8 @@ foam.CLASS({
           user.setGroup("shopper");
           user.setInvitedBy(session.getUserId());
           User result = (User) ( (FObject) userDAO.put(user)).fclone();
+
+          String url = result.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
 
           // generate token
           Token token = (Token) tokenDAO.put(new Token.Builder(getX())

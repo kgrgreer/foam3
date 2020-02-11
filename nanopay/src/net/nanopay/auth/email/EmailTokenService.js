@@ -8,6 +8,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.util.Emails.EmailsUtility'
   ],
@@ -18,9 +19,8 @@ foam.CLASS({
       javaCode: `
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
-          AppConfig appConfig = (AppConfig) x.get("appConfig");
-          String url = appConfig.getUrl()
-              .replaceAll("/$", "");
+          AppConfig appConfig = user.findGroup(x).getAppConfig(x);
+          String url = appConfig.getUrl().replaceAll("/$", "");
 
           Token token = new Token();
           token.setUserId(user.getId());

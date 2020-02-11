@@ -16,7 +16,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.token.Token',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -35,7 +34,6 @@ foam.CLASS({
       javaCode:
 `
 Logger logger = (Logger) x.get("logger");
-AppConfig appConfig = (AppConfig) x.get("appConfig");
 
 // The context passed to us won't have a user in it because obviously the user
 // isn't logged in if they're resetting their password. However, decorators on
@@ -48,8 +46,6 @@ x = x.put("user", systemUser);
 
 DAO userDAO = (DAO) getX().get("localUserUserDAO");
 DAO tokenDAO = (DAO) getTokenDAO();
-String url = appConfig.getUrl()
-    .replaceAll("/$", "");
 
 // check if email invalid
 if ( user == null || ! Email.isValid(user.getEmail()) ) {
@@ -81,6 +77,8 @@ for ( Object u : list ) {
 if ( user == null ) {
   throw new RuntimeException("User not found");
 }
+
+String url = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
 
 Token token = new Token();
 token.setUserId(user.getId());

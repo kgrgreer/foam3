@@ -34,8 +34,7 @@ foam.CLASS({
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
           User agent = (User) x.get("agent");
-          AppConfig appConfig = (AppConfig) x.get("appConfig");
-          String url = appConfig.getUrl().replaceAll("/$", "");
+          String url = agent.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
 
           Token token = new Token.Builder(x)
             .setUserId(user.getId())

@@ -11,7 +11,6 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.MLang',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
@@ -52,11 +51,8 @@ return calendar.getTime();`
       name: 'generateToken',
       javaCode:
       `try {
-        AppConfig config = (AppConfig) getX().get("appConfig");
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO userDAO = (DAO) getLocalUserDAO();
-        String url = config.getUrl()
-            .replaceAll("/$", "");
 
         // keep generating a new password until a valid one is generated
         String password = passgen.generate(18);
@@ -69,6 +65,7 @@ return calendar.getTime();`
 
         // save password and generate a valid id.
         user = (User) userDAO.put(user);
+        String url = user.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
        
         Token token = new Token();
         token.setUserId(user.getId());
