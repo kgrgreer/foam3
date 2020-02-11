@@ -1513,7 +1513,7 @@ foam.CLASS({
       name: 'init',
       code: function() {
         this.userId$find.then((user) => {
-          if ( this.signingOfficer) {
+          if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
