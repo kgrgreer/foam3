@@ -16,14 +16,22 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.List',
     'java.util.Map',
     'java.util.Set',
+    'net.nanopay.account.Account',
+    'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.approval.ApprovalStatus',
+    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
     'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -363,17 +371,59 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( ! getIsUsingTemplate() || getRequestType() == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL )
-          return;
+        // if the object is deleted or rejected, do not validate
+        if ( getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) return;
+        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+        List<ApprovalRequest> rejectedApprovalRequests = ((ArraySink) approvalRequestDAO
+          .where(
+            AND(
+              EQ(ApprovalRequest.DAO_KEY, "capabilityRequestDAO"),
+              EQ(ApprovalRequest.OBJ_ID, getApprovableKey()),
+              EQ(RoleApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
+              EQ(RoleApprovalRequest.IS_FULFILLED, false),
+              EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
+            )
+          ).select(new ArraySink())).getArray();
+        if ( rejectedApprovalRequests.size() > 0 ) return;
 
+        // 1. check users
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User user;
+        for ( Long userId : getUsers() ) {
+          user = (User) userDAO.find(userId);
+          if ( user == null || user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) 
+            throw new IllegalStateException("One or more users being assigned this capability is no longer available");
+        }
+
+
+        // 2. check capability reference
+        DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
+        String capabilityRef = getRequestType() == CapabilityRequestOperations.ASSIGN_GLOBAL ? getGlobalCapability() : getAccountBasedCapability();
+        LiquidCapability capability = (LiquidCapability) capabilityDAO.find(capabilityRef);
+        if ( capability == null || capability.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE )
+          throw new IllegalStateException("The capability to be assigned is no longer available");
+
+        if ( getRequestType() == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL ) return;
+
+        // 3. check single account assigned 
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        Account account;
+        if ( ! getIsUsingTemplate() ) {
+          account = (Account) accountDAO.find(getAccountToAssignTo());
+          if ( account == null || account.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) 
+            throw new IllegalStateException("The account for which to assigned users this capability is no longer available");
+          return;
+        }
+
+        // 4. check account keys in template
         Map<String, CapabilityAccountData> map = getCapabilityAccountTemplateMap();
         if ( map == null || map.size() == 0 )
           throw new IllegalStateException("At least one account must be provided in the Account Group Map");
 
-        DAO dao = (DAO) x.get("localAccountDAO");
         Set<String> keySet = map.keySet();
         for ( String key : keySet ) {
-          if ( dao.find(Long.parseLong(key)) == null )
+          account = (Account) accountDAO.find(Long.parseLong(key));
+          if ( account == null || account.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) 
             throw new IllegalStateException("One or more entries of this Account Group Map contains an invalid value for account");
         }
       `
