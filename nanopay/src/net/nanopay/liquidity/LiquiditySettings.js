@@ -5,7 +5,10 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
@@ -39,6 +42,7 @@ foam.CLASS({
     'name',
     'cashOutFrequency',
     'denomination',
+    'createdBy',
     'lowLiquidity',
     'highLiquidity'
   ],
@@ -277,6 +281,53 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
+      name: 'created',
+      documentation: 'Created date',
+      createMode: 'HIDDEN',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The unique identifier of the agent
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'DateTime',
       name: 'lastModified',
       documentation: 'Last modified date',
       createMode: 'HIDDEN',
@@ -287,7 +338,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
-        who last modified this account.`,
+        who last modified this liquidity setting.`,
       visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
