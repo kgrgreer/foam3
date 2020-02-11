@@ -61,7 +61,7 @@ foam.CLASS({
             Business business = (Business) obj;
     
             // format the sign up date
-            String signUpDate = dateFormat.format(business.getCreated());
+            String signUpDate = business.getCreated() == null ? "" : dateFormat.format(business.getCreated());
     
             // find the person who created the business account
             User createdBy = business.findCreatedBy(x);

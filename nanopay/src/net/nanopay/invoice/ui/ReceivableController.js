@@ -17,6 +17,7 @@ foam.CLASS({
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
@@ -40,7 +41,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.sales;
+        return this.user.sales.orderBy(this.DESC(this.Invoice.CREATED));
       }
     },
     {

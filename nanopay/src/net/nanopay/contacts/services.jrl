@@ -7,6 +7,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setValidated(true)
+      .setDeletedAware(false)
       .setDecorator(
         new net.nanopay.contacts.CheckContactExistsDAO(x,
         new net.nanopay.contacts.CheckContactExistingTransaction(x,
@@ -28,6 +29,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
+      .setDeletedAware(false)
       .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).build())
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))

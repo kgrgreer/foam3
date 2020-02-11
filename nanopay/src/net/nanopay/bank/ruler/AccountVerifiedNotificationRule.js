@@ -44,14 +44,14 @@ foam.CLASS({
             HashMap<String, Object> args    = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
-            args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("accountNumber",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
             args.put("institution", institutionStr);
             args.put("userEmail", User.EMAIL);
             args.put("accountType", account.getType());
-        
+
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")
-                    .setNotificationType("BankNotifications")
+                    .setNotificationType("Latest_Activity")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("verifiedBank")

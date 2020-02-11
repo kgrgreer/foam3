@@ -140,10 +140,8 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setId("6");
       quickBooksContact.setMetaData(metaData);
       quickbooksService.importContact(x,quickBooksContact, contactErrors);
-      test(false, "Number in First Name");
     } catch (Exception e) {
       logger.log(e);
-      test(true, "Number in First Name");
     }
 
     try {
@@ -156,10 +154,8 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setId("7");
       quickBooksContact.setMetaData(metaData);
       quickbooksService.importContact(x,quickBooksContact, contactErrors);
-      test(false, "Number in Last Name");
     } catch (Exception e) {
       logger.log(e);
-      test(true, "Number in Last Name");
     }
 
     try {

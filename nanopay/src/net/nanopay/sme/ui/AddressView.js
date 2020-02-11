@@ -35,6 +35,7 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
+      margin-bottom: 20px;
     }
     ^ .three-column{
       display: grid;
@@ -46,8 +47,9 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'showValidationText',
-      documentation: 'Use this property if the value of validationTextVisible is situational'
+      name: 'showValidation',
+      value: true,
+      documentation: 'Use this property if the value of validationTextVisible is situational.'
     },
     {
       class: 'Boolean',
@@ -104,7 +106,7 @@ foam.CLASS({
                     },
                     mode$: this.mode$
                   },
-                  validationTextVisible: this.showValidationText
+                  validationTextVisible: this.showValidation
                 })
               })
             .end()
@@ -122,7 +124,7 @@ foam.CLASS({
                     mode$: this.mode$
                   },
                   label: this.PROVINCE_LABEL,
-                  validationTextVisible: this.showValidationText
+                  validationTextVisible: this.showValidation
                 })
               })
             .end()
@@ -134,7 +136,7 @@ foam.CLASS({
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
               prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                validationTextVisible: this.showValidationText
+                validationTextVisible: this.showValidation
               })
             })
           .end()
@@ -142,18 +144,10 @@ foam.CLASS({
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
               prop: this.Address.STREET_NAME.clone().copyFrom({
-                validationTextVisible: this.showValidationText
+                validationTextVisible: this.showValidation
               })
             })
           .end()
-        .end()
-        .start().addClass('label-input')
-          .tag(this.SectionedDetailPropertyView, {
-            data$: this.data$,
-            prop: this.Address.SUITE.clone().copyFrom({
-              validationTextVisible: this.showValidationText
-            })
-          })
         .end()
         .start()
           .addClass('two-column')
@@ -161,7 +155,7 @@ foam.CLASS({
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
               prop: this.Address.CITY.clone().copyFrom({
-                validationTextVisible: this.showValidationText
+                validationTextVisible: this.showValidation
               })
             })
           .end()
@@ -170,10 +164,18 @@ foam.CLASS({
               data$: this.data$,
               prop: this.Address.POSTAL_CODE.clone().copyFrom({
                 label: this.POSTAL_CODE,
-                validationTextVisible: this.showValidationText
+                validationTextVisible: this.showValidation
               })
             })
           .end()
+        .end()
+        .start().addClass('label-input')
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.Address.SUITE.clone().copyFrom({
+              validationTextVisible: this.showValidation
+            })
+          })
         .end();
     }
   ]

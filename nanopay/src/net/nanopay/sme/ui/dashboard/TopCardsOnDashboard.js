@@ -106,13 +106,11 @@ foam.CLASS({
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
     'bankAccount',
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-    },
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   messages: [
@@ -120,51 +118,26 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.internationalPaymentEnabled = this.user.businessRegistrationDate && this.user.countryOfBusinessRegistration;
-    },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
-        .callIf( ! this.businessOnboarding || this.businessOnboarding.signingOfficer || this.businessOnboarding.status !== this.OnboardingStatus.SUBMITTED,
-          () => { // not started or signingofficer or finished onboarding
-            this
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .add(this.slot((onboardingStatus, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((user$onboarded, businessOnboarding) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
               .start('span').hide(this.isIframe())
-                .add(this.slot((onboardingStatus, internationalPaymentEnabled, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && internationalPaymentEnabled, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((user$onboarded, businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
+                  let complete = user$onboarded && (businessRegistrationDate && countryOfBusinessRegistration);
+                  let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: complete, isEmployee: isEmp, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-            .end();
-          })
-
-        .callIf( this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
-          () => {  // onboarded && nonSigningOfficer &&  submit
-            this
-            .start().addClass('divider').end()
-            .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
-            .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
-            .start().addClass('cards').hide(this.hidePaymentCards$)
-              .start('span')
-                .add(this.slot((onboardingStatus, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
-                }))
-              .end()
-              .start('span').hide(this.isIframe())
-                .add(this.slot((internationalPaymentEnabled, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled, isEmployee: true, businessOnboarding: businessOnboarding }).end();
-                }))
-              .end()
-            .end();
-          })
+            .end()
         .start().addClass('lower-cards')
           .start('span')
             .add(this.slot((bankAccount) => {

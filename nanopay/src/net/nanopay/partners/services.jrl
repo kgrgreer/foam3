@@ -10,8 +10,7 @@ p({
         new net.nanopay.partners.AuthenticatedUserUserJunctionDAO(x, "partnerJunction", 
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "yourId", "yourInfo", 
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "partnerId", "partnerInfo", 
-        new net.nanopay.partners.PartnerInfoDAO(x, null))))
-      )
+        new net.nanopay.partners.PartnerInfoDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo()).build())))))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("partnerJunctions")
       .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo())
@@ -34,7 +33,7 @@ p({
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "createdBy", "inviter",
         new net.nanopay.auth.PublicUserInfoDAO(x, false, "inviteeId", "invitee",  
         new net.nanopay.partners.MakeConnectionDAO(x, 
-        new net.nanopay.partners.SendInvitationDAO(x, null)))))
+        new net.nanopay.partners.SendInvitationDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.model.Invitation.getOwnClassInfo()).build())))))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("invitations")
       .setOf(net.nanopay.model.Invitation.getOwnClassInfo())

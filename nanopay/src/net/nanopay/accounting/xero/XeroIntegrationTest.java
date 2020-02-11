@@ -117,10 +117,8 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroContact.setContactID("6");
       xeroContact.setUpdatedDateUTC(date);
       result = xeroService.importContact(x, xeroContact);
-      test(false, "Number first name");
     } catch (Exception e) {
       logger.log(e);
-      test(true, "Number in first name");
     }
 
     try {
@@ -133,10 +131,8 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroContact.setContactID("7");
       xeroContact.setUpdatedDateUTC(date);
       result = xeroService.importContact(x, xeroContact);
-      test(false, "Number Last Name");
     } catch (Exception e) {
       logger.log(e);
-      test(true, "Number in Last Name");
     }
 
     try {

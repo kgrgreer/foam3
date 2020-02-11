@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.LifecycleState',
     'net.nanopay.account.Account',
   ],
 
@@ -26,7 +27,13 @@ foam.CLASS({
               AND(
                 EQ(Account.PARENT, account.getId()),
                 EQ(Account.ENABLED, true),
-                EQ(Account.DELETED, false)
+                EQ(Account.DELETED, false),
+                OR(
+                  // we don't want to included REJECTED or DELETED accounts
+                  // TODO: on wiring cascade delete we will account for LifecycleState.PENDING
+                  EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                  EQ(Account.LIFECYCLE_STATE, LifecycleState.PENDING)
+                )
               )
             )
             .limit(1)
@@ -34,8 +41,8 @@ foam.CLASS({
 
           if ( count.getValue() > 0 ) {
             Logger logger = (Logger) x.get("logger");
-            logger.log("Cannot delete account " + account.getId() + " as it has children accounts");
-            throw new RuntimeException("Cannot delete this account as it has children accounts");
+            logger.log("Cannot delete account " + account.getId() + " as it has children account(s) or pending child accounts request(s)");
+            throw new RuntimeException("Cannot delete this account as it has children account(s) or pending child account request(s)");
           }
         }
       `
