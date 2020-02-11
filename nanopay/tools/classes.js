@@ -693,6 +693,7 @@ var classes = [
   // tests
   'net.nanopay.test.DateAndPlaceOfBirthDAOTest',
   'net.nanopay.test.BranchDAOTest',
+  'net.nanopay.test.BranchDAOAuthorizationTest',
   'net.nanopay.test.BusinessSectorDAOTest',
 
   'net.nanopay.test.ModelledTest',

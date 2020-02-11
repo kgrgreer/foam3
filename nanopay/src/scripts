@@ -1581,7 +1581,6 @@ p({
 
 p({
   "class": "foam.nanos.script.Script",
-<<<<<<< HEAD
   "id": "Setup RBC PGP Key",
   "status": 2,
   "code": """
