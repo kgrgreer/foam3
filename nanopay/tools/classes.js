@@ -22,6 +22,8 @@ var classes = [
   'net.nanopay.tx.cico.CABankTransactionPlanDAO',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.EFTFile',
+  'net.nanopay.tx.cico.EFTFileGenerator',
   'net.nanopay.tx.cico.EFTFileStatus',
   'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.cico.ReverseCORule',
@@ -960,7 +962,6 @@ var classes = [
   'net.nanopay.tx.rbc.iso20022file.RbcCIRecord',
   'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
   'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
-  'net.nanopay.tx.rbc.iso20022file.RbcISO20022File',
   'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
   
   // Ticket

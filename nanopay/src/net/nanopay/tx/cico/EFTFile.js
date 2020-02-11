@@ -1,8 +1,8 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.rbc.iso20022file',
-  name: 'RbcISO20022File',
+  package: 'net.nanopay.tx.cico',
+  name: 'EFTFile',
 
-  documentation: `RBC ISO20022 file`,
+  documentation: `Model for an EFT file`,
 
   tableColumns: [
     'id', 'fileName'
@@ -18,13 +18,33 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'fileCreationTimeEDT',
-      class: 'String'
+      name: 'provider',
+      class: 'Reference',
+      of: 'net.nanopay.payment.PaymentProvider'
     },
     {
       name: 'content',
       class: 'String',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 }
+    },
+    {
+      name: 'file',
+      class: 'Reference',
+      of: 'foam.nanos.fs.File'
+    },
+    {
+      name: 'receipt',
+      class: 'Reference',
+      of: 'foam.nanos.fs.File'
+    },
+    {
+      name: 'report',
+      class: 'Reference',
+      of: 'foam.nanos.fs.File'
+    },
+    {
+      name: 'fileCreationTimeEDT',
+      class: 'String'
     },
     {
       name: 'retries',
@@ -34,9 +54,6 @@ foam.CLASS({
       name: 'status',
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.cico.EFTFileStatus',
-      // view: function(_, x) {
-      //   return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
-      // },
     },
     {
       name: 'failureReason',

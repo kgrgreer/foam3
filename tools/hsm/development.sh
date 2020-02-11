@@ -21,6 +21,7 @@ function create_slot {
   # Create fresh slot
   if [[ $DEVELOPMENT_SLOT -eq 1 ]]; then
     softhsm2-util --init-token --label "development" --so-pin $PIN --pin $PIN --free
+    migrate_slot
     printf "INFO :: New slot for development created...\n"
   fi
 }
@@ -90,7 +91,7 @@ clean
 #if [[ $CREATE -eq 1 ]]; then
   create_slot
 #else
-  migrate_slot
+  #migrate_slot
 #fi
 
 config_setup

@@ -31,15 +31,21 @@ public class RbcFTPSClient {
    * Send the file to RBC home folder
    */
   public void send(File file) throws IOException {
+    if ( file == null ) return;
+
+    this.send(new FileInputStream(new File(file.getAbsolutePath())) , file.getName());
+  }
+
+  public void send(FileInputStream in, String filename) throws IOException {
     if ( (! this.credential.getEnable() ) || this.credential.getSkipSendFile() ) {
       return;
     }
 
     this.login();
 
-    this.logger.info("Start sending file: " + file.getName());
-    this.put(file.getAbsolutePath(), file.getName());
-    this.logger.info("Finish sending file: " + file.getName());
+    this.logger.info("Start sending file: " + filename);
+    this.put(in, filename);
+    this.logger.info("Finish sending file: " + filename);
 
     this.logout();
   }
@@ -154,9 +160,17 @@ public class RbcFTPSClient {
   }
 
   public void put(String local, String remote) throws IOException {
+    try {
+      this.put(new FileInputStream(new File(local)), remote);
+    } catch(IOException e) {
+      throw e;
+    }    
+  }
+
+  public void put(FileInputStream in, String remote) throws IOException {
     omLogger.log("RBC send file starting");
     try {
-      ftpsClient.storeFile(remote, new FileInputStream(new File(local)));
+      ftpsClient.storeFile(remote, in);
     } catch(IOException e) {
       omLogger.log("RBC send file failed");
       this.logger.error("RBC send file failed ", e);
