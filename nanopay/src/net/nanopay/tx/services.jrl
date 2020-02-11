@@ -518,7 +518,7 @@ p({
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("eftFile")
-      .setOf(net.nanopay.tx.ciso.EFTFile.getOwnClassInfo())
+      .setOf(net.nanopay.tx.cico.EFTFile.getOwnClassInfo())
       .setAuthorize(false)
       .build();
   """, 

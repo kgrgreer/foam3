@@ -28,10 +28,10 @@ public class RbcVerifyFileAcceptedCron implements ContextAgent {
     /**
      * get sent files
      */
-    DAO eftileDAO = (DAO) x.get("eftileDAO");
+    DAO eftFileDAO = (DAO) x.get("eftFileDAO");
     logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
 
-    ArraySink sink = (ArraySink) eftileDAO.where(
+    ArraySink sink = (ArraySink) eftFileDAO.where(
       MLang.EQ(EFTFile.STATUS, EFTFileStatus.SENT)
     ).select(new ArraySink());
     List<EFTFile> files = (ArrayList<EFTFile>) sink.getArray();
