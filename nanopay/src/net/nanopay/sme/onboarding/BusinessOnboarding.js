@@ -408,9 +408,19 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          this.userId$find.then((user) => {
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
+          });
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+
+          this.owner1.firstName = this.adminFirstName;
+          this.owner1.lastName = this.adminLastName;
+          this.owner1.jobTitle = this.adminJobTitle;
         }
       }
     },
@@ -681,7 +691,10 @@ foam.CLASS({
           },
           errorString: 'Please enter first name with least 1 character.'
         }
-      ]
+      ],
+      postSet: function() {
+        this.owner1.firstName = this.adminFirstName;
+      }
     },
     {
       class: 'String',
@@ -690,7 +703,10 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      postSet: function() {
+        this.owner1.lastName = this.adminLastName;
+      }
     },
     {
       class: 'String',
@@ -1463,12 +1479,20 @@ foam.CLASS({
           if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
+
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
           } else {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+            this.owner1.firstName = this.adminFirstName;
+            this.owner1.lastName = this.adminLastName;
+            this.owner1.jobTitle = this.adminJobTitle;
           }
         });
-       
+
         this.owner1.showValidation$ = this.signingOfficer$;
         this.owner2.showValidation$ = this.signingOfficer$;
         this.owner3.showValidation$ = this.signingOfficer$;
