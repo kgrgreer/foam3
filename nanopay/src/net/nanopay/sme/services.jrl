@@ -109,7 +109,13 @@ p({
     validatingDAO = new foam.dao.ValidatingDAO(x, updateOnboardingDAO);
     return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer(\"businessOnboarding\"));
   """,
-  "client": "{\"of\":\"net.nanopay.sme.onboarding.BusinessOnboarding\"}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.sme.onboarding.BusinessOnboarding",
+      "cache":false
+    }
+  """
 })
 
 p({
@@ -135,7 +141,8 @@ p({
   "client":
   """
   {
-    "of":"net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding"
+    "of":"net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding",
+    "cache":false
   }
   """
 })
@@ -164,7 +171,8 @@ p({
   "client":
   """
   {
-    "of":"net.nanopay.sme.onboarding.USBusinessOnboarding"
+    "of":"net.nanopay.sme.onboarding.USBusinessOnboarding",
+    "cache":false
   }
   """
 })
