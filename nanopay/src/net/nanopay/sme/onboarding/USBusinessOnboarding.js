@@ -347,19 +347,9 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
-
-//          this.userId$find.then((user) => {
-//            this.owner1.firstName = user.firstName;
-//            this.owner1.lastName = user.lastName;
-//            this.owner1.jobTitle = user.jobTitle;
-//          });
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
-
-//          this.owner1.firstName = this.adminFirstName;
-//          this.owner1.lastName = this.adminLastName;
-//          this.owner1.jobTitle = this.adminJobTitle;
         }
       }
     },
