@@ -1432,10 +1432,10 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("usBusinessOnboardingDAO");
 
         USBusinessOnboarding obj = (USBusinessOnboarding) this;
-        USBusinessOnboarding oldObj = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(this.getId());
+        USBusinessOnboarding oldObj = (USBusinessOnboarding) usBusinessOnboardingDAO.find(this.getId());
 
         if ( auth.check(x, "onboarding.update.*") ) return;
 

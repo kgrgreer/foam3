@@ -25,8 +25,14 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'payerId',
-    'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
+    'id', 
+    'invoiceNumber', 
+    'payerId',
+    'payeeId', 
+    'issueDate', 
+    'dueDate', 
+    'amount', 
+    'status'
   ],
 
   javaImports: [
