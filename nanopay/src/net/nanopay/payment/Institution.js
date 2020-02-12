@@ -49,6 +49,11 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
+      code: function() {
+        return this.institutionNumber == this.name ?
+                null :
+                this.abbreviation == '' ? this.name : `${this.name}(${this.abbreviation})`;
+      },
       javaCode: `
         if ( this.getInstitutionNumber() == this.getName() ) {
           return null;
