@@ -693,7 +693,7 @@ p({
     dao = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
-      .setInnerDAO(nuoe)
+      .setInnerDAO(dao)
       .setEnableInterfaceDecorators(false)
       .setDeletedAware(false)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
