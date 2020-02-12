@@ -39,7 +39,7 @@ public class SecurefactRequestGenerator {
     }
     request.setCountry(address.getCountryId());
     request.setJurisdiction(address.getRegionId());
-    request.setAddress(address.getPostalCode().replaceAll(" ", ""));
+    request.setAddress(address.getPostalCode().replace(" ", ""));
 
     BusinessType businessType = business.findBusinessTypeId(x);
     if ( businessType != null ) {
@@ -85,9 +85,7 @@ public class SecurefactRequestGenerator {
   private static SIDniAddress[] buildAddress(X x, User user) {
     Address userAddress = user.getAddress();
     String address = userAddress.getAddress();
-    if (userAddress == null
-      || SafetyUtil.isEmpty(address)
-    ) {
+    if ( SafetyUtil.isEmpty(address) ) {
       throw new IllegalStateException("User address can't be blank");
     }
     if ( ! SafetyUtil.isEmpty(userAddress.getSuite()) ) {
@@ -99,7 +97,7 @@ public class SecurefactRequestGenerator {
         .setAddressLine(address)
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
-        .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
+        .setPostalCode(userAddress.getPostalCode().replace(" ", ""))
         .build()
     };
   }

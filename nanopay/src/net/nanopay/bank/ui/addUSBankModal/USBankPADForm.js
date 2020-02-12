@@ -18,12 +18,14 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'bannerizeCompliance',
     'bank',
     'ctrl',
     'isConnecting',
     'onComplete',
     'plaidService',
     'padCaptureDAO',
+    'pushMenu',
     'user',
     'validateAccountNumber',
     'validateRoutingNumber'
@@ -252,15 +254,10 @@ foam.CLASS({
 
       if ( this.onComplete ) this.onComplete();
       this.closeDialog();
+      this.bannerizeCompliance();
       location.hash = 'sme.main.banking';
 
-      if ( this.plaidResponseItem != null ) {
-        this.ctrl.stack.back();
-      } else {
-        this.ctrl.stack.push({
-          class: 'net.nanopay.bank.BankAccountController'
-        });
-      }
+      this.pushMenu('sme.main.banking');
     }
   ],
 

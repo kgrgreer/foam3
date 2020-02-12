@@ -423,7 +423,9 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        this.invoice = await this.invoiceDAO.put(this.invoice);
+        if ( ! this.isApproving ) {
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        }
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put): ' + error.message);
         this.notify(this.INVOICE_ERROR + this.type, 'error');
@@ -515,11 +517,13 @@ foam.CLASS({
     },
     async function populatePayerIdOrPayeeId() {
       try {
-        var contact = await this.user.contacts.find(this.invoice.contactId);
-        if ( this.isPayable ) {
-          this.invoice.payeeId = contact.businessId || contact.id;
-        } else {
-          this.invoice.payerId = contact.businessId || contact.id;
+        if ( ! this.invoice.payee || ! this.invoice.payer ) {
+          var contact = await this.user.contacts.find(this.invoice.contactId);
+          if ( this.isPayable ) {
+            this.invoice.payeeId = contact.businessId || contact.id;
+          } else {
+            this.invoice.payerId = contact.businessId || contact.id;
+          }
         }
       } catch (err) {
         if ( this.invoice.payerId && this.invoice.payeeId && err.id == 'foam.nanos.auth.AuthorizationException' ) return;
@@ -553,7 +557,7 @@ foam.CLASS({
         if ( this.user.address.countryId === 'CA' ) {
           return ! errors && ! isLoading;
         } else {
-          return this.auth.check(null, 'currency.read.CAD').then(function(cadPerm) {
+          return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
             return cadPerm && ! errors && ! isLoading;
           });
         }

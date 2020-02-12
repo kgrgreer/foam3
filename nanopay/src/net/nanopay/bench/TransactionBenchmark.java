@@ -1,30 +1,31 @@
 package net.nanopay.bench;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.GT;
+
+import java.util.List;
+
 import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.MDAO;
-import foam.dao.ProxyDAO;
 import foam.dao.ArraySink;
-import foam.dao.Sink;
+import foam.dao.DAO;
 import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import foam.nanos.logger.Logger;
-import net.nanopay.account.*;
-import net.nanopay.bank.*;
-import net.nanopay.payment.*;
-import net.nanopay.model.*;
-import net.nanopay.tx.model.*;
-import net.nanopay.tx.*;
-import net.nanopay.tx.alterna.*;
-
-import java.util.List;
-
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.NEQ;
-import static foam.mlang.MLang.GT;
+import net.nanopay.account.Account;
+import net.nanopay.account.DigitalAccount;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.model.Branch;
+import net.nanopay.payment.Institution;
+import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.alterna.AlternaCITransaction;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class TransactionBenchmark
   implements Benchmark

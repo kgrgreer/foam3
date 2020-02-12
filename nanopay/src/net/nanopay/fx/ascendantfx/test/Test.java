@@ -18,7 +18,7 @@ public class Test {
     request.setOrgID("5904960");
 
     Deal deal = new Deal();
-    deal.setDirection(Direction.Buy);
+    deal.setDirection(Direction.BUY);
     deal.setFee(0);
     deal.setFxAmount(1);
     deal.setFxCurrencyID("USD");

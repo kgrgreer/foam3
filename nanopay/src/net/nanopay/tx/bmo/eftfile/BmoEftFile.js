@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.bmo.eftfile',
   name: 'BmoEftFile',
+  extends: 'net.nanopay.tx.cico.EFTFile',
 
   documentation: `BMO EFT file`,
 

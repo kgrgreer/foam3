@@ -8,13 +8,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessDirector',
     'java.util.Calendar',

@@ -33,9 +33,8 @@ foam.CLASS({
       args: [{ type: 'User', name: 'user' }],
       documentation: `Return a sanitized copy of the given user.`,
       javaCode: `
-          User userClone = new User();
+          User userClone;
           userClone = (User) user.fclone();
-
           return userClone;
       `
     }

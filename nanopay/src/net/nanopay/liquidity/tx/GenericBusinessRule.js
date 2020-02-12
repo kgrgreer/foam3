@@ -12,7 +12,8 @@ foam.CLASS({
     'foam.mlang.*',
     'foam.mlang.expr.*',
     'foam.mlang.predicate.*',
-    'foam.mlang.MLang.*'
+    'foam.mlang.MLang.*',
+    'foam.nanos.logger.Logger'
   ],
 
   requires: [
@@ -86,15 +87,17 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaGetter: `
-        // PREVENT
-        if (this.getBusinessRuleAction() == BusinessRuleAction.PREVENT)
-          return new ExceptionRuleAction.Builder(getX()).setMessage(this.getId() + " preventing operation. " + this.getDescription()).build();
+        // RESTRICT
+        if ( this.getBusinessRuleAction() == BusinessRuleAction.RESTRICT ) {
+          ((Logger) getX().get("logger")).warning(this.getId() + " restricting operation. " + this.getDescription());
+          return new ExceptionRuleAction.Builder(getX()).setMessage("Operation prevented by business rule: " + this.getId()).build(); // <- seen by users
+        }
 
         // NOTIFY
         if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
           return new BusinessRuleNotificationAction.Builder(getX())
             .setBusinessRuleId(this.getId())
-            .setGroupId("liquidDev")
+            .setGroupId("liquidBasic")
             .build();
 
         // ALLOW

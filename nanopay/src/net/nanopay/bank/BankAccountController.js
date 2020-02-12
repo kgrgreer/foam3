@@ -36,7 +36,8 @@ foam.CLASS({
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' },
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
-    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' }
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' },
+    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' }
   ],
 
   properties: [
@@ -105,6 +106,10 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'Set as Default',
               code: function(X) {
+                if ( this.isDefault ) {
+                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, 'warning');
+                  return;
+                }
                 this.isDefault = true;
                 self.user.accounts.put(this).then(() =>{
                   self.notify(`${ this.name } ${ self.IS_DEFAULT }`);

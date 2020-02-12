@@ -12,16 +12,12 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.mlang.MLang',
 
     'net.nanopay.tx.model.TransactionFee',
-    'net.nanopay.tx.FeeTransfer',
-    'net.nanopay.tx.model.Transaction',
 
     'java.util.List'
   ],

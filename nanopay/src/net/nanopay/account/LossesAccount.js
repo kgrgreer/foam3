@@ -4,19 +4,13 @@ foam.CLASS({
   extends: 'net.nanopay.account.ZeroAccount',
 
   javaImports: [
-    'net.nanopay.account.Account',
     'foam.core.Currency',
-
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.mlang.MLang',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
-    'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 

@@ -1,6 +1,18 @@
 package net.nanopay.tx.bmo;
 
-import foam.core.FObject;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+
+import foam.core.Currency;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
@@ -12,35 +24,30 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Branch;
-import foam.core.Currency;
 import net.nanopay.payment.Institution;
-import net.nanopay.payment.PADType;
 import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
-import net.nanopay.tx.bmo.eftfile.*;
+import net.nanopay.tx.bmo.eftfile.BmoBatchControl;
+import net.nanopay.tx.bmo.eftfile.BmoBatchHeader;
+import net.nanopay.tx.bmo.eftfile.BmoBatchRecord;
+import net.nanopay.tx.bmo.eftfile.BmoDetailRecord;
+import net.nanopay.tx.bmo.eftfile.BmoEftFile;
+import net.nanopay.tx.bmo.eftfile.BmoFileControl;
+import net.nanopay.tx.bmo.eftfile.BmoFileHeader;
 import net.nanopay.tx.bmo.exceptions.BmoEftFileException;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.EFTFile;
+import net.nanopay.tx.cico.EFTFileGenerator;
+import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class BmoEftFileGenerator {
+public class BmoEftFileGenerator implements EFTFileGenerator {
 
   X      x;
   DAO    currencyDAO;
@@ -61,25 +68,38 @@ public class BmoEftFileGenerator {
   }
 
   /**
+   * Create the real file object and save it into the disk.		
+   * @param transactions a list of transactins to be sent
+   * @return an EFTFile model
+   */
+  public EFTFile generate(List<Transaction> transactions) {
+    try {
+      BmoEftFile bmoFile = initFile(transactions);
+      bmoFile.setFile(createEftFile(bmoFile).getId());
+      bmoFile.setProvider(2); // TODO set provider appropriately
+      return (BmoEftFile) ((DAO) this.x.get("bmoEftFileDAO")).put(bmoFile);
+    } catch (Throwable t) {
+      this.logger.error("BMO Error generating EFT File. " + t.getMessage(), t);
+      throw new BmoEftFileException("BMO Error generating EFT File. " + t.getMessage(), t);
+    }
+  }
+
+  /**
    * Create the real file object and save it into the disk.
    * @param eftFile the BmoEftFile Object created from initFile method
    * @return the real file object
    */
-  public File createEftFile(BmoEftFile eftFile) {
-    File file = null;
-
+  public foam.nanos.fs.File createEftFile(BmoEftFile eftFile) {
     try {
 
-      file = new File(SEND_FOLDER + eftFile.getFileName() + "_" + Instant.now().toEpochMilli());
-      FileUtils.touch(file);
-      FileUtils.writeStringToFile(file, eftFile.toBmoFormat(), false);
+      InputStream in = new ByteArrayInputStream(eftFile.toBmoFormat().getBytes());
+      return EFTFileUtil.storeEFTFile(this.x, in, eftFile.getFileName()
+        , Long.valueOf(eftFile.toBmoFormat().getBytes().length), "text/csv");
 
-    } catch (IOException e) {
-      this.logger.error("Error when create bmo file.", e);
-      throw new BmoEftFileException("Error when create bmo file.", e);
+    } catch (Throwable t) {
+      this.logger.error("Error when create bmo file.", t);
+      throw new BmoEftFileException("Error when create bmo file.", t);
     }
-
-    return file;
   }
 
   /**

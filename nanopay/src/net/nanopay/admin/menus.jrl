@@ -1,0 +1,22 @@
+// admin
+p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.account.ui.AccountSummaryView"}, "updateView":{"class":"net.nanopay.tx.ui.TransactionsAccountsView"}},"order":1000,"parent":"admin"})
+//TODO add those properties as predicate based on permissions ("createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":true)
+p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu2","config": {"class": "foam.comics.v2.DAOControllerConfig","daoKey": "tableViewTransactionDAO"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DAOMenu2","config": {"class": "foam.comics.v2.DAOControllerConfig","daoKey": "invoiceDAO"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"afexBusinesses","label":"AFEX Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBusinessDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"afexBeneficiaries","label":"AFEX Beneficiaries","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBeneficiaryDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"brokerDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"acceptanceDocumentDAO","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"accountingResultResponse","label":"Accounting Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountingReportDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"alarm","label":"Alarms","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"alarmDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"csvUploadScriptDAO","label":"CSV UploadScripts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"csvUploadScriptDAO"}},"order":1000,"parent":"admin"})
+
+// line items
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTypeAccount","label":"LineItem User Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeAccountDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTax","label":"LineItem Taxes","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTaxDAO"},"order":1000,"parent":"admin"})

@@ -9,20 +9,14 @@ foam.CLASS({
       If so that fact is also included in this email.`,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.mlang.MLang',
-    'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Business',
@@ -58,10 +52,10 @@ foam.CLASS({
             .limit(1).select(new ArraySink())).getArray();
 
           Boolean doesAccExist = (accountsArray != null && accountsArray.size() != 0);
-          Account acc = (Account)(doesAccExist ? accountsArray.get(0) : null);
 
           // checking if account has been added
           if ( doesAccExist ) {
+            Account acc = (Account) accountsArray.get(0);
             // User also has bankAccount, thus add bank fields to email
             args.put("title", "User has Onboarded & previously added an Account");
             args.put("subTitle2", "BankAccount Information:");

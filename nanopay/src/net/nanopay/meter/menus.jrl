@@ -140,3 +140,37 @@ p({
   "order":30,
   "parent":"report"
 })
+
+// BusinessSummaryReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.businessSummaryReport",
+  "label":    "Business Summary Report for Leadership",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu",
+    "daoKey": "businessSummaryReportDAO",
+    "title": "Business Summary Report",
+    "createEnabled": false,
+    "editEnabled":   false,
+    "searchMode":    1
+  },
+  "order":50,
+  "parent":"report"
+})
+
+// UserComplianceSummaryReport
+p({
+  "class":    "foam.nanos.menu.Menu",
+  "id":       "report.UserComplianceSummaryReport",
+  "label":    "User Compliance Summary Report",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu",
+    "daoKey": "userComplianceSummaryReportDAO",
+    "title":  "User Compliance Summary Report",
+    "createEnabled": false,
+    "editEnabled":   false,
+    "searchMode":    1
+  },
+  "order":60,
+  "parent":"report"
+})

@@ -169,7 +169,6 @@ public class FXWebAgent
       out.println("<pre>");
       t.printStackTrace(out);
       out.println("</pre>");
-      t.printStackTrace();
       try {
         resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.toString());
       } catch (java.io.IOException e) {

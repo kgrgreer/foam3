@@ -19,6 +19,7 @@ foam.CLASS({
   imports: [
     'auth',
     'currencyDAO',
+    'invoiceDAO',
     'menuDAO',
     'stack',
     'transactionDAO',
@@ -185,7 +186,6 @@ foam.CLASS({
         this.isApprover_ = result;
       });
     },
-
     function init() {
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
@@ -198,7 +198,6 @@ foam.CLASS({
         }
       });
     },
-
     function initE() {
       var self = this;
       this.populateVariables();
@@ -227,10 +226,11 @@ foam.CLASS({
           .start('a')
             .addClass('link')
             .add(this.isPayable_$.map((value) => value ? this.V_PAY : this.V_REC))
-            .on('click', () => {
+            .on('click', async () => {
+              this.invoice = await this.invoiceDAO.find(this.invoice.id);
               this.stack.push({
                 class: 'net.nanopay.sme.ui.InvoiceOverview',
-                invoice: this.invoice,
+                invoice$: this.invoice$,
                 isPayable: this.isPayable_
               });
             })
@@ -242,7 +242,7 @@ foam.CLASS({
                 class: 'net.nanopay.sme.ui.Link',
                 data: self.transactionConfirmationPDF.address,
                 text: self.TXN_CONFIRMATION_LINK_TEXT
-              })
+              });
             }
           }))
         .end()

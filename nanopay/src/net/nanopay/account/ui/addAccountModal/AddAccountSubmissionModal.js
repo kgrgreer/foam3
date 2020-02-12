@@ -103,9 +103,8 @@ foam.CLASS({
         case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT :
           account = this.AggregateAccount.create();
           break;
-        case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.VIRTUAL_ACCOUNT :
+        default:
           account = this.DigitalAccount.create();
-          break;
       }
 
       // TODO: Please allow user to set the owner of account

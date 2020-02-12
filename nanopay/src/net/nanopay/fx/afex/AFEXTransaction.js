@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: `Hold AFEX specific properties`,
 
   javaImports: [
-    'com.itextpdf.html2pdf.HtmlConverter',
     'foam.blob.BlobService',
     'foam.core.X',
     'foam.dao.DAO',
@@ -22,14 +21,11 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.io.ByteArrayInputStream',
-    'java.io.ByteArrayOutputStream',
-    'java.io.IOException',
     'java.io.InputStream',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.model.Business',
     'foam.core.Currency',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',
@@ -368,67 +364,9 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
+      setAfexTradeResponseNumber(((AFEXTransaction) other).getAfexTradeResponseNumber());
       setLineItems(other.getLineItems());
       `
     },
-    {
-      name: 'executeAfterPut',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      javaCode: `
-      super.executeAfterPut(x, oldTxn);
-      if ( oldTxn == null ) {
-        AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        byte[] bytes = afexServiceProvider.getConfirmationPDF(this);
-        if ( bytes != null ) {
-          try {
-            InputStream inStream = new ByteArrayInputStream(bytes);
-
-            // Save the PDF on disk.
-            BlobService blobStore = (BlobService) x.get("blobStore");
-            foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, bytes.length));
-
-            // Save the file in fileDAO.
-            DAO fileDAO = (DAO) x.get("fileDAO");
-            foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x).setData(data)
-              .setOwner(findSourceAccount(x).getOwner()).setFilesize(bytes.length)
-              .setFilename("TransactionConfirmation_" + getId() + ".pdf").setMimeType("application/pdf").build();
-
-            File pdf = (File) fileDAO.inX(x).put(thePDF);
-            addLineItems(new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
-            ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
-            
-            // Append file to related invoice.
-            Transaction root = findRootTransaction(x, this);
-            if ( root.getInvoiceId() != 0 ) {
-              DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-              Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
-
-              if ( invoice == null ) {
-                throw new RuntimeException("Couldn't fetch invoice associated to AFEX transaction");
-              }
-
-              File[] files = invoice.getInvoiceFile();
-              File[] fileArray = new File[files.length + 1];
-              System.arraycopy(files, 0, fileArray, 0, files.length);
-              fileArray[files.length] = pdf;
-              invoice.setInvoiceFile(fileArray);
-              invoiceDAO.put(invoice);
-            }
-          } catch (Throwable t) {
-            ((Logger) x.get("logger")).error("Error creating AFEX trade request pdf", t);
-          }
-        }
-      } 
-      `
-    }
   ],
 });

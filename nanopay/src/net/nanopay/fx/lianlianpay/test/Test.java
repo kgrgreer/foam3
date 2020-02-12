@@ -1,19 +1,18 @@
 package net.nanopay.fx.lianlianpay.test;
 
-import com.jcraft.jsch.ChannelSftp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import foam.core.ProxyX;
 import foam.core.X;
 import foam.lib.json.Outputter;
 import net.nanopay.fx.lianlianpay.LianLianPayService;
-import net.nanopay.fx.lianlianpay.model.*;
-
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.WritableByteChannel;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import net.nanopay.fx.lianlianpay.model.DistributionMode;
+import net.nanopay.fx.lianlianpay.model.InstructionCombined;
+import net.nanopay.fx.lianlianpay.model.InstructionCombinedRequest;
+import net.nanopay.fx.lianlianpay.model.InstructionCombinedSummary;
+import net.nanopay.fx.lianlianpay.model.InstructionType;
 
 public class Test {
 
@@ -76,6 +75,7 @@ public class Test {
       System.out.println(outputter.stringify(service.downloadReconciliation(date, "123456789")));
       System.out.println(outputter.stringify(service.downloadStatement(date, "123456789")));
     } catch (Throwable t) {
+      // test class with no access to logging
       t.printStackTrace();
     }
   }

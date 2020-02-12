@@ -4,11 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.fx.FXTransaction',
 
    javaImports: [
-    'java.util.ArrayList',
-    'java.util.List',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer'
   ],
 

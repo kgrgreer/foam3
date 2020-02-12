@@ -87,6 +87,12 @@ foam.CLASS({
       color: #8e9090;
       font-size: 10px;
     }
+    ^ .foam-u2-TextField {
+      width: 100%;
+    }
+    ^ .net-nanopay-sme-ui-AddressView .two-column{
+      margin-bottom: 15px;
+    }
   `,
 
   messages: [

@@ -7,21 +7,11 @@ foam.CLASS({
   documentation: 'handles User PII (personally identifiable information) reporting and requests',
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.auth.User',
     'foam.mlang.MLang',
     'java.util.ArrayList',
     'java.util.Date',
-    'java.util.List',
-    'net.nanopay.security.pii.ViewPIIRequest',
-    'net.nanopay.security.pii.PIIRequestStatus',
-    'net.nanopay.security.pii.PIIOutputter',
-    'org.json.simple.JSONObject',
-
   ],
 
   imports: [

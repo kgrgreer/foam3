@@ -30,6 +30,7 @@ foam.CLASS({
              public void execute(X x) {
               User user = (User) obj; 
 
+              if (user == null || user.getId() <= 0) return;
               DAO businessDAO = (DAO) x.get("businessDAO");
               Business bs = (Business) businessDAO.find(user.getId());
               if (user == null && user.getId() <= 0) return;

@@ -17,8 +17,8 @@ public class BitMapParser
   public BitMapParser() {
     super(
       new Alt(
-        new NullParser(),
-        new StringParser()
+        NullParser.instance(),
+        StringParser.instance()
     ));
   }
 
