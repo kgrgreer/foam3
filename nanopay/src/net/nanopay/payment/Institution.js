@@ -47,7 +47,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'label',
+      name: 'toSummary',
       type: 'String',
       javaCode: `
         if ( this.getInstitutionNumber() == this.getName() ) {
