@@ -37,7 +37,7 @@ foam.CLASS({
             User user = (User) acc.findOwner(x);
             AppConfig config = user.findGroup(x).getAppConfig(x);
 
-            institutionName = institution == null ? null : institution.label();
+            institutionName = institution == null ? null : institution.toSummary();
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("name", User.FIRST_NAME);
