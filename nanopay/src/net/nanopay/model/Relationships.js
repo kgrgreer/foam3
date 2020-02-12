@@ -843,9 +843,14 @@ foam.RELATIONSHIP({
       outputter.outputValue("Sender Name");
     `,
     javaToCSV: `
-      User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
-      outputter.outputValue(sender.getId());
-      outputter.outputValue(sender.label());
+      net.nanopay.account.Account account = (Account)((Transaction)obj).findSourceAccount(x);
+      if ( account != null ) {
+        User sender = account.findOwner(x);
+        outputter.outputValue(sender.getId());
+        outputter.outputValue(sender.label());
+      } else {
+        ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
+      }
     `,
     includeInDigest: true
   },
@@ -916,9 +921,14 @@ foam.RELATIONSHIP({
       outputter.outputValue("Receiver Name");
     `,
     javaToCSV: `
-      User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
-      outputter.outputValue(receiver.getId());
-      outputter.outputValue(receiver.label());
+      net.nanopay.account.Account account = (Account)((Transaction)obj).findDestinationAccount(x);
+      if ( account != null ) {
+        User receiver = account.findOwner(x);
+        outputter.outputValue(receiver.getId());
+        outputter.outputValue(receiver.label());
+      } else {
+        ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.destinationAccount not found (during toCSV).", ((Transaction)obj).getId());
+      }
     `,
     includeInDigest: true
   },

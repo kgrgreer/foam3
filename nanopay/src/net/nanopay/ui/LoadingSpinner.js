@@ -17,9 +17,32 @@ foam.CLASS({
         }
 
         ^ img {
-          -webkit-animation:spin 3s linear infinite;
-          -moz-animation:spin 3s linear infinite;
-          animation:spin 3s linear infinite;
+          -webkit-animation-duration: 3s;
+          -webkit-animation-timing-function: linear;
+          -webkit-animation-delay: 0s;
+          -webkit-animation-iteration-count: infinite;
+          -webkit-animation-direction: normal;
+          -webkit-animation-fill-mode: none;
+          -webkit-animation-play-state: running;
+          -webkit-animation-name: spin;
+          
+          -moz-animation-duration: 3s;
+          -moz-animation-timing-function: linear;
+          -moz-animation-delay: 0s;
+          -moz-animation-iteration-count: infinite;
+          -moz-animation-direction: normal;
+          -moz-animation-fill-mode: none;
+          -moz-animation-play-state: running;
+          -moz-animation-name: spin;
+          
+          animation-duration: 3s;
+          animation-timing-function: linear;
+          animation-delay: 0s;
+          animation-iteration-count: infinite;
+          animation-direction: normal;
+          animation-fill-mode: none;
+          animation-play-state: running;
+          animation-name: spin;
         }
         @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
         @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }

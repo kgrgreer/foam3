@@ -322,7 +322,16 @@ p({
       )
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\",\"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}",
+  "client": """
+    {
+      "of":"net.nanopay.invoice.model.Invoice",
+      "remoteListenerSupport":false,
+      "cache":false,
+      "decorators": [{
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }]
+    }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "serve":true,  "serviceScript":"return new net.nanopay.invoice.service.DefaultInvoicePaymentService(x);","boxClass":"net.nanopay.invoice.service.InvoicePaymentServiceSkeleton","client":"{\"class\":\"net.nanopay.invoice.service.ClientInvoicePaymentService\"}"})
@@ -760,6 +769,7 @@ p({
   """
   {
     "of":"net.nanopay.model.Business",
+    "cache":false,
     "remoteListenerSupport": false,
     "decorators": [
       {

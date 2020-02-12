@@ -11,7 +11,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.Account',
@@ -32,8 +31,7 @@ foam.CLASS({
             DAO accountDAO = (DAO) x.get("accountDAO");
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
-            Group       group      = user.findGroup(x);
-            AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
+            AppConfig config = user.findGroup(x).getAppConfig(x);
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("name", User.FIRST_NAME);
