@@ -207,7 +207,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -255,6 +254,10 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [
