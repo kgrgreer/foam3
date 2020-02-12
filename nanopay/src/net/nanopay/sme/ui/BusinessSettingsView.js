@@ -61,8 +61,7 @@ foam.CLASS({
   ],
 
   properties: [
-    'preSelectedTab',
-    'hasPermission'
+    'preSelectedTab'
   ],
 
   methods: [
@@ -95,9 +94,6 @@ foam.CLASS({
             .end();
           }
           this.addClass(this.myClass())
-            .startContext({ data: this })
-              .tag(this.CREATE_BUSINESS)
-            .endContext()
             .start('h1').add(this.TITLE).end()
             .start().addClass('section-line').end()
             .tag(tabs);

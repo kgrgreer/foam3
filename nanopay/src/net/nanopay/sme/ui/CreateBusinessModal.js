@@ -6,15 +6,15 @@ foam.CLASS({
   documentation: 'Create new business modal',
 
   requires: [
-    'net.nanopay.model.Business',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Address'
+    'net.nanopay.model.Business'
   ],
 
   imports: [
-    'notify',
     'businessDAO',
-    'countryDAO'
+    'countryDAO',
+    'notify'
   ],
 
   css: `
