@@ -216,7 +216,6 @@ foam.CLASS({
             // If the user is only in one business but that business has
             // disabled them, then don't immediately switch to that business.
             if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-
             this.assignBusinessAndLogIn(junction);
             this.removeAllChildren();
           }
