@@ -185,6 +185,7 @@ foam.CLASS({
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
+                      visibilitySlot.value = ! visibilitySlot.value;
                       return;
                     }
                     if ( ! hasChildren.get() ) {
