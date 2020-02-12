@@ -435,7 +435,12 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        // No authorization required on create for businesses. The businessDAO is permissioned via service.businessDAO
+        AuthService auth = (AuthService) x.get("auth");
+        boolean hasUserCreatePermission = auth.check(x, "business.create." + this.getId());
+
+        if ( ! hasUserCreatePermission ) {
+          throw new AuthorizationException("You do not have permission to create a business.");
+        }
       `
     },
     {
