@@ -567,10 +567,7 @@ foam.CLASS({
           errorString: 'Please select job title.'
         }
       ],
-      validationTextVisible: true,
-      postSet: function(_, n) {
-        this.owner1.jobTitle = this.adminJobTitle;
-      }
+      validationTextVisible: true
     },
     {
       class: 'PhoneNumber',
@@ -968,18 +965,18 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: function(args, X){
+      view: function(_, X) {
         return {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: X.data.PLACE_HOLDER,
-        choices: [
-          '1 to 99',
-          '100 to 199',
-          '200 to 499',
-          '500 to 999',
-          'Over 1000'
-        ]
-      }
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLACE_HOLDER,
+          choices: [
+            '1 to 99',
+            '100 to 199',
+            '200 to 499',
+            '500 to 999',
+            'Over 1000'
+          ]
+        };
       },
       validationPredicates: [
         {
@@ -1001,23 +998,23 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      view: function(args, X) {
+      view: function(_, X) {
         return {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        otherKey: 'Other',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.PLACE_HOLDER,
-          choices: [
-            'Payables for products and/or services',
-            'Working capital',
-            'Bill payments',
-            'Intracompany bank transfers',
-            'Government fee and taxes',
-            'Other'
-          ]
-        }
-        }
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            choices: [
+              'Payables for products and/or services',
+              'Working capital',
+              'Bill payments',
+              'Intracompany bank transfers',
+              'Government fee and taxes',
+              'Other'
+            ]
+          }
+        };
       },
       validationPredicates: [
         {
@@ -1391,8 +1388,7 @@ foam.CLASS({
 
         if (
           oldObj != null &&
-          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
-          oldObj.getSigningOfficer()
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
@@ -1472,6 +1468,11 @@ foam.CLASS({
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
+       
+        this.owner1.showValidation$ = this.signingOfficer$;
+        this.owner2.showValidation$ = this.signingOfficer$;
+        this.owner3.showValidation$ = this.signingOfficer$;
+        this.owner4.showValidation$ = this.signingOfficer$;
       }
     }
   ]

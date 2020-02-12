@@ -36,15 +36,15 @@ foam.CLASS({
       javaFactory: `
         Map<String,ConcurrentHashMap> cache = new ConcurrentHashMap<>();
 
-        cache.put("getRolesCache", new ConcurrentHashMap<String,List>());
-        cache.put("getUsersCache", new ConcurrentHashMap<String,List>());
-        cache.put("getAccountsCache", new ConcurrentHashMap<String,List>());
-        cache.put("getApproversByLevelCache", new ConcurrentHashMap<String,List>());
-        cache.put("getAllApproversCache", new ConcurrentHashMap<String,List>());
+        cache.put("rolesCache", new ConcurrentHashMap<String,List>());
+        cache.put("usersCache", new ConcurrentHashMap<String,List>());
+        cache.put("accountsCache", new ConcurrentHashMap<String,List>());
+        cache.put("approversByLevelCache", new ConcurrentHashMap<String,List>());
+        cache.put("allApproversCache", new ConcurrentHashMap<String,List>());
 
-        cache.put("getRolesAndAccountsCache", new ConcurrentHashMap<String,List>());
-        cache.put("getUsersAndRolesCache", new ConcurrentHashMap<String,List>());
-        cache.put("getUsersAndAccountsCache", new ConcurrentHashMap<String,List>());
+        cache.put("rolesAndAccountsCache", new ConcurrentHashMap<String,List>());
+        cache.put("usersAndRolesCache", new ConcurrentHashMap<String,List>());
+        cache.put("usersAndAccountsCache", new ConcurrentHashMap<String,List>());
 
         return cache;
       `
@@ -55,8 +55,6 @@ foam.CLASS({
     {
       name: 'getRoles',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -73,11 +71,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'u' + String.valueOf(userId) + 'a' + String.valueOf(accountId);
-      String cache = "getRolesCache";
+      String cache = "rolesCache";
 
-      Map<String,List> getRolesCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> rolesCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getRolesCache.containsKey(cacheKey) ) {
+      if ( ! rolesCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -117,14 +115,14 @@ foam.CLASS({
         }
 
         List rolesFilteredByAccountToCache = new ArrayList(rolesFilteredByAccount);
-        getRolesCache.put(cacheKey, rolesFilteredByAccountToCache);
+        rolesCache.put(cacheKey, rolesFilteredByAccountToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return rolesFilteredByAccount;
 
       } else {
-        List newListFromCache = new ArrayList(getRolesCache.get(cacheKey));
+        List newListFromCache = new ArrayList(rolesCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -133,8 +131,6 @@ foam.CLASS({
     {
       name: 'getUsers',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -151,11 +147,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'r' + roleId + 'a' + String.valueOf(accountId);
-      String cache = "getUsersCache";
+      String cache = "usersCache";
 
-      Map<String,List> getUsersCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> usersCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getUsersCache.containsKey(cacheKey) ) {
+      if ( ! usersCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -197,14 +193,14 @@ foam.CLASS({
         }
 
         List usersFilteredByAccountToCache = new ArrayList(usersFilteredByAccount);
-        getUsersCache.put(cacheKey, usersFilteredByAccountToCache);
+        usersCache.put(cacheKey, usersFilteredByAccountToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return usersFilteredByAccount;
 
       } else {
-        List newListFromCache = new ArrayList(getUsersCache.get(cacheKey));
+        List newListFromCache = new ArrayList(usersCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -213,8 +209,6 @@ foam.CLASS({
     {
       name: 'getAccounts',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -231,11 +225,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'u' + String.valueOf(userId) + 'r' + roleId;
-      String cache = "getAccountsCache";
+      String cache = "accountsCache";
 
-      Map<String,List> getAccountsCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> accountsCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getAccountsCache.containsKey(cacheKey) ) {
+      if ( ! accountsCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -280,14 +274,14 @@ foam.CLASS({
         }
 
         List accountsToCache = new ArrayList(accounts);
-        getAccountsCache.put(cacheKey, accountsToCache);
+        accountsCache.put(cacheKey, accountsToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return accounts;
 
       } else {
-        List newListFromCache = new ArrayList(getAccountsCache.get(cacheKey));
+        List newListFromCache = new ArrayList(accountsCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -296,8 +290,6 @@ foam.CLASS({
     {
       name: 'getApproversByLevel',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -318,11 +310,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'm' + modelToApprove + 'a' + String.valueOf(accountId) + 'l' + String.valueOf(level);
-      String cache = "getApproversByLevelCache";
+      String cache = "approversByLevelCache";
 
-      Map<String,List> getApproversByLevelCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> approversByLevelCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getApproversByLevelCache.containsKey(cacheKey) ) {
+      if ( ! approversByLevelCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -395,14 +387,14 @@ foam.CLASS({
         List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
         
         List uniqueApproversForLevelListToCache = new ArrayList(uniqueApproversForLevelList);
-        getApproversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
+        approversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
         capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
         return uniqueApproversForLevelList;
       } else {
-        List newListFromCache = new ArrayList(getApproversByLevelCache.get(cacheKey));
+        List newListFromCache = new ArrayList(approversByLevelCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -411,8 +403,6 @@ foam.CLASS({
      {
       name: 'getAllApprovers',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'x',
@@ -429,11 +419,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'm' + modelToApprove + 'a' + String.valueOf(accountId);
-      String cache = "getAllApproversCache";
+      String cache = "allApproversCache";
 
-      Map<String,List> getAllApproversCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> allApproversCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getAllApproversCache.containsKey(cacheKey) ) {
+      if ( ! allApproversCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -506,14 +496,14 @@ foam.CLASS({
         List uniqueApproversList = new ArrayList(uniqueApprovers);
         
         List uniqueApproversListToCache = new ArrayList(uniqueApproversList);
-        getAllApproversCache.put(cacheKey, uniqueApproversListToCache);
+        allApproversCache.put(cacheKey, uniqueApproversListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
         capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
         return uniqueApproversList;
       } else {
-        List newListFromCache = new ArrayList(getAllApproversCache.get(cacheKey));
+        List newListFromCache = new ArrayList(allApproversCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -522,8 +512,6 @@ foam.CLASS({
     {
       name: 'getRolesAndAccounts',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'userId',
@@ -537,11 +525,11 @@ foam.CLASS({
       javaCode: `
     
       String cacheKey = 'u' + String.valueOf(userId);
-      String cache = "getRolesAndAccountsCache";
+      String cache = "rolesAndAccountsCache";
 
-      Map<String,List> getRolesAndAccountsCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> rolesAndAccountsCache = (Map<String,List>) getCache().get(cache);
 
-      if ( ! getRolesAndAccountsCache.containsKey(cacheKey) ) {
+      if ( ! rolesAndAccountsCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -593,14 +581,14 @@ foam.CLASS({
         }
 
         List totalListToCache = new ArrayList(totalList);
-        getRolesAndAccountsCache.put(cacheKey, totalListToCache);
+        rolesAndAccountsCache.put(cacheKey, totalListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
         return totalList;
 
       } else {
-        List newListFromCache = new ArrayList(getRolesAndAccountsCache.get(cacheKey));
+        List newListFromCache = new ArrayList(rolesAndAccountsCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -609,8 +597,6 @@ foam.CLASS({
     {
       name: 'getUsersAndRoles',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'accountId',
@@ -623,11 +609,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'a' + String.valueOf(accountId);
-      String cache = "getUsersAndRolesCache";
+      String cache = "usersAndRolesCache";
   
-      Map<String,List> getUsersAndRolesCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> usersAndRolesCache = (Map<String,List>) getCache().get(cache);
   
-      if ( ! getUsersAndRolesCache.containsKey(cacheKey) ) {
+      if ( ! usersAndRolesCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -677,14 +663,14 @@ foam.CLASS({
         }
     
         List totalListToCache = new ArrayList(totalList);
-        getUsersAndRolesCache.put(cacheKey, totalListToCache);
+        usersAndRolesCache.put(cacheKey, totalListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
   
         return totalList;
   
       } else {
-        List newListFromCache = new ArrayList(getUsersAndRolesCache.get(cacheKey));
+        List newListFromCache = new ArrayList(usersAndRolesCache.get(cacheKey));
 
         return newListFromCache;
       }
@@ -693,8 +679,6 @@ foam.CLASS({
     {
       name: 'getUsersAndAccounts',
       type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
           name: 'roleId',
@@ -707,11 +691,11 @@ foam.CLASS({
       ],
       javaCode: `
       String cacheKey = 'r' + roleId;
-      String cache = "getUsersAndAccountsCache";
+      String cache = "usersAndAccountsCache";
   
-      Map<String,List> getUsersAndAccountsCache = (Map<String,List>) getCache().get(cache);
+      Map<String,List> usersAndAccountsCache = (Map<String,List>) getCache().get(cache);
   
-      if ( ! getUsersAndAccountsCache.containsKey(cacheKey) ) {
+      if ( ! usersAndAccountsCache.containsKey(cacheKey) ) {
         Sink purgeSink = new Sink() {
           public void put(Object obj, Detachable sub) {
             purgeCache(cache, cacheKey);
@@ -765,14 +749,14 @@ foam.CLASS({
         }
     
         List totalListToCache = new ArrayList(totalList);
-        getUsersAndAccountsCache.put(cacheKey, totalListToCache);
+        usersAndAccountsCache.put(cacheKey, totalListToCache);
         
         ucjDAO.listen(purgeSink, MLang.TRUE);
   
         return totalList;
   
       } else {
-        List newListFromCache = new ArrayList(getUsersAndAccountsCache.get(cacheKey));
+        List newListFromCache = new ArrayList(usersAndAccountsCache.get(cacheKey));
 
         return newListFromCache;
       }

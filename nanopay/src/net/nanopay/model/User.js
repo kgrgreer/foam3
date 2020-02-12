@@ -13,6 +13,10 @@ foam.CLASS({
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
+  imports: [
+    'complianceHistoryDAO'
+  ],
+
   javaImports: [
     'foam.mlang.MLang',
     'static foam.mlang.MLang.AND',
@@ -173,11 +177,6 @@ foam.CLASS({
       name: 'jobTitle',
       label: 'Job Title',
       documentation: 'The job title of the individual person, or real user.',
-      validateObj: function(jobTitle) {
-        if ( ! jobTitle.trim() ) {
-          return 'Job title required.';
-        }
-      },
       section: 'business'
     },
     {
@@ -371,6 +370,25 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['service.compliancehistorydao', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.legalName}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
+          ))
+        });
+      }
+    },
     {
       name: 'viewAccounts',
       label: 'View Accounts',

@@ -22,6 +22,9 @@ var classes = [
   'net.nanopay.tx.cico.CABankTransactionPlanDAO',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.EFTFile',
+  'net.nanopay.tx.cico.EFTFileGenerator',
+  'net.nanopay.tx.cico.EFTFileStatus',
   'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.cico.ReverseCORule',
   'net.nanopay.tx.alterna.AlternaFormat',
@@ -732,6 +735,12 @@ var classes = [
   'net.nanopay.meter.report.TransactionReport',
   'net.nanopay.meter.report.PaymentReport',
   'net.nanopay.meter.report.PaymentReportDAO',
+  'net.nanopay.meter.report.PaymentSummaryReport',
+  'net.nanopay.meter.report.PaymentSummaryReportDAO',
+  'net.nanopay.meter.report.BusinessSummaryReport',
+  'net.nanopay.meter.report.BusinessSummaryReportDAO',
+  'net.nanopay.meter.report.UserComplianceSummaryReport',
+  'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',

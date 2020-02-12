@@ -345,9 +345,6 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
-      view: {
-        class: 'foam.u2.view.FObjectArrayView'
-      },
       section: 'business'
     },
     {
