@@ -167,9 +167,10 @@ for(int j = 0; j < emails.length; j+=2) {
     user.setEmailVerified(true);
     user.setEmailVerified(true);
     user.setCompliance(ComplianceStatus.PASSED);
-    smeBusinessRegistrationDAO.put(user);
+    user = smeBusinessRegistrationDAO.put(user);
 
-    business = businessDAO.where(foam.mlang.MLang.EQ(Business.EMAIL, user.getEmail())).select().getArray().get(0);
+    UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
+    business = businessDAO.find(junction.getTargetId());
     business = business.fclone();
     business.setStatus(AccountStatus.ACTIVE);
     business.setAddress(address);

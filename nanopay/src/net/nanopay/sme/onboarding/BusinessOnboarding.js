@@ -1463,12 +1463,26 @@ foam.CLASS({
           if ( this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
-          } else {
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            }
+          } else if ( ! this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = this.adminFirstName;
+              this.owner1.lastName = this.adminLastName;
+              this.owner1.jobTitle = this.adminJobTitle;
+            }
+          } else if ( ! this.userOwnsPercent ) {
+            this.clearProperty('owner1');
           }
         });
-       
+
         this.owner1.showValidation$ = this.signingOfficer$;
         this.owner2.showValidation$ = this.signingOfficer$;
         this.owner3.showValidation$ = this.signingOfficer$;

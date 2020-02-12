@@ -16,6 +16,7 @@ import foam.nanos.auth.Permission;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
 import foam.test.TestUtils;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.admin.model.ComplianceStatus;
@@ -115,8 +116,8 @@ public class AFEXServiceProviderTest
       // Set properties that can't be set during registration.
       user1.setEmailVerified(true);
       user1 = (User) localUserDAO.put(user1);
-
-      business = (Business) businessDAO.find(EQ(Business.EMAIL, user1.getEmail()));
+      UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user1.getId()));
+      business = (Business) businessDAO.find(junction.getTargetId());
       business = (Business) business.fclone();
       business.setStatus(AccountStatus.ACTIVE);
       business.setAddress(businessAddress);
