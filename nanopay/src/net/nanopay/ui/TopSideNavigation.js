@@ -19,18 +19,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'currentMenu',
     'menuListener',
     'loginSuccess',
-    'menuDAO',
-    'pushMenu',
-  ],
-  css: `
-  `,
-  
-
-  properties: [
-    
   ],
 
   methods: [
@@ -39,13 +29,13 @@ foam.CLASS({
         // Sets currentMenu and listeners on search selections and subMenu scroll on load.
         if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
 
-        this.start()
+        this
+        .show(this.loginSuccess$)
+        .start()
           .addClass(this.myClass())
-          .show(this.loginSuccess$)
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' })
         .tag({ class: 'foam.nanos.menu.VerticalMenu' });
-        //this.menuSearch$.sub(this.menuSearchSelect);
       }
   ]
 });
