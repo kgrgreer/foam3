@@ -35,12 +35,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.plaid.model.PlaidAccountDetail',
       name: 'accountDetail',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'DateTime',
       name: 'validationDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',

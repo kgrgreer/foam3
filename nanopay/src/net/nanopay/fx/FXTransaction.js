@@ -37,9 +37,9 @@ Stores all Exchange Rate info.`,
       name: 'fxRate',
       class: 'Double',
       section: 'amountSelection',
-      visibilityExpression: function(fxRate) {
-        if ( ! fxRate || fxRate == 1 ) return foam.u2.Visibility.HIDDEN;
-        return foam.u2.Visibility.RO;
+      visibility: function(fxRate) {
+        if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
+        return foam.u2.DisplayMode.RO;
       },
       view: function (_, X) {
         return X.data.slot(function(fxRate) {

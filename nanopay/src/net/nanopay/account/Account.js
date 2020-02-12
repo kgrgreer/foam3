@@ -291,9 +291,9 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       section: 'balanceDetails',
       storageTransient: true,
-      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
-      updateMode: 'RO',
-      readMode: 'RO',
+      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -361,7 +361,7 @@ foam.CLASS({
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
       // visibility: 'RO',
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       class: 'DateTime',
@@ -423,14 +423,14 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     }
   ],
 

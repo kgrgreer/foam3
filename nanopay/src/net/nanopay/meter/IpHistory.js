@@ -66,7 +66,7 @@ foam.RELATIONSHIP({
     hidden: false
   },
   targetProperty: {
-    visibility: foam.u2.Visibility.RO,
+    visibility: foam.u2.DisplayMode.RO,
     tableCellFormatter: function(value, obj) {
       if ( value !== undefined ) {
         obj.publicBusinessDAO.find(value).then(function(business) {

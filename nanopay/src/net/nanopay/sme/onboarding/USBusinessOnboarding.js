@@ -387,14 +387,14 @@ foam.CLASS({
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
-      createMode: 'RW',
+      createVisibility: 'RW',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
       section: 'personalInformationSection',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -435,8 +435,8 @@ foam.CLASS({
       factory: function() {
         return this.PersonalIdentification.create({});
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: {
         class: 'foam.u2.detail.SectionedDetailView',
@@ -474,8 +474,8 @@ foam.CLASS({
         ],
         isHorizontal: true
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     }),
     {
@@ -498,8 +498,8 @@ foam.CLASS({
           }
         };
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -522,8 +522,8 @@ foam.CLASS({
       name: 'adminPhone',
       section: 'homeAddressSection',
       label: 'Phone Number',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -828,8 +828,8 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: 'Enter your operating name'
       },
-      visibilityExpression: function(operatingUnderDifferentName) {
-        return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(operatingUnderDifferentName) {
+        return operatingUnderDifferentName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -912,8 +912,8 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       label: 'Federal Tax ID Number (EIN)',
       documentation: 'Federal Tax ID Number (EIN)',
-      visibilityExpression: function(countryOfBusinessFormation) {
-        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1158,8 +1158,8 @@ foam.CLASS({
 
         this.clearProperty('ownershipPercent');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1171,8 +1171,8 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) this.clearProperty('owner1');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners == 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1251,8 +1251,8 @@ foam.CLASS({
           'ownershipPercent'
         ]
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1283,8 +1283,8 @@ foam.CLASS({
 
         return sum;
       `,
-      visibilityExpression: function(totalOwnership) {
-        return Number(totalOwnership) > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(totalOwnership) {
+        return Number(totalOwnership) > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
@@ -1304,8 +1304,8 @@ foam.CLASS({
       label: 'There are no beneficial owners with 25% or more ownership listed.',
       visibility: 'RO',
       documentation: 'If amountOfOwners property is zero, this message will be display',
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners === 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
     },
     {
@@ -1314,8 +1314,8 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       label: '',
       label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1340,8 +1340,8 @@ foam.CLASS({
       documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
       docName: 'USD_AFEX_Terms',
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1366,8 +1366,8 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'nanopayInternationalPaymentsCustomerAgreement', // TODO Make this the USD version. Waiting on USD doc from complaince
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
