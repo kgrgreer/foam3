@@ -7,6 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account',
     'static foam.mlang.MLang.EQ',
     'foam.dao.DAO'
@@ -57,7 +58,7 @@ foam.CLASS({
 
         //If this planner is a split planner, it can also recursively plan its sub parts with the subPlan function.
         Transaction dt2 = subPlan(x, dt);
-        dt.setNext(dt2);
+        dt.addNext(dt2);
 
         // order of transfer creation does not matter. It will always be added to the returned transaction.
         addTransfer(myAccount.getId(), 1l);

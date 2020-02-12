@@ -10,13 +10,14 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionQuote',
-    'static foam.mlang.MLang.EQ',
+    'foam.dao.DAO',
     'java.util.UUID',
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'net.nanopay.tx.Transfer',
+    'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
