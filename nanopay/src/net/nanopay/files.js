@@ -578,6 +578,9 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/cico/EFTFile' },
+  { name: 'net/nanopay/tx/cico/EFTFileGenerator' },
+  { name: 'net/nanopay/tx/cico/EFTFileStatus' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
   { name: 'net/nanopay/tx/AccountRelationship' },
   { name: 'net/nanopay/tx/AccountRelationshipLineItem' },
@@ -1170,6 +1173,10 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/TransactionReportView' },
   { name: 'net/nanopay/meter/report/PaymentReport' },
   { name: 'net/nanopay/meter/report/PaymentReportDAO' },
+  { name: 'net/nanopay/meter/report/BusinessSummaryReport' },
+  { name: 'net/nanopay/meter/report/BusinessSummaryReportDAO' },
+  { name: 'net/nanopay/meter/report/UserComplianceSummaryReport' },
+  { name: 'net/nanopay/meter/report/UserComplianceSummaryReportDAO' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
