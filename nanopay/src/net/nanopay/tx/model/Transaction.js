@@ -372,12 +372,12 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       readVisibility: function(invoiceId) {
         return invoiceId ?
-          foam.u2.DisplayMode.FINAL :
+          foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(invoiceId) {
         return invoiceId ?
-          foam.u2.DisplayMode.FINAL :
+          foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
@@ -777,13 +777,13 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       readVisibility: function(referenceData) {
         return referenceData.length > 0 ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(referenceData) {
         return referenceData.length > 0 ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
     },
     {

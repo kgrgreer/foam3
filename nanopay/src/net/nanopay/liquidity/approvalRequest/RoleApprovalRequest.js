@@ -115,12 +115,12 @@ foam.CLASS({
           });
         }
       },
-      visibilityExpression: function(status) {
+      visibility: function(status) {
         if ( status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
-          return foam.u2.Visibility.HIDDEN;
+          return foam.u2.DisplayMode.HIDDEN;
         }
 
-        return foam.u2.Visibility.RO;
+        return foam.u2.DisplayMode.RO;
       }
     },
     {
@@ -130,11 +130,11 @@ foam.CLASS({
       section: 'requestDetails',
       transient: true,
       value: 'Pending',
-      visibilityExpression: function(status) {
+      visibility: function(status) {
         if ( status === net.nanopay.approval.ApprovalStatus.REQUESTED ) {
-          return foam.u2.Visibility.RO;
+          return foam.u2.DisplayMode.RO;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `
         This string will be used to show that the approver is pending without
@@ -147,10 +147,10 @@ foam.CLASS({
       name: 'operation',
       label: 'Action',
       section: 'requestDetails',
-      visibilityExpression: function(operation) {
+      visibility: function(operation) {
         return operation ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -165,10 +165,10 @@ foam.CLASS({
         });
       },
       section: 'requestDetails',
-      visibilityExpression: function(initiatingUser) {
+      visibility: function(initiatingUser) {
         return initiatingUser ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {

@@ -9,19 +9,19 @@ foam.CLASS({
     {
       name: 'classification',
       value: 'Expedite transaction',
-      visibilityExpression: function(classification) {
+      visibility: function(classification) {
         return classification ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       name: 'daoKey',
       value: 'localTransactionDAO',
-      visibilityExpression: function(daoKey) {
+      visibility: function(daoKey) {
         return daoKey ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     }
   ]
