@@ -9,16 +9,18 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware',
-    'foam.nanos.auth.EnabledAware',
+    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
   imports: [
     'homeDenomination',
-    'fxService',
-    'user'
+    'exchangeRateService',
+    'user',
+    'balanceService',
+    'currencyDAO'
   ],
 
   javaImports: [
@@ -47,34 +49,66 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'All',
       predicateFactory: function(e) {
-        return e.TRUE;
+        return e.AND(
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
+          e.OR(
+            e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+            e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+          )
+        );
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Aggregate Accounts',
       predicateFactory: function(e) {
-        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
-        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
+        return e.AND(
+          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Securities Accounts',
+      predicateFactory: function(e) {
+        return e.AND(
+          e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
+          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
+        )
       }
     },
     {
       class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Table',
-      view: { class: 'foam.comics.v2.DAOBrowserView' },
+      view: { class: 'net.nanopay.account.AccountDAOBrowserView' },
       icon: 'images/list-view.svg',
     },
     {
@@ -129,7 +163,7 @@ foam.CLASS({
       documentation: 'The type of the account.',
       transient: true,
       getter: function() {
-        return this.cls_.name;
+        return this.model_.label === 'Digital Account' ? 'Virtual Account' : this.model_.label;
       },
       javaGetter: `
         return getClass().getSimpleName();
@@ -141,6 +175,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
+      label: 'Account Number',
       documentation: 'The ID for the account.',
       section: 'administration',
       visibility: 'RO',
@@ -168,10 +203,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      label: 'Account name',
+      label: 'Account Name',
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
-      tableWidth: 168,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
@@ -213,8 +247,20 @@ foam.CLASS({
       `,
       tableWidth: 127,
       writePermissionRequired: true,
-      section: 'administration',
-      order: 3
+      section: 'accountDetails',
+      order: 3,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO,
+              heading: 'Currencies'
+            }
+          ]
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -245,66 +291,52 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       section: 'balanceDetails',
       storageTransient: true,
-      visibility: 'RO',
+      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateMode: 'RO',
+      readMode: 'RO',
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
         Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
-        
+
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
-      tableWidth: 145,
+      tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
-
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.currencyDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.currencyDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
             })
-        }));
+          }));
+        }))
       }
-    },
+
+  },
     {
       class: 'UnitValue',
       unitPropName: 'homeDenomination',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
-        A numeric value representing the available funds in the 
+        A numeric value representing the available funds in the
         bank account converted to home denomination.
       `,
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
-      tableWidth: 145,
+      tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
-        var self = this;
-
-        this.add(
-          obj.slot(homeDenomination => {
-            return Promise.all([
-              obj.denomination == homeDenomination ?
-                Promise.resolve(1) :
-                obj.fxService.getFXRate(obj.denomination, homeDenomination,
-                  0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => r.rate),
-              obj.findBalance(self.__subSubContext__),
-              self.__subSubContext__.currencyDAO.find(homeDenomination)
-            ]).then(arr => {
-              let [r, b, c] = arr;
-              var displayBalance = c.format(Math.floor((b || 0) * r));
-              self.tooltip = displayBalance;
-              return displayBalance;
+      var self = this;
+        this.add(obj.slot(function(denomination, homeDenomination, balance) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.exchangeRateService.exchangeFormat(denomination, homeDenomination, balance).then((result) => {
+              return self.E().add(result);
             })
-          })
-        );
+          }));
+        }))
       }
     },
     {
@@ -328,7 +360,8 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
-      visibility: 'RO',
+      // visibility: 'RO',
+      visibility: foam.u2.Visibility.HIDDEN
     },
     {
       class: 'DateTime',
@@ -345,6 +378,14 @@ foam.CLASS({
         who last modified this account.`,
       section: 'administration',
       visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
     },
     {
       class: 'String',
@@ -353,6 +394,10 @@ foam.CLASS({
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
+      tableWidth: 500,
+      expression: function() {
+        return this.toSummary() + ` - ${this.type}`;
+      },
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,
@@ -372,6 +417,21 @@ foam.CLASS({
         }));
       }
     },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      section: 'administration',
+      visibility: foam.u2.Visibility.HIDDEN
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: foam.u2.Visibility.HIDDEN
+    }
   ],
 
   methods: [
@@ -407,7 +467,7 @@ foam.CLASS({
     },
     {
       name: 'findBalance',
-      type: 'Any',
+      type: 'Long',
       async: true,
       args: [
         {
@@ -416,16 +476,14 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
+        return x.balanceService.findBalance(x,this.id);
       },
       javaCode: `
+        //TODO: use the balance service. for some reason rule engine can't get it in its context so until thats figured out.. this is what its gotta be. this function will be broken for aggregate and securitiesAccounts until then.
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
         if ( balance != null ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
           return balance.getBalance();
-        } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
         }
         return 0L;
       `
@@ -458,6 +516,66 @@ foam.CLASS({
           logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
+      `
+    },
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
+        Long key = getId();
+        return (String) key.toString();
+      `
+    },
+    {
+      name: 'getOutgoingAccountCreate',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getParent();
+      `
+    },
+    {
+      name: 'getOutgoingAccountRead',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountUpdate',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
+      `
+    },
+    {
+      name: 'getOutgoingAccountDelete',
+      type: 'Long',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        }
+      ],
+      javaCode: `
+        return getId();
       `
     }
   ]

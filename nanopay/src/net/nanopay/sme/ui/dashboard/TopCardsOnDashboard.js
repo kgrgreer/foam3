@@ -30,6 +30,7 @@ foam.CLASS({
   imports: [
     'accountingIntegrationUtil',
     'agent',
+    'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'canadaUsBusinessOnboardingDAO',
@@ -110,7 +111,15 @@ foam.CLASS({
     'businessOnboarding',
     'onboardingStatus',
     'businessRegistrationDate',
-    'countryOfBusinessRegistration'
+    'countryOfBusinessRegistration',
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: false,
+      expression: function(businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) {
+        return businessOnboarding && businessRegistrationDate && countryOfBusinessRegistration;
+      }
+    }
   ],
 
   messages: [
@@ -118,48 +127,31 @@ foam.CLASS({
   ],
 
   methods: [
+    async function init() {
+      let business = await this.businessDAO.find(this.user.id);
+      this.onboardingStatus = business.onboarded;
+      this.countryOfBusinessRegistration = business.countryOfBusinessRegistration;
+      this.businessRegistrationDate = business.businessRegistrationDate;
+    },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
-        .callIf( ! this.businessOnboarding || this.businessOnboarding.signingOfficer || this.businessOnboarding.status !== this.OnboardingStatus.SUBMITTED,
-          () => { // not started or signingofficer or finished onboarding
-            this
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .add(this.slot((onboardingStatus, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((user$onboarded, businessOnboarding) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
               .start('span').hide(this.isIframe())
-                .add(this.slot((onboardingStatus, businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && (businessRegistrationDate && countryOfBusinessRegistration), businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((user$onboarded, businessOnboarding, complete) => {
+                  let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: complete, isEmployee: isEmp, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-            .end();
-          })
-
-        .callIf( this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
-          () => {  // onboarded && nonSigningOfficer &&  submit
-            this
-            .start().addClass('divider').end()
-            .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
-            .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
-            .start().addClass('cards').hide(this.hidePaymentCards$)
-              .start('span')
-                .add(this.slot((onboardingStatus, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus, businessOnboarding: businessOnboarding }).end();
-                }))
-              .end()
-              .start('span').hide(this.isIframe())
-                .add(this.slot((businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && (businessRegistrationDate && countryOfBusinessRegistration), isEmployee: true, businessOnboarding: businessOnboarding }).end();
-                }))
-              .end()
-            .end();
-          })
+            .end()
         .start().addClass('lower-cards')
           .start('span')
             .add(this.slot((bankAccount) => {

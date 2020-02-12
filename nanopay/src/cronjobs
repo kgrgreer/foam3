@@ -62,8 +62,8 @@ p({
     /**
      * Configure revenue accounts for billing invoices
      */
-    CAD_REVENUE_ACCOUNT_ID = 2;
-    USD_REVENUE_ACCOUNT_ID = 2;
+    CAD_REVENUE_ACCOUNT_ID = 2L;
+    USD_REVENUE_ACCOUNT_ID = 2L;
 
     /**
      * Configure the number of business days due before processing the invoices

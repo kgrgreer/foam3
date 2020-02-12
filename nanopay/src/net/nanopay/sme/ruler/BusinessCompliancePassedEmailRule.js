@@ -48,8 +48,8 @@ foam.CLASS({
               try {
 
                 Notification businessCompliancePassedNotification = new Notification.Builder(x)
-                  .setBody("Business Passed Compliance")
-                  .setNotificationType("BusinessCompliancePassed")
+                  .setBody("This business can now make payments")
+                  .setNotificationType("Latest_Activity")
                   .setGroupId(group.toString())
                   .setEmailIsEnabled(true)
                   .setEmailArgs(args)

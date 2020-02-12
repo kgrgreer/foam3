@@ -270,8 +270,8 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function(amountOfOwners) {
-        return amountOfOwners > 0;
+      isAvailable: function(amountOfOwners, signingOfficer) {
+        return amountOfOwners > 0 || (amountOfOwners == 0 && signingOfficer) ;
       }
     },
     {
@@ -567,10 +567,7 @@ foam.CLASS({
           errorString: 'Please select job title.'
         }
       ],
-      validationTextVisible: true,
-      postSet: function(_, n) {
-        this.owner1.jobTitle = this.adminJobTitle;
-      }
+      validationTextVisible: true
     },
     {
       class: 'PhoneNumber',
@@ -968,18 +965,18 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: function(args, X){
+      view: function(_, X) {
         return {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: X.data.PLACE_HOLDER,
-        choices: [
-          '1 to 99',
-          '100 to 199',
-          '200 to 499',
-          '500 to 999',
-          'Over 1000'
-        ]
-      }
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLACE_HOLDER,
+          choices: [
+            '1 to 99',
+            '100 to 199',
+            '200 to 499',
+            '500 to 999',
+            'Over 1000'
+          ]
+        };
       },
       validationPredicates: [
         {
@@ -1001,23 +998,23 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      view: function(args, X) {
+      view: function(_, X) {
         return {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        otherKey: 'Other',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.PLACE_HOLDER,
-          choices: [
-            'Payables for products and/or services',
-            'Working capital',
-            'Bill payments',
-            'Intracompany bank transfers',
-            'Government fee and taxes',
-            'Other'
-          ]
-        }
-        }
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            choices: [
+              'Payables for products and/or services',
+              'Working capital',
+              'Bill payments',
+              'Intracompany bank transfers',
+              'Government fee and taxes',
+              'Other'
+            ]
+          }
+        };
       },
       validationPredicates: [
         {
@@ -1116,6 +1113,7 @@ foam.CLASS({
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
+          return;
         } else if ( ! this.signingOfficer && newV ) {
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
@@ -1123,7 +1121,11 @@ foam.CLASS({
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-        } else if ( ! newV ) {
+          return;
+        }
+
+        if ( this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName
+            && this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName ) {
           this.clearProperty('owner1');
         }
 
@@ -1270,13 +1272,22 @@ foam.CLASS({
       ]
     },
     {
+      name: 'noBeneficialOwners',
+      section: 'reviewOwnersSection',
+      label: 'There are no beneficial owners with 25% or more ownership listed.',
+      documentation: 'If amountOfOwners property is zero, this message will be display',
+      visibility: function(amountOfOwners) {
+        return amountOfOwners === 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      },
+    },
+    {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
       visibility: function(signingOfficer, amountOfOwners) {
-        return signingOfficer && amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1285,15 +1296,9 @@ foam.CLASS({
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
-                e.GT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
               ),
-              e.AND(
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
-              ),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
           errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
@@ -1307,8 +1312,8 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'dualPartyAgreementCAD',
       label: '',
-      visibility: function(signingOfficer, amountOfOwners) {
-        return signingOfficer && amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1319,8 +1324,7 @@ foam.CLASS({
                 e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
                 e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
               ),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0)
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
@@ -1383,8 +1387,7 @@ foam.CLASS({
 
         if (
           oldObj != null &&
-          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
-          oldObj.getSigningOfficer()
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
@@ -1464,6 +1467,11 @@ foam.CLASS({
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
           }
         });
+       
+        this.owner1.showValidation$ = this.signingOfficer$;
+        this.owner2.showValidation$ = this.signingOfficer$;
+        this.owner3.showValidation$ = this.signingOfficer$;
+        this.owner4.showValidation$ = this.signingOfficer$;
       }
     }
   ]

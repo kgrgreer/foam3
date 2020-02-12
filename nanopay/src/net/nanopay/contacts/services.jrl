@@ -2,11 +2,13 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localContactDAO",
   "serve": false,
+  "lazy":false,
   "serviceScript": 
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setValidated(true)
+      .setDeletedAware(false)
       .setDecorator(
         new net.nanopay.contacts.CheckContactExistsDAO(x,
         new net.nanopay.contacts.CheckContactExistingTransaction(x,
@@ -24,14 +26,23 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "contactDAO",
   "serve": true,
+  "lazy":false,
   "serviceScript": 
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
+      .setDeletedAware(false)
       .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).build())
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.contacts.Contact",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })

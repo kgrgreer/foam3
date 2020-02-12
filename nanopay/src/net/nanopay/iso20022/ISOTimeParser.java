@@ -26,16 +26,16 @@ public class ISOTimeParser
 
   public ISOTimeParser() {
     super(new Seq(
-      new Literal("\""),
-      new IntParser(),
-      new Literal(":"),
-      new IntParser(),
-      new Literal(":"),
-      new IntParser(),
-      new Literal("."),
+      Literal.create("\""),
+      IntParser.instance(),
+      Literal.create(":"),
+      IntParser.instance(),
+      Literal.create(":"),
+      IntParser.instance(),
+      Literal.create("."),
       new Repeat(new Chars("0123456789")),
-      new Literal("Z"),
-      new Literal("\"")));
+      Literal.create("Z"),
+      Literal.create("\"")));
   }
 
   @Override

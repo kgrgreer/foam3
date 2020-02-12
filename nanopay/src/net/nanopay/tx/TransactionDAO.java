@@ -109,9 +109,10 @@ public class TransactionDAO
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
     X y = getX().put("balanceDAO",getBalanceDAO());
-    Transfer[] ts = txn.createTransfers(y, oldTxn);
+    Transfer[] ts = txn.getTransfers(); // just get transfers we no longer auto generate any
 
         // legacy support for REVERSE
+     /*
     if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
          txn.getStatus() == TransactionStatus.REVERSE &&
          oldTxn != null &&
@@ -132,6 +133,7 @@ public class TransactionDAO
               .build());
       ts = (Transfer[]) all.toArray(new Transfer[0]);
     }
+    */
 
     return lockAndExecute(x, txn, ts);
   }
@@ -177,7 +179,6 @@ public class TransactionDAO
       hm.put(tr.getAccount(), tr);
     }
     Transfer [] newTs = hm.values().toArray(new Transfer[0]);
-
     // sort the transfer array
     java.util.Arrays.sort(newTs);
     // persist condensed transfers

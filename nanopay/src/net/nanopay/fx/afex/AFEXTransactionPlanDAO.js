@@ -73,6 +73,7 @@ foam.CLASS({
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
       Logger logger = (Logger) x.get("logger");
+      logger.debug(this.getClass().getSimpleName(), "generateTransaction", quote);
 
       // Validate that Payer is provisioned for AFEX before proceeding
       AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
@@ -134,7 +135,6 @@ foam.CLASS({
 
     Logger logger = (Logger) x.get("logger");
     Transaction request = quote.getRequestTransaction();
-    logger.debug(this.getClass().getSimpleName(), "put", quote);
 
     Account sourceAccount = request.findSourceAccount(x);
     Account destinationAccount = request.findDestinationAccount(x);

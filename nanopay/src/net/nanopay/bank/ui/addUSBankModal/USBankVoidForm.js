@@ -141,7 +141,7 @@ foam.CLASS({
     { name: 'ERROR_INVALID_ROUTING', message: 'Invalid ACH Routing No.' },
     { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid ACH Account No.' },
     { name: 'ERROR_INVALID_NICKNAME', message: 'Invalid nickname' },
-    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' },
+    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check or a 3 month bank statement.' },
     { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
   ],
 
@@ -194,7 +194,7 @@ foam.CLASS({
         return this.bank.supportingDocuments ? this.bank.supportingDocuments : [];
       },
       postSet: function(_, n) {
-        this.bank.supportingDocuments = n;
+        this.bank.supportingDocuments = Array.from(n);
       }
     },
     'skip'

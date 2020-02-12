@@ -373,7 +373,7 @@ public class ContactAuthorizationTest
       // Try to find the removed contact.
       Contact findResult = (Contact) contactDAO.find_(adminUserContext_, putResult.getId());
 
-      test(findResult.getDeleted(), "Admin users can remove other users' contacts.");
+      test(findResult.getLifecycleState() == LifecycleState.DELETED, "Admin users can remove other users' contacts.");
     } catch (Throwable t) {
       System.out.println(t.getMessage());
       Logger logger = (Logger) x.get("logger");
@@ -429,7 +429,7 @@ public class ContactAuthorizationTest
 
       // Make the admin select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.LIFECYCLE_STATE, LifecycleState.ACTIVE));
 
       test(
         sink.getArray().size() == 2,
@@ -498,7 +498,7 @@ public class ContactAuthorizationTest
 
       // Make the admin user select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.LIFECYCLE_STATE, LifecycleState.ACTIVE));
 
       test(
         sink.getArray().size() == 0,
@@ -534,7 +534,7 @@ public class ContactAuthorizationTest
 
       // Make the admin user select on the contactDAO.
       ArraySink sink = new ArraySink();
-      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.DELETED, false));
+      contactDAO.select_(adminUserContext_, sink, 0, Long.MAX_VALUE, null, EQ(Contact.LIFECYCLE_STATE, LifecycleState.ACTIVE));
 
       test(
         sink.getArray().size() == 1,

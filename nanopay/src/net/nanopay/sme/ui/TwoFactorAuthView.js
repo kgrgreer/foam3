@@ -236,7 +236,7 @@ foam.CLASS({
   actions: [
     {
       name: 'enableTwoFactor',
-      label: 'Verfiy',
+      label: 'Verify',
       code: function(x) {
         var self = this;
 
