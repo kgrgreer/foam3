@@ -124,7 +124,7 @@ foam.CLASS({
         denominations of any type, from mobile minutes to stocks.
       `,
       section: 'basicInfo',
-      updateMode: 'RO',
+      updateVisibility: 'RO',
       postSet: function(o, n) {
         if ( this.lowLiquidity ) this.lowLiquidity.denomination = n;
         if ( this.highLiquidity ) this.highLiquidity.denomination = n;
@@ -283,8 +283,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: 'Created date',
-      createMode: 'HIDDEN',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -330,7 +330,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'Last modified date',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       visibility: 'RO'
     },
     {
@@ -355,14 +355,14 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     }
   ],
   methods: [

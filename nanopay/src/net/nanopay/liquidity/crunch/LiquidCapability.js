@@ -81,7 +81,7 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       name: 'notes',
@@ -90,15 +90,15 @@ foam.CLASS({
     },
     {
       name: 'users',
-      updateMode: 'RO'
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      readMode: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subContext__.userDAO
           .find(value)

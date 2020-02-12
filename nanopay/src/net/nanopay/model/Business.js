@@ -106,8 +106,8 @@ foam.CLASS({
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `,
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'administrative'
     },
     {
@@ -253,7 +253,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
       documentation: 'Represents the people who own the majority shares in a business.',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
