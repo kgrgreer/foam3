@@ -1513,7 +1513,13 @@ p({
       .build();
 
   """,
-  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
+  "client": """
+    {
+      "of":"foam.nanos.auth.UserUserJunction",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })
 
 p({
