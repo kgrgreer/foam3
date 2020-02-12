@@ -141,6 +141,23 @@ p({
   "parent":"report"
 })
 
+// PaymentSummaryReport
+p({
+  "class":    "foam.nanos.menu.Menu",
+  "id":       "report.paymentSummaryReport",
+  "label":    "Payment Summary Report for Leadership",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu",
+    "daoKey": "paymentSummaryReportDAO",
+    "title":  "Payment Summary Report for Leadership",
+    "createEnabled": false,
+    "editEnabled":   false,
+    "searchMode":    1
+  },
+  "order":40,
+  "parent":"report"
+})
+    
 // BusinessSummaryReport
 p({
   "class":   "foam.nanos.menu.Menu",

@@ -2003,6 +2003,26 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "paymentSummaryReportDAO",
+  "serve": true,
+  "serviceScript": """
+    psrDAO =  new net.nanopay.meter.report.PaymentSummaryReportDAO.Builder(x)
+      .setDelegate(null)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.meter.report.PaymentSummaryReport.getOwnClassInfo())
+      .setDecorator(psrDAO)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.meter.report.PaymentSummaryReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "businessSummaryReportDAO",
   "serve": true,
   "serviceScript": """
