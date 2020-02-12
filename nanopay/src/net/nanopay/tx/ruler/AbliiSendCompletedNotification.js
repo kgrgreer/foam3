@@ -7,16 +7,16 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.core.ContextAgent',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -37,7 +37,7 @@ foam.CLASS({
               User receiver = (User) localUserDAO.find(tx.findDestinationAccount(x).getOwner());
 
               DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
-              Currency currency = (Currency) currencyDAO.find(tx.getDestinationCurrency());
+              Currency currency = (Currency) currencyDAO.find(tx.getSourceCurrency());
 
               StringBuilder sb = new StringBuilder(sender.label())
                 .append(" just initiated a payment to ")
@@ -72,8 +72,7 @@ foam.CLASS({
               Notification senderNotification = new Notification();
               senderNotification.setUserId(sender.getId());
               senderNotification.setBody(notificationMsg);
-              senderNotification.setNotificationType("Transaction Initiated");
-              senderNotification.setIssuedDate(invoice.getIssueDate());
+              senderNotification.setNotificationType("Latest_Activity");
               try {
                 notificationDAO.put_(x, senderNotification);
               }
@@ -84,8 +83,7 @@ foam.CLASS({
                 Notification receiverNotification = new Notification();
                 receiverNotification.setUserId(receiver.getId());
                 receiverNotification.setBody(receiver_notificationMsg);
-                receiverNotification.setNotificationType("Transaction Initiated");
-                receiverNotification.setIssuedDate(invoice.getIssueDate());
+                receiverNotification.setNotificationType("Latest_Activity");
                 try {
                   notificationDAO.put_(x, receiverNotification);
                 }

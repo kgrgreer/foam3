@@ -35,6 +35,7 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
+      margin-bottom: 20px;
     }
     ^ .three-column{
       display: grid;

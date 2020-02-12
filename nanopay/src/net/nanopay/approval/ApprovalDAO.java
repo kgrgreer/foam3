@@ -5,6 +5,9 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.sink.Sum;
+import foam.nanos.auth.User;
+import foam.nanos.ruler.Operations;
+import net.nanopay.liquidity.approvalRequest.RoleApprovalRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -33,12 +36,28 @@ public class ApprovalDAO
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getClassification());
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
-      getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+           getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
+
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
 
-        //puts object to its original dao
-        rePutObject(x, request);
+        if ( 
+          request.getStatus() == ApprovalStatus.APPROVED ||
+          ( 
+            request.getStatus() == ApprovalStatus.REJECTED &&
+            request instanceof RoleApprovalRequest && 
+            ((RoleApprovalRequest) request).getOperation() == Operations.CREATE 
+          )
+        ){
+          //puts object to its original dao
+          try {
+            rePutObject(x, request);
+          } catch ( Exception e ) {
+            request.setStatus(ApprovalStatus.REQUESTED);
+            getDelegate().put(request);
+            throw new RuntimeException(e);
+          }
+        }
       }
     }
     return request;
@@ -47,7 +66,20 @@ public class ApprovalDAO
   private void rePutObject(X x, ApprovalRequest request) {
     DAO dao = (DAO) x.get(request.getDaoKey());
     FObject found = dao.inX(x).find(request.getObjId()).fclone();
-    dao.inX(x).put(found);
+
+    if ( request instanceof RoleApprovalRequest ) {
+      DAO userDAO = (DAO) x.get("localUserDAO");
+      User initiatingUser = (User) userDAO.find(((RoleApprovalRequest) request).getInitiatingUser());
+      X initiatingUserX = x.put("user", initiatingUser);
+
+      if ( ((RoleApprovalRequest) request).getOperation() == Operations.REMOVE ) {
+        dao.inX(initiatingUserX).remove(found);
+      } else {
+        dao.inX(initiatingUserX).put(found);
+      }
+    } else {
+      dao.inX(x).put(found);
+    }
   }
 
   private void removeUnusedRequests(DAO dao) {

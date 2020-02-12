@@ -266,6 +266,10 @@ foam.CLASS({
       name: 'caUsOnboardingComplete'
     },
     {
+      class: 'Boolean',
+      name: 'verifiedAccount'
+    },
+    {
       class: 'Array',
       name: 'complianceStatusArray',
       documentation: `
@@ -289,10 +293,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -300,10 +304,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -321,10 +325,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -342,10 +346,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -353,10 +357,10 @@ foam.CLASS({
           {
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -364,10 +368,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
               && user.compliance === self.ComplianceStatus.PASSED
-              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && verifiedAccount
               && user.address.countryId === 'CA'
               && ! self.caUsOnboardingComplete;
             },
@@ -377,10 +381,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER_INTERNATIONAL,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
               && user.compliance === self.ComplianceStatus.PASSED
-              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && verifiedAccount
               && user.address.countryId === 'CA'
               && self.caUsOnboardingComplete;
             },
@@ -390,10 +394,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER_DOMESTIC_US,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED
+                && verifiedAccount
                 && user.address.countryId === 'US';
             },
             passed: true,
@@ -475,10 +479,10 @@ foam.CLASS({
           }
           if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
-            .start()
-              .tag(this.topNavigation_)
-              .show(this.slot((loginSuccess) => loginSuccess))
-            .end()
+            .add(this.loginSuccess$.map((loginSuccess) => {
+              if ( ! loginSuccess ) return null;
+              return this.E().tag(this.topNavigation_);
+            }))
             .start()
               .addClass('stack-wrapper')
               .start({
@@ -494,9 +498,6 @@ foam.CLASS({
             .end();
           } else {
           this.addClass(this.myClass())
-          .start()
-            .show(this.slot((loginSuccess) => loginSuccess))
-          .end()
           .start()
             .addClass('stack-wrapper')
             .start({
@@ -578,6 +579,13 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      if ( accountArray ) {
+        for ( i =0; i < accountArray.length; i++ ) {
+          if ( accountArray[i].status == this.BankAccountStatus.VERIFIED ) {
+            this.verifiedAccount = true;
+          }
+        }
+      }
       await this.getCAUSPaymentEnabled(user, this.agent);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
@@ -591,7 +599,7 @@ foam.CLASS({
        * and bank account status, also when showBanner is true.
        */
       var bannerElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray) && complianceStatus.showBanner;
+        return complianceStatus.condition(user, accountArray, this.verifiedAccount) && complianceStatus.showBanner;
       });
 
       if ( bannerElement ) {
@@ -614,8 +622,16 @@ foam.CLASS({
         this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
       }
 
+      if ( accountArray ) {
+        for ( i =0; i < accountArray.length; i++ ) {
+          if ( accountArray[i].status == this.BankAccountStatus.VERIFIED ) {
+            this.verifiedAccount = true;
+          }
+        }
+      }
+
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray);
+        return complianceStatus.condition(user, accountArray, this.verifiedAccount);
       });
 
       if ( toastElement ) {

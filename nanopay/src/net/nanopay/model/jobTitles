@@ -7,7 +7,7 @@ p({"class":"net.nanopay.model.JobTitle","name":"Accounts Receivable Manager","la
 p({"class":"net.nanopay.model.JobTitle","name":"Cash Manager","label":"Cash Manager"})
 p({"class":"net.nanopay.model.JobTitle","name":"CEO","label":"CEO"})
 p({"class":"net.nanopay.model.JobTitle","name":"CFO","label":"CFO"})
-p({"class":"net.nanopay.model.JobTitle","name":"Chairman,"label":"Chairman"})
+p({"class":"net.nanopay.model.JobTitle","name":"Chairman","label":"Chairman"})
 p({"class":"net.nanopay.model.JobTitle","name":"Company Secretary","label":"Company Secretary"})
 p({"class":"net.nanopay.model.JobTitle","name":"Comptroller","label":"Comptroller"})
 p({"class":"net.nanopay.model.JobTitle","name":"Controller","label":"Controller"})

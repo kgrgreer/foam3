@@ -62,8 +62,8 @@ p({
     /**
      * Configure revenue accounts for billing invoices
      */
-    CAD_REVENUE_ACCOUNT_ID = 2;
-    USD_REVENUE_ACCOUNT_ID = 2;
+    CAD_REVENUE_ACCOUNT_ID = 2L;
+    USD_REVENUE_ACCOUNT_ID = 2L;
 
     /**
      * Configure the number of business days due before processing the invoices
@@ -127,7 +127,12 @@ p({
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":20,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},
   "id":"Send Welcome Email to Ablii Business 30min after SignUp",
   "description":"Send Welcome Email to Ablii Business",
-  "code":"import net.nanopay.sme.cron.WelcomeEmailCron;\ncron = new WelcomeEmailCron();\ncron.execute(x);\nprint(\"done\");"
+  "code":"""
+    import net.nanopay.sme.cron.WelcomeEmailCron;
+    cron = new WelcomeEmailCron();
+    cron.execute(x);
+    print("done");
+  """
 })
 p({
   "class": "foam.nanos.cron.Cron",

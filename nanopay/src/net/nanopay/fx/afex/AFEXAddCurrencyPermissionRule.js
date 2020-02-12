@@ -66,7 +66,8 @@ foam.CLASS({
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
                 Group group = (Group) localGroupDAO.find(business.getGroup());
                 while ( group != null ) {
-                  group = group.findParent(x);
+
+                  group = (Group) group.findParent(x);
                   if ( group != null && group.getId().endsWith("employee") ) break;
                 }
                 if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
@@ -133,8 +134,8 @@ foam.CLASS({
               .setEmailName("international-payments-enabled-notification")
               .build() :
             new Notification.Builder(x)
-              .setBody("Business Passed Compliance")
-              .setNotificationType("BusinessCompliancePassed")
+              .setBody("This business can now make international payments")
+              .setNotificationType("Latest_Activity")
               .setGroupId(group.toString())
               .setEmailIsEnabled(true)
               .setEmailArgs(args)

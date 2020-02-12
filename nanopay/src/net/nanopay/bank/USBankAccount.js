@@ -71,7 +71,8 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'supportingDocuments',
-      documentation: 'Supporting documents to verify bank account'
+      documentation: 'Supporting documents to verify bank account',
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
     },
     {
       name: 'branchId',
