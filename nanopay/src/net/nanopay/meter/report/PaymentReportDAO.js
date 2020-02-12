@@ -17,6 +17,9 @@ foam.CLASS({
     'foam.mlang.predicate.Lt',
     'foam.mlang.predicate.Nary',
     'foam.mlang.predicate.Predicate',
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'net.nanopay.account.Account',
     'net.nanopay.meter.report.PaymentReport',
     'net.nanopay.tx.model.Transaction',
 
@@ -31,6 +34,7 @@ foam.CLASS({
           return super.select_(x, sink, skip, limit, order, predicate);
 
         Predicate newPredicate = null;
+        Logger logger = (Logger) x.get("logger");
 
         if ( predicate != null ) {
           if ( predicate instanceof Nary ) {
@@ -85,27 +89,34 @@ foam.CLASS({
         transactionDAO.where(newPredicate).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             Transaction transaction = (Transaction) obj;
+            try {
+              User sender = ((Account) transaction.findSourceAccount(x)).findOwner(x);
+              User receiver = ((Account) transaction.findDestinationAccount(x)).findOwner(x);
 
-            PaymentReport pr = new PaymentReport.Builder(x)
-              .setInvoiceId(transaction.getInvoiceId())
-              .setStatus(transaction.getStatus())
-              .setState(transaction.getState(x))
-              .setId(transaction.getId())
-              .setReferenceNumber(transaction.getReferenceNumber())
-              .setParent(transaction.getParent())
-              .setCreated(transaction.getCreated())
-              .setProcessDate(transaction.getProcessDate())
-              .setCompletionDate(transaction.getCompletionDate())
-              .setType(transaction.getType())
-              .setDestinationAccount(transaction.getDestinationAccount())
-              .setSourceAccount(transaction.getSourceAccount())
-              .setSourceAmount(transaction.getAmount())
-              .setSourceCurrency(transaction.getSourceCurrency())
-              .setDestinationAmount(transaction.getDestinationAmount())
-              .setDestinationCurrency(transaction.getDestinationCurrency())
-              .build();
-
-            decoratedSink.put(pr, null);
+              PaymentReport pr = new PaymentReport.Builder(x)
+                .setInvoiceId(transaction.getInvoiceId())
+                .setStatus(transaction.getStatus())
+                .setState(transaction.getState(x))
+                .setId(transaction.getId())
+                .setReferenceNumber(transaction.getReferenceNumber())
+                .setParent(transaction.getParent())
+                .setCreated(transaction.getCreated())
+                .setProcessDate(transaction.getProcessDate())
+                .setCompletionDate(transaction.getCompletionDate())
+                .setType(transaction.getType())
+                .setSenderUserId(sender.getId())
+                .setSenderName(sender.label())
+                .setReceiverUserId(receiver.getId())
+                .setReceiverName(receiver.label())
+                .setSourceAmount(transaction.getAmount())
+                .setSourceCurrency(transaction.getSourceCurrency())
+                .setDestinationAmount(transaction.getDestinationAmount())
+                .setDestinationCurrency(transaction.getDestinationCurrency())
+                .build();
+                decoratedSink.put(pr, null);
+            } catch (Exception e ){
+              logger.error("Failed to generate payment report for transaction " + transaction.getId(), e);
+            }
           }
         });
 

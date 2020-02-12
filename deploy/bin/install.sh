@@ -47,6 +47,11 @@ NANOPAY_CURRENT_VERSION=$(readlink -f ${NANOPAY_ROOT} | awk -F- '{print $NF}')
 NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 
 function backupFiles {
+    # skip on first install
+    if [ ! -d ${MNT_HOME} ]; then
+        return;
+    fi
+    
     if [ ! -d ${BACKUP_HOME} ]; then
         mkdir -p ${BACKUP_HOME} 
         chgrp nanopay ${BACKUP_HOME}
@@ -119,6 +124,11 @@ function installFiles {
 
     if [ ! -d ${CONF_HOME} ]; then
         mkdir -p ${CONF_HOME}
+    fi
+    
+    if [ ! -f "${CONF_HOME}/shrc.custom" ]; then
+        echo '#!/bin/bash' > ${CONF_HOME}/shrc.custom
+        echo '  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"' >> ${CONF_HOME}/shrc.custom
     fi
     chown -R nanopay:nanopay ${CONF_HOME}
     chmod -R 750 ${CONF_HOME}

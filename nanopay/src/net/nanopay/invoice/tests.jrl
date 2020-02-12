@@ -1,7 +1,7 @@
 p({"class":"net.nanopay.invoice.AuthenticatedInvoiceDAOTest","id":"AuthenticatedInvoiceDAOTest"})
 p({
   "class":"foam.nanos.test.Test",
-  "id":"Approval tests",
+  "id":"ApprovalTests",
   "code":"""
 import foam.dao.*;
 import foam.nanos.auth.User;
@@ -42,7 +42,7 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).remov
 myEmployee = new User();
 myEmployee.setFirstName("MyEmployee");
 myEmployee.setEmail("employee@example.com");
-myEmployee.setGroup("sme");
+myEmployee.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myEmployee.setEmailVerified(true); // Required to send or receive money.
 myEmployee.setCompliance(ComplianceStatus.PASSED);
 myEmployee = bareUserDAO.put(myEmployee);
@@ -52,7 +52,7 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remov
 myApprover = new User();
 myApprover.setFirstName("MyEmployee");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup("approver");
+myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".approver");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover = bareUserDAO.put(myApprover);

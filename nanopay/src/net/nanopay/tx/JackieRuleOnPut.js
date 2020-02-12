@@ -14,10 +14,7 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   methods: [

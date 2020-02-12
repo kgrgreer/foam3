@@ -14,7 +14,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.Detachable',
     'foam.core.FObject',
-    'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -43,7 +42,6 @@ foam.CLASS({
     'java.io.File',
     'java.security.*',
     'java.util.ArrayList',
-    'java.util.concurrent.atomic.AtomicBoolean',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.CountDownLatch',
@@ -51,7 +49,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.regex.Matcher',
     'java.util.regex.Pattern',
-    'java.util.stream.Collectors',
     'java.util.Queue',
 
     'net.nanopay.security.KeyStoreManager',
@@ -693,6 +690,7 @@ try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
             getLogger().error("RollingJournal :: put wait interrupted. " + e);
+            Thread.currentThread().interrupt();
           }
         }
 
@@ -714,6 +712,7 @@ try {
             Thread.sleep(10);
           } catch ( InterruptedException e ){
             getLogger().error("RollingJournal :: put_ wait interrupted. " + e);
+            Thread.currentThread().interrupt();
           }
         }
 

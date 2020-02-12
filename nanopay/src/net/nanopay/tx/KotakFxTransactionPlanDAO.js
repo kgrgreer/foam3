@@ -30,6 +30,11 @@ foam.CLASS({
       type: 'Long',
       name: 'KOTAK_PARTNER_IN_ID',
       value: 1021
+    },
+    {
+      type: 'Long',
+      name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
+      value: 9
     }
   ],
 
@@ -63,16 +68,15 @@ foam.CLASS({
         // txn 2: CO transaction to move funds out of system.
         // funds will be manualy moved by ops team and approve the KotakFXTransaction once they are complete
         TrustAccount trustAccount = TrustAccount.find(getX(), request.findSourceAccount(x));
-        COTransaction co = new COTransaction.Builder(x).build();
-        co.setAmount(request.getAmount());
-        co.setSourceAccount(request.getSourceAccount());
-        co.setDestinationAccount(9);
-        co.setIsQuoted(true);
-        co.setStatus(TransactionStatus.COMPLETED);
-        txn.addNext(co);
+        KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
+        kotakCO.setAmount(request.getAmount());
+        kotakCO.setSourceAccount(request.getSourceAccount());
+        kotakCO.setDestinationAccount(this.KOTAK_CO_DESTINATION_ACCOUNT_ID);
+        kotakCO.setIsQuoted(true);
+        txn.addNext(kotakCO);
 
         // txn 3: Kotak IN bank -> destination IN bank
-        KotakCOTransaction t3 = new KotakCOTransaction.Builder(x).build();
+        KotakPaymentTransaction t3 = new KotakPaymentTransaction.Builder(x).build();
         t3.copyFrom(request);
         t3.setAmount(request.getDestinationAmount());
         t3.addLineItems(

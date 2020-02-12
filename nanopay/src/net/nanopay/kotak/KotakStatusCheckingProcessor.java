@@ -11,7 +11,7 @@ import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
 import net.nanopay.kotak.model.reversal.Rev_DetailType;
 import net.nanopay.kotak.model.reversal.Reversal;
-import net.nanopay.tx.KotakCOTransaction;
+import net.nanopay.tx.KotakPaymentTransaction;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -28,24 +28,24 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
 
     transactionDAO
       .where(AND(
-        INSTANCE_OF(KotakCOTransaction.class),
+        INSTANCE_OF(KotakPaymentTransaction.class),
         EQ(Transaction.STATUS, TransactionStatus.SENT)
       )).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
 
-        getStatus(x, ((KotakCOTransaction) obj));
+        getStatus(x, ((KotakPaymentTransaction) obj));
 
       }
     });
   }
 
-  public void getStatus(X x, KotakCOTransaction kotakCOTxn) {
+  public void getStatus(X x, KotakPaymentTransaction kotakCOTxn) {
     DAO    transactionDAO = (DAO) x.get("localTransactionDAO");
     Logger logger         = (Logger) x.get("logger");
     KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
 
-    kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) kotakCOTxn).fclone();
+    kotakCOTxn = (KotakPaymentTransaction) ((KotakPaymentTransaction) kotakCOTxn).fclone();
 
     try {
 

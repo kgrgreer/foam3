@@ -176,9 +176,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ChoiceView',
           placeholder: '- Please select -',
-          dao: X.countryDAO.where(m.OR(
-            m.EQ(foam.nanos.auth.Country.ID, 'CA')
-          )),
+          dao: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')),
           objToChoice: function(a) {
             return [a.id, a.name];
           }

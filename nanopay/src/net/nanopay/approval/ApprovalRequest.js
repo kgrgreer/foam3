@@ -24,7 +24,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'approvalRequestDAO'
+    'approvalRequestDAO',
+    'ctrl'
   ],
 
   tableColumns: [
@@ -32,7 +33,7 @@ foam.CLASS({
     'description',
     'classification',
     'objId',
-    'referenceObj',
+    'viewReference',
     'approver',
     'status',
     'memo',
@@ -40,10 +41,28 @@ foam.CLASS({
     'reject'
   ],
 
+  sections: [
+    {
+      name: 'basicInformation',
+      isAvailable: () => false
+    },
+    {
+      name: 'requestDetails'
+    },
+    {
+      name: 'supportDetails'
+    },
+    {
+      name: '_defaultSection',
+      isAvailable: () => false
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
+      section: '_defaultSection',
       visibility: 'RO',
       documentation: 'Sequence number.'
     },
@@ -51,7 +70,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approver',
-      visibility: 'RO',
+      section: 'requestDetails',
       documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
         let self = this;
@@ -62,13 +81,18 @@ foam.CLASS({
             self.add(approver);
           }
         });
-      }
+      },
+      visibilityExpression: function(approver) {
+        return approver ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      },
     },
     {
       class: 'Object',
       javaType: 'Object',
       name: 'objId',
-      visibility: 'RO',
+      visibility: 'HIDDEN',
       documentation: 'id of the object that needs approval.',
       tableWidth: 150,
       tableCellFormatter: function(objId) {
@@ -96,7 +120,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'daoKey',
-      visibility: 'RO',
+      visibility: 'HIDDEN',
       documentation: `Used internally in approvalDAO to point where requested object can be found.
       Should not be used to retrieve approval requests for a given objects
       since an object can have multiple requests of different nature.`
@@ -104,6 +128,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'classification',
+      label: 'Approval Type',
+      section: 'requestDetails',
       tableWidth: 150,
       documentation: `Should be unique to a certain type of requests and created within a single rule.
       For example "IdentityMind Business approval".
@@ -111,7 +137,13 @@ foam.CLASS({
       mlang.AND(
         EQ(ApprovalRequest.OBJ_ID, objectId),
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
-      )`
+      )`,
+      gridColumns: 4,
+      visibilityExpression: function(classification) {
+        return classification ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Int',
@@ -119,78 +151,144 @@ foam.CLASS({
       documentation: `Specific to each ApprovalRequest object.
       Determines the weight of the approved request depending on the approver's role.
       Future: populated in approvalRequestDAO pipeline based on configurations.
-      Currentely populated as 1.`
+      Currentely populated as 1.`,
+      gridColumns: 4,
+      section: 'basicInformation',
+      visibilityExpression: function(points) {
+        return points ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Int',
       name: 'requiredPoints',
       value: 1,
+      gridColumns: 4,
+      section: 'basicInformation',
       documentation: `Defines how many approvers required and approvers' ranks.
       E.g. when set to 10:
       1) 10 approval requests with "points" set to 1.
       2) 2 approval requests with "points" set to 3 and 1 approval request with "points" set to 5.
       etc.
-      Deafults to 1 meaning only one approval of any approver rank is required by default.`
+      Deafults to 1 meaning only one approval of any approver rank is required by default.`,
+      visibilityExpression: function(requiredPoints) {
+        return requiredPoints ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Int',
       name: 'requiredRejectedPoints',
-      value: 1
+      value: 1,
+      gridColumns: 4,
+      section: 'basicInformation',
+      visibilityExpression: function(requiredRejectedPoints) {
+        return requiredRejectedPoints ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'group',
       documentation: `When set, each user in the group will receive a request for approval.
-      If "approver" property is set, "group" property is ignored.`
+      If "approver" property is set, "group" property is ignored.`,
+      section: 'supportDetails',
+      visibilityExpression: function(group) {
+        return group ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Enum',
       of: 'net.nanopay.approval.ApprovalStatus',
       name: 'status',
       value: 'REQUESTED',
+      section: 'requestDetails',
       javaFactory: 'return net.nanopay.approval.ApprovalStatus.REQUESTED;',
+      visibilityExpression: function(status) {
+        return status ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'String',
       name: 'memo',
-      label: 'Notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
-      documentation: 'Meant to be used for explanation on why request was approved/rejected'
+      documentation: 'Meant to be used for explanation on why request was approved/rejected',
+      section: 'basicInformation',
+      visibilityExpression: function(memo) {
+        return memo ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'String',
       name: 'description',
       documentation: `Approval request description.`,
       tableWidth: 200,
+      section: 'basicInformation',
+      visibilityExpression: function(description) {
+        return description ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
    },
     {
       class: 'String',
       name: 'token',
-      visibility: 'RO',
-      documentation: 'token in email for ‘click to approve’.'
+      documentation: 'token in email for ‘click to approve’.',
+      section: 'basicInformation',
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
       name: 'created',
-      visibility: 'RO'
+      section: 'supportDetails',
+      gridColumns: 6,
+      visibilityExpression: function(created) {
+        return created ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      gridColumns: 6,
+      section: 'supportDetails',
+      visibilityExpression: function(lastModified) {
+        return lastModified ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      visibility: 'RO'
+      section: 'supportDetails',
+      visibility: 'HIDDEN'
     },
     {
-      class: 'DateTime',
-      name: 'lastModified',
-      visibility: 'RO'
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      section: 'supportDetails',
+      visibility: 'HIDDEN'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      visibility: 'RO'
+      section: 'supportDetails',
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -203,7 +301,53 @@ foam.CLASS({
         return getDaoKey() + ": " + getObjId();
       `,
       hidden: true
+    },
+    {
+      class: 'String',
+      name: 'daoKey_',
+      hidden: true,
+      factory: function(o, n) {
+        var key = this.daoKey;
+        var X = this.ctrl.__subContext__;
+        // FIXME: This is hacky
+        if ( ! X[key] ) {
+          // if DAO doesn't exist in context, change daoKey from localMyDAO
+          // (server-side) to myDAO (accessible on front-end)
+          key = key.substring(5, 6).toLowerCase() + key.substring(6);
+        }
+        return key;
+      }
+    },
+    {
+      name: 'referenceObj_',
+      hidden: true,
+      expression: function() {
+        var X = this.ctrl.__subContext__;
+        var objId = X[this.daoKey_].of.ID.type === 'Long' ? parseInt(this.objId) : this.objId;
+
+        X[this.daoKey_]
+          .find(objId)
+          .then((obj) => {
+            if (
+              // if approvalRequest is rejected don't show ViewReference
+              this.status === net.nanopay.approval.ApprovalStatus.REJECTED
+              ||
+              // if approvalRequest is for remove and has been either approved/rejected
+              (this.status === net.nanopay.approval.ApprovalStatus.APPROVED
+                &&
+              this.operation === foam.nanos.ruler.Operations.REMOVE)
+            ) {
+              this.referenceObj_ = '';
+              return;
+            }
+            this.referenceObj_ = obj;
+          })
+          .catch((err) => {
+            console.warn(err.message || err);
+          });
+        return '';
     }
+  }
   ],
 
   methods: [
@@ -234,6 +378,7 @@ if ( obj == null ) {
     {
       name: 'approve',
       label: 'Approve',
+      section: 'requestDetails',
       code: function() {
         this.status = this.ApprovalStatus.APPROVED;
         this.approvalRequestDAO.put(this);
@@ -244,6 +389,7 @@ if ( obj == null ) {
     {
       name: 'reject',
       label: 'Reject',
+      section: 'requestDetails',
       code: function() {
         this.status = this.ApprovalStatus.REJECTED;
         this.approvalRequestDAO.put(this);
@@ -252,23 +398,40 @@ if ( obj == null ) {
       tableWidth: 100
     },
     {
-      name: 'referenceObj',
-      label: 'View Ref',
-      code: function(approvalRequest) {
-        var key = approvalRequest.data.daoKey;
-        if(!this.__context__[approvalRequest.data.daoKey]) {
-          // if DAO doesn't exist in context, change daoKey from localMyDAO
-          // (server-side) to myDAO (accessible on front-end)
-          key = key.substring(5,6).toLowerCase() + key.substring(6);
+      name: 'viewReference',
+      isDefault: true,
+      isAvailable: function(referenceObj_) {
+        return !! referenceObj_;
+      },
+      code: function(X) {
+        var obj = this.referenceObj_;
+        // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+        // this is for updating object approvals
+        if ( obj.propertiesToUpdate ) {
+          // then here we created custom view to display these properties
+          X.stack.push({
+            class: 'net.nanopay.liquidity.approvalRequest.PropertiesToUpdateView',
+            propObject: obj.propertiesToUpdate,
+            objId: obj.objId,
+            daoKey: obj.daoKey,
+            title: 'Updated Properties and Changes'
+          });
+          return;
         }
-        var service = this.__context__[key];
-        // this.proxyOfDAO.delegate = service;
-        this.__context__.stack.push({
-          class: 'foam.comics.DAOUpdateControllerView',
-          detailView: 'foam.u2.DetailView',
-          key: approvalRequest.data.objId,
-          dao: service
-        }, this);
+        // else pass general view with modeled data for display
+        // this is for create, deleting object approvals
+        X.stack.push({
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          of: obj.cls_,
+          config: foam.comics.v2.DAOControllerConfig.create({
+            daoKey: this.daoKey_,
+            of: obj.cls_,
+            editEnabled: false,
+            createEnabled: false,
+            deleteEnabled: false
+          })
+        });
       },
       tableWidth: 100
     }

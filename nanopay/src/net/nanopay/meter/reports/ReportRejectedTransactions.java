@@ -1,16 +1,14 @@
 package net.nanopay.meter.reports;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.CSVSink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
-import foam.nanos.auth.User;
-import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.util.*;
 
 public class ReportRejectedTransactions extends AbstractReport {
 

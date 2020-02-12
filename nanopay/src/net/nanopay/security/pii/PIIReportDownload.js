@@ -72,19 +72,19 @@ foam.CLASS({
   methods: [
     // queries the viewPIIRequestDAO and sets requestsStatus to NONE, APPROVED, or PENDING.
     function checkPermissionStatus(instance, userID) {
-      vprDAO = this.viewPIIRequestDAO;
+      var vprDAO = this.viewPIIRequestDAO;
       instance.viewPIIRequestDAO.where(
         this.EQ(this.ViewPIIRequest.CREATED_BY, userID)
         ).select().then(
           function(result) {
-            arr = (Array(result))[0].instance_;
+            let arr = (Array(result))[0].instance_;
             // returns if DAO is empty
             if ( Object.keys(arr).length === 0 && arr.constructor === Object ) {
                 instance.requestsStatus = instance.PIIDisplayStatus.NONE;
                 instance.tick++;
                 return;
             }
-            for ( i = 0; i < arr.array.length; i++ ) {
+            for ( let i = 0; i < arr.array.length; i++ ) {
               // Looks for pending requests in DAO
               // is there a more explicit way to do this?
               if ( ! arr.array[i].instance_.viewRequestStatus ) {
@@ -111,7 +111,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      currentUserID = this.user.id;
+      var currentUserID = this.user.id;
       this.checkPermissionStatus(self, currentUserID);
 
       // set up listener on tick to update when requestStatus changes
@@ -150,7 +150,7 @@ foam.CLASS({
       label: 'Request Personal Identifiable Information Report',
       code: function(X) {
         var self = this;
-        vpr = X.window.net.nanopay.security.pii.ViewPIIRequest.create();
+        var vpr = X.window.net.nanopay.security.pii.ViewPIIRequest.create();
         X.viewPIIRequestDAO.put(vpr).then( function() {
           alert('Your request has been submitted');
           self.window.location.assign(self.window.location.origin);

@@ -30,7 +30,7 @@ foam.CLASS({
     ^ .side-nav-view {
       display: inline-block;
       position: fixed;
-      height: 100vh;
+      height: calc(100vh - 60px);
       width: 240px;
       padding-top: 60px;
       overflow-y: scroll;
@@ -46,7 +46,7 @@ foam.CLASS({
       font-weight: 800;
     }
     ^ .submenu {
-      max-height: 204px;
+      height: auto;
       overflow-y: scroll;
       overflow-x: hidden;
       font-size: 14px;
@@ -178,36 +178,50 @@ foam.CLASS({
             .select(this.dao_.where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {
               var slot = foam.core.SimpleSlot.create({ value: false });
               var hasChildren = foam.core.SimpleSlot.create({ value: false });
-              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every(x => x));
+              var visibilitySlot = foam.core.ArraySlot.create({ slots: [slot, hasChildren] }).map((results) => results.every((x) => x));
+              
               return this.E()
                 .start()
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
-                      slot.set(! slot.get());
                       return;
                     }
                     if ( ! hasChildren.get() ) {
                       self.menuListener(menu.id);
                       self.pushMenu(menu.id);
+                    } else {
+                      visibilitySlot.value = ! visibilitySlot.value;
                     }
                     self.menuSearch = menu.id;
-                    slot.set(! slot.get());
                   })
                   .addClass('sidenav-item-wrapper')
-                    .start().addClass('menu-label')
+                  .start()
+                    .addClass('menu-label')
                     .enableClass('selected-root', slot)
                     .enableClass('selected-root', self.currentMenu$.map((currentMenu) => {
                       var selectedRoot = window.location.hash.replace('#', '') == menu.id ||
-                        currentMenu != null &&
-                        currentMenu.id == menu.id ||
-                        currentMenu.parent == menu.id;
+                        currentMenu != null && (
+                          currentMenu.id == menu.id ||
+                          currentMenu.parent == menu.id
+                        );
                       slot.set(selectedRoot);
                       return selectedRoot;
                     }))
-                    .start('img').addClass('icon')
-                      .attr('src', menu.icon)
-                    .end()
+
+                    // If the menu doesn't have an icon then we use an empty
+                    // span instead. We do this to avoid a broken image icon
+                    // being inserted by the browser in place of the menu icon.
+                    .add(menu.icon$.map((iconURL) => {
+                      return iconURL
+                        ? this.E('span')
+                            .start('img')
+                              .addClass('icon')
+                              .attr('src', iconURL)
+                            .end()
+                        : this.E('span').start('span').addClass('icon').end();
+                    }))
+
                     .start('span')
                       .add(menu.label)
                     .end()
@@ -224,9 +238,11 @@ foam.CLASS({
                         .start().addClass(self.myClass('selected-dot')).end()
                         .attrs({ name: subMenu.id })
                         .on('click', function() {
+                          visibilitySlot.value = ! visibilitySlot.value;
                           if ( self.currentMenu != null && self.currentMenu.id != subMenu.id ) {
                             self.pushMenu(subMenu.id);
                             self.menuSearch = menu.id;
+                            self.menuSearchSelect();
                           }
                         })
                         .start('span').add(subMenu.label).end()
@@ -245,7 +261,6 @@ foam.CLASS({
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
 
-        this.menuSearch$.sub(this.menuSearchSelect);
         this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
       }
   ],
@@ -256,12 +271,16 @@ foam.CLASS({
       this.pushMenu(this.menuSearch);
       this.menuListener(menu);
       // Scroll to submenu selected from search.
-      document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'end' });
+      if ( document.getElementsByName(this.menuSearch)[0] ) {
+        document.getElementsByName(this.menuSearch)[0].scrollIntoView({ block: 'end' });
+      }
     },
     function scrollToCurrentSub() {
       // When submenu element is loaded, scroll element into parent view TODO: Fix to align to middle of parent div.
       if ( this.subMenu.state === this.subMenu.LOADED ) {
-        this.subMenu.el().scrollIntoView({ block: 'end' });
+        if ( this.subMenu.el() ) {
+          this.subMenu.el().scrollIntoView({ block: 'end' });
+        }
       }
     }
   ]

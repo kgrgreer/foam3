@@ -332,9 +332,7 @@ try {
     logger.error("CSVFileGeneration expected", expectedCSV);
     logger.error("CSVFileGeneration response", response);
   }
-} catch (IOException e) {
-  e.printStackTrace();
-}
+} catch (IOException e) {}
     `
     },
     {

@@ -18,17 +18,9 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'foam.nanos.auth.User',
-    'java.util.Arrays',
-    'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
-    'net.nanopay.tx.AcceptAware',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -44,12 +36,19 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'paymentInfo',
+      section: 'amountSelection',
       visibilityExpression: function(fxRate) {
-        return ! fxRate ?
-          foam.u2.Visibility.HIDDEN :
-          foam.u2.Visibility.RO;
+        if ( ! fxRate || fxRate == 1 ) return foam.u2.Visibility.HIDDEN;
+        return foam.u2.Visibility.RO;
       },
+      view: function (_, X) {
+        return X.data.slot(function(fxRate) {
+          return foam.u2.TextField.create({
+            mode: foam.u2.DisplayMode.RO,
+            data: fxRate != 1 ? `Rate: ${fxRate.toString()}` : 'No Fx'
+          });
+        });
+      }
     },
     {
       name: 'fxExpiry',
@@ -80,7 +79,7 @@ Stores all Exchange Rate info.`,
       name: 'validate',
       javaCode: `
         super.validate(x);
-
+/*
         User sourceOwner = findSourceAccount(x).findOwner(x);
         if ( sourceOwner instanceof Business
           && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
@@ -93,7 +92,7 @@ Stores all Exchange Rate info.`,
           // We throw when the destination account owner failed compliance however
           // we obligate to not expose the fact that the user failed compliance.
           throw new RuntimeException("Receiver needs to pass compliance.");
-        }
+        } Not needed in liquid Ablii specific validations need to be moved to rules. */
       `
     },
     {
@@ -108,22 +107,5 @@ Stores all Exchange Rate info.`,
 /* nop */
 `
 },
-{
-  name: 'createTransfers',
-  args: [
-    {
-      name: 'x',
-      type: 'Context'
-    },
-    {
-      name: 'oldTxn',
-      type: 'net.nanopay.tx.model.Transaction'
-    }
-  ],
-  type: 'net.nanopay.tx.Transfer[]',
-  javaCode: `
-    return getTransfers();
-  `
-}
   ]
 });

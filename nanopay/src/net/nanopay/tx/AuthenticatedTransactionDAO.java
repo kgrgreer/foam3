@@ -31,7 +31,7 @@ public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
-  public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
+  public final static String GLOBAL_TXN_CREATE = "transaction.create";
   public final static String GLOBAL_TXN_UPDATE = "transaction.update.*";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
@@ -145,7 +145,7 @@ public class AuthenticatedTransactionDAO
       logger.error(this.getClass().getSimpleName(), id, "source account", t.getSourceAccount(), "not found.", t);
     }
 
-    if ( t != null && t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
+    if ( t.findDestinationAccount(x).getOwner() != user.getId() && t.findSourceAccount(x).getOwner() != user.getId() && ! auth.check(x, GLOBAL_TXN_READ) ) {
       return null;
     }
     return t;

@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
@@ -32,7 +33,8 @@ foam.CLASS({
             Logger logger = (Logger) x.get("logger");
             BankAccount acc = (BankAccount) accountDAO.find(EQ(Account.ID, txn.getDestinationAccount()));
             User user = (User) acc.findOwner(x);
-            
+            AppConfig config = user.findGroup(x).getAppConfig(x);
+
             HashMap<String, Object> args = new HashMap<>();
             args.put("name", User.FIRST_NAME);
             args.put("institution", acc.getInstitutionNumber());
@@ -40,6 +42,7 @@ foam.CLASS({
             args.put("accountType", acc.getType());
             args.put("userEmail", User.EMAIL);
             args.put("sendTo", User.EMAIL);
+            args.put("link", config.getUrl());
 
             Notification notification = new Notification.Builder(x)
             .setBody(acc.getAccountNumber() + " verification failed!")

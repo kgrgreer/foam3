@@ -1,24 +1,20 @@
 package net.nanopay.fx.afex.cron;
 
-import foam.core.ContextAgent;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ArraySink;
-import foam.nanos.logger.Logger;
-import foam.nanos.logger.PrefixLogger;
-import foam.mlang.MLang;
-import java.util.List;
-import java.util.Calendar;
-import java.util.Date;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalRequestUtil;
-import net.nanopay.approval.ApprovalStatus;
-import net.nanopay.fx.afex.AFEXBusinessApprovalRequest;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
 
+import java.util.Calendar;
+import java.util.List;
 
+import foam.core.ContextAgent;
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalRequestUtil;
+import net.nanopay.approval.ApprovalStatus;
+import net.nanopay.fx.afex.AFEXBusinessApprovalRequest;
 
 public class AFEXBusinessApprovalRequestCron implements ContextAgent {
 

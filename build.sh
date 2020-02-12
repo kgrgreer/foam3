@@ -660,7 +660,7 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         x) VULNERABILITY_CHECK=1 ;;
-        ?) usage ; quit 1 ;;
+       ?) usage ; quit 1 ;;
     esac
 done
 
@@ -690,10 +690,7 @@ fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
-    if [[ ! -f ~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/security-versions-1.0.6.jar ]]; then
-        mvn dependency:get -DgroupId=com.redhat.victims.maven -DartifactId=security-versions -Dversion=1.0.6
-    fi
-    mvn com.redhat.victims.maven:security-versions:check
+    gradle dependencyCheckAnalyze --info
     quit 0
 fi
 

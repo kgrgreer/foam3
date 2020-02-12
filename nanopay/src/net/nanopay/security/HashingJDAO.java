@@ -1,17 +1,15 @@
 package net.nanopay.security;
 
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import foam.core.ClassInfo;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
-import foam.dao.MapDAO;
 import foam.dao.java.JDAO;
-import foam.nanos.fs.FileSystemStorage;
 import foam.nanos.fs.ResourceStorage;
-import foam.nanos.fs.Storage;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.Security;
 
 public class HashingJDAO
   extends JDAO

@@ -33,16 +33,18 @@ foam.CLASS({
             Group          group = owner.findGroup(x);
             AppConfig     config = group != null ? (AppConfig) group.getAppConfig(x) : null;
 
+            if ( config == null ) return;
             if ( owner instanceof Contact ) return;
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("business", owner.label());
 
             Notification deletedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been deleted.")
-                    .setNotificationType("BankNotifications")
+                    .setNotificationType("Latest_Activity")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("deletedBank")

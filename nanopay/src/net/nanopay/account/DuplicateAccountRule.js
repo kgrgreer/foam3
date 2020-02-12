@@ -9,13 +9,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.mlang.predicate.ContainsIC',
-    'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
-    'static foam.mlang.MLang.*',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.ShadowAccount'
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -24,7 +20,7 @@ foam.CLASS({
       javaCode: `
         if ( (obj instanceof ShadowAccount || obj instanceof DigitalAccount) ) {
           Account account = (Account) obj;
-          Count count = (Count) ((DAO) x.get("accountDAO"))
+          Count count = (Count) ((DAO) x.get("localAccountDAO"))
             .where(
               AND(
                 EQ(Account.NAME, account.getName()),

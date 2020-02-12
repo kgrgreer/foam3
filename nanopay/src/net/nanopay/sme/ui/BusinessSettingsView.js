@@ -66,7 +66,7 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
-      showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
+      var showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
       this.auth
         .check(null, 'menu.read.sme.userManagement')
         .then((hasPermission) => {

@@ -6,10 +6,8 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
-import net.nanopay.bank.USBankAccount;
-import net.nanopay.contacts.Contact;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.contacts.Contact;
 
 // we only need a put_ override in this decorator, since it only deals with the CREATION of contact bank accounts
 public class AbliiBankAccountAutoverifyDAO

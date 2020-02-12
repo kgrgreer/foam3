@@ -49,7 +49,7 @@ foam.CLASS({
     ^ .invoice-note {
       display: inline-block;
       max-height: 260px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
@@ -530,9 +530,9 @@ foam.CLASS({
       try {
         var className = '.full-invoice';
         var downloadContent = ctrl.document.querySelector(className);
-        var doc = new jsPDF('l', 'mm', ['350', '700']);
         downloadContent.style.backgroundColor = '#fff';
         downloadContent.style.padding = '20px';
+        var doc = new jsPDF('l', 'mm', [downloadContent.clientHeight, downloadContent.clientWidth]);
         doc.addHTML(downloadContent, () => {
           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
         });
