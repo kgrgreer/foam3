@@ -43,16 +43,16 @@ public class BCryptAuthService
   }
 
   @Override
-  public User login(X x, String id, String password) throws AuthenticationException {
+  public User login(X x, String identifier, String password) throws AuthenticationException {
     try {
-      return super.login(x, id, password);
+      return super.login(x, identifier, password);
     } catch (Throwable t) {
       User user = (User) userDAO_
         .find(
           AND(
             OR(
-              EQ(User.EMAIL, id.toLowerCase()),
-              EQ(User.USER_NAME, id)
+              EQ(User.EMAIL, identifier.toLowerCase()),
+              EQ(User.USER_NAME, identifier)
             ),
             CLASS_OF(User.class)
           )

@@ -61,7 +61,7 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, id, password);
+        return login_(x, identifier, password);
       `
     },
     {
@@ -74,7 +74,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'id',
+          name: 'identifier',
           type: 'String'
         },
         {
@@ -84,7 +84,7 @@ foam.CLASS({
       ],
       javaCode: `
         // check login attempts
-        User user = getUser(x, id);
+        User user = getUser(x, identifier);
 
         if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
@@ -98,7 +98,7 @@ foam.CLASS({
 
         try {
           // attempt to login in, on success reset the login attempts
-          return resetLoginAttempts(x, super.login(x, id, password));
+          return resetLoginAttempts(x, super.login(x, identifier, password));
         } catch ( Throwable t ) {
           if ( user == null ) {
             /*
@@ -144,7 +144,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'id',
+          name: 'identifier',
           type: 'String'
         }
       ],
@@ -154,8 +154,8 @@ foam.CLASS({
           .find(
             AND(
               OR(
-                EQ(User.EMAIL, id.toLowerCase()),
-                EQ(User.USER_NAME, id)
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
               ),
               CLASS_OF(User.class)
             )

@@ -108,7 +108,7 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, id, password);
+        return login_(x, identifier, password);
       `
     },
     {
@@ -121,7 +121,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'id',
+          name: 'identifier',
           type: 'String'
         },
         {
@@ -130,7 +130,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        User user = getUser(x, id);
+        User user = getUser(x, identifier);
 
         if ( user == null ) {
           throw new AuthenticationException("User not found.");
@@ -148,7 +148,7 @@ foam.CLASS({
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
-        return super.login(x, id, password);
+        return super.login(x, identifier, password);
       `
     },
     {
@@ -161,7 +161,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'id',
+          name: 'identifier',
           type: 'String'
         }
       ],
@@ -171,8 +171,8 @@ foam.CLASS({
           .find(
             AND(
               OR(
-                EQ(User.EMAIL, id.toLowerCase()),
-                EQ(User.USER_NAME, id)
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
               ),
               CLASS_OF(User.class)
             )

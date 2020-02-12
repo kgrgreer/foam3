@@ -3,7 +3,7 @@ foam.CLASS({
     name: 'CheckUserNameAvailabilityRule',
     extends: 'foam.dao.ProxyDAO',
 
-    documentation: ` A rule that check if a user with the same username already
+    documentation: ` A rule that checks if a user with the same username already
       exists in the system.`,
 
     implements: ['foam.nanos.ruler.RuleAction'],
@@ -25,7 +25,7 @@ foam.CLASS({
           DAO userDAO = (DAO) x.get("localUserDAO");
           User userWithRequestedUserName = (User) userDAO.find(EQ(User.USER_NAME, user.getUserName()));
           if ( userWithRequestedUserName != null ) {
-            throw new RuntimeException("User with same username already exists: " + user.getUserName());
+            throw new RuntimeException("User with the same username already exists: " + user.getUserName());
           }
 
           agency.submit(x, new ContextAgent() {
