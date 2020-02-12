@@ -1993,6 +1993,26 @@ p({
   """
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userComplianceSummaryReportDAO",
+  "serve": true,
+  "serviceScript": """
+    ucsrDAO =  new net.nanopay.meter.report.UserComplianceSummaryReportDAO.Builder(x)
+      .setDelegate(null)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.meter.report.UserComplianceSummaryReport.getOwnClassInfo())
+      .setDecorator(ucsrDAO)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.meter.report.UserComplianceSummaryReport"
+    }
+  """
+})
+
 // We need to override om1minDAO to add the AlarmingUniqueNameDAO decorator
 p({
   "class": "foam.nanos.boot.NSpec",
