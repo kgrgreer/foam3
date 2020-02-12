@@ -8,7 +8,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'Boolean',

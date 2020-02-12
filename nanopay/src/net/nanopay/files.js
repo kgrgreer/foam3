@@ -516,7 +516,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionsAccountsView', flags: ['web'] },
-  { name: 'net/nanopay/admin/ui/TransactionAltView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserItemView', flags: ['web'] },
@@ -647,7 +646,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/model/BillingInvoice' },
   { name: 'net/nanopay/invoice/ui/ExpensesView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/InvoiceDashboardView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceSummaryView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/MentionsView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SummaryCard', flags: ['web'] },
@@ -863,7 +861,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
-  { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
   { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
@@ -978,7 +975,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/transaction/TransactionDAOBrowserView' },
 
    // partners
-  { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },

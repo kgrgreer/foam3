@@ -18,8 +18,8 @@ foam.CLASS({
       label: 'Apply to Sub-Accounts',
       class: 'Boolean',
       value: true,
-      visibilityExpression: function(isIncluded) {
-        return ! isIncluded ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(isIncluded) {
+        return ! isIncluded ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     }
   ],
@@ -41,7 +41,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.crunch.ApproverLevel',
       javaType: 'net.nanopay.liquidity.crunch.ApproverLevel',
-      visibility: foam.u2.Visibility.HIDDEN,
+      visibility: foam.u2.DisplayMode.HIDDEN,
       factory: function() {
         return net.nanopay.liquidity.crunch.ApproverLevel.create({ approverLevel: 1 });
       },

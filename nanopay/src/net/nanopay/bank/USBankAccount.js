@@ -29,13 +29,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'US',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/us.png',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -78,7 +78,7 @@ foam.CLASS({
       name: 'branchId',
       label: 'ACH Routing Number',
       section: 'accountDetails',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123456789',

@@ -140,12 +140,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'summary',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'basicInfo',
-      visibilityExpression: function(summary) {
+      readVisibility: function(summary) {
         return summary ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(summary) {
+        return summary ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
       transient: true,
       documentation: `
