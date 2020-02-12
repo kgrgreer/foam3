@@ -10,13 +10,9 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
-import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
-import net.nanopay.model.Business;
-
 import static foam.mlang.MLang.*;
 
 /**
@@ -25,9 +21,9 @@ import static foam.mlang.MLang.*;
  * in that currency.
  */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
-  public DAO userDAO;
-  public DAO bareUserDAO;
-  public DAO accountDAO;
+  protected DAO userDAO;
+  protected DAO bareUserDAO;
+  protected DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);
@@ -41,6 +37,13 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
     CanReceiveCurrency request = (CanReceiveCurrency) obj;
+
+    // Reusing this service for a liquid requirement:
+    // Given an account id return if this is an account-not aggregate - and its currency.
+    // will return account selection validity with response.response
+    // and denomination in response.message
+    if ( request.getAccountChoice() > 0 ) return accountSelectionLookUp(x, request);
+
     CanReceiveCurrency response = (CanReceiveCurrency) request.fclone();
 
     User user = (User) bareUserDAO.inX(x).find(request.getUserId());
@@ -98,6 +101,29 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     return user;
   }
   
+  public CanReceiveCurrency accountSelectionLookUp(X x, CanReceiveCurrency query) {
+    CanReceiveCurrency response = (CanReceiveCurrency) query.fclone();
+    response.setResponse(false);
+    ArraySink accountSink = (ArraySink) accountDAO.where(AND(
+      EQ(net.nanopay.account.Account.DELETED, false),
+      EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+      EQ(net.nanopay.account.Account.ENABLED, true),
+      EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
+      OR(
+        CLASS_OF(net.nanopay.account.DigitalAccount.class),
+        INSTANCE_OF(net.nanopay.account.ShadowAccount.class)
+      )
+    )).select(new ArraySink());
+
+    if ( accountSink.getArray().size() > 0 ) {
+      Account account = (Account)accountSink.getArray().get(0);
+      response.setResponse(true);
+      response.setMessage(account.getDenomination());
+    }
+    return response;
+  }
+
+
   @Override
   public FObject find_(X x, Object id) {
     return null;

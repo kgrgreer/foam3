@@ -34,7 +34,7 @@ foam.CLASS({
               ));
 
             ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
-            if ( approval != ApprovalStatus.REQUESTED ) {
+            if ( approval != null && approval != ApprovalStatus.REQUESTED ) {
               user.setCompliance(ApprovalStatus.REJECTED == approval
                 ? ComplianceStatus.FAILED
                 // Approval can be null because no approval request is created

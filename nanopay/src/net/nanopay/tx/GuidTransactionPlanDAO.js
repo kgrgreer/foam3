@@ -17,6 +17,11 @@ foam.CLASS({
       obj = getDelegate().put_(x, obj);
       
       TransactionQuote quote = (TransactionQuote) obj;
+      Transaction plan = quote.getPlan();
+      if ( plan != null ) {
+        plan = guidForTransactions(x, plan);
+      }
+
       Transaction[] txnArray = quote.getPlans();
       for ( int i=0; i<txnArray.length; i++ ) {
         txnArray[i] = guidForTransactions(x, txnArray[i]);

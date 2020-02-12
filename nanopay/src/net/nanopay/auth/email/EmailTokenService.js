@@ -9,7 +9,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'foam.nanos.auth.User',
     'foam.util.Emails.EmailsUtility'
   ],
 

@@ -8,11 +8,6 @@ foam.CLASS({
   javaImports: [
     'sun.security.pkcs11.SunPKCS11',
 
-    'java.io.BufferedReader',
-    'java.io.File',
-    'java.io.FileInputStream',
-    'java.io.InputStreamReader',
-    'java.nio.charset.StandardCharsets',
     'java.security.KeyStore'
   ],
 

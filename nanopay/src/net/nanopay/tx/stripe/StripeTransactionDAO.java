@@ -1,17 +1,5 @@
 package net.nanopay.tx.stripe;
 
-import foam.core.FObject;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.util.SafetyUtil;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
-import foam.core.Currency;
-import net.nanopay.cico.paymentCard.model.StripePaymentCard;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import net.nanopay.account.DigitalAccount;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +7,18 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
-import com.stripe.Stripe;
+
+import foam.core.Currency;
+import foam.core.FObject;
+import foam.core.X;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
+import net.nanopay.account.DigitalAccount;
+import net.nanopay.cico.paymentCard.model.StripePaymentCard;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class StripeTransactionDAO extends ProxyDAO {
   private static final Long STRIPE_ID = 2L;

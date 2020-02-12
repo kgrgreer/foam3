@@ -9,11 +9,11 @@ import net.nanopay.kotak.model.reversal.Reversal;
 
 public class Test {
 
-  public String paymentMessageId;
-  public String paymentResponseStatusCode;
-  public String paymentResponseStatusRem;
-  public String transactionStatusCode;
-  public String transactionStatusDesc;
+  private String paymentMessageId;
+  private String paymentResponseStatusCode;
+  private String paymentResponseStatusRem;
+  private String transactionStatusCode;
+  private String transactionStatusDesc;
 
   public void paymentTest(KotakService kotakService,
                           String msgSource,

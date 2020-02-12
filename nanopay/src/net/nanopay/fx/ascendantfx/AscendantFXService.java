@@ -38,7 +38,7 @@ public class AscendantFXService
   @Override
   public GetQuoteResult getQuote(GetQuoteRequest request) {
     try {
-      StringBuffer sbuf = new StringBuffer();
+      StringBuilder sbuf = new StringBuilder();
       sbuf.append("\n------------------------------------\n");
       sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
@@ -82,7 +82,7 @@ public class AscendantFXService
   @Override
   public SubmitDealResult submitDeal(SubmitDealRequest request) {
     try {
-      StringBuffer sbuf = new StringBuffer();
+      StringBuilder sbuf = new StringBuilder();
       sbuf.append("\n------------------------------------\n");
       sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
@@ -154,7 +154,7 @@ public class AscendantFXService
   @Override
   public PayeeOperationResult addPayee(PayeeOperationRequest request) {
     try {
-      StringBuffer sbuf = new StringBuffer();
+      StringBuilder sbuf = new StringBuilder();
       sbuf.append("\n------------------------------------\n");
       sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
@@ -181,7 +181,7 @@ public class AscendantFXService
   @Override
   public PayeeOperationResult updatePayee(PayeeOperationRequest request) {
     try {
-      StringBuffer sbuf = new StringBuffer();
+      StringBuilder sbuf = new StringBuilder();
       sbuf.append("\n------------------------------------\n");
       sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
@@ -222,7 +222,7 @@ public class AscendantFXService
   @Override
   public GetPayeeInfoResult getPayeeInfo(GetPayeeInfoRequest request) {
     try {
-      StringBuffer sbuf = new StringBuffer();
+      StringBuilder sbuf = new StringBuilder();
       sbuf.append("\n------------------------------------\n");
       sbuf.append("Soap Request--------------------------\n");
       // initialize soap message

@@ -94,7 +94,7 @@ foam.CLASS({
         // non-chained delta output tests
         HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("MD5",
           "6139573a13f6ee7e9f92e9e1da2cfd01");
-        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-1",
+        HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-1",  // here!!
           "7c46c39e4c46f85b217b800c6973952097e4dfc5");
         HashingOutputter_StringifyDeltaWithoutChaining_CorrectOutput("SHA-256",
           "e0dbb6fcf5a1d18e1fd03feb7b3fef729b035c84bc196d3fb722625a8d9e3d89");
@@ -164,7 +164,8 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
-          test(outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString());
+          String delta = outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone());
+          test(delta.equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString() + " matching with: " + delta);
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }

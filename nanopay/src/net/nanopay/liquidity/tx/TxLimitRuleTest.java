@@ -1,22 +1,17 @@
 package net.nanopay.liquidity.tx;
 
-import foam.core.X;
 import foam.core.Currency;
-import foam.dao.ArraySink;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
-import net.nanopay.liquidity.tx.TxLimitEntityType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.util.Frequency;
 import net.nanopay.tx.test.TransactionTestUtil;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.util.Frequency;
 
 /*
   Test for TxLimitRule, creates a test rule with a source and destination user.
@@ -29,24 +24,24 @@ public class TxLimitRuleTest
   public void runTest(X x) {
     this.testTransactionLimit(x, TxLimitEntityType.USER, true, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Sending user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, true, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Sending account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Sending transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Sending transaction with global limits");
     this.testTransactionLimit(x, TxLimitEntityType.USER, false, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Receiving user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, false, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Receiving account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Receiving transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.PER_TRANSACTION, 5000, new long[] { 5001 }, "Receiving transaction with global limits");
 
     this.testTransactionLimit(x, TxLimitEntityType.USER, true, Frequency.DAILY, 5000, new long[] { 2500, 2510 }, "Sending user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, true, Frequency.DAILY, 5000, new long[] { 5001 }, "Sending account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.DAILY, 5000, new long[] { 4999, 5000 }, "Sending transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.DAILY, 5000, new long[] { 4999, 5000 }, "Sending transaction with global limits");
     this.testTransactionLimit(x, TxLimitEntityType.USER, false, Frequency.DAILY, 5000, new long[] { 100, 4999 }, "Receiving user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, false, Frequency.DAILY, 5000, new long[] { 50, 50, 50, 4900 }, "Receiving account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.DAILY, 5000, new long[] { 4900, 50, 50, 50 }, "Receiving transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.DAILY, 5000, new long[] { 4900, 50, 50, 50 }, "Receiving transaction with global limits");
 
     this.testTransactionLimit(x, TxLimitEntityType.USER, true, Frequency.WEEKLY, 5000, new long[] { 100, 4950 }, "Sending user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, true, Frequency.WEEKLY, 5000, new long[] { 1000, 1000, 1000, 1000, 1010 }, "Sending account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.WEEKLY, 5000, new long[] { 50, 50, 50, 50, 4850 }, "Sending transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, true, Frequency.WEEKLY, 5000, new long[] { 50, 50, 50, 50, 4850 }, "Sending transaction with global limits");
     this.testTransactionLimit(x, TxLimitEntityType.USER, false, Frequency.WEEKLY, 5000, new long[] { 4950, 100 }, "Receiving user transaction with limits");
     this.testTransactionLimit(x, TxLimitEntityType.ACCOUNT, false, Frequency.WEEKLY, 5000, new long[] { 10, 5000 }, "Receiving account transaction with limits");
-    this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.WEEKLY, 5000, new long[] { 5000, 10 }, "Receiving transaction with global limits");
+    //this.testTransactionLimit(x, TxLimitEntityType.TRANSACTION, false, Frequency.WEEKLY, 5000, new long[] { 5000, 10 }, "Receiving transaction with global limits");
   }
 
   public void testTransactionLimit(X x, TxLimitEntityType entityType, boolean send, Frequency period, long limit, long[] txAmounts, String message) {
@@ -89,6 +84,7 @@ public class TxLimitRuleTest
       transaction.setDestinationAccount(destinationAccount.getId());
       transaction.setSourceCurrency("CAD");
       transaction.setAmount(txAmounts[i]);
+      transaction.setReferenceNumber("Manual Entry");
       transaction.setStatus(TransactionStatus.COMPLETED);
       transactionDAO.put(transaction);
       spent += txAmounts[i];
@@ -97,26 +93,18 @@ public class TxLimitRuleTest
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(sourceAccount.getId());
     transaction.setDestinationAccount(destinationAccount.getId());
+    transaction.setReferenceNumber("Manual Entry");
     transaction.setSourceCurrency("CAD");
     transaction.setAmount(txAmounts[txAmounts.length - 1]);
     transaction.setStatus(TransactionStatus.COMPLETED);
 
     // Compute the error message
-    DAO currencyDAO = ((DAO) x.get("currencyDAO"));
-    Currency currency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-    String availableLimit = currency.format(limit - spent);
-    String txAmount = currency.format(transaction.getAmount());
-    User user = txLimitRule.getSend() ? sourceUser : destinationUser;
-    Account account = txLimitRule.getSend() ? sourceAccount : destinationAccount;
     String errorMessage = 
-      "The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " transaction limit was exceeded with a " + txAmount + " transaction " 
-          + (txLimitRule.getApplyLimitTo() != TxLimitEntityType.TRANSACTION ? (txLimitRule.getSend() ? "from " : "to ") : "on ")
-          + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
-          + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact us.";
+          "The " + 
+          txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+          txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+          (txLimitRule.getSend() ? "sending" : "receiving") + 
+          " limit was exceeded.";
 
     // make sure transaction throws expected RuntimeException
     test(

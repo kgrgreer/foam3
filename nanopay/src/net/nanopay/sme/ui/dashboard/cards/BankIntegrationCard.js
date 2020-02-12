@@ -9,7 +9,7 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   requires: [
@@ -21,10 +21,6 @@ foam.CLASS({
     'net.nanopay.payment.Institution',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
     'foam.u2.dialog.Popup'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions',
   ],
 
   imports: [
@@ -64,7 +60,7 @@ foam.CLASS({
     {
       name: 'SUBTITLE_VERIF',
       description: 'This used for accounts that have a micro-deposit verification. Users can manually verify',
-      message: 'bank account is added, Please Verify'
+      message: 'Bank account is added. Please verify.'
     }
   ],
 
@@ -200,7 +196,7 @@ foam.CLASS({
     },
     {
       name: 'verifyBank',
-      label: 'verify',
+      label: 'Verify',
       code: function(X) {
         this.add(this.Popup.create().tag({
           class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',

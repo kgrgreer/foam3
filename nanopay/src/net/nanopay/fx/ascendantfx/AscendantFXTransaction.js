@@ -25,16 +25,10 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.IOException',
     'java.io.InputStream',
-    'java.util.ArrayList',
-    'java.util.Arrays',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType',
-    'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
-    'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
-    'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
-    'net.nanopay.model.Business',
     'foam.core.Currency',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.ConfirmationFileLineItem',
@@ -162,6 +156,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      //TODO: this should be moved into a rule before dev merge.
         super.executeAfterPut(x, oldTxn);
         if ( oldTxn == null ) {
           // Generate the HTML.

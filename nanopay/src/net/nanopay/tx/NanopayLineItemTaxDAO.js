@@ -13,13 +13,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-    'foam.core.FObject',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.mlang.MLang',
 
-    'net.nanopay.tx.model.TransactionFee',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tax.TaxItem',
     'net.nanopay.tax.TaxService',
     'net.nanopay.tax.TaxQuoteRequest',

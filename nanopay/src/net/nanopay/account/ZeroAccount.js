@@ -32,7 +32,7 @@ foam.CLASS({
             id.append(currency);
             ZeroAccountUserAssociation assoc = (ZeroAccountUserAssociation)((DAO) x.get("localZeroAccountUserAssociationDAO")).find_(x, id.toString());
             if ( assoc == null ) {
-              if ( currency == "*" ) {
+              if ( "*".equals(currency) ) {
                 logger.error("Trust account user not found for ServiceProvider", sp, currency);
                 throw new RuntimeException("Trust account not found for ServiceProvider "+sp.getId());
               }
@@ -68,7 +68,7 @@ foam.CLASS({
         long bal = balance == null ? 0L : balance.getBalance();
         if ( amount > 0 &&
              amount > -bal) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
+          throw new RuntimeException("Invalid transfer, for: "+amount +" and "+ bal+  " "+ this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
         }
       `
     }
