@@ -1131,7 +1131,7 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       label: '',
       postSet: function(_, newV) {
-        if ( this.signingOfficer && this.userOwnsPercent && newV ) {
+        if ( this.signingOfficer && newV ) {
           this.userId$find.then((user) => {
             this.owner1.firstName = user.firstName;
             this.owner1.lastName = user.lastName;
@@ -1141,7 +1141,7 @@ foam.CLASS({
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
           return;
-        } else if ( ! this.signingOfficer && this.userOwnsPercent && newV ) {
+        } else if ( ! this.signingOfficer && newV ) {
           this.owner1.firstName = this.adminFirstName;
           this.owner1.lastName = this.adminLastName;
           this.owner1.jobTitle = this.adminJobTitle;
