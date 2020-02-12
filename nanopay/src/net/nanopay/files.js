@@ -1173,6 +1173,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/TransactionReportView' },
   { name: 'net/nanopay/meter/report/PaymentReport' },
   { name: 'net/nanopay/meter/report/PaymentReportDAO' },
+  { name: 'net/nanopay/meter/report/BusinessSummaryReport' },
+  { name: 'net/nanopay/meter/report/BusinessSummaryReportDAO' },
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReport' },
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReportDAO' },
 

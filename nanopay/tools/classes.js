@@ -735,6 +735,8 @@ var classes = [
   'net.nanopay.meter.report.TransactionReport',
   'net.nanopay.meter.report.PaymentReport',
   'net.nanopay.meter.report.PaymentReportDAO',
+  'net.nanopay.meter.report.BusinessSummaryReport',
+  'net.nanopay.meter.report.BusinessSummaryReportDAO',
   'net.nanopay.meter.report.UserComplianceSummaryReport',
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
 

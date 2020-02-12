@@ -1967,8 +1967,7 @@ p({
   """,
   "client": """
     {
-      "of": "net.nanopay.meter.report.AbliiBusinessReport",
-      "cache": true
+      "of": "net.nanopay.meter.report.AbliiBusinessReport"
     }
   """
 })
@@ -1989,6 +1988,26 @@ p({
   "client": """
     {
       "of": "net.nanopay.meter.report.PaymentReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "businessSummaryReportDAO",
+  "serve": true,
+  "serviceScript": """
+    abrDAO =  new net.nanopay.meter.report.BusinessSummaryReportDAO.Builder(x)
+      .setDelegate(null)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.meter.report.BusinessSummaryReport.getOwnClassInfo())
+      .setDecorator(abrDAO)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.meter.report.BusinessSummaryReport"
     }
   """
 })
