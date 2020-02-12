@@ -92,7 +92,9 @@ foam.CLASS({
         txn.setIsQuoted(true);
         //likely can add logic for setting clearing/completion time based on planners here.
         //auto add fx rate
-        //add cost/time
+        //TODO: add cost by hitting Fee Engine
+        //TODO: hit tax engine
+        //TODO: signing
         quote.addPlan(txn);
       `
     },
