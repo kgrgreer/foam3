@@ -689,7 +689,7 @@ p({
   "serviceScript":
   """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
-    dao = x.get(\"localUserDAO").where(predicate);
+    dao = x.get("localUserDAO").where(predicate);
     dao = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
