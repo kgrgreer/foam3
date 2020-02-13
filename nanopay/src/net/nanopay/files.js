@@ -38,6 +38,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
+  { name: 'net/nanopay/payment/InstitutionAuthorizerTest' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
@@ -331,7 +332,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
-  
+
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
@@ -1067,12 +1068,14 @@ FOAM_FILES([
   // tests
   { name: 'net/nanopay/test/DateAndPlaceOfBirthDAOTest' },
   { name: 'net/nanopay/test/BranchDAOTest' },
+  { name: 'net/nanopay/test/BranchDAOAuthorizationTest' },
   { name: 'net/nanopay/test/BusinessSectorDAOTest' },
 
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
+  { name: 'net/nanopay/invoice/test/invoiceHistoryAuthorizerTest' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
