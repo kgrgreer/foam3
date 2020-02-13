@@ -1078,4 +1078,6 @@ foam.RELATIONSHIP({
   forwardName: 'paymentCode',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'paymentCodeDAO',
 });
