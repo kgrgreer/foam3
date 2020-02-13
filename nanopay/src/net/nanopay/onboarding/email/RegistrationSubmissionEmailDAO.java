@@ -35,7 +35,7 @@ public class RegistrationSubmissionEmailDAO
 
       user = (User) super.put_(x , obj);
       User                      admin        = (User) getDelegate().find(user.getInvitedBy());
-      String                    url           = admin.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
+      String                    url           = admin.findGroup(x).getAppConfig(x).getUrl();
       EmailMessage            message      = new EmailMessage();
       EmailMessage            adminMessage = new EmailMessage();
       HashMap<String, Object> args         = new HashMap<>();
