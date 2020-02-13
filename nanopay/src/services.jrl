@@ -1864,6 +1864,33 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "txnDetailDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.meter.report.FetchTransactionDetailDAO.Builder(x)
+      .setDelegate(null)
+      .setX(x)
+      .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.meter.report.TransactionReport.getOwnClassInfo())
+      .setDecorator(dao)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "net.nanopay.meter.report.TransactionReport"
+    }
+  """
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"assetClassDAO",
   "serve":true,
