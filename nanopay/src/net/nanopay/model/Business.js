@@ -436,7 +436,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        boolean hasUserCreatePermission = auth.check(x, "business.create." + this.getId());
+        boolean hasUserCreatePermission = auth.check(x, "business.create");
 
         if ( ! hasUserCreatePermission ) {
           throw new AuthorizationException("You do not have permission to create a business.");
