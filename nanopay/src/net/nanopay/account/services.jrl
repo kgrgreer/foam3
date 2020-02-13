@@ -101,7 +101,7 @@ p({
   """
     dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
       .setX(x)
-      .setDelegate(null)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
       .build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
