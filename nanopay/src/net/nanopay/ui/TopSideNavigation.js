@@ -23,6 +23,12 @@ foam.CLASS({
     'loginSuccess',
   ],
 
+  css: `
+    ^ .foam-u2-view-TreeViewRow-heading {
+      padding: 8px 8px;
+    }
+  `,
+
   methods: [
       function initE() {
         var self = this;
@@ -33,9 +39,10 @@ foam.CLASS({
         .show(this.loginSuccess$)
         .start()
           .addClass(this.myClass())
-        .end()
-        .tag({ class: 'net.nanopay.ui.TopNavigation' })
-        .tag({ class: 'foam.nanos.menu.VerticalMenu' });
+          .tag({ class: 'net.nanopay.ui.TopNavigation' })
+          .tag({ class: 'foam.nanos.menu.VerticalMenu' })
+        .end();
+        
       }
   ]
 });
