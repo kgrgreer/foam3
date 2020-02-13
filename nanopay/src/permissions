@@ -30,7 +30,7 @@ p({"class":"foam.nanos.auth.Permission","id":"beneficialowner.create.*","descrip
 p({"class":"foam.nanos.auth.Permission","id":"beneficialowner.delete.*","description":"Permission to delete every beneficial owner."})
 p({"class":"foam.nanos.auth.Permission","id":"beneficialowner.read.*","description":"Permission to see every beneficial owner."})
 p({"class":"foam.nanos.auth.Permission","id":"beneficialowner.update.*","description":"Permission to update every beneficial owner."})
-p({"class":"foam.nanos.auth.Permission","id":"business.create.*", "description":"Permission to create a business."})
+p({"class":"foam.nanos.auth.Permission","id":"business.create", "description":"Permission to create a business."})
 p({"class":"foam.nanos.auth.Permission","id":"business.add.id.*","description":"Permission to add users to groups associated with the Business whose id is 'id'."})
 p({"class":"foam.nanos.auth.Permission","id":"business.read.id.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"business.remove.id.*","description":""})
