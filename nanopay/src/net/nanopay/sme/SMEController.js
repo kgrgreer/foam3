@@ -118,6 +118,9 @@ foam.CLASS({
     margin-left: 5px;
     text-decoration: underline;
   }
+  ^ .net-nanopay-sme-ui-AbliiActionView-large {
+    width: 160px;
+  }
   `,
 
   messages: [
