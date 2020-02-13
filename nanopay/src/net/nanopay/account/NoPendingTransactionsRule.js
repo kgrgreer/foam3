@@ -27,10 +27,7 @@ foam.CLASS({
           count = (Count) ((DAO) x.get("localTransactionDAO"))
             .where(
               AND(
-                OR(
-                  EQ(Transaction.SOURCE_ACCOUNT, digitalAccount.getId()),
-                  EQ(Transaction.DESTINATION_ACCOUNT, digitalAccount.getId())
-                ),
+                EQ(Transaction.SOURCE_ACCOUNT, digitalAccount.getId()),
                 OR(
                   EQ(Transaction.LIFECYCLE_STATE, LifecycleState.PENDING),
                   EQ(Transaction.STATUS, TransactionStatus.PENDING),
