@@ -1509,7 +1509,13 @@ p({
       .build();
 
   """,
-  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
+  "client": """
+    {
+      "of":"foam.nanos.auth.UserUserJunction",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })
 
 p({
@@ -2136,7 +2142,11 @@ p({
       .setDecorator(new net.nanopay.alarming.AlarmingUniqueNameDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo()).build()).build())
       .build();
   """,
-  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+  "client": """
+    {
+      "of":"foam.nanos.analytics.Candlestick"
+    }
+  """
 })
 
 p({
@@ -2144,7 +2154,7 @@ p({
   "name": "csvUploadScriptDAO",
   "lazy": true,
   "serve": true,
-  "serviceScript": "
+  "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
@@ -2155,8 +2165,21 @@ p({
       .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .build();",
-  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+      .build();
+  """,
+  "client": """
+    {
+      "of":"net.nanopay.script.CsvUploadScript",
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileDAODecorator"
+        },
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator"
+        }
+      ]
+    }
+  """
 })
 
 // Progress bar service
