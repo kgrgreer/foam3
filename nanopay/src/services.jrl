@@ -188,7 +188,6 @@ p({
   "client":
   """
     {
-      "cache":true,
       "of":"net.nanopay.model.BusinessSector"
     }
   """
@@ -326,7 +325,7 @@ p({
     {
       "of":"net.nanopay.invoice.model.Invoice",
       "remoteListenerSupport":false,
-      "cache":false,
+      "cache": false,
       "decorators": [{
         "class":"foam.nanos.fs.FileArrayDAODecorator"
       }]
@@ -373,8 +372,7 @@ p({
   "client":
   """
   {
-    "of":"net.nanopay.exchangeable.Security",
-    "cache":true
+    "of":"net.nanopay.exchangeable.Security"
   }
   """
 })
@@ -541,7 +539,6 @@ p({
     dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
     dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
     dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
-    dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
     dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
 
@@ -622,7 +619,7 @@ p({
   """
   {
     "of":"foam.nanos.auth.User",
-    "cache":true,"decorators": [
+    "decorators": [
       {
         "class":"foam.nanos.fs.FileDAODecorator"
       },
@@ -658,7 +655,6 @@ p({
   """
   {
     "of": "foam.nanos.auth.User",
-    "cache": true,
     "order": [
       {
         "class": "foam.mlang.order.Desc",
@@ -690,11 +686,11 @@ p({
   "serviceScript":
   """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
-    inner = (new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get("localUserDAO"))).where(predicate);
-    nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(inner).build();
+    dao = x.get("localUserDAO").where(predicate);
+    dao = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
-      .setInnerDAO(nuoe)
+      .setInnerDAO(dao)
       .setEnableInterfaceDecorators(false)
       .setDeletedAware(false)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
@@ -769,7 +765,7 @@ p({
   """
   {
     "of":"net.nanopay.model.Business",
-    "cache":false,
+    "cache": false,
     "remoteListenerSupport": false,
     "decorators": [
       {
@@ -1363,7 +1359,6 @@ p({
   """
   {
     "of":"net.nanopay.auth.PublicUserInfo",
-    "cache":true,
     "decorators": [
       {
         "class":"foam.nanos.fs.FileArrayDAODecorator"
@@ -1514,7 +1509,13 @@ p({
       .build();
 
   """,
-  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
+  "client": """
+    {
+      "of":"foam.nanos.auth.UserUserJunction",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })
 
 p({
@@ -1678,9 +1679,53 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"canadianSanctionDAO",              "lazy":false, "serve":true, "description":"In-memeory datastore for Canadian sanction records.", "authenticate": false, "serviceScript":"new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer(\"canadianSanctionDAO\")).setName(\"canadianSanction\").setOf(net.nanopay.meter.compliance.canadianSanction.Record.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.meter.compliance.canadianSanction.Record\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"acceptanceDocumentDAO",            "serve":true,  "serviceScript":"return new foam.nanos.auth.AuthorizationDAO(x, new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"acceptanceDocuments\").setSeqNo(true).setOf(net.nanopay.documents.AcceptanceDocument.getOwnClassInfo()).build(), new foam.nanos.auth.AuthorizableAuthorizer(\"acceptanceDocument\"));","client":"{\"of\":\"net.nanopay.documents.AcceptanceDocument\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"acceptanceDocumentDAO",            
+  "serve":true,  
+  "serviceScript":
+  """
+    return 
+      new foam.nanos.auth.AuthorizationDAO(x, 
+      new foam.dao.EasyDAO.Builder(x)
+        .setPm(true)
+        .setPipelinePm(true)
+        .setAuthorize(false)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName(\"acceptanceDocuments\")
+        .setSeqNo(true)
+        .setOf(net.nanopay.documents.AcceptanceDocument.getOwnClassInfo())
+      .build(), 
+      new foam.nanos.auth.AuthorizableAuthorizer("acceptanceDocument"));
+    """,
+    "client":"{\"of\":\"net.nanopay.documents.AcceptanceDocument\"}"
+})
 p({"class":"foam.nanos.boot.NSpec", "name":"acceptanceDocumentService",        "lazy":false,  "serve":true,  "authenticate": false, "boxClass":"net.nanopay.documents.AcceptanceDocumentServiceSkeleton", "serviceClass":"net.nanopay.documents.AcceptanceDocumentServer","client":"{\"class\":\"net.nanopay.documents.ClientAcceptanceDocumentService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/acceptanceDocumentService\"}}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"userAcceptanceDocumentDAO",        "serve":true,  "serviceScript":"lb = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorize(false).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"userAcceptanceDocuments\").setOf(net.nanopay.documents.UserAcceptanceDocument.getOwnClassInfo()).build()).build(); l = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(lb).build(); cb = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(l).build(); c = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(cb).build(); ar = new foam.nanos.auth.AuthorizationDAO(x, c, new foam.nanos.auth.AuthorizableAuthorizer(\"userAcceptanceDocument\")); return ar;", "client":"{\"of\":\"net.nanopay.documents.UserAcceptanceDocument\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"userAcceptanceDocumentDAO",        
+  "serve":true,  
+  "serviceScript":
+  """
+    lb = new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x).setDelegate(
+      new foam.dao.EasyDAO.Builder(x)
+        .setPm(true)
+        .setPipelinePm(true)
+        .setAuthorize(false)
+        .setSeqNo(true)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("userAcceptanceDocuments")
+        .setOf(net.nanopay.documents.UserAcceptanceDocument.getOwnClassInfo())
+      .build()).build(); 
+    l = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(lb).build(); 
+    cb = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(l).build(); 
+    c = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(cb).build();
+    ar = new foam.nanos.auth.AuthorizationDAO(x, c, new foam.nanos.auth.AuthorizableAuthorizer("userAcceptanceDocument"));
+    return ar;
+  """,
+
+  "client":"{\"of\":\"net.nanopay.documents.UserAcceptanceDocument\"}"
+})
 p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "authenticate":false, "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.", "serviceScript":"return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"))).build();"})
 p({"class":"foam.nanos.boot.NSpec","name":"securefactSIDniDAO",                "serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo(), \"securefactSIDni\"), \"securefactSIDniDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactSIDni\").setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse\"}"})
 p({"class":"foam.nanos.boot.NSpec","name":"securefactLEVDAO",                  "serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo(), \"securefactLEV\"), \"securefactLEVDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactLEV\").setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.lev.LEVResponse\"}"})
@@ -1747,7 +1792,28 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"kotakCredentials",                 "lazy":false,  "service":{"class":"net.nanopay.kotak.KotakCredentials"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"complianceHistoryDAO",             "serve":true, "serviceScript":"return new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(new foam.dao.FilteredDAO.Builder(x).setPredicate(foam.mlang.MLang.IN(foam.nanos.ruler.RuleHistory.RULE_ID,((foam.dao.ArraySink)((foam.mlang.sink.Map)((foam.dao.DAO) x.get(\"ruleDAO\")).where(foam.mlang.MLang.OR(new foam.mlang.predicate.Predicate[] {foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, \"onboarding\"), foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, \"compliance\"), foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, \"FastPay\")})).select(foam.mlang.MLang.MAP(foam.nanos.ruler.Rule.ID, new foam.dao.ArraySink()))).getDelegate()).getArray().toArray())).setDelegate((foam.dao.DAO)x.get(\"ruleHistoryDAO\")).build()).build();", "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"complianceHistoryDAO",             
+  "serve":true, 
+  "serviceScript":"""
+    return new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(
+      new foam.dao.FilteredDAO.Builder(x)
+        .setPredicate(
+          foam.mlang.MLang.IN(
+            foam.nanos.ruler.RuleHistory.RULE_ID,
+            ((foam.dao.ArraySink)((foam.mlang.sink.Map)((foam.dao.DAO) x.get("ruleDAO"))
+              .where(foam.mlang.MLang.OR(new foam.mlang.predicate.Predicate[] { 
+                foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, "onboarding"), 
+                foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, "compliance"), 
+                foam.mlang.MLang.EQ(foam.nanos.ruler.Rule.RULE_GROUP, "FastPay")}))
+              .select(foam.mlang.MLang.MAP(foam.nanos.ruler.Rule.ID, new foam.dao.ArraySink())))
+            .getDelegate()).getArray().toArray()))
+      .setDelegate((foam.dao.DAO)x.get("ruleHistoryDAO"))
+    .build()).build();
+  """, 
+  "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -1957,8 +2023,7 @@ p({
   "client":
   """
   {
-    "of":"net.nanopay.exchangeable.AssetClass",
-    "cache":true
+    "of":"net.nanopay.exchangeable.AssetClass"
   }
   """
 })
@@ -2077,7 +2142,11 @@ p({
       .setDecorator(new net.nanopay.alarming.AlarmingUniqueNameDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo()).build()).build())
       .build();
   """,
-  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+  "client": """
+    {
+      "of":"foam.nanos.analytics.Candlestick"
+    }
+  """
 })
 
 p({
@@ -2085,7 +2154,7 @@ p({
   "name": "csvUploadScriptDAO",
   "lazy": true,
   "serve": true,
-  "serviceScript": "
+  "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
@@ -2096,8 +2165,21 @@ p({
       .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .build();",
-  "client": "{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
+      .build();
+  """,
+  "client": """
+    {
+      "of":"net.nanopay.script.CsvUploadScript",
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileDAODecorator"
+        },
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator"
+        }
+      ]
+    }
+  """
 })
 
 // Progress bar service

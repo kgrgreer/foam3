@@ -1,3 +1,59 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "userDAO",
+      "browseTitle": "Users",
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
+      "predicate": {
+        "class":"foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "group"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "liquidBasic"
+            }
+          }
+      ]
+      },
+      "CRUDActionsAuth": {
+        "class": "foam.comics.v2.CRUDActionsAuth",
+        "create": ["user.make"],
+        "update": ["user.make"],
+        "delete": ["user.make"]
+      },
+      "browseViews": [
+        {
+          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+          "name": "Users",
+          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
+        }
+      ]
+    }
+  }
+})
+
 // Remove unnecessary menu items
 r({
   "class": "foam.nanos.menu.Menu",
@@ -10,35 +66,6 @@ r({
 r({
   "class": "foam.nanos.menu.Menu",
   "id": "report"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "tickets"
-})
-
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "connect"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "alterna-eft"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "ascendantFXUsers"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBusinesses"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBeneficiaries"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "account-balance"
 })
 
 // Remove unnecessary right menu items

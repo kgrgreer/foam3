@@ -8,6 +8,9 @@ foam.CLASS({
   `,
 
   css: `
+    ^ .net-nanopay-sme-ui-PaymentCodeView {
+      margin-top: 16px;
+    }
     ^ .net-nanopay-sme-ui-TransactionLimitView {
       margin-top: 16px;
     }
@@ -23,6 +26,7 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .tag({ class: 'net.nanopay.sme.ui.BusinessInformationView' })
+        .tag({ class: 'net.nanopay.sme.ui.PaymentCodeView' })
         .tag({ class: 'net.nanopay.sme.ui.TransactionLimitView' })
         .tag({ class: 'net.nanopay.sme.ui.BeneficialOwnerView' });
     }

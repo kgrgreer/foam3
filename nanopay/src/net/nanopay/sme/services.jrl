@@ -149,7 +149,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"uSBusinessOnboardingDAO",
+  "name":"usBusinessOnboardingDAO",
   "serve":true,
   "authenticate":true,
   "serviceScript":
