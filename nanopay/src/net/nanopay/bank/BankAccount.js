@@ -67,7 +67,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
@@ -207,7 +207,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -255,6 +254,10 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

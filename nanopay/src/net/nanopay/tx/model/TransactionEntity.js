@@ -11,17 +11,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'firstName',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'lastName',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',

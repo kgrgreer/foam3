@@ -26,8 +26,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'rebalancingEnabled',
       label: 'Automate Sweep',
-      visibilityExpression: function(enabled) {
-        return enabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(enabled) {
+        return enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       documentation: 'Triggeres automatic transaction on accounts.'
     },
@@ -44,8 +44,8 @@ foam.CLASS({
       unitPropName: 'denomination',
       name: 'threshold',
       documentation: 'The balance when liquidity should be triggered.',
-      visibilityExpression: function(enabled) {
-        return enabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(enabled) {
+        return enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
@@ -53,10 +53,10 @@ foam.CLASS({
       class: 'UnitValue',
       unitPropName: 'denomination',
       name: 'resetBalance',
-      label: 'Reset balance to',
-      visibilityExpression: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(rebalancingEnabled) {
+        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      label: 'Reset balance to',
       documentation: 'Account balance must match reset amount after liquidity transaction was generated.',
       view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
     },
@@ -65,8 +65,8 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
       label: 'Rebalancing Account',
-      visibilityExpression: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(rebalancingEnabled) {
+        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       documentation: 'Account associated to setting.',
       tableCellFormatter: function(value, obj, axiom) {

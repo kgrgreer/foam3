@@ -35,7 +35,9 @@ foam.CLASS({
           this.User.ORGANIZATION.clone().copyFrom({
             label: 'Company Name'
           }),
-          this.User.JOB_TITLE,
+          this.User.JOB_TITLE.clone().copyFrom({
+            required: true,
+          }),
           this.User.ADDRESS.clone().copyFrom({
             label: '',
             view: {

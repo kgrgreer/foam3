@@ -92,8 +92,8 @@ foam.CLASS({
           account.name ? self.add(account.name) : self.add(account.id);
         });
       },
-      visibilityExpression: function(useAccountTemplate) {
-        return ! useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(useAccountTemplate) {
+        return ! useAccountTemplate ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       postSet: function(_, nu) {
         if ( ! this.useAccountTemplate && !! nu ) {
@@ -109,8 +109,8 @@ foam.CLASS({
       name: 'accountTemplate',
       label: 'Apply To Account Group',
       section: 'basicInfo',
-      visibilityExpression: function(useAccountTemplate) {
-        return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(useAccountTemplate) {
+        return useAccountTemplate ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -121,8 +121,8 @@ foam.CLASS({
       documentation: 'The denomination to apply to when using account group.',
       label: 'Apply To Denomination',
       section: 'basicInfo',
-      visibilityExpression: function(useAccountTemplate) {
-        return useAccountTemplate ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(useAccountTemplate) {
+        return useAccountTemplate ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
         return {

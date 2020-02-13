@@ -4,7 +4,7 @@ p({
   "description":"Liquid",
   "appName":"nanopay",
   "priority":2,
-  "defaultMenu":"admin.nspec",
+  "defaultMenu":"admin.data",
   "largeLogoEnabled": false,
   "largeLogo": "images/Goldman_Sachs_Logo.svg",
   "logoBackgroundColour":"transparent",
