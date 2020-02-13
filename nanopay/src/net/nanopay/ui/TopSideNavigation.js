@@ -262,9 +262,7 @@ foam.CLASS({
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
 
-        this.menuSearch$.sub(this.menuSearchSelect);
         this.onDetach(this.menuSearch$.sub(this.menuSearchSelect));
-        this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
         this.onDetach(this.subMenu$.dot('state').sub(this.scrollToCurrentSub));
       }
   ],
