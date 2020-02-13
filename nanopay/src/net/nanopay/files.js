@@ -267,6 +267,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXUser' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanner' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
@@ -286,6 +287,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBusinessDisabledPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXRemoveCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXCredentials' },
+  { name: 'net/nanopay/fx/afex/AFEXTransactionPlanner' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionRule' },
   { name: 'net/nanopay/fx/afex/AFEXLog' },
@@ -339,6 +341,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/KotakCOTransaction' },
   { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
+  { name: 'net/nanopay/tx/KotakFxTransactionPlanner' },
+  { name: 'net/nanopay/tx/KotakTransactionPlanner' },
+  { name: 'net/nanopay/tx/KotakSplitTransactionPlanner' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
