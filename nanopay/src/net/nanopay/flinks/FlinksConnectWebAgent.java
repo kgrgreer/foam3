@@ -86,7 +86,7 @@ public class FlinksConnectWebAgent
       FlinksResponse response = (FlinksResponse)
           parser.parseString(builder.toString(), FlinksResponse.class);
 
-      String appUrl = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
+      String appUrl = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl();
       builder.setLength(0);
       builder.append(appUrl)
           .append("service/appRedirect")
