@@ -43,6 +43,26 @@ foam.CLASS({
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
       includeInSignature: false,
+      visibilityExpression: function(signatures) {
+        return signatures ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      },
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'TransferRefine',
+  refines: 'net.nanopay.tx.Transfer',
+  properties: [
+    {
+      class: 'List',
+      name: 'signatures',
+      documentation: 'List of signatures for a given transaction',
+      javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
+      includeInSignature: false,
     }
   ]
 });

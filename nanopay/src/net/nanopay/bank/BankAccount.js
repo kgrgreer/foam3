@@ -18,10 +18,10 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'foam.core.Currency',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
     'foam.nanos.logger.Logger',
@@ -207,7 +207,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -255,6 +254,10 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

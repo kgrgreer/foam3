@@ -47,7 +47,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radous: 2px;
-      background-color: #59a5d5;
+      background-color: /*%PRIMARY3%*/ #406dea;
       border-radius: 2px;
       font-family: Roboto;
       font-size: 14px;
@@ -64,14 +64,13 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-family: 2px;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
-      color: /*%BLACK%*/ #1e1f21;
+      color: #fff;
       cursor: pointer;
       display: inline-block;
       float: right;
@@ -122,7 +121,7 @@ foam.CLASS({
           .addClass('expand-BTN')
           .enableClass('close-BTN', this.expandBox$, true)
           .add(this.expandBox$.map(function(e) {
-            return e ? 'Expand' : 'Close';
+            return e ? 'Expand' : 'Collapse';
           }))
           .enableClass('', self.expandBox = (self.expandBox ? false : true))
           .on('click', function() {

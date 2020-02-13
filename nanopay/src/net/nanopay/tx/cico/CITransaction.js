@@ -13,8 +13,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.Transfer'
+    'foam.nanos.auth.LifecycleState'
   ],
   properties: [
     {
@@ -39,6 +38,11 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      visibility: 'Hidden'
     },
     {
       name: 'statusChoices',
@@ -82,12 +86,6 @@ foam.CLASS({
         }
         return ['No status to choose'];
       }
-    },
-    {
-      name: 'institutionNumber',
-      class: 'String',
-      value: "",
-      visibility: 'Hidden'
     }
   ],
 
@@ -107,67 +105,6 @@ foam.CLASS({
       copyClearingTimesFrom(other);
       `
     },
-    // {
-    //   documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
-    //   name: 'canReverseTransfer',
-    //   args: [
-    //     {
-    //       name: 'x',
-    //       type: 'Context'
-    //     },
-    //     {
-    //       name: 'oldTxn',
-    //       type: 'net.nanopay.tx.model.Transaction'
-    //     }
-    //   ],
-    //   type: 'Boolean',
-    //   javaCode: `
-    //     return false;
-    //   `
-    // },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-      List all = new ArrayList();
-      TransactionLineItem[] lineItems = getLineItems();
-
-      if ( canTransfer(x, oldTxn) ) {
-          for ( int i = 0; i < lineItems.length; i++ ) {
-            TransactionLineItem lineItem = lineItems[i];
-            Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, false);
-            for ( int j = 0; j < transfers.length; j++ ) {
-              all.add(transfers[j]);
-            }
-          }
-          all.add(new Transfer.Builder(x)
-              .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-In COMPLETED")
-              .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
-              .setAmount(-getTotal())
-              .build());
-            all.add( new Transfer.Builder(getX())
-                .setDescription("Cash-In")
-                .setAccount(getDestinationAccount())
-                .setAmount(getTotal())
-                .build());
-          Transfer[] transfers = getTransfers();
-          for ( int i = 0; i < transfers.length; i++ ) {
-            all.add(transfers[i]);
-          }
-      }
-      return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
     {
       name: `validate`,
       args: [
@@ -175,20 +112,26 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      super.validate(x);
-      Logger logger = (Logger) x.get("logger");
+        super.validate(x);
+        Logger logger = (Logger) x.get("logger");
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-        logger.error("Bank account must be verified");
-        throw new RuntimeException("Bank account must be verified");
-      }
-      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) ||
-        oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
-        oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
-        logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-        throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-      }
+        // Check source account
+        if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+          logger.error("Bank account must be verified");
+          throw new RuntimeException("Bank account must be verified");
+        }
+
+        // Check transaction status and lifecycleState
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+        if ( oldTxn != null
+          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
+            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
+          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && oldTxn.getLifecycleState() != LifecycleState.PENDING
+        ) {
+          logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+        }
       `
     }
   ]
