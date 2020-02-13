@@ -499,21 +499,22 @@ p({
   "authenticate": false,
   "serviceScript":
   """
-
-  return new foam.dao.EasyDAO.Builder(x)
-    .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.GROUP}) // will add index by EMAIL when easyDAO indexing fixed.
-    .setPm(true)
-    .setPipelinePm(true)
-    .setSeqNo(true)
-    .setSeqStartingValue(1000)
-    .setOf(foam.nanos.auth.User.getOwnClassInfo())
-    .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
-    .setJournalName("users")
-    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-    .setAuthorize(false)
-    .setServiceProviderAware(true)
-    .setDeletedAware(false)
-    .build();
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setSeqStartingValue(1000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .setServiceProviderAware(true)
+      .setDeletedAware(false)
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+    return dao;
   """,
   "client": """
     { "of":"foam.nanos.auth.User" }
