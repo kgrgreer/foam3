@@ -89,7 +89,7 @@ foam.CLASS({
         user = (User) ((DAO) getLocalUserDAO()).put(user);
 
         // send user email to notify of password change
-        String url = user.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
+        String url = user.findGroup(x).getAppConfig(x).getUrl();
         EmailMessage message = new EmailMessage();
         message.setTo(new String[] { user.getEmail() });
         HashMap<String, Object> args = new HashMap<>();

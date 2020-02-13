@@ -207,7 +207,7 @@ public class LiquidityService
       direction = "has fallen below ";
     }
     User user = (User) account.findOwner(x_);
-    String url = user.findGroup(getX()).getAppConfig(getX()).getUrl().replaceAll("/$", "");
+    String url = user.findGroup(getX()).getAppConfig(getX()).getUrl();
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
     args.put("account",     "your account "+account.getName()+",");

@@ -65,7 +65,7 @@ return calendar.getTime();`
 
         // save password and generate a valid id.
         user = (User) userDAO.put(user);
-        String url = user.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
+        String url = user.findGroup(x).getAppConfig(x).getUrl();
        
         Token token = new Token();
         token.setUserId(user.getId());

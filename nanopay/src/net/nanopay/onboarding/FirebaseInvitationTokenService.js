@@ -116,7 +116,7 @@ foam.CLASS({
           user.setInvitedBy(session.getUserId());
           User result = (User) ( (FObject) userDAO.put(user)).fclone();
 
-          String url = result.findGroup(x).getAppConfig(x).getUrl().replaceAll("/$", "");
+          String url = result.findGroup(x).getAppConfig(x).getUrl();
 
           // generate token
           Token token = (Token) tokenDAO.put(new Token.Builder(getX())
