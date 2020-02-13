@@ -185,6 +185,7 @@ foam.CLASS({
                   .attrs({ name: menu.label })
                   .on('click', function() {
                     if ( self.currentMenu != null && self.currentMenu.parent == menu.id ) {
+                      visibilitySlot.value = ! visibilitySlot.value;
                       return;
                     }
                     if ( ! hasChildren.get() ) {
@@ -261,7 +262,8 @@ foam.CLASS({
         .end()
         .tag({ class: 'net.nanopay.ui.TopNavigation' });
 
-        this.subMenu$.dot('state').sub(this.scrollToCurrentSub);
+        this.onDetach(this.menuSearch$.sub(this.menuSearchSelect));
+        this.onDetach(this.subMenu$.dot('state').sub(this.scrollToCurrentSub));
       }
   ],
 
