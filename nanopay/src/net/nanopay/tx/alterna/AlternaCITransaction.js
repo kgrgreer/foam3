@@ -12,22 +12,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'confirmationLineNumber',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnCode',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
       name: 'returnType',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'String',
@@ -40,13 +40,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      name: 'institutionNumber',
-      class: 'String',
-      value: '842',
-      visibility: 'Hidden'
+      visibility: foam.u2.DisplayMode.RO
     }
   ],
 
@@ -61,13 +55,15 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setConfirmationLineNumber(((AlternaCITransaction)other).getConfirmationLineNumber());
-        setReturnCode(((AlternaCITransaction)other).getReturnCode());
-        setReturnDate(((AlternaCITransaction)other).getReturnDate());
-        setReturnType(((AlternaCITransaction)other).getReturnType());
-        setPadType(((AlternaCITransaction)other).getPadType());
-        setTxnCode(((AlternaCITransaction)other).getTxnCode());
-        setDescription(((AlternaCITransaction)other).getDescription());
+        if ( other instanceof AlternaCITransaction ) {
+          setConfirmationLineNumber(((AlternaCITransaction)other).getConfirmationLineNumber());
+          setReturnCode(((AlternaCITransaction)other).getReturnCode());
+          setReturnDate(((AlternaCITransaction)other).getReturnDate());
+          setReturnType(((AlternaCITransaction)other).getReturnType());
+          setPadType(((AlternaCITransaction)other).getPadType());
+          setTxnCode(((AlternaCITransaction)other).getTxnCode());
+          setDescription(((AlternaCITransaction)other).getDescription());
+        }
       `
     },
     {

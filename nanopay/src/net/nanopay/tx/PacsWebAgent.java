@@ -136,7 +136,7 @@ public class PacsWebAgent
    * @return the error message
    */
   protected String getParsingError(X x, String buffer) {
-    Parser        parser = new foam.lib.json.ExprParser();
+    Parser        parser = foam.lib.json.ExprParser.instance();
     PStream       ps     = new StringPStream();
     ParserContext psx    = new ParserContextImpl();
 

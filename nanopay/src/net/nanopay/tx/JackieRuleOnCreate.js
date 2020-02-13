@@ -14,7 +14,6 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
-
   ],
 
   methods: [

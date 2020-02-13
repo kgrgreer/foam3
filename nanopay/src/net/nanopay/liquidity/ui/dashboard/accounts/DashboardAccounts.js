@@ -9,7 +9,7 @@ foam.CLASS({
 
   imports: [
     'homeDenomination',
-    'accountDAO',
+    'tableViewAccountDAO',
     'balanceDAO',
     'user'
   ],
@@ -51,6 +51,10 @@ foam.CLASS({
       line-height: 1.2;
       margin-bottom: 4px;
     }
+
+    ^ .net-nanopay-account-AccountDAOBrowserView-browse-view-container {
+      margin: 0;
+    }
   `,
 
   requires: [
@@ -86,8 +90,17 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({
-          defaultColumns: ["name","balance","homeBalance"],
-          dao: this.accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
+          defaultColumns: [
+            ['name', { tableWidth: undefined }],
+            ['balance', { tableWidth: 200 }],
+            ['homeBalance', { tableWidth: 200 }]
+          ],
+          filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
+          dao: this.tableViewAccountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+            this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
+            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
+foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
+          ))
         });
       }
     },
@@ -99,7 +112,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(homeDenomination, currency, accountDAO, config) {
+        .add(self.slot(function(homeDenomination, currency, tableViewAccountDAO, config) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
@@ -109,14 +122,14 @@ foam.CLASS({
                     .end()
                     .start().addClass(this.myClass('balance'))
                       .add(
-                            currency.select().then(denomBalances => {
-                              let baseTotal = 0;
-                              denomBalances.array.forEach(denomBalance => {
-                                baseTotal += denomBalance.total;
-                              })
-                              return self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
-                            })
-                          )
+                        currency.select().then(denomBalances => {
+                          let baseTotal = 0;
+                          denomBalances.array.forEach(denomBalance => {
+                            baseTotal += denomBalance.total;
+                          })
+                          return self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
+                        })
+                      )
                     .end()
                     .start().addClass(this.myClass('balance-note'))
                       .add(self.BALANCE_NOTE)
@@ -125,7 +138,7 @@ foam.CLASS({
                   .end()
                 .end()
                 .start()
-                  .start(foam.comics.v2.DAOBrowserView, {
+                  .start(net.nanopay.account.AccountDAOBrowserView, {
                     config
                   })
                     .addClass(this.myClass('accounts-table'))

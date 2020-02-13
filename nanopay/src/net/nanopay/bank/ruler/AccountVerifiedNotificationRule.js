@@ -48,10 +48,11 @@ foam.CLASS({
             args.put("institution", institutionStr);
             args.put("userEmail", User.EMAIL);
             args.put("accountType", account.getType());
+            args.put("sendTo", User.EMAIL);
 
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")
-                    .setNotificationType("BankNotifications")
+                    .setNotificationType("Latest_Activity")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("verifiedBank")

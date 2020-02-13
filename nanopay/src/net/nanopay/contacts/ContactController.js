@@ -69,6 +69,8 @@ foam.CLASS({
                 }
               }
             }),
+            'legalName',
+            'email',
             'signUpStatus',
             foam.core.Property.create({
               name: 'warning',

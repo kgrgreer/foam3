@@ -46,7 +46,7 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'quickbooksService',
-    'uSBusinessOnboardingDAO',
+    'usBusinessOnboardingDAO',
     'user',
     'userDAO',
     'xeroService',
@@ -189,6 +189,7 @@ foam.CLASS({
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
+            this.EQ( this.Notification.NOTIFICATION_TYPE, 'Latest_Activity'),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
                 this.user.disabledTopics))
@@ -266,26 +267,19 @@ foam.CLASS({
           this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
         )
-      ) || await this.uSBusinessOnboardingDAO.find(
+      ) || await this.usBusinessOnboardingDAO.find(
         this.AND(
           this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
     },
-
     function initE() {
       this.ctrl.bannerizeCompliance();
       this.SUPER();
       this.getUserAccounts().then(() => {
         var self = this;
         var split = this.DashboardBorder.create();
-
-        this.businessDAO.find(this.user.id).then((o) => {
-          this.onboardingStatus = o.onboarded;
-          this.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
-          this.businessRegistrationDate = o.businessRegistrationDate;
-        });
 
         var top = this.Element.create()
           .start('h1')

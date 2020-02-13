@@ -21,12 +21,6 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'institutionNumber',
-      class: 'String',
-      value: '001',
-      visibility: 'Hidden'
-    },
-    {
       name: 'settled',
       class: 'Boolean'
     }
@@ -43,10 +37,12 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
-        setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
-        setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
-        setSettled( ((BmoCOTransaction) other).getSettled() );
+        if ( other instanceof BmoCOTransaction ) {
+          setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
+          setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
+          setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
+          setSettled( ((BmoCOTransaction) other).getSettled() );
+        }
       `
     }
   ]

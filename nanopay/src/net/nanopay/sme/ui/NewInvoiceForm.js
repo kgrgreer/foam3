@@ -12,6 +12,8 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'getDefaultCurrencyDAO',
+    'currencyDAO',
     'ctrl',
     'errors',
     'invoice',
@@ -31,6 +33,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.Popup',
@@ -250,6 +253,7 @@ foam.CLASS({
   properties: [
     'type',
     {
+      class: 'String',
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
       expression: function(invoice) {
@@ -339,6 +343,7 @@ foam.CLASS({
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
+      
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
       } else {
@@ -548,12 +553,13 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onContactIdChange() {
-      this.checkUser(this.invoice.destinationCurrency);
+    async function onContactIdChange() {
+      await this.setDefaultCurrency();
+      this.checkUser(this.currencyType);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.id;
-      this.checkUser(this.currencyType.id);
+      this.selectedCurrency = this.currencyType;
+      this.checkUser(this.currencyType);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
@@ -578,6 +584,17 @@ foam.CLASS({
     function setCoordinates(e) {
       this.xPosition = e.x + this.TOOLTIP_OFFSET;
       this.yPosition = e.y + this.TOOLTIP_OFFSET;
+    },
+    async function setDefaultCurrency() {
+      var request = this.GetDefaultCurrency.create({
+        contactId: this.invoice.contactId
+      });
+      var responseObj = await this.getDefaultCurrencyDAO.put(request);
+      if ( responseObj.response ) {
+        this.currencyType = responseObj.response;
+        this.selectedCurrency = responseObj.response;
+        this.invoice.destinationCurrency = responseObj.response;
+      }
     }
   ],
 
