@@ -171,9 +171,12 @@ foam.CLASS({
         this.startAt = 'AddContactStepOne';
       }
       this.views = {
-        'selectBusiness': {
-          view: { class: 'net.nanopay.contacts.ui.modal.SearchBusinessView' },
+        'addContactMenu': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactMenu' },
           startPoint: true
+        },
+        'selectBusiness': {
+          view: { class: 'net.nanopay.contacts.ui.modal.SearchBusinessView' }
         },
         'AddContactStepOne': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepOne' }
