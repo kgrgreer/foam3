@@ -125,3 +125,20 @@ p({
   },
   "parent":"report"
 })
+
+// RejectedTransactionReport
+p({
+  "class":    "foam.nanos.menu.Menu",
+  "id":       "report.summaryRejectedTransactionReport",
+  "label":    "Summary Rejected Transaction Report",
+  "handler":{
+    "class":  "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey": "rejectedTransactionReportDAO",
+      "browseTitle":  "Rejected Transaction Report",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
+  },
+  "parent":"report"
+})
