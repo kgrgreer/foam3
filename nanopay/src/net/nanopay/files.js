@@ -13,6 +13,8 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
+  { name: 'net/nanopay/liquidity/approvalRequest/RemovePendingRequestsOnObjectRemovePredicate' },
+  { name: 'net/nanopay/liquidity/approvalRequest/RemovePendingRequestsOnObjectRemoveRule' },
 
   // Payment
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
