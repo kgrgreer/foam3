@@ -6,7 +6,7 @@ p({
   "priority":2,
   "defaultMenu":"admin.data",
   "largeLogoEnabled": true,
-  "largeLogo": "images/nanopay_blue_white_206x42.svg",
+  "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
   "logo":"images/nanopay_logo_blue.svg",
   "primary1":"#202341",
