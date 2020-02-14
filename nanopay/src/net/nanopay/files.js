@@ -616,6 +616,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
   { name: 'net/nanopay/tx/cico/CABankTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/cico/CABankTransactionPlanner' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaFormat' },
   { name: 'net/nanopay/tx/alterna/SFTPService' },
@@ -625,6 +626,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaVerificationTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanner' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeCustomer' },
@@ -1365,7 +1367,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/BmoSFTPCredential'},
   { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
   { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},
-  { name: 'net/nanopay/tx/bmo/BmoTransactionPlanDAO'},
+  { name: 'net/nanopay/tx/bmo/BmoTransactionPlanner' },
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },

@@ -20,6 +20,7 @@ var classes = [
   'net.nanopay.tx.CreateExpediteApprovalRequest',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.CABankTransactionPlanDAO',
+  'net.nanopay.tx.cico.CABankTransactionPlanner',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.cico.ReverseCIRule',
@@ -32,6 +33,7 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.alterna.AlternaTransactionPlanDAO',
+  'net.nanopay.tx.alterna.AlternaTransactionPlanner',
   'net.nanopay.tx.ExecuteMethodsTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
@@ -930,6 +932,7 @@ var classes = [
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',
   'net.nanopay.tx.bmo.BmoTransactionPlanDAO',
+  'net.nanopay.tx.bmo.BmoTransactionPlanner',
 
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
