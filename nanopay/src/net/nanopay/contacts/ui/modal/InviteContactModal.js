@@ -62,10 +62,6 @@ foam.CLASS({
       message: 'Invite to Ablii'
     },
     {
-      name: 'CHECKBOX_LABEL',
-      message: `I have this contact's permission to invite them to Ablii`
-    },
-    {
       name: 'INVITE_SUCCESS',
       message: 'Sent a request to connect.'
     },
@@ -93,7 +89,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'permission'
+      name: 'permission',
+      label: `I have this contact's permission to invite them to Ablii`
     }
   ],
 
@@ -126,7 +123,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass('input-wrapper')
-            .tag(this.PERMISSION, { label: this.CHECKBOX_LABEL })
+            .tag(this.PERMISSION)
           .end()
         .end()
         .start()
