@@ -43,7 +43,7 @@ foam.CLASS({
         solely to hold money for a specific invoice to an external user.
       `,
       required: true,
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.DisplayMode.RO
     }
   ]
 });

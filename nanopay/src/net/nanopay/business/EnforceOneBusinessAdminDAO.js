@@ -5,13 +5,7 @@ foam.CLASS({
 
   documentation: `
     This DAO decorator ensures that there is only one person in a Business that
-    can make payments at any given time.
-
-    This isn't exactly what we want to do forever, but it works as an interim
-    solution before we have a way to support multiple people in a business who
-    can make payments. For the time being though, only one user can be an admin
-    in a business at a time, and that must be the signing officer who fills out
-    the business profile for Ablii onboarding.
+    can make payments after submitting onboarding.
 
     When a person signs up for Ablii, they create a User and a Business. They
     become the admin for that business. However, if that person is not a signing

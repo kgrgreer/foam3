@@ -82,10 +82,10 @@ foam.CLASS({
           }
         });
       },
-      visibilityExpression: function(approver) {
+      visibility: function(approver) {
         return approver ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
     },
     {
@@ -139,10 +139,10 @@ foam.CLASS({
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
       )`,
       gridColumns: 4,
-      visibilityExpression: function(classification) {
+      visibility: function(classification) {
         return classification ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -154,10 +154,10 @@ foam.CLASS({
       Currentely populated as 1.`,
       gridColumns: 4,
       section: 'basicInformation',
-      visibilityExpression: function(points) {
+      visibility: function(points) {
         return points ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -172,10 +172,10 @@ foam.CLASS({
       2) 2 approval requests with "points" set to 3 and 1 approval request with "points" set to 5.
       etc.
       Deafults to 1 meaning only one approval of any approver rank is required by default.`,
-      visibilityExpression: function(requiredPoints) {
+      visibility: function(requiredPoints) {
         return requiredPoints ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -184,10 +184,10 @@ foam.CLASS({
       value: 1,
       gridColumns: 4,
       section: 'basicInformation',
-      visibilityExpression: function(requiredRejectedPoints) {
+      visibility: function(requiredRejectedPoints) {
         return requiredRejectedPoints ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -197,10 +197,10 @@ foam.CLASS({
       documentation: `When set, each user in the group will receive a request for approval.
       If "approver" property is set, "group" property is ignored.`,
       section: 'supportDetails',
-      visibilityExpression: function(group) {
+      visibility: function(group) {
         return group ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -210,10 +210,10 @@ foam.CLASS({
       value: 'REQUESTED',
       section: 'requestDetails',
       javaFactory: 'return net.nanopay.approval.ApprovalStatus.REQUESTED;',
-      visibilityExpression: function(status) {
+      visibility: function(status) {
         return status ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -222,10 +222,10 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
       documentation: 'Meant to be used for explanation on why request was approved/rejected',
       section: 'basicInformation',
-      visibilityExpression: function(memo) {
+      visibility: function(memo) {
         return memo ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -234,10 +234,10 @@ foam.CLASS({
       documentation: `Approval request description.`,
       tableWidth: 200,
       section: 'basicInformation',
-      visibilityExpression: function(description) {
+      visibility: function(description) {
         return description ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
    },
     {
@@ -252,10 +252,10 @@ foam.CLASS({
       name: 'created',
       section: 'supportDetails',
       gridColumns: 6,
-      visibilityExpression: function(created) {
+      visibility: function(created) {
         return created ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -263,10 +263,10 @@ foam.CLASS({
       name: 'lastModified',
       gridColumns: 6,
       section: 'supportDetails',
-      visibilityExpression: function(lastModified) {
+      visibility: function(lastModified) {
         return lastModified ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {

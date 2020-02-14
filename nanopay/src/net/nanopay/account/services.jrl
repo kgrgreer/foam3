@@ -92,6 +92,50 @@ p({
   """
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewAccountDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
+      .setX(x)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .setInnerDAO(x.get("accountDAO"))
+      .setDecorator(dao)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPermissioned(false)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": 
+  """
+    {
+      "of": "net.nanopay.account.Account", 
+      "remoteListenerSupport": false, 
+      "serverBox": { 
+        "class": "foam.box.SessionClientBox", 
+        "url": "service/tableViewAccountDAO", 
+        "delegate": { 
+          "class": "foam.box.TimeoutBox", 
+          "timeout": 25000,
+          "delegate": {
+            "class": "foam.box.HTTPBox", 
+            "url": "service/tableViewAccountDAO"
+          }
+        }
+      }
+    }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"digitalAccount",                     "serve":true, "boxClass":"net.nanopay.account.DigitalAccountServiceInterfaceSkeleton", "serviceClass":"net.nanopay.account.DigitalAccountService","client":"{ \"class\":\"net.nanopay.account.ClientDigitalAccountService\", \"serviceName\": \"service/digitalAccount\" }"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localZeroAccountUserAssociationDAO",                  "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setPm(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"zeroAccountUserAssociations\").setOf(net.nanopay.account.ZeroAccountUserAssociation.getOwnClassInfo()).build() /*.setDaoType(foam.dao.MDAO).build()*/;","client":"{\"of\":\"net.nanopay.account.ZeroAccountUserAssociation\"}"})
 

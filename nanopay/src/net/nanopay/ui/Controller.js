@@ -119,6 +119,11 @@ foam.CLASS({
       color: rgb(0, 153, 229);
       text-decoration-line: none;
     }
+
+    .foam-u2-stack-StackView {
+      overflow: scroll;
+      height: calc(100vh - 80px);
+    }
   `,
 
   constants: [

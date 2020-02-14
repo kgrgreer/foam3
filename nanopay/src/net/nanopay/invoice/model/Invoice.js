@@ -25,8 +25,14 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'payerId',
-    'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
+    'id', 
+    'invoiceNumber', 
+    'payerId',
+    'payeeId', 
+    'issueDate', 
+    'dueDate', 
+    'amount', 
+    'status'
   ],
 
   javaImports: [
@@ -73,7 +79,7 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL,
+      updateVisibility: 'RO',
       tableWidth: 110
     },
     {

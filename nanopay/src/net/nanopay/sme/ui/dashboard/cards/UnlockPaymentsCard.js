@@ -23,7 +23,7 @@ foam.CLASS({
     'agent',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
-    'uSBusinessOnboardingDAO',
+    'usBusinessOnboardingDAO',
     'menuDAO',
     'stack',
     'user',
@@ -327,7 +327,7 @@ foam.CLASS({
                 });
               });
             }  else if ( ! this.isCanadianBusiness ) {
-              this.uSBusinessOnboardingDAO.find(
+              this.usBusinessOnboardingDAO.find(
                 this.AND(
                   this.EQ(this.USBusinessOnboarding.USER_ID, userId),
                   this.EQ(this.USBusinessOnboarding.BUSINESS_ID, businessId)
