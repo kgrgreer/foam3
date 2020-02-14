@@ -21,8 +21,8 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      CLASS: 'String',
-      NAME: 'firstName',
+      class: 'String',
+      name: 'firstName',
       documentation: 'The first name of the individual person, or real user.',
       visibility: 'RO'
     },
