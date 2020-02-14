@@ -211,6 +211,7 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
+      tableWidth: 168,
       section: 'accountDetails',
       order: 1
     },
@@ -394,7 +395,6 @@ foam.CLASS({
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
-      tableWidth: 500,
       expression: function() {
         return this.toSummary() + ` - ${this.type}`;
       },
