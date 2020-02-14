@@ -35,6 +35,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       line-height: 1.5;
+      margin-top: -25px;
       margin-right: 6px;
       width: 90%;
       float: right;
@@ -86,6 +87,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.wizard.CONFIRM_RELATIONSHIP.label = '';
       var emailDisplayMode = this.isEdit ?
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       this.addClass(this.myClass())
