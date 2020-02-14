@@ -44,6 +44,9 @@ p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"FOP Transaction Planner"
 p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"DVP Transaction Planner")
 p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Bucket Transaction Planner")
 
+// transaction auto approval
+p({"class":"foam.nanos.ruler.Rule","id":"Transaction Auto-Approval","enabled":false})
+
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Create UserCapabilityJunction on CapabilityRequest Approval",
@@ -465,4 +468,3 @@ p({
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate" },
   "saveHistory": true
 })
-
