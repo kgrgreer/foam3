@@ -183,7 +183,6 @@ foam.CLASS({
       } else if ( this.wizard.bankAccount ) {
         this.bankAccount = this.wizard.bankAccount;
       }
-      console.log(await this.auth.check(null, 'strategyreference.read.5ce586f7-5e50-c03b-4303-d6fb5172d82a'));
       let permIndia = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
       let permUs = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
       if ( permIndia || permUs ) {
