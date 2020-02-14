@@ -207,13 +207,13 @@ foam.CLASS({
           .start()
           .addClass('contact-bank-account')
             .add(this.slot(function(bankAdded) {
-              // if ( bankAdded || this.viewData.isBankingProvided ) {
-              //   return this.E().tag({
-              //     class: 'foam.u2.detail.SectionedDetailView',
-              //     of: 'net.nanopay.bank.BankAccount',
-              //     data$: self.bankAccount$ // Bind value to the property
-              //   });
-              // }
+              if ( bankAdded || this.viewData.isBankingProvided ) {
+                return this.E().tag({
+                  class: 'foam.u2.detail.SectionedDetailView',
+                  of: 'net.nanopay.bank.BankAccount',
+                  data$: self.bankAccount$ // Bind value to the property
+                });
+              }
 
               return this.E().tag({
                 class: 'foam.u2.view.FObjectView',
