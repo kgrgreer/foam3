@@ -396,17 +396,25 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "liquidUserDAO",
+  "lazy": false,
   "serve": true,
   "description": "filtered DAO for liquidBasic users",
   "serviceScript":"""
-    return new foam.dao.FilteredDAO.Builder(x)
-      .setPredicate(
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("userDAO"))
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setAuthorize(false)
+      .setValidated(true)
+      .setDecorator(new foam.dao.FilteredDAO(
+        x,
         foam.mlang.MLang.AND(
           foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "liquidBasic"),
           foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-        )
-      )
-      .setDelegate((foam.dao.DAO)x.get("userDAO"))
+        ),
+        null,
+        foam.nanos.auth.User.getOwnClassInfo(),
+        foam.nanos.auth.User.ID
+      ))
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\"}"
