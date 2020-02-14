@@ -441,24 +441,6 @@ p({
 })
 
 p({
-  "class": "foam.nanos.ruler.Rule",
-  "id": "Remove all related pending approval requests on object remove",
-  "daoKey": "approvalRequestDAO",
-  "priority": 100,
-  "enabled":true,
-  "operation": 1, 
-  "saveHistory": true,
-  "after": true,
-  "predicate": {
-    "class": "net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemovePredicate"
-  },
-  "action": {
-    "class": "net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemoveRule"
-  },
-  "ruleGroup": "liquid"
-})
-
-p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Remove Deleted Account From AccountTemplate",
   "priority": 100,
