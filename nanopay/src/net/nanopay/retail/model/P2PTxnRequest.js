@@ -12,19 +12,19 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       tableWidth: 50,
-      visibilty: 'RO',
+      visibility: 'RO',
     },
     {
       class: 'EMail',
       name: 'requestorEmail',
       label: `Requestor's Email`,
-      visibilty: 'RO',
+      visibility: 'RO',
     },
     {
       class: 'EMail',
       name: 'requesteeEmail',
       label: `Requestee's email`,
-      visibilty: 'RO',
+      visibility: 'RO',
     },
     {
       class: 'String',

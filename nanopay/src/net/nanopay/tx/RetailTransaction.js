@@ -18,7 +18,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'tip',
       label: 'Tip',
-      visibilty: 'RO',
+      visibility: 'RO',
       tableCellFormatter: function(tip, X) {
         var formattedAmount = tip/100;
         this
@@ -30,7 +30,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'total',
-      visibilty: 'RO',
+      visibility: 'RO',
       label: 'Total Amount',
       transient: true,
       expression: function(amount, tip) {
@@ -61,7 +61,7 @@ foam.CLASS({
       of: 'net.nanopay.retail.model.Device',
       name: 'deviceId',
       swiftType: 'Int?',
-      visibilty: 'RO'
+      visibility: 'RO'
     },
     {
       class: 'String',
