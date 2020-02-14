@@ -23,12 +23,6 @@ foam.CLASS({
     'loginSuccess',
   ],
 
-  css: `
-    ^ .foam-u2-view-TreeViewRow-heading {
-      padding: 8px 8px;
-    }
-  `,
-
   methods: [
       function initE() {
         var self = this;
