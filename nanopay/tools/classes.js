@@ -323,8 +323,6 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
-   'net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemoveRule',
-   'net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemovePredicate',
    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
    'net.nanopay.liquidity.crunch.ApproverLevel',
