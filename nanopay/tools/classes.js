@@ -323,6 +323,8 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate',
    'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
+   'net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemoveRule',
+   'net.nanopay.liquidity.approvalRequest.RemovePendingRequestsOnObjectRemovePredicate',
    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
    'net.nanopay.liquidity.crunch.ApproverLevel',
@@ -741,6 +743,8 @@ var classes = [
   'net.nanopay.meter.report.BusinessSummaryReportDAO',
   'net.nanopay.meter.report.UserComplianceSummaryReport',
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
+  'net.nanopay.meter.report.RejectedTransactionReport',
+  'net.nanopay.meter.report.RejectedTransactionReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',

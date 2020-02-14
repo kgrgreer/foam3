@@ -13,6 +13,8 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },
   { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
+  { name: 'net/nanopay/liquidity/approvalRequest/RemovePendingRequestsOnObjectRemovePredicate' },
+  { name: 'net/nanopay/liquidity/approvalRequest/RemovePendingRequestsOnObjectRemoveRule' },
 
   // Payment
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
@@ -1181,6 +1183,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/BusinessSummaryReportDAO' },
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReport' },
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReportDAO' },
+  { name: 'net/nanopay/meter/report/RejectedTransactionReportDAO' },
+  { name: 'net/nanopay/meter/report/RejectedTransactionReport' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
