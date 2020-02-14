@@ -741,6 +741,8 @@ var classes = [
   'net.nanopay.meter.report.BusinessSummaryReportDAO',
   'net.nanopay.meter.report.UserComplianceSummaryReport',
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
+  'net.nanopay.meter.report.RejectedTransactionReport',
+  'net.nanopay.meter.report.RejectedTransactionReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',

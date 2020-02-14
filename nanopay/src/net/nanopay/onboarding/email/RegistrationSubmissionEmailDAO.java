@@ -34,8 +34,8 @@ public class RegistrationSubmissionEmailDAO
         return getDelegate().put_(x, obj);
 
       user = (User) super.put_(x , obj);
-      User                    admin        = (User) getDelegate().find(user.getInvitedBy());
-      AppConfig               config       = (AppConfig) x.get("appConfig");
+      User                      admin        = (User) getDelegate().find(user.getInvitedBy());
+      String                    url           = admin.findGroup(x).getAppConfig(x).getUrl();
       EmailMessage            message      = new EmailMessage();
       EmailMessage            adminMessage = new EmailMessage();
       HashMap<String, Object> args         = new HashMap<>();
@@ -44,8 +44,8 @@ public class RegistrationSubmissionEmailDAO
       args.put("name",        user.getFirstName());
       args.put("lastName",    user.getLastName());
       args.put("id",          user.getId());
-      args.put("link",        config.getUrl());
-      args.put("memberLink",  config.getUrl()+"#members");
+      args.put("link",        url);
+      args.put("memberLink",  url+"#members");
 
       try {
         EmailsUtility.sendEmailFromTemplate(x, user, message, "reg-pending", args);

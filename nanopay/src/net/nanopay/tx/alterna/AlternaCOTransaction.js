@@ -1,4 +1,4 @@
-foam.CLASS({
+ foam.CLASS({
   package: 'net.nanopay.tx.alterna',
   name: 'AlternaCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
@@ -11,22 +11,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'confirmationLineNumber',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnCode',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnDate',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnType',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
@@ -39,7 +39,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     }
   ],
 

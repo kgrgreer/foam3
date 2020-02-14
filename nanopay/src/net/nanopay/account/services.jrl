@@ -1,5 +1,22 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"localBalanceDAO",                    "serviceScript":"return new net.nanopay.tx.LocalBalanceDAO(x);"})
-p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"balanceDAO",                         
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get("localBalanceDAO")));
+  """,
+  "client":"""
+    {
+      "of":"net.nanopay.account.Balance",
+      "cache":false,
+      "decorators": [{
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }]
+    }
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -101,7 +118,7 @@ p({
   """
     dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
       .setX(x)
-      .setDelegate(null)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
       .build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
