@@ -11,7 +11,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userType',
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
       documentation: 'Will be repeated twice, once for the sender and the other for the receiver. Possible values "Sender" | "Receiver"',
       view: function() {
         return foam.u2.view.ChoiceView.create({
