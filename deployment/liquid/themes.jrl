@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":2,
+  "id":4,
   "description":"Liquid",
   "appName":"Liquid",
   "priority":2,
