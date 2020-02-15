@@ -1,10 +1,82 @@
 // admin
-p({"class":"foam.nanos.menu.Menu","id":"admin.acceptanceDocument","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.acceptanceDocumentUser","label":"Acceptance Documents for Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userAcceptanceDocumentDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.accountingResultResponse","label":"Accounting Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountingReportDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.alarm","label":"Alarms","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"alarmDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.brokers","label":"Brokers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"brokerDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.csvUploadScriptDAO","label":"CSV UploadScripts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"csvUploadScriptDAO"}},"parent":"admin"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.acceptanceDocument",
+  "label":"Acceptance Documents",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"acceptanceDocumentDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.acceptanceDocumentUser",
+  "label":"Acceptance Documents for User",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userAcceptanceDocumentDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.accountingResultResponse",
+  "label":"Accounting Result Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"accountingReportDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.alarm",
+  "label":"Alarms",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"alarmDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.brokers",
+  "label":"Brokers",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"brokerDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.csvUploadScriptDAO",
+  "label":"CSV UploadScripts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"csvUploadScriptDAO"
+    }
+  },
+  "parent":"admin"
+})
 
 // line items
 p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemFees","label":"Line Item Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"parent":"admin"})
@@ -14,13 +86,77 @@ p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTypes","label":"Line Item 
 
 // integration
 p({"class":"foam.nanos.menu.Menu","id":"integration.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"integraiton.afexBeneficiaries","label":"AFEX Beneficiaries","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBeneficiaryDAO"},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"integration.afexBusinesses","label":"AFEX Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBusinessDAO"},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexBeneficiaries",
+  "label":"AFEX Beneficiaries",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBeneficiaryDAO"
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexBusiness",
+  "label":"AFEX Businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBusinessDAO"
+    }
+  },
+  "parent":"integration"
+})
 p({"class":"foam.nanos.menu.Menu","id":"integration.ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"integration.ascendantuser","label":"Ascendant Payee","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantUserPayeeJunctionDAO"},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.ascendantuser",
+  "label":"AscendantFX Payee",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ascendantUserPayeeJunctionDAO"
+    }
+  },
+  "parent":"integration"
+})
 p({"class":"foam.nanos.menu.Menu","id":"integration.devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"integration.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"integration.plaidResultReport","label":"Plaid Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"plaidResultReportDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.flinksResponses",
+  "label":"FLinks Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"flinksAccountsDetailResponseDAO",
+      "createEnabled":false,
+      "editEnabled":false,
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.plaidResultReport",
+  "label":"Plaid Result Report",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"plaidResultReportDAO",
+      "createEnabled":false,
+      "editEnabled":false,
+    }
+  },
+  "parent":"integration"
+})
 
 // root items
 p({
