@@ -46,7 +46,9 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"alarmDAO"
+      "daoKey":"alarmDAO",
+      "editEnabled":false,
+      "deleteEnabled":false
     }
   },
   "parent":"admin"
@@ -211,3 +213,5 @@ r({"class":"foam.nanos.menu.Menu","id":"admin.users"})
 // remove support and use operations ticketing
 r({"class":"foam.nanos.menu.Menu","id":"admin.support"})
 r({"class":"foam.nanos.menu.Menu","id":"admin.support-email"})
+// support has access to admin.logs
+r({"class":"foam.nanos.menu.Menu","id":"supportLogs"})
