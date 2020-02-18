@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.bmo',
   name: 'BmoTransactionPlanner',
-  extends: 'net.nanopay.tx.cico.CABankTransactionPlanner',
+  extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   javaImports: [
     'foam.dao.DAO',
@@ -41,11 +41,10 @@ foam.CLASS({
     {
       name: 'plannerLogic',
       javaCode: `
-        
+        // TODO move logic to planner predicates
     Logger logger = (Logger) x.get("logger");;
     
     if ( requestTxn instanceof BmoVerificationTransaction ) {
-        requestTxn.setIsQuoted(true);
         return requestTxn;
       } else if ( requestTxn instanceof VerificationTransaction ) {
         return null;
@@ -65,18 +64,8 @@ foam.CLASS({
         throw new RuntimeException("Bank account needs to be verified for cashin");
       };
 
-      BmoCITransaction t = new BmoCITransaction.Builder(x).build();
-      t.copyFrom(requestTxn);
-      t.setInstitutionNumber(institutionNumber);
-      t.setTransfers(createCITransfers(t, institutionNumber));
-
-      // TODO: use EFT calculation process
-      t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
-      if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
-        PADTypeLineItem.addEmptyLineTo(t);
-      }
-      t.setIsQuoted(true);
-      return t;
+      // bmoCITransactionPlanner
+      
     } else if ( sourceAccount instanceof DigitalAccount &&
                 destinationAccount instanceof CABankAccount &&
                 sourceAccount.getOwner() == destinationAccount.getOwner() ) {
@@ -98,7 +87,6 @@ foam.CLASS({
       if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
         PADTypeLineItem.addEmptyLineTo(t);
       }
-      t.setIsQuoted(true);
       return t;
     }
 
