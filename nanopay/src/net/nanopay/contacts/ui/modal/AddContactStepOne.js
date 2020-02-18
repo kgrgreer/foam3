@@ -87,6 +87,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.wizard.CONFIRM_RELATIONSHIP.label = '';
       var emailDisplayMode = this.isEdit ?
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       this.addClass(this.myClass())

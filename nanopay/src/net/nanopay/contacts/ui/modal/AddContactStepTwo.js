@@ -154,6 +154,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BankAccount',
       name: 'bankAccount'
+    },
+    {
+      class: 'Boolean',
+      name: 'hasStrategyPermission',
+      value: false
     }
   ],
 
@@ -178,6 +183,11 @@ foam.CLASS({
       } else if ( this.wizard.bankAccount ) {
         this.bankAccount = this.wizard.bankAccount;
       }
+      let permIndia = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
+      let permUs = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
+      if ( permIndia || permUs ) {
+        this.hasStrategyPermission = true;
+      }
     },
 
     function initE() {
@@ -188,6 +198,7 @@ foam.CLASS({
           .add(this.BANKING_TITLE)
         .end()
         .start()
+          .show(this.hasStrategyPermission$)
           .addClass('Country-label')
           .add('Country')
         .end()

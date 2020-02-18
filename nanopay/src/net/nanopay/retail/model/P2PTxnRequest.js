@@ -12,19 +12,19 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       tableWidth: 50,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
     },
     {
       class: 'EMail',
       name: 'requestorEmail',
       label: `Requestor's Email`,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
     },
     {
       class: 'EMail',
       name: 'requesteeEmail',
       label: `Requestee's email`,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
     },
     {
       class: 'String',
@@ -56,7 +56,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'amount',
       label: 'Amount',
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
     },
     {
       class: 'foam.core.Enum',

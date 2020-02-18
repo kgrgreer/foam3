@@ -54,6 +54,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getRoles',
+      async: true,
       type: 'List',
       args: [
         {
@@ -130,6 +131,7 @@ foam.CLASS({
     },
     {
       name: 'getUsers',
+      async: true,
       type: 'List',
       args: [
         {
@@ -208,6 +210,7 @@ foam.CLASS({
     },
     {
       name: 'getAccounts',
+      async: true,
       type: 'List',
       args: [
         {
@@ -289,6 +292,7 @@ foam.CLASS({
     },
     {
       name: 'getApproversByLevel',
+      async: true,
       type: 'List',
       args: [
         {
@@ -402,6 +406,7 @@ foam.CLASS({
     },
      {
       name: 'getAllApprovers',
+      async: true,
       type: 'List',
       args: [
         {
@@ -511,6 +516,7 @@ foam.CLASS({
     },
     {
       name: 'getRolesAndAccounts',
+      async: true,
       type: 'List',
       args: [
         {
@@ -596,6 +602,7 @@ foam.CLASS({
     },
     {
       name: 'getUsersAndRoles',
+      async: true,
       type: 'List',
       args: [
         {
@@ -678,6 +685,7 @@ foam.CLASS({
     },
     {
       name: 'getUsersAndAccounts',
+      async: true,
       type: 'List',
       args: [
         {

@@ -25,7 +25,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'Reference',
