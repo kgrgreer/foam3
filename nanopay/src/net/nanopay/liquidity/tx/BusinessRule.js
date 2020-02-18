@@ -28,7 +28,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
+      name: 'id', 
+      tableWidth: 125
+    },
+    {
+      name: 'name',
       section: 'basicInfo',
       label: 'Rule Name',
       tableWidth: 400
@@ -163,7 +167,7 @@ foam.CLASS({
       name: 'getApprovableKey',
       type: 'String',
       javaCode: `
-        String id = (String) getId();
+        String id = String.valueOf(getId());
         return id;
       `
     },
