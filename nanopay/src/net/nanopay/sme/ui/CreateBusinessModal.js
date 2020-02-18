@@ -30,6 +30,8 @@ foam.CLASS({
       color: #525455;
       font-size: 16px;
       margin-right: 25px;
+      position: relative;
+      right: -525px;
     }
     ^ .description {
       font-size: 12px;
@@ -114,6 +116,9 @@ foam.CLASS({
     },
     {
       name: 'create',
+      isEnabled: function(companyName, countryId) {
+        return companyName && countryId;
+      },
       code: async function(X) {
         var business = this.Business.create({
           organization: this.companyName,
