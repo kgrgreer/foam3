@@ -968,7 +968,9 @@ var classes = [
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
   'net.nanopay.tx.planner.ExamplePlanner',
   'net.nanopay.tx.planner.DigitalTransactionPlanner',
-  
+  'net.nanopay.tx.planner.GenericCIPlanner',
+  'net.nanopay.tx.planner.GenericCOPlanner',
+
 ];
 
 var abstractClasses = [
