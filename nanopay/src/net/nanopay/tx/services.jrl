@@ -138,6 +138,7 @@ p({
     dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new foam.dao.GUIDDAO.Builder(x).setDelegate(dao).build();
+    //TODO: Replace below line with  this line: dao = new net.nanopay.tx.TransactionQuotingDAO(x, dao);
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
@@ -467,23 +468,6 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.PurposeGroup\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"securityPlannerDAO",
-  "lazy":false,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setNullify(true)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setRuler(true)
-      .setRulerDaoKey("securityPlannerDAO")
-      .setPm(true)
-      .setPipelinePm(true)
-      .build();
-  """
 })
 
 p({

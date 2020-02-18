@@ -498,7 +498,6 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.DigitalTransactionPlanDAO',
-  'net.nanopay.tx.SecurityPlanDAO',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
   'net.nanopay.tx.PlanETAComparator',
@@ -521,14 +520,9 @@ var classes = [
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
-  'net.nanopay.tx.GenericCIPlanner',
-  'net.nanopay.tx.DVPplanner',
   'net.nanopay.tx.DVPTransaction',
   'net.nanopay.tx.ParentCompleteToPendingRule',
-  'net.nanopay.tx.FOPplanner',
-  'net.nanopay.tx.SecurityCIplanner',
   'net.nanopay.tx.BucketTransaction',
-  'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
   'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
@@ -965,12 +959,18 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
 
   // Planners
+  'net.nanopay.tx.planner.TransactionPlannerDAO',
+  'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
   'net.nanopay.tx.planner.ExamplePlanner',
   'net.nanopay.tx.planner.DigitalTransactionPlanner',
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
-
+  'net.nanopay.tx.GenericCIPlanner', //needs migration.. 
+  'net.nanopay.tx.DVPplanner', //needs migration.. 
+  'net.nanopay.tx.FOPplanner', //needs migration.. 
+  'net.nanopay.tx.SecurityCIplanner', //needs migration.. 
+  'net.nanopay.tx.SecurityBucketPlanner', //needs migration.. 
 ];
 
 var abstractClasses = [

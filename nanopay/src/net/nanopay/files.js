@@ -421,23 +421,17 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtTransaction' },
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
   { name: 'net/nanopay/tx/DigitalTransactionPlanDAO' },
-  { name: 'net/nanopay/tx/SecurityPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/cico/ReverseCIRule'},
   { name: 'net/nanopay/tx/cico/ReverseCORule'},
   { name: 'net/nanopay/tx/LoanTransactionPlanDAO' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
-  { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
   { name: 'net/nanopay/tx/InvoicedFeeLineItem' },
   { name: 'net/nanopay/tx/HistoricStatus' },
   { name: 'net/nanopay/tx/DVPTransaction' },
-  { name: 'net/nanopay/tx/DVPplanner' },
-  { name: 'net/nanopay/tx/FOPplanner' },
-  { name: 'net/nanopay/tx/SecurityCIplanner' },
-  { name: 'net/nanopay/tx/SecurityBucketPlanner' },
   { name: 'net/nanopay/tx/BucketTransaction' },
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
@@ -1404,10 +1398,18 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
 
   // planners
+  { name: 'net/nanopay/tx/planner/TransactionPlannerDAO' },
+  { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/ExamplePlanner' },
   { name: 'net/nanopay/tx/planner/DigitalTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
+  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs migration.. 
+  { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
+  { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 
+  { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
+  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration.. 
+
 
 ]);

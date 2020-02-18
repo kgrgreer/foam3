@@ -1,0 +1,26 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionPlannerDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .setRuler(true)
+      .setRulerDaoKey("transactionPlannerDAO")
+      .setPm(true)
+      .setPipelinePm(true)
+      .build();
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionQuotePlanDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return x.get("localTransactionPlannerDAO");
+    """,
+  "client":"{\"of\":\"net.nanopay.tx.TransactionQuote\"}"
+})

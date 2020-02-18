@@ -302,7 +302,7 @@ p({
           .setDelegate(dao)
           .build();
     dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
-    dao = new net.nanopay.tx.SecurityPlanDAO(x, dao);
+    dao = new net.nanopay.tx.planner.TransactionPlannerDAO(x, dao);
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
     dao = new net.nanopay.tx.QuoteFillerDAO.Builder(x)
       .setDelegate(dao)
