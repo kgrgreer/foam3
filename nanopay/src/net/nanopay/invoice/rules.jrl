@@ -1,6 +1,6 @@
 p({
     "class":"foam.nanos.ruler.Rule",
-    "id":" Invoice Completed notification rule",
+    "id":116,"name":" Invoice Completed notification rule",
     "priority":100,
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sends notification when payment is Completed",
@@ -19,7 +19,7 @@ p({
 
 p({
     "class":"foam.nanos.ruler.Rule",
-    "id":"Request payment notification rule",
+    "id":117,"name":"Request payment notification rule",
     "priority":100,
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sends notification when request payment is made.",
@@ -35,7 +35,7 @@ p({
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id": "Send invoice voided email to payer",
+  "id":118,"name": "Send invoice voided email to payer",
   "priority": 100,
   "ruleGroup": "InvoiceNotification",
   "documentation": "Send invoice voided email to payer",
