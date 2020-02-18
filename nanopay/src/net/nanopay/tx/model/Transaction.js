@@ -92,17 +92,17 @@ foam.CLASS({
     {
       name: 'paymentInfoSource',
       help: 'The information here will be for the source of the transfer.',
-      index: 0
+      order: 0
     },
     {
       name: 'paymentInfoDestination',
       help: 'The information here will be for the destination of the transfer.',
-      index: 1
+      order: 1
     },
     {
       name: 'amountSelection',
       help: 'The amount inputted will be refelective of the source currency account.',
-      index: 2
+      order: 2
     },
     {
       name: 'basicInfo',
@@ -130,8 +130,7 @@ foam.CLASS({
       isAvailable: function(mode) {
         return mode !== 'create';
       },
-      permissionRequired: true,
-      hidden: true
+      permissionRequired: true
     }
   ],
 
@@ -280,10 +279,6 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
-      expression: function(statusHistory) {
-        return Array.isArray(statusHistory)
-          && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
-      },
       getter: function() {
         return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
       },
