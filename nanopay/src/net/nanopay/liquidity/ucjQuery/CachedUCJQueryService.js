@@ -48,6 +48,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getRoles',
+      async: true,
       type: 'List',
       args: [
         {
@@ -113,6 +114,7 @@ foam.CLASS({
     },
     {
       name: 'getUsers',
+      async: true,
       type: 'List',
       args: [
         {
@@ -178,6 +180,7 @@ foam.CLASS({
     },
     {
       name: 'getApproversByLevel',
+      async: true,
       type: 'List',
       args: [
         {
@@ -300,8 +303,9 @@ foam.CLASS({
       }
       `
     },
-        {
+    {
       name: 'getAllApprovers',
+      async: true,
       type: 'List',
       args: [
         {
