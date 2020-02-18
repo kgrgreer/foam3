@@ -353,6 +353,50 @@ p({
   }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "liquidUserDAO",
+  "serve": true,
+  "description": "filtered DAO for liquidBasic users",
+  "authenticate": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setValidated(true)
+      .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator())
+      .setOf(foam.nanos.auth.User.getOwnClassInfo()) 
+      .setInnerDAO(x.get("localUserDAO"))
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+            foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "liquidBasic"),
+            foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+          }))
+        .build())
+      .setDeletedAware(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localUserDAO",
