@@ -5,7 +5,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
       name: 'groupId',
       value: 'payment-ops',
       javaValue: '"payment-ops"'

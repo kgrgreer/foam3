@@ -1,5 +1,3 @@
-r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
-
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "auth",
@@ -40,9 +38,9 @@ p({
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
         "hostMapping": {
-          "ablii": "/nanopay/src/net/nanopay/sme/index_nolsb.html",
-          "localhost": "/nanopay/src/net/nanopay/index_nolsb.html",
-          "liquid": "/nanopay/src/net/nanopay/liquid_nolsb.html",
+          "ablii": "/nanopay/src/net/nanopay/sme/index.html",
+          "localhost": "/nanopay/src/net/nanopay/index.html",
+          "liquid": "/nanopay/src/net/nanopay/liquid.html",
           "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
         },
         "defaultHost": "liquid"
