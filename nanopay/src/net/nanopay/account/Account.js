@@ -211,6 +211,7 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
+      tableWidth: 168,
       section: 'accountDetails',
       order: 1
     },
@@ -291,9 +292,9 @@ foam.CLASS({
       documentation: 'A numeric value representing the available funds in the bank account.',
       section: 'balanceDetails',
       storageTransient: true,
-      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
-      updateMode: 'RO',
-      readMode: 'RO',
+      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -361,7 +362,7 @@ foam.CLASS({
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
       // visibility: 'RO',
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       class: 'DateTime',
@@ -394,7 +395,6 @@ foam.CLASS({
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
-      tableWidth: 500,
       expression: function() {
         return this.toSummary() + ` - ${this.type}`;
       },
@@ -423,14 +423,14 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: foam.u2.DisplayMode.HIDDEN
     }
   ],
 
@@ -476,16 +476,10 @@ foam.CLASS({
         }
       ],
       code: function(x) {
-        return x.balanceService.findBalance(x,this.id);
+        return x.balanceService.findBalance(x, this.id);
       },
       javaCode: `
-        //TODO: use the balance service. for some reason rule engine can't get it in its context so until thats figured out.. this is what its gotta be. this function will be broken for aggregate and securitiesAccounts until then.
-        DAO balanceDAO = (DAO) x.get("balanceDAO");
-        Balance balance = (Balance) balanceDAO.find(this.getId());
-        if ( balance != null ) {
-          return balance.getBalance();
-        }
-        return 0L;
+        return ((BalanceService) x.get("balanceService")).findBalance_(x, this);
       `
     },
     {

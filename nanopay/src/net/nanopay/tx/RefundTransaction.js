@@ -8,12 +8,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.RetailTransaction',
       name: 'refundTransactionId',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'UnitValue',
       name: 'total',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       label: 'Total Amount',
       transient: true,
       expression: function(amount) {

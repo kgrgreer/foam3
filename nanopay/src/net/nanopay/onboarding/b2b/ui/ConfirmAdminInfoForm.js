@@ -275,7 +275,7 @@ foam.CLASS({
     {
       name: 'emailAddress',
       class: 'String',
-      visibility: foam.u2.Visibility.DISABLED,
+      visibility: foam.u2.DisplayMode.DISABLED,
       factory: function() {
         return this.viewData.user.email;
       },

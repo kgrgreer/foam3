@@ -1,5 +1,22 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"localBalanceDAO",                    "serviceScript":"return new net.nanopay.tx.LocalBalanceDAO(x);"})
-p({"class":"foam.nanos.boot.NSpec", "name":"balanceDAO",                         "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get(\"localBalanceDAO\")));","client":"{\"of\":\"net.nanopay.account.Balance\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"balanceDAO",                         
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO( x, (foam.dao.DAO) x.get("localBalanceDAO")));
+  """,
+  "client":"""
+    {
+      "of":"net.nanopay.account.Balance",
+      "cache":false,
+      "decorators": [{
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }]
+    }
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -89,6 +106,50 @@ p({
       }
     ]
   }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewAccountDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.account.AccountBalanceDAO.Builder(x)
+      .setX(x)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .setInnerDAO(x.get("accountDAO"))
+      .setDecorator(dao)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPermissioned(false)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": 
+  """
+    {
+      "of": "net.nanopay.account.Account", 
+      "remoteListenerSupport": false, 
+      "serverBox": { 
+        "class": "foam.box.SessionClientBox", 
+        "url": "service/tableViewAccountDAO", 
+        "delegate": { 
+          "class": "foam.box.TimeoutBox", 
+          "timeout": 25000,
+          "delegate": {
+            "class": "foam.box.HTTPBox", 
+            "url": "service/tableViewAccountDAO"
+          }
+        }
+      }
+    }
   """
 })
 

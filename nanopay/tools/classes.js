@@ -742,6 +742,8 @@ var classes = [
   'net.nanopay.meter.report.BusinessSummaryReportDAO',
   'net.nanopay.meter.report.UserComplianceSummaryReport',
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
+  'net.nanopay.meter.report.RejectedTransactionReport',
+  'net.nanopay.meter.report.RejectedTransactionReportDAO',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -905,7 +907,6 @@ var classes = [
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
   'net.nanopay.business.JoinBusinessTokenService',
-  'net.nanopay.business.UpdateBusinessEmailRule',
   'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
   'net.nanopay.business.SetBusinessNameDAO',
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',

@@ -169,7 +169,7 @@ foam.CLASS({
           documents$: X.data.additionalDocuments$
         };
       },
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -214,7 +214,7 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -223,7 +223,7 @@ foam.CLASS({
       documentation: `Determines whether the User is taking instructions from and/or acting
         on behalf of a 3rd party.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -233,7 +233,7 @@ foam.CLASS({
       documentation: `A placeholder for the photo identification image, such as a
         passport, of the individual person, or real user.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       factory: function() {
         return this.PersonalIdentification.create();
       },
@@ -247,7 +247,7 @@ foam.CLASS({
         Exposed Person (PEP), Head of an International Organization (HIO)_, or
         related to any such person.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -281,7 +281,7 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       },
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'personal'
     },
     {
@@ -289,14 +289,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',

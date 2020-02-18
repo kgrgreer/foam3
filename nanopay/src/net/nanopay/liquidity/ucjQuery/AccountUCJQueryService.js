@@ -4,6 +4,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRoles',
+      async: true,
       type: 'List',
       args: [
         {
@@ -22,6 +23,7 @@ foam.INTERFACE({
     },
     {
       name: 'getUsers',
+      async: true,
       type: 'List',
       args: [
         {
@@ -40,6 +42,7 @@ foam.INTERFACE({
     },
     {
       name: 'getAccounts',
+      async: true,
       type: 'List',
       args: [
         {
@@ -58,6 +61,7 @@ foam.INTERFACE({
     },
     {
       name: 'getApproversByLevel',
+      async: true,
       type: 'List',
       args: [
         {
@@ -80,6 +84,7 @@ foam.INTERFACE({
     },
     {
       name: 'getAllApprovers',
+      async: true,
       type: 'List',
       args: [
         {
@@ -98,6 +103,7 @@ foam.INTERFACE({
     },
     {
       name: 'getRolesAndAccounts',
+      async: true,
       type: 'List',
       args: [
         {
@@ -112,6 +118,7 @@ foam.INTERFACE({
     },
     {
       name: 'getUsersAndRoles',
+      async: true,
       type: 'List',
       args: [
         {
@@ -126,6 +133,7 @@ foam.INTERFACE({
     },
     {
       name: 'getUsersAndAccounts',
+      async: true,
       type: 'List',
       args: [
         {

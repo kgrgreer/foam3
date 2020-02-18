@@ -425,7 +425,6 @@ foam.CLASS({
         organization: business.organization,
         businessName: business.organization,
         businessId: business.id,
-        email: business.email,
         type: 'Contact',
         group: 'sme'
       });

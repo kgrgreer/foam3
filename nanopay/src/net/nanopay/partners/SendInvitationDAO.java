@@ -108,7 +108,7 @@ public class SendInvitationDAO
         "partners-external-invite";
 
     // Populate the email template.
-    String url = config.getUrl();
+    String url = currentUser.findGroup(x).getAppConfig(x).getUrl();
     String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
 
     if ( invite.getIsContact() ) {

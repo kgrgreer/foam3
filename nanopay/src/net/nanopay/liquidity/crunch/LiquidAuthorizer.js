@@ -6,6 +6,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.tx.model.Transaction',
@@ -68,6 +69,14 @@ foam.CLASS({
           0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
+        if ( obj instanceof User ) {
+          User userToRead = (User) obj;
+
+          User currentUser = (User) x.get("user");
+
+          if ( userToRead.getId() == currentUser.getId() ) return;
+        }
+
         if ( ! (
           authService.check(x, createPermission(permissionPrefix, "view",    accountId)) ||
           authService.check(x, createPermission(permissionPrefix, "approve", accountId)) ||
@@ -84,6 +93,14 @@ foam.CLASS({
 
         String permission = createPermission(getPermissionPrefix(), "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
+
+        if ( oldObj instanceof User ) {
+          User userToRead = (User) oldObj;
+
+          User currentUser = (User) x.get("user");
+
+          if ( userToRead.getId() == currentUser.getId() ) return;
+        }
 
         if ( ! authService.check(x, permission) ) {
           throw new AuthorizationException();

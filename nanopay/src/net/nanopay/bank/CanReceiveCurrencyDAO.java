@@ -77,7 +77,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     boolean contactRecieveCurrency = (count.getValue() > 0);
   
     response.setResponse(contactRecieveCurrency);
-    if ( count.getValue() == 0 ) response.setMessage("We apologize for, this contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
+    if ( count.getValue() == 0 ) response.setMessage("This contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
     return response;
   }
 

@@ -138,12 +138,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldInvite',
+      label: 'Invite them to join Ablii',
       documentation: `
         True if the user wants to invite the contact to join Ablii.
       `,
       view: {
         class: 'foam.u2.CheckBox',
-        label: 'Invite them to join Ablii'
       }
     },
     {
