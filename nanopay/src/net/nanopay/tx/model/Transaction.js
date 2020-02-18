@@ -323,7 +323,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       documentation: `The id of the agent who created the transaction.`,
-      visibility: foam.u2.DisplayMode.HIDDEN,
+      visibility: 'HIDDEN',
       // visibility: 'RO',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
