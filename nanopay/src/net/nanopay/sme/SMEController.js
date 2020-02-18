@@ -187,7 +187,7 @@ foam.CLASS({
     },
     {
       name: 'ADDED_TO_BUSINESS_1',
-      message: "You've been successfully added to "
+      message: `You've been successfully added to `
     },
     {
       name: 'ADDED_TO_BUSINESS_2',
