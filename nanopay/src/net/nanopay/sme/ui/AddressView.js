@@ -31,15 +31,27 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       width: 100%;
     }
-    ^ .two-column{
+    ^ .container {
+      margin-bottom: 20px;
+    }
+    ^ .two-column {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
-      margin-bottom: 20px;
     }
-    ^ .three-column{
+    ^ .three-column {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 16px;
+    }
+    ^ .one-three-one-column {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1fr;
+      grid-gap: 16px;
+    }
+    ^ .one-two-column {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       grid-gap: 16px;
     }
   `,
@@ -91,8 +103,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .callIf( ! this.withoutCountrySelection, () => {
-          this.start()
-            .addClass('two-column')
+          this.start().addClass('container')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
@@ -110,6 +121,48 @@ foam.CLASS({
                 })
               })
             .end()
+          .end();
+        })
+        .start().addClass('container')
+          .start().addClass('one-three-one-column')
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.STREET_NUMBER.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.STREET_NAME.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.SUITE.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+          .end()
+        .end()
+        .start().addClass('container')
+          .start().addClass('label-input')
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.CITY.clone().copyFrom({
+                validationTextVisible: this.showValidation
+              })
+            })
+          .end()
+        .end()
+        .start().addClass('container')
+          .start().addClass('one-two-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
@@ -128,55 +181,18 @@ foam.CLASS({
                 })
               })
             .end()
-          .end();
-        })
-        .start()
-          .addClass('two-column')
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                validationTextVisible: this.showValidation
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.POSTAL_CODE.clone().copyFrom({
+                  label: this.POSTAL_CODE,
+                  validationTextVisible: this.showValidation
+                })
               })
-            })
-          .end()
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.STREET_NAME.clone().copyFrom({
-                validationTextVisible: this.showValidation
-              })
-            })
+            .end()
           .end()
         .end()
-        .start()
-          .addClass('two-column')
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.CITY.clone().copyFrom({
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.POSTAL_CODE.clone().copyFrom({
-                label: this.POSTAL_CODE,
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-        .end()
-        .start().addClass('label-input')
-          .tag(this.SectionedDetailPropertyView, {
-            data$: this.data$,
-            prop: this.Address.SUITE.clone().copyFrom({
-              validationTextVisible: this.showValidation
-            })
-          })
-        .end();
+      .end();
     }
   ]
 });
