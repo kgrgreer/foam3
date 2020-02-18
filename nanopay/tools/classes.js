@@ -963,6 +963,10 @@ var classes = [
   'net.nanopay.ticket.SudoTicketApprovalResponseRule',
   'net.nanopay.ticket.SudoTicketApprovalResponseAction',
   'net.nanopay.ticket.test.SudoTicketTest',
+
+  // Planners
+  'net.nanopay.tx.planner.AbstractTransactionPlanner',
+  'net.nanopay.tx.planner.ExamplePlanner',
 ];
 
 var abstractClasses = [
