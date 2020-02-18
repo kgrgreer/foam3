@@ -1406,5 +1406,6 @@ FOAM_FILES([
   // planners
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/ExamplePlanner' },
+  { name: 'net/nanopay/tx/planner/DigitalTransactionPlanner' },
 
 ]);
