@@ -106,7 +106,8 @@ public class RestrictAccountChildrenRuleTest
 
     // create test rule to restrict source account & children from transacting with destination account and children
     rule_ = new RestrictAccountsRule();
-    rule_.setId("Restrict Accounts & Children Test Rule");
+    rule_.setId(1);
+    rule_.setName("Restrict Accounts & Children Test Rule");
     rule_.setDescription("Tests the RestrictAccountsRule including child accounts.");
     rule_.setCreatedBy(user_.getId());
     rule_.setSourceAccount(sourceAccount_.getId());
