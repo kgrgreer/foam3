@@ -1405,6 +1405,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/DigitalTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
+  { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs migration.. 
   { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
   { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 

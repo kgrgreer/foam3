@@ -966,6 +966,7 @@ var classes = [
   'net.nanopay.tx.planner.DigitalTransactionPlanner',
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
+  'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.GenericCIPlanner', //needs migration.. 
   'net.nanopay.tx.DVPplanner', //needs migration.. 
   'net.nanopay.tx.FOPplanner', //needs migration.. 
