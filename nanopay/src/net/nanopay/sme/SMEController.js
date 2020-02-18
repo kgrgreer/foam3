@@ -59,6 +59,7 @@ foam.CLASS({
 
   css: `
   ^ {
+    height: 100%;
     display: flex;
   }
   ^ > .stack-wrapper {

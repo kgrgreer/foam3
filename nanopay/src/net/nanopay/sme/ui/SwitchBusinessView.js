@@ -132,6 +132,9 @@ foam.CLASS({
       border: none;
       color: grey;
     }
+    ^ .net-nanopay-sme-ui-AbliiActionView-closeModal {
+      right: -525px;
+    }
   `,
 
   messages: [
