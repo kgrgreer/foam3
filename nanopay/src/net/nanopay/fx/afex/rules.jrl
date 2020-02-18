@@ -191,6 +191,26 @@ p({
 })
 
 p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Create AFEX Trade Request PDF Rule",
+    "priority":100,
+    "ruleGroup":"AFEX",
+    "documentation":"Rule that creates an AFEX trade request pdf",
+    "daoKey":"localTransactionDAO",
+    "operation":0,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+      "of":"net.nanopay.fx.afex.AFEXTransaction"
+    },
+    "after":true,
+    "action":{
+      "class":"net.nanopay.fx.afex.AFEXCreateTradeRequestPDFRule"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"AFEX Submit Payment Rule",
   "documentation":"Rule to create submit payment to AFEX system when transaction is PENDING and reference number is null.",

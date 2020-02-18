@@ -213,7 +213,6 @@ p({
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
-    import net.nanopay.tx.ExecuteMethodsTransactionDAO;
     import net.nanopay.tx.CheckQuotedTransactionDAO;
     import net.nanopay.tx.CompletedTransactionDAO;
     import net.nanopay.tx.realex.RealexTransactionDAO;
@@ -274,9 +273,6 @@ p({
     dao = new foam.nanos.ruler.RulerDAO(x, x.get("bareTransactionDAO"), "localTransactionDAO");
     dao = new net.nanopay.tx.SaveChainedTransactionDAO(x, dao);
     dao = new net.nanopay.tx.CompletedTransactionDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao, true);

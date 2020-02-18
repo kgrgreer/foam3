@@ -535,6 +535,63 @@ p({
     "saveHistory":true
 })
 p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Ascendant fx transaction after put",
+    "priority":100,
+    "ruleGroup":"Payment",
+    "documentation":"Ascendant fx transaction after put",
+    "daoKey":"localTransactionDAO",
+    "operation":0,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+      "of":"net.nanopay.fx.ascendantfx.AscendantFXTransaction"
+    },
+    "after":true,
+    "action":{
+      "class":"net.nanopay.tx.ruler.AscendantFXTransactionAfterPutRule"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Invoice transaction after put",
+    "priority":100,
+    "ruleGroup":"InvoicePayment",
+    "documentation":"Invoice transaction after put",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+      "of":"net.nanopay.tx.InvoiceTransaction"
+    },
+    "after":true,
+    "action":{
+      "class":"net.nanopay.tx.ruler.InvoiceTransactionAfterPutRule"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Send complete retail transaction notification ",
+    "priority":100,
+    "ruleGroup":"Payment",
+    "documentation":"Send notification once retail transaction is complete.",
+    "daoKey":"localTransactionDAO",
+    "operation":3,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+      "of":"net.nanopay.tx.RetailTransaction"
+    },
+    "after":true,
+    "action":{
+      "class":"net.nanopay.tx.ruler.SendCompleteRetailTransactionNotificationRule"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"Set transaction lifecycleState to PENDING",
   "documentation":"Set transaction lifecycle state to PENDING. Used in liquid to force all transactions going through approval.",
