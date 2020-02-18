@@ -971,7 +971,8 @@ var classes = [
   'net.nanopay.tx.DVPplanner', //needs migration.. 
   'net.nanopay.tx.FOPplanner', //needs migration.. 
   'net.nanopay.tx.SecurityCIplanner', //needs migration.. 
-  'net.nanopay.tx.SecurityBucketPlanner', //needs migration.. 
+  'net.nanopay.tx.SecurityBucketPlanner', //needs migration..
+  'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
 ];
 
 var abstractClasses = [

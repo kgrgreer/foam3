@@ -1410,7 +1410,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
   { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 
   { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration.. 
+  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration..
+  { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
 
 
 ]);
