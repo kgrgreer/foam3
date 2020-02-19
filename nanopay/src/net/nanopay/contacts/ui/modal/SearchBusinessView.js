@@ -151,7 +151,19 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'filter',
+      name: 'businessNameFilter',
+      documentation: 'This property is the data binding for the search field',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        placeholder: 'Start typing to search',
+        onKey: true,
+        focused: true
+      }
+    },
+    {
+      class: 'String',
+      name: 'locationFilter',
       documentation: 'This property is the data binding for the search field',
       view: {
         class: 'foam.u2.TextField',
@@ -202,8 +214,8 @@ foam.CLASS({
         This property is to query all connected businesses related to
         the current acting business.
       `,
-      expression: function(filter) {
-        if ( filter.length < 2 ) {
+      expression: function(businessNameFilter, locationFilter) {
+        if ( businessNameFilter.length < 2 ) {
           return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
@@ -214,7 +226,8 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      this.CONTAINS_IC(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.FULL_ADDRESS), locationFilter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
                   );
@@ -236,8 +249,8 @@ foam.CLASS({
         This property is to query all unconnected businesses related to
         the current acting business.
       `,
-      expression: function(filter) {
-        if ( filter.length < 2 ) {
+      expression: function(businessNameFilter, locationFilter) {
+        if ( businessNameFilter.length < 2 ) {
           return this.NullDAO.create({ of: net.nanopay.auth.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
@@ -248,7 +261,8 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      this.CONTAINS_IC(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.FULL_ADDRESS), locationFilter),
                       this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
                       this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
@@ -268,8 +282,8 @@ foam.CLASS({
       type: 'String',
       name: 'searchBusinessesCount',
       documentation: `Construct the searching count string.`,
-      expression: function(filter, countBusinesses) {
-        if ( filter.length > 1 ) {
+      expression: function(businessNameFilter, countBusinesses) {
+        if ( businessNameFilter.length > 1 ) {
           if ( this.countBusinesses > 1 ) {
             return `Showing ${countBusinesses} of ${countBusinesses} results`;
           } else {
@@ -286,8 +300,8 @@ foam.CLASS({
         Only show no matching text 'We couldn’t find a business with that name'
         when the searching keyword is longer than 1 char.
       `,
-      expression: function(filter, countBusinesses) {
-        return countBusinesses === 0 && filter.length > 1;
+      expression: function(businessNameFilter, countBusinesses) {
+        return countBusinesses === 0 && businessNameFilter.length > 1;
       }
     },
     {
@@ -297,8 +311,8 @@ foam.CLASS({
         Only show the default searching text when the searching keyword
         is shorter than 2 chars.
       `,
-      expression: function(filter) {
-        return filter.length < 2;
+      expression: function(businessNameFilter) {
+        return businessNameFilter.length < 2;
       }
     },
     {
@@ -344,7 +358,18 @@ foam.CLASS({
             })
               .addClass(this.myClass('searchIcon'))
             .end()
-            .start(this.FILTER)
+            .start(this.BUSINESS_NAME_FILTER)
+              .addClass(this.myClass('filter-search'))
+            .end()
+          .end()
+          .start().addClass(this.myClass('search-field'))
+            .start({
+              class: 'foam.u2.tag.Image',
+              data: this.SEARCH_ICON
+            })
+              .addClass(this.myClass('searchIcon'))
+            .end()
+            .start(this.LOCATION_FILTER)
               .addClass(this.myClass('filter-search'))
             .end()
           .end()
@@ -353,6 +378,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('business-list'))
             .select(this.unconnectedBusinesses$proxy, (business) => {
+              // debugger;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
@@ -387,15 +413,15 @@ foam.CLASS({
               .addClass(this.myClass('search-result'))
               .add(this.DEFAULT_TEXT)
             .end()
-            .start()
-              .addClass(this.myClass('center'))
-              .start(this.CREATE_NEW).end()
-            .end()
-            .start()
-              .addClass(this.myClass('center'))
-              .addClass(this.myClass('paymentcode-button'))
-              .start(this.ADD_BY_PAYMENTCODE).end()
-            .end()
+            // .start()
+            //   .addClass(this.myClass('center'))
+            //   .start(this.CREATE_NEW).end()
+            // .end()
+            // .start()
+            //   .addClass(this.myClass('center'))
+            //   .addClass(this.myClass('paymentcode-button'))
+            //   .start(this.ADD_BY_PAYMENTCODE).end()
+            // .end()
           .end()
           .start().show(this.showNoMatch$)
             .addClass(this.myClass('create-new-block'))
@@ -408,8 +434,8 @@ foam.CLASS({
               .addClass(this.myClass('center'))
               .addClass(this.myClass('search-result'))
               .addClass(this.myClass('align-text-center'))
-              .add(this.slot(function(filter) {
-                return `${this.NO_MATCH_TEXT_2} “${filter}”?`;
+              .add(this.slot(function(businessNameFilter) {
+                return `${this.NO_MATCH_TEXT_2} “${businessNameFilter}”?`;
               }))
             .end()
             .start().addClass(this.myClass('center'))
@@ -441,34 +467,34 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'createNew',
-      label: 'Create New',
-      code: function(X) {
-        this.wizard.viewData.isEdit = false;
-        X.viewData.isBankingProvided = false;
-        X.pushToId('AddContactStepOne');
-      }
-    },
-    {
-      name: 'addByPaymentcode',
-      label: 'Add By Paymentcode',
-      code: function(X) {
-        console.log('open modal')
-        X.pushToId('AddContactByPaymentCode');
-      }
-    },
-    {
-      name: 'createNewWithBusiness',
-      label: 'Create New',
-      code: function(X) {
-        this.wizard.data.organization = this.filter;
-        this.wizard.viewData.isEdit = false;
-        X.viewData.isBankingProvided = false;
-        X.pushToId('AddContactStepOne');
-      }
-    },
-  ]
+  // actions: [
+  //   {
+  //     name: 'createNew',
+  //     label: 'Create New',
+  //     code: function(X) {
+  //       this.wizard.viewData.isEdit = false;
+  //       X.viewData.isBankingProvided = false;
+  //       X.pushToId('AddContactStepOne');
+  //     }
+  //   },
+  //   {
+  //     name: 'addByPaymentcode',
+  //     label: 'Add By Paymentcode',
+  //     code: function(X) {
+  //       console.log('open modal')
+  //       X.pushToId('AddContactByPaymentCode');
+  //     }
+  //   },
+  //   {
+  //     name: 'createNewWithBusiness',
+  //     label: 'Create New',
+  //     code: function(X) {
+  //       this.wizard.data.organization = this.filter;
+  //       this.wizard.viewData.isEdit = false;
+  //       X.viewData.isBankingProvided = false;
+  //       X.pushToId('AddContactStepOne');
+  //     }
+  //   },
+  // ]
 
 });
