@@ -240,6 +240,16 @@ foam.CLASS({
     {
       name: 'TOOLTIP_BODY',
       message: 'Please edit this invoice in your accounting software and sync again.'
+    },
+    {
+      name: 'EXTERNAL_USER_MESSAGE',
+      message: `The contact you've selected is not associated to a business using Ablii,
+          You will not be receiving payments from this business using Ablii until they have been onboarded, however you do
+          have the ability to mark invoices as complete if paid outside of the platform.`
+    },
+    {
+      name: 'EXTERNAL_TITLE',
+      message: 'Attention to Payment'
     }
   ],
 
@@ -252,6 +262,7 @@ foam.CLASS({
 
   properties: [
     'type',
+    'contact',
     {
       class: 'String',
       name: 'currencyType',
@@ -390,6 +401,12 @@ foam.CLASS({
                     return isInvalid && type === 'payable' && showAddBank;
                   }))
               .end()
+              .start({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.EXTERNAL_USER_MESSAGE, title: this.EXTERNAL_TITLE })
+              .show(this.slot(function(type, contact) {
+                console.log(contact);
+                return contact != null ? type != 'payable' && contact.businessId == 0 : false;
+              }))
+              .end()
             .endContext()
           .end()
           .start()
@@ -408,9 +425,6 @@ foam.CLASS({
                   });
                 })
               .end()
-            .end()
-            .start().show(! (this.type === 'payable'))
-              .add(this.RECEIVABLE_ERROR_MSG)
             .end()
           .end()
         .end()
@@ -446,6 +460,11 @@ foam.CLASS({
                 function(isInvalid, showAddBank) {
                   return isInvalid && ! showAddBank;
                 }))
+                .start()
+                .addClass('validation-failure-container')
+                .show(! (this.type === 'payable'))
+                  .add(this.RECEIVABLE_ERROR_MSG)
+                .end()
                 .start().show(this.type === 'payable').addClass('validation-failure-container')
                   .start('img')
                     .addClass('small-error-icon')
@@ -554,7 +573,8 @@ foam.CLASS({
 
   listeners: [
     async function onContactIdChange() {
-      await this.setDefaultCurrency();
+      if ( this.type == 'payable' ) await this.setDefaultCurrency();
+      this.contact = await this.user.contacts.find(this.invoice.contactId);
       this.checkUser(this.currencyType);
     },
     function onCurrencyTypeChange() {
