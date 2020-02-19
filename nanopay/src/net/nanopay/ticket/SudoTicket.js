@@ -48,13 +48,17 @@ foam.CLASS({
         return cal.getTime();
       `,
       section: 'infoSection',
-      writePermissionRequired: true
+      //writePermissionRequired: true,
+      readVisibility: 'RO',
+      createVisibility: 'RW',
+      updateVisibility: 'RW'
     },
     {
       name: 'approvalStatus',
       class: 'foam.core.Enum',
       of: 'net.nanopay.approval.ApprovalStatus',
       value: 'REQUESTED',
+      createVisibility: 'HIDDEN',
       visibility: 'RO',
       section: 'infoSection'
     },
