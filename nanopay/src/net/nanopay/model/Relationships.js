@@ -1109,11 +1109,12 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  package: 'net.nanopay.payment',
   sourceModel: 'net.nanopay.payment.PaymentProvider',
   targetModel: 'net.nanopay.fx.Corridor',
   forwardName: 'paymentProvider',
   inverseName: 'corridors',
-  cardinality: '1:*',
+  cardinality: '*:*'
 });
 
 foam.CLASS({

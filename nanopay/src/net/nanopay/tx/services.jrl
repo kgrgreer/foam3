@@ -517,7 +517,6 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.payment.PaymentProviderCorridorJunction.SOURCE_ID });
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("paymentProviderCorridorJunctions")
       .setOf(net.nanopay.payment.PaymentProviderCorridorJunction.getOwnClassInfo())
@@ -525,4 +524,26 @@ p({
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.payment.PaymentProviderCorridorJunction\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "corridorService",
+  "serve": true,
+  "serviceClass": "net.nanopay.payment.PaymentCorridorService",
+  "boxClass": "net.nanopay.payment.CorridorService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.payment.ClientCorridorService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/corridorService"
+          }
+        }
+      }
+    """
 })
