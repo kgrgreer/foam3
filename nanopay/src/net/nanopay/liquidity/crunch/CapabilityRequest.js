@@ -348,7 +348,7 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
 

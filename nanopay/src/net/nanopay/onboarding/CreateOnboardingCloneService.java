@@ -23,7 +23,7 @@ public class CreateOnboardingCloneService {
 
   public CreateOnboardingCloneService(X x) {
     businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
-    usBusinessOnboardingDAO = (DAO) x.get("usBusinessOnboardingDAO");
+    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
   }
 
   public List getSourceOnboarding(Long businessId) {

@@ -132,7 +132,7 @@ foam.CLASS({
       // TODO: Consider moving this somewhere else.
       name: 'AnimateTo',
       properties: [
-        'slot',
+        'animatedSlot',
         'destValue',
         'ms',
         {
@@ -147,10 +147,10 @@ foam.CLASS({
           code: function() {
             var timeRemaining = this.ms - (Date.now() - this.startTime_.getTime());
             if ( timeRemaining < 0 ) {
-              this.slot.set(this.destValue);
+              this.animatedSlot.set(this.destValue);
             } else {
-              var delta = this.destValue - this.slot.get();
-              this.slot.set(this.slot.get() + delta * 0.5);
+              var delta = this.destValue - this.animatedSlot.get();
+              this.animatedSlot.set(this.animatedSlot.get() + delta * 0.5);
               this.doAnimation();
             }
           }
@@ -342,7 +342,7 @@ foam.CLASS({
       this.cview.view.selectedNode = node;
 
       this.AnimateTo.create({
-        slot: {
+        animatedSlot: {
           get: () => this.cview.viewPortPosition.x,
           set: x => {
             this.cview.viewPortPosition = {
@@ -355,7 +355,7 @@ foam.CLASS({
         ms: 200
       }).doAnimation();
       this.AnimateTo.create({
-        slot: {
+        animatedSlot: {
           get: () => this.cview.viewPortPosition.y,
           set: y => {
             this.cview.viewPortPosition = {
@@ -409,7 +409,7 @@ foam.CLASS({
       name: 'zoomIn',
       code: function() {
         this.AnimateTo.create({
-          slot: this.cview.scale$,
+          animatedSlot: this.cview.scale$,
           destValue: this.cview.scale * 1.25,
           ms: 200
         }).doAnimation();
@@ -422,7 +422,7 @@ foam.CLASS({
       },
       code: function() {
         this.AnimateTo.create({
-          slot: this.cview.scale$,
+          animatedSlot: this.cview.scale$,
           destValue: this.cview.scale / 1.25,
           ms: 200
         }).doAnimation();

@@ -41,8 +41,10 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InterestTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.account.Balance',
@@ -92,17 +94,17 @@ foam.CLASS({
     {
       name: 'paymentInfoSource',
       help: 'The information here will be for the source of the transfer.',
-      index: 0
+      order: 0
     },
     {
       name: 'paymentInfoDestination',
       help: 'The information here will be for the destination of the transfer.',
-      index: 1
+      order: 1
     },
     {
       name: 'amountSelection',
       help: 'The amount inputted will be refelective of the source currency account.',
-      index: 2
+      order: 2
     },
     {
       name: 'basicInfo',
@@ -130,8 +132,7 @@ foam.CLASS({
       isAvailable: function(mode) {
         return mode !== 'create';
       },
-      permissionRequired: true,
-      hidden: true
+      permissionRequired: true
     }
   ],
 
@@ -280,10 +281,6 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
-      expression: function(statusHistory) {
-        return Array.isArray(statusHistory)
-          && statusHistory.length > 0 ? statusHistory[0].timeStamp : null;
-      },
       getter: function() {
         return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
       },
@@ -328,7 +325,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       documentation: `The id of the agent who created the transaction.`,
-      visibility: foam.u2.DisplayMode.HIDDEN,
+      visibility: 'HIDDEN',
       // visibility: 'RO',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
@@ -1328,38 +1325,6 @@ foam.CLASS({
         t2[0] = txn;
         tx.setNext(t2);
       }
-    `
-  },
-  {
-    documentation: `Method to execute additional logic for each transaction before it was written to journals`,
-    name: 'executeBeforePut',
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      }
-    ],
-    type: 'net.nanopay.tx.model.Transaction',
-    javaCode: `
-    this.validate(x);
-    return this;
-    `
-  },
-  {
-    documentation: `Method to execute additional logic for each transaction after it was written to journals`,
-    name: 'executeAfterPut',
-    //TODO: delete this.
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      },
-      {
-        name: 'oldTxn',
-        type: 'net.nanopay.tx.model.Transaction'
-      }
-    ],
-    javaCode: `
     `
   },
   {

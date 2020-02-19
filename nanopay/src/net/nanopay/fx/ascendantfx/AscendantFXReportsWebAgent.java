@@ -157,7 +157,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
-    DAO    usBusinessOnboardingDAO = (DAO) x.get("usBusinessOnboardingDAO");
+    DAO    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 

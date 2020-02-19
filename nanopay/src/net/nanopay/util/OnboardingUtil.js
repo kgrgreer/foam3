@@ -28,7 +28,7 @@ foam.CLASS({
     'stack',
     'userDAO',
     'xeroService',
-    'usBusinessOnboardingDAO',
+    'uSBusinessOnboardingDAO',
     'user',
   ],
 
@@ -41,7 +41,7 @@ foam.CLASS({
             this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         ) :
-        await this.usBusinessOnboardingDAO.find(
+        await this.uSBusinessOnboardingDAO.find(
           this.AND(
             this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
             this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)

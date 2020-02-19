@@ -1,30 +1,22 @@
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'SecurityPlanDAO',
+  package: 'net.nanopay.tx.planner',
+  name: 'TransactionPlannerDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Plans Security transactions',
+  documentation: 'Plans transactions',
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.util.SafetyUtil',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'java.util.List',
-    'java.util.ArrayList',
-    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionQuote'
   ],
 
   axioms: [
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-    public SecurityPlanDAO(X x, DAO delegate) {
+      public TransactionPlannerDAO(X x, DAO delegate) {
       setX(x);
       setDelegate(delegate);
       System.err.println("Direct constructor use is deprecated. Use Builder instead.");
@@ -38,9 +30,8 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-
     TransactionQuote quote = (TransactionQuote) obj;
-    DAO d = ((DAO) x.get("securityPlannerDAO"));
+    DAO d = ((DAO) x.get("localTransactionPlannerDAO"));
     quote = (TransactionQuote) d.put(quote);
     if ( quote.getPlan() != null )
       return quote;

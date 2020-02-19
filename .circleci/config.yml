@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam-gradle:latest
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/java11:latest
     working_directory: ~/NANOPAY
     steps:
       - checkout
