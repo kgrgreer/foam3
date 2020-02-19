@@ -1,13 +1,132 @@
 //Transaction Planners only beyond this point.
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"Digital Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":true,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.core.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Generic Cash In Planner",
+  "priority":100,
+  "ruleGroup":"genericPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":true,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.GenericCIPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Generic Cash Out Planner",
+  "priority":101,
+  "ruleGroup":"genericPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":true,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.GenericCOPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Generic FX Planner",
+  "priority":102,
+  "ruleGroup":"genericPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":true,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"foam.core.ruler.predicate.PropertyEQProperty",
+          "prop1":"sourceUnit",
+          "prop2":"destinationUnit"
+        }
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.GenericFXPlanner"}
+})
+
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"Generic Security CICO planner",
   "priority":110,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"securityPlannerDAO",
+  "daoKey":"transactionPlannerDAO",
   "enabled":true,
   "operation":0,
-  "predicate":{"class":"foam.core.ruler.predicate.PropertyEQProperty","prop1":"sourceUnit","prop2":"destinationUnit"},
+  "predicate":{
+    "class":"foam.core.ruler.predicate.PropertyEQProperty",
+    "prop1":"sourceUnit",
+    "prop2":"destinationUnit"
+  },
   "action":{"class":"net.nanopay.tx.SecurityCIplanner"}
 })
 p({
@@ -15,10 +134,14 @@ p({
   "id":"FOP Transaction Planner",
   "priority":100,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"securityPlannerDAO",
+  "daoKey":"transactionPlannerDAO",
   "enabled":true,
   "operation":0,
-  "predicate":{"class":"foam.core.ruler.predicate.PropertyEQProperty","prop1":"sourceUnit","prop2":"destinationUnit"},
+  "predicate":{
+    "class":"foam.core.ruler.predicate.PropertyEQProperty",
+    "prop1":"sourceUnit",
+    "prop2":"destinationUnit"
+  },
   "action":{"class":"net.nanopay.tx.FOPplanner"}
 })
 p({
@@ -26,12 +149,12 @@ p({
   "id":"DVP Transaction Planner",
   "priority":90,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"securityPlannerDAO",
+  "daoKey":"transactionPlannerDAO",
   "enabled":true,
-  "predicate":
-    {"class":"foam.mlang.predicate.And",
-      "args":[
-        {"class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"requestTransaction","propValue":null},
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {"class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"requestTransaction","propValue":null},
         {"class":"foam.mlang.predicate.Eq",
           "arg1":{"class":"foam.mlang.expr.Dot",
             "arg1":{"class":"foam.mlang.expr.Dot","arg1":{"class":"foam.mlang.ContextObject","key":"NEW"},
@@ -49,7 +172,7 @@ p({
   "id":"Bucket Transaction Planner",
   "priority":80,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"securityPlannerDAO",
+  "daoKey":"transactionPlannerDAO",
   "enabled":true,
   "predicate":
     {"class":"foam.mlang.predicate.And",
