@@ -1,7 +1,7 @@
 //Transaction Planners only beyond this point.
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":182,
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d182",
   "name":"Digital Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
@@ -32,7 +32,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":183,
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d183",
   "name":"Generic Cash In Planner",
   "priority":100,
   "ruleGroup":"genericPlanner",
@@ -58,7 +58,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":184,
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d184",
   "name":"Generic Cash Out Planner",
   "priority":101,
   "ruleGroup":"genericPlanner",
@@ -84,7 +84,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":185,
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d185",
   "name":"Generic FX Planner",
   "priority":102,
   "ruleGroup":"genericPlanner",
@@ -120,7 +120,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":51,"name":"Generic Security CICO planner",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d51","name":"Generic Security CICO planner",
   "priority":110,
   "ruleGroup":"SecurityPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -135,7 +135,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":52,"name":"FOP Transaction Planner",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d52","name":"FOP Transaction Planner",
   "priority":100,
   "ruleGroup":"SecurityPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -150,7 +150,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":53,"name":"DVP Transaction Planner",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d53","name":"DVP Transaction Planner",
   "priority":90,
   "ruleGroup":"SecurityPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -173,7 +173,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":54,"name":"Bucket Transaction Planner",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d54","name":"Bucket Transaction Planner",
   "priority":80,
   "ruleGroup":"SecurityPlanner",
   "daoKey":"transactionPlannerDAO",

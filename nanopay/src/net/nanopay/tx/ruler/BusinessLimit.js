@@ -101,7 +101,7 @@ foam.CLASS({
           EQ(BusinessLimit.PERIOD, this.getPeriod()),
           EQ(BusinessLimit.SEND, this.getSend())
         ));
-        if ( old != null && getId() != old.getId() ) {
+        if ( old != null && ! getId().equals(old.getId()) ) {
           throw new IllegalStateException("BusinessLimit for the business and period already exists. ");
         }
       `

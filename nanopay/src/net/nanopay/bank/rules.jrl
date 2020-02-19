@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":19,"name":"Set default bank account if account owner has none in denomination.",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d19","name":"Set default bank account if account owner has none in denomination.",
   "priority":100,
   "ruleGroup":"bankOperations",
   "documentation":"Set newly verified bank account to default if owner has no default bank accounts in the verified bank accounts denomination.",
@@ -37,7 +37,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":20,"name":"Set old default bank account to false.",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d20","name":"Set old default bank account to false.",
   "priority":100,
   "ruleGroup":"bankOperations",
   "documentation":"Rule prevents users from setting default on non verified bank accounts as well as setting old default account to false if isDefault is being set to true on obj.",
@@ -71,7 +71,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":21,"name":"Send notification when bank account has been verified.",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d21","name":"Send notification when bank account has been verified.",
   "priority":100,
   "ruleGroup":"bankOperations",
   "documentation":"Sends a notification to account owner detailing that their bank account has been verified.",
@@ -109,7 +109,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":22,"name": "Send notification to account owner when account has been deleted.",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d22","name": "Send notification to account owner when account has been deleted.",
   "priority": 100,
   "ruleGroup": "bankOperations",
   "documentation": "Send notification to account owner when account has been deleted.",
@@ -131,7 +131,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":23,"name": "Send notification to account owner when account has been added.",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d23","name": "Send notification to account owner when account has been added.",
   "priority": 100,
   "ruleGroup": "bankOperations",
   "documentation": "Send notification to account owner when account has been added.",
