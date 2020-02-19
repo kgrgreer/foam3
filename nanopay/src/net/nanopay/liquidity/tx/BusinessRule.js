@@ -178,7 +178,7 @@ foam.CLASS({
         property. In this case, we are using the name.
       `,
       code: function(x) {
-        return this.id;
+        return this.name || this.id;
       }
     },
     {
