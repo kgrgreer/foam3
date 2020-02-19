@@ -16,7 +16,7 @@ p({
 })
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"transactionQuotePlanDAO",
+  "name":"transactionPlannerDAO",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
