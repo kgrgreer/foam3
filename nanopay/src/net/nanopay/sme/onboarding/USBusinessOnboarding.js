@@ -389,6 +389,7 @@ foam.CLASS({
       label: '',
       createVisibility: 'RW',
       autoValidate: true
+      // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
@@ -1103,9 +1104,9 @@ foam.CLASS({
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
           } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
           }
         });
       },
@@ -1512,9 +1513,11 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
+        this.phone.VERIFIED.writePermissionRequired = false;
+
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
             if ( this.userOwnsPercent ) {
