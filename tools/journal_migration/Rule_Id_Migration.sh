@@ -19,7 +19,7 @@ def doMigration(filename):
         name = re.search(r'\"id\":\d*', line)
         if ( '\"id\":' in line ):
             id = id + 1
-            line = line.replace('\"id\"', '\"id\":' + str(id) + ',\"name\"')
+            line = line.replace('\"id\"', '\"id\":68afcf0c-c718-98f8-0841-75e97a3ad16d' + str(id) + ',\"name\"')
         writeFile.writelines(line);
 
     readFile.close();
