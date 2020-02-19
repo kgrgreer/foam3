@@ -1264,46 +1264,19 @@ foam.CLASS({
       class: 'Long',
       name: 'totalOwnership',
       section: 'reviewOwnersSection',
-//      expression: function(owner1$ownershipPercent, owner2$ownershipPercent, owner3$ownershipPercent, owner4$ownershipPercent) {
-
-//      expression: function(amountOfOwners,
-//      owner1$ownershipPercent,
-//      owner2$ownershipPercent,
-//      owner3$ownershipPercent,
-//      owner4$ownershipPercent) {
-
-//      console.log("totalO.. : " );
-//        var sum = 0;
-//
-//        if ( amountOfOwners >= 1 ) sum += Number(owner1$ownershipPercent);
-//        if ( amountOfOwners >= 2 ) sum += Number(owner2$ownershipPercent);
-//        if ( amountOfOwners >= 3 ) sum += Number(owner3$ownershipPercent);
-//        if ( amountOfOwners >= 4 ) sum += Number(owner4$ownershipPercent);
-//
-//        return sum;
-//return 100;
-//      },
-//      javaGetter: `
-//        int sum = 0;
-//
-//        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
-//        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
-//        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
-//        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
-//
-//        return sum;
-//      `,
       visibility: function(totalOwnership) {
-        return totalOwnership > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+        return Number(totalOwnership) > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
-      validationTextVisible: true,
       max: 100,
       validationPredicates: [
         {
           args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100);
+            return e.OR (
+              e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
+            );
           },
           errorString: 'The total ownership should be less than 100%.'
         }

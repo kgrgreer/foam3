@@ -347,9 +347,21 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          if ( this.userOwnsPercent ) {
+            this.userId$find.then((user) => {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            })
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+
+          if ( ! this.userOwnsPercent ) {
+            this.clearProperty('owner1');
+          }
         }
       }
     },
@@ -382,7 +394,12 @@ foam.CLASS({
           },
           errorString: 'Please select job title.'
         }
-      ]
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent && this.signingOfficer ) {
+          this.owner1.jobTitle = this.jobTitle;
+        }
+      },
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
@@ -498,6 +515,11 @@ foam.CLASS({
             }
           }
         };
+      },
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.jobTitle = this.adminJobTitle;
+        }
       },
       visibility: function(signingOfficer) {
         return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
@@ -630,7 +652,12 @@ foam.CLASS({
           },
           errorString: 'Please enter first name with least 1 character.'
         }
-      ]
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.adminFirstName;
+        }
+      }
     },
     {
       class: 'String',
@@ -639,7 +666,12 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.lastName = this.adminLastName;
+        }
+      }
     },
     {
       class: 'String',
@@ -1260,30 +1292,6 @@ foam.CLASS({
       class: 'Long',
       name: 'totalOwnership',
       section: 'reviewOwnersSection',
-      expression: function(amountOfOwners,
-                           owner1$ownershipPercent,
-                           owner2$ownershipPercent,
-                           owner3$ownershipPercent,
-                           owner4$ownershipPercent) {
-        var sum = 0;
-
-        if ( amountOfOwners >= 1 ) sum += owner1$ownershipPercent;
-        if ( amountOfOwners >= 2 ) sum += owner2$ownershipPercent;
-        if ( amountOfOwners >= 3 ) sum += owner3$ownershipPercent;
-        if ( amountOfOwners >= 4 ) sum += owner4$ownershipPercent;
-
-        return sum;
-      },
-      javaGetter: `
-        int sum = 0;
-
-        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
-
-        return sum;
-      `,
       visibility: function(totalOwnership) {
         return Number(totalOwnership) > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
@@ -1293,7 +1301,10 @@ foam.CLASS({
         {
           args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100);
+            return e.OR (
+              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+            );
           },
           errorString: 'The total Ownership should less than 100%'
         }
@@ -1405,6 +1416,8 @@ foam.CLASS({
           for ( var i = 0; i < self.amountOfOwners; i++ ) {
             self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
           }
+
+          self.totalOwnership = self.getTotalOwnership();
         });
       }
     },
@@ -1542,6 +1555,19 @@ foam.CLASS({
         this.owner2.showValidation$ = this.signingOfficer$;
         this.owner3.showValidation$ = this.signingOfficer$;
         this.owner4.showValidation$ = this.signingOfficer$;
+      }
+    },
+    {
+      name: 'getTotalOwnership',
+      code: function() {
+        var sum = 0;
+
+        if ( this.owner1.ownershipPercent && this.amountOfOwners >= 1 ) sum += this.owner1.ownershipPercent;
+        if ( this.owner2.ownershipPercent && this.amountOfOwners >= 2 ) sum += this.owner2.ownershipPercent;
+        if ( this.owner3.ownershipPercent && this.amountOfOwners >= 3 ) sum += this.owner3.ownershipPercent;
+        if ( this.owner4.ownershipPercent && this.amountOfOwners >= 4 ) sum += this.owner4.ownershipPercent;
+
+        return sum;
       }
     }
   ]
