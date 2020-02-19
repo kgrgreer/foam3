@@ -938,8 +938,6 @@ var classes = [
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',
   'net.nanopay.tx.bmo.BmoTransactionPlanDAO',
-  'net.nanopay.tx.bmo.BmoCITransactionPlanner',
-  'net.nanopay.tx.bmo.BmoCOTransactionPlanner',
 
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
@@ -984,6 +982,11 @@ var classes = [
   'net.nanopay.tx.SecurityCIplanner', //needs migration.. 
   'net.nanopay.tx.SecurityBucketPlanner', //needs migration..
   'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
+  'net.nanopay.tx.planner.AlternaCITransactionPlanner',
+  'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
+  'net.nanopay.tx.planner.BmoCITransactionPlanner',
+  'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+  'net.nanopay.tx.planner.predicate.CACICOPredicate',
 ];
 
 var abstractClasses = [

@@ -192,3 +192,68 @@ p({
   "action":{"class":"net.nanopay.tx.SecurityBucketPlanner"},
   "operation":0
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"AlternaCI Transaction Planner",
+  "priority":100,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":
+    {
+      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "providerId":"Alterna",
+      "isCI": true
+    },
+  "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"AlternaCO Transaction Planner",
+  "priority":100,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":
+    {
+      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "providerId":"Alterna",
+      "isCI": false
+    },
+  "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"BMOCI Transaction Planner",
+  "priority":100,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":
+    {
+      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "providerId":"BMO",
+      "isCI": true
+    },
+  "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"BMOCO Transaction Planner",
+  "priority":100,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":
+    {
+      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "providerId":"BMO",
+      "isCI": false
+    },
+  "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
+})
+

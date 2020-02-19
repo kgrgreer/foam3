@@ -627,8 +627,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaCITransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaVerificationTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanDAO' },
-  { name: 'net/nanopay/tx/alterna/AlternaCITransactionPlanner' },
-  { name: 'net/nanopay/tx/alterna/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeCustomer' },
@@ -1378,8 +1376,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/BmoSFTPCredential'},
   { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
   { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},
-  { name: 'net/nanopay/tx/bmo/BmoCITransactionPlanner' },
-  { name: 'net/nanopay/tx/bmo/BmoCOTransactionPlanner' },
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
@@ -1425,6 +1421,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
   { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration..
   { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
-
+  { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/predicate/CACICOPredicate' },
 
 ]);
