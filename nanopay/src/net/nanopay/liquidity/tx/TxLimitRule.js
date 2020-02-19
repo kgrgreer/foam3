@@ -50,7 +50,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Users',
-              dao: X.userDAO.where(X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic')).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+              dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
             }
           ]
         };
@@ -59,7 +59,7 @@ foam.CLASS({
         return (applyLimitTo == 'USER') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       tableCellFormatter: function(value, obj, axiom) {
-        this.__subContext__.userDAO
+        this.__subContext__.liquiditySettingsUserDAO
           .find(value)
           .then((user) => {
             this.add(user.label());

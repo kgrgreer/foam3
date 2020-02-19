@@ -356,7 +356,7 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "liquidUserDAO",
+  "name": "liquiditySettingsUserDAO",
   "serve": true,
   "description": "filtered DAO for liquidBasic users",
   "authenticate": false,

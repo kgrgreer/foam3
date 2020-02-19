@@ -78,7 +78,7 @@ foam.CLASS({
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj, axiom) {
-        this.__subSubContext__.userDAO
+        this.__subSubContext__.liquiditySettingsUserDAO
           .find(value)
           .then((user) => this.add(user.label()))
           .catch((error) => {
@@ -92,12 +92,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Users',
-              dao: X.userDAO.where(
-                X.data.AND(
-                  X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-                  X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-                )
-              ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+              dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
             }
           ]
         };
@@ -292,7 +287,7 @@ foam.CLASS({
       name: 'createdBy',
       documentation: `The unique identifier of the individual person, or real user,
         who created this liquidity setting.`,
-      visibility: 'RO',
+      visibility: foam.u2.DisplayMode.RO,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -312,7 +307,7 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: `The unique identifier of the agent
         who created this liquidity setting.`,
-      visibility: 'RO',
+      visibility: foam.u2.DisplayMode.RO,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -331,7 +326,7 @@ foam.CLASS({
       name: 'lastModified',
       documentation: 'Last modified date',
       createVisibility: 'HIDDEN',
-      visibility: 'RO'
+      visibility: foam.u2.DisplayMode.RO
     },
     {
       class: 'Reference',
@@ -339,7 +334,7 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this liquidity setting.`,
-      visibility: 'RO',
+      visibility: foam.u2.DisplayMode.RO,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
