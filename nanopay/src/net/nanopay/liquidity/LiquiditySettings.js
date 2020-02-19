@@ -355,14 +355,14 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

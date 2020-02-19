@@ -14,14 +14,14 @@ foam.CLASS({
   ],
 
 /*
-  The Planner is written by overwriting the logic of the method "plannerLogic"
-  planner logic gives you the following arguments to use:
+  The Planner is written by overwriting the logic of the method "plan"
+  plan gives you the following arguments to use:
       1. x  - The Context
       2. quote  - The transactionQuote that the planner needs to quote
       3. requestTxn  - gives the request transaction in the quote.
       4. agency  - Allows use of agency.submit() for all non read operations. used just as in standard rules.
 
-  You must return a transaction object from the plannerLogic method. This gets added as a plan to the quote automatically.
+  You must return a transaction object from the plan method. This gets added as a plan to the quote automatically.
 
   This section should not include any checks for whether or not to run this planner on a transaction. This should be
   done within a predicate that is applied to the planner rule. Don't forget to take advantage of generic predicates!
@@ -30,13 +30,13 @@ foam.CLASS({
 
       addTransfer(id of account (Long), amount of transfer (Long) : adds a transfer to the transaction plan
 
-      subPlan(x, Transaction to sub plan) : makes it easy to build split planners. can call TransactionQuotePlanDAO
+      quoteTxn(x, Transaction to sub plan) : makes it easy to build split planners. can call TransactionQuotePlanDAO
       and receive the best transaction in one line.
 
 */
   methods: [
     {
-      name: 'plannerLogic',
+      name: 'plan',
       javaCode: `
 
         // Create a transaction, or make a fclone of the requestTransaction. Don't modify the requestTxn directly.
@@ -57,7 +57,7 @@ foam.CLASS({
         Account myAccount = (Account) ((DAO) x.get("accountDAO")).find(EQ(Account.NAME,"Michal's Account"));
 
         //If this planner is a split planner, it can also recursively plan its sub parts with the subPlan function.
-        Transaction dt2 = subPlan(x, dt);
+        Transaction dt2 = quoteTxn(x, dt);
         dt.addNext(dt2);
 
         // order of transfer creation does not matter. It will always be added to the returned transaction.

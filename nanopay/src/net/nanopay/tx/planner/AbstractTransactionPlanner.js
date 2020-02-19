@@ -48,11 +48,11 @@ foam.CLASS({
       javaCode: `
         TransactionQuote q = (TransactionQuote) obj;
         Transaction t = q.getRequestTransaction();
-        savePlan(plannerLogic(x, q, ((Transaction) t.freeze()), agency), q); //this freeze will likely need to go at beginning of Planner stack instead.
+        save(plan(x, q, ((Transaction) t.freeze()), agency), q); //this freeze will likely need to go at beginning of Planner stack instead.
       `
     },
     {
-      name: 'plannerLogic',
+      name: 'plan',
       documentation: 'The transaction that is to be planned should be created here',
       args: [
         { name: 'x', type: 'Context' },
@@ -81,7 +81,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'savePlan',
+      name: 'save',
       documentation: 'boiler plate transaction fields that need to be set for a valid plan',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
@@ -100,7 +100,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'subPlan',
+      name: 'quoteTxn',
       documentation: 'Takes care of recursive transactionQuotePlanDAO calls',
       args: [
         { name: 'x', type: 'Context' },

@@ -49,7 +49,7 @@ foam.CLASS({
         // Retrieve the DAO
         DAO businessDAO             = (DAO) x.get("localBusinessDAO");
         DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO usBusinessOnboardingDAO = (DAO) x.get("usBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
         DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
         DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");

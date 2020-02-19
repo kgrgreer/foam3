@@ -35,9 +35,6 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.alterna.AlternaTransactionPlanDAO',
-  'net.nanopay.tx.alterna.AlternaCITransactionPlanner',
-  'net.nanopay.tx.alterna.AlternaCOTransactionPlanner',
-  'net.nanopay.tx.ExecuteMethodsTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -45,6 +42,8 @@ var classes = [
   'net.nanopay.tx.ruler.MicroDepositSuccessed',
   'net.nanopay.tx.ruler.MicroDepositFailed',
   'net.nanopay.tx.ruler.MicroDepositSent',
+  'net.nanopay.tx.ruler.InvoiceTransactionAfterPutRule',
+  'net.nanopay.tx.ruler.SendCompleteRetailTransactionNotificationRule',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
@@ -217,6 +216,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
+  'net.nanopay.fx.afex.AFEXCreateTradeRequestPDFRule',
   'net.nanopay.fx.afex.AFEXCreateTradePredicate',
   'net.nanopay.fx.afex.AFEXCreateTradeRule',
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
@@ -501,7 +501,6 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.DigitalTransactionPlanDAO',
-  'net.nanopay.tx.SecurityPlanDAO',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
   'net.nanopay.tx.PlanETAComparator',
@@ -527,14 +526,9 @@ var classes = [
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
-  'net.nanopay.tx.GenericCIPlanner',
-  'net.nanopay.tx.DVPplanner',
   'net.nanopay.tx.DVPTransaction',
   'net.nanopay.tx.ParentCompleteToPendingRule',
-  'net.nanopay.tx.FOPplanner',
-  'net.nanopay.tx.SecurityCIplanner',
   'net.nanopay.tx.BucketTransaction',
-  'net.nanopay.tx.SecurityBucketPlanner',
   'net.nanopay.tx.Amount',
   'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
@@ -553,6 +547,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
   'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
+  'net.nanopay.tx.ruler.AscendantFXTransactionAfterPutRule',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -572,6 +567,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
   'net.nanopay.fx.AddINCurrencyPermissionRule',
+  'net.nanopay.tx.TransactionValidator',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -974,8 +970,20 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
 
   // Planners
+  'net.nanopay.tx.planner.TransactionPlannerDAO',
+  'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
   'net.nanopay.tx.planner.ExamplePlanner',
+  'net.nanopay.tx.planner.DigitalTransactionPlanner',
+  'net.nanopay.tx.planner.GenericCIPlanner',
+  'net.nanopay.tx.planner.GenericCOPlanner',
+  'net.nanopay.tx.planner.GenericFXPlanner',
+  'net.nanopay.tx.GenericCIPlanner', //needs migration.. 
+  'net.nanopay.tx.DVPplanner', //needs migration.. 
+  'net.nanopay.tx.FOPplanner', //needs migration.. 
+  'net.nanopay.tx.SecurityCIplanner', //needs migration.. 
+  'net.nanopay.tx.SecurityBucketPlanner', //needs migration..
+  'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
 ];
 
 var abstractClasses = [

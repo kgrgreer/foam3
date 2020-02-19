@@ -7,7 +7,6 @@ foam.CLASS({
   documentation: `This class adds Nanopay specific user and group auth rules.`,
 
   imports: [
-    'localUserDAO',
     'passwordEntropyService'
   ],
 

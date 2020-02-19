@@ -271,8 +271,8 @@ foam.CLASS({
           .start('div').addClass(this.myClass('current-signin'))
             .add(this.CURRENTLY_SIGNED_IN)
             .start('div').addClass(this.myClass('current-signin-email'))
-              .add(this.slot(function(agent, user) {
-                return agent != null ? agent.email : user.email;
+              .add(this.slot(function(user) {
+                return user.label();
               }))
             .end()
           .end()

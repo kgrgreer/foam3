@@ -120,6 +120,7 @@ foam.CLASS({
                   .end()
                   .on('click', function() {
                     self.pushMenu(menu.id);
+                    self.close();
                   });
             }
 
