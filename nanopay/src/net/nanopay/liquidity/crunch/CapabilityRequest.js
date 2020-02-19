@@ -136,7 +136,7 @@ foam.CLASS({
 
         return {
           class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'userDAO',
+          daoKey: 'liquiditySettingsUserDAO',
           dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
         };
       },

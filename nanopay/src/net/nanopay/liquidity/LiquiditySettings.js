@@ -287,7 +287,7 @@ foam.CLASS({
       name: 'createdBy',
       documentation: `The unique identifier of the individual person, or real user,
         who created this liquidity setting.`,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -307,7 +307,7 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: `The unique identifier of the agent
         who created this liquidity setting.`,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -326,7 +326,7 @@ foam.CLASS({
       name: 'lastModified',
       documentation: 'Last modified date',
       createVisibility: 'HIDDEN',
-      visibility: foam.u2.DisplayMode.RO
+      visibility: 'RO'
     },
     {
       class: 'Reference',
@@ -334,7 +334,7 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this liquidity setting.`,
-      visibility: foam.u2.DisplayMode.RO,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
