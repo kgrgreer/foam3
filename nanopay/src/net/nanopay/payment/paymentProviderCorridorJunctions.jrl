@@ -1,0 +1,6 @@
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
+  "sourceId": 4,
+  "targetId": 2,
+  "currencies":["CAD","USD"]
+})
