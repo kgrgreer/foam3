@@ -46,7 +46,7 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'quickbooksService',
-    'usBusinessOnboardingDAO',
+    'uSBusinessOnboardingDAO',
     'user',
     'userDAO',
     'xeroService',
@@ -267,7 +267,7 @@ foam.CLASS({
           this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
         )
-      ) || await this.usBusinessOnboardingDAO.find(
+      ) || await this.uSBusinessOnboardingDAO.find(
         this.AND(
           this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)

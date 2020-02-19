@@ -77,8 +77,6 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.dashboard","description"
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.integration.devices"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.invoices","description":"Permission to see the invoices view"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.notifications"})
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.operation","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.operation.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.password"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bank","description":"Permission to see Bank Account view, which has button to create a new bank account"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.set-bus","description":"Permission to see Business Profile and Principal Owners Profile information"})
