@@ -60,7 +60,7 @@ public class TxLimitRuleTest
     // create test rule to restrict users from transacting
     TxLimitRule txLimitRule = new TxLimitRule();
     txLimitRule.setEnabled(true);
-    txLimitRule.setId(123123);
+    txLimitRule.setId("123123");
     txLimitRule.setName("Tx Limit Test Rule");
     txLimitRule.setDescription("Tx Limit Test Rule");
     txLimitRule.setCreatedBy(sourceUser.getId());

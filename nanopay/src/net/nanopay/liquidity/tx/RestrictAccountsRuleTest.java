@@ -83,7 +83,7 @@ public class RestrictAccountsRuleTest
 
     // create test rule to restrict source account from transacting with destination account
     rule_ = new RestrictAccountsRule();
-    rule_.setId(121);
+    rule_.setId("121");
     rule_.setName("Restrict Accounts Test Rule");
     rule_.setDescription("Tests the RestrictAccountsRule.");
     rule_.setCreatedBy(user_.getId());

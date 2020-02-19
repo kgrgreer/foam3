@@ -82,7 +82,7 @@ public class RestrictUsersRuleTest
 
     // create test rule to restrict users from transacting
     rule_ = new RestrictUsersRule();
-    rule_.setId(123);
+    rule_.setId("123");
     rule_.setName("Restrict Users Test Rule");
     rule_.setDescription("Tests the RestrictUsersRule.");
     rule_.setCreatedBy(user_.getId());

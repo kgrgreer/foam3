@@ -131,7 +131,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
 
   private void createUserRule(X ctx) {
     Rule rule = new Rule();
-    rule.setId(12323);
+    rule.setId("12323");
     rule.setName("rule1. testing approval");
     RuleGroup rg = new RuleGroup();
     rg.setId("test approval_CREATE");
@@ -151,7 +151,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     ruleDAO.put(rule);
 
     Rule rule2 = new Rule();
-    rule2.setId(2);
+    rule2.setId("2");
     rule2.setName("rule2. testing approval");
     RuleGroup rg2 = new RuleGroup();
     rg2.setId("test approval_UPDATE");
