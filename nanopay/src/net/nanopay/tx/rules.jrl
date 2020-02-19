@@ -553,6 +553,27 @@ p({
     "enabled":true,
     "saveHistory":true
 })
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"Ablii transaction check invoice attached",
+    "priority":100,
+    "ruleGroup":"Payment",
+    "documentation":"Check if Ablii transaction has an invoice attached to it",
+    "daoKey":"localTransactionDAO",
+    "operation":0,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+      "of":"net.nanopay.tx.AbliiTransaction"
+    },
+    "after":false,
+    "action":{
+      "class":"net.nanopay.tx.ruler.AbliiTxnCheckInvoiceAttachedRule"
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"Invoice transaction after put",

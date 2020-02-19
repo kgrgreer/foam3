@@ -43,20 +43,6 @@ foam.CLASS({
       `
     },
     {
-      name: `validate`,
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      type: 'Void',
-      javaCode: `
-      super.validate(x);
-      if( findInvoiceId(x) == null ) {
-        ((Logger) x.get("logger")).error("An invoice was not provided for this transaction");
-        throw new RuntimeException("An invoice for this transaction was not provided.");
-      }
-      `
-    },
-    {
       name: 'authorizeOnCreate',
       args: [
         { name: 'x', type: 'Context' }
