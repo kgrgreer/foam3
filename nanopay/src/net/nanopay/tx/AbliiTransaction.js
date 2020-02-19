@@ -43,25 +43,18 @@ foam.CLASS({
       `
     },
     {
-      name: 'executeBeforePut',
+      name: `validate`,
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
+        { name: 'x', type: 'Context' }
       ],
-      type: 'net.nanopay.tx.model.Transaction',
+      type: 'Void',
       javaCode: `
-      Transaction tx = super.executeBeforePut(x);
-
-      // An invoice is required to create an ablii transaction
-      if( tx.findInvoiceId(x) == null ) {
+      super.validate(x);
+      if( findInvoiceId(x) == null ) {
         ((Logger) x.get("logger")).error("An invoice was not provided for this transaction");
         throw new RuntimeException("An invoice for this transaction was not provided.");
       }
-
-      return tx;
-    `
+      `
     },
     {
       name: 'authorizeOnCreate',

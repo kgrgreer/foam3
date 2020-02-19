@@ -31,7 +31,7 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       width: 100%;
     }
-    ^ .container {
+    ^container {
       margin-bottom: 20px;
     }
     ^ .two-column {
@@ -103,7 +103,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .callIf( ! this.withoutCountrySelection, () => {
-          this.start().addClass('container')
+          this.start().addClass(this.myClass('container'))
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
@@ -123,7 +123,7 @@ foam.CLASS({
             .end()
           .end();
         })
-        .start().addClass('container')
+        .start().addClass(this.myClass('container'))
           .start().addClass('one-three-one-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
@@ -151,7 +151,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass('container')
+        .start().addClass(this.myClass('container'))
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
@@ -161,7 +161,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().addClass('container')
+        .start().addClass(this.myClass('container'))
           .start().addClass('one-two-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {

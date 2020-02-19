@@ -7,9 +7,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.LoanAccount',
-    'net.nanopay.account.LoanedTotalAccount'
+    'net.nanopay.account.LoanedTotalAccount',
+    'net.nanopay.tx.model.Transaction',
+    'java.util.List',
+    'java.util.ArrayList'
   ],
 
   methods: [
@@ -32,26 +34,22 @@ foam.CLASS({
       `
     },
     {
-      name: 'executeBeforePut',
+      name: `validate`,
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
+        { name: 'x', type: 'Context' }
       ],
-      type: 'net.nanopay.tx.model.Transaction',
+      type: 'Void',
       javaCode: `
-      Transaction tx = super.executeBeforePut(x);
-      if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) ) {
+      super.validate(x);
+      if( ! ( findSourceAccount(x) instanceof LoanAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a Loan Account as a Source Account");
         throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
       }
-      if( ! ( tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
+      if( ! ( findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a LoanedTotalAccount as a Destination Account");
         throw new RuntimeException("Transaction must include a LoanedTotalAccount as a Destination Account");
       }
-      return tx;
-    `
+      `
     }
   ]
 });

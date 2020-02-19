@@ -131,25 +131,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `Method to execute additional logic for each transaction after it was written to journals`,
-      name: 'executeAfterPut',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      javaCode: `
-      //TODO: move this to a rule. before merge
-      super.executeAfterPut(x, oldTxn);
-      createChild(x, oldTxn);
-      `
-    },
-    {
       name: 'limitedCopyFrom',
       args: [
         {
@@ -166,39 +147,6 @@ foam.CLASS({
       if ( other instanceof InvoiceTransaction ) {
         setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
       }
-      `
-    },
-    {
-      documentation: `creates another child transaction if job was done partially`,
-      name: 'createChild',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      javaCode: `
-      InvoiceTransaction old = (InvoiceTransaction) oldTxn;
-      if ( this.getServiceCompleted() == 100 ) {
-        return;
-      }
-      InvoiceTransaction child = new InvoiceTransaction();
-      child.copyFrom(this);
-      child.setId("");
-      child.setServiceCompleted(100);
-      child.setStatus(TransactionStatus.PENDING);
-
-      TransactionLineItem[] lineItems = old.getLineItems();
-      for ( int i = 0; i < lineItems.length; i++ ) {
-        lineItems[i].setAmount((long)(lineItems[i].getAmount()*0.01*(100 - getServiceCompleted())));
-      }
-      child.setLineItems(lineItems);
-      getChildren(x).put(child);
-
       `
     }
   ]

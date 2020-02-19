@@ -19,12 +19,12 @@ p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"IdentityMind transfer t
 p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Clear transaction approval requests"})            // Compliance
 p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Compliance transaction approval"})                // Compliance
 p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Create Expedite Aproval Request"})                // Compliance
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Ablii Completed Transaction Notification")
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Ablii FX Completed Transaction Notification")
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Cash In Transaction Notification")
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Verification Transaction Notification")
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Compliance Transaction Notification")
-p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Send email when the micro deposit succeeded")
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Ablii Completed Transaction Notification"})
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Ablii FX Completed Transaction Notification"})
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Cash In Transaction Notification"})
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Verification Transaction Notification"})
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Declined Compliance Transaction Notification"})
+p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Send email when the micro deposit succeeded"})
 p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"Send notification to account owner when account has been added."})
 
 // enable rules
@@ -39,10 +39,10 @@ p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Declined Verification Tr
 p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"statusHistory Update Rule"})                       // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Reset transaction lastModified/By properties"})    // Tx Processing
 p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Estimate Transaction completionDate"})             // Tx Processing
-p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Generic Security CICO planner")
-p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"FOP Transaction Planner")
-p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"DVP Transaction Planner")
-p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Bucket Transaction Planner")
+p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Generic Security CICO planner"})
+p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"FOP Transaction Planner"})
+p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"DVP Transaction Planner"})
+p({"class":"foam.nanos.ruler.Rule","enabled":true,"id":"Bucket Transaction Planner"})
 
 // transaction auto approval
 p({"class":"foam.nanos.ruler.Rule","id":"Transaction Auto-Approval","enabled":false})

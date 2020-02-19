@@ -7,10 +7,6 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.Account',
-    'static foam.mlang.MLang.EQ',
-    'foam.dao.DAO'
   ],
 //TODO: predicate: both accounts are digital, and currency is the same.
 

@@ -7,10 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.cico.CITransaction',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.TrustAccount',
-    'static foam.mlang.MLang.EQ',
-    'foam.dao.DAO'
   ],
 
   //TODO: Predicate:
