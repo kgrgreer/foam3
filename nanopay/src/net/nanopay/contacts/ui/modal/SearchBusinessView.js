@@ -21,7 +21,7 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicBusinessInfo',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
   ],
 
   imports: [
@@ -225,12 +225,13 @@ foam.CLASS({
                 var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
-                      this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      this.CONTAINS_IC(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.FULL_ADDRESS), locationFilter),
-                      this.IN(this.Business.ID, mapSink.delegate.array)
+                      // this.NEQ(this.Business.ID, this.user.id),
+                      // this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      // this.IN(this.Business.ID, mapSink.delegate.array)
                     )
                   );
+
                 dao
                   .select(this.Count.create())
                   .then((sink) => {
@@ -251,7 +252,7 @@ foam.CLASS({
       `,
       expression: function(businessNameFilter, locationFilter) {
         if ( businessNameFilter.length < 2 ) {
-          return this.NullDAO.create({ of: net.nanopay.auth.PublicBusinessInfo });
+          return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
             promise: this.user.contacts
@@ -260,11 +261,11 @@ foam.CLASS({
                 var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
-                      this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      this.CONTAINS_IC(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.FULL_ADDRESS), locationFilter),
-                      this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
-                      this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
+                      // this.NEQ(this.Business.ID, this.user.id),
+                      // this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      // this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
+                      // this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
                   );
                 dao

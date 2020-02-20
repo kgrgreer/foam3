@@ -231,7 +231,7 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-    },
+    }, 
     {
       class: 'Boolean',
       name: 'businessHoursEnabled',
