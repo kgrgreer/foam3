@@ -16,7 +16,7 @@ p({
   "canApproveCapabilityrequest": true,
   "canIngestFile": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Treasury Cash Manager (Admin)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2", "name": "Treasury Cash Manager (Admin)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -26,7 +26,7 @@ p({
   "canApproveTransaction": true,
   "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Treasury Cash Manager (Transactional)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3", "name": "Treasury Cash Manager (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -36,7 +36,7 @@ p({
   "canViewTransaction": true,
   "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Operational Administrator (Transactional)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4", "name": "Operational Administrator (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -55,7 +55,7 @@ p({
   "canMakeCapabilityrequest": true,
   "canApproveCapabilityrequest": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Operational Administrator (Admin)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5", "name": "Operational Administrator (Admin)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -64,7 +64,7 @@ p({
   "canMakeTransaction": true,
   "canApproveTransaction": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Treasurer / Risk Manager (Transactional)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6", "name": "Treasurer / Risk Manager (Transactional)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.GlobalLiquidCapability",
@@ -75,7 +75,7 @@ p({
   "canApproveLiquiditysettings":true,
   "canViewCapability": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Treasurer / Risk Manager (Admin)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7", "name": "Treasurer / Risk Manager (Admin)"
 })
 
 p({
@@ -96,7 +96,7 @@ p({
   "canApproveCapabilityrequest": true,
   "canIngestFile": true,
   "of": "net.nanopay.liquidity.crunch.ApproverLevel",
-  "id": "Full Access (Admin)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8", "name": "Full Access (Admin)"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.AccountBasedLiquidCapability",
@@ -108,5 +108,5 @@ p({
   "canApproveTransaction": true,
   "canViewDashboard": true,
   "of": "net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
-  "id": "Full Access (Transactional)"
+  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9", "name": "Full Access (Transactional)"
 })
