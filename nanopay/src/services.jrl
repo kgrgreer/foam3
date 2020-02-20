@@ -621,11 +621,8 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setPipelinePm(true)
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("userDAO"))
-        .setEnableInterfaceDecorators(false)
         .setDeletedAware(false)
         .build();
   """,

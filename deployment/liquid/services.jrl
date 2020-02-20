@@ -359,13 +359,8 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setValidated(true)
-      .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator())
       .setOf(foam.nanos.auth.User.getOwnClassInfo()) 
-      .setInnerDAO(x.get("localUserDAO"))
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
+      .setInnerDAO(x.get("userDAO"))
       .setDecorator(
         new foam.dao.FilteredDAO.Builder(x)
           .setPredicate(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
