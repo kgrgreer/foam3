@@ -36,10 +36,9 @@ public class RbcVerifyFileAcceptedCron implements ContextAgent {
     ).select(new ArraySink());
     List<EFTFile> files = (ArrayList<EFTFile>) sink.getArray();
 
-    for ( EFTFile file : files ) {
-      /* Verify file was accepted and valid */
+    if (  files.size() > 0 ) {
       try {
-        new RbcReportProcessor(x).processReceipt(file);
+        new RbcReportProcessor(x).processReceipts();
       } catch ( Exception e ) {
         logger.error("RBC send file failed.", e);
       } 
