@@ -1865,11 +1865,11 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "txnDetailDAO",
+  "name": "transactionHierarchyDAO",
   "serve":true,
   "serviceScript":
   """
-    dao = new net.nanopay.meter.report.FetchTransactionDetailDAO.Builder(x)
+    dao = new net.nanopay.meter.report.TransactionHierarchyDAO.Builder(x)
       .setDelegate(null)
       .setX(x)
       .build();

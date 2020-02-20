@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.report',
-  name: 'FetchTransactionDetailDAO',
+  name: 'TransactionHierarchyDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: '',
@@ -63,5 +63,4 @@ foam.CLASS({
       `
     }
   ]
-
 });
