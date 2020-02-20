@@ -1,13 +1,12 @@
+// Use DAOMenu as DAOMenu2 does not yet support Strategy
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"admin.tickets",
   "label":"Tickets",
   "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"ticketDAO"
-    }
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"ticketDAO",
+    "title":"Tickets"
   },
   "parent":"admin"
 })
