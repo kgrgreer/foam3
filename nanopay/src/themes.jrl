@@ -48,9 +48,6 @@ p({
     .footer-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-ActionView-export {
-      display: none;
-    }
     .foam-u2-DateView {
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
       letter-spacing: 0.2px;
