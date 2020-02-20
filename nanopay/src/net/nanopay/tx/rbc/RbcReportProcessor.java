@@ -63,15 +63,12 @@ public class RbcReportProcessor {
   /**
    * Process the report to check file was accepted and valid 
    */
-  public boolean processReceipt(EFTFile eftFile) {
-    if ( eftFile == null ) return false;
-
+  public void processReceipts() {
     /* Download status report files from RBC */
     try{
       rbcFTPSClient.batchDownload();
     } catch (Exception e) {
       this.logger.error("Error downloading status reports from RBC ", e);
-      return false;
     }
 
     /* Decrypt file status report files */
@@ -79,58 +76,58 @@ public class RbcReportProcessor {
       decryptFolder(x);
     } catch (Exception e) {
       this.logger.error("Error decrypting files from download folder", e);
-      return false;
     }
 
     File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
     for (File file : folder.listFiles()) {
       if ( file.isDirectory() ) continue;
       try{
-        if( processReceipt(file, eftFile.getId()) ) {
-          // Store receipt processed
-          try {
-            foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(x, file, eftFile.getId() + "_receipt", "text/plain"); 
-            eftFile = (EFTFile) eftFile.fclone();
-            eftFile.setReceipt(f.getId());
-            eftFile.setStatus(EFTFileStatus.ACCEPTED);
-            ((DAO) x.get("eftFileDAO")).inX(x).put(eftFile);
-          } catch(Exception e) {
-            logger.error("RBC Error while saving recipt", e);
-          }
-
-          return true;
+          processReceipt(file);
+        } catch(Exception e) {
+          logger.error("RBC Error while saving recipt", e);
         }
-      } catch (Exception e) {
-        this.logger.error("Error decrypting file: " + file.getName(), e);
-      }
     }
-
-    return false;
   }
 
   /**
    * Process the receipt file
    */
-  public boolean processReceipt(File file, long fileId) {
-    if ( file == null ) return false;
+  public void processReceipt(File file) {
+    if ( file == null ) return;
 
     try {
       ISO20022Util driver = new ISO20022Util();
       Pain00200103 pain = (Pain00200103) driver.fromXML(x, file, Pain00200103.class);
-      if ( pain == null || pain.getCstmrPmtStsRpt() == null ) return false;
+      if ( pain == null || pain.getCstmrPmtStsRpt() == null ) return;
       net.nanopay.iso20022.OriginalGroupInformation20 grpInfo = pain.getCstmrPmtStsRpt().getOriginalGroupInformationAndStatus();
-      if ( grpInfo == null || ! String.valueOf(fileId).equals(grpInfo.getOriginalMessageIdentification()) ) return false;
+      if ( grpInfo == null || grpInfo.getGroupStatus() == null ) return;
 
-      // Confirm - ACTC status should occur at least once per batch - 
-      if ( null != grpInfo.getGroupStatus() && net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) { 
-        return true;
+      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) { 
+        updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.ACCEPTED);
+      } else if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) { 
+        updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.REJECTED);
       }
     } catch (Exception e) {
       this.logger.error("Error when processing the receipt file. ", e);
-      return false;
     }
+  }
 
-    return false;
+  protected void updateEFTFileReceipt(File file, long fileNumber, EFTFileStatus status) {
+    try {
+      // Save Receipt File
+      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, fileNumber + "_receipt.txt", "text/plan"); 
+      DAO eftFileDAO = ((DAO) x.get("eftFileDAO")).inX(x);
+      EFTFile eftFile = (EFTFile) eftFileDAO.find(fileNumber);
+      if ( eftFile != null ) {
+        eftFile.setReceipt(f.getId());
+        eftFile.setStatus(status);
+        eftFileDAO.put(eftFile);
+        FileUtils.deleteQuietly(file);
+      }
+    } catch ( Exception e ) {
+      this.logger.error("Error while saving and updating EFT Receipt File with filecreation number: . " + fileNumber, e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "Error while saving and updating EFT Receipt File with filecreation number: . " + fileNumber, e);
+    }
   }
 
   /**
@@ -183,6 +180,7 @@ public class RbcReportProcessor {
       if ( eftFile != null ) {
         eftFile.setReport(f.getId());
         eftFileDAO.put(eftFile);
+        FileUtils.deleteQuietly(file);
       }
     } catch ( Exception e ) {
       this.logger.error("Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e.getMessage(), e);
