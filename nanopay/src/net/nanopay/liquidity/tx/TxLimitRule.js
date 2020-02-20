@@ -19,13 +19,14 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'name',
     'applyLimitTo',
     'limit',
     'period'
   ],
 
   properties: [
-    { name: 'id' },
+    { name: 'name' },
     { name: 'description' },
     {
       class: 'Enum',
@@ -55,8 +56,8 @@ foam.CLASS({
           ]
         };
       },
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'USER') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'USER') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       tableCellFormatter: function(value, obj, axiom) {
         this.__subContext__.userDAO
@@ -98,8 +99,8 @@ foam.CLASS({
       documentation: 'The account to limit.',
       name: 'accountToLimit',
       section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       postSet: function(o, n) {
         if ( this.applyLimitTo == 'ACCOUNT' ) {
@@ -116,10 +117,10 @@ foam.CLASS({
       documentation: 'Whether to include the children of the account.',
       name: 'includeChildAccounts',
       section: 'basicInfo',
-      visibilityExpression: function(applyLimitTo) {
+      visibility: function(applyLimitTo) {
         // We do not want this for GS R2 demo, so hiding it for now
-        // return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-        return foam.u2.Visibility.HIDDEN;
+        // return (applyLimitTo == 'BUSINESS') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -127,7 +128,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       label: 'Apply Limit When',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -172,8 +173,8 @@ foam.CLASS({
       documentation: 'The unit of measure of the transaction limit.',
       section: 'basicInfo',
       required: true,
-      visibilityExpression: function(applyLimitTo) {
-        return (applyLimitTo == 'ACCOUNT') ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'ACCOUNT') ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {

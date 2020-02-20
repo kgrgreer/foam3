@@ -37,7 +37,7 @@ foam.CLASS({
     {
       name: 'denomination',
       value: 'CAD',
-      updateMode: 'RO'
+      updateVisibility: 'RO'
     }
   ],
 

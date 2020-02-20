@@ -1,18 +1,18 @@
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.dashboard",
+  "id": "dashboard",
   "label": "Dashboard",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.liquidity.ui.dashboard.Dashboard"
     }
-  },
-  "order": 100
+  }
 })
+
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.accounts",
+  "id": "accounts",
   "label": "Accounts",
   "handler":
     {
@@ -58,13 +58,12 @@ p({
               }
             }
         }
-    },
-  "order": 200
+    }
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.transactions",
+  "id": "transactions",
   "label": "Transactions",
   "handler":
     {
@@ -108,13 +107,12 @@ p({
             }
           ]
         }
-    },
-  "order":300
+    }
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.users",
+  "id": "users",
   "label": "Users",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -123,34 +121,17 @@ p({
       "daoKey": "userDAO",
       "browseTitle": "Users",
       "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
-      "predicate": {
-        "class":"foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "foam.nanos.auth.User",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "foam.nanos.auth.User",
-              "name": "group"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "liquidBasic"
-            }
-          }
-      ]
+      "predicate": { 
+        "class": "foam.mlang.predicate.Eq",
+        "arg1": {
+          "class": "__Property__",
+          "forClass_": "foam.nanos.auth.User",
+          "name": "lifecycleState"
+        },
+        "arg2": {
+          "class": "foam.mlang.Constant",
+          "value": "ACTIVE"
+        }
       },
       "CRUDActionsAuth": {
         "class": "foam.comics.v2.CRUDActionsAuth",
@@ -166,13 +147,12 @@ p({
         }
       ]
     }
-  },
-  "order": 400
+  }
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.liquidity",
+  "id": "liquidity",
   "label": "Liquidity Settings",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -200,13 +180,12 @@ p({
         "delete": ["liquiditysettings.make"]
       }
     }
-  },
-  "order": 600
+  }
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.approvals",
+  "id": "approvals",
   "label": "Approval Requests",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -219,23 +198,22 @@ p({
       "editEnabled": false,
       "deleteEnabled": false
     }
-  },
-  "order": 700
+  }
 })
 
 // Business Rules
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.rules",
+  "id": "rules",
   "label": "Business Rules",
   "handler": {
     "class": "foam.nanos.menu.SubMenu"
-  },
-  "order": 2000
+  }
 })
+
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.accounttemplates",
+  "id": "rules.accounttemplates",
   "label": "Account Groups for Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -246,13 +224,12 @@ p({
       "createTitle": "Create a New Account Group for Rules",
     }
   },
-  "order": 3000,
-  "parent": "liquid.rules"
+  "parent": "rules"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.genericrules",
+  "id": "rules.genericrules",
   "label": "Generic Rules",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -282,6 +259,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "businessRuleAction",
         "createdBy"
@@ -295,13 +273,12 @@ p({
       }
     }
   },
-  "order":5000,
-  "parent": "hidden"
+  "parent": "rules"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.restrictaccountsrules",
+  "id": "rules.restrictaccountsrules",
   "label": "Restrict Accounts",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -331,6 +308,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceAccount",
@@ -347,13 +325,12 @@ p({
       }
     }
   },
-  "order": 300,
-  "parent": "liquid.rules"
+  "parent": "rules"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.restrictusersrules",
+  "id": "rules.restrictusersrules",
   "label": "Restrict Users",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -383,6 +360,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceUser",
@@ -399,13 +377,12 @@ p({
       }
     }
   },
-  "order":310,
-  "parent": "hidden"
+  "parent": "rules"
 })
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"liquid.txapprovaltrules",
+  "id":"rules.txapprovaltrules",
   "label":"High Value L2 Rules",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
@@ -437,6 +414,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "startAmount"
       ],
@@ -449,13 +427,12 @@ p({
       }
     }
   },
-  "order": 340,
-  "parent": "liquid.rules"
+  "parent": "rules"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.txlimitrules",
+  "id": "rules.txlimitrules",
   "label": "Transaction Limits",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -485,6 +462,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "applyLimitTo",
         "send",
@@ -502,98 +480,22 @@ p({
       }
     }
   },
-  "order": 330,
-  "parent": "liquid.rules"
-})
-
-// Move the Email menu to admin
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "admin.emailmessage",
-  "label": "Email Messages",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu",
-    "daoKey": "emailMessageDAO"
-  },
-  "order": 1000,
-  "parent": "admin"
-})
-
-// Remove unnecessary menu items
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "sme"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "operation"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "report"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "tickets"
-})
-
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "connect"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "alterna-eft"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "ascendantFXUsers"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBusinesses"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBeneficiaries"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "account-balance"
-})
-
-// Remove unnecessary right menu items
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "set-bus"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "set-bank"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "set-multi-user"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "set-integrate"
+  "parent": "rules"
 })
 
 // Roles and Capabilities
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.roles",
+  "id": "roles",
   "label": "Role Management",
   "handler": {
     "class": "foam.nanos.menu.SubMenu"
-  },
-  "order": 3000
+  }
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.globalliquidcapabilities",
+  "id": "roles.globalliquidcapabilities",
   "label": "Admin Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -622,12 +524,11 @@ p({
       }
     }
   },
-  "order": 500,
-  "parent": "liquid.roles"
+  "parent": "roles"
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.accountbasedliquidcapabilities",
+  "id": "roles.accountbasedliquidcapabilities",
   "label": "Transactional Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -656,12 +557,11 @@ p({
       }
     }
   },
-  "order": 510,
-  "parent": "liquid.roles"
+  "parent": "roles"
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.capabilityaccounttemplates",
+  "id": "roles.capabilityaccounttemplates",
   "label": "Account Groups for Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -672,13 +572,12 @@ p({
       "createTitle": "Create a New Account Group for Roles",
     }
   },
-  "order": 535,
-  "parent": "liquid.roles"
+  "parent": "roles"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.assigncapability",
+  "id": "roles.assigncapability",
   "label": "Role Assignment",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -695,13 +594,12 @@ p({
       }
     }
   },
-  "order": 540,
-  "parent": "liquid.roles"
+  "parent": "roles"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.rolequeryview",
+  "id": "roles.rolequeryview",
   "label": "Role Query",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
@@ -709,19 +607,17 @@ p({
       "class": "net.nanopay.liquidity.ucjQuery.RoleQueryView"
     }
   },
-  "order": 600,
-  "parent": "liquid.roles"
+  "parent": "roles"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "liquid.fileupload",
+  "id": "fileupload",
   "label": "File Upload",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.tx.gs.GSFileUploadScreen"
     }
-  },
-  "order": 10000
+  }
 })

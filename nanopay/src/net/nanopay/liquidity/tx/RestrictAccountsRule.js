@@ -25,11 +25,12 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'name',
     'createdBy'
   ],
 
   properties: [
-    { name: 'id' },
+    { name: 'name' },
     { name: 'description' },
     {
       class: 'Reference',

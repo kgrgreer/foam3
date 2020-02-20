@@ -207,8 +207,8 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       label: 'Federal Tax ID Number (EIN)',
       documentation: 'Federal Tax ID Number (EIN)',
-      visibilityExpression: function(countryOfBusinessFormation) {
-        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -231,8 +231,8 @@ foam.CLASS({
       documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
       docName: 'CAD_AFEX_Terms',
       label: '',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -254,8 +254,8 @@ foam.CLASS({
       documentation: 'Verifies if the user has accepted nanopayInternationalPaymentsCustomerAgreement.',
       docName: 'nanopayInternationalPaymentsCustomerAgreement',
       label: '',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {

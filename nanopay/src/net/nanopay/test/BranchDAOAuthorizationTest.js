@@ -3,7 +3,6 @@ foam.CLASS({
   name: 'BranchDAOAuthorizationTest',
   extends: 'foam.nanos.test.Test',
   documentation: `class to test BranchDAO security`,
-  flags: ['java'],
 
   javaImports: [
     'foam.core.X',
@@ -147,6 +146,5 @@ foam.CLASS({
       test(! threw, "Admin user can delete branch");
     `
     }
-
   ]
 })

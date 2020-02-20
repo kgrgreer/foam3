@@ -157,7 +157,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
-    DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
@@ -173,7 +173,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
         EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true)
       )).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(
+    usBusinessOnboardingDAO.where(
       AND(
         EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
         EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),

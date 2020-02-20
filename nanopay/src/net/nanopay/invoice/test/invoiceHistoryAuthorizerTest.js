@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'net.nanopay.invoice.test',
   name: 'invoiceHistoryAuthorizerTest',
   extends: 'foam.nanos.test.Test',
-  flags: ['java'],
 
   javaImports: [
     'foam.core.X',

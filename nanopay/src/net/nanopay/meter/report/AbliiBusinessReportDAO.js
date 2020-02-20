@@ -49,7 +49,7 @@ foam.CLASS({
         // Retrieve the DAO
         DAO businessDAO             = (DAO) x.get("localBusinessDAO");
         DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
         DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
         DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");
@@ -94,7 +94,7 @@ foam.CLASS({
               if ( bo != null ) onboardSubmitDate = dateFormat.format(bo.getLastModified());
             }
             else if ( country.equals("US") ) {
-              USBusinessOnboarding ubo = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(
+              USBusinessOnboarding ubo = (USBusinessOnboarding) usBusinessOnboardingDAO.find(
                 MLang.AND(
                   MLang.EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
                   MLang.EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)
