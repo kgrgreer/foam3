@@ -211,7 +211,6 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      tableWidth: 168,
       section: 'accountDetails',
       order: 1
     },
@@ -362,7 +361,7 @@ foam.CLASS({
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
       // visibility: 'RO',
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
@@ -423,14 +422,14 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
 

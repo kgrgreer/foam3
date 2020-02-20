@@ -272,8 +272,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
+  { name: 'net/nanopay/tx/ruler/AscendantFXTransactionAfterPutRule' },
 
-  //
+  // afex
   { name: 'net/nanopay/fx/FXSummaryTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: 'net/nanopay/fx/afex/AFEX' },
@@ -328,6 +329,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
+  { name: 'net/nanopay/fx/afex/AFEXCreateTradeRequestPDFRule' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
@@ -370,6 +372,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
+  { name: 'net/nanopay/tx/TransactionValidator' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/util/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
@@ -386,8 +389,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
+  { name: 'net/nanopay/tx/ruler/InvoiceTransactionAfterPutRule' },
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
+  { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
@@ -1406,11 +1411,13 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
-  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration.. 
-
+  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
+  { name: 'net/nanopay/tx/planner/DVPPlanner' },
+  { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
+  { name: 'net/nanopay/tx/planner/predicate/PropertyIsClass' }, //needs to be put to foam..
 
 ]);

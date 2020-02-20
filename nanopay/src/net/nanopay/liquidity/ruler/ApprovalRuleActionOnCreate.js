@@ -123,23 +123,38 @@ foam.CLASS({
 
           User user = (User) x.get("user");
           User agent = (User) x.get("agent");
+          Long initiatingUser = agent != null ? agent.getId() : user.getId();
+
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
             .setOperation(Operations.CREATE)
-            .setInitiatingUser(agent != null ? agent.getId() : user.getId())
+            .setInitiatingUser(initiatingUser)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)
             .build();
 
-          if ( ! approvers.isEmpty() ) {
+          if ( approvers.size() == 1 && approvers.get(0) == initiatingUser ) {
+            ((Logger) x.get("logger")).error(
+              "ApprovalRuleActionOnCreate - The only approver for this level is the initiating user of the request.", classification, objId);
+          } else if ( approvers.size() > 0) {
+            // sending a tracking request to the initiating user
+            approvalRequest.clearId();
+            approvalRequest.setApprover(initiatingUser);
+            approvalRequestDAO.put(approvalRequest);
+
+            approvers.remove(initiatingUser);
+
             for ( Long approver : approvers ) {
               approvalRequest.clearId();
               approvalRequest.setApprover(approver);
               approvalRequestDAO.put(approvalRequest);
             }
+          } else if ( approvers.size() == 1 && approvers.get(0) == initiatingUser ) {
+            ((Logger) x.get("logger")).error(
+              "ApprovalRuleActionOnCreate - The only approver for this level is the initiating user of the request.", classification, objId);
           } else if ( getDefaultApprover() > 0 ) {
             approvalRequest.setApprover(getDefaultApprover());
             approvalRequestDAO.put(approvalRequest);
