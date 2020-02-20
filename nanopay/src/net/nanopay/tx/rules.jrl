@@ -553,6 +553,38 @@ p({
     "enabled":true,
     "saveHistory":true
 })
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d77",
+    "name":"Ablii transaction check invoice attached",
+    "priority":100,
+    "ruleGroup":"Payment",
+    "documentation":"Check if Ablii transaction has an invoice attached to it",
+    "daoKey":"localTransactionDAO",
+    "operation":3,
+    "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "args":[{
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.AbliiTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"invoiceId",
+        "propValue": null
+      }
+      ]
+    },
+    "after":false,
+    "action":{
+      "class":"net.nanopay.liquidity.tx.ExceptionRuleAction",
+      "message":"An invoice for this transaction was not provided."
+    },
+    "enabled":true,
+    "saveHistory":true
+})
+
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d202","name":"Invoice transaction after put",
