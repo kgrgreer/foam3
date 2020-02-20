@@ -36,6 +36,9 @@ foam.CLASS({
 
   css: `
     ^ {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       height: 593px;
       overflow-y: scroll;
     }
@@ -82,6 +85,23 @@ foam.CLASS({
       width: 462px;
       overflow-wrap: break-word;
     }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.43;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      background-color: transparent;
+      color: #4d38e1;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover {
+      border: none;
+    }
     ^align-text-center {
       text-align: center;
     }
@@ -98,8 +118,12 @@ foam.CLASS({
     ^business-list {
       overflow-y: scroll;
     }
-    ^paymentcode-button {
-      margin-top: 16px;
+    ^button-container {
+      height: 84px;
+      display: flex;
+      align-items: center;
+      background-color: #fafafa;
+      padding-left: 24px;
     }
   `,
 
@@ -114,11 +138,11 @@ foam.CLASS({
   messages: [
     {
       name: 'TITLE',
-      message: 'Add a contact'
+      message: 'Search by Business Name'
     },
     {
       name: 'BUSINESS_NAME',
-      message: 'Business name'
+      message: 'Business Name'
     },
     {
       name: 'INSTRUCTION',
@@ -214,7 +238,7 @@ foam.CLASS({
         This property is to query all connected businesses related to
         the current acting business.
       `,
-      expression: function(businessNameFilter, locationFilter) {
+      expression: function(businessNameFilter) {
         if ( businessNameFilter.length < 2 ) {
           return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
@@ -225,10 +249,10 @@ foam.CLASS({
                 var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
-                      // this.NEQ(this.Business.ID, this.user.id),
-                      // this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
-                      // this.IN(this.Business.ID, mapSink.delegate.array)
+                      this.NEQ(this.Business.ID, this.user.id),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      // this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      this.IN(this.Business.ID, mapSink.delegate.array)
                     )
                   );
 
@@ -250,7 +274,7 @@ foam.CLASS({
         This property is to query all unconnected businesses related to
         the current acting business.
       `,
-      expression: function(businessNameFilter, locationFilter) {
+      expression: function(businessNameFilter) {
         if ( businessNameFilter.length < 2 ) {
           return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
@@ -261,11 +285,11 @@ foam.CLASS({
                 var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
-                      // this.NEQ(this.Business.ID, this.user.id),
-                      // this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
-                      // this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
-                      // this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
+                      this.NEQ(this.Business.ID, this.user.id),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
+                      // this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
+                      this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
                   );
                 dao
@@ -363,23 +387,22 @@ foam.CLASS({
               .addClass(this.myClass('filter-search'))
             .end()
           .end()
-          .start().addClass(this.myClass('search-field'))
-            .start({
-              class: 'foam.u2.tag.Image',
-              data: this.SEARCH_ICON
-            })
-              .addClass(this.myClass('searchIcon'))
-            .end()
-            .start(this.LOCATION_FILTER)
-              .addClass(this.myClass('filter-search'))
-            .end()
-          .end()
+          // .start().addClass(this.myClass('search-field'))
+          //   .start({
+          //     class: 'foam.u2.tag.Image',
+          //     data: this.SEARCH_ICON
+          //   })
+          //     .addClass(this.myClass('searchIcon'))
+          //   .end()
+          //   .start(this.LOCATION_FILTER)
+          //     .addClass(this.myClass('filter-search'))
+          //   .end()
+          // .end()
           .start()
             .addClass('divider')
           .end()
           .start().addClass(this.myClass('business-list'))
             .select(this.unconnectedBusinesses$proxy, (business) => {
-              // debugger;
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
@@ -414,15 +437,6 @@ foam.CLASS({
               .addClass(this.myClass('search-result'))
               .add(this.DEFAULT_TEXT)
             .end()
-            // .start()
-            //   .addClass(this.myClass('center'))
-            //   .start(this.CREATE_NEW).end()
-            // .end()
-            // .start()
-            //   .addClass(this.myClass('center'))
-            //   .addClass(this.myClass('paymentcode-button'))
-            //   .start(this.ADD_BY_PAYMENTCODE).end()
-            // .end()
           .end()
           .start().show(this.showNoMatch$)
             .addClass(this.myClass('create-new-block'))
@@ -443,7 +457,12 @@ foam.CLASS({
               .start(this.CREATE_NEW_WITH_BUSINESS).end()
             .end()
           .end()
-        .end();
+        .end()
+        .start().addClass(this.myClass('button-container'))
+          .start().addClass(this.myClass('back-button'))
+            .start(this.BACK).end()
+          .end()
+        .end();  
     },
 
     function addSelected(business) {
@@ -468,34 +487,23 @@ foam.CLASS({
     }
   ],
 
-  // actions: [
-  //   {
-  //     name: 'createNew',
-  //     label: 'Create New',
-  //     code: function(X) {
-  //       this.wizard.viewData.isEdit = false;
-  //       X.viewData.isBankingProvided = false;
-  //       X.pushToId('AddContactStepOne');
-  //     }
-  //   },
-  //   {
-  //     name: 'addByPaymentcode',
-  //     label: 'Add By Paymentcode',
-  //     code: function(X) {
-  //       console.log('open modal')
-  //       X.pushToId('AddContactByPaymentCode');
-  //     }
-  //   },
-  //   {
-  //     name: 'createNewWithBusiness',
-  //     label: 'Create New',
-  //     code: function(X) {
-  //       this.wizard.data.organization = this.filter;
-  //       this.wizard.viewData.isEdit = false;
-  //       X.viewData.isBankingProvided = false;
-  //       X.pushToId('AddContactStepOne');
-  //     }
-  //   },
-  // ]
-
+  actions: [
+    {
+      name: 'back',
+      label: 'Go back',
+      code: function(X) {
+        X.subStack.back();
+      }
+    },
+    {
+      name: 'createNewWithBusiness',
+      label: 'Create New',
+      code: function(X) {
+        this.wizard.data.organization = this.businessNameFilter;
+        this.wizard.viewData.isEdit = false;
+        X.viewData.isBankingProvided = false;
+        X.pushToId('AddContactStepOne');
+      }
+    }
+  ]
 });
