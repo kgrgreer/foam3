@@ -561,14 +561,24 @@ p({
     "ruleGroup":"Payment",
     "documentation":"Check if Ablii transaction has an invoice attached to it",
     "daoKey":"localTransactionDAO",
-    "operation":0,
+    "operation":3,
     "predicate":{
-      "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-      "of":"net.nanopay.tx.AbliiTransaction"
+      "class":"foam.mlang.predicate.And",
+      "args":[{
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.AbliiTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"invoiceId",
+        "propValue": null
+      }
+      ]
     },
     "after":false,
     "action":{
-      "class":"net.nanopay.tx.ruler.AbliiTxnCheckInvoiceAttachedRule"
+      "class":"net.nanopay.liquidity.tx.ExceptionRuleAction",
+      "message":"An invoice for this transaction was not provided."
     },
     "enabled":true,
     "saveHistory":true

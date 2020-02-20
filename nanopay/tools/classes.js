@@ -543,7 +543,6 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
   'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.tx.ruler.AscendantFXTransactionAfterPutRule',
-  'net.nanopay.tx.ruler.AbliiTxnCheckInvoiceAttachedRule',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',

@@ -393,7 +393,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
-  { name: 'net/nanopay/tx/ruler/AbliiTxnCheckInvoiceAttachedRule' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
