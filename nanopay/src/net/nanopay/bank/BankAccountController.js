@@ -65,7 +65,9 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            'name',
+            this.BankAccount.NAME.clone().copyFrom({
+              tableWidth: 168
+            }),
             'flagImage',
             'denomination',
             'summary',

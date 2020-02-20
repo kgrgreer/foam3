@@ -211,7 +211,6 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      tableWidth: 168,
       section: 'accountDetails',
       order: 1
     },

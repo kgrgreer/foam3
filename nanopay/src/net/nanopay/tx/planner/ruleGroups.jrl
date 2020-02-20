@@ -17,7 +17,7 @@ p({
     "arg1":{
       "class":"net.nanopay.tx.ruler.IsSecurityQuote",
     }
-  }
+  },
   "enabled":true
 })
 p({
@@ -30,7 +30,7 @@ p({
     "arg1":{
       "class":"net.nanopay.tx.ruler.IsSecurityQuote",
     }
-  }
+  },
   "enabled":false
 })
 

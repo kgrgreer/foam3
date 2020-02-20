@@ -478,6 +478,7 @@ function usage {
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
+    echo "  -e : Skipping genJava task."
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
