@@ -18,6 +18,19 @@ p({
   },
   "parent":"operation"
 })
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"bankaccounts",
+  "label":"Bank Accounts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"accountDAO",
+    "title":"Bank Accounts",
+    "customDAOController":"net.nanopay.meter.BankAccountController",
+    "detailView":"net.nanopay.meter.BankAccountDetailView"
+  },
+  "parent":""
+})
 
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad","label":"Canadian only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad-us","label":"Canadian Upgraded Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"canadaUsBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
