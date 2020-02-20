@@ -32,6 +32,8 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
@@ -267,7 +269,7 @@ foam.CLASS({
       class: 'String',
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
-      expression: function(invoice) {
+      expression: function(invoice, currencies, type) {
         return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
     },
@@ -341,14 +343,36 @@ foam.CLASS({
       name: 'xPosition',
       value: 0
     },
-     {
+    {
       type: 'Int',
       name: 'yPosition',
       value: 0
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredCurrencyDAO',
+      factory: function() {
+        return this.currencyDAO;
+      }
+    },
+    {
+      class: 'Array',
+      name: 'currencies'
     }
   ],
 
   methods: [
+    async function init() {
+      if ( this.type != 'payable' ) {
+        await this.user.accounts.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
+          .select({
+            put: (b) => {
+              this.currencies.push(b.denomination);
+            }
+          });
+        this.filteredCurrencyDAO = this.currencyDAO.where(this.IN(this.Currency.ID, this.currencies));
+      }
+    },
     function initE() {
       var self = this;
       // Setup the default destination currency
@@ -364,7 +388,7 @@ foam.CLASS({
 
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
-
+      this.currencies$.sub(this.prePopulateCurrency);
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
       this.ctrl
@@ -436,7 +460,7 @@ foam.CLASS({
                 .on('mouseleave', this.toggleTooltip)
                 .on('mousemove', this.setCoordinates)
                 .startContext({ data: this })
-                  .start(this.CURRENCY_TYPE, { mode: displayMode })
+                  .start(this.CURRENCY_TYPE, { mode: displayMode, dao$: this.filteredCurrencyDAO$ })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .enableClass('error-box-outline', this.slot( function(isInvalid, type, showAddBank) {
                         return isInvalid && type === 'payable' && ! showAddBank;
@@ -572,6 +596,10 @@ foam.CLASS({
   ],
 
   listeners: [
+    async function prePopulateCurrency() {
+      debugger;
+      this.currencyType = this.currencies[0];
+    },
     async function onContactIdChange() {
       if ( this.type == 'payable' ) await this.setDefaultCurrency();
       this.contact = await this.user.contacts.find(this.invoice.contactId);
