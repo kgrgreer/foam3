@@ -19,13 +19,14 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'name',
     'applyLimitTo',
     'limit',
     'period'
   ],
 
   properties: [
-    { name: 'id' },
+    { name: 'name' },
     { name: 'description' },
     {
       class: 'Enum',
