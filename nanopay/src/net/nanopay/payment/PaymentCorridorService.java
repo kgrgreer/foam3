@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.nanos.NanoService;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.Corridor;
 
 import static foam.mlang.MLang.EQ;
@@ -38,19 +39,20 @@ public class PaymentCorridorService implements CorridorService {
   }
 
   public boolean isSupportedCurrencyPair(X x, String sourceCountry, String targetCountry, String sourceCurrency, String targetCurrency) {
+    if ( SafetyUtil.isEmpty(sourceCurrency) || SafetyUtil.isEmpty(targetCurrency) ) return false;
+
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return false;
 
     DAO dao = (DAO) x.get("paymentProviderCorridorJunctionDAO");
-    Count count = null;
 
-    count = (Count) dao.where(
+    Count count = (Count) dao.where(
       AND(
         EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, corridor.getId())
+        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, sourceCurrency),
+        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, targetCurrency)
       )
-    ).limit(1).select(count);
+    ).select(new Count());
 
     return count.getValue() > 0;
   }
@@ -64,8 +66,8 @@ public class PaymentCorridorService implements CorridorService {
       AND(
         EQ(PaymentProviderCorridorJunction.SOURCE_ID, providerId),
         EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, corridor.getId())
+        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, sourceCurrency),
+        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, targetCurrency)
       )
     );
 
