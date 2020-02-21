@@ -1370,6 +1370,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/BmoSFTPCredential'},
   { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
   { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},
+  { name: 'net/nanopay/tx/bmo/BmoTransactionPlanDAO'},
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
