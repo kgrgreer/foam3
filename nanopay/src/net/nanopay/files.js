@@ -1411,12 +1411,13 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
-  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration..
+  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
+  { name: 'net/nanopay/tx/planner/DVPPlanner' },
+  { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
-
+  { name: 'net/nanopay/tx/planner/predicate/PropertyIsClass' }, //needs to be put to foam..
 
 ]);
