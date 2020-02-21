@@ -29,7 +29,7 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
         TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
-        BmoCOTransaction t = new BmoCOTransaction.Builder(x).build();
+        BmoCOTransaction t = new BmoCOTransaction();
         t.copyFrom(requestTxn);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         addTransfer(trustAccount.getId(), t.getAmount());
