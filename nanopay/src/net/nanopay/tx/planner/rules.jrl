@@ -12,12 +12,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
@@ -43,12 +43,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.DigitalAccount"
       }
@@ -69,12 +69,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
       }
@@ -95,12 +95,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
@@ -136,12 +136,12 @@ p({
         "prop2":"destinationUnit"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.BrokerAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.SecuritiesAccount"
       }
@@ -167,12 +167,12 @@ p({
         "prop2":"destinationUnit"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsClass",
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.SecuritiesAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsClass",
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.BrokerAccount"
       }
@@ -198,12 +198,12 @@ p({
         "prop2":"destinationUnit"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsClass",
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
         "propName":"SourceAccount",
         "of":"net.nanopay.account.SecuritiesAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsClass",
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
         "propName":"destinationAccount",
         "of":"net.nanopay.account.SecuritiesAccount"
       }
@@ -221,7 +221,7 @@ p({
   "enabled":true,
   "operation":0,
   "predicate":{
-    "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.DVPTransaction"
   },
@@ -237,7 +237,7 @@ p({
   "enabled":true,
   "operation":0,
   "predicate":{
-    "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.BucketTransaction"
   },
@@ -256,12 +256,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
       },
@@ -286,12 +286,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
       },
@@ -317,12 +317,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.INBankAccount"
       },
@@ -354,12 +354,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.CABankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.INBankAccount"
       }
@@ -381,12 +381,12 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.INBankAccount"
       },
