@@ -535,7 +535,6 @@ var classes = [
   'net.nanopay.fx.FXLineItem',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
-  'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanner',
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
