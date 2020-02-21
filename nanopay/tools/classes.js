@@ -535,6 +535,7 @@ var classes = [
   'net.nanopay.fx.FXLineItem',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
+  'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanner',
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
@@ -971,7 +972,6 @@ var classes = [
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
-  'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
   'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
@@ -983,6 +983,11 @@ var classes = [
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
+  'net.nanopay.tx.planner.AlternaCITransactionPlanner',
+  'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
+  'net.nanopay.tx.planner.BmoCITransactionPlanner',
+  'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+  'net.nanopay.tx.planner.predicate.CACICOPredicate',
 ];
 
 var abstractClasses = [

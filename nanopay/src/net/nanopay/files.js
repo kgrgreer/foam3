@@ -1422,5 +1422,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/predicate/CACICOPredicate' },
 
 ]);
