@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.planner.predicates',
+  package: 'net.nanopay.tx.planner.predicate',
   name: 'FXPlannerPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],

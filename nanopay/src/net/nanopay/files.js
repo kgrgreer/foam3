@@ -1412,7 +1412,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
-  { name: 'net/nanopay/tx/planner/predicates/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakTransactionPlanner' },
@@ -1423,7 +1423,5 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
-  { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
-  { name: 'net/nanopay/tx/planner/predicate/PropertyIsClass' }, //needs to be put to foam..
 
 ]);

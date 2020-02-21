@@ -972,7 +972,7 @@ var classes = [
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.AFEXTransactionPlanner',
-  'net.nanopay.tx.planner.predicates.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
   'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
   'net.nanopay.tx.planner.KotakFxTransactionPlanner',
@@ -983,8 +983,6 @@ var classes = [
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
-  'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
-  'net.nanopay.tx.planner.predicate.PropertyIsClass', //needs to be put to foam..
 ];
 
 var abstractClasses = [
