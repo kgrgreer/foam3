@@ -1411,6 +1411,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
+  { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/predicates/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakSplitTransactionPlanner' },
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
   { name: 'net/nanopay/tx/planner/DVPPlanner' },
   { name: 'net/nanopay/tx/planner/FOPPlanner' },

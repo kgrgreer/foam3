@@ -243,3 +243,159 @@ p({
   },
   "action":{"class":"net.nanopay.tx.planner.SecurityBucketPlanner"}
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+  "name":"AFEX Transaction Planner",
+  "priority":95,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
+        "serviceProviderName":"afexServiceProvider",
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.AFEXTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"33666aa9-2294-415a-a015-31530f9e0204",
+  "name":"AscendantFx Transaction Planner",
+  "priority":90,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+    "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
+        "serviceProviderName":"ascendantFXService",
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.AscendantFXTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"43db5d84-1d63-4b28-b671-7bd1e7cccf5f",
+  "name":"KotakFxTransactionPlanner",
+  "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
+  "priority":90,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.INBankAccount"
+      },
+      {
+        "class":"foam.core.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"CAD"
+      },
+      {
+        "class":"foam.core.ruler.predicate.PropertyEQValue",
+        "propName":"destinationUnit",
+        "propValue":"INR"
+      },
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.KotakFxTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"10625392-606c-4d9b-9cec-8e588b28e134",
+  "name":"KotakSplitTransactionPlanner",
+  "documentation":"Split CA bank to IN bank transactions",
+  "priority":85,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.INBankAccount"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.KotakSplitTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"eab3592a-b79e-4c5f-a198-328729133d25",
+  "name":"KotakTransactionPlanner",
+  "documentation":"Planner for INR Digital to INR bank account",
+  "priority":70,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.INBankAccount"
+      },
+      {
+        "class":"foam.core.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.KotakTransactionPlanner"}
+})

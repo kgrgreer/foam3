@@ -971,6 +971,12 @@ var classes = [
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
+  'net.nanopay.tx.planner.AFEXTransactionPlanner',
+  'net.nanopay.tx.planner.predicates.FXPlannerPredicate',
+  'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
+  'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
+  'net.nanopay.tx.planner.KotakFxTransactionPlanner',
+  'net.nanopay.tx.planner.KotakTransactionPlanner',
   'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
