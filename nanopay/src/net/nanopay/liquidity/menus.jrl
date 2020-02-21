@@ -259,6 +259,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "businessRuleAction",
         "createdBy"
@@ -307,6 +308,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceAccount",
@@ -358,6 +360,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceUser",
@@ -411,6 +414,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "startAmount"
       ],
@@ -458,6 +462,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "applyLimitTo",
         "send",

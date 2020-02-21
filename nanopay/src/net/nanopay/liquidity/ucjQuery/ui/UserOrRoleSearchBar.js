@@ -59,9 +59,7 @@ foam.CLASS({
         if ( nu === 'user' ) {
           this.userOrRoleRef.of = foam.nanos.auth.User;
           this.userOrRoleRef.clearProperty("targetDAOKey");
-          this.userOrRoleRef.dao = this.__context__['userDAO'].where(
-            this.EQ(this.User.GROUP, 'liquidBasic')
-          ).orderBy(this.User.LEGAL_NAME);
+          this.userOrRoleRef.dao = this.__context__['liquiditySettingsUserDAO'].orderBy(this.User.LEGAL_NAME);
         }
         if ( nu === 'role' ) {
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
@@ -80,9 +78,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       self.userOrRoleRef.of = foam.nanos.auth.User;
-      self.userOrRoleRef.dao = this.__context__['userDAO'].where(
-        this.EQ(this.User.GROUP, 'liquidBasic')
-      ).orderBy(this.User.LEGAL_NAME);
+      self.userOrRoleRef.dao = this.__context__['liquiditySettingsUserDAO'].orderBy(this.User.LEGAL_NAME);
 
       self
         .addClass(self.myClass('query-container'))

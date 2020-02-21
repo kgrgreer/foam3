@@ -17,11 +17,12 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'name',
     'startAmount'
   ],
 
   properties: [
-    { name: 'id' },
+    { name: 'name' },
     { name: 'description' },
     {
       name: 'ruleGroup',

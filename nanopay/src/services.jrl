@@ -612,6 +612,35 @@ p({
   """
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "liquiditySettingsUserDAO",
+  "serve": true,
+  "description": "Client authenticated liquiditySettingsUserDAO",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+        .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setInnerDAO(x.get("userDAO"))
+        .setDeletedAware(false)
+        .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -1999,7 +2028,7 @@ p({
       .setReferenceProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS)
       .setNameProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS_NAME)
       .build();
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
       .setContextualize(true)
@@ -2010,6 +2039,10 @@ p({
       .setValidated(true)
       .setRuler(false)
       .build();
+      
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
+
+    return dao;
   """,
   "client": """
     {
