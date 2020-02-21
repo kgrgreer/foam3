@@ -136,13 +136,8 @@ foam.CLASS({
 
         return {
           class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'userDAO',
-          dao: X.userDAO.where(
-            X.data.AND(
-              X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-              X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-            )
-          ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+          daoKey: 'liquiditySettingsUserDAO',
+          dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
         };
       },
       validateObj: function(users) {
