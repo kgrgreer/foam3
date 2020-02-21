@@ -355,7 +355,6 @@ p({
   "name": "liquiditySettingsUserDAO",
   "serve": true,
   "description": "filtered DAO for liquidBasic users",
-  "authenticate": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
