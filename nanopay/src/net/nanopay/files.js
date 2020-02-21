@@ -993,6 +993,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/SearchBusinessView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactMenu', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/AddContactConfirmation', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepOne', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepTwo', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepThree', flags: ['web'] },

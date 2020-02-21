@@ -459,31 +459,38 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass(this.myClass('button-container'))
-          .start().addClass(this.myClass('back-button'))
-            .start(this.BACK).end()
-          .end()
+          .start(this.BACK).end()
         .end();  
     },
 
     function addSelected(business) {
-      this.loading = true
-      newContact = this.Contact.create({
-        organization: business.organization,
-        businessName: business.organization,
-        businessId: business.id,
-        type: 'Contact',
-        group: 'sme'
-      });
+      let { data } = this.wizard;
+      data.organization = business.organization;
+      data.businessName = business.organization;
+      data.businessId = business.id;
+      data.address = business.address;
+      data.businessSectorId = business.businessSectorId;
+      this.pushToId('addContactConfirmation');
 
-      this.user.contacts.put(newContact).then(() => {
-        this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
-        this.closeDialog();
-        this.loading = false;
-      }).catch( err => {
-        this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
-        this.closeDialog();
-        this.loading = false;
-      })
+      // debugger;
+      // this.loading = true
+      // newContact = this.Contact.create({
+      //   organization: business.organization,
+      //   businessName: business.organization,
+      //   businessId: business.id,
+      //   type: 'Contact',
+      //   group: 'sme'
+      // });
+
+      // this.user.contacts.put(newContact).then(() => {
+      //   this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
+      //   this.closeDialog();
+      //   this.loading = false;
+      // }).catch( err => {
+      //   this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
+      //   this.closeDialog();
+      //   this.loading = false;
+      // })
     }
   ],
 
