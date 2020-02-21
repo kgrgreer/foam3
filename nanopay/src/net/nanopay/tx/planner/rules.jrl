@@ -401,7 +401,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"b72c9818-1446-4041-8ea8-598205bd3a1fr",
+  "id":"826d7ac5-65ce-4459-972b-6211a3fb8554",
   "documentation":"Alterna CI Transaction Planner",
   "priority":100,
   "ruleGroup":"transactionPlanner",
@@ -410,7 +410,7 @@ p({
   "operation":0,
   "predicate":
     {
-      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
       "providerId":"Alterna",
       "isCI": true
     },
@@ -427,7 +427,7 @@ p({
   "operation":0,
   "predicate":
     {
-      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
       "providerId":"Alterna",
       "isCI": false
     },
@@ -444,7 +444,7 @@ p({
   "operation":0,
   "predicate":
     {
-      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
       "providerId":"BMO",
       "isCI": true
     },
@@ -461,7 +461,7 @@ p({
   "operation":0,
   "predicate":
     {
-      "class":"foam.core.ruler.predicate.CACICOPredicate",
+      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
       "providerId":"BMO",
       "isCI": false
     },
