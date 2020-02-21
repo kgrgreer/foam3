@@ -564,7 +564,10 @@ foam.CLASS({
         if ( getCanIngestFile() ) permissions.add("menu.read.fileupload");
 
         if ( getCanMakeRule() ) permissions.add("rule.make");
-        if ( getCanMakeUser() ) permissions.add("user.make");
+        if ( getCanMakeUser() ) {
+          permissions.add("user.make");
+          permissions.add("foam.nanos.auth.user.section.administrative");
+        }
         if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
         if ( getCanMakeCapability() ) permissions.add("capability.make");
 
