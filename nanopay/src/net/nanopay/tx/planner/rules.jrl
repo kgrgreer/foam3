@@ -401,7 +401,8 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"AlternaCI Transaction Planner",
+  "id":"b72c9818-1446-4041-8ea8-598205bd3a1fr",
+  "documentation":"Alterna CI Transaction Planner",
   "priority":100,
   "ruleGroup":"transactionPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -417,7 +418,8 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"AlternaCO Transaction Planner",
+  "id":"b72c9818-1446-4041-8ea8-598205bd3a1f",
+  "documentation":"Alterna CO Transaction Planner",
   "priority":100,
   "ruleGroup":"transactionPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -433,7 +435,8 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"BMOCI Transaction Planner",
+  "id":"4763d336-e876-4611-a8b4-b0325b187d79",
+  "documentation":"BMO CI Transaction Planner",
   "priority":100,
   "ruleGroup":"transactionPlanner",
   "daoKey":"transactionPlannerDAO",
@@ -449,7 +452,8 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"BMOCO Transaction Planner",
+  "id":"8ddd5708-1420-4e7a-b383-d9f683405179",
+  "documentation":"BMO CO Transaction Planner",
   "priority":100,
   "ruleGroup":"transactionPlanner",
   "daoKey":"transactionPlannerDAO",
