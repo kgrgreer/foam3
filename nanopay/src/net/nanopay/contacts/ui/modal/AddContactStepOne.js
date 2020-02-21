@@ -60,7 +60,6 @@ foam.CLASS({
     { name: 'BUSINESS_LABEL', message: 'Business name' },
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
-    { name: 'CONTACT_EXIST', message: 'Contact with same email address already exists.' },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' },
     { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
   ],
@@ -88,6 +87,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.wizard.CONFIRM_RELATIONSHIP.label = '';
       var emailDisplayMode = this.isEdit ?
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       this.addClass(this.myClass())
@@ -207,20 +207,6 @@ foam.CLASS({
           return;
         }
 
-        if ( ! this.isEdit ) {
-          try {
-            var contact = await this.user.contacts.where(
-              this.EQ(this.Contact.EMAIL, this.wizard.data.email)
-            ).select();
-            if ( contact.array.length != 0 ) {
-              this.ctrl.notify(this.CONTACT_EXIST, 'error');
-              return;
-            }
-          } catch (err) {
-            console.warn('Error when checking the contact email existence: ' + err);
-            return;
-          }
-        }
         X.pushToId('AddContactStepTwo');
       }
     }

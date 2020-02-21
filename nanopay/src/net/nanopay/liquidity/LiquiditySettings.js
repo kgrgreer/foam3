@@ -5,7 +5,10 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
     'net.nanopay.liquidity.approvalRequest.ApprovableAware'
   ],
 
@@ -39,6 +42,7 @@ foam.CLASS({
     'name',
     'cashOutFrequency',
     'denomination',
+    'createdBy',
     'lowLiquidity',
     'highLiquidity'
   ],
@@ -120,7 +124,7 @@ foam.CLASS({
         denominations of any type, from mobile minutes to stocks.
       `,
       section: 'basicInfo',
-      updateMode: 'RO',
+      updateVisibility: 'RO',
       postSet: function(o, n) {
         if ( this.lowLiquidity ) this.lowLiquidity.denomination = n;
         if ( this.highLiquidity ) this.highLiquidity.denomination = n;
@@ -277,9 +281,56 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
+      name: 'created',
+      documentation: 'Created date',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The unique identifier of the agent
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'DateTime',
       name: 'lastModified',
       documentation: 'Last modified date',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       visibility: 'RO'
     },
     {
@@ -287,7 +338,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
-        who last modified this account.`,
+        who last modified this liquidity setting.`,
       visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
@@ -304,14 +355,14 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

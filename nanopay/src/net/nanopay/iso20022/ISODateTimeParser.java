@@ -28,23 +28,23 @@ public class ISODateTimeParser
   public ISODateTimeParser() {
     super(new Seq(
       Literal.create("\""),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("-"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("-"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("T"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("."),
       new Repeat(new Chars("0123456789")),
       new Alt(Literal.create("+"), Literal.create("-")),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("\"")
     ));
   }

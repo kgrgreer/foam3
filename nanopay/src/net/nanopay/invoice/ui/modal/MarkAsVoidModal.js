@@ -19,8 +19,8 @@ foam.CLASS({
     { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
     { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
-    { name: 'NOTE_LABEL', message: 'Note:'},
-    { name: 'NOTE_HINT', message: 'i.e. Why is it voided?'},
+    { name: 'NOTE_LABEL', message: 'Notes' },
+    { name: 'NOTE_HINT', message: 'i.e. Why is it voided?' },
     { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
     { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}    
   ],
@@ -42,6 +42,8 @@ foam.CLASS({
     ^ .margin-bottom-24 {
       margin: 0;
       margin-bottom: 24px;
+      width: 270px;
+      opacity: 0.8;
     }
     ^ .margin-bottom-8 {
      margin: 0px;   
@@ -119,9 +121,15 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
         this.invoiceDAO.put(this.invoice).then((invoice) => {
-         if (invoice.paymentMethod == this.PaymentStatus.VOID) {
+         if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           this.notify(this.VOID_SUCCESS, 'success');
           X.closeDialog();
+          if ( X.currentMenu.id == 'sme.quickAction.send' ) {
+            X.stack.push({
+              class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
+              invoice: this.invoice
+            });
+          }
          }
         }).catch((err) => {
          if ( err ) this.notify(this.VOID_ERROR, 'error');

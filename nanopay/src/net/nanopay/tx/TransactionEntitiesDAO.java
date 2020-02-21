@@ -54,20 +54,10 @@ public class TransactionEntitiesDAO extends ProxyDAO
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate)
   {
-    // Only needed for table view on client, which will be seen here as an
-    // ArraySink. Otherwise operations like COUNT() will also get decorated
-    // then not short-circuited then become very slow.
-    // TODO: remove this whole class or move to a tableViewTransactionDAO
-    // which is only used by the tableView.
-    if ( sink instanceof ArraySink ) {
-      Sink decoratedSink = new DecoratedSink(x, sink);
-      getDelegate().select_(x, decoratedSink, skip, limit, order, predicate);
-      return sink;
-    }
-
-    return super.select_(x, sink, skip, limit, order, predicate);
+    Sink decoratedSink = new DecoratedSink(x, sink);
+    getDelegate().select_(x, decoratedSink, skip, limit, order, predicate);
+    return sink;
   }
-
 
   private FObject fillEntitiesInfo(FObject obj)
   {

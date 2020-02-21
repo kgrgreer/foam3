@@ -8,12 +8,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'Long',
       name: 'balance',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     }
   ]
 });

@@ -1,14 +1,14 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":2,
-  "description":"Liquid",
+  "description":"nanopay",
   "appName":"nanopay",
   "priority":2,
-  "defaultMenu":"admin.nspec",
-  "largeLogoEnabled": false,
-  "largeLogo": "images/Goldman_Sachs_Logo.svg",
-  "logoBackgroundColour":"transparent",
-  "logo":"images/Goldman_Sachs_Logo.svg",
+  "defaultMenu":"admin.data",
+  "largeLogoEnabled": true,
+  "largeLogo": "images/nanopay_blue_white_206x42.png",
+  "logoBackgroundColour":"#202341",
+  "logo":"images/nanopay_logo_blue.svg",
   "primary1":"#202341",
   "primary2":"#144794",
   "primary3":"#406dea",
@@ -47,9 +47,6 @@ p({
     }
     .footer-wrapper {
       margin-left: 250px;
-    }
-    .foam-u2-ActionView-export {
-      display: none;
     }
     .foam-u2-DateView {
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;

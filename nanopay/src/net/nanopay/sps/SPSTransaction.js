@@ -7,47 +7,47 @@ foam.CLASS({
     {
       class: 'String',
       name: 'batchId',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'itemId',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'approvalCode',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'settlementResponse',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'settleDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'achRequest',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'achRequestDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'rejectReason',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'chargebackTime',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     }
   ]
 });
