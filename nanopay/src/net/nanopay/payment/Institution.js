@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'Institution',
   documentation: 'Bank/Institution',
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -38,6 +42,25 @@ foam.CLASS({
       class: 'String',
       name: 'swiftCode',
       label: 'SWIFT Code'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.institutionNumber == this.name ?
+                null :
+                this.abbreviation == '' ? this.name : `${this.name}(${this.abbreviation})`;
+      },
+      javaCode: `
+        if ( this.getInstitutionNumber() == this.getName() ) {
+          return null;
+        } else {
+          return  SafetyUtil.isEmpty(this.getAbbreviation()) ? this.getName() : this.getName() + "(" + this.getAbbreviation() + ")";
+        }
+      `
     }
   ]
 });

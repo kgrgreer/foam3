@@ -7,6 +7,7 @@ import foam.nanos.auth.*;
 import foam.nanos.logger.Logger;
 import foam.test.TestUtils;
 import foam.util.Auth;
+import foam.util.SafetyUtil;
 
 import static foam.mlang.MLang.EQ;
 

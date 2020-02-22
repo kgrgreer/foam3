@@ -157,9 +157,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.core.Currency',
       name: 'chosenCurrency',
-      postSet: function() {
-        this.data = this.chosenCurrency;
-      },
       documentation: 'The selected currency showing on the optionsBtn_'
     }
   ],
@@ -172,6 +169,8 @@ foam.CLASS({
         .then((currency) => {
           this.chosenCurrency = currency;
         });
+        
+      this.data$.sub(this.updateChosenCurrency);  
 
       this
         .addClass(this.myClass())
@@ -190,6 +189,10 @@ foam.CLASS({
   ],
 
   listeners: [
+    async function updateChosenCurrency() {
+      var currencyObj = await this.currencyDAO.find(this.data);
+      this.chosenCurrency = currencyObj;  
+    },
     {
       name: 'onClick',
       code: function(e) {
@@ -216,6 +219,7 @@ foam.CLASS({
                   .add(currency.id)
                   .on('click', function() {
                       self.chosenCurrency = currency;
+                      self.data = currency.id;
                       self.optionPopup_.remove();
                   });
               }

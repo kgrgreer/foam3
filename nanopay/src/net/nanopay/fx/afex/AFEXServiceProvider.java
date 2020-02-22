@@ -774,7 +774,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
+  public AFEXBusiness getAFEXBusiness(X x, Long userId) {
     DAO dao = (DAO) x.get("afexBusinessDAO");
     return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
   }

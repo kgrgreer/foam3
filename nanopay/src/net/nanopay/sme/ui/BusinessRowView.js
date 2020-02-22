@@ -124,7 +124,7 @@ foam.CLASS({
                   var businessSector = await this.businessSectorDAO.find(data.businessSectorId);
                   var city = data.address.city;
                   var region = data.address.regionId;
-                  let industry = businessSector.name;
+                  let industry = businessSector ? businessSector.name : '';
                   if ( city && region ) {
                     return `${industry} • ${city}, ${region}`;
                   } else if ( region ) {

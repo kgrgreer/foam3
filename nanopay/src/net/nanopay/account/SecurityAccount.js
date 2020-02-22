@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'The base model for storing all individual securities.',
 
   javaImports: [
-    'foam.dao.DAO'
+    'foam.core.Currency',
+    'foam.dao.DAO'    
   ],
 
   imports: [
@@ -40,7 +41,6 @@ foam.CLASS({
       order: 3
     },
     {
-      class: 'Long',
       name: 'balance',
       label: 'Balance (local)',
       section: 'balanceDetails',

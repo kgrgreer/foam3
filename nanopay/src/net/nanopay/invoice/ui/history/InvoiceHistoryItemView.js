@@ -47,9 +47,9 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       const isFirstHistoryEvent = record.updates.length === 0;
       const updatesContainRelevantChange = record.updates.some((update) => {
-          if ( update.name === 'status' ) {
-            return update.oldValue.name !== 'DRAFT'
-          }
+        if ( update.name === 'status' ) {
+          return update.oldValue.name !== 'DRAFT'
+        }
         return update.name === 'paymentDate';
       });
       const updatesContainApprovalChange = record.updates.some((update) => {

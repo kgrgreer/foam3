@@ -58,7 +58,7 @@ foam.CLASS({
 
       // get fx rate
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
-      FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
+      FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"nanopay");
       
       // calculate source amount 
       Double amount =  Math.ceil(request.getDestinationAmount()/100.00/fxQuote.getRate()*100);

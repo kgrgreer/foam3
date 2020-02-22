@@ -27,13 +27,11 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
-      updateMode: 'RW'
+      updateVisibility: 'RW'
     },
     {
       name: 'liquiditySetting',
-      createMode: 'HIDDEN',
-      updateMode: 'HIDDEN',
-      readMode: 'HIDDEN'
+      visibility: 'HIDDEN'
     }
   ]
 });
