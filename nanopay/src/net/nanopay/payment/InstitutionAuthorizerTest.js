@@ -84,13 +84,7 @@ foam.CLASS({
       }
       test(threw, "Non sme user can't add institution");
 
-      threw = false;
-      try {
-        institutionDAO.inX(nonSmeContext).find(institution);
-      } catch ( AuthorizationException e ) {
-        threw = true;
-      }
-      test(threw, "Non sme user can't view institution");
+      test(institutionDAO.inX(nonSmeContext).find(institution) == null, "Non sme user can't view institution");
 
       threw = false;
       try {
