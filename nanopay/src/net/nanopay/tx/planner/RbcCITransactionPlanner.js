@@ -22,7 +22,6 @@ foam.CLASS({
       t.copyFrom(requestTxn);
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
-      t.setIsQuoted(true);
 
       return t;
 
