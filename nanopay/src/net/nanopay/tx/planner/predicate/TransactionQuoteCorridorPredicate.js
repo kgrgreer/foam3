@@ -15,12 +15,14 @@ foam.CLASS({
 
     'static foam.mlang.MLang.*',
   ],
+
   properties: [
     {
-      type: 'Long',
+      class: 'Long',
       name: 'providerId'
     },
   ],
+
   methods: [
     {
       name: 'f',
