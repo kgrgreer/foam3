@@ -10,7 +10,8 @@ foam.CLASS({
 
   imports: [
     'businessSectorDAO',
-    'countryDAO'
+    'countryDAO',
+    'addContact'
   ],
 
   requires: [
@@ -55,26 +56,6 @@ foam.CLASS({
       line-height: 1.43;
       width: 174px;
     }
-    ^confirmation-container {
-      display: flex;
-      flex-direction: row;
-      height: 96px;
-      margin: 0 24px 24px;
-    }
-    ^confirmation-checkbox {
-      width: 20px;
-      padding-top: 15px;
-    }
-    ^ .foam-u2-CheckBox {
-      width: 16px;
-      height: 16px;
-    }
-    ^confirmation-text {
-      width: 452px;
-      font-size: 16px;
-      line-height: 1.5;
-      padding-top: 10px;
-    }
     ^button-container {
       height: 84px;
       display: flex;
@@ -101,15 +82,6 @@ foam.CLASS({
       border: none;
     }
   `,
-
-  messages: [
-    { 
-      name: 'CONFIRMATION',
-      message: `I confirm that I have a business relationship with this contact
-        and acknowledge that the bank account info entered by the contact business
-        will be used for all deposits to their account.`
-    }
-  ],
 
   properties: [
     {
@@ -178,20 +150,10 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass(this.myClass('confirmation-container'))
-          .start().addClass(this.myClass('confirmation-checkbox'))
-            .add(this.CONFIRM_BUSINESS_RELATIONSHIP)
-          .end()
-          .start().addClass(this.myClass('confirmation-text'))
-            .add(this.CONFIRMATION)
-          .end()
+        .start().addClass(this.myClass('button-container'))
+          .start(this.BACK).end()
+          .start(this.CONFIRM).end()
         .end()
-        .startContext({ data: this.wizard })
-          .start().addClass(this.myClass('button-container'))
-            .start(this.BACK).end()
-            .start(this.ADD_CONTACT).end()
-          .end()
-        .endContext()
     }
   ],
 
@@ -200,18 +162,21 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        this.data = net.nanopay.contacts.Contact.create({
+        // debugger;
+        this.data.wizard = net.nanopay.contacts.Contact.create({
           type: 'Contact',
           group: 'sme'
         });
+        // debugger;
         X.subStack.back();
       }
     },
     {
-      name: 'addContact',
+      name: 'confirm',
       label: 'Add contact',
-      code: function(X) {
-        console.log('Contact Added!')
+      code: async function(X) {
+        if ( ! await this.addContact() ) return;
+        X.closeDialog();
       }
     }
   ]
