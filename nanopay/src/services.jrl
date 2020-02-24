@@ -1194,7 +1194,7 @@ p({
       .setOf(net.nanopay.accounting.AccountingResultReport.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("AccountingResultReport")
-      .setAuthorize(false)
+      .setAuthorize(true)
       .build();
   """,
   "client": "{\"of\": \"net.nanopay.accounting.AccountingResultReport\"}"
