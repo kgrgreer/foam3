@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'java.util.List',
     'foam.nanos.auth.AuthService'
   ],
 
