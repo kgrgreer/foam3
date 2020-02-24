@@ -62,8 +62,12 @@ foam.CLASS({
       margin: 0 24px 24px;
     }
     ^confirmation-checkbox {
-      width: 30;
+      width: 20px;
       padding-top: 15px;
+    }
+    ^ .foam-u2-CheckBox {
+      width: 16px;
+      height: 16px;
     }
     ^confirmation-text {
       width: 452px;
