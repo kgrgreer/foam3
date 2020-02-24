@@ -26,14 +26,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id', 
-      visibility: 'HIDDEN',
-    },
-    {
       name: 'name',
       label: 'Name',
-      class: 'String',
-      required: true
+      required: true,
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
