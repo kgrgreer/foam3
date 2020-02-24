@@ -992,6 +992,9 @@ var classes = [
   'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
+  'net.nanopay.tx.planner.RbcCITransactionPlanner',
+  'net.nanopay.tx.planner.RbcCOTransactionPlanner',
+  'net.nanopay.tx.planner.RbcVerificationTransactionPlanner',
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',

@@ -1430,6 +1430,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
   { name: 'net/nanopay/tx/planner/DVPPlanner' },
   { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcVerificationTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
