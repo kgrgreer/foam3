@@ -56,6 +56,7 @@ public class RbcReportProcessor {
         if ( null != RbcPGPUtil.decrypt(x, file) ) FileUtils.deleteQuietly(file);
       } catch (Exception e) {
         this.logger.error("Error decrypting file: " + file.getName(), e);
+        BmoFormatUtil.sendEmail(x, "RBC error while decrypting file: " + file.getName(), e);
       }
     }
   }

@@ -70,14 +70,14 @@ p({
       .setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo())
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"privateKeys\")
+      .setJournalName("privateKeys")
       .setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo())
       .build();
     pgpPrivateKeyDAO = new net.nanopay.security.PGPPrivateKeyDAO.Builder(x)
       .setDelegate(easyDAO)
       .build();
     privateKeyDAO = new net.nanopay.security.PrivateKeyDAO.Builder(x)
-      .setAlias(\"net.nanopay.security.PrivateKeyDAO\")
+      .setAlias("net.nanopay.security.PrivateKeyDAO")
       .setDelegate(pgpPrivateKeyDAO)
       .build();
     return privateKeyDAO;

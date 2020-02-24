@@ -127,35 +127,44 @@ public class PGPKeyUtil {
 
   public static void encryptFile(X x, File file, String keyAlias, OutputStream out) throws IOException, 
     NoSuchProviderException, PGPException {
-    PublicKeyEntry pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(EQ(PublicKeyEntry.ALIAS, keyAlias)); 
-    if ( pubKey == null ) throw new RuntimeException("Public Key not found with alias: " + keyAlias); 
-    pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(pubKey.getId()); 
-    if ( ! (pubKey.getPublicKey() instanceof PgpPublicKeyWrapper) ) throw new RuntimeException("Public Key is not a PGP Key: " + keyAlias);
-    PgpPublicKeyWrapper pgpPubKey = (PgpPublicKeyWrapper) pubKey.getPublicKey();
-    PGPPublicKey encKey = pgpPubKey.getPGPPublicKey();
 
-    // add provider only if it's not in the JVM
-    if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-      Security.addProvider(new BouncyCastleProvider());
+    ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+    OutputStream cOut = null;
+    try {
+      PublicKeyEntry pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(EQ(PublicKeyEntry.ALIAS, keyAlias)); 
+      if ( pubKey == null ) throw new RuntimeException("Public Key not found with alias: " + keyAlias); 
+      pubKey = (PublicKeyEntry) ((DAO) x.get("publicKeyDAO")).find(pubKey.getId()); 
+      if ( ! (pubKey.getPublicKey() instanceof PgpPublicKeyWrapper) ) throw new RuntimeException("Public Key is not a PGP Key: " + keyAlias);
+      PgpPublicKeyWrapper pgpPubKey = (PgpPublicKeyWrapper) pubKey.getPublicKey();
+      PGPPublicKey encKey = pgpPubKey.getPGPPublicKey();
+  
+      // add provider only if it's not in the JVM
+      if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+        Security.addProvider(new BouncyCastleProvider());
+      }
+      
+      PGPCompressedDataGenerator comData = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
+      org.bouncycastle.openpgp.PGPUtil.writeFileToLiteralData(comData.open(bOut), PGPLiteralData.BINARY, file);
+      comData.close();
+  
+      JcePGPDataEncryptorBuilder c = new JcePGPDataEncryptorBuilder(PGPEncryptedData.CAST5)
+        .setWithIntegrityPacket(true).setSecureRandom(new SecureRandom()).setProvider("BC");
+      PGPEncryptedDataGenerator cPk = new PGPEncryptedDataGenerator(c);
+      JcePublicKeyKeyEncryptionMethodGenerator d = new JcePublicKeyKeyEncryptionMethodGenerator(encKey)
+        .setProvider(new BouncyCastleProvider()).setSecureRandom(new SecureRandom());
+      cPk.addMethod(d);
+      byte[] bytes = bOut.toByteArray();
+      out = new ArmoredOutputStream(out);
+      cOut = cPk.open(out, bytes.length);
+      cOut.write(bytes);
+      cOut.close();
+      out.close();
+    } finally {
+      bOut.close();
+      if ( cOut != null ) cOut.close();
+      if ( out != null ) out.close();
     }
     
-    ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-    PGPCompressedDataGenerator comData = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
-    org.bouncycastle.openpgp.PGPUtil.writeFileToLiteralData(comData.open(bOut), PGPLiteralData.BINARY, file);
-    comData.close();
-
-    JcePGPDataEncryptorBuilder c = new JcePGPDataEncryptorBuilder(PGPEncryptedData.CAST5)
-      .setWithIntegrityPacket(true).setSecureRandom(new SecureRandom()).setProvider("BC");
-    PGPEncryptedDataGenerator cPk = new PGPEncryptedDataGenerator(c);
-    JcePublicKeyKeyEncryptionMethodGenerator d = new JcePublicKeyKeyEncryptionMethodGenerator(encKey)
-      .setProvider(new BouncyCastleProvider()).setSecureRandom(new SecureRandom());
-    cPk.addMethod(d);
-    byte[] bytes = bOut.toByteArray();
-    out = new ArmoredOutputStream(out);
-    OutputStream cOut = cPk.open(out, bytes.length);
-    cOut.write(bytes);
-    cOut.close();
-    out.close();
   }
   
   public static void decryptFile(X x, InputStream in, OutputStream out, String keyAlias) throws Exception {
@@ -183,9 +192,6 @@ public class PGPKeyUtil {
         enc = (PGPEncryptedDataList) o;
       } 
     }
-		//
-		// the first object might be a PGP marker packet.
-		//
     
     PublicKeyDataDecryptorFactory b = new JcePublicKeyDataDecryptorFactoryBuilder().setProvider("BC").setContentProvider("BC").build(decKey);
     Iterator<PGPPublicKeyEncryptedData> it = enc.getEncryptedDataObjects();

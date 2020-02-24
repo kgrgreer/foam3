@@ -84,28 +84,28 @@ public class PGPKeyUtilTest
   }
 
   protected void createTestPGPKeys() {
-    try{
-		Security.addProvider(new BouncyCastleProvider());
-		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
-		kpg.initialize(2048);
-    KeyPair kp = kpg.generateKeyPair();
-    PGPPublicKey a = (new JcaPGPKeyConverter().getPGPPublicKey(PGPPublicKey.RSA_GENERAL, kp.getPublic(), new Date()));
-    RSAPrivateCrtKey rsK = (RSAPrivateCrtKey)kp.getPrivate();
-    RSASecretBCPGKey privPk = new RSASecretBCPGKey(rsK.getPrivateExponent(), rsK.getPrimeP(), rsK.getPrimeQ());
-    PGPPrivateKey b = new PGPPrivateKey(a.getKeyID(), a.getPublicKeyPacket(), privPk);
-    if ( b == null ) throw new RuntimeException("Unable to create PGP Private Key"); 
+    try {
+      Security.addProvider(new BouncyCastleProvider());
+      KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
+      kpg.initialize(2048);
+      KeyPair kp = kpg.generateKeyPair();
+      PGPPublicKey a = (new JcaPGPKeyConverter().getPGPPublicKey(PGPPublicKey.RSA_GENERAL, kp.getPublic(), new Date()));
+      RSAPrivateCrtKey rsK = (RSAPrivateCrtKey)kp.getPrivate();
+      RSASecretBCPGKey privPk = new RSASecretBCPGKey(rsK.getPrivateExponent(), rsK.getPrimeP(), rsK.getPrimeQ());
+      PGPPrivateKey b = new PGPPrivateKey(a.getKeyID(), a.getPublicKeyPacket(), privPk);
+      if ( b == null ) throw new RuntimeException("Unable to create PGP Private Key"); 
 
-    PgpPublicKeyWrapper publicKey = new PgpPublicKeyWrapper(a);
-    PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(b); 
-    KeyPairEntry keyPairEntry = new KeyPairEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
-    .setAlias(NANOPAY_RBC_ALIAS).setPrivateKey(privateKey).setPublicKey(publicKey).build();
-    PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
-    SecretKey key = privateKeyDAO.getSecretKey();
-    ((DAO) x.get("keyPairDAO")).put(keyPairEntry);
+      PgpPublicKeyWrapper publicKey = new PgpPublicKeyWrapper(a);
+      PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(b); 
+      KeyPairEntry keyPairEntry = new KeyPairEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
+      .setAlias(NANOPAY_RBC_ALIAS).setPrivateKey(privateKey).setPublicKey(publicKey).build();
+      PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
+      SecretKey key = privateKeyDAO.getSecretKey();
+      ((DAO) x.get("keyPairDAO")).put(keyPairEntry);
 
-    PublicKeyEntry rbcPublicKeyEntry = new PublicKeyEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
-          .setAlias(RBC_ALIAS).setPublicKey(publicKey).build();
-        ((DAO) x.get("publicKeyDAO")).put(rbcPublicKeyEntry);
+      PublicKeyEntry rbcPublicKeyEntry = new PublicKeyEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
+            .setAlias(RBC_ALIAS).setPublicKey(publicKey).build();
+          ((DAO) x.get("publicKeyDAO")).put(rbcPublicKeyEntry);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
