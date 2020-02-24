@@ -79,6 +79,7 @@ p({
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.GlobalLiquidCapability\"}"
 })
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"accountBasedLiquidCapabilityDAO",
