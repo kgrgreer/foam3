@@ -1024,19 +1024,23 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   protected void logMessage(String apiKey, String methodName, String msg, boolean isResponse) {
-    // String msgType = isResponse ? "Response" : "Request";
-    // StringBuilder sb = new StringBuilder();
-    // sb.append("{ apiKey: ");
-    // sb.append(apiKey);
-    // sb.append(", name: ");
-    // sb.append(methodName);
-    // sb.append(", " + msgType +" : ");
-    // sb.append(msg);
-    // logger.debug(sb.toString());
+    String msgType = isResponse ? "Response" : "Request";
+    StringBuilder sb = new StringBuilder();
+    sb.append("{ apiKey: ");
+    sb.append(apiKey);
+    sb.append(", name: ");
+    sb.append(methodName);
+    sb.append(", " + msgType +" : ");
+    sb.append(msg);
+    logger.debug(sb.toString());
   }
   
   protected String parseHttpPost(HttpPost httpPost) {
-    // return EntityUtils.toString(httpPost.getEntity())
+    try {
+      return EntityUtils.toString(httpPost.getEntity());
+    } catch (Exception e) {
+
+    }
     return "";
   }
 
@@ -1047,9 +1051,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     sb.append(methodName);
     sb.append(" failed with: ");
     sb.append(httpResponse.getStatusLine().getStatusCode());
-    // sb.append(" - ");
-    // sb.append(httpResponse.getStatusLine().getReasonPhrase());
-    // sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+    sb.append(" - ");
+    sb.append(httpResponse.getStatusLine().getReasonPhrase());
+    try {
+      sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+    } catch (Exception e) {
+
+    }
+    EntityUtils.consumeQuietly(httpResponse.getEntity());
     return sb.toString();
   }
 }

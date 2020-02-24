@@ -106,8 +106,8 @@ foam.CLASS({
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `,
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'administrative'
     },
     {
@@ -253,7 +253,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
       documentation: 'Represents the people who own the majority shares in a business.',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -345,9 +345,6 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
-      view: {
-        class: 'foam.u2.view.FObjectArrayView'
-      },
       section: 'business'
     },
     {
@@ -423,10 +420,14 @@ foam.CLASS({
           throw new IllegalStateException("Business name cannot be empty.");
         }
 
+        AuthService auth = (AuthService) x.get("auth");
+
         // Temporarily prohibit businesses based in Quebec.
         Address businessAddress = this.getAddress();
 
-        if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
+        if ( businessAddress != null &&
+             SafetyUtil.equals(businessAddress.getRegionId(), "QC") &&
+             ! auth.check(getX(), "*") ) {
           throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
@@ -434,15 +435,11 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
+        boolean hasUserCreatePermission = auth.check(x, "business.create");
 
-        // Prevent privilege escalation by only allowing a user's group to be
-        // set to one that the user doing the put has permission to update.
-        boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
-
-        if ( ! hasGroupUpdatePermission ) {
-          throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
+        if ( ! hasUserCreatePermission ) {
+          throw new AuthorizationException("You do not have permission to create a business.");
         }
       `
     },
@@ -558,7 +555,9 @@ foam.CLASS({
 
         // Gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
-          .where(EQ(UserUserJunction.TARGET_ID, getId()))
+          .where(AND(
+            EQ(UserUserJunction.TARGET_ID, getId()),
+            EQ(UserUserJunction.GROUP, getGroup())))
           .select(new ArraySink())).getArray();
 
         for( UserUserJunction businessUserJunction : businessUserJunctions ) {

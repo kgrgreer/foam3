@@ -14,8 +14,8 @@ public class HexStringParser
   public HexStringParser() {
     super(
       new Alt(
-        new NullParser(),
-        new StringParser()
+        NullParser.instance(),
+        StringParser.instance()
     ));
   }
 

@@ -9,19 +9,39 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'dealId'
+      name: 'dealId',
+      visibility: function(dealId) {
+        return dealId ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'Double',
-      name: 'fxRate'
+      name: 'fxRate',
+      visibility: function(fxRate) {
+        return fxRate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'DateTime',
-      name: 'valueDate'
+      name: 'valueDate',
+      visibility: function(valueDate) {
+        return valueDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'DateTime',
-      name: 'expiryDate'
+      name: 'expiryDate',
+      visibility: function(expiryDate) {
+        return expiryDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ]
 });

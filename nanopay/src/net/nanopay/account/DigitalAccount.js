@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.account',
   name: 'DigitalAccount',
   extends: 'net.nanopay.account.Account',
-
+  label: 'Virtual Account',
   documentation: 'Digital Account. Default to monetary denomination.',
 
   javaImports: [
@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'foam.nanos.auth.AuthService'
   ],
 
   implements: [
@@ -38,8 +38,9 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
-      value: 'CAD'
-    },
+      value: 'CAD',
+      updateVisibility: 'RO'
+    }
   ],
 
   actions: [

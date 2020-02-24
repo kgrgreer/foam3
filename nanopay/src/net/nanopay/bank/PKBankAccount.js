@@ -4,10 +4,6 @@ foam.CLASS({
   label: 'Pakistan Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
-    imports: [
-      'institutionDAO'
-    ],
-
     javaImports: [
       'foam.util.SafetyUtil',
       'java.util.regex.Pattern',

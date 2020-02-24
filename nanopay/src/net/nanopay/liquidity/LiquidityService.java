@@ -16,9 +16,11 @@ import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
 import foam.nanos.app.Mode;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
+import net.nanopay.account.BalanceService;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.approval.ApprovalRequest;
 import net.nanopay.approval.ApprovalStatus;
@@ -38,6 +40,7 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
+  protected BalanceService balanceService_;
 
   protected Logger getLogger() {
     if ( logger_ == null ) {
@@ -50,6 +53,11 @@ public class LiquidityService
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
 
     return accountDAO_;
+  }
+  protected BalanceService getBalanceService() {
+    if ( balanceService_ == null ) balanceService_ = (BalanceService) getX().get("balanceService");
+
+    return balanceService_;
   }
 
   protected DAO getLiquiditySettingsDAO() {
@@ -87,7 +95,7 @@ public class LiquidityService
   }
 
   public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
-    long pendingBalance = (long) account.findBalance(getX());
+    long pendingBalance =  getBalanceService().findBalance_(getX(),account);
     pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(
         OR(
@@ -198,15 +206,16 @@ public class LiquidityService
     } else {
       direction = "has fallen below ";
     }
-    AppConfig appConfig = (AppConfig) x_.get("appConfig");
+    User user = (User) account.findOwner(x_);
+    String url = user.findGroup(getX()).getAppConfig(getX()).getUrl();
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
     args.put("account",     "your account "+account.getName()+",");
     args.put("greeting",     "Hi");
-    args.put("name",        account.findOwner(x_).getFirstName());
+    args.put("name",        user.getFirstName());
     args.put("direction",   direction);
     args.put("threshold",   formatter.format(threshold/100.00));
-    args.put("link",        appConfig.getUrl());
+    args.put("link",        url);
 
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
@@ -221,6 +230,7 @@ public class LiquidityService
   {
     Transaction transaction = new Transaction.Builder(x_)
         .setAmount(amount)
+        .setReferenceNumber("Liquidity Service")
         .setDestinationAccount(destination)
         .setSourceAccount(source)
         .build();
@@ -235,9 +245,9 @@ public class LiquidityService
       }
     } catch (Exception e) {
       Notification notification = new Notification();
-      notification.setEmailName("Failure to Rebalance");
+      notification.setNotificationType("Failure to Rebalance");
       notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
-      notification.setEmailIsEnabled(true);
+      notification.setEmailIsEnabled(false);
       notification.setUserId(ls.getUserToEmail());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }

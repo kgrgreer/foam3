@@ -18,6 +18,9 @@ foam.CLASS({
   ^ .checkBox {
     margin-right: .5vw;
   }
+  ^ .checkBoxText {
+    display: inline;
+  }
   `,
 
   properties: [
@@ -45,6 +48,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
       this.docName$.sub(this.updateDoc);
       this.updateDoc();
 
@@ -54,8 +58,14 @@ foam.CLASS({
           .start()
             .hide(this.doc$.map((d) => ! d))
             .start(this.AGREED).addClass('checkBox')
-              .add(this.doc$.dot('checkboxText'))
+              .start().addClass('checkBoxText')
+              .on('click', () => {
+                self.agreed = ! self.agreed;
+              })
+                .add(this.doc$.dot('checkboxText'))
+              .end()
               .start('a')
+                .addClass('link')
                 .add(this.doc$.dot('title'))
                 .attrs({
                   href: this.doc$.dot('link'),

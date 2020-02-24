@@ -90,7 +90,7 @@ foam.CLASS({
       name: 'invoiceNumber',
       label: 'Invoice #',
       aliases: [ 'invoice', 'i' ],
-      visibility: foam.u2.Visibility.FINAL
+      updateVisibility: 'RO'
     },
     {
       class: 'String',

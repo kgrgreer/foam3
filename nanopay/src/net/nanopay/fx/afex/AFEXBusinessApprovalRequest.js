@@ -9,7 +9,12 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'afexBusinessId'
+      name: 'afexBusinessId',
+      visibility: function(afexBusinessId) {
+        return afexBusinessId ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ]
 });
