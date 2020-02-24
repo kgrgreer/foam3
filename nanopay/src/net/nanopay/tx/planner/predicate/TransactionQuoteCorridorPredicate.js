@@ -9,6 +9,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
+    'foam.util.SafetyUtil',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.payment.PaymentCorridorService',
@@ -30,14 +33,34 @@ foam.CLASS({
       FObject nu  = (FObject) NEW_OBJ.f(obj);
       if ( ! ( nu instanceof TransactionQuote ) ) return false;
       TransactionQuote tq = (TransactionQuote) nu;
+      Account from = tq.getSourceAccount();
+      Account to = tq.getDestinationAccount();
 
-      if ( ! (tq.getSourceAccount() instanceof BankAccount) 
-        || ! (tq.getDestinationAccount() instanceof BankAccount) ) return false;
-      BankAccount from = (BankAccount) tq.getSourceAccount();
-      BankAccount to = (BankAccount) tq.getDestinationAccount();
+      if ( from == null || to == null ) return false;
+
+      String sourceCountry  = "";
+      String targetCountry  = "";
+      String sourceCurrency = from.getDenomination();
+      String targetCurrency = to.getDenomination();
+
+      if ( from instanceof BankAccount ) {
+        sourceCountry = ((BankAccount) from).getCountry();
+      } else {
+        sourceCountry = ((BankAccount) TrustAccount.find(((X) obj),from)
+          .findReserveAccount(((X) obj))).getCountry();
+      }
+
+      if ( to instanceof BankAccount ) {
+        targetCountry = ((BankAccount) to).getCountry();
+      } else {
+        targetCountry = ((BankAccount) TrustAccount.find(((X) obj),to)
+          .findReserveAccount(((X) obj))).getCountry();
+      }
+
+      if ( SafetyUtil.isEmpty(sourceCountry) || SafetyUtil.isEmpty(targetCountry) ) return false;
 
       return new PaymentCorridorService().canProcessCurrencyPair(((X) obj), getProviderId(), 
-        from.getCountry(), to.getCountry(), from.getDenomination(), to.getDenomination());
+        sourceCountry, targetCountry, sourceCurrency, targetCurrency);
       
       `
     }
