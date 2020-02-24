@@ -82,19 +82,31 @@ p({
   "handler":{"class":"foam.nanos.menu.SubMenu"}
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"report.reportScripts","label":"Report Scripts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"reportDAO"},"parent":"report"})
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.reportScripts",
+  "label":   "Report Scripts",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey": "reportDAO"
+    }
+  },
+  "parent":  "report"})
 
 // BusinessReport
 p({
   "class":   "foam.nanos.menu.Menu",
   "id":      "report.abliiBusinessReport",
-  "label":    "Ablii Business Report",
-  "handler":{
-    "class":  "foam.nanos.menu.DAOMenu",
-    "daoKey": "abliiBusinessReportDAO",
-    "title": "Ablii Business Report",
-    "createEnabled": false,
-    "editEnabled":   false
+  "label":   "Ablii Business Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "abliiBusinessReportDAO",
+      "browseTitle":   "Ablii Business Report",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
   },
   "parent":"report"
 })
@@ -113,78 +125,83 @@ p({
 p({
   "class":   "foam.nanos.menu.Menu",
   "id":      "report.paymentReport",
-  "label":    "Payment Report",
-  "handler":{
-    "class":  "foam.nanos.menu.DAOMenu",
-    "daoKey": "paymentReportDAO",
-    "title": "Payment Report",
-    "createEnabled": false,
-    "editEnabled":   false
+  "label":   "Payment Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "paymentReportDAO",
+      "browseTitle":   "Payment Report",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
   },
-  "parent":"report"
+  "parent":  "report"
 })
 
 // BusinessSummaryReport
 p({
   "class":   "foam.nanos.menu.Menu",
   "id":      "report.summaryBusinessReport",
-  "label":    "Summary Business Report",
-  "handler":{
-    "class":  "foam.nanos.menu.DAOMenu",
-    "daoKey": "businessSummaryReportDAO",
-    "title": "Business Summary Report",
-    "createEnabled": false,
-    "editEnabled":   false,
-    "searchMode":    1
-  },
-  "parent":"report"
-})
-
-// PaymentSummaryReport
-p({
-  "class":    "foam.nanos.menu.Menu",
-  "id":       "report.summaryPaymentReport",
-  "label":    "Summary Payment Report",
-  "handler":{
-    "class":  "foam.nanos.menu.DAOMenu",
-    "daoKey": "paymentSummaryReportDAO",
-    "title":  "Payment Summary Report for Leadership",
-    "createEnabled": false,
-    "editEnabled":   false,
-    "searchMode":    1
-  },
-  "parent":"report"
-})
-
-// UserComplianceSummaryReport
-p({
-  "class":    "foam.nanos.menu.Menu",
-  "id":       "report.summaryUserComplianceReport",
-  "label":    "Summary User Compliance Report",
-  "handler":{
-    "class":  "foam.nanos.menu.DAOMenu",
-    "daoKey": "userComplianceSummaryReportDAO",
-    "title":  "User Compliance Summary Report",
-    "createEnabled": false,
-    "editEnabled":   false,
-    "searchMode":    1
-  },
-  "parent":"report"
-})
-
-// RejectedTransactionReport
-p({
-  "class":    "foam.nanos.menu.Menu",
-  "id":       "report.summaryRejectedTransactionReport",
-  "label":    "Summary Rejected Transaction Report",
-  "handler":{
+  "label":   "Summary Business Report",
+  "handler": {
     "class":  "foam.nanos.menu.DAOMenu2",
     "config": {
-      "daoKey": "rejectedTransactionReportDAO",
-      "browseTitle":  "Rejected Transaction Report",
+      "daoKey":        "businessSummaryReportDAO",
+      "browseTitle":   "Business Summary Report",
       "createEnabled": false,
       "editEnabled":   false
     }
   },
-  "parent":"report"
+  "parent":  "report"
+})
+
+// PaymentSummaryReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.summaryPaymentReport",
+  "label":   "Summary Payment Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "paymentSummaryReportDAO",
+      "browseTitle":   "Payment Summary Report for Leadership",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
+  },
+  "parent":  "report"
+})
+
+// UserComplianceSummaryReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.summaryUserComplianceReport",
+  "label":   "Summary User Compliance Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "userComplianceSummaryReportDAO",
+      "browseTitle":   "User Compliance Summary Report",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
+  },
+  "parent":  "report"
+})
+
+// RejectedTransactionReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.summaryRejectedTransactionReport",
+  "label":   "Summary Rejected Transaction Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "rejectedTransactionReportDAO",
+      "browseTitle":   "Rejected Transaction Report",
+      "createEnabled": false,
+      "editEnabled":   false
+    }
+  },
+  "parent":  "report"
 })
