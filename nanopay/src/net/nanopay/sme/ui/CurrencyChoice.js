@@ -161,7 +161,10 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'dao'
+      name: 'dao',
+      factory: function() {
+        return this.currencyDAO;
+      }
     }
   ],
 
