@@ -364,6 +364,7 @@ foam.CLASS({
 
   methods: [
     async function init() {
+      this.onContactIdChange();
       if ( this.type != 'payable' ) {
         await this.user.accounts.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
           .select({
