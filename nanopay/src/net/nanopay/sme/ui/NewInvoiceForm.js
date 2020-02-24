@@ -21,7 +21,7 @@ foam.CLASS({
     'notify',
     'stack',
     'user',
-    'userDAO',
+    'userDAO'
   ],
 
   exports: [
