@@ -21,7 +21,7 @@ foam.CLASS({
     'notify',
     'stack',
     'user',
-    'userDAO'
+    'userDAO',
   ],
 
   exports: [
@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.Currency',
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.BankAccount',
@@ -245,8 +246,8 @@ foam.CLASS({
     },
     {
       name: 'EXTERNAL_USER_MESSAGE',
-      message: `The contact you've selected is not associated to a business using Ablii,
-          You will not be receiving payments from this business using Ablii until they have been onboarded, however you do
+      message: `The contact you've selected is not associated to an internal business,
+          You will not be receiving payments from this busines until they have been onboarded to the platform, however you do
           have the ability to mark invoices as complete if paid outside of the platform.`
     },
     {
@@ -370,6 +371,7 @@ foam.CLASS({
               this.currencies.push(b.denomination);
             }
           });
+        this.currencyType = this.currencies[0];
         this.filteredCurrencyDAO = this.currencyDAO.where(this.IN(this.Currency.ID, this.currencies));
       }
     },
@@ -388,7 +390,6 @@ foam.CLASS({
 
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
-      this.currencies$.sub(this.prePopulateCurrency);
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
       this.ctrl
@@ -596,10 +597,6 @@ foam.CLASS({
   ],
 
   listeners: [
-    async function prePopulateCurrency() {
-      debugger;
-      this.currencyType = this.currencies[0];
-    },
     async function onContactIdChange() {
       if ( this.type == 'payable' ) await this.setDefaultCurrency();
       this.contact = await this.user.contacts.find(this.invoice.contactId);
