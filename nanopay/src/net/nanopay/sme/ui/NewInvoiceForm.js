@@ -246,7 +246,7 @@ foam.CLASS({
     },
     {
       name: 'EXTERNAL_USER_MESSAGE',
-      message: `The contact you've selected is not associated to an internal business,
+      message: `The contact you've selected is not associated with a business on the platform.
           You will not be receiving payments from this busines until they have been onboarded to the platform, however you do
           have the ability to mark invoices as complete if paid outside of the platform.`
     },
@@ -655,4 +655,3 @@ foam.CLASS({
     }
   ]
 });
-
