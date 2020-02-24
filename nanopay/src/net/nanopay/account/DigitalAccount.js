@@ -15,7 +15,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
