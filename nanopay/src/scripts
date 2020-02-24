@@ -1382,7 +1382,46 @@ p({
   "notes": "This script is for our clients who use our API. In Ablii/Connect staging and production enviroments, it should be in DRY_RUN mode."
 })
 p({"class":"foam.nanos.script.Script","id":"benchmarkHashingJShell","description":"Concurrent Hashing Benchmark","lastRun":"2019-12-24T16:29:17.561Z","lastDuration":413,"language":2,"code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\nimport foam.nanos.bench.*;\nimport foam.nanos.bench.BenchmarkRunner.Builder;\nimport net.nanopay.bench.*;\nimport net.nanopay.bench.*;\nimport foam.core.X;\n\n\n  String  runMethod(X x){\n  String st=\"\";\n   for ( int i = 0; i < 10; i++ ) {\n\n  x = x.put(\"pmLogger\", null);\n  HashingBenchmark b = new HashingBenchmark();\n  Builder builder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(1000).setBenchmark(b);\n  BenchmarkRunner runner = builder.build();\n\n  runner.execute(x);\n  st= st + runner.getResult();\n   \n  }\n  return st;\n}\n\n\n    String st1 = runMethod(x);\nSystem.out.print(st1);  \n","output":"\"8,83333.336,666666.7,1,376.56583404541016\\n8,9433.962,75471.695,1,203.05460357666016\\n8,166666.67,1333333.4,1,210.25112915039062\\n8,142857.14,1142857.1,1,217.46712493896484\\n8,142857.14,1142857.1,1,224.68373107910156\\n8,142857.14,1142857.1,1,231.88909912109375\\n8,111111.12,888888.94,1,239.10884857177734\\n8,124999.99,999999.94,1,246.31501007080078\\n8,124999.99,999999.94,1,253.51348114013672\\n8,166666.67,1333333.4,1,260.7246780395508\\n\"\n\n"})
-p({"class":"foam.nanos.script.Script","id":"showRandomDepositAmountsJShell","description":"Show random bank account deposit amounts.","lastRun":"2019-12-17T21:31:12.941Z","lastDuration":334,"language":2,"code":"import java.util.ArrayList;\nimport java.util.List;\n\nimport foam.core.X;\nimport foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.dao.EasyDAO;\nimport foam.nanos.auth.User;\n\nimport java.lang.System;\nimport java.io.*;\n void test(){\n\n   PrintStream ps = (PrintStream) x.get(\"out\");\n   \n   ps.println(\"starting ....\");\n\n   foam.dao.EasyDAO dao = (EasyDAO) x.get(\"localAccountDAO\");\n\n   java.util.List a = ( (ArraySink) dao.select() ).getArray();\n   \n   for ( int i = 0 ; i < a.size() ; i++ ) {\n     Object account = a.get(i);\n     if ( account instanceof net.nanopay.bank.BankAccount ) {\n       long amount = ( (net.nanopay.bank.BankAccount) account ).getRandomDepositAmount();\n       String amountFormatted = amount >= 10 ? Long.toString(amount) : \"0\" + Long.toString(amount);\n       ps.println(( (net.nanopay.bank.BankAccount) account ).getName() + \" [id = \" + ( (net.nanopay.bank.BankAccount) account ).getId() + \"]\" + \": $0.\" + amountFormatted);\n\n     } \n   }\n}\n\ntest()" }","output":"...","notes":""})
+p({
+  "class" : "foam.nanos.script.Script",
+  "id" : "showRandomDepositAmountsJShell",
+  "description" : "Show random bank account deposit amounts.",
+  "language" : 2,
+  "code" : """ 
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.dao.EasyDAO;
+    import foam.nanos.auth.User;
+
+    import java.lang.System;
+    import java.io.*;
+     void test(){
+
+       PrintStream ps = (PrintStream) x.get("out");
+
+       ps.println("starting ....");
+
+       foam.dao.EasyDAO dao = (EasyDAO) x.get("localAccountDAO");
+       java.util.List a = ( (ArraySink) dao.select() ).getArray();
+
+       for ( int i = 0 ; i < a.size() ; i++ ) {
+         Object account = a.get(i);
+         if ( account instanceof net.nanopay.bank.BankAccount ) {
+           long amount = ( (net.nanopay.bank.BankAccount) account ).getRandomDepositAmount();
+           String amountFormatted = amount >= 10 ? Long.toString(amount) : "0" + Long.toString(amount);
+           ps.println(( (net.nanopay.bank.BankAccount) account ).getName() + " [id = " + ( (net.nanopay.bank.BankAccount) account ).getId() + "]" + ": $0." + amountFormatted);
+         } 
+       }
+    }
+
+    test()
+  """
+})
+
 p({"class":"foam.nanos.script.Script","id":"AddAccountJShell","lastRun":"2019-12-17T21:03:50.082Z","lastDuration":1271,"language":2,"code":"import java.util.ArrayList;\nimport java.util.List;\nimport java.lang.Object;\n\nimport foam.core.X;\nimport foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.dao.EasyDAO;\nimport foam.nanos.auth.User;\nimport net.nanopay.account.Account;\nimport java.lang.System;\nimport java.io.*;\n\n2+2\n\nString twice(String s) {\n   return s + s;\n}\n\ntwice(\"Ocean\")\n\n    void runMethod(){\n     String res;\n     PrintStream ps = (PrintStream) x.get(\"out\");\n     System.out.println(ps.toString());\n     ps.print(\"foobar\");\n     foam.dao.EasyDAO dao = (EasyDAO) x.get(\"localAccountDAO\");\n\n     Account acc = new Account();\n\n     boolean enabled = true;\n     acc.setEnabled(enabled);\n     acc.setName(\"test331112\");\n     acc.setDesc(\"test1\");\n\n     dao.put(acc);\n\n     java.util.List   a   = ( (ArraySink) dao.select() ).getArray();\n     int nb = a.size();\n\n     String  tt = \"before remove\";;\nps.println(\"before remove\");\n     dao.remove(acc);\n     ps.println(\"after remove\");\n\n     ps.println(a.size());\n\n   }  \n\nrunMethod()\n","output":"foobarbefore remove\nafter remove\n70\n4\n\"OceanOcean\"\n\n","notes":""})
 
 
