@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.ruler',
+  package: 'net.nanopay.tx.planner.predicate',
   name: 'TransactionQuoteCorridorPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
@@ -17,7 +17,7 @@ foam.CLASS({
   ],
   properties: [
     {
-      class: 'Long',
+      type: 'Long',
       name: 'providerId'
     },
   ],
