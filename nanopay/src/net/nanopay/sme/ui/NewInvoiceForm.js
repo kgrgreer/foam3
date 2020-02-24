@@ -428,7 +428,6 @@ foam.CLASS({
               .end()
               .start({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.EXTERNAL_USER_MESSAGE, title: this.EXTERNAL_TITLE })
               .show(this.slot(function(type, contact) {
-                console.log(contact);
                 return contact != null ? type != 'payable' && contact.businessId == 0 : false;
               }))
               .end()
