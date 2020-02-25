@@ -66,7 +66,9 @@ foam.CLASS({
       name: 'savedGroup',
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      hidden: true
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      section: 'metaSection'
     },
     {
       name: 'title',

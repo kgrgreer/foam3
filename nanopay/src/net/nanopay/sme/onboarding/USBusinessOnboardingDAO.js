@@ -135,66 +135,66 @@ foam.CLASS({
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
         user.setAddress(businessOnboarding.getAddress());
 
-        // If the user is the signing officer
-        if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
+        if ( businessOnboarding.getStatus() == OnboardingStatus.SUBMITTED ) {
+          // If the user is the signing officer
+          if ( businessOnboarding.getSigningOfficer() ) {
+            user.setBirthday(businessOnboarding.getBirthday());
 
-          // Agreenments (tri-party, dual-party & PEP/HIO)
-          user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
+            // Agreenments (tri-party, dual-party & PEP/HIO)
+            user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
 
-          localUserDAO.put(user);
-          // Set the signing officer junction between the user and the business
-          business.getSigningOfficers(x).add(user);
+            localUserDAO.put(user);
+            // Set the signing officer junction between the user and the business
+            business.getSigningOfficers(x).add(user);
 
-          // Update the business because the put to signingOfficerJunctionDAO
-          // will have updated the email property of the business.
-          business = (Business) localBusinessDAO.find(business.getId());
-          business = (Business) business.fclone();
+            // Update the business because the put to signingOfficerJunctionDAO
+            // will have updated the email property of the business.
+            business = (Business) localBusinessDAO.find(business.getId());
+            business = (Business) business.fclone();
 
-          // * Step 6: Business info
-          // Business info: business address
-          business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setPhone(businessOnboarding.getPhone());
-          business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-          business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
-          business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation());
+            // * Step 6: Business info
+            // Business info: business address
+            business.setAddress(businessOnboarding.getBusinessAddress());
+            business.setPhone(businessOnboarding.getPhone());
+            business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
+            business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
+            business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation());
 
-          // Business info: business details
-          business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
-          business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
-          business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+            // Business info: business details
+            business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
+            business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
+            business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
-          if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-            business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
-          }
+            if ( businessOnboarding.getOperatingUnderDifferentName() ) {
+              business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
+            }
 
-          // Business info: transaction details
-          SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-          suggestedUserTransactionInfo.setBaseCurrency("USD");
-          suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
-          suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
-          suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
-          suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
-          suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+            // Business info: transaction details
+            SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
+            suggestedUserTransactionInfo.setBaseCurrency("USD");
+            suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+            suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
+            suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
+            suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+            suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
-          business.setTargetCustomers(businessOnboarding.getTargetCustomers());
-          business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+            business.setTargetCustomers(businessOnboarding.getTargetCustomers());
+            business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-          // * Step 7: Percent of ownership
-          business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
-          for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
-            business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
-          }
+            // * Step 7: Percent of ownership
+            business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
+            for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+              business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
+            }
 
-          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
             business.setOnboarded(true);
 
-          if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
-            business.setCompliance(ComplianceStatus.REQUESTED);
+            if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
+              business.setCompliance(ComplianceStatus.REQUESTED);
+            }
+
+            localBusinessDAO.put(business);
           }
-
-          localBusinessDAO.put(business);
-
         }
 
         return getDelegate().put_(x, businessOnboarding);

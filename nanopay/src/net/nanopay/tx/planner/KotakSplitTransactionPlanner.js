@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'KotakSplitTransactionPlanDAO',
-  extends: 'foam.dao.ProxyDAO',
+  package: 'net.nanopay.tx.planner',
+  name: 'KotakSplitTransactionPlanner',
+  extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   documentation: `Split CA bank to IN bank transactions`,
 
@@ -22,6 +22,8 @@ foam.CLASS({
     'net.nanopay.kotak.KotakCredentials',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.time.LocalDateTime',
@@ -40,58 +42,47 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'put_',
-      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      name: 'plan',
+      javaCode: `
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
-      if ( ! ( sourceAccount instanceof CABankAccount && destinationAccount instanceof INBankAccount ) ) {
-        return super.put_(x, quote);
-      }
 
-      Transaction request = quote.getRequestTransaction();
-      
       // check for transaction limits
       INBankAccount inDestinationAccount = (INBankAccount) destinationAccount;
       if ( getPurposeText(inDestinationAccount.getPurposeCode()).equals("TRADE_TRANSACTION") ) {
-        checkTransactionLimits(request);
+        checkTransactionLimits(requestTxn);
       }
 
       // get fx rate
-      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"nanopay");
       
       // calculate source amount 
-      Double amount =  Math.ceil(request.getDestinationAmount()/100.00/fxQuote.getRate()*100);
-      request.setAmount(amount.longValue());
+      Double amount =  Math.ceil(requestTxn.getDestinationAmount()/100.00/fxQuote.getRate()*100);
+      requestTxn.setAmount(amount.longValue());
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
-      txn.copyFrom(request);
+      txn.copyFrom(requestTxn);
       txn.setStatus(TransactionStatus.PENDING);
       DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), sourceAccount.getDenomination());
       // split 1: CA bank -> CA digital
-      TransactionQuote q1 = new TransactionQuote.Builder(x).build();
-      q1.copyFrom(quote);
+
       Transaction t1 = new Transaction.Builder(x).build();
-      t1.copyFrom(request);
+      t1.copyFrom(requestTxn);
       t1.setDestinationAccount(destinationDigitalaccount.getId());
       t1.setDestinationCurrency(t1.getSourceCurrency());
-      q1.setRequestTransaction(t1);
-      TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-      Transaction cashinPlan = c1.getPlan();
+      Transaction cashinPlan = quoteTxn(x, t1);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {
-        return super.put_(x, quote);
+        return null;
       }
+      
       // split 2: CA digital -> IN bank
-      TransactionQuote q2 = new TransactionQuote.Builder(x).build();
-      q2.copyFrom(quote);
       Transaction t2 = new Transaction.Builder(x).build();
-      t2.copyFrom(request);
+      t2.copyFrom(requestTxn);
       t2.setSourceAccount(destinationDigitalaccount.getId());
-      q2.setRequestTransaction(t2);
-      TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-      Transaction kotakPlan = c2.getPlan();
+      Transaction kotakPlan = quoteTxn(x,t2);
       if ( kotakPlan != null ) {
         txn.addNext(kotakPlan);
         Transaction[] nextPlans = kotakPlan.getNext();
@@ -101,17 +92,16 @@ foam.CLASS({
           nextPlans = nextPlan.getNext();
         }
       } else {
-        return super.put_(x, quote);
+        return null;
       }
 
       txn.setStatus(TransactionStatus.COMPLETED);
-      txn.setIsQuoted(true);
       ((FXSummaryTransaction) txn).setFxRate(fxQuote.getRate());
       KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
-      txn.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(credentials.getTransactionFee()).setCurrency(request.getSourceCurrency()).build()}, null);  
+      txn.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(credentials.getTransactionFee()).setCurrency(requestTxn.getSourceCurrency()).build()}, null);  
       ((FXSummaryTransaction) txn).collectLineItems();
-      quote.addPlan(txn);
-      return super.put_(x, quote);`
+      return txn;
+    `
     },
     {
       name: 'getPurposeText',
@@ -146,20 +136,20 @@ foam.CLASS({
       javaType: 'void',
       args: [
         {
-          name: 'request',
+          name: 'requestTxn',
           type: 'Transaction',
         }
       ],
       javaCode: `
         KotakCredentials credentials = (KotakCredentials) getX().get("kotakCredentials");
 
-        if ( request.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
+        if ( requestTxn.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
           throw new RuntimeException("Exceed INR Transaction limit");
         }
         
         DAO txnDAO = (DAO) getX().get("localTransactionDAO");
     
-        User owner = request.findSourceAccount(getX()).findOwner(getX());
+        User owner = requestTxn.findSourceAccount(getX()).findOwner(getX());
         DAO accounts = owner.getAccounts(getX());
         ArraySink sink = new ArraySink(getX());
         accounts.where (MLang.AND(
@@ -190,7 +180,7 @@ foam.CLASS({
           }
         }
         
-        if ( limit + request.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
+        if ( limit + requestTxn.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
           throw new RuntimeException("Exceed INR Transaction limit");
         }
       `

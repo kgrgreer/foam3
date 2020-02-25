@@ -549,6 +549,7 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/ClientPlaidService' },
   { name: 'net/nanopay/plaid/PlaidResponseItem' },
   { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
+  { name: 'net/nanopay/plaid/PlaidAccountDetailTest' },
   { name: 'net/nanopay/plaid/model/PlaidBalances' },
   { name: 'net/nanopay/plaid/model/PlaidItem' },
   { name: 'net/nanopay/plaid/model/ACH' },
@@ -1135,6 +1136,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/resultresponse/ContactResponseItem' },
   { name: 'net/nanopay/accounting/resultresponse/InvoiceResponseItem' },
   { name: 'net/nanopay/accounting/AccountingResultReport' },
+  { name: 'net/nanopay/accounting/AccountingResultReportAuthorizerTest' },
   { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
@@ -1411,13 +1413,18 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
+  { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
+  { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakSplitTransactionPlanner' },
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
   { name: 'net/nanopay/tx/planner/DVPPlanner' },
   { name: 'net/nanopay/tx/planner/FOPPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
-  { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
-  { name: 'net/nanopay/tx/planner/predicate/PropertyIsClass' }, //needs to be put to foam..
 
 ]);

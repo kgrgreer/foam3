@@ -131,6 +131,7 @@ var classes = [
   'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
+  'net.nanopay.plaid.PlaidAccountDetailTest',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -297,6 +298,7 @@ var classes = [
    'net.nanopay.accounting.IntegrationService',
    'net.nanopay.accounting.ResultResponse',
    'net.nanopay.accounting.AccountingResultReport',
+   'net.nanopay.accounting.AccountingResultReportAuthorizerTest',
    'net.nanopay.accounting.ResultResponseWrapper',
    'net.nanopay.accounting.AccountingBankAccount',
    'net.nanopay.accounting.ContactMismatchPair',
@@ -971,14 +973,19 @@ var classes = [
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
+  'net.nanopay.tx.planner.AFEXTransactionPlanner',
+  'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
+  'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
+  'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
+  'net.nanopay.tx.planner.KotakFxTransactionPlanner',
+  'net.nanopay.tx.planner.KotakTransactionPlanner',
   'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
-  'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
-  'net.nanopay.tx.planner.predicate.PropertyIsClass', //needs to be put to foam..
 ];
 
 var abstractClasses = [

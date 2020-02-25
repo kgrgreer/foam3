@@ -1,0 +1,11 @@
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f",
+  "name":"viewCrunchAppStore",
+  "description":"Ability to view the CRUNCH App Store",
+  "notes":"When users sign up for an account, they are granted the capability to view the crunch app store and select the capabilities they want.",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":["menu.read.appStore"]
+})
