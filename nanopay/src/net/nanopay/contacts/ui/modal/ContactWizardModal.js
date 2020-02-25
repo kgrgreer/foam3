@@ -175,14 +175,11 @@ foam.CLASS({
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactMenu' },
           startPoint: true
         },
-        'addContactConfirmation': {
-          view: { 
-            class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation',
-            data: this.data
-          }
-        },
         'selectBusiness': {
           view: { class: 'net.nanopay.contacts.ui.modal.SearchBusinessView' }
+        },
+        'AddContactByPaymentCode': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactByPaymentCodeModal' }
         },
         'AddContactStepOne': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepOne' }
@@ -193,8 +190,11 @@ foam.CLASS({
         'AddContactStepThree': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
         },
-        'AddContactByPaymentCode': {
-          view: { class: 'net.nanopay.contacts.ui.modal.AddContactByPaymentCodeModal' }
+        'addContactConfirmation': {
+          view: { 
+            class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation',
+            data: this.data
+          }
         },
       };
     },

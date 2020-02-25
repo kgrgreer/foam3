@@ -17,26 +17,70 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 593px;
+    }
     ^container {
-      width: 540px;
-      box-sizing: border-box;
+      height: 509px;
       padding: 24px;
     }
     ^contact-title {
       font-size: 12px;
       font-weight: 600;
       line-height: 1;
-      margin-top: 16px;
       margin-bottom: 8px;
+    }
+    ^instruction {
+      color: #8e9090;
+      line-height: 1.43;
+      margin-top: 8px;
+      margin-bottom: 16px;
     }
     ^contact-input {
       width: 100%;
       margin: 0;
     }
-    ^contact-btn {
-      margin: 10px;
+    ^button-container {
+      height: 84px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.43;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      background-color: transparent;
+      color: #4d38e1;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover {
+      border: none;
     }
   `,
+
+  messages: [
+    {
+      name: 'TITLE',
+      message: 'Add by Payment Code'
+    },
+    {
+      name: 'INSTRUCTION',
+      message: `Input a payment code to add an Ablii business to your
+        contacts. You can ask your contact for their Payment Code.`
+    }
+  ],
 
   properties: [
     {
@@ -55,22 +99,22 @@ foam.CLASS({
 
     function initE() {
       this
-      .addClass(this.myClass('container'))
-        .start()
-          .addClass(this.myClass('contact-title'))
-          .add('Enter Payment Code')
+        .addClass(this.myClass())
+        .start().addClass(this.myClass('container'))
+          .start().addClass('contact-title')
+            .add(this.TITLE)
+          .end()
+          .start().addClass(this.myClass('instruction'))
+            .add(this.INSTRUCTION)
+          .end()
+          .start(this.PAYMENT_CODE_VALUE)
+            .addClass(this.myClass('contact-input'))
+          .end()
         .end()
-        .start(this.PAYMENT_CODE_VALUE)
-          .addClass(this.myClass('contact-input'))
-        .end()
-        .startContext({ data: this })
-          .tag({
-            class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
-            back: this.BACK,
-            next: this.ADD_CONTACT_BY_PAYMENT_CODE
-          })
-        .endContext()
-      .end();
+        .start().addClass(this.myClass('button-container'))
+          .start(this.BACK).end()
+          .start(this.ADD_CONTACT_BY_PAYMENT_CODE).end()
+        .end();
     },
 
     function dec2hex(dec) {

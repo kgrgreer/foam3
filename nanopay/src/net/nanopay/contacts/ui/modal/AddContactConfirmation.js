@@ -89,17 +89,17 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'data',
       documentation: 'Set this to the contact whose information you want to display.'
-    },
-    {
-        class: 'Boolean',
-        name: 'confirmBusinessRelationship',
-        documentation: 'True when user confirms they have a business relationship with contact.',
-        value: false,
-        view: {
-          class: 'foam.u2.CheckBox',
-          showLabel: false
-        }
-      }
+    }
+    // {
+    //   class: 'Boolean',
+    //   name: 'confirmBusinessRelationship',
+    //   documentation: 'True when user confirms they have a business relationship with contact.',
+    //   value: false,
+    //   view: {
+    //     class: 'foam.u2.CheckBox',
+    //     showLabel: false
+    //   }
+    // }
   ],
 
   methods: [
@@ -153,7 +153,7 @@ foam.CLASS({
         .start().addClass(this.myClass('button-container'))
           .start(this.BACK).end()
           .start(this.CONFIRM).end()
-        .end()
+        .end();
     }
   ],
 
@@ -162,12 +162,10 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        // debugger;
         this.data.wizard = net.nanopay.contacts.Contact.create({
           type: 'Contact',
           group: 'sme'
         });
-        // debugger;
         X.subStack.back();
       }
     },

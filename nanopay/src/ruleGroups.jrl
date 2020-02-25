@@ -117,7 +117,6 @@ p({
     ]
   }
 })
-<<<<<<< HEAD
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({
   "class": "foam.nanos.ruler.RuleGroup",
@@ -137,5 +136,3 @@ p({
     ]
   }
 })
-=======
->>>>>>> 90779932dc3679f9725d2737df313053e6620dbc

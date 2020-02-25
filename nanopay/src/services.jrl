@@ -777,8 +777,8 @@ p({
     .setRuler(false)
     .setInnerDAO(x.get("localBusinessDAO"))
     .setEnableInterfaceDecorators(false)
-    .setDecorator(new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.auth.PublicBusinessInfo.getOwnClassInfo()).build())).build())
-    .setOf(net.nanopay.auth.PublicBusinessInfo.getOwnClassInfo())
+    .setDecorator(new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.model.Business.getOwnClassInfo()).build())).build())
+    .setOf(net.nanopay.model.Business.getOwnClassInfo())
     .build();
   """,
   "client":
