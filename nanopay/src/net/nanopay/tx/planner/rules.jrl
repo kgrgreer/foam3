@@ -408,12 +408,22 @@ p({
   "daoKey":"transactionPlannerDAO",
   "enabled":false,
   "operation":0,
-  "predicate":
-    {
-      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
-      "providerId":"Alterna",
-      "isCI": true
-    },
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      // TODO confirm same owners
+    ]
+  },
   "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
 })
 p({
@@ -425,12 +435,22 @@ p({
   "daoKey":"transactionPlannerDAO",
   "enabled":false,
   "operation":0,
-  "predicate":
-    {
-      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
-      "providerId":"Alterna",
-      "isCI": false
-    },
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      // TODO confirm same owners
+    ]
+  },
   "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
 })
 p({
@@ -442,12 +462,22 @@ p({
   "daoKey":"transactionPlannerDAO",
   "enabled":false,
   "operation":0,
-  "predicate":
-    {
-      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
-      "providerId":"BMO",
-      "isCI": true
-    },
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      // TODO confirm same owners
+    ]
+  },
   "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
 })
 p({
@@ -459,12 +489,22 @@ p({
   "daoKey":"transactionPlannerDAO",
   "enabled":false,
   "operation":0,
-  "predicate":
-    {
-      "class":"net.nanopay.tx.planner.predicate.CACICOPredicate",
-      "providerId":"BMO",
-      "isCI": false
-    },
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      // TODO confirm same owners
+    ]
+  },
   "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
 })
 

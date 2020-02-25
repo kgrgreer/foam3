@@ -986,7 +986,6 @@ var classes = [
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
-  'net.nanopay.tx.planner.predicate.CACICOPredicate',
 ];
 
 var abstractClasses = [
