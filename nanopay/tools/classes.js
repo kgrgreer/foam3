@@ -131,6 +131,7 @@ var classes = [
   'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
+  'net.nanopay.plaid.PlaidAccountDetailTest',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
