@@ -1269,7 +1269,6 @@ foam.CLASS({
                            owner2$ownershipPercent,
                            owner3$ownershipPercent,
                            owner4$ownershipPercent) {
-                           console.log("totalOwnership");
 
         var sum = 0;
 
