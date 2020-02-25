@@ -106,6 +106,26 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "description":"",
+  "lazy":false,
+  "parameters":false,
+  "pm":true,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacy":"Privacy Policy",
+    "privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "urlLabel":"Powered by nanopay",
+    "termsAndCondLabel":"Terms and Conditions",
+    "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
+    "playLink":"https://play.google.com/store?hl=en",
+    "url":"http://liquid:8080"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"testRunnerConfig",
   "service": {
     "class":"foam.nanos.script.TestRunnerConfig",
