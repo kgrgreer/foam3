@@ -7,7 +7,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   searchColumns: [
@@ -26,73 +27,18 @@ foam.CLASS({
     {
       //not required, except maybe for view.
       class: 'Reference',
-      of: 'net.nanopay.exchangeable.Security',
-      targetDAOKey: 'securitiesDAO',
+      of: 'foam.core.Unit',
+      targetDAOKey: 'currencyDAO',
       name: 'denomination',
       documentation: 'The security that this account stores.',
       tableWidth: 127,
       section: 'accountDetails',
+      value: 'USD',
       order: 3,
-      required: false
-    },
-    {
-    // balance of all sub accounts I suppose
-      class: 'Long',
-      name: 'balance',
-      label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the bank account.',
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.securitiesDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
-            })
-        }));
-      },
-      tableWidth: 145
-    },
-
+    }
   ],
 
   methods: [
-  /*
-    {
-     WIP. Get balance of all subaccounts, but not their subaccounts.
-      name: 'findBalance',
-      type: 'Any',
-      async: true,
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      code: function(x) {
-        return x.balanceDAO.find(this.id).then(b => b ? b.balance : 0);
-      },
-      javaCode: `
-        DAO balanceDAO = (DAO) x.get("balanceDAO");
-        Balance balance = (Balance) balanceDAO.find(this.getId());
-        if ( balance != null ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance found for account", this.getId());
-          return balance.getBalance();
-        } else {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("Balance not found for account", this.getId());
-        }
-        return 0L;
-      `
-
-
-    },*/
     {
       name: 'getSecurityAccount',
       type: 'net.nanopay.account.SecurityAccount',
@@ -108,13 +54,16 @@ foam.CLASS({
       ],
 
       javaCode: `
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        SecurityAccount sa = (SecurityAccount) accountDAO.where(EQ(
-          SecurityAccount.SECURITIES_ACCOUNT, getId())).find(EQ(
+        DAO accountDAO = (DAO) this.getSubAccounts(x);
+        // TODO: switch to StripedLock when available, KGR
+        Object lock = (getId() + ":" + unit).intern();
+        synchronized ( lock ) {
+          SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-        if (sa == null || sa.getId() == 0)
-          return createSecurityAccount_(x,unit);
-        return sa;
+          if (sa == null || sa.getId() == 0)
+            return createSecurityAccount_(x,unit);
+          return sa;
+        }
       `
     },
     {
@@ -135,9 +84,10 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.setName(unit+ " subAccount for "+this.getId());
+        sa.setName(unit + " subAccount for " + getId());
         sa.setSecuritiesAccount(this.getId());
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        sa.setLifecycleState(LifecycleState.ACTIVE);
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
         return sa;
       `

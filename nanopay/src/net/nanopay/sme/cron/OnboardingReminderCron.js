@@ -41,7 +41,7 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          tpye: 'Context'
+          type: 'Context'
         }
       ],
       javaCode:

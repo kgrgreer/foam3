@@ -25,26 +25,26 @@ foam.CLASS({
       name: 'id',
       tableWidth: 50,
       documentation: `The unique identifier for the User.`,
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'firstName',
       documentation: 'The first name of the individual person, or real user.',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'lastName',
       documentation: 'The last name of the individual person, or real user.',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'businessName',
       documentation: `The name of the business associated with the public
         information of a User.`,
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
@@ -52,14 +52,14 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'organization',
       documentation: `The organization/business associated with the public
         nformation of a User.`,
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'EMail',
@@ -79,7 +79,7 @@ foam.CLASS({
       name: 'address',
       documentation: `Returns the postal address of the business associated with the
         public information of a User.  It is drawn from the Address model.`,
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'FObjectProperty',
@@ -88,7 +88,7 @@ foam.CLASS({
       documentation: `Returns the phone number of the business associated with the
         public information of a User. It is drawn from the Phone model.`,
       view: { class: 'foam.u2.detail.VerticalDetailView' },
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -96,7 +96,7 @@ foam.CLASS({
       documentation: `The profile picture of the business, initially defaulting
         to a placeholder picture.`,
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',

@@ -18,8 +18,7 @@ foam.CLASS({
     'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
     'net.nanopay.tx.ruler.TransactionLimitState',
     'net.nanopay.util.Frequency',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.FXQuote'
+    'net.nanopay.fx.ExchangeRateService',
   ],
 
   methods: [
@@ -47,50 +46,47 @@ foam.CLASS({
         txLimitRule.getCurrentLimits().put(key, limitState);
       }
 
-      // Amount of the transaction in the transaction source currency
-      long amount = transaction.getAmount();
-
       // Retrieve the currencies
       DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
       Currency transactionCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
       Currency ruleCurrency = (Currency) currencyDAO.find(txLimitRule.getDenomination());
 
-      // Convert to rule currency if necessary
-      if ( ruleCurrency != null && ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
-        User user = (User) x.get("user");
-        FXService fxService = (FXService) x.get("fxService");
-        
-        FXQuote fxQuote = fxService.getFXRate(transactionCurrency.getId(), ruleCurrency.getId(), amount, 0l, "Buy", null, user.getId(), null);
-        if (fxQuote.getTargetAmount() == 0l) {
-          Logger logger = (Logger) x.get("logger");
-          logger.warning("FX conversion missing for " + transactionCurrency.getId() + " -> " + ruleCurrency.getId() + ". Skipping aggregation on transaction limit: " + txLimitRule.getId());
+      // Amount of the transaction in the transaction source currency
+      long amount = transaction.getAmount();
+      if ( !txLimitRule.getSend() && 
+         ( transaction.getDestinationAmount() >= 0) && 
+         ( transaction.getDestinationCurrency() != null ) )
+      {
+        amount = transaction.getDestinationAmount();  
+        transactionCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+      }
 
-          // Skip transaction limit if there is no currency conversion
+      // Convert to rule currency if necessary
+      if ( ! SafetyUtil.equals(transactionCurrency.getId(), ruleCurrency.getId()) ) {
+        try {
+          ExchangeRateService ers = (ExchangeRateService) x.get("exchangeRateService");
+          amount = ers.exchange(transactionCurrency.getId(), ruleCurrency.getId(), amount);
+        } catch (Exception e) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("FX conversion missing. Cannot apply rule " + txLimitRule.getId(), e);
+
+          // Do not continue to apply rule since the amount cannot be added to the limitState
           return;
         }
-
-        amount = fxQuote.getTargetAmount();
       }
-      
-      // Compute the amounts
-      String availableLimit = (ruleCurrency != null) ?
-        ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
-        String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
-      String txAmount = (transactionCurrency != null) ?
-        transactionCurrency.format(amount) :
-        String.format("%s", amount);
-      Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
-      User user = account.findOwner(x);
 
       // Add information if this is a probe
       if ( testedRule != null ) {
+        String availableLimit = (ruleCurrency != null) ?
+          ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
+          String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
+        Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
         testedRule.setProbeInfo(
           new TransactionLimitProbeInfo.Builder(x)
             .setRemainingLimit(txLimitRule.getLimit() - limitState.getSpent())
             .setMessage(
               "Remaining limit for " + txLimitRule.getApplyLimitTo().getLabel() + " " +
               (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? user.label() :
                txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? account.getName() : "") 
               + " is " + availableLimit )
             .build());
@@ -98,15 +94,11 @@ foam.CLASS({
 
       // Check the limit
       if ( ! limitState.check(txLimitRule.getLimit(), txLimitRule.getPeriod(), amount) ) {
-        throw new RuntimeException("The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " transaction limit was exceeded with a " + txAmount + " transaction " 
-          + (txLimitRule.getApplyLimitTo() != TxLimitEntityType.TRANSACTION ? (txLimitRule.getSend() ? "from " : "to ") : "on ")
-          + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? " " + user.label() :
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
-          + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact us.");
+        throw new RuntimeException("The " + 
+          txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+          txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+          (txLimitRule.getSend() ? "sending" : "receiving") + 
+          " limit was exceeded.");
       }
 
       // Note: there is a race condition here between the check call above and the updateSpent call below
@@ -140,8 +132,7 @@ foam.CLASS({
           .append(rule.getApplyLimitTo())
           .append(":")
           .append(rule.getApplyLimitTo() == TxLimitEntityType.USER ? rule.getUserToLimit() :
-                  rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() :
-                  rule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? rule.getBusinessToLimit() : 0)
+                  rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() : 0)
           .append(":")
           .append(rule.getDenomination())
           .append(":")

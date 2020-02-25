@@ -7,7 +7,8 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'auth'
+    'auth',
+    'notify'
   ],
 
   requires: [
@@ -99,9 +100,8 @@ foam.CLASS({
         })
         .catch((err) => {
           console.error(err);
-          this.ctrl.notify(err.message || this.GENERIC_ERROR, 'error');
+          this.notify(err.message || this.GENERIC_ERROR, 'error');
         });
     }
   ]
-
 });

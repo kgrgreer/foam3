@@ -49,7 +49,7 @@ foam.CLASS({
       )).limit(1).select(count);
 
   if ( count.getValue() == 1 ) {
-    throw new RuntimeException("User with same email address already exists: " + user.getEmail());
+    throw new RuntimeException("This email address is unavailable: " + user.getEmail());
   }
 
   return super.put_(x, obj);
