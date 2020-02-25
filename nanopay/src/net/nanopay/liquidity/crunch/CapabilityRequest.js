@@ -5,7 +5,7 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'foam.nanos.approval.ApprovableAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
 
@@ -24,9 +24,9 @@ foam.CLASS({
     'java.util.Map',
     'java.util.Set',
     'net.nanopay.account.Account',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',

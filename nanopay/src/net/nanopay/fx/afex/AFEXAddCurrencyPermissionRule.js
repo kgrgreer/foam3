@@ -23,9 +23,9 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'javax.security.auth.AuthPermission',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'

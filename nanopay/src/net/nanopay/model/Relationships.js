@@ -1016,7 +1016,7 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.approval.ApprovalRequest',
+  targetModel: 'foam.nanos.approval.ApprovalRequest',
   forwardName: 'approvalRequests',
   inverseName: 'entityId',
   cardinality: '1:*',

@@ -193,7 +193,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "net.nanopay.liquidity.approvalRequest.RoleApprovalRequest",
+      "of": "foam.nanos.approval.RoleApprovalRequest",
       "createEnabled": false,
       "editEnabled": false,
       "deleteEnabled": false

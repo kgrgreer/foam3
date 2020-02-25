@@ -4,6 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.notification.Notification;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 

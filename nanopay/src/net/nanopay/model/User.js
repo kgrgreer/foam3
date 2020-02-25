@@ -10,7 +10,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.core.Validatable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   imports: [

@@ -3,16 +3,9 @@ FOAM_FILES([
   { name: 'net/nanopay/dao/EasyDAO'},
 
   // Approvable
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
-  { name: 'net/nanopay/liquidity/approvalRequest/PropertiesToUpdateView', flags: ['web'] },
-  { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsPredicate' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
-  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },
-  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
 
   // Payment
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
@@ -883,10 +876,11 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
-   { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/RoleUserQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReference' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/ReferenceSpec' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReferenceView' },
@@ -897,8 +891,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/ui/SelectOneSearchBar' },
    { name: 'net/nanopay/liquidity/ucjQuery/ui/rows' },
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
-   { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
-   { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/ruler/IsSystemOrAdminUser' },
@@ -1353,8 +1345,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
-  { name: 'net/nanopay/approval/ApprovalRequest' },
-  { name: 'net/nanopay/approval/ApprovalStatus' },
   { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo

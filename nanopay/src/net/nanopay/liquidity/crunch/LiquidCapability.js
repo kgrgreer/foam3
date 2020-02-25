@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   tableColumns: [ 'id' ],

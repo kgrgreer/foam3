@@ -320,16 +320,8 @@ var classes = [
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
-   'net.nanopay.liquidity.approvalRequest.Approvable',
-   'net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO',
-   'net.nanopay.liquidity.approvalRequest.ApprovableAware',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
-   'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsPredicate',
-   'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule',
-   'net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate',
-   'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
-   'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
    'net.nanopay.liquidity.crunch.ApproverLevel',
    'net.nanopay.liquidity.crunch.LiquidCapability',
@@ -385,6 +377,7 @@ var classes = [
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.RoleUserQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -916,10 +909,6 @@ var classes = [
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 
-  // approval
-  'net.nanopay.approval.ApprovalRequest',
-  'net.nanopay.approval.ApprovalStatus',
-
   // BMO EFT integration
   'net.nanopay.tx.bmo.eftfile.BmoBatchControl',
   'net.nanopay.tx.bmo.eftfile.BmoBatchHeader',
@@ -1008,7 +997,6 @@ var skeletons = [
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
-  'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',

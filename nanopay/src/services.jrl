@@ -542,7 +542,7 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
       .setDaoKey("userDAO")
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setIsEnabled(false)
