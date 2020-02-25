@@ -421,7 +421,9 @@ p({
         "propName":"destinationAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
-      // TODO confirm same owners
+      {
+        "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate"
+      }
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
@@ -448,7 +450,9 @@ p({
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.CABankAccount"
       },
-      // TODO confirm same owners
+      {
+        "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate"
+      }
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
@@ -475,7 +479,9 @@ p({
         "propName":"destinationAccount",
         "of":"net.nanopay.account.DigitalAccount"
       },
-      // TODO confirm same owners
+      {
+        "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate"
+      }
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
@@ -502,7 +508,9 @@ p({
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.CABankAccount"
       },
-      // TODO confirm same owners
+      {
+        "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate"
+      }
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
