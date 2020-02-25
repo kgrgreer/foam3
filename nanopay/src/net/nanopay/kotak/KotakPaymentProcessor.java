@@ -18,6 +18,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
+import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.kotak.model.paymentRequest.EnrichmentSetType;
@@ -49,9 +50,12 @@ public class KotakPaymentProcessor implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         try {
           KotakPaymentTransaction kotakTransaction = (KotakPaymentTransaction) ((KotakPaymentTransaction) obj).fclone();
+          Transaction root = kotakTransaction.findRoot(x);
           kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction picked up by KotakPaymentProcessor.").build());
           INBankAccount destinationBankAccount = getAccountById(x, kotakTransaction.getDestinationAccount());
           User payee = destinationBankAccount.findOwner(x);
+          Account sourceBankAccount = root.findSourceAccount(x);
+          User payer = sourceBankAccount.findOwner(x);
 
           /**
            * Payment request Header
@@ -93,10 +97,10 @@ public class KotakPaymentProcessor implements ContextAgent {
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
-            credentials.getRemitterName() + "~" +
+            payer.getLegalName() + "~" +
             beneACType + "~" +
-            credentials.getRemitterAddress() + "~" +
-            credentials.getRemitterAcNo() + "~" +
+            payer.getAddress().getAddress() + "~" +
+            payer.getId() + "~" +
             remitPurpose + "~~" +
             relationShip + "~"});
           requestInstrument.setEnrichmentSet(type);

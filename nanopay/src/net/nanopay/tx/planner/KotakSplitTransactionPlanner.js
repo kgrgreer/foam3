@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: `Split CA bank to IN bank transactions`,
 
   javaImports: [
+    'foam.core.Unit',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
@@ -58,7 +59,9 @@ foam.CLASS({
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"nanopay");
       
       // calculate source amount 
-      Double amount =  Math.ceil(requestTxn.getDestinationAmount()/100.00/fxQuote.getRate()*100);
+      Unit denomination = sourceAccount.findDenomination(x);
+      Double currencyPrecision = Math.pow(10, denomination.getPrecision());
+      Double amount =  Math.ceil(requestTxn.getDestinationAmount()/currencyPrecision/fxQuote.getRate()*currencyPrecision);
       requestTxn.setAmount(amount.longValue());
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
