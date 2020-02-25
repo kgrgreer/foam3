@@ -508,7 +508,7 @@ p({
     "action":{
         "class":"net.nanopay.tx.ruler.MicroDepositSuccessed"
     },
-    "enabled":false,
+    "enabled":true,
     "saveHistory":true
 })
 p({
