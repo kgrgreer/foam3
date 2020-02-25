@@ -1107,3 +1107,32 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   cardinality: '1:*',
 });
+
+foam.RELATIONSHIP({
+  package: 'net.nanopay.payment',
+  sourceModel: 'net.nanopay.payment.PaymentProvider',
+  targetModel: 'net.nanopay.fx.Corridor',
+  forwardName: 'paymentProvider',
+  inverseName: 'corridors',
+  cardinality: '*:*'
+});
+
+foam.CLASS({
+  package: 'net.nanopay.payment',
+  name: 'PaymentProviderCorridorJunctionRefine',
+  refines: 'net.nanopay.payment.PaymentProviderCorridorJunction',
+
+  documentation: `
+    Model for PaymentProviderCorridorJunction, also contains accepted 
+    currency string for each junction.
+  `,
+
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'currencies',
+      documentation: 'Accepted currencies.'
+    },
+  ]
+});
+
