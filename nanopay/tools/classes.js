@@ -974,6 +974,7 @@ var classes = [
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
   'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
   'net.nanopay.tx.planner.KotakFxTransactionPlanner',
