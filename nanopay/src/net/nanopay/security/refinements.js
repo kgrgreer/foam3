@@ -20,6 +20,7 @@ foam.CLASS({
       name: 'isPublic',
       class: 'Boolean',
       value: true,
+      writePermissionRequired: true,
       section: 'administrative'
     },
     {
