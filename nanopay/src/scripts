@@ -302,6 +302,51 @@ for ( Business business : businesses ) {
 
 p({
   "class": "foam.nanos.script.Script",
+  "id": "Grant business.rw.ispublic to all existing business admin groups",
+  "code": """
+PERMISSION = "business.rw.ispublic";
+
+// ----------------------------------------------------------------
+
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.Permission;
+import net.nanopay.model.Business;
+import javax.security.auth.AuthPermission;
+
+DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+DAO groupDAO = (DAO) x.get("groupDAO");
+
+businesses = localBusinessDAO.select(new ArraySink()).getArray();
+permission_ = new Permission.Builder(x).setId(PERMISSION).build();
+
+for ( Business business : businesses ) {
+  Group group = business.findGroup(x);
+
+  if ( group == null ) {
+    print("Couldn't find group '" + business.getGroup() + "'. Skipping...");
+    continue;
+  }
+
+  if ( group.implies(x, new AuthPermission(PERMISSION)) ) {
+    print("Group '" + group.getId() + "' already has a permission that implies the one we're adding. Skipping...");
+    continue;
+  }
+
+  try {
+    group.getPermissions(x).add(permission_);
+    print("Successfully added permission '" + PERMISSION + "' to group " + group.getId());
+  } catch(Throwable t) {
+    print("Failed to add permission '" + PERMISSION + "' to group '" + group.getId() + "'.");
+  }
+}
+  """
+})
+
+p({
+  "class": "foam.nanos.script.Script",
   "id": "Migrate Business",
   "status": 2,
   "code": """

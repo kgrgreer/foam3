@@ -1026,6 +1026,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CompanyInformationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessInformationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/PrivacyView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PaymentCodeView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TransactionLimitView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BeneficialOwnerView', flags: ['web'] },
