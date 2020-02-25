@@ -388,12 +388,12 @@ foam.CLASS({
             .end()
           .end()
           // .start().addClass(this.myClass('search-field'))
-          //   .start({
-          //     class: 'foam.u2.tag.Image',
-          //     data: this.SEARCH_ICON
-          //   })
-          //     .addClass(this.myClass('searchIcon'))
-          //   .end()
+            // .start({
+            //   class: 'foam.u2.tag.Image',
+            //   data: this.SEARCH_ICON
+            // })
+            //   .addClass(this.myClass('searchIcon'))
+            // .end()
           //   .start(this.LOCATION_FILTER)
           //     .addClass(this.myClass('filter-search'))
           //   .end()

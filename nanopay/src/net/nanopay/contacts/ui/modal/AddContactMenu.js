@@ -80,7 +80,7 @@ foam.CLASS({
         optionDestination: 'selectBusiness'
       },
       {
-        optionTitle: 'Search by Payment Code',
+        optionTitle: 'Add by Payment Code',
         optionIcon: {
           src: 'images/ablii/payment-code.png',
           width: '50px',
