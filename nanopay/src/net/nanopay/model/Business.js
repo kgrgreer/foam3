@@ -52,6 +52,8 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      section: 'business',
+      visibility: 'RW',
       width: 50
     },
     {
@@ -78,7 +80,7 @@ foam.CLASS({
         foam.nanos.auth.user and changes the section from administrative to
         business, so that paymentops and other groups can see this property.
       `,
-      section: 'business',
+      section: 'business'
     },
     {
       class: 'Reference',
