@@ -103,6 +103,16 @@ p({
     }]
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"testRunnerConfig",
+  "service": {
+    "class":"foam.nanos.script.TestRunnerConfig",
+    "testSuite": "liquid"
+  }
+})
+
 p({
   "class":"foam.nanos.boot.NSpec", 
   "name":"localAccountDAO",
