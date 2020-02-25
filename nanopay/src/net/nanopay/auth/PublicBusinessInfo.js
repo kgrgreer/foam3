@@ -43,6 +43,13 @@ foam.CLASS({
   ],
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.label();
+      }
+    },
+    {
       name: 'label',
       code: function() {
         return this.operatingBusinessName

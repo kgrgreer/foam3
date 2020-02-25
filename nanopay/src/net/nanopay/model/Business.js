@@ -536,6 +536,16 @@ foam.CLASS({
       `
     },
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.label();
+      },
+      javaCode: `
+        return this.label();
+      `
+    },
+    {
       name: 'label',
       type: 'String',
       code: function label() {

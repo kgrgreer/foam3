@@ -107,6 +107,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: async function() {
+        return await this.label();
+      },
+      javaCode: `
+        return this.label();
+      `
+    },
+    {
       name: 'label',
       code: async function() {
         if ( this.type === 'Contact' ) {
