@@ -65,6 +65,6 @@ p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": 6,
   "targetId": 1,
-  "currencies":["USD"],
+  "currencies":["USD","INR"],
   "description": "CA to IN corridor via Kotak"
 })
