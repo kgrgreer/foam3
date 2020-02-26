@@ -266,8 +266,8 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
-        "serviceProviderName":"afexServiceProvider",
+        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
+        "providerId":4,
       }
     ]
   },
@@ -296,8 +296,8 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
-        "serviceProviderName":"ascendantFXService",
+        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
+        "providerId":1,
       }
     ]
   },
