@@ -44,21 +44,21 @@ p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": 3,
   "targetId": 5,
-  "currencies":["USD"],
+  "currencies":["CAD"],
   "description": "CA to CA corridor via Alterna"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": 2,
   "targetId": 5,
-  "currencies":["USD"],
+  "currencies":["CAD"],
   "description": "CA to CA corridor via BMO"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": 5,
   "targetId": 5,
-  "currencies":["USD"],
+  "currencies":["CAD"],
   "description": "CA to CA corridor via RBC"
 })
 p({
