@@ -220,7 +220,6 @@ foam.CLASS({
         this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {
             this.appConfig.copyFrom(config.service);
-
             if (this.appConfig.name != 'liquid') {
               this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
             }
