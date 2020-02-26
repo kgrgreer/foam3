@@ -294,7 +294,7 @@ foam.CLASS({
         }
         return n;
       },
-      javaType: 'java.lang.Integer',
+      javaType: 'int',//'java.lang.Integer',
       validateObj: function(approverLevel) {
         if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
           return this.approverLevelRangeError;

@@ -11,7 +11,7 @@ foam.CLASS({
     {
       name: 'approverLevel',
       class: 'Int',
-      javaType: 'java.lang.Integer',
+      javaType: 'int',//'java.lang.Integer',
       min: 1, 
       max: 2,
       validateObj: function(approverLevel) {
