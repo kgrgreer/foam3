@@ -63,6 +63,8 @@ var classes = [
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
+  'net.nanopay.payment.PaymentProviderCorridorJunction',
+  'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.InstitutionPaymentProvider',
   'net.nanopay.payment.PADType',
   'net.nanopay.payment.PADTypeLineItem',
@@ -131,6 +133,7 @@ var classes = [
   'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
+  'net.nanopay.plaid.PlaidAccountDetailTest',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -297,6 +300,7 @@ var classes = [
    'net.nanopay.accounting.IntegrationService',
    'net.nanopay.accounting.ResultResponse',
    'net.nanopay.accounting.AccountingResultReport',
+   'net.nanopay.accounting.AccountingResultReportAuthorizerTest',
    'net.nanopay.accounting.ResultResponseWrapper',
    'net.nanopay.accounting.AccountingBankAccount',
    'net.nanopay.accounting.ContactMismatchPair',
@@ -316,16 +320,8 @@ var classes = [
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
-   'net.nanopay.liquidity.approvalRequest.Approvable',
-   'net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO',
-   'net.nanopay.liquidity.approvalRequest.ApprovableAware',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
-   'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsPredicate',
-   'net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule',
-   'net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate',
-   'net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule',
-   'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
    'net.nanopay.liquidity.crunch.ApproverLevel',
    'net.nanopay.liquidity.crunch.LiquidCapability',
@@ -381,6 +377,7 @@ var classes = [
    'net.nanopay.liquidity.ucjQuery.CachedAccountUCJQueryService',
    'net.nanopay.liquidity.ucjQuery.UCJQueryService',
    'net.nanopay.liquidity.ucjQuery.CachedUCJQueryService',
+   'net.nanopay.liquidity.ucjQuery.RoleUserQueryService',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -912,10 +909,6 @@ var classes = [
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 
-  // approval
-  'net.nanopay.approval.ApprovalRequest',
-  'net.nanopay.approval.ApprovalStatus',
-
   // BMO EFT integration
   'net.nanopay.tx.bmo.eftfile.BmoBatchControl',
   'net.nanopay.tx.bmo.eftfile.BmoBatchHeader',
@@ -971,14 +964,20 @@ var classes = [
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
+  'net.nanopay.tx.planner.AFEXTransactionPlanner',
+  'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate',
+  'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
+  'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
+  'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
+  'net.nanopay.tx.planner.KotakFxTransactionPlanner',
+  'net.nanopay.tx.planner.KotakTransactionPlanner',
   'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
-  'net.nanopay.tx.planner.predicate.PropertyIsInstance', //needs to be put to foam..
-  'net.nanopay.tx.planner.predicate.PropertyIsClass', //needs to be put to foam..
 ];
 
 var abstractClasses = [
@@ -995,9 +994,9 @@ var skeletons = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
+  'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
-  'net.nanopay.liquidity.ucjQuery.UCJQueryService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',

@@ -1,1 +1,2 @@
 p({ class: 'net.nanopay.plaid.PlaidIntegrationTest', id: 'PlaidIntegrationTest' })
+p({ class: 'net.nanopay.plaid.PlaidAccountDetailTest', id: 'PlaidAccountDetailTest'})

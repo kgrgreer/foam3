@@ -822,7 +822,7 @@ foam.CLASS({
         isHorizontal: true
       }
     },
-    foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
       view: {
         class: 'foam.u2.TextField',

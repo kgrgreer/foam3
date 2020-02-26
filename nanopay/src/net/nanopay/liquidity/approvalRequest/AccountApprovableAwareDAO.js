@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'AccountApprovableAwareDAO',
-  extends: 'net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO',
+  extends: 'foam.nanos.approval.ApprovableAwareDAO',
 
   javaImports: [
     'foam.core.X',
@@ -26,13 +26,13 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.LifecycleAware',
     'foam.mlang.predicate.Predicate',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
-    'net.nanopay.liquidity.approvalRequest.Approvable',
+    'foam.nanos.approval.Approvable',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'foam.nanos.approval.ApprovableAware',
+    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],

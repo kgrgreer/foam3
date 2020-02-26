@@ -52,7 +52,18 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      section: 'business',
+      visibility: 'RW',
       width: 50
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      label: 'Company',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
+      section: 'business'
     },
     {
       class: 'Reference',
@@ -69,7 +80,7 @@ foam.CLASS({
         foam.nanos.auth.user and changes the section from administrative to
         business, so that paymentops and other groups can see this property.
       `,
-      section: 'business',
+      section: 'business'
     },
     {
       class: 'Reference',
@@ -527,15 +538,27 @@ foam.CLASS({
       `
     },
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.label();
+      },
+      javaCode: `
+        return this.label();
+      `
+    },
+    {
       name: 'label',
       type: 'String',
       code: function label() {
+        if ( this.operatingBusinessName ) return this.operatingBusinessName;
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
         return '';
       },
       javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getOperatingBusinessName()) ) return this.getOperatingBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

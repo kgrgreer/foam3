@@ -12,7 +12,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
     'static foam.mlang.MLang.*'
   ],
 

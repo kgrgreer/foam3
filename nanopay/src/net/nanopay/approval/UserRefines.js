@@ -19,8 +19,8 @@ foam.CLASS({
             exportEnabled: true,
             title: `${this.organization}'s Approval Requests`,
             data: X.approvalRequestDAO.where(m.AND(
-              m.EQ(net.nanopay.approval.ApprovalRequest.OBJ_ID, this.id),
-              m.EQ(net.nanopay.approval.ApprovalRequest.DAO_KEY, 'localUserDAO')
+              m.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, this.id),
+              m.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, 'localUserDAO')
             ))
           });
         }

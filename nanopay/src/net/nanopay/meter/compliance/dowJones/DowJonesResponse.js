@@ -62,7 +62,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.approval.ApprovalStatus',
+      of: 'foam.nanos.approval.ApprovalStatus',
       name: 'status'
     },
     {

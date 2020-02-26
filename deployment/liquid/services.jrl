@@ -103,6 +103,37 @@ p({
     }]
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "description":"",
+  "lazy":false,
+  "parameters":false,
+  "pm":true,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "name": "liquid",
+    "privacy":"Privacy Policy",
+    "privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "urlLabel":"Powered by nanopay",
+    "termsAndCondLabel":"Terms and Conditions",
+    "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
+    "playLink":"https://play.google.com/store?hl=en",
+    "url":"http://liquid:8080"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"testRunnerConfig",
+  "service": {
+    "class":"foam.nanos.script.TestRunnerConfig",
+    "testSuite": "liquid"
+  }
+})
+
 p({
   "class":"foam.nanos.boot.NSpec", 
   "name":"localAccountDAO",
@@ -349,13 +380,51 @@ p({
   }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "liquiditySettingsUserDAO",
+  "serve": true,
+  "description": "filtered DAO for liquidBasic users",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo()) 
+      .setInnerDAO(x.get("userDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+            foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "liquidBasic"),
+            foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+          }))
+        .build())
+      .setDeletedAware(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localUserDAO",
   "lazy": false,
   "serviceScript":
   """
-    dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
     .setDaoKey("userDAO")
     .setOf(foam.nanos.auth.User.getOwnClassInfo())
     .build();
@@ -403,7 +472,7 @@ p({
       .setDelegate(null)
       .build();
 
-    dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
       .setDaoKey("ruleDAO")
       .setOf(BusinessRule.getOwnClassInfo())
       .setDelegate(dao)
@@ -456,7 +525,7 @@ p({
     )
     .build();
   
-  dao = new net.nanopay.liquidity.approvalRequest.ApprovableAwareDAO.Builder(x)
+  dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
     .setDaoKey("liquiditySettingsDAO")
     .setOf(LiquiditySettings.getOwnClassInfo())
     .setDelegate(dao)
@@ -528,7 +597,7 @@ p({
   "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.approval.ApprovalRequest.getOwnClassInfo())
+      .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer.Builder(x).setPermissionPrefix("approve").build())
       .setPm(true)
       .setPipelinePm(true)
@@ -538,14 +607,17 @@ p({
       .setValidated(true)
       .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
-         new net.nanopay.approval.SendGroupRequestApprovalDAO(x,
-            new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
-              new net.nanopay.approval.ApprovalDAO(x, null))))
-      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.approval.ApprovalRequest.CREATED})
+        new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
+          new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
+            new foam.nanos.approval.ApprovalDAO(x, null)
+          )
+        )
+      )
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .build()
-      .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
   """,
-  "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
+  "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
 })
 
 p({

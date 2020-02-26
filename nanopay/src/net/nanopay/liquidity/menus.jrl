@@ -120,32 +120,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "userDAO",
       "browseTitle": "Users",
-      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
-      "predicate": { 
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "foam.nanos.auth.User",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
-      },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["user.make"],
-        "update": ["user.make"],
-        "delete": ["user.make"]
-      },
-      "browseViews": [
-        {
-          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
-          "name": "Users",
-          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
-        }
-      ]
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"]
     }
   }
 })
@@ -193,7 +168,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "net.nanopay.liquidity.approvalRequest.RoleApprovalRequest",
+      "of": "foam.nanos.approval.RoleApprovalRequest",
       "createEnabled": false,
       "editEnabled": false,
       "deleteEnabled": false
