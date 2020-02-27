@@ -34,7 +34,7 @@ declare -a arr=(
   "scripts,scriptDAO"
   "reports,reportDAO"
   "services,serviceDAO"
-  "spids,localServiceProviderDAO"
+  "spids,serviceProviderDAO"
   "tests,testDAO"
   "transactionfees,transactionFeesDAO"
   "transactionLimits,transactionLimitDAO"
