@@ -85,6 +85,23 @@ p({
   "parent":"operation"
 })
 
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.complianceItem",
+  "label":"Compliance Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Compliance Responses",
+      "daoKey": "complianceItemDAO",
+      "createEnabled": false,
+      "editEnabled": false
+    }
+  },
+  "parent":"operation"
+})
+
 p({"class":"foam.nanos.menu.Menu","id":"operation.donotsolicit","label":"Do Not Solicit","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"doNotSolicitDAO"},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
