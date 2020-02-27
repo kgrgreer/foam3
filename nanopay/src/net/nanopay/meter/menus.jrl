@@ -13,7 +13,7 @@ p({
       "title":"Approval Requests",
       "daoKey":"approvalRequestDAO",
       "createEnabled":false,
-      "editEnbled":false
+      "editEnabled":false
     }
   },
   "parent":"operation"
@@ -76,6 +76,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Compliance Responses",
       "daoKey": "complianceItemDAO",
       "createEnabled": false,
       "editEnabled": false
