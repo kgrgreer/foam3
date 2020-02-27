@@ -228,7 +228,7 @@ var classes = [
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
   'net.nanopay.contacts.ExternalContactToken',
-  'net.nanopay.sme.ruler.UpgradeContactByPaymentCodeRule',
+  'net.nanopay.sme.ClientBusinessFromPaymentCodeService',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -986,11 +986,13 @@ var skeletons = [
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',
-  'net.nanopay.liquidity.tx.AccountHierarchy'
+  'net.nanopay.liquidity.tx.AccountHierarchy',
+  'net.nanopay.sme.BusinessFromPaymentCodeInterface'
 ];
 
 var proxies = [
-  'net.nanopay.cico.service.BankAccountVerifier'
+  'net.nanopay.cico.service.BankAccountVerifier',
+  'net.nanopay.sme.BusinessFromPaymentCodeInterface'
 ];
 
 module.exports = {

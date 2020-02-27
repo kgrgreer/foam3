@@ -6,10 +6,10 @@ foam.CLASS({
   documentation: 'Add Contact By PaymentCode Modal',
 
   imports: [
-    'addPaymentCodeContact',
     'closeDialog',
     'ctrl',
     'user',
+    'businessFromPaymentCode'
   ],
 
   requires: [
@@ -191,16 +191,6 @@ foam.CLASS({
           .start(this.BACK).end()
           .start(this.ADD_CONTACT_BY_PAYMENT_CODE).end()
         .end();
-    },
-
-    function dec2hex(dec) {
-      return ('0' + dec.toString(16)).substr(-2);
-    },
-
-    function generateTemporaryId() {
-      var array = new Uint8Array((15 || 40) / 2);
-      window.crypto.getRandomValues(array);
-      return Array.from(array, this.dec2hex).join('');
     }
   ],
 
@@ -220,18 +210,16 @@ foam.CLASS({
       name: 'AddContactByPaymentCode',
       label: 'Add Contact',
       code: async function(X) {
-        let contact = this.Contact.create({
-            type: 'Contact',
-            group: 'sme',
-            email: 'temp' + this.generateTemporaryId() + this.user.email,
-            organization: 'temp' + this.generateTemporaryId() + this.user.organization
-        });
-        contact.paymentCode = this.paymentCodeValue;
-        contact.createdUsingPaymentCode = true;
+        let { data } = this.wizard;
         try {
-          await this.user.contacts.put(contact);
-          this.ctrl.notify('Contact by payment code added!', 'success');
-          X.closeDialog();
+          var business = await this.businessFromPaymentCode.getPublicBusinessInfo(X, this.paymentCodeValue);
+          data.organization = business.organization;
+          data.businessName = business.organization;
+          data.businessId = business.id;
+          data.address = business.address;
+          data.businessSectorId = business.businessSectorId;
+          data.paymentCode = this.paymentCodeValue;
+          this.pushToId('addContactConfirmation');
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;
           this.ctrl.notify(msg, 'error');

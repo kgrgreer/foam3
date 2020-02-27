@@ -54,7 +54,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
       line-height: 1.43;
-      width: 174px;
+      width: 194px;
     }
     ^button-container {
       height: 84px;
@@ -104,6 +104,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.data = this.wizard.data;
       this
         .addClass(this.myClass())
         .start().addClass(this.myClass('info-container'))
@@ -131,6 +132,19 @@ foam.CLASS({
               }))
             .end()
           .end()
+          .add(this.slot(function(data$paymentCode) {
+            if ( data$paymentCode ) {
+              return self.E()
+                .start().addClass(this.myClass('info-slot'))
+                  .start().addClass(this.myClass('info-slot-title'))
+                    .add('Payment Code')
+                  .end()
+                  .start().addClass(this.myClass('info-slot-value'))
+                    .add(data$paymentCode)
+                  .end()
+                .end();
+            }
+          }))
           .start().addClass(this.myClass('info-slot'))
             .start().addClass(this.myClass('info-slot-title'))
               .add('Address')
@@ -162,10 +176,12 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        this.data.wizard = net.nanopay.contacts.Contact.create({
+        var defaultContact = net.nanopay.contacts.Contact.create({
           type: 'Contact',
           group: 'sme'
         });
+        this.data = defaultContact;
+        this.wizard.data = defaultContact;
         X.subStack.back();
       }
     },

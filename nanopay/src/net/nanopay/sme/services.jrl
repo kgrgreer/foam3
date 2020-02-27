@@ -176,3 +176,13 @@ p({
   }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "businessFromPaymentCode",
+  "serve":true,
+  "authenticate": true,
+  "boxClass":"net.nanopay.sme.BusinessFromPaymentCodeInterfaceSkeleton",
+  "serviceClass": "net.nanopay.sme.BusinessFromPaymentCodeService",
+  "client": "{ \"class\":\"net.nanopay.sme.ClientBusinessFromPaymentCodeService\", \"delegate\": { \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/businessFromPaymentCode\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/businessFromPaymentCode\"} } }"
+})
