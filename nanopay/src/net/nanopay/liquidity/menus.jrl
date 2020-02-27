@@ -72,8 +72,8 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "transactionDAO",
-          "editEnabled": false,
-          "deleteEnabled": false,
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
           "defaultColumns": [
             "summary",
             "lastModified",
@@ -169,9 +169,9 @@ p({
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
       "of": "foam.nanos.approval.RoleApprovalRequest",
-      "createEnabled": false,
-      "editEnabled": false,
-      "deleteEnabled": false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   }
 })

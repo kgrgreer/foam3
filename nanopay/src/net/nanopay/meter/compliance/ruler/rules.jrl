@@ -44,7 +44,7 @@ p({
   "asyncAction": {
     "class": "net.nanopay.meter.compliance.dowJones.PersonSanctionValidator"
   },
-  "enabled": false,
+  "enabled": true,
   "saveHistory": true,
   "validity": 1
 })
@@ -121,7 +121,7 @@ p({
   "asyncAction": {
     "class": "net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator"
   },
-  "enabled": false,
+  "enabled": true,
   "saveHistory": true,
   "validity": 1
 })
