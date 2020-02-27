@@ -2,7 +2,7 @@ foam.INTERFACE({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'AccountApprovableAware',
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   javaImports: [

@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.nanos.ticket.Ticket',
 
   javaImports: [
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'java.util.Calendar',
     'java.util.Date'
   ],
@@ -56,7 +56,7 @@ foam.CLASS({
     {
       name: 'approvalStatus',
       class: 'foam.core.Enum',
-      of: 'net.nanopay.approval.ApprovalStatus',
+      of: 'foam.nanos.approval.ApprovalStatus',
       value: 'REQUESTED',
       createVisibility: 'HIDDEN',
       visibility: 'RO',

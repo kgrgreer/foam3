@@ -4,8 +4,15 @@ foam.CLASS({
   documentation: `The base model for representing the public information of a User`,
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
+    'net.nanopay.contacts.Contact',
     'foam.util.SafetyUtil',
+  ],
+
+  imports: [
+    'contactDAO'
   ],
 
   tableColumns: [
@@ -37,6 +44,14 @@ foam.CLASS({
       name: 'businessName',
       documentation: `The name of the business associated with the public
         information of a User.`,
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
       visibility: 'RO'
     },
     {
@@ -92,29 +107,52 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: async function() {
+        return await this.label();
+      },
+      javaCode: `
+        return this.label();
+      `
+    },
+    {
       name: 'label',
-      code: function() {
-        return this.organization
-          ? this.organization
-          : this.businessName
-            ? this.businessName
-            : this.firstName
-              ? this.lastName
-                ? `${this.firstName} ${this.lastName}`
-                : this.firstName
-              : 'Unknown';
+      code: async function() {
+        if ( this.type === 'Contact' ) {
+          let contact = await this.contactDAO.find(this.id);
+          return await contact.label();
+        }
+        return this.operatingBusinessName
+          ? this.operatingBusinessName
+          : this.organization
+            ? this.organization
+            : this.businessName
+              ? this.businessName
+              : this.firstName
+                ? this.lastName
+                  ? `${this.firstName} ${this.lastName}`
+                  : this.firstName
+                : 'Unknown';
       },
       type: 'String',
       javaCode: `
-        return ! SafetyUtil.isEmpty(this.getOrganization())
-          ? this.getOrganization()
-          : ! SafetyUtil.isEmpty(this.getBusinessName())
-            ? this.getBusinessName()
-            : ! SafetyUtil.isEmpty(this.getFirstName())
-              ? ! SafetyUtil.isEmpty(this.getLastName())
-                ? this.getFirstName() + " " + this.getLastName()
-                : this.getFirstName()
-              : "Unknown";
+        DAO contactDAO = (DAO) getX().get("contactDAO");
+        if ( SafetyUtil.equals(this.getType(), "Contact") ) {
+          Contact contact = (Contact) contactDAO.find(this.getId());
+          return contact.label();
+        }
+        return ! SafetyUtil.isEmpty(this.getOperatingBusinessName())
+          ? this.getOperatingBusinessName()
+          : ! SafetyUtil.isEmpty(this.getOrganization())
+            ? this.getOrganization()
+            : ! SafetyUtil.isEmpty(this.getBusinessName())
+              ? this.getBusinessName()
+              : ! SafetyUtil.isEmpty(this.getFirstName())
+                ? ! SafetyUtil.isEmpty(this.getLastName())
+                  ? this.getFirstName() + " " + this.getLastName()
+                  : this.getFirstName()
+                : "Unknown";
       `
     }
   ],
@@ -125,6 +163,10 @@ foam.CLASS({
         cls.extras.push(`
           public PublicUserInfo(User user) {
             if ( user == null ) return;
+            if ( user instanceof Business ) {
+              Business business = (Business) user;
+              setOperatingBusinessName(business.getOperatingBusinessName());
+            }
             setId(user.getId());
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());

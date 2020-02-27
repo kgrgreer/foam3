@@ -10,7 +10,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.core.Validatable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   imports: [
@@ -207,15 +207,6 @@ foam.CLASS({
       value: 0,
       documentation: 'Defines the number of attempts to invite the user.',
       section: 'administrative'
-    },
-    {
-      class: 'String',
-      name: 'operatingBusinessName',
-      documentation: `The business name displayed to the public. This may differ
-        from the organization name.`,
-          // Is displayed on client if present taking place of organziation name.
-      createVisibility: 'HIDDEN',
-      section: 'business'
     },
     {
       class: 'Boolean',
