@@ -24,6 +24,7 @@ foam.CLASS({
     'homeDenomination',
     'stack?',
     'user',
+    'userDAO',
     'exchangeRateService'
   ],
 
@@ -85,9 +86,12 @@ foam.CLASS({
   tableColumns: [
     'type',
     'status',
-    'summary',
+    'sourceAccount',
+    'destinationAccount',
     'created',
-    'completionDate'
+    'total',
+    'completionDate',
+    'referenceNumber'
   ],
 
   sections: [
@@ -640,7 +644,7 @@ foam.CLASS({
             });
         }));
       },
-      tableWidth: 250,
+      tableWidth: 400,
     },
     {
       // REVIEW: why do we have total and amount?
