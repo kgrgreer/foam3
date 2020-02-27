@@ -1415,6 +1415,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakTransactionPlanner' },

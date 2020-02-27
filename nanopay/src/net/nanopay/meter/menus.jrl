@@ -92,7 +92,8 @@ p({
       "daoKey": "reportDAO"
     }
   },
-  "parent":  "report"})
+  "parent":  "report"
+})
 
 // BusinessReport
 p({
