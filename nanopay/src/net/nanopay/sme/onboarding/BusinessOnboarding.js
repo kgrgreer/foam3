@@ -408,9 +408,21 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          if ( this.userOwnsPercent ) {
+            this.userId$find.then((user) => {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            })
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+        }
+
+        if ( ! this.userOwnsPercent ) {
+          this.clearProperty('owner1');
         }
       }
     },
@@ -432,6 +444,11 @@ foam.CLASS({
           }
         };
       },
+      postSet: function() {
+        if ( this.userOwnsPercent && this.signingOfficer ) {
+          this.owner1.jobTitle = this.jobTitle;
+        }
+      },
       validationPredicates: [
         {
           args: ['jobTitle'],
@@ -450,6 +467,7 @@ foam.CLASS({
       label: '',
       createVisibility: 'RW',
       autoValidate: true
+      // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
@@ -548,6 +566,11 @@ foam.CLASS({
             }
           }
         };
+      },
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.jobTitle = this.adminJobTitle;
+        }
       },
       visibility: function(signingOfficer) {
         return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
@@ -681,7 +704,12 @@ foam.CLASS({
           },
           errorString: 'Please enter first name with least 1 character.'
         }
-      ]
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.adminFirstName;
+        }
+      }
     },
     {
       class: 'String',
@@ -690,7 +718,12 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.lastName = this.adminLastName;
+        }
+      }
     },
     {
       class: 'String',
@@ -1076,9 +1109,9 @@ foam.CLASS({
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
           } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
           }
         });
       },
@@ -1265,7 +1298,10 @@ foam.CLASS({
         {
           args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100);
+            return e.OR (
+              e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.TOTAL_OWNERSHIP, 100),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
+            );
           },
           errorString: 'The total ownership should be less than 100%.'
         }
@@ -1458,9 +1494,11 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
+        this.phone.VERIFIED.writePermissionRequired = false;
+
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
             if ( this.userOwnsPercent ) {
@@ -1469,7 +1507,7 @@ foam.CLASS({
               this.owner1.jobTitle = user.jobTitle;
             }
           } else if ( ! this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
             if ( this.userOwnsPercent ) {
