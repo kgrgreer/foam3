@@ -218,6 +218,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -1418,6 +1419,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/VerificationPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
