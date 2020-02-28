@@ -80,7 +80,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp), ' by ', self.name)
+              .add(this.formatDate(record.timestamp))
             .end()
           .end()
         .end();
