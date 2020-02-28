@@ -114,11 +114,14 @@ foam.CLASS({
         throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
   
-      // makers cannot approve their own requests even if they are an approver for the account
-      // however they will receive an approvalRequest which they can only view and not approve or reject
-      // so that they can keep track of the status of their requests
-      sendSingleAccountRequest(x, accountRequest, accountRequest.getInitiatingUser());
-      approverIds.remove(accountRequest.getInitiatingUser());
+      if ( getIsTrackingRequestSent() ){
+        AccountRoleApprovalRequest accountTrackingRequest = (AccountRoleApprovalRequest) accountRequest.fclone();
+        accountTrackingRequest.setIsTrackingRequest(true);
+
+        sendSingleAccountRequest(x, accountTrackingRequest, accountTrackingRequest.getInitiatingUser());
+
+        approverIds.remove(accountTrackingRequest.getInitiatingUser());
+      }
   
       for ( int i = 0; i < approverIds.size(); i++ ){
         sendSingleAccountRequest(getX(), accountRequest, approverIds.get(i));
