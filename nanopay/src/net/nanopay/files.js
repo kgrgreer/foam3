@@ -322,7 +322,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
-  { name: 'net/nanopay/fx/afex/AFEXCreateTradeRequestPDFRule' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
@@ -335,7 +334,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/KotakCOTransaction' },
   { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
-
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
@@ -1406,6 +1404,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/TransactionQuoteCorridorPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
@@ -1418,5 +1418,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
 
 ]);

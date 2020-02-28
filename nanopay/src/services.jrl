@@ -1713,12 +1713,14 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.model.BeneficialOwner.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"beneficialOwners\")
-      .setSeqNo(true)
       .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
       .setName("beneficialOwnerDAO")
+      .setOf(net.nanopay.model.BeneficialOwner.getOwnClassInfo())
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.model.BeneficialOwner.getOwnClassInfo(), "beneficialOwners"))
+      .setRuler(true)
+      .setRulerDaoKey("beneficialOwnerDAO")
       .build();
   """,
   "client":"{\"of\": \"net.nanopay.model.BeneficialOwner\"}"
@@ -1853,10 +1855,11 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setSeqNo(true)
-      .setJournalName("dowJonesResponse")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setName("dowJonesResponse")
       .setOf(net.nanopay.meter.compliance.dowJones.DowJonesResponse.getOwnClassInfo())
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.meter.compliance.dowJones.DowJonesResponse.getOwnClassInfo(), "dowJonesResponse"))
+      .setRuler(true)
+      .setRulerDaoKey("dowJonesResponseDAO")
       .build()
   """,
   "client": "{\"of\":\"net.nanopay.meter.compliance.dowJones.DowJonesResponse\"}"

@@ -1,6 +1,6 @@
 // operations
 p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operations","handler":{"class":"foam.nanos.menu.SubMenu"}})
-//p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","customDAOController":"net.nanopay.ui.ApprovalRequestController","title":"Approval Requests","createEnabled":false,"editEnabled":false},"parent":"operation"})
+//p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","customDAOController":"net.nanopay.ui.ApprovalRequestController","title":"Approval Requests","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"operation.approvalRequests",
@@ -12,8 +12,8 @@ p({
       "class":"net.nanopay.ui.ApprovalRequestController",
       "title":"Approval Requests",
       "daoKey":"approvalRequestDAO",
-      "createEnabled":false,
-      "editEnbled":false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
     }
   },
   "parent":"operation"
@@ -62,16 +62,49 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey":"tableViewTransactionDAO",
-      "createEnabled":false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
     }
   },
   "parent":"operation"
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"parent":"operation"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.complianceItem",
+  "label":"Compliance Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Compliance Responses",
+      "daoKey": "complianceItemDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"operation"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.complianceItem",
+  "label":"Compliance Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Compliance Responses",
+      "daoKey": "complianceItemDAO",
+      "createEnabled": false,
+      "editEnabled": false
+    }
+  },
+  "parent":"operation"
+})
+
 p({"class":"foam.nanos.menu.Menu","id":"operation.donotsolicit","label":"Do Not Solicit","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"doNotSolicitDAO"},"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createEnabled":false,"editEnabled":false},"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.whitelistedemail","label":"Email Whitelist","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"whitelistedEmailDAO"},"parent":"operation"})
 
 // reports
@@ -105,8 +138,8 @@ p({
     "config": {
       "daoKey":        "abliiBusinessReportDAO",
       "browseTitle":   "Ablii Business Report",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"report"
@@ -132,8 +165,8 @@ p({
     "config": {
       "daoKey":        "paymentReportDAO",
       "browseTitle":   "Payment Report",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -149,8 +182,8 @@ p({
     "config": {
       "daoKey":        "businessSummaryReportDAO",
       "browseTitle":   "Business Summary Report",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -166,8 +199,8 @@ p({
     "config": {
       "daoKey":        "paymentSummaryReportDAO",
       "browseTitle":   "Payment Summary Report for Leadership",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -183,8 +216,8 @@ p({
     "config": {
       "daoKey":        "userComplianceSummaryReportDAO",
       "browseTitle":   "User Compliance Summary Report",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -200,8 +233,8 @@ p({
     "config": {
       "daoKey":        "rejectedTransactionReportDAO",
       "browseTitle":   "Rejected Transaction Report",
-      "createEnabled": false,
-      "editEnabled":   false
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"

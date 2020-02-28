@@ -218,7 +218,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
   'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
-  'net.nanopay.fx.afex.AFEXCreateTradeRequestPDFRule',
   'net.nanopay.fx.afex.AFEXCreateTradePredicate',
   'net.nanopay.fx.afex.AFEXCreateTradeRule',
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
@@ -930,13 +929,15 @@ var classes = [
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
   'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmConfigOMNameDAO',
+  'net.nanopay.alarming.AlarmConfigOMNameSink',
   'net.nanopay.alarming.AlarmReason',
-  'net.nanopay.alarming.MonitoringReport',
-  'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
-  'net.nanopay.alarming.OMName',
   'net.nanopay.alarming.AlarmingUniqueNameDAO',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.OMName',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
@@ -964,8 +965,9 @@ var classes = [
   'net.nanopay.tx.planner.GenericCIPlanner',
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
-  'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.IsAFEXUserPredicate',
+  'net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate',
   'net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate',
   'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
@@ -978,6 +980,10 @@ var classes = [
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
+  'net.nanopay.tx.planner.AlternaCITransactionPlanner',
+  'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
+  'net.nanopay.tx.planner.BmoCITransactionPlanner',
+  'net.nanopay.tx.planner.BmoCOTransactionPlanner',
 ];
 
 var abstractClasses = [
