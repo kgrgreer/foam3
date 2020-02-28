@@ -929,13 +929,15 @@ var classes = [
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
   'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmConfigOMNameDAO',
+  'net.nanopay.alarming.AlarmConfigOMNameSink',
   'net.nanopay.alarming.AlarmReason',
-  'net.nanopay.alarming.MonitoringReport',
-  'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
-  'net.nanopay.alarming.OMName',
   'net.nanopay.alarming.AlarmingUniqueNameDAO',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.OMName',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
@@ -964,6 +966,8 @@ var classes = [
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.IsAFEXUserPredicate',
+  'net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate',
   'net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate',
   'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
