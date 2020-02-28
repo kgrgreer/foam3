@@ -1494,8 +1494,8 @@ foam.CLASS({
       code: function() {
         this.phone.VERIFIED.writePermissionRequired = false;
         this.PHONE.label = '';
-                                                 this.ADDRESS.label = '';
-                                                 this.BUSINESS_ADDRESS.label = '';
+        this.ADDRESS.label = '';
+        this.BUSINESS_ADDRESS.label = '';
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
