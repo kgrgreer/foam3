@@ -1133,6 +1133,11 @@ foam.CLASS({
       name: 'currencies',
       documentation: 'Accepted currencies.'
     },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: 'Junction description'
+    },
   ]
 });
 
