@@ -78,6 +78,7 @@ foam.CLASS({
       t1.copyFrom(request);
       t1.setDestinationAccount(destinationDigitalaccount.getId());
       t1.setDestinationCurrency(t1.getSourceCurrency());
+      t1.setDestinationAmount(t1.getAmount());
       q1.setRequestTransaction(t1);
       TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
       Transaction cashinPlan = c1.getPlan();

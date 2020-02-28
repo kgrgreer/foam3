@@ -74,6 +74,7 @@ foam.CLASS({
       t1.copyFrom(requestTxn);
       t1.setDestinationAccount(destinationDigitalaccount.getId());
       t1.setDestinationCurrency(t1.getSourceCurrency());
+      t1.setDestinationAmount(t1.getAmount());
       Transaction cashinPlan = quoteTxn(x, t1);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
