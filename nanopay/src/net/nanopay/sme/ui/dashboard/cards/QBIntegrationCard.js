@@ -68,7 +68,7 @@ foam.CLASS({
         return this.E()
           .start(self.IntegrationCard, {
             iconPath: self.iconPath,
-            title: self.TITLE,
+            title: self.TITLE + ' (BETA)',
             subtitle: updatedUser.integrationCode === this.IntegrationCode.QUICKBOOKS ? self.SUBTITLE_LINKED: self.SUBTITLE_EMPTY,
             action: updatedUser.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
           }).end();
