@@ -63,31 +63,29 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
     txn.setPayerId(sender.getId());
     txn = (Transaction) txnDAO.put(txn).fclone();
 
-    Predicate firstPredicate = AND(TRUE, TRUE);
-
     try {
-      ArraySink sink1 = (ArraySink) paymentReportDAO.where(firstPredicate).select(new ArraySink());
+      ArraySink sink1 = (ArraySink) paymentReportDAO.select(new ArraySink());
       test(sink1 != null, "The basic predicate for PaymentReport has no error");
     } catch (Exception e) {
+      e.printStackTrace();
       test(false, "The basic predicate for PaymentReport is not the right structure");
     }
 
     try {
-      ArraySink sink1 = (ArraySink) rejectedTransactionReportDAO.where(firstPredicate).select(new ArraySink());
+      ArraySink sink1 = (ArraySink) rejectedTransactionReportDAO.select(new ArraySink());
       test(sink1 != null, "The basic predicate for RejectedTransactionReport has no error");
     } catch (Exception e) {
+      e.printStackTrace();
       test(false, "The basic predicate for RejectedTransactionReport is not the right structure");
     }
 
     try {
       ArraySink sink2 = (ArraySink) paymentReportDAO
         .where(
-          AND(
-            TRUE,
             AND(
               GT(PaymentReport.DATE_RANGE, new Date()),
               LT(PaymentReport.DATE_RANGE, new Date())
-            ))).select(new ArraySink());
+            )).select(new ArraySink());
       test(sink2 != null, "The advanced predicate for PaymentReport has no error");
     } catch (Exception e) {
       test(false, "The advanced predicate for PaymentReport is not the right structure");
@@ -96,12 +94,10 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
     try {
       ArraySink sink2 = (ArraySink) rejectedTransactionReportDAO
         .where(
-          AND(
-            TRUE,
             AND(
               GT(RejectedTransactionReport.DATE_RANGE, new Date()),
               LT(RejectedTransactionReport.DATE_RANGE, new Date())
-            ))).select(new ArraySink());
+            )).select(new ArraySink());
       test(sink2 != null, "The advanced predicate for RejectedTransactionReport has no error");
     } catch (Exception e) {
       test(false, "The advanced predicate for RejectedTransactionReport is not the right structure");
