@@ -50,7 +50,7 @@ foam.CLASS({
     {
       name: 'generateTokenWithParameters',
       javaCode: `
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
 
         // don't send token if already verified
         Phone phone = user.getPhone();
@@ -74,7 +74,7 @@ foam.CLASS({
       name: 'processToken',
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
         Calendar calendar = Calendar.getInstance();
 
         // find token
@@ -88,21 +88,21 @@ foam.CLASS({
         }
 
         // find user from token
-        user = (User) userDAO.find_(x, result.getUserId());
-        if ( user == null ) {
+        User newUser = (User) userDAO.find_(x, result.getUserId());
+        if ( newUser == null ) {
           throw new RuntimeException("User not found");
         }
 
-        Phone phone = user.getPhone();
+        Phone phone = newUser.getPhone();
         if ( phone.getVerified() ) {
           throw new RuntimeException("Phone already verified");
         }
 
         // update phone to verified
-        user = (User) user.fclone();
+        newUser = (User) newUser.fclone();
         phone.setVerified(true);
-        user.setPhone(phone);
-        userDAO.put_(x, user);
+        newUser.setPhone(phone);
+        userDAO.put_(x, newUser);
 
         // update token
         result = (Token) result.fclone();

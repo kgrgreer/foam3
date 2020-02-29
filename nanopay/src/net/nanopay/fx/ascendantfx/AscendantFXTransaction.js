@@ -25,17 +25,11 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.IOException',
     'java.io.InputStream',
-    'java.util.ArrayList',
-    'java.util.Arrays',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType',
-    'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
-    'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
-    'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
-    'net.nanopay.model.Business',
-    'net.nanopay.model.Currency',
+    'foam.core.Currency',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.TransactionLineItem',
@@ -145,6 +139,7 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
+      setCompletionDate(other.getCompletionDate());
       setLineItems(other.getLineItems());
       `
     },
@@ -235,7 +230,7 @@ foam.CLASS({
       User payee = (User) localUserDAO.find(destinationAccount.getOwner());
       User payer = (User) localUserDAO.find(sourceAccount.getOwner());
   
-      Address payerAddress = payer.getBusinessAddress();
+      Address payerAddress = payer.getAddress();
       String addressLine1 =
         (! SafetyUtil.isEmpty(payerAddress.getSuite()) ? payerAddress.getSuite() + "-" : "") +
         payerAddress.getStreetNumber() +
@@ -295,9 +290,7 @@ foam.CLASS({
       // the business address.
       AcceptanceDocument disclosure = null;
       DAO acceptanceDocumentDAO = ((DAO) x.get("acceptanceDocumentDAO")).inX(x);
-      Address address = (payer instanceof Business)
-        ? payer.getBusinessAddress()
-        : payer.getAddress();
+      Address address = payer.getAddress();
   
       if ( address != null ) {
         disclosure = (AcceptanceDocument) acceptanceDocumentDAO.find(
@@ -376,7 +369,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Tel:</b></td>\");
-      doc.append(\"    <td>\").append(payer.getBusinessPhone().getNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");
       doc.append(\"    <td><b>Deal Type:</b></td>\");
       doc.append(\"    <td>Spot</td>\");
       doc.append(\"  </tr>\");

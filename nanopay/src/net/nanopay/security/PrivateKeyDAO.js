@@ -75,7 +75,7 @@ foam.CLASS({
         if ( entry == null ) {
           throw new RuntimeException("Private key not found");
         }
-
+        entry = (PrivateKeyEntry) entry.fclone();
         try {
           // initialize cipher for key unwrapping
           KeyStoreManager manager = (KeyStoreManager) x.get("keyStoreManager");

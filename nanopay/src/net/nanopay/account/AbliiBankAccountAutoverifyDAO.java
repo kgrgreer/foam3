@@ -6,10 +6,8 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
-import net.nanopay.bank.USBankAccount;
-import net.nanopay.contacts.Contact;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.contacts.Contact;
 
 // we only need a put_ override in this decorator, since it only deals with the CREATION of contact bank accounts
 public class AbliiBankAccountAutoverifyDAO
@@ -40,12 +38,6 @@ public class AbliiBankAccountAutoverifyDAO
      * this autoverified bank account WILL NOT CARRY OVER to their ablii account, as they will have to still set up an
      * account and verify it using the micro-deposit even if they are using the same bank information
      * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
-     * 
-     * 2. FOR US BANK ACCOUNTS
-     * Just need to check if the bank account obj is an instance of USBankAccount
-     * If it is, then we can automatically verify it
-     * This is to account when the user is adding a US Bank Account for themselves
-     * As the requirement is to automatically verify US Bank Accounts
      * 
      * 3. FOR FLINKS BANK ACCOUNTS
      * NOTE: MIGHT WANT TO INCLUDE THIS IN THE FUTURE FOR INSTITUTIONS IDS BETWEEN 1 to 23 SINCE THESE WILL ALL REQUIRE TO LOGIN VIA THE CLIENT

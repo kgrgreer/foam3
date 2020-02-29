@@ -38,7 +38,7 @@ foam.CLASS({
         },
         {
           name: 'taxable',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -53,7 +53,7 @@ foam.CLASS({
         },
         {
           name: 'tax',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -64,7 +64,7 @@ foam.CLASS({
         },
         {
           name: 'taxCalculated',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -75,7 +75,7 @@ foam.CLASS({
         },
         {
           name: 'nonTaxable',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -95,8 +95,7 @@ foam.CLASS({
           documentation: 'User\' Address.',
           factory: function() {
             return this.Address.create();
-          },
-          view: { class: 'foam.nanos.auth.AddressDetailView' }
+          }
         },
     ]
 });

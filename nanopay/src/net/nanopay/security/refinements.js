@@ -11,19 +11,23 @@ foam.CLASS({
     {
       class: 'Short',
       name: 'loginAttempts',
-      value: 0
+      value: 0,
+      createMode: 'HIDDEN',
+      section: 'administrative'
     },
     {
       documentation: 'Visibility in Global Directory / Parners lookup',
       name: 'isPublic',
       class: 'Boolean',
-      value: true
+      value: true,
+      section: 'administrative'
     },
     {
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
       type: 'Date',
       javaFactory: 'return new Date();',
+      section: 'administrative'
     }
   ]
 });

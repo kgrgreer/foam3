@@ -6,6 +6,9 @@ foam.CLASS({
   'The object is stored in a hash map on the TransactionLimitRule' +
   'along with the object that it stores limit for(account, business, user..)',
 
+  javaImports: [
+    'net.nanopay.util.Frequency'
+  ],
 
   properties: [
     {
@@ -14,8 +17,8 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'Double',
-      name: 'lastSpentAmount'
+      class: 'Long',
+      name: 'spent'
     }
   ],
 
@@ -24,16 +27,20 @@ foam.CLASS({
       name: 'update',
       args: [
         {
-          name: 'rule',
-          type: 'net.nanopay.tx.ruler.TransactionLimitRule'
+          name: 'limit',
+          type: 'Long'
+        },
+        {
+          name: 'period',
+          type: 'net.nanopay.util.Frequency'
         }
       ],
       javaCode: `
       long now   = System.currentTimeMillis();
-      long delta = now - getLastActivity();
+      long delta = getLastActivity() != 0 ? now - getLastActivity() : 0;
 
       setLastActivity(now);
-      setLastSpentAmount(rule.updateLimitAmount(getLastSpentAmount(), delta));
+      setSpent(Math.max(getSpent() - delta * limit / period.getMs(), 0));
       `
     }
   ],
@@ -44,17 +51,17 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
 
-        public synchronized boolean check(TransactionLimitRule rule, double amount) {
-          update(rule);
+        public synchronized boolean check(Long limit, net.nanopay.util.Frequency period, Long amount) {
+          update(limit, period);
 
-          if ( amount <= rule.getLimit() - getLastSpentAmount() ) {
+          if ( amount <= limit - getSpent() ) {
             return true;
           }
           return false;
         }
 
-        public synchronized void updateLastSpentAmount(Double amount) {
-          setLastSpentAmount(Math.max(0, getLastSpentAmount() + amount));
+        public synchronized void updateSpent(Long amount, Frequency period) {
+          setSpent((period == Frequency.PER_TRANSACTION) ? 0 : Math.max(0, getSpent() + amount));
         }
         `);
       }

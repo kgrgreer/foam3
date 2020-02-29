@@ -24,7 +24,12 @@ foam.CLASS({
   imports: [
     'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
     'liquidityThresholdWeeklyCandlestickDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'accountDAO'
+  ],
+
+  exports: [
+    'filteredAccountDAO'
   ],
 
   css: `
@@ -62,9 +67,22 @@ foam.CLASS({
       }
     },
     {
+      name: 'filteredAccountDAO',
+      expression: function(accountDAO){
+        return accountDAO.where(
+          this.NOT(
+            this.OR(
+              this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+              this.INSTANCE_OF(net.nanopay.bank.BankAccount)
+            )
+          )
+        )
+      }
+    },
+    {
       class: 'foam.dao.DAOProperty',
       name: 'currencyExposureDAO',
-      expression: function(lastUpdated) {
+      expression: function(lastUpdated, filteredAccountDAO) {
         return this.CurrencyExposureDAO.create();
       },
     },
@@ -109,17 +127,19 @@ foam.CLASS({
             return this.Grid.create()
               .addClass(this.myClass('dashboard-container'))
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
-                .tag(this.DashboardAccounts, { 
+                .tag(this.DashboardAccounts, {
                   currency: this.currencyExposureDAO$proxy
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                .tag(this.DashboardLiquidity)
+                .tag(this.DashboardLiquidity, {
+                  filteredAccountDAO: this.filteredAccountDAO
+                })
               .end()
-              .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
+              .start(this.Card, { columns: 4 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO$proxy })
               .end()
-              .start(this.Card, { columns: 9 })
+              .start(this.Card, { columns: 8 })
                 .tag(this.DashboardCicoShadow)
               .end()
               .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))

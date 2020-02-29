@@ -7,14 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.dao.AbstractSink',
-    'foam.core.Detachable',
-    'foam.mlang.sink.Count',
     'static foam.mlang.MLang.*',
-
-    'net.nanopay.account.DigitalAccount',
-
     'java.util.List',
     'java.util.Iterator'
   ],

@@ -99,7 +99,7 @@ foam.CLASS({
             .call(function() {
               if ( self.contactResult.contactSyncErrors.length  > 0 ) {
                 this.start('h2').add('Contact Sync Errors').addClass('center').end();
-                for ( i = 0; i < self.contactResult.contactSyncErrors.length; i++ ) {
+                for ( let i = 0; i < self.contactResult.contactSyncErrors.length; i++ ) {
                   this
                     .start()
                       .add(self.contactResult.contactSyncErrors[i]).addClass('result-item').addClass('error')

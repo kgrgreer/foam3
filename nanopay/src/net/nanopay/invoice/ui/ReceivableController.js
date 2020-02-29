@@ -17,6 +17,7 @@ foam.CLASS({
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
@@ -31,7 +32,8 @@ foam.CLASS({
 
   messages: [
     { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
   ],
 
   properties: [
@@ -39,7 +41,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.sales;
+        return this.user.sales.orderBy(this.DESC(this.Invoice.CREATED));
       }
     },
     {
@@ -120,14 +122,10 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
-                this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.sales.put(this).then((invoice)=> {
-                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
-                    self.notify(self.VOID_SUCCESS, 'success');
-                  }
-                }).catch((err) => {
-                  if ( err ) self.notify(self.VOID_ERROR, 'error');
-                });;
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+                  invoice: this
+                }));
               }
             }),
             foam.core.Action.create({
@@ -138,7 +136,9 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.user.sales.remove(this);
+                self.user.sales.remove(this).then(() => {
+                  self.notify(self.DELETE_DRAFT, 'success')
+                });
               }
             })
           ]

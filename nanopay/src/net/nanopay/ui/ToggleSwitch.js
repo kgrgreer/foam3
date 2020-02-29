@@ -12,9 +12,11 @@ foam.CLASS({
           display: inline-block;
           position: relative;
           width: 40px;
-          -webkit-user-select:none;
-          -moz-user-select:none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
           -ms-user-select: none;
+          -khtml-user-select: none;
+          user-select: none;
         }
         ^toggleswitch input[type="checkbox"] {
           display: none;
@@ -76,7 +78,7 @@ foam.CLASS({
         ^label ^inner.checked {
           margin-left: 0;
         }
-        
+
         ^checkbox:checked + ^label ^switch,
         ^label ^switch.checked {
           right: 0px;

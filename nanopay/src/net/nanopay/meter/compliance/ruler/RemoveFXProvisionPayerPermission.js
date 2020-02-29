@@ -32,7 +32,7 @@ foam.CLASS({
             }
             Business business = (Business) obj.fclone();
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-            Address businessAddress = business.getBusinessAddress();
+            Address businessAddress = business.getAddress();
             
             if ( ! business.getOnboarded() && null != businessAddress 
                 && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {

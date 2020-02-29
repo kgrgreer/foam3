@@ -33,31 +33,13 @@ foam.CLASS({
       javaCode: `
         if (getEnabled()) {
           TransactionQuote quote = (TransactionQuote) obj;
-          if ( quote.getRequestTransaction() instanceof FXTransaction ) {
-            FXTransaction txn = (FXTransaction) quote.getRequestTransaction();
-            if ( ! SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
+          Transaction txn = (Transaction) quote.getRequestTransaction();
+          if ( ! SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
 
-              // has source and destination but no rate or has all 3.
-              if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
-                if ( SafetyUtil.equals(txn.getFxRate(),0) ) {
-                  txn.setFxRate((long)(txn.getDestinationAmount()/txn.getAmount()));
-                }
-                quote.addPlan(buildFxTransaction_(x,txn));
-                return super.put_(x,quote);
-              }
-
-                 // no source but has rate and destination.
-              if ( SafetyUtil.equals(txn.getAmount(),0) &&  ! SafetyUtil.equals(txn.getDestinationAmount(),0) && ! SafetyUtil.equals(txn.getFxRate(),0) ) {
-                txn.setAmount((long)(txn.getDestinationAmount()/txn.getFxRate()));
-                quote.addPlan(buildFxTransaction_(x,txn));
-                return super.put_(x,quote);
-              }
-                // no destination but has rate and source.
-              if ( ! SafetyUtil.equals(txn.getAmount(),0) &&  SafetyUtil.equals(txn.getDestinationAmount(),0) && ! SafetyUtil.equals(txn.getFxRate(),0) ) {
-                txn.setDestinationAmount((long)(txn.getAmount()*txn.getFxRate()));
-                quote.addPlan(buildFxTransaction_(x,txn));
-                return super.put_(x,quote);
-              }
+            // has source and destination but no rate or has all 3.
+            if ( ! SafetyUtil.equals(txn.getAmount(),0) && ! SafetyUtil.equals(txn.getDestinationAmount(),0) ) {
+              quote.setPlan(buildFxTransaction_(x,txn));
+              return quote;//super.put_(x,quote);
             }
           }
         }
@@ -73,11 +55,20 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'net.nanopay.fx.FXTransaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       type: 'net.nanopay.fx.FXTransaction',
       javaCode:`
+        FXTransaction f = new FXTransaction();
+        f.setDestinationCurrency(txn.getDestinationCurrency());
+        f.setSourceCurrency(txn.getSourceCurrency());
+        f.setAmount(txn.getAmount());
+        f.setDestinationAmount(txn.getDestinationAmount());
+        f.setSourceAccount(txn.getSourceAccount());
+        f.setLastStatusChange(txn.getLastStatusChange());
+        f.setDestinationAccount(txn.getDestinationAccount());
+        f.setFxRate( Math.round(((double) txn.getAmount()/txn.getDestinationAmount())*10000) / 10000.0);
         List all = new ArrayList();
         all.add( new Transfer.Builder(x)
             .setDescription(TrustAccount.find(x, txn.findSourceAccount(x)).getName()+" FX Transfer COMPLETED")
@@ -99,11 +90,11 @@ foam.CLASS({
             .setAccount(txn.getDestinationAccount())
             .setAmount(txn.getDestinationAmount())
             .build());
-
-        txn.add( (Transfer[]) all.toArray(new Transfer[0]) );
-        txn.setStatus(TransactionStatus.COMPLETED);
-        txn.setIsQuoted(true);
-        return txn;
+        f.add( (Transfer[]) all.toArray(new Transfer[0]) );
+        f.setStatus(TransactionStatus.COMPLETED);
+        f.addLineItems(txn.getLineItems(),null);
+        f.setIsQuoted(true);
+        return f;
       `
     }
   ]

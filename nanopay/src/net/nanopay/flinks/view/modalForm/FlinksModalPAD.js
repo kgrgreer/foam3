@@ -18,6 +18,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'bannerizeCompliance',
     'closeDialog',
     'ctrl',
     'flinksAuth',
@@ -25,6 +26,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'stack',
     'user'
   ],
 
@@ -160,6 +162,11 @@ foam.CLASS({
         this.ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
+        location.hash = 'sme.main.banking';
+        this.bannerizeCompliance();
+        this.stack.push({
+          class: 'net.nanopay.bank.BankAccountController'
+        });
       }
     }
   ],
@@ -179,6 +186,7 @@ foam.CLASS({
         var model = X.pad;
         if ( model.isConnecting ) return;
         if ( ! model.validateInputs() ) return;
+
         model.capturePADAndPutBankAccounts();
       }
     }

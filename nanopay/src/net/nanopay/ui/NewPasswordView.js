@@ -162,25 +162,27 @@ foam.CLASS({
   ],
 
   listeners: [
-    async function evaluatePasswordStrength() {
-      result = await this.passwordEntropyService.getPasswordStrength(this.data);
-      if ( this.data.length > 0 && result === 0 ) {
-        result = 1; // prevent an empty strength bar if result is 0
-      }
-      if ( this.data.length < 6 && this.data.length > 0 ) {
-        this.textStrength = 'text' + 5;
-        this.strength = '_' + 1;
-        this.showOuter2 = true;
-        this.passwordError = true;
-      } else {
-        this.strength = '_' + result;
-        this.textStrength = 'text' + result;
-        this.passwordStrength = result;
-        this.showOuter2 = false;
-        this.passwordError = ( result < 3 );
-      }
-      // used to reset error box css
-      if ( this.data.length == 0 ) this.passwordError = false;
+    function evaluatePasswordStrength() {
+      this.passwordEntropyService.getPasswordStrength(this.data)
+      .then((result)=>{
+        if ( this.data.length > 0 && result === 0 ) {
+          result = 1; // prevent an empty strength bar if result is 0
+        }
+        if ( this.data.length < 6 && this.data.length > 0 ) {
+          this.textStrength = 'text' + 5;
+          this.strength = '_' + 1;
+          this.showOuter2 = true;
+          this.passwordError = true;
+        } else {
+          this.strength = '_' + result;
+          this.textStrength = 'text' + result;
+          this.passwordStrength = result;
+          this.showOuter2 = false;
+          this.passwordError = ( result < 3 );
+        }
+        // used to reset error box css
+        if ( this.data.length == 0 ) this.passwordError = false;
+      });
     }
   ]
 });

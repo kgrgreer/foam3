@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.accounting.AccountingIntegrationTrait',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',
@@ -34,7 +35,8 @@ foam.CLASS({
 
   messages: [
     { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
   ],
 
   properties: [
@@ -42,7 +44,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.expenses;
+        return this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED));
       }
     },
     {
@@ -61,6 +63,7 @@ foam.CLASS({
                   invoice.payee.businessName :
                   invoice.payee.label();
                 this.add(additiveSubField);
+                this.tooltip = additiveSubField;
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
@@ -180,14 +183,10 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
               code: function() {
-                this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.expenses.put(this).then((invoice)=> {
-                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
-                    self.notify(self.VOID_SUCCESS, 'success');
-                  }
-                }).catch((err) => {
-                  if ( err ) self.notify(self.VOID_ERROR, 'error');
-                });
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+                  invoice: this
+                }));
               }
             }),
 
@@ -199,7 +198,9 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function() {
-                self.user.expenses.remove(this);
+                self.user.expenses.remove(this).then(() => {
+                  self.notify(self.DELETE_DRAFT, 'success')
+                });
               }
             })
           ]

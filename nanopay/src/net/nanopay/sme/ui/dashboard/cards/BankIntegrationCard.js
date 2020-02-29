@@ -9,19 +9,18 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.payment.Institution',
-    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions',
+    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
+    'foam.u2.dialog.Popup'
   ],
 
   imports: [
@@ -52,6 +51,16 @@ foam.CLASS({
     {
       name: 'SUBTITLE_LINKED',
       message: 'Connected to'
+    },
+    {
+      name: 'SUBTITLE_VERIFING',
+      message: 'We are reviewing your bank account',
+      description: 'This used for accounts that need a manual operations process for verification.',
+    },
+    {
+      name: 'SUBTITLE_VERIF',
+      description: 'This used for accounts that have a micro-deposit verification. Users can manually verify',
+      message: 'Bank account is added. Please verify.'
     }
   ],
 
@@ -76,7 +85,8 @@ foam.CLASS({
           subtitle += ' ****' + this.account.accountNumber.slice(-4);
           return subtitle;
         }
-        return this.SUBTITLE_EMPTY;
+
+        return isAccountThere ? (this.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
       }
     },
     {
@@ -105,15 +115,36 @@ foam.CLASS({
       if ( this.isAccountThere ) {
         this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
         let branch = await this.branchDAO.find(this.account.branch);
-        let institution = await this.institutionDAO.find(branch.institution);
-        if ( institution ) {
-          this.abbreviation = institution.abbreviation;
-          this.bankName = institution.name;
+        if ( branch ) {
+          let institution = await this.institutionDAO.find(branch.institution);
+          if ( institution ) {
+            this.abbreviation = institution.abbreviation;
+            this.bankName = institution.name;
+          }
         }
       }
     },
 
+    async function checkDefaultAccount() {
+      await this.user.accounts
+        .find(
+          this.AND(
+            this.OR(
+              this.EQ(this.Account.TYPE, this.BankAccount.name),
+              this.EQ(this.Account.TYPE, this.CABankAccount.name),
+              this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            ),
+            this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
+            this.EQ(this.Account.IS_DEFAULT, true)
+          )
+        ).then((defaultAccount) => {
+          if ( defaultAccount !== null ) this.account = defaultAccount;
+        });
+    },
+
     function initE() {
+      this.checkDefaultAccount();
+      this.account$.sub(this.updateBankCard);
       this.getInstitution().then(() => {
         this.add(this.slot((subtitleToUse, isAccountThere) => {
           return this.E()
@@ -121,10 +152,19 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : this.ADD_BANK
+              action: isAccountThere ? (this.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
             }).end();
         }));
-      })
+      });
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateBankCard',
+      code: function() {
+        this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
+      }
     }
   ],
 
@@ -151,7 +191,17 @@ foam.CLASS({
           class: 'net.nanopay.bank.ui.BankPickCurrencyView',
           cadAvailable: true,
           usdAvailable: true
-        })
+        });
+      }
+    },
+    {
+      name: 'verifyBank',
+      label: 'Verify',
+      code: function(X) {
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+          bank$: this.account$
+        }));
       }
     }
   ]

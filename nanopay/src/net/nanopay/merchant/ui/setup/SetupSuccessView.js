@@ -66,7 +66,7 @@ foam.CLASS({
           .addClass('success-view-div')
           .start('div')
             .addClass('success-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-success.svg' })
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-success.svg' })
           .end()
           .start()
             .addClass('success-message')

@@ -20,7 +20,19 @@ foam.CLASS({
   properties: [
     'data',
     'fileNumber',
-    [ 'removeHidden', false ]
+    ['removeHidden', false],
+    {
+      name: 'imageUrlReference',
+      expression: function(data) {
+        var blob = data.data;
+        if ( this.BlobBlob.isInstance(blob) ) {
+          return URL.createObjectURL(blob.blob);
+        } else {
+          var url = '/service/httpFileService/' + data.id + '?sessionId=' + localStorage['defaultSession'];
+          return url;
+        }
+      }
+    }
   ],
 
   css: `
@@ -81,6 +93,12 @@ foam.CLASS({
       height: 20px;
       object-fit: contain;
       background: white;
+      border: none;
+    }
+    ^ .foam-u2-ActionView-remove img {
+      position: relative;
+      bottom: 10px;
+      right: 17px;
     }
     ^ .foam-u2-ActionView-remove:hover {
       background: white;
@@ -89,8 +107,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start().addClass('attachment-number')
@@ -99,23 +115,10 @@ foam.CLASS({
         .start().addClass('attachment-filename').style({'width': '200'})
           .start('a')
             .attrs({
-              href: this.data$.map(function (data) {
-                var blob = data.data;
-                var sessionId = localStorage['defaultSession'];
-                if ( self.BlobBlob.isInstance(blob) ) {
-                  return URL.createObjectURL(blob.blob);
-                } else {
-                  var url = '/service/httpFileService/' + data.id;
-                  // attach session id if available
-                  if ( sessionId ) {
-                    url += '?sessionId=' + sessionId;
-                  }
-                  return url;
-                }
-              }),
+              href: this.imageUrlReference,
               target: '_blank'
             })
-            .add(this.slot(function (filename) {
+            .add(this.slot(function(filename) {
               var len = filename.length;
               return ( len > 35 ) ? (filename.substr(0, 20) +
                 '...' + filename.substr(len - 10, len)) : filename;
@@ -127,7 +130,7 @@ foam.CLASS({
           .start().addClass('attachment-filesize')
             .add(this.formatFileSize())
           .end()
-        .end()
+        .end();
     },
 
     function formatFileNumber() {
@@ -143,7 +146,7 @@ foam.CLASS({
     {
       name: 'remove',
       icon: 'images/ic-delete.svg',
-      code: function (X) {
+      code: function(X) {
         this.onInvoiceFileRemoved(X.data.fileNumber);
       }
     }

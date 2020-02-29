@@ -60,7 +60,7 @@ return calendar.getTime();`
 
         // keep generating a new password until a valid one is generated
         String password = passgen.generate(18);
-        while ( ! Password.isValid(getX(), password) ) {
+        while ( ! Password.isValid(getX(), user, password) ) {
           password = passgen.generate(18);
         }
         user = (User) user.fclone();

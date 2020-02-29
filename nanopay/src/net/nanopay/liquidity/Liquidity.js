@@ -25,12 +25,12 @@ foam.CLASS({
       documentation: 'Triggeres automatic transaction on accounts.'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'threshold',
       documentation: 'The balance when liquidity should be triggered.'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'resetBalance',
       visibilityExpression: function(rebalancingEnabled) {
         return rebalancingEnabled ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

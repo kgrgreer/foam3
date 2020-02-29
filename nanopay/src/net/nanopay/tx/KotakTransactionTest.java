@@ -1,6 +1,14 @@
 package net.nanopay.tx;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
@@ -11,29 +19,20 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.FXQuote;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
-import net.nanopay.tx.alterna.AlternaCITransaction;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.ComplianceTransaction;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import foam.dao.ArraySink;
-import foam.util.SafetyUtil;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO;
-  Transaction txn, txn2, txn3, txn4, txn5, txn6;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO;
+  Transaction txn, txn2, txn3, txn4, txn5, txn6, txn7;
   KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
   net.nanopay.fx.FXQuote quote;
@@ -44,6 +43,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     userDAO = ((DAO) x.get("localUserDAO"));
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
+    planDAO = ((DAO) x.get("localTransactionQuotePlanDAO"));
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     sender = addUserIfNotFound(x, senderEmail);
@@ -65,15 +65,19 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   public void testTxnChain(X x) {
     // test top level txn
     test( "".equals(txn.getParent()), "top level txn has no parent");
-    test(txn.getClass() == SummaryTransaction.class, "top level txn is a SummaryTransaction");
-    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED");
-    test(txn.getState(x)== TransactionStatus.PENDING, "top level txn has state PENDING");
-    test(SafetyUtil.equals(txn.getSourceCurrency(), "CAD"), "top level txn has source currency CAD");
-    test(SafetyUtil.equals(txn.getDestinationCurrency(), "INR"), "top level txn has destination currency INR");
+    test(txn.getClass() == FXSummaryTransaction.class, "top level txn is a FXSummaryTransaction. found: "+txn.getClass().getSimpleName());
+    test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn has status COMPLETED. found: "+txn.getStatus());
+    test(txn.getState(x) == TransactionStatus.PENDING, "top level txn has state PENDING. found: "+txn.getState(x));
+    test(SafetyUtil.equals(txn.getSourceCurrency(), "CAD"), "top level txn has source currency CAD. found: "+txn.getSourceCurrency());
+    test(SafetyUtil.equals(txn.getDestinationCurrency(), "INR"), "top level txn has destination currency INR. found: "+txn.getDestinationCurrency());
 
     // test second txn in the chain
+    Transaction found = (Transaction) txnDAO.find(txn.getId());
+    test( found != null, "find of root successful. found: "+(found != null));
+    sink = (foam.dao.ArraySink) txnDAO.select(new foam.dao.ArraySink());
+    test( sink.getArray().size() > 0, "select all found at least one. found: "+sink.getArray().size());
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "top level txn is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn2 is parent to a single transaction. found: " +sink.getArray().size()+", parentId: "+txn.getId());
     txn2 = (Transaction) sink.getArray().get(0);
     test(txn2.getClass() == ComplianceTransaction.class, "txn2 is a ComplianceTransaction");
     test(txn2.getStatus() == TransactionStatus.PENDING, "txn2 has status PENDING");
@@ -82,9 +86,9 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test third txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn2.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "top level txn is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn3 is parent to a single transaction");
     txn3 = (Transaction) sink.getArray().get(0);
-    test(txn3.getClass() == AlternaCITransaction.class, "txn3 is a AlternaCITransaction");
+    test(txn3 instanceof CITransaction, "txn3 is a CITransaction");
     test(txn3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn3 has status PENDING");
     test(SafetyUtil.equals(txn3.getSourceCurrency(), "CAD"), "txn3 has source currency CAD");
     test(SafetyUtil.equals(txn3.getDestinationCurrency(), "CAD"), "txn3 has destination currency CAD");
@@ -92,30 +96,39 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test fourth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn3.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "txn3 is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn4 is parent to a single transaction");
     txn4 = (Transaction) sink.getArray().get(0);
-    test(txn4.getClass() == AlternaCOTransaction.class, "txn4 is a AlternaCOTransaction");
+    test(txn4 instanceof DigitalTransaction, "txn4 is a DigitalTransaction");
     test(txn4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn4 has status PENDING_PARENT_COMPLETED");
     test(SafetyUtil.equals(txn4.getSourceCurrency(), "CAD"), "txn4 has source currency CAD");
     test(SafetyUtil.equals(txn4.getDestinationCurrency(), "CAD"), "txn4 has destination currency CAD");
 
     // test fifth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn4.getId())).select(new foam.dao.ArraySink());
-    test(sink.getArray().size() == 1, "txn4 is parent to a single transaction");
+    test(sink.getArray().size() == 1, "txn6 is parent to a single transaction");
     txn5 = (Transaction) sink.getArray().get(0);
-    test(txn5.getClass() == KotakFxTransaction.class, "txn5 is a KotakFxTransaction");
-    test(txn5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn5 has status PENDING_PARENT_COMPLETED");
-    test(SafetyUtil.equals(txn5.getSourceCurrency(), "CAD"), "txn5 has source currency CAD");
-    test(SafetyUtil.equals(txn5.getDestinationCurrency(), "INR"), "txn5 has destination currency INR");
+    test(txn5 instanceof  KotakFxTransaction, "txn6 is a KotakFxTransaction");
+    test(txn5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn6 has status PENDING_PARENT_COMPLETED");
+    test(SafetyUtil.equals(txn5.getSourceCurrency(), "CAD"), "txn6 has source currency CAD");
+    test(SafetyUtil.equals(txn5.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
 
-    // test last txn in the chain
+    // test sixth txn in the chain
     sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn5.getId())).select(new foam.dao.ArraySink());
     test(sink.getArray().size() == 1, "txn5 is parent to a single transaction");
     txn6 = (Transaction) sink.getArray().get(0);
-    test(txn6.getClass() == KotakCOTransaction.class, "txn6 is a KotakCOTransaction");
-    test(txn6.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn6 has status PENDING_PARENT_COMPLETED");
-    test(SafetyUtil.equals(txn6.getSourceCurrency(), "INR"), "txn6 has source currency INR");
-    test(SafetyUtil.equals(txn6.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
+    test(txn6 instanceof COTransaction, "txn5 is a COTransaction");
+    test(txn6.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn5 has status PENDING_PARENT_COMPLETED");
+    test(SafetyUtil.equals(txn6.getSourceCurrency(), "CAD"), "txn5 has source currency CAD");
+    test(SafetyUtil.equals(txn6.getDestinationCurrency(), "CAD"), "txn5 has destination currency CAD");
+
+    // test last txn in the chain
+    sink = (foam.dao.ArraySink) txnDAO.where(EQ(Transaction.PARENT, txn6.getId())).select(new foam.dao.ArraySink());
+    test(sink.getArray().size() == 1, "txn7 is parent to a single transaction");
+    txn7 = (Transaction) sink.getArray().get(0);
+    test(txn7 instanceof KotakPaymentTransaction, "txn7 is a KotakPaymentTransaction");
+    test(txn7.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn7 has status PENDING_PARENT_COMPLETED");
+    test(SafetyUtil.equals(txn7.getSourceCurrency(), "INR"), "txn7 has source currency INR");
+    test(SafetyUtil.equals(txn7.getDestinationCurrency(), "INR"), "txn7 has destination currency INR");
   }
 
   public void testApprovalRequests(X x) {
@@ -130,7 +143,8 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     txn5 = (KotakFxTransaction) txn5.fclone();
     txn5.setStatus(TransactionStatus.PENDING);
-    txnDAO.put_(x, txn5);
+    txn5 = (Transaction) txnDAO.put_(x, txn5);
+    test(! SafetyUtil.isEmpty(txn5.getId()), "Txn5 id not empty");
     approval = (ManualFxApprovalRequest) approvalDAO.find(
       AND(
         INSTANCE_OF(ManualFxApprovalRequest.class),
@@ -141,13 +155,14 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
 
     // enter an fx rate
-    approval.setFxRate(52);
+    approval.setFxRate(52.0);
     approval.setDealId("abcde");
     approval.setValueDate(new Date());
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     cal.add(Calendar.DATE, 1);
     approval.setExpiryDate(cal.getTime());
+    approval.setStatus(ApprovalStatus.APPROVED);
     approvalDAO.put_(x, approval);
 
     kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
@@ -183,6 +198,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     if ( sourceAccount == null ) {
       sourceAccount = new CABankAccount();
       sourceAccount.setOwner(sender.getId());
+      sourceAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
       sourceAccount.setAccountNumber("87654321");
       sourceAccount.setStatus(BankAccountStatus.VERIFIED);
       sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount);
@@ -197,9 +213,11 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
         EQ(BankAccount.DENOMINATION, "INR")));
     if ( destinationAccount == null ) {
       destinationAccount = new INBankAccount();
+      destinationAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
       destinationAccount.setOwner(receiver.getId());
       destinationAccount.setAccountNumber("9876543210");
       destinationAccount.setStatus(BankAccountStatus.VERIFIED);
+      destinationAccount.setPurposeCode("P1306");
       destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount);
     }
   }

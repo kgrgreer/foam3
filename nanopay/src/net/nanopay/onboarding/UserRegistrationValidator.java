@@ -23,7 +23,7 @@ public class UserRegistrationValidator implements Validator {
     // case two does not have user.getDesiredPassword() populated.
     // In the first case, the password is required and must be valid.
     if ( ! SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
-      ( (AuthService) x.get("auth") ).validatePassword( user.getDesiredPassword() );
+      ( (AuthService) x.get("auth") ).validatePassword( x, user, user.getDesiredPassword() );
     } 
     else if ( oldUser == null) throw new RuntimeException("Password Required.");
     

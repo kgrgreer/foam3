@@ -14,7 +14,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.User',
-    'net.nanopay.tx.TransactionQuote'
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.payment.PADType'
   ],
 
   imports: [
@@ -124,11 +125,35 @@ foam.CLASS({
           .end();
     },
 
+    function printTxn(prefix, txn, self2) {
+      self2.start('p')
+        .add(prefix + "-" + txn.type)
+        .callIf(txn.type !== 'SummaryTransaction' &&
+                txn.type !== 'ComplianceTransaction', function() {
+          for ( let lineItem of txn.lineItems ) {
+            if (lineItem.requireUserAction) {
+              self2.start().add(lineItem).end();
+            }
+          }
+        })
+        .end();
+
+      if ( ! txn.next ) {
+        return;
+      }
+
+      for ( let i = 0; i < txn.next.length; i++) {
+        printTxn(prefix + "-", txn.next[i], self2);
+      }
+    },
+
     function addCheckBoxes(self) {
         var self2 = this;
         return this.call(function() {
           self.quote
           .then(function(q) {
+
+
            self.viewData.transaction = q.plans[0];
             for ( var i = 0; i < q.plans.length; ++i ) {
             if ( q.plans[i] != undefined ) {
@@ -161,8 +186,8 @@ foam.CLASS({
                   self2
                   .add('Additional transfers: ')
                   .br();
-                  for ( k = 0; k< q.plans[i].transfers.length; k++ ) {
-                    transfer = q.plans[i].transfers[k];
+                  for ( let k = 0; k< q.plans[i].transfers.length; k++ ) {
+                    let transfer = q.plans[i].transfers[k];
                     transfer.account$find.then(function(acc) {
                       if ( acc.owner == self.user.id && transfer.description ) {
                         self
@@ -176,6 +201,8 @@ foam.CLASS({
                 .add('Cost: ', self.formattedAmount$)
                 .br()
               .end();
+
+              self.printTxn("", q.plans[i], self2);
             }
            }
           });

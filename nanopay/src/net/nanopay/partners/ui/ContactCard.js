@@ -235,8 +235,8 @@ foam.CLASS({
             .add(i.firstName + ' ' + i.lastName).end()
           .start('h5').addClass('contactInfoDetail').add(i.email).end()
           .start('h5').addClass('contactInfoDetail')
-            .add(i.businessPhone.number ?
-              i.businessPhone.number : '')
+            .add(i.phone.number ?
+              i.phone.number : '')
           .end()
         .end()
         .start().addClass(this.myClass('bottom-status'))

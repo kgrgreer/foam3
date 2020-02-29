@@ -1,0 +1,15 @@
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "Create payement code",
+  "priority": 100,
+  "ruleGroup": "Payment",
+  "documentation": "Create a payment code for each business or user",
+  "daoKey": "localUserDAO",
+  "operation": 0,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.payment.CreatePaymentCode"
+  },
+  "enabled": true,
+  "saveHistory": false
+})

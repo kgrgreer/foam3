@@ -7,10 +7,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthService',
-    'net.nanopay.account.Account'
+    'foam.nanos.auth.AuthService'
   ],
 
   messages: [
@@ -27,7 +25,7 @@ foam.CLASS({
       name: 'property',
       documentation: `
         The property that should be checked. The property's value should be the
-        alphabeticCode of a Currency object.
+        id of a Currency object.
       `
     }
   ],

@@ -17,15 +17,10 @@ Stores all Exchange Rate info.`,
   ],
 
   javaImports: [
-    'net.nanopay.tx.AcceptAware',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.util.Frequency',
-    'net.nanopay.account.Account',
-    'java.util.Arrays',
+    'foam.nanos.auth.User',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.Business',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -40,7 +35,13 @@ Stores all Exchange Rate info.`,
     },
     {
       name: 'fxRate',
-      class: 'Double'
+      class: 'Double',
+      section: 'paymentInfo',
+      visibilityExpression: function(fxRate) {
+        return ! fxRate ?
+          foam.u2.Visibility.HIDDEN :
+          foam.u2.Visibility.RO;
+      },
     },
     {
       name: 'fxExpiry',
@@ -59,10 +60,34 @@ Stores all Exchange Rate info.`,
       name: 'fxFees',
       class: 'FObjectProperty',
       of: 'net.nanopay.fx.FeesFields'
+    },
+    {
+      name: 'paymentMethod',
+      class: 'String'
     }
   ],
 
   methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        super.validate(x);
+
+        User sourceOwner = findSourceAccount(x).findOwner(x);
+        if ( sourceOwner instanceof Business
+          && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
+        ) {
+          throw new RuntimeException("Sender needs to pass business compliance.");
+        }
+
+        User destinationOwner = findDestinationAccount(x).findOwner(x);
+        if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
+          // We throw when the destination account owner failed compliance however
+          // we obligate to not expose the fact that the user failed compliance.
+          throw new RuntimeException("Receiver needs to pass compliance.");
+        }
+      `
+    },
     {
       name: 'accept',
       args: [

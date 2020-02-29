@@ -297,6 +297,14 @@ foam.CLASS({
       expression: function(filter) {
         return filter.length < 2;
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'loading',
+      value: false,
+      documentation: `
+        When loading is true it will disable the click listenner to prevent mutiple input
+      `
     }
   ],
 
@@ -349,7 +357,8 @@ foam.CLASS({
                 })
                   .on('click', function() {
                     // Add contact
-                    self.addSelected(business);
+                    if( ! self.loading )
+                      self.addSelected(business);
                   })
                 .end();
             })
@@ -402,7 +411,8 @@ foam.CLASS({
         .end();
     },
 
-    async function addSelected(business) {
+    function addSelected(business) {
+      this.loading = true
       newContact = this.Contact.create({
         organization: business.organization,
         businessName: business.organization,
@@ -412,13 +422,15 @@ foam.CLASS({
         group: 'sme'
       });
 
-      try {
-        await this.user.contacts.put(newContact);
+      this.user.contacts.put(newContact).then(() => {
         this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
         this.closeDialog();
-      } catch (err) {
+        this.loading = false;
+      }).catch( err => {
         this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
-      }
+        this.closeDialog();
+        this.loading = false;
+      })
     }
   ],
 

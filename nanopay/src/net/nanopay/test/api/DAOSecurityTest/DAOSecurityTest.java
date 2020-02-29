@@ -1,34 +1,45 @@
 package net.nanopay.test.api.DAOSecurityTest;
 
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
-import java.util.regex.*;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import net.nanopay.test.api.ApiTestBase;
-
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.boot.NSpec;
-import foam.util.SafetyUtil;
+import net.nanopay.test.api.ApiTestBase;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import static java.lang.System.exit;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DAOSecurityTest extends ApiTestBase {
+public abstract class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
+  protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
+
+  public DAOSecurityTest() {
+    // TODO: Review this list.
+    GLOBAL_IGNORES.add("businessTypeDAO");
+    GLOBAL_IGNORES.add("canadianSanctionDAO");
+    GLOBAL_IGNORES.add("countryDAO");
+    GLOBAL_IGNORES.add("deprecatedCapabilityJunctionDAO");
+    GLOBAL_IGNORES.add("nSpecDAO");
+    GLOBAL_IGNORES.add("prerequisiteCapabilityJunctionDAO");
+    GLOBAL_IGNORES.add("regionDAO");
+    GLOBAL_IGNORES.add("smeBusinessRegistrationDAO");
+    GLOBAL_IGNORES.add("themeDAO");
+    GLOBAL_IGNORES.add("userDAO");
+    GLOBAL_IGNORES.add("userUserDAO");
+  }
 
   // Helper class for holding results
   static class TestDAOFailed extends Exception {
@@ -90,121 +101,64 @@ public class DAOSecurityTest extends ApiTestBase {
     if ( ! (jso instanceof JSONObject) ) {
       throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
     }
-    jso = ((JSONObject) jso).get("data");
-    if ( ! (jso instanceof JSONObject) ) {
+    Object data = ((JSONObject) jso).get("data");
+    if ( ! (data instanceof JSONObject) ) {
       throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
     }
-    jso = ((JSONObject) jso).get("id");
+    jso = ((JSONObject) data).get("id");
     if (jso == null) {
       throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
     }
 
     String sid = jso.toString();
 
-    if ( ! sid.equals("foam.nanos.auth.AuthenticationException") ) {
-      throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
-    } 
+    switch ( sid ) {
+      case "foam.nanos.auth.AuthenticationException":
+        return true;
 
-    // Successful (i.e. transaction failed with authentication exception)
-    return true;
-  }
+      // If a DAO is decorated with ReadOnlyDAO then it will throw an
+      // UnsupportedOperationException if anyone tries to put or remove items in
+      // the DAO. That's an expected security measure, so we count such an
+      // exception as successfully passing the test.
+      case "java.lang.UnsupportedOperationException": // ReadOnlyDAO throws this.
+        Object message = ((JSONObject) data).get("message");
+        return message != null && message.toString().endsWith("ReadOnlyDAO");
 
-  private String getRequestString(String testBody) throws IOException {
-    File file = new File(testBody);
-    FileInputStream fis = new FileInputStream(file);
-    byte[] data = new byte[(int) file.length()];
-    fis.read(data);
-    fis.close();
-    return new String(data, StandardCharsets.UTF_8); 
-  }
-
-  // Run the test
-  public String runTest(X x, String testBody) {
-    List<String> ignores = new ArrayList<>();
-    return runTest(x, testBody, ignores);
+      default:
+        System.out.println("Got an instance of '" + sid + "' back from the server, which was unexpected.");
+        throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
+    }
   }
 
   // Run the test with a list of DAOs to ignore
-  public String runTest(X x, String testBody, List<String> ignores) {
-
+  public void testAllDAOs(X x, String request, String command, List<String> ignores) {
     DAO nspecDAO = (DAO) x.get("nSpecDAO");
     List nspecs = ((ArraySink) nspecDAO.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink())).getArray();
 
-    String request;
-    try {
-      request = getRequestString(testBody);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
+    // TODO: Use a sink instead of a list.
+    for ( Object obj : nspecs ) {
+      NSpec nspec = (NSpec)obj;
+
+      // TODO: Use predicates for these conditions.
+      if ( ! nspec.getName().endsWith("DAO") || ignores.contains(nspec.getName()) ) {
+        System.out.println("Skipping " + nspec.getName());
+        continue;
+      }
+
+      boolean result;
+
+      try {
+        result = testDAO(x, nspec.getName(), request);
+      } catch ( TestDAOFailed e ) {
+        System.out.println(e.getMsgBody());
+        System.out.println(e.getResponse());
+        result = false;
+      } catch ( ParseException | IOException e ) {
+        System.out.println(e.getMessage());
+        result = false;
+      }
+
+      test(result, "DAO " + nspec.getName() + " " + command + " rejected unauthorized request");
     }
-
-    Map<String, String> failedDAOs = new HashMap<>();
-
-    for (Object obj : nspecs) {
-        NSpec nspec = (NSpec)obj;
-        
-        // Skip anything that is not a DAO
-        if (!nspec.getName().endsWith("DAO"))
-          continue;
-
-        // Skip anything in the ignores list
-        if (ignores.contains(nspec.getName()))
-          continue;
-        
-        // Test the DAO
-        try
-        {
-          testDAO(x, nspec.getName(), request);
-        }
-        catch (TestDAOFailed testDAOFailed) {
-          failedDAOs.put(nspec.getName(), testDAOFailed.getMsgBody());
-        } catch (IOException e) {
-          e.printStackTrace();
-          failedDAOs.put(nspec.getName(), "IOException: " + e.getMessage());
-        } catch (ParseException e) {
-          e.printStackTrace();
-          failedDAOs.put(nspec.getName(), "ParseException: " + e.getMessage());
-        }
-    }
-
-    StringBuilder ret = new StringBuilder();
-    ret.append("Failed DAOs:\n");
-    for(Map.Entry<String, String> dao : failedDAOs.entrySet()) {
-      ret.append(dao.getKey()).append(": ").append(dao.getValue()).append('\n');
-    }
-    return ret.toString();
-  }
-
-  // Run an individual test for debugging
-  public String runIndividualTest(X x, String testBody, String dao, boolean force)
-  {
-    String request;
-    try {
-      request = getRequestString(testBody);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    }
-
-    // Skip anything that is not a DAO
-    if (!dao.endsWith("DAO") && !force)
-      return "Not a DAO - Skipping";
-  
-    // Test the DAO
-    try
-    {
-      testDAO(x, dao, request);
-    }
-    catch (TestDAOFailed testDAOFailed) {
-      return testDAOFailed.getMsgBody();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    } catch (ParseException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    }
-
-    return "Success";
   }
 }

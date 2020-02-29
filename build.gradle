@@ -11,7 +11,7 @@ plugins {
 repositories {
     mavenLocal()
     maven {
-        url = "http://repo.maven.apache.org/maven2"
+        url = "https://repo.maven.apache.org/maven2"
     }
 }
 
@@ -61,6 +61,7 @@ dependencies {
 	compile "com.itextpdf:itextpdf:5.5.12"
 	compile "com.itextpdf:html2pdf:1.0.2"
 	compile "xml-apis:xml-apis:1.4.01"
+	compile "mysql:mysql-connector-java:8.0.16"
 }
 
 configurations.all {
@@ -179,10 +180,14 @@ task genJava(type: Exec) {
             includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
             classFiles.add(file("nanopay/tools/classes.js"))
             outputDir = file(project.genJavaDir)
+            onlyIf {
+                !project.hasProperty('foamoptions.skipgenjava')
+            }
         }
     }
     onlyIf {
-        !tasks.incrementalGenTask.state.upToDate
+        !tasks.incrementalGenTask.state.upToDate &&
+        !project.hasProperty('foamoptions.skipgenjava')
     }
     commandLine 'bash', './gen.sh', 'tools/classes.js', "${project.genJavaDir}"
 }
@@ -214,7 +219,7 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
+    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
     into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
@@ -256,6 +261,7 @@ task copyImages(type: Copy) {
     from "$rootDir/foam2/src/foam/nanos"
     from "$rootDir/foam2/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
+    from "$rootDir/nanopay/src/net/nanopay/merchant"
     into "${project.targetDir}/classes"
     include "images/**"
 }

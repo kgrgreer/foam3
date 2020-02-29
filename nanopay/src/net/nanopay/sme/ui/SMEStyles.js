@@ -42,6 +42,7 @@ foam.CLASS({
       margin: 50px;
       margin-left: 0px;
       margin-top: 0px;
+      width: 38vw;
     }
     .sme-image {
       display: inline-block;
@@ -192,8 +193,8 @@ foam.CLASS({
     }
 
     .carrot {
-      width: 0; 
-      height: 0; 
+      width: 0;
+      height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-top: 5px solid white;
@@ -299,6 +300,10 @@ foam.CLASS({
     }
     .login {
       margin-top: 24px !important;
+    }
+    /* specifically overriding the action but intenet is only for SignIn/Up: TODO remove AbliiActionView*/
+    .net-nanopay-sme-ui-AbliiActionView-login {
+      width: 100%;
     }
     .sme-title {
       font-size: 32px;
@@ -568,6 +573,10 @@ foam.CLASS({
       display: inline-block;
       visibility: visible;
       border: 6px solid #604aff;
+      -webkit-border-before-width: 8px;
+      -webkit-border-end-width: 8px;
+      -webkit-border-start-width: 8px;
+      -webkit-border-after-width: 8px;
     }
 
     input[type='checkbox']:checked:after {
@@ -840,6 +849,14 @@ foam.CLASS({
       display: inline-block;
     }
 
+    .generic-status-circle.Scheduled {
+      background: #406dea;
+    }
+
+    .Invoice-Status.Scheduled {
+      color: #406dea !important;
+    }
+
     .generic-status-circle.Complete {
       background: #07941f;
     }
@@ -1013,6 +1030,20 @@ foam.CLASS({
 
     .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
       transform: translate(-100%, 16px);
+    }
+
+    /* signIn & signUp */
+    .foam-u2-view-LoginView .foam-u2-detail-VerticalDetailView {
+      width: 78%;
+    }
+    .title-top {
+      padding-bottom: 2vh;
+    }
+    .center-footer {
+      width: 78%;
+    }
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
+      padding-top: 75px;
     }
   `
 });

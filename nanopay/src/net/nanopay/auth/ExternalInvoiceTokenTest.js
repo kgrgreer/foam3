@@ -4,21 +4,13 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.MDAO',
-    'foam.dao.Sink',
-    'foam.nanos.auth.AuthenticationException',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.auth.token.TokenService',
     'foam.util.Auth',
     'java.util.Calendar',
-    'java.util.List',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business',
     'net.nanopay.invoice.model.Invoice',
     'static foam.mlang.MLang.*'
   ],
@@ -31,7 +23,7 @@ foam.CLASS({
       DAO userUserDAO = (DAO) x.get("userUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      DAO tokenDAO = (DAO) x.get("localTokenDAO");
       TokenService externalToken = (TokenService) x.get("externalInvoiceToken");
 
       Calendar calendar = Calendar.getInstance();

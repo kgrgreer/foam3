@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import static foam.mlang.MLang.*;
 
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.bank.CABankAccount;
 
@@ -26,7 +27,7 @@ public class BankAccountCodesTest
     String institutionNumber = "002";
     branchId = "54321";
     accountId = "99999";
-    b = new CABankAccount.Builder(x).setInstitutionNumber(institutionNumber).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).build();
+    b = new CABankAccount.Builder(x).setInstitutionNumber(institutionNumber).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).setStatus(BankAccountStatus.VERIFIED).build();
     b = (BankAccount) d.put(b);
     test(b.getBankCode(x).equals(institutionNumber), "Invalid BankCode");
     test(b.getRoutingCode(x).equals(branchId), "Invalid RoutingCode");

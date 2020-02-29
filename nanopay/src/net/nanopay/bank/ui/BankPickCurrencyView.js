@@ -257,7 +257,7 @@ foam.CLASS({
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
-            .start().addClass('institutionSearchContainer')
+            .start().addClass('institutionSearchContainer').hide(this.selection === 2)
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
               .start(this.FILTER_FOR)
                 .addClass('institutionSearch')

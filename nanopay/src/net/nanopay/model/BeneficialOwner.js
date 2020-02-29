@@ -44,16 +44,21 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'Boolean',
+      name: 'showValidation',
+      value: true
+    },
+    {
       class: 'String',
       name: 'jobTitle',
       section: 'requiredSection',
-      view: function(args, X) {
+      view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Select...',
+            placeholder: 'Please select...',
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
               return [a.name, a.label];
@@ -61,7 +66,21 @@ foam.CLASS({
           }
         };
       },
-      minLength: 1
+      validationPredicates: [
+        {
+          args: ['jobTitle', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.model.BeneficialOwner.JOB_TITLE
+                }), 0)
+            );
+          },
+          errorString: 'Please select a Job Title.'
+        }
+      ]
     },
     {
       class: 'Int',
@@ -72,20 +91,61 @@ foam.CLASS({
         owns.
       `,
       autoValidate: true,
-      min: 25,
-      max: 100
+      validationPredicates: [
+        {
+          args: ['ownershipPercent', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.AND(
+                e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
+                e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
+              )
+            );
+          },
+          errorString: 'Must be between 25 and 100'
+        }
+      ]
     },
     {
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
-      minLength: 1
+      validationPredicates: [
+        {
+          args: ['firstName', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.model.BeneficialOwner.FIRST_NAME
+                }), 0)
+            );
+          },
+          errorString: 'Please enter first name'
+        }
+      ]
     },
     {
       class: 'String',
       name: 'lastName',
       section: 'requiredSection',
-      minLength: 1
+      validationPredicates: [
+        {
+          args: ['lastName', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.model.BeneficialOwner.LAST_NAME
+                }), 0)
+            );
+          },
+          errorString: 'Please enter last name'
+        }
+      ]
     },
     'middleName',
     'legalName',
@@ -96,24 +156,30 @@ foam.CLASS({
       section: 'requiredSection',
       validationPredicates: [
         {
-          args: ['birthday'],
+          args: ['birthday', 'showValidation'],
           predicateFactory: function(e) {
-            return foam.mlang.predicate.OlderThan.create({
-              arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
-              timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-            });
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+              })
+            );
           },
           errorString: 'Must be at least 18 years old.'
         },
         {
-          args: ['birthday'],
+          args: ['birthday', 'showValidation'],
           predicateFactory: function(e) {
-            return e.NOT(
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.NOT(
                 foam.mlang.predicate.OlderThan.create({
                   arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
                   timeMs: 125 * 365 * 24 * 60 * 60 * 1000
                 })
-              );
+              )
+            );
           },
           errorString: 'Must be under the age of 125 years old.'
         }
@@ -127,12 +193,13 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: function(args, X) {
+      view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao
+          customCountryDAO: dao,
+          showValidation: X.data.showValidation
         };
       },
       autoValidate: true
@@ -151,7 +218,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.create.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.create.%d", this.getId())) ) return;
 
         if ( ! (user instanceof Business) ) {
           throw new AuthorizationException("Only businesses can have beneficial owners.");
@@ -173,7 +240,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.read.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.read.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot see beneficial owners owned by other businesses.");
@@ -192,7 +259,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
 
-        if ( auth.check(x, String.format("beneficialOwner.update.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.update.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot edit beneficial owners owned by other businesses.");
@@ -210,7 +277,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.delete.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.delete.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");
@@ -221,10 +288,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function toSummary() {
-        return this.lastName ? this.firstName + " " + this.lastName : this.firstName;
+        return this.lastName ? this.firstName + ' ' + this.lastName : this.firstName;
       },
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
     }

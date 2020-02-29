@@ -13,15 +13,19 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.session.Session',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
 
+    'java.util.HashMap',
+
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.passwordutil.PasswordEntropy',
     'net.nanopay.model.Business',
 
     'static foam.mlang.MLang.AND',
@@ -83,20 +87,20 @@ foam.CLASS({
         // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
         user.setPasswordExpiry(null);
         user = (User) ((DAO) getLocalUserDAO()).put(user);
-        return user;
-      `
-    },
-    {
-      name: 'validatePassword',
-      javaCode: `
-        PasswordEntropy passwordEntropy = (PasswordEntropy) getPasswordEntropyService();
 
-        if ( SafetyUtil.isEmpty(potentialPassword) ) {
-          throw new RuntimeException("Password is required");
-        }
-        if ( passwordEntropy.getPasswordStrength(potentialPassword) < 3 ) {
-          throw new RuntimeException("Password is not strong enough.");
-        }
+        // send user email to notify of password change
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        String url = appConfig.getUrl().replaceAll("/$", "");
+        EmailMessage message = new EmailMessage();
+        message.setTo(new String[] { user.getEmail() });
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("name", user.getFirstName());
+        args.put("sendTo", user.getEmail());
+        args.put("link", url);
+
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "password-changed", args);
+
+        return user;
       `
     },
     {

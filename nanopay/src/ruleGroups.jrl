@@ -1,0 +1,69 @@
+p({"class":"foam.nanos.ruler.RuleGroup","id":"MigrateContacts"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"UpdateBusinessEmail"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"InvoiceNotification"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"am"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"DuplicateAccount"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ClosingAccount"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"CurrencyCheck"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"CreateDefaultDigitalAccount"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessRegistration"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"AFEX"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"AFEXOnboarding"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ManualFxTxn"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"compliance"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"FastPay"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"StatusRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"InvoicePayment"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ModifyCicoStatus"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"CreateExpediteApprovalRequest"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"PruneCicoApprovalCleanup"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Liquidity"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ReverseTransactions"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Observer"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Quote Transaction"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Notifications"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"StatusHistory"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"signup"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"onboarding"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"dowjones-update"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"rollup"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"remove compliance requests"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ComplianceItem"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"(Default)"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ClearingTime"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"transactionLimits"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"txlimits"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"liquid"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"businessRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"SecurityPlanner","predicate":{"class":"net.nanopay.tx.ruler.IsSecurityQuote"},"enabled":true})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"bankOperations",
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.bank.BankAccount"
+  }
+})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"AgentJunctions"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"UserCreate"})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"DepositTransacationVerify",
+  "predicate": {
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.bmo.cico.BmoVerificationTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.cico.VerificationTransaction"
+      }
+    ]
+  }
+})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})

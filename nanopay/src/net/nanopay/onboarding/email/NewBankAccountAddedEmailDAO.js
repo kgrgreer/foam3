@@ -9,19 +9,16 @@ foam.CLASS({
       included in this email.`,
 
   javaImports: [
-    'foam.core.FObject',
-    'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'java.util.HashMap',
-    'java.util.Map'
+    'java.util.Map',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -66,6 +63,11 @@ foam.CLASS({
       // finish processing the account through the dao
       account = (BankAccount) getDelegate().put_(x, obj);
 
+      // Do not send email to contact owned accounts.
+      if ( owner instanceof Contact ) {
+        return account;
+      }
+
       // Send email only after passing above checks
       EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
@@ -78,7 +80,7 @@ foam.CLASS({
       args.put("accName", account.getName());
       args.put("accId", account.getId());
 
-      if ( owner.getOnboarded() ) {
+      if ( owner instanceof Business &&  ((Business) owner).getOnboarded() ) {
         args.put("title", "User added a (" + account.getStatus() + ") Account & was previously onboarded");
         args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
       } else {
@@ -92,7 +94,7 @@ foam.CLASS({
         String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);
       }
-      
+
       return account;
       `
     }

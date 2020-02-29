@@ -1,7 +1,8 @@
 foam.CLASS({
-    package: 'net.nanopay.bank',
-    name: 'PKBankAccount',
-    extends: 'net.nanopay.bank.BankAccount',
+  package: 'net.nanopay.bank',
+  name: 'PKBankAccount',
+  label: 'Pakistan Bank Account',
+  extends: 'net.nanopay.bank.BankAccount',
 
     imports: [
       'institutionDAO'
@@ -34,20 +35,28 @@ foam.CLASS({
         type: 'Regex',
         javaValue: 'Pattern.compile("^[0-9]{16}$")'
       },
-      {
-        name: 'BRANCH_ID_PATTERN',
-        type: 'Regex',
-        javaValue: 'Pattern.compile("^[0-9]{9}$")'
-      },
     ],
 
     properties: [
       {
-        name: 'branch',
-        label: 'Routing No.',
-        hidden: true
+        name: 'country',
+        value: 'PK'
       },
       {
+        name: 'flagImage',
+        value: 'images/flags/unknown.png'
+      },
+      {
+        name: 'denomination',
+        value: 'PKR'
+      },
+      { // REVIEW: remove
+        class: 'String',
+        name: 'institutionNumber',
+        hidden: true
+      },
+      { // REVIEW: remove
+        class: 'String',
         name: 'branchId',
         hidden: true
       },
@@ -61,13 +70,6 @@ foam.CLASS({
         adapt: function(_, v) {
             return v.replace(/\s/g, '').toUpperCase();
         },
-      },
-      {
-        class: 'String',
-        name: 'denomination',
-        label: 'Currency',
-        aliases: ['currencyCode', 'currency'],
-        value: 'PKR'
       },
     ],
 
@@ -117,7 +119,6 @@ foam.CLASS({
           validateAccountNumber();
           validateSwiftCode();
           validateNationalIban();
-          //validateBranchId(x);
         `
       },
       {
@@ -168,32 +169,6 @@ foam.CLASS({
           throw new IllegalStateException("Please enter a valid account number.");
         }
         `
-      }/*,
-    {
-      name: 'validateBranchId',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `
-      Branch branch = this.findBranch(x);
-
-      // no validation when the branch is attached.
-      if (branch != null) {
-        return;
       }
-      // when the branchId is provided and not the branch
-      String branchId = this.getBranchId();
-      if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a routing number.");
-      }
-      if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Please enter a valid routing number.");
-      }
-      `
-    }*/
     ]
   });

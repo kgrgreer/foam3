@@ -49,7 +49,6 @@ public class BmoSFTPClient {
    * Connect to BMO sftp server
    */
   private BmoSFTPClient connect(String loginId) throws Exception {
-    ChannelSftp sftp = new ChannelSftp();
     sshClient        = new SSHClient();
 
     sshClient.addHostKeyVerifier (new PromiscuousVerifier());
@@ -131,14 +130,14 @@ public class BmoSFTPClient {
       // retry
       while ( re <= 30 ) {
         this.logger.info("start trying download receipt: " + re);
-        Thread.sleep(30 * 1000);
+        Thread.sleep(30L * 1000);
         ls = this.statefulSFTPClient.ls();
         if ( ls.size() != 0 ) { break;}
         re++;
       }
       this.logger.info("finishing downloading receipt" + re);
 
-      if ( ls.size() == 0 ) {
+      if ( ls == null || ls.size() == 0 ) {
         this.disconnect();
         this.logger.error("EFT Receipt file not received.");
         throw new BmoSFTPException("EFT Receipt file not received.");

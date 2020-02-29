@@ -10,7 +10,6 @@ foam.CLASS({
   css: `
     ^ {
       height: 92%;
-      border-bottom: solid 1px #edf0f5;
     }
 
     ^sections-container {
@@ -44,6 +43,7 @@ foam.CLASS({
       flex: 1;
       basis:0;
       padding-right: 128px;
+      padding-bottom: 50px;
     }
 
     ^left-section {
@@ -61,10 +61,6 @@ foam.CLASS({
 
     ^ .property-signingOfficer .foam-u2-view-RadioView:last-child {
       margin: 0;
-    }
-    
-    ^ .foam-u2-detail-SectionView {
-      max-height: 100%;
     }
   `,
   properties: [

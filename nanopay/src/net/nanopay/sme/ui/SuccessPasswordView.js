@@ -165,7 +165,7 @@ foam.CLASS({
                 .add(this.BACK_TO).addClass('sme').addClass('link')
                 .on('click', function() {
                   window.location.href = '#';
-                  self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+                  self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
                 })
               .end()
             .end()

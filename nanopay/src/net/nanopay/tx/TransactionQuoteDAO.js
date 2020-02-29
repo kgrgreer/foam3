@@ -13,22 +13,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
 
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.exception.UnsupportedTransactionException',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
 
-    'net.nanopay.tx.PlanCostComparator',
-    'net.nanopay.tx.PlanETAComparator',
-    'net.nanopay.tx.PlanTransactionComparator',
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Collections'
@@ -42,15 +33,30 @@ foam.CLASS({
       // initiate a Quote request.
 
       TransactionQuote quote = (TransactionQuote) obj;
+      Logger logger = (Logger) x.get("logger");
 
       //when a planner forces to pick certain plan we do not calculate cost.
       if ( quote.getPlan() != null ) {
+        // only add plan if it is valid
+        try {
+          validateTransactionChain(x, quote.getPlan());
+        } catch (Exception e ) {
+          logger.warning("Transaction plan failed to validate",e,quote.getPlan());
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+        }
         return quote;
       }
       quote = (TransactionQuote) getDelegate().put_(x, quote);
 
       //when a planner forces to pick certain plan we do not calculate cost.
       if (quote.getPlan() != null) {
+        // only add plan if it is valid
+        try {
+          validateTransactionChain(x, quote.getPlan());
+        } catch (Exception e ) {
+          logger.warning("Transaction plan failed to validate",e,quote.getPlan());
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+        }
         return quote;
       }
 
@@ -65,6 +71,13 @@ foam.CLASS({
 
       //if there was only one plan added we do not need to calculate the cost.
       if ( quote.getPlans().length == 1 ) {
+        // only add plan if it is valid
+        try {
+          validateTransactionChain(x, quote.getPlans()[0]);
+        } catch (Exception e ) {
+          logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+        }
         quote.setPlan(quote.getPlans()[0]);
         return quote;
       }
@@ -76,11 +89,18 @@ foam.CLASS({
       planComparators.add(etaComparator);
       List<Transaction> transactionPlans = new ArrayList<Transaction>();
       for ( Object aTransaction : quote.getPlans() ) {
-        transactionPlans.add((Transaction) aTransaction);
+        try {
+          validateTransactionChain(x, (Transaction) aTransaction);          
+          transactionPlans.add((Transaction) aTransaction);
+        } catch (Exception e) {
+          logger.warning("Transaction plan failed to validate",e,aTransaction);
+        }
+      }
+      if ( transactionPlans.size() == 0 ) { 
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
       }
       Collections.sort(transactionPlans, planComparators);
-      Transaction plan = transactionPlans.get(0);
-      quote.setPlan(plan);
+      quote.setPlan(transactionPlans.get(0));
       // TransactionQuotes - return all plans.
       return quote;`
     },
@@ -105,5 +125,26 @@ foam.CLASS({
     ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
     `
     },
+    {
+      name: 'validateTransactionChain',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'net.nanopay.tx.model.Transaction',
+          name: 'transaction'
+        },
+      ],
+      javaCode: `
+        transaction.validate(x);
+        if (transaction.getNext()!= null && transaction.getNext().length != 0) {
+          for ( Transaction txn : transaction.getNext() ) {
+            validateTransactionChain(x, txn);
+          }
+        }
+      `
+    }
   ]
 });

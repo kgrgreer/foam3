@@ -114,4 +114,26 @@ public class BankAccountBranchDAO
     ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
     return newBranch;
   }
+
+  @Override
+  public FObject find_(X x, Object obj) {
+
+    FObject fObject = this.getDelegate().find_(x, obj);
+
+    if ( fObject == null ) {
+      return fObject;
+    }
+    fObject = fObject.fclone();
+
+    if (fObject instanceof BankAccount) {
+      BankAccount bankAccount = (BankAccount) fObject;
+
+      Branch branch = bankAccount.findBranch(x);
+      if ( branch != null )
+        bankAccount.setBranchId(branch.getBranchId());
+
+      return bankAccount;
+    }
+    return fObject;
+  }
 }

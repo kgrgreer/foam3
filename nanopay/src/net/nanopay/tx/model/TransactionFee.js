@@ -35,12 +35,12 @@ foam.CLASS({
       documentation: 'Describes a Transaction class subclass fee should be applied to. All transactions which are an instanceOf this transactionClass'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'minAmount',
       documentation: 'Describes minimum amount this fee can be applied to.'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'maxAmount',
       documentation: 'Describes maximum amount this fee can be applied to.'
     },

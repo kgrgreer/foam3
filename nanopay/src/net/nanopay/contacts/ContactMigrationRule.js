@@ -11,7 +11,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -22,8 +21,6 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.contacts.Contact',
-    'net.nanopay.contacts.ExternalContactToken',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
@@ -132,7 +129,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
+        DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
 
         ExternalContactToken token = (ExternalContactToken) tokenDAO
           .find(EQ(ExternalContactToken.BUSINESS_ID, business.getId()));

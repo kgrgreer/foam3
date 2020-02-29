@@ -40,7 +40,7 @@ public class DowJonesService
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
-        logger.error("Exception [Person Name Search]: " + t);
+        logger.error("Exception [Dow Jones User Person Name Search]: " + t);
         throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones: [ " + t.toString() + " ].");
       }
 
@@ -49,7 +49,7 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
-        resp.setSearchType("Dow Jones Person");
+        resp.setSearchType("Dow Jones User");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
         resp.setSearchDate(new Date());
@@ -61,13 +61,13 @@ public class DowJonesService
       } else {
         feedback = (DowJonesInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
-        logger.error("Dow Jones Person Name Search: [ HttpStatusCode: " + feedback.getHttpStatusCode() + " ]");
+        logger.error("Dow Jones User Person Name Search: [ HttpStatusCode: " + feedback.getHttpStatusCode() + " ]");
       }
       return feedback;
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Dow Jones person name search error: [ " + t.toString() + " ].", t);
-      throw new AuthenticationException("Dow Jones person name search failed: [ " + t.toString() + " ].");
+      logger.error("Dow Jones User Person name search error: [ " + t.toString() + " ].", t);
+      throw new AuthenticationException("Dow Jones User person name search failed: [ " + t.toString() + " ].");
     }
   }
 
@@ -81,7 +81,7 @@ public class DowJonesService
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
-        logger.error("Exception [Person Name Search]: " + t);
+        logger.error("Exception [Dow Jones Beneficial Owner Person Name Search]: " + t);
         throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones: [ " + t.toString() + " ].");
       }
 
@@ -90,7 +90,7 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
-        resp.setSearchType("Dow Jones Person");
+        resp.setSearchType("Dow Jones Beneficial Owner");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
         resp.setSearchDate(new Date());
@@ -104,8 +104,8 @@ public class DowJonesService
       return feedback;
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Dow Jones person name search error: [ " + t.toString() + " ].", t);
-      throw new AuthenticationException("Dow Jones person name search failed: [ " + t.toString() + " ].");
+      logger.error("Dow Jones Beneficial Owner Person name search error: [ " + t.toString() + " ].", t);
+      throw new AuthenticationException("Dow Jones beneficial owner person name search failed: [ " + t.toString() + " ].");
     }
   }
 

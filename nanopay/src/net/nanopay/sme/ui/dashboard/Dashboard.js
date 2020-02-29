@@ -23,10 +23,10 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
@@ -40,22 +40,22 @@ foam.CLASS({
     'ctrl',
     'group',
     'invoiceDAO',
+    'isIframe',
     'notificationDAO',
+    'onboardingUtil',
     'pushMenu',
     'stack',
     'quickbooksService',
     'uSBusinessOnboardingDAO',
     'user',
     'userDAO',
-    'xeroService'
+    'xeroService',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
   ],
 
   exports: [
     'myDaoNotification'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions'
   ],
 
   messages: [
@@ -67,7 +67,8 @@ foam.CLASS({
     { name: 'SUBTITLE2', message: 'Recent Payables' },
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
-    { name: 'VIEW_ALL', message: 'View all' }
+    { name: 'VIEW_ALL', message: 'View all' },
+    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
   ],
 
   css: `
@@ -82,13 +83,37 @@ foam.CLASS({
     }
     ^ .empty-state {
       text-align: center;
-      padding: 45px 27px;
+      padding: 64px 27px;
       border: 1px solid #e2e2e3;
       background: inherit;
       border-radius: 3px;
       font-size: 14px;
       line-height: 25px;
       color: #8e9090;
+    }
+    ^ .empty-box {
+      height: 60px;
+      padding:14px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-requestPayment {
+      width: 200px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-sendPayment {
+      width: 200px;
+    }
+    ^ .divider-half {
+      font-size: 14px;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      padding: 0 10px;
+      text-align: center;
+      color: #8e9090;
+    }
+    ^ .line {
+      width: 100%;
+      height: 10px;
+      border-bottom: 2px solid #e2e2e3;
+      text-align: center;
+      margin-top: 15px;
     }
   `,
 
@@ -116,7 +141,7 @@ foam.CLASS({
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
           ))
           .select(this.COUNT()).then((c) => {
-            this.countOverdueAndUpcoming = c.value; 
+            this.countOverdueAndUpcoming = c.value;
           });
         return 0;
       }
@@ -164,6 +189,7 @@ foam.CLASS({
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
+            this.EQ( this.Notification.NOTIFICATION_TYPE, 'Latest_Activity'),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
                 this.user.disabledTopics))
@@ -206,7 +232,9 @@ foam.CLASS({
     'bankAccount',
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration'
   ],
 
   methods: [
@@ -225,7 +253,7 @@ foam.CLASS({
         .then((sink) => {
           this.bankAccount = sink.array[0];
         });
-      this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+     this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
 
       // We need to find the BusinessOnboarding by checking both the userId and
       // the businessId. Previously we were only checking the userId, which
@@ -245,10 +273,7 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
-      this.user = await this.businessDAO.find(this.user.id);
-      this.onboardingStatus = this.user.onboarded;
     },
-
     function initE() {
       this.ctrl.bannerizeCompliance();
       this.SUPER();
@@ -265,20 +290,29 @@ foam.CLASS({
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
             businessOnboarding: this.businessOnboarding,
-            onboardingStatus: this.onboardingStatus
+            onboardingStatus$: this.onboardingStatus$,
+            businessRegistrationDate$: this.businessRegistrationDate$,
+            countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
           }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
-        var topL = this.Element.create()
-          .start('h2')
-            .add(this.SUBTITLE1)
-          .end()
-          .start()
-            .tag(this.RequireActionView.create({
-              countRequiresApproval$: this.countRequiresApproval$,
-              countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
-              countDepositPayment$: this.countDepositPayment$
-            }))
+        var line = this.Element.create()
+          .start().addClass('line')
+            .start('span')
+              .addClass('divider-half').add(this.UPPER_TXT)
+            .end()
           .end();
+
+          var topL = this.Element.create()
+            .start('h2')
+              .add(this.SUBTITLE1)
+            .end()
+            .start()
+              .tag(this.RequireActionView.create({
+                countRequiresApproval$: this.countRequiresApproval$,
+                countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+                countDepositPayment$: this.countDepositPayment$
+              }))
+            .end();
 
         var topR = this.Element.create()
           .start()
@@ -289,6 +323,7 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
+              .hide(this.payablesCount$.map((value) => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.payables');
               })
@@ -318,7 +353,9 @@ foam.CLASS({
           .end()
           .start()
             .hide(this.payablesCount$.map((value) => value > 0))
-            .addClass('empty-state').add(this.NO_RECENT_PAYABLES)
+            .addClass('empty-state')
+            .start().add(this.SEND_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_PAYABLES).end()
           .end();
 
         var botL = this.Element.create()
@@ -340,7 +377,10 @@ foam.CLASS({
             .end()
             .start()
               .hide(this.notificationsCount$.map((value) => value > 0))
-              .addClass('empty-state').add(this.NO_LATEST_ACTIVITY)
+              .addClass('empty-state')
+              .start().addClass('empty-box')
+                .start('p').add(this.NO_LATEST_ACTIVITY).end()
+              .end()
           .end();
 
         var botR = this.Element.create()
@@ -352,6 +392,7 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
+              .hide(this.receivablesCount$.map((value) => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.receivables');
               })
@@ -376,17 +417,49 @@ foam.CLASS({
           .end()
           .start()
             .hide(this.receivablesCount$.map((value) => value > 0))
-            .addClass('empty-state').add(this.NO_RECENT_RECEIVABLES)
+            .addClass('empty-state')
+            .start().add(this.REQUEST_PAYMENT).end()
+            .start('p').add(this.NO_RECENT_RECEIVABLES).end()
           .end();
 
         split.topButtons.add(top);
-        split.leftTopPanel.add(topL);
-        split.leftBottomPanel.add(botL);
-        split.rightTopPanel.add(topR);
-        split.rightBottomPanel.add(botR);
+        split.line.add(line)
+          .hide(this.isIframe());
+        split.leftTopPanel.add(topL)
+          .hide(this.isIframe());
+        split.leftBottomPanel.add(botL)
+          .hide(this.isIframe());
+        split.rightTopPanel.add(topR)
+          .hide(this.isIframe());
+        split.rightBottomPanel.add(botR)
+          .hide(this.isIframe());
 
-        this.addClass(this.myClass()).add(split).end();
+        this.addClass(this.myClass()).add(split);
       });
+    }
+  ],
+  actions: [
+    {
+      name: 'sendPayment',
+      label: 'Send payment',
+      code: function() {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            this.pushMenu('sme.quickAction.send');
+          }
+        });
+      }
+    },
+    {
+      name: 'requestPayment',
+      label: 'Request payment',
+      code: function() {
+        this.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            this.pushMenu('sme.quickAction.request');
+          }
+        });
+      }
     }
   ]
 });

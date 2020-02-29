@@ -361,7 +361,7 @@ foam.CLASS({
 
                        Phone senderPhone = new Phone();
                        senderPhone.setVerified(true);
-                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                        sender.setPhone(senderPhone);
 
@@ -371,15 +371,16 @@ foam.CLASS({
                        sender.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                        sender.setGroup("system");
                        sender.setSpid(spId);
-                       sender.setBusinessTypeId(0);
-                       sender.setBusinessSectorId(1);
+                       // REVIEW: removed with User/Business split
+                       // sender.setBusinessTypeId(0);
+                       // sender.setBusinessSectorId(1);
                        //sender.setStatus("Active");
-                       sender.setOnboarded(true);
+                      // sender.setOnboarded(true);
 
                        Address senderAddress = new Address();
                        addrLine = "";
 
-                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null |
+                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null ||
                               ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                 senderAddress.setStructured(true);
                                 senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName());
@@ -459,7 +460,7 @@ foam.CLASS({
 
                       Phone receiverPhone = new Phone();
                       receiverPhone.setVerified(true);
-                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replaceAll(String.valueOf('-'), ""));
+                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
 
                       receiver.setPhone(receiverPhone);
 
@@ -469,15 +470,16 @@ foam.CLASS({
                       receiver.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                       receiver.setGroup("system");
                       receiver.setSpid(spId);
-                      receiver.setBusinessTypeId(0);
-                      receiver.setBusinessSectorId(1);
+                       // REVIEW: removed with User/Business split
+                      // receiver.setBusinessTypeId(0);
+                      // receiver.setBusinessSectorId(1);
                       //receiver.setStatus("Active");
-                      receiver.setOnboarded(true);
+                      //receiver.setOnboarded(true);
 
                       Address receiverAddress = new Address();
                       addrLine = "";
 
-                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null |
+                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null ||
                              ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName()).equals("") ) {  //structured
                                receiverAddress.setStructured(true);
                                receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName());
@@ -578,13 +580,12 @@ foam.CLASS({
                     long desAmt = new Double((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getText()).longValue();
                     transaction = new Transaction.Builder(getX())
                       .setName("Digital Transfer from PACS")
-                      .setStatus(TransactionStatus.ACSP)
+                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status. 
+                      //.setStatus(TransactionStatus.ACSP)
 
-                      .setPayer(payer)
                       .setSourceCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy())
                       .setSourceAccount(senderBkId)
 
-                      .setPayee(payee)
                       .setDestinationCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getCcy())
                       .setDestinationAmount(desAmt)
                       .setDestinationAccount(receiverBkId)
@@ -672,7 +673,6 @@ foam.CLASS({
                     out.println("<pre>");
                     t.printStackTrace(out);
                     out.println("</pre>");
-                    t.printStackTrace();
                     logger.error(t);
                 }
              }
@@ -747,18 +747,18 @@ foam.CLASS({
                     //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
                     Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
-                    String cur_txnStatus = null;
-                    TransactionStatus txnStatus  = null;
+                    TransactionStatus cur_txnStatus = null;
+                    String txnStatus  = null;
 
                     if ( txn != null ) {
-                      cur_txnStatus = ((TransactionStatus)txn.getStatus()).getName();
+                      cur_txnStatus = (TransactionStatus)txn.getStatus();
                       System.out.println("txn.getStatus() : " + txn.getStatus());
                       System.out.println("txn.getStatus().getName() : " + txn.getStatus().getName());
 
                       if ( cur_txnStatus.equals(TransactionStatus.COMPLETED) ) {
-                        txnStatus = TransactionStatus.ACSP;
+                        txnStatus = "ACSP"; //TransactionStatus.ACSP;
                       } else {
-                        txnStatus = TransactionStatus.ACSC;
+                        txnStatus = "ACSC"; //TransactionStatus.ACSC;
                       }
 
                     } else {
@@ -768,7 +768,7 @@ foam.CLASS({
                     orgnlGrpInfAndSts.setOriginalMessageIdentification((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
                     orgnlGrpInfAndSts.setOriginalCreationDateTime((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalCreationDateTime());
                     orgnlGrpInfAndSts.setOriginalMessageNameIdentification("Pacs.008.001.06");
-                    orgnlGrpInfAndSts.setGroupStatus(txnStatus.toString());   // ACSP or ACSC
+                    orgnlGrpInfAndSts.setGroupStatus(txnStatus);   // ACSP or ACSC
                     pacs00200109.getFIToFIPmtStsRpt().getOriginalGroupInformationAndStatus()[i] = orgnlGrpInfAndSts;
                   } else {
                     throw new RuntimeException("Missing field : OriginalMessageIdentification OR OriginalCreationDateTime");
@@ -782,7 +782,6 @@ foam.CLASS({
               out.println("<pre>");
               t.printStackTrace(out);
               out.println("</pre>");
-              t.printStackTrace();
               logger.error(t);
              }
 

@@ -2,7 +2,6 @@ package net.nanopay.fx;
 
 import foam.core.X;
 import foam.dao.DAO;
-import net.nanopay.fx.localfx.LocalFXService;
 
 public class FXServiceTest
     extends foam.nanos.test.Test {

@@ -26,7 +26,10 @@ foam.CLASS({
         class: 'Date',
         name: 'date',
         documentation: 'Date of the holiday.',
-        required: true
+        required: true,
+        tableCellFormatter: function(value, obj, axiom) {
+          this.add(value.toISOString().substring(0, 10));
+        }
       },
       {
         class: 'Reference',

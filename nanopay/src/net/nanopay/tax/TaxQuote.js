@@ -21,7 +21,7 @@ foam.CLASS({
         },
         {
           name: 'totalAmount',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -30,7 +30,7 @@ foam.CLASS({
         },
         {
           name: 'totalExempt',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -39,7 +39,7 @@ foam.CLASS({
         },
         {
           name: 'totalDiscount',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -48,7 +48,7 @@ foam.CLASS({
         },
         {
           name: 'totalTax',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -57,7 +57,7 @@ foam.CLASS({
         },
         {
           name: 'totalTaxable',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -66,7 +66,7 @@ foam.CLASS({
         },
         {
           name: 'totalTaxCalculated',
-          class: 'Currency',
+          class: 'UnitValue',
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this

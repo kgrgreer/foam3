@@ -219,7 +219,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
+      if ( ! this.validatePhone(businessProfile.phone.number) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
         return false;
       }
@@ -246,7 +246,7 @@ foam.CLASS({
         return false;
       }
 
-      var businessAddress = businessProfile.businessAddress;
+      var businessAddress = businessProfile.address;
       if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNumberMessage, type: 'error' }));
         return false;

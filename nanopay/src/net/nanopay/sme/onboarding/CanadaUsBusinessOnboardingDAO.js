@@ -9,12 +9,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
-    'foam.core.X',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil',
+    'foam.nanos.notification.Notification',
     'net.nanopay.documents.AcceptanceDocumentService',
-    'net.nanopay.model.Business',
-    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding'
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -36,38 +34,55 @@ foam.CLASS({
         CanadaUsBusinessOnboarding businessOnboarding = (CanadaUsBusinessOnboarding) obj;
         CanadaUsBusinessOnboarding old = (CanadaUsBusinessOnboarding)getDelegate().find_(x, obj);
 
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, businessOnboarding);
-        }
-
         // if the businessOnboarding is already set to SUBMITTED, do not allow modification
         if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) return getDelegate().put_(x, businessOnboarding);
-  
-        // TODO: Please call the java validator of the businessOnboarding here
-
-        businessOnboarding.validate(x);
-
-        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-
-        Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-        business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
-        business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
-        localBusinessDAO.put(business);
 
         // ACCEPTANCE DOCUMENTS
         Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
         }
         Long oldInternationAgrement = old == null ? 0 : old.getNanopayInternationalPaymentsCustomerAgreement();
         if ( oldInternationAgrement != businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement(),
             businessOnboarding.getNanopayInternationalPaymentsCustomerAgreement() != 0 );
         }
-        return getDelegate().put_(x, businessOnboarding);
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, businessOnboarding);
+        }
+  
+        // TODO: Please call the java validator of the businessOnboarding here
+
+        businessOnboarding.validate(x);
+
+        FObject fObject = getDelegate().put_(x, businessOnboarding);
+
+        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+
+        Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
+        business = (Business) business.fclone();
+        business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
+        business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
+        business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
+        localBusinessDAO.put(business);
+
+        // Generate the notification sent to Fraud-ops & Payment-ops group only
+        DAO localNotificationDAO = (DAO) x.get("localNotificationDAO");
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("A Canadian business with name: " + business.getOrganization() + " and id: "
+          + business.getId() + " has completed the cross-border onboarding.");
+        notification.setNotificationType("A cross-border business has been onboarded");
+
+        notification.setGroupId("fraud-ops");
+        localNotificationDAO.put(notification);
+        notification.setGroupId("payment-ops");
+        localNotificationDAO.put(notification);
+
+        return fObject;
       `
     }
   ]

@@ -5,22 +5,17 @@ foam.RELATIONSHIP({
   inverseName: 'branch',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    view: function(_, X) {
-      return foam.u2.view.ChoiceView.create({
-        dao: X.branchDAO,
-        placeholder: '--',
-        objToChoice: function(branch) {
-          return [branch.id, branch.branchId];
-        }
-      });
-    },
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        if ( branch ) self.add(branch.branchId);
+        if ( branch ) {
+          self.add(branch.branchId);
+          self.tooltip = branch.branchId;
+        }
       });
     }
   }
@@ -33,6 +28,7 @@ foam.RELATIONSHIP({
   inverseName: 'institution',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -48,11 +44,14 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
+            var displayinstitution;
             if ( institution.institutionNumber !== "" ) {
-              self.add(institution.institutionNumber);
+              displayinstitution = institution.institutionNumber;
             }  else {
-              self.add(institution.name);
+              displayinstitution = institution.name;
             }
+            self.add(displayinstitution);
+            self.tooltip  = displayinstitution;
           }
         }).catch( function( error ) {
           self.add('N/A');
@@ -88,7 +87,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
-    section: 'accountDetails',
+    section: 'parentSection',
     order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
@@ -98,8 +97,20 @@ foam.RELATIONSHIP({
         placeholder: 'select Parent',
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
-    }
+    },
+    readPermissionRequired: true
   }
+});
+
+// A securities account is one account that all the security transactions go to and from. The subaccounts hold the actual securities, and there is one per Security`
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.SecuritiesAccount',
+  targetModel: 'net.nanopay.account.SecurityAccount',
+  inverseName: 'SecuritiesAccount',
+  forwardName: 'subAccounts',
+  targetDAOKey: 'accountDAO',
+  sourceDAOKey: 'accountDAO',
+  cardinality: '1:*',
 });
 
 foam.RELATIONSHIP({
@@ -109,6 +120,7 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     section: 'accountsSection',
     label: ''
@@ -129,6 +141,10 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
+  targetDAOKey: 'accountDAO',
+  unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
     hidden: true
   },
@@ -149,7 +165,7 @@ foam.RELATIONSHIP({
       this.__subSubContext__.userDAO
         .find(value)
         .then((user) => {
-          this.add('[', user.cls_.name, '] ', user.label());
+          this.add(user.label());
         })
         .catch((error) => {
           this.add(value);
@@ -210,7 +226,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.cico.paymentCard.model.PaymentCard',
   forwardName: 'paymentCards',
   inverseName: 'owner',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 /*
@@ -231,7 +251,9 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'transactionLimits',
-      of: 'net.nanopay.tx.model.TransactionLimit'
+      of: 'net.nanopay.tx.model.TransactionLimit',
+      createMode: 'HIDDEN',
+      section: 'administrative'
     }
   ]
 });
@@ -240,9 +262,30 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent'
+  inverseName: 'parent',
+  sourceProperty: {
+    visibility: 'FINAL',
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+  }
 });
 
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'associatedTransactions',
+  inverseName: 'associateTransaction',
+  sourceProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  },
+  targetProperty: {
+    visibility: 'FINAL',
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
+});
 
 foam.RELATIONSHIP({
   cardinality: '1:*',
@@ -258,7 +301,15 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'partners',
   inverseName: 'partnered',
-  junctionDAOKey: 'partnerJunctionDAO'
+  junctionDAOKey: 'partnerJunctionDAO',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  },
+  targetProperty: {
+    createMode: 'HIDDEN',
+    section: 'administrative'
+  }
 });
 
 foam.CLASS({
@@ -337,7 +388,8 @@ foam.CLASS({
       of: 'net.nanopay.auth.AgentJunctionStatus',
       name: 'status',
       documentation: 'Describes the active state between agent and entity.',
-      permissionRequired: true,
+      readPermissionRequired: true,
+      writePermissionRequired: true,
       value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
     }
   ],
@@ -508,6 +560,7 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
+  unauthorizedTargetDAOKey: 'localContactDAO',
 });
 
 foam.RELATIONSHIP({
@@ -570,6 +623,10 @@ foam.RELATIONSHIP({
   cardinality: '*:*',
   forwardName: 'signingOfficers',
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
+  sourceProperty: {
+    createMode: 'HIDDEN',
+    section: 'business'
+  },
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
@@ -645,9 +702,33 @@ foam.RELATIONSHIP({
   forwardName: 'debits',
   inverseName: 'sourceAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
+  targetProperty: {
+    visibility: 'FINAL',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value)
+        .then((account) => account.name ? account.name : value));
+    },
+    javaToCSVLabel: `
+      outputter.outputValue("Sender User Id");
+      outputter.outputValue("Sender Name");
+    `,
+    javaToCSV: `
+      net.nanopay.account.Account account = (Account)((Transaction)obj).findSourceAccount(x);
+      if ( account != null ) {
+        User sender = account.findOwner(x);
+        outputter.outputValue(sender.getId());
+        outputter.outputValue(sender.label());
+      } else {
+        ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
+      }
+    `,
+    includeInDigest: true
+  },
 });
 
 foam.RELATIONSHIP({
@@ -656,9 +737,34 @@ foam.RELATIONSHIP({
   forwardName: 'credits',
   inverseName: 'destinationAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  unauthorizedTargetDAOKey: 'localTransactionDAO',
+  sourceProperty: { visibility: 'RO' },
+  targetProperty: {
+    visibility: 'FINAL',
+    section: 'paymentInfo',
+    tableCellFormatter: function(value) {
+      this.add(this.__subSubContext__.accountDAO.find(value)
+        .then((account) => account.name ? account.name : value));
+    },
+    javaToCSVLabel: `
+      outputter.outputValue("Receiver User Id");
+      outputter.outputValue("Receiver Name");
+    `,
+    javaToCSV: `
+      net.nanopay.account.Account account = (Account)((Transaction)obj).findDestinationAccount(x);
+      if ( account != null ) {
+        User receiver = account.findOwner(x);
+        outputter.outputValue(receiver.getId());
+        outputter.outputValue(receiver.label());
+      } else {
+        ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.destinationAccount not found (during toCSV).", ((Transaction)obj).getId());
+      }
+    `,
+    includeInDigest: true
+  },
 });
 
 foam.RELATIONSHIP({
@@ -668,6 +774,7 @@ foam.RELATIONSHIP({
   inverseName: 'flinksAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -679,6 +786,7 @@ foam.RELATIONSHIP({
   inverseName: 'plaidAccount',
   cardinality: '1:*',
   sourceDAOKey: 'accountDAO',
+  unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -690,8 +798,16 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceItemDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -701,8 +817,16 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'complianceHistoryDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -712,17 +836,55 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  unauthorizedSourceDAOKey: 'localUserDAO',
   targetDAOKey: 'approvalRequestDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    readMode: 'RO',
+    updateMode: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'administrative'
+  }
 });
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
-  forwardName: 'complianceItems',
+  forwardName: 'complianceResponses',
   inverseName: 'transactionId',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.exchangeable.AssetClass',
+  targetModel: 'net.nanopay.exchangeable.Security',
+  forwardName: 'members',
+  inverseName: 'assetClass',
+  cardinality: '1:*',
+  sourceDAOKey: 'assetClassDAO',
+  targetDAOKey: 'securitiesDAO',
+});
+
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.TransactionEvent',
+  forwardName: 'transactionEvents',
+  inverseName: 'transaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'transactionEventDAO',
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PaymentCode',
+  forwardName: 'paymentCode',
+  inverseName: 'owner',
+  cardinality: '1:*',
 });

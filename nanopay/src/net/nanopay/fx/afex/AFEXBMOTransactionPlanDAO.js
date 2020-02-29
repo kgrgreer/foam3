@@ -14,36 +14,25 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'foam.core.FObject',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.tx.ExpiryLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.fx.FeesFields',
-    'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXLineItem',
-    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.FXTransaction',
-    'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
-    'net.nanopay.iso20022.Pacs00800106',
-    'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.model.Currency',
-    'net.nanopay.tx.alterna.AlternaCOTransaction',
+    'foam.core.Currency',
     'net.nanopay.tx.alterna.AlternaCITransaction'
   ],
 
@@ -107,8 +96,6 @@ foam.CLASS({
       // }
 
       if ( fxService instanceof AFEXServiceProvider  ) {
-        fxService = (AFEXServiceProvider) fxService;
-  
         // Validate that Payer is provisioned for AFEX before proceeding
         // if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
           AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
@@ -284,7 +271,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.setFxFees(fees);
   
   afexTransaction.setIsQuoted(true);
-  afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+ // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
   afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());

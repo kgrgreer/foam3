@@ -4,16 +4,6 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'addHistory',
-      type: 'void',
-      args: [
-        {
-          type: 'String',
-          name: 'history',
-        },
-      ]
-    },
-    {
       name: 'setBmoReferenceNumber',
       type: 'void',
       args: [

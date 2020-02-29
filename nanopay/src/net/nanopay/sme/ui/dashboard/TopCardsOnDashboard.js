@@ -30,9 +30,11 @@ foam.CLASS({
   imports: [
     'accountingIntegrationUtil',
     'agent',
+    'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'canadaUsBusinessOnboardingDAO',
+    'isIframe',
     'user',
     'userDAO'
   ],
@@ -68,42 +70,24 @@ foam.CLASS({
     margin-top: -12px;
   }
   ^ .radio-as-arrow {
-    width: 0;
-    height: 0;
     border-style: solid;
     border-width: 0 4px 5px 4px;
     border-color: transparent transparent white transparent;
     position: relative;
-    left: 17px;
-    bottom: -10px;
+    left: 13px;
+    top: 6px;
     z-index: 0;
     pointer-events:none;
   }
   ^ .radio-as-arrow-down {
-    width: 0;
-    height: 0;
     border-style: solid;
     border-width: 5px 4px 0 4px;
     border-color: white transparent transparent transparent;
     position: relative;
-    left: 17px;
-    bottom: -10px;
+    left: 13px;
+    top: 7px;
     z-index: 0;
     pointer-events:none;
-  }
-  ^ .line {
-    width: 100%;
-    height: 10px;
-    border-bottom: 2px solid #e2e2e3;
-    text-align: center;
-    margin-top: 15px;
-  }
-  ^ .divider-half {
-    font-size: 14px;
-    background-color: /*%GREY5%*/ #f5f7fa;
-    padding: 0 10px;
-    text-align: center;
-    color: #8e9090;
   }
   ^ .foam-u2-CheckBox {
     -webkit-appearance: none;
@@ -113,14 +97,6 @@ foam.CLASS({
   }
   ^ .foam-u2-CheckBox:checked:after {
     content: none;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 4px 0 4px;
-    border-color: transparent transparent white transparent;
-    position: relative;
-    left: 17px;
-    bottom: -10px;
   }
   `,
 
@@ -131,93 +107,61 @@ foam.CLASS({
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
     'bankAccount',
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-    },
     'userHasPermissionsForAccounting',
     'businessOnboarding',
-    'onboardingStatus'
+    'onboardingStatus',
+    'businessRegistrationDate',
+    'countryOfBusinessRegistration',
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: false,
+      expression: function(businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) {
+        return businessOnboarding && businessRegistrationDate && countryOfBusinessRegistration;
+      }
+    }
   ],
 
   messages: [
-    { name: 'LOWER_LINE_TXT', message: 'Welcome back ' },
-    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
+    { name: 'LOWER_LINE_TXT', message: 'Welcome back ' }
   ],
 
   methods: [
-    function init() {
-      this.canadaUsBusinessOnboardingDAO.find(
-        this.AND(
-          this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
-          this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
-        )
-      ).then((o) => {
-        this.internationalPaymentEnabled = o && o.status === this.OnboardingStatus.SUBMITTED;
-      });
+    async function init() {
+      let business = await this.businessDAO.find(this.user.id);
+      this.onboardingStatus = business.onboarded;
+      this.countryOfBusinessRegistration = business.countryOfBusinessRegistration;
+      this.businessRegistrationDate = business.businessRegistrationDate;
     },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
-        .callIf( ! this.businessOnboarding || this.businessOnboarding.signingOfficer || this.businessOnboarding.status !== this.OnboardingStatus.SUBMITTED,
-          () => {
-            this
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .add(this.slot((onboardingStatus) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus }).end();
+                .add(this.slot((user$onboarded, businessOnboarding) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-              .start('span')
-                .add(this.slot((onboardingStatus, internationalPaymentEnabled) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: onboardingStatus && internationalPaymentEnabled }).end();
+              .start('span').hide(this.isIframe())
+                .add(this.slot((user$onboarded, businessOnboarding, complete) => {
+                  let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: complete, isEmployee: isEmp, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-            .end();
-          })
-        .callIf(this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
-          () => {
-            this
-            .start().addClass('divider').end()
-            .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
-            .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
-            .start().addClass('cards').hide(this.hidePaymentCards$)
-              .start('span')
-                .add(this.slot((onboardingStatus) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: onboardingStatus }).end();
-                }))
-              .end()
-              .start('span')
-                .add(this.slot((internationalPaymentEnabled) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled, isEmployee: true }).end();
-                }))
-              .end()
-            .end();
-          })
-        .callIf( ! this.onboardingStatus && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED,
-          () => {
-            this
-            .start('span').addClass('cards')
-              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
-            .end();
-          })
+            .end()
         .start().addClass('lower-cards')
-              .start('span')
-                .add(this.slot((bankAccount) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount }).end();
-                }))
-              .end()
-              .start('span')
-                .add(this.slot((user$hasIntegrated) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
-                }))
-              .end()
-        .start().addClass('line')
           .start('span')
-            .addClass('divider-half').add(this.UPPER_TXT)
+            .add(this.slot((bankAccount) => {
+              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount }).end();
+            }))
+          .end()
+          .start('span').hide(this.isIframe())
+            .add(this.slot((user$hasIntegrated) => {
+              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
+            }))
           .end()
         .end();
     }

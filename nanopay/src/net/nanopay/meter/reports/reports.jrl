@@ -22,3 +22,4 @@ p({class:"net.nanopay.meter.reports.Report",id:"Report-ReportRejectedTransaction
 
 // Business Summary Reports
 p({"class":"net.nanopay.meter.reports.Report","id":"Report-Business-Summary-for-Leadership","code":"import net.nanopay.meter.reports.ReportBusinessSummary;\nrbs = new ReportBusinessSummary();\nreport = rbs.createReport(x);\nprint(report);"})
+p({"class":"net.nanopay.meter.reports.Report","id":"Report-Business-Information-for-Marketing","code":"import net.nanopay.meter.reports.ReportBusinessInformation;\nrbi = new ReportBusinessInformation();\nreport = rbi.createReport(x);\nprint(report);"})

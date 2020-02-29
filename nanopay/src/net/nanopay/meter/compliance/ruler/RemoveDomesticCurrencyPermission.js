@@ -17,9 +17,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.model.Business',
   ],
 
@@ -35,7 +32,7 @@ foam.CLASS({
             }
             Business business = (Business) obj.fclone();
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
-            Address businessAddress = business.getBusinessAddress();
+            Address businessAddress = business.getAddress();
             
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String currencyPermissionString = "currency.read.";

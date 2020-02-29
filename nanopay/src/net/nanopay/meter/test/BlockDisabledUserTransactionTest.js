@@ -103,7 +103,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Payer user is disabled.",
+            "Unable to find a plan for requested transaction.",
             RuntimeException.class
           ),
           "Create transaction with disabled sender throws RuntimeException"
@@ -120,7 +120,7 @@ foam.CLASS({
         test(
           TestUtils.testThrows(
             () -> transactionDAO_.put(txn),
-            "Payee user is disabled.",
+            "Unable to find a plan for requested transaction.",
             RuntimeException.class
           ),
           "Create transaction with disabled receiver throws RuntimeException"

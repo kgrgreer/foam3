@@ -87,7 +87,8 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
         user = (User) bareUserDAO.find(userId);
       }
     } catch(Exception e) {
-      e.printStackTrace();
+      Logger logger = (Logger) getX().get("logger");
+      logger.log(e);
     }
     return user;
   }

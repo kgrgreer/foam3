@@ -187,7 +187,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start('div').addClass('error-view-div')
           .start('div').addClass('error-icon')
-            .tag({ class: 'foam.u2.tag.Image', data: 'images/merchant/ic-error.svg' })
+            .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-error.svg' })
           .end()
         .start().addClass('error-message')
           .add(! refund ? this.paymentError : this.refundError).end()
@@ -200,7 +200,7 @@ foam.CLASS({
               .tag({
                 class: 'foam.nanos.auth.ProfilePictureView',
                 ProfilePictureImage$: this.transactionUser.profilePicture$,
-                placeholderImage: 'images/merchant/ic-placeholder.png',
+                placeholderImage: 'images/ic-placeholder.png',
                 uploadHidden: true,
                 boxHidden: true
               })

@@ -185,6 +185,7 @@ foam.CLASS({
       javaCode: `
         for ( BusinessUserJunction junction : signingOfficers ) {
           if ( business.getCompliance() != junction.getCompliance() ) {
+            business = (Business) business.fclone();
             business.setCompliance(junction.getCompliance());
             return;
           }

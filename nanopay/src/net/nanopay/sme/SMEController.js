@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingIntegrationUtil',
+    'net.nanopay.util.OnboardingUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -15,13 +16,11 @@ foam.CLASS({
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.model.SignUp',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.ChangePasswordView',
-    'net.nanopay.sme.ui.ResendPasswordView',
-    'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -31,7 +30,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
-    'foam.u2.Element',
+    'foam.u2.Element'
   ],
 
   exports: [
@@ -44,8 +43,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'currentAccount',
+    'isIframe',
+    'onboardingUtil',
     'privacyUrl',
-    'termsUrl',
+    'termsUrl'
   ],
 
   imports: [
@@ -204,6 +205,17 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'loginVariables',
+      expression: function(client$smeBusinessRegistrationDAO) {
+        return {
+          dao_: client$smeBusinessRegistrationDAO || null,
+          imgPath: 'images/sign_in_illustration.png',
+          group_: 'sme',
+          countryChoices_: ['CA', 'US']
+        };
+      }
+    },
+    {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'agent',
@@ -242,14 +254,26 @@ foam.CLASS({
       }
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.util.OnboardingUtil',
+      name: 'onboardingUtil',
+      factory: function() {
+        return this.OnboardingUtil.create();
+      }
+    },
+    {
       class: 'Boolean',
       name: 'caUsOnboardingComplete'
+    },
+    {
+      class: 'Boolean',
+      name: 'verifiedAccount'
     },
     {
       class: 'Array',
       name: 'complianceStatusArray',
       documentation: `
-        A customized array contains objects for the toast notification 
+        A customized array contains objects for the toast notification
         and banner to handle different cases of the business onboarding status
         and the bank account status.
       `,
@@ -264,15 +288,15 @@ foam.CLASS({
                 && accountArray.length === 0;
             },
             passed: false,
-            showBanner: false
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -280,10 +304,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -301,10 +325,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -322,10 +346,10 @@ foam.CLASS({
           {
             msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+                && ! verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -333,10 +357,10 @@ foam.CLASS({
           {
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
             bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && verifiedAccount;
             },
             passed: false,
             showBanner: true
@@ -344,10 +368,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
               && user.compliance === self.ComplianceStatus.PASSED
-              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && verifiedAccount
               && user.address.countryId === 'CA'
               && ! self.caUsOnboardingComplete;
             },
@@ -357,10 +381,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER_INTERNATIONAL,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
               && user.compliance === self.ComplianceStatus.PASSED
-              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && verifiedAccount
               && user.address.countryId === 'CA'
               && self.caUsOnboardingComplete;
             },
@@ -370,10 +394,10 @@ foam.CLASS({
           {
             msg: this.PASSED_BANNER_DOMESTIC_US,
             bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray) {
+            condition: function(user, accountArray, verifiedAccount) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED
+                && verifiedAccount
                 && user.address.countryId === 'US';
             },
             passed: true,
@@ -416,7 +440,8 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      if ( this.user.emailVerified ) {
+      if ( (this.user && this.user.emailVerified) ||
+           (this.agent && this.agent.emailVerified) ) {
         this.add(this.SMEModal.create({ closeable: false }).tag({
           class: 'net.nanopay.ui.modal.SessionTimeoutModal',
         }));
@@ -442,18 +467,22 @@ foam.CLASS({
           this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
           this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
           this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
-          this.__subContext__.register(this.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
-          this.__subContext__.register(this.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
-          this.__subContext__.register(this.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
           this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
           this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
           this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
           this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
           this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
+          this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
 
-          this.findBalance();
-          this.addClass(this.myClass())
-            .tag('div', null, this.topNavigation_$)
+          if ( this.loginSuccess ) {
+            this.findBalance();
+          }
+          if ( ! this.isIframe() ) {
+            this.addClass(this.myClass())
+            .add(this.loginSuccess$.map((loginSuccess) => {
+              if ( ! loginSuccess ) return null;
+              return this.E().tag(this.topNavigation_);
+            }))
             .start()
               .addClass('stack-wrapper')
               .start({
@@ -466,51 +495,79 @@ foam.CLASS({
                 data: this.stack,
                 showActions: false
               })
+            .end();
+          } else {
+          this.addClass(this.myClass())
+          .start()
+            .addClass('stack-wrapper')
+            .start({
+              class: 'net.nanopay.ui.banner.Banner',
+              data$: this.bannerData$
+            })
             .end()
-            .tag('div', null, this.footerView_$);
-
-            /*
-              This is mandatory.
-              'topNavigation_' & 'footerView' need empty view when initialize,
-              otherwise they won't toggle after signin.
-            */
-            this.topNavigation_.add(foam.u2.View.create());
-            this.footerView_.hide();
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: this.stack,
+              showActions: false
+            })
+          .end();
+          }
         });
       });
+    },
+
+    function isIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
     },
 
     function requestLogin() {
       var self = this;
       var locHash = location.hash;
-      var view = { class: 'net.nanopay.sme.ui.SignInView' };
+      var view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
 
       if ( locHash ) {
-        // Don't go to log in screen if going to reset password screen.
-        if ( locHash === '#reset' ) {
-          view = { class: 'foam.nanos.auth.resetPassword.ResetView' };
-        }
-
         var searchParams = new URLSearchParams(location.search);
 
-        // Don't go to log in screen if going to sign up password screen.
+        if ( locHash === '#reset' ) {
+          view = { class: 'foam.nanos.auth.ChangePasswordView' };
+        }
+
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
           view = {
-            class: 'net.nanopay.sme.ui.SignUpView',
-            emailField: searchParams.get('email'),
-            disableEmail: !! searchParams.get('email'),
-            signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.has('companyName')
-              ? searchParams.get('companyName')
-              : '',
-            disableCompanyName: searchParams.has('companyName'),
-            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
+            class: 'foam.u2.view.LoginView',
+            mode_: 'SignUp',
+            param: {
+              email: searchParams.get('email'),
+              disableEmail_: searchParams.has('email'),
+              token_: searchParams.get('token'),
+              organization: searchParams.has('companyName')
+                ? searchParams.get('companyName')
+                : '',
+              disableCompanyName_: searchParams.has('companyName'),
+              countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
+              firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
+              lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
+              jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
+              phone: searchParams.has('phone') ? searchParams.get('phone') : '',
+            }
           };
+        }
+
+        // Process auth token
+        if ( ! self.loginSuccess && !! searchParams.get('token') ) {
+          self.client.authenticationTokenService.processToken(null, null,
+            searchParams.get('token')).then(() => {
+              location = locHash == '#onboarding' ? '/' : '/' + locHash;
+            });
         }
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(view);
+        self.stack.push(view, self);
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -522,12 +579,14 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      await this.getCAUSPaymentEnabled(user, this.agent);
-
-      if ( user.compliance == this.ComplianceStatus.PASSED ) {
-        var signingOfficers = await this.getSigningOfficersArray(user);
-        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      if ( accountArray ) {
+        for ( i =0; i < accountArray.length; i++ ) {
+          if ( accountArray[i].status == this.BankAccountStatus.VERIFIED ) {
+            this.verifiedAccount = true;
+          }
+        }
       }
+      await this.getCAUSPaymentEnabled(user, this.agent);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -540,7 +599,7 @@ foam.CLASS({
        * and bank account status, also when showBanner is true.
        */
       var bannerElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray) && complianceStatus.showBanner;
+        return complianceStatus.condition(user, accountArray, this.verifiedAccount) && complianceStatus.showBanner;
       });
 
       if ( bannerElement ) {
@@ -563,8 +622,16 @@ foam.CLASS({
         this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
       }
 
+      if ( accountArray ) {
+        for ( i =0; i < accountArray.length; i++ ) {
+          if ( accountArray[i].status == this.BankAccountStatus.VERIFIED ) {
+            this.verifiedAccount = true;
+          }
+        }
+      }
+
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray);
+        return complianceStatus.condition(user, accountArray, this.verifiedAccount);
       });
 
       if ( toastElement ) {
@@ -599,7 +666,7 @@ foam.CLASS({
 
         // Pass the customized DOM element into the toast notification
         this.notify(TwoFactorNotificationDOM, 'warning');
-        if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
           return false;

@@ -11,13 +11,13 @@ public class ISODateParser
 {
   public ISODateParser() {
     super(new Seq(
-      new Literal("\""),
+      Literal.create("\""),
       new IntParser(),
-      new Literal("-"),
+      Literal.create("-"),
       new IntParser(),
-      new Literal("-"),
+      Literal.create("-"),
       new IntParser(),
-      new Literal("\"")));
+      Literal.create("\"")));
   }
 
   @Override

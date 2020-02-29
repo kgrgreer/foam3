@@ -83,7 +83,7 @@ function setup_jce {
   if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
     mkdir tmp_jce
     cd tmp_jce
-    curl -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
+    curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
     unzip jce_policy-8.zip
     sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
     cd ..
@@ -113,10 +113,15 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+    journalExtras=""
+    if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
+        journalExtras=-E"tools/journal_extras/disable_livescriptbundler"
+    fi
+
+    if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
@@ -162,45 +167,16 @@ function clean {
             rm -rf *
             cd "$tmp"
         fi
-
-        if [ "$GRADLE_BUILD" -eq 0 ]; then
-            if [ -d "build/" ]; then
-                rm -rf build
-                mkdir build
-            fi
-            if [ -d "target/" ]; then
-                rm -rf target
-                mkdir target
-            fi
-            mvn clean
-        else
-            gradle clean $GRADLE_FLAGS
-        fi
+        
+        gradle clean $GRADLE_FLAGS
     fi
 }
 
 function build_jar {
-    if [ "$GRADLE_BUILD" -eq 1 ]; then
-        if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-            gradle --daemon buildJar $GRADLE_FLAGS
-        else
-            gradle --daemon build $GRADLE_FLAGS
-        fi
+    if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
+        gradle --daemon buildJar $GRADLE_FLAGS
     else
-        # maven
-        if [ "$COMPILE_ONLY" -eq 0 ]; then
-            echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js build/src/java
-
-            echo "INFO :: Packaging js..."
-            ./tools/js_build/build.js
-        fi
-
-        if [[ ! -z "$VERSION" ]]; then
-            mvn versions:set -DnewVersion=$VERSION
-        fi
-
-        mvn package
+        gradle --daemon build $GRADLE_FLAGS
     fi
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
@@ -290,9 +266,7 @@ function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
         OPT_ARGS=
         
-        if [ $GRADLE_BUILD -eq 1 ]; then
-            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
-        fi
+        OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
 
         if [ ! -z ${RUN_USER} ]; then
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
@@ -391,7 +365,7 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+    export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
@@ -419,7 +393,10 @@ function setenv {
         mkdir -p "${JOURNAL_HOME}"
     fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
-        mkdir -p "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
+    elif [ ! -L "${DOCUMENT_HOME}" ]; then
+        rm -rf "${DOCUMENT_HOME}"
+        ln -s "$(pwd)/documents" $DOCUMENT_HOME
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -449,7 +426,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
@@ -508,6 +485,7 @@ function usage {
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
+    echo "  -l : Delete runtime logs."
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
@@ -523,6 +501,7 @@ function usage {
     echo "  -U : User to run as"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
+    echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -x : Check dependencies for known vulnerabilities."
@@ -531,12 +510,47 @@ function usage {
     echo ""
 }
 
+# Print Nanopay text (very important, otherwise nothing will work)
+if [ $(date +%m) -eq 10 ] && [ $(date +%d) -gt 25 ]; then
+  ostart="\033[38;5;214m"
+  echo -e " $ostart                                 #'\""
+  echo -e "  _ __   __ _ _ __   ___  _ __ @ @ @ @_   _ "
+  echo -e " | '_ \\ / _\` | '_ \\ / _ \\| '_@ /\\   /\\ @ | |"
+  echo -e " | | | | (_| | | | | (_) | |@     ^     @| |"
+  echo -e " |_| |_|\\__,_|_| |_|\\___/| .@  \\_____/  @, |"
+  echo -e " (c) nanopay Corporation |_| @ @ @ @ @ @__/\033[0m"
+  echo ""
+elif [ $(date +%m) -eq 11 ] && [ $(date +%d) -eq 11 ]; then
+  echo -e "\033[34;1m  _ __   __ _ _ __   \033[31;1m.-.\033[0m  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\\\\033[31;1m.\\   /.\033[0m '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | |\033[31;1m:\033[0m  (O)  \033[31;1m:\033[0m|_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_\033[31;1m'/   \\'\033[0m .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[0m|_|          |___/  \033[0m"
+  echo ""
+elif [ $(date +%m) -eq 12 ]; then
+
+ echo -e "                         \033[32m#\033[0m"
+ echo -e "                        \033[32m###\033[0m"
+ echo -e "\033[38;5;46m _ __   __ _ _ __   ___\033[0m\033[32m##\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;46m_   __ _ _   _\033[0m"
+ echo -e "\033[38;5;34m| '_ \\ / _\` | '_ \\ / _\033[0m\033[32m#\033[0m\033[31;1;5mO\033[0m\033[32m##\033[0m\033[36;1;5mO\033[0m\033[32m##\033[0m\033[38;5;34m\\ / _\` | | | |\033[0m"
+ echo -e "\033[38;5;28m| | | | (_| | | | | (\033[0m\033[32m#\033[0m\033[36;1;5mO\033[0m\033[32m#\033[0m\033[38;5;94m| |\033[0m\033[33;1;5mO\033[0m\033[32m##\033[0m\033[38;5;28m| (_| | |_| |\033[0m"
+ echo -e "\033[38;5;22m|_| |_|\\__,_|_| |_|\\\\\033[0m\033[32m##_#\033[0m\033[34;1;5mO\033[0m\033[32m#.#_\033[0m\033[31;1;5mO\033[0m\033[32m#\033[0m\033[38;5;22m\\__,_|\\__, |\033[0m"
+ echo -e "\033[33m(c) nanopay Corporation\033[0m \033[38;5;94m|_|\033[0m          \033[38;5;22m|___/\033[0m"
+else
+  echo -e "\033[34;1m  _ __   __ _ _ __   ___  _ __   __ _ _   _  \033[0m"
+  echo -e "\033[34;1m | '_ \\ / _\` | '_ \\ / _ \\| '_ \\ / _\` | | | | \033[0m"
+  echo -e "\033[34;1m | | | | (_| | | | | (_) | |_) | (_| | |_| | \033[0m"
+  echo -e "\033[34;1m |_| |_|\\__,_|_| |_|\\___/| .__/ \\__,_|\\__, | \033[0m"
+  echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
+  echo ""
+fi
+
 ############################
 
 JOURNAL_CONFIG=default
+JOURNAL_SPECIFIED=0
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -560,13 +574,14 @@ STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
+DISABLE_LIVESCRIPTBUNDLER=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
+while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -575,11 +590,20 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
            ;;
+        e) warning "Skipping genJava task"
+           skipGenFlag="-Pfoamoptions.skipgenjava=true"
+           if [ "$GRADLE_FLAGS" == "" ]; then
+                GRADLE_FLAGS=$skipGenFlag
+           else
+                GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
+           fi
+           ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
-        J) JOURNAL_CONFIG=$OPTARG ;;
+        J) JOURNAL_CONFIG=$OPTARG
+           JOURNAL_SPECIFIED=1 ;;
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
@@ -590,7 +614,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
-        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
@@ -599,7 +622,22 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
            ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
-           echo "💧 Initializing Liquid Environment 💧"
+           JOURNAL_SPECIFIED=1
+
+           echo ""                             
+           echo -e "\033[34;1m   (                       (     \033[0m"    
+           echo -e "\033[34;1m   )\ (     (     (   (    )\ )  \033[0m"
+           echo -e "\033[34;1m  ((_))\  ( )\   ))\  )\  (()/(  \033[0m"
+           echo -e "\033[34;1m   \033[96;1m_\033[0m\033[34;1m ((_) )(( ) /((_)((_)  ((\033[96;1m_\033[0m\033[34;1m)) \033[0m\033[0m"
+           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m" 
+           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m" 
+           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m" 
+           echo -e "\033[96;1m            |_|                  \033[0m"
+           echo ""
+           echo "" 
+           echo -e "💧 Initializing Liquid Environment 💧"
+           echo -e "\033[41;1m IMPORTANT: BE SURE TO SET ENABLED TO TRUE FOR BOTH: \033[0m"
+           echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
@@ -616,6 +654,7 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}";;
+        w) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         W) WEB_PORT=$OPTARG
            echo "WEB_PORT=${WEB_PORT}";;
         z) DAEMONIZE=1 ;;
@@ -626,16 +665,16 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
-    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
-    JOURNAL_CONFIG=test
+    if [ $JOURNAL_SPECIFIED -ne 1 ]; then
+        echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+        JOURNAL_CONFIG=test
+    else
+        echo "INFO :: Mode is TEST, but JOURNAL_CONFIG is ${JOURNAL_CONFIG}"
+    fi
 fi
 
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
-fi
-
-if [ ${GRADLE_BUILD} -eq 0 ]; then
-    warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
 fi
 
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then

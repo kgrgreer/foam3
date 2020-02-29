@@ -1,0 +1,102 @@
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "2890c3b8-936e-4441-b1ef-1d115a506076",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.Account"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "74061846-de99-4606-a5e9-1a202e0e0497",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.model.PadAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "3e7c1271-dc05-4b2f-a605-16ffef61bdad",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.DebtAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "1b84342e-b107-4175-bfb4-120c4837a7c9",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.LoanAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "4cddb7eb-e75b-4f51-8142-c4bcd90cd211",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.ZeroAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "dd6d1cf4-fec9-4c41-b8ff-bc324c5c725e",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.TrustAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "7f8deffa-96e3-40b7-9efa-ce382ffae0e3",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.CABankAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "15b7f0c0-ef7f-4876-9a00-0dd8177ee7bb",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.INBankAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "35025d19-4a93-48b5-abe3-c245fddebe56",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.PKBankAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "174c777e-124f-4d4b-8811-2ef8feeff68d",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.USBankAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "c6623a70-ebff-4582-b1d2-d819c1f13fb5",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.LossesAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "dfce5b83-3861-4fcd-9196-93da05f9a931",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.ShadowAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "eca7cf8e-82d7-42a7-9061-26a01cce4dc7",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.DigitalAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "575d2308-385f-4f17-8bb7-fbb3db58c6e4",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.HoldingAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "fe1c1e4f-c518-4095-9543-bd2cf5777492",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.SecurityAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "4b5d8b34-a3bf-487a-a451-a9e68a91df7f",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.AggregateAccount"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "76549144-ed23-4173-90fa-890c2357547f",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.account.OverdraftAccount"
+})

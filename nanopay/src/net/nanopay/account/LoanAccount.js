@@ -15,14 +15,22 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.InterestTransaction',
     'foam.dao.DAO',
     'foam.mlang.MLang'
   ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      targetDAOKey: 'currencyDAO',
+      name: 'denomination',
+      documentation: 'The currency that this account stores.',
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3
+    },
     {
       class: 'Double',
       name: 'rate',

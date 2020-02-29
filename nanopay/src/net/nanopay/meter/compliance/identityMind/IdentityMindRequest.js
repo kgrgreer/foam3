@@ -235,6 +235,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'phash',
+      documentation: 'Source digital account number (Hash).'
+    },
+    {
+      class: 'String',
+      name: 'dphash',
+      documentation: 'Destination digital account number (Hash).'
+    },
+    {
+      class: 'String',
       name: 'amt',
       documentation: 'The amount of the transaction'
     },

@@ -44,7 +44,7 @@ foam.CLASS({
             return;
           }
 
-          if ( beneficiary.getStatus().equals("Active") ) {
+          if ( "Approved".equals(beneficiary.getStatus()) || "Active".equals(beneficiary.getStatus())) {
             txn.setStatus(TransactionStatus.COMPLETED);
           } else {
             DAO afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");

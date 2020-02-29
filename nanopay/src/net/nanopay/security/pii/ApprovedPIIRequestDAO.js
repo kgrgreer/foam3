@@ -14,12 +14,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'java.util.Calendar',
-    'java.util.Date',
-    'net.nanopay.security.pii.ViewPIIRequest'
+    'java.util.Date'
   ],
 
   methods: [
@@ -32,8 +29,6 @@ foam.CLASS({
       obj.setProperty("approvedBy", ((User) x.get("user")).getId() );
       obj.setProperty("approvedAt", new Date());
       
-      // set request approval and expiry time
-      obj.setProperty("ApprovedAt", new Date());
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.add(Calendar.HOUR_OF_DAY, 48);

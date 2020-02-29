@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.auth.User',
 
   documentation: `
-    The base model, as part of the Self-Serve project, for representing people who, 
+    The base model, as part of the Self-Serve project, for representing people who,
     although they are not registered on the platform, can still receive invoices from
     platform users.
   `,
@@ -15,7 +15,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
@@ -24,15 +23,10 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-    'java.util.Iterator',
-    'java.util.List',
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.account.Account',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
   ],
 
@@ -69,8 +63,8 @@ foam.CLASS({
     },
     {
       name: 'legalName',
-      documentation: `A field for the legal first and last name of the Contact, 
-        if different than the provided first name.  The field will default to first 
+      documentation: `A field for the legal first and last name of the Contact,
+        if different than the provided first name.  The field will default to first
         name, last name.`,
       label: 'Name'
     },
@@ -91,12 +85,8 @@ foam.CLASS({
       name: 'firstName',
       validateObj: function(firstName) {
         if ( !! firstName ) {
-          var containsDigitRegex = /\d/;
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
             return 'First name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(firstName) ) {
-            return 'First name cannot contain numbers.';
           }
         }
       }
@@ -109,12 +99,8 @@ foam.CLASS({
       name: 'lastName',
       validateObj: function(lastName) {
         if ( !! lastName ) {
-          var containsDigitRegex = /\d/;
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
             return 'Last name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(lastName) ) {
-            return 'Last name cannot contain numbers.';
           }
         }
       }
@@ -148,7 +134,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
-      documentation: `The ID for the individual person, or real user, 
+      documentation: `The ID for the individual person, or real user,
         who registers with our platform.`
     },
     {
@@ -161,13 +147,18 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
-      documentation: `The unique identifier for the bank account of the Contact 
+      documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      factory: function() {
+        return this.Address.create();
+      }
     },
     {
       class: 'foam.core.Enum',
@@ -179,10 +170,30 @@ foam.CLASS({
     {
       name: 'emailVerified',
       value: true,
-      documentation: `Verifies that the email address of the Contact is valid. 
-        If the email address is not verified the transaction validation logic will 
+      documentation: `Verifies that the email address of the Contact is valid.
+        If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'businessPhone',
+      documentation: 'The phone number of the business.',
+      factory: function() {
+        return this.Phone.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'businessPhoneNumber',
+      documentation: 'The phone number of the business.'
+    },
+    {
+      class: 'Boolean',
+      name: 'businessPhoneVerified',
+      writePermissionRequired: true
     }
   ],
 
@@ -197,8 +208,6 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        String containsDigitRegex = ".*\\\\d.*";
-
         if ( getBusinessId() != 0 ) {
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
           Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
@@ -216,12 +225,8 @@ foam.CLASS({
 
           if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
-            throw new IllegalStateException("First name cannot contain numbers.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {
-            throw new IllegalStateException("Last name cannot contain numbers.");
           } else  if ( this.getBusinessId() == 0 && SafetyUtil.isEmpty(this.getEmail()) ) {
             throw new IllegalStateException("Email is required.");
           } else if ( ! isValidEmail ) {
@@ -234,7 +239,7 @@ foam.CLASS({
 
           if ( this.getBankAccount() != 0 ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
-            
+
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
 
             if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
@@ -304,12 +309,15 @@ foam.CLASS({
       javaCode: `
         Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
         Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
+        Pattern inPosCode = Pattern.compile("^\\\\d{6}(?:[-\\\\s]\\\\d{4})?$");
 
         switch ( countryId ) {
           case "CA":
             return caPosCode.matcher(code).matches();
           case "US":
             return usPosCode.matcher(code).matches();
+          case "IN":
+            return inPosCode.matcher(code).matches();
           default:
             return false;
         }
@@ -369,6 +377,28 @@ foam.CLASS({
         ) {
           throw new AuthorizationException();
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        if ( this.organization ) return this.organization;
+        if ( this.businessName ) return this.businessName;
+        if ( this.legalName ) return this.legalName;
+        if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
+        if ( this.lastName ) return this.lastName;
+        if ( this.firstName ) return this.firstName;
+        return '';
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
+        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
+        if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getLastName()) ) return this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName();
+        return "";
       `
     }
   ]

@@ -91,7 +91,7 @@ foam.CLASS({
         }
 
         if ( liquidityThresholdDetails$errors_ ) {
-          return liquidityThresholdDetails$errors_ ? liquidityThresholdDetails$errors_ : 'Please select what to do with this threshold';
+          return liquidityThresholdDetails$errors_;
         }
       }
     }

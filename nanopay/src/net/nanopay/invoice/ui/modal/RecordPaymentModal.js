@@ -49,7 +49,10 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
+    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
+    { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
+    { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
     { name: 'NOTE_LABEL', message: 'Notes' }
@@ -109,6 +112,9 @@ foam.CLASS({
       margin-top: 20px;
       float: right;
     }
+    ^ .foam-u2-CurrencyView {
+      width: 100%;
+    } 
   `,
   
   methods: [
@@ -135,7 +141,7 @@ foam.CLASS({
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
-          .start(this.NOTE).end()
+          .start(this.NOTE, { placeholder: this.PLACEHOLDER_TEXT }).end()
         .end()
         .start()
           .addClass('button-container')
@@ -157,24 +163,26 @@ foam.CLASS({
       name: 'record',
       label: 'Complete',
       code: function(X) {
-        var paymentDate = X.data.paymentDate;
         if ( ! X.data.paymentDate ) {
-          this.add(this.notify(this.MSG_1, 'error'));
+          this.add(this.notify(this.MSG_RECEIVE_DATE, 'error'));
           return;
         }
 
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        if ( isNaN(paymentDate) && paymentDate != null ) {
-          this.add(this.notify(this.MSG_2, 'error'));
+        var paymentDate = new Date(X.data.paymentDate);
+        var dateCheck = paymentDate > new Date();
+
+        if ( isNaN(paymentDate) || dateCheck ) {
+          this.add(this.notify(this.MSG_INVALID_DATE, 'error'));
           return;
         }
         
         paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
-
+        
         this.invoice.paymentDate = paymentDate;
         this.invoice.chequeAmount = X.data.chequeAmount;
-        this.invoice.chequeCurrency = X.data.currencyType.alphabeticCode;
+        this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);

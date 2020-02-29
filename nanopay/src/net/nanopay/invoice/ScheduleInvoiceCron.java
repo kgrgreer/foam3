@@ -1,22 +1,23 @@
 package net.nanopay.invoice;
 
-import foam.core.ContextAwareSupport;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import foam.util.SafetyUtil;
-import net.nanopay.admin.model.AccountStatus;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.invoice.model.PaymentStatus;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.model.Transaction;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.NEQ;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static foam.mlang.MLang.*;
+import foam.core.ContextAwareSupport;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 
 public class ScheduleInvoiceCron
   extends    ContextAwareSupport
@@ -32,7 +33,7 @@ public class ScheduleInvoiceCron
         logger.log("Finding scheduled Invoices...");
         ArraySink sink = (ArraySink) invoiceDAO_.where(
           AND(
-            EQ(Invoice.PAYMENT_ID, 0),
+            EQ(Invoice.PAYMENT_ID, ""),
             EQ(Invoice.PAYMENT_METHOD, PaymentStatus.NONE),
             NEQ(Invoice.PAYMENT_DATE, null)
           )
@@ -77,13 +78,18 @@ public class ScheduleInvoiceCron
 
         // sets accountId to be used for CICO transaction
         if ( invoice.findDestinationAccount(getX()) != null ) {
-          transaction.setDestinationAccount(invoice.getAccount());
+          transaction.setDestinationAccount(invoice.getDestinationAccount());
         } else {
           transaction.setPayeeId(invoice.getPayeeId());
         }
 
+        if ( invoice.findAccount(getX()) != null ) {
+          transaction.setSourceAccount(invoice.getAccount());
+        } else {
+          transaction.setPayerId(invoice.getPayerId());
+        }
+
         long invAmount = invoice.getAmount();
-        transaction.setSourceAccount(invoice.getAccount());
         transaction.setInvoiceId(invoice.getId());
         transaction.setAmount(invAmount);
 

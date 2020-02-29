@@ -15,6 +15,8 @@ import foam.util.SafetyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 /**
  * Creates an object that stores information we need to access the QuickBooks
  * API. Each object is associated with a user and contains things like security
@@ -47,10 +49,13 @@ public class QuickbooksClientFactory {
       tokenStorage.setCsrf(" ");
       tokenStorage.setRealmId(" ");
       tokenStorage.setAppRedirect(" ");
+    } else {
+      tokenStorage = (QuickbooksToken) tokenStorage.fclone();
     }
 
     if ( config == null ) {
       ((Logger) x.get("logger")).error("Unable to find QBO config for " + app.getUrl());
+      throw new RuntimeException("Unable to find QBOconfig for " + app.getUrl());
     }
 
     // Configures the OAuth and gets the correct URLs.
@@ -71,7 +76,6 @@ public class QuickbooksClientFactory {
       // access to their account.
       tokenStorage.setAppRedirect(oauth2Config.prepareUrl(scopes, config.getAppRedirect(), tokenStorage.getCsrf()));
     } catch ( Exception e ) {
-      e.printStackTrace();
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
     }

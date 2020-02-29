@@ -14,7 +14,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
-      permissionRequired: true
+      readPermissionRequired: true,
+      writePermissionRequired: true
     }
   ]
 });

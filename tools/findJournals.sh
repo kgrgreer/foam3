@@ -1,23 +1,26 @@
 #!/bin/bash
 
 IN_FILE=
-INSTANCE=
+INSTANCES=
 OUT_FILE=
+EXTRA_FILES=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
     echo "  -I : Input File, no option defaults to stdin"
-    echo "  -J : Instance"
+    echo "  -J : Instances"
     echo "  -O : Output File, no option defaults to stdout"
+    echo "  -E : Specify extra journal source directory"
 }
 
-while getopts "I:J:O:" opt ; do
+while getopts "I:J:O:E:" opt ; do
     case $opt in
         I) IN_FILE=$OPTARG ;;
-        J) INSTANCE=$OPTARG ;;
+        J) INSTANCES=$OPTARG ;;
         O) OUT_FILE=$OPTARG ;;
+        E) EXTRA_FILES=$OPTARG ;;
         ?) usage ; exit 1;;
     esac
 done
@@ -25,9 +28,16 @@ done
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
-  "deployment/$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')"
- # "interac/src"
 )
+
+IFS=',' read -ra DIRS <<< "$INSTANCES"
+for d in "${DIRS[@]}"; do
+    sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+done
+
+if [ ! -z $EXTRA_FILES ]; then
+    sources+=($EXTRA_FILES)
+fi
 
 if [ ! -z $OUT_FILE ]; then
     rm $OUT_FILE

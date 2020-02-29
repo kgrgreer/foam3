@@ -2,3 +2,4 @@ p({"class":"foam.nanos.test.Test","id":"Account Balance Dashboard Test","server"
 p({"class":"net.nanopay.account.AuthenticatedAccountDAOTest","id":"AuthenticatedAccountDAOTest"})
 p({"class":"net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAOTest","id":"EnforceOneDefaultDigitalAccountPerCurrencyDAOTest"})
 p({"class":"net.nanopay.account.DuplicateDigitalAccountRuleTest","id":"DuplicateDigitalAccountRuleTest"})
+p({"class":"net.nanopay.account.SecurityAccountTest","id":"SecurityAccountTest"})

@@ -6,11 +6,22 @@ foam.ENUM({
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'glang'
+      name: 'startExpr'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'endExpr'
     },
     {
       class: 'Int',
-      name: 'timeFactor'
+      name: 'numLineGraphPoints',
+      expression: function(numBarGraphPoints) {
+        return numBarGraphPoints * 2;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'numBarGraphPoints'
     }
   ],
 
@@ -18,42 +29,37 @@ foam.ENUM({
     {
       name: 'DAILY',
       label: 'Daily',
-      glang: {
-        class: 'foam.glang.EndOfDay'
-      },
-      timeFactor: 7
+      startExpr: { class: 'foam.glang.StartOfDay' },
+      endExpr: { class: 'foam.glang.EndOfDay' },
+      numBarGraphPoints: 7
     },
     {
       name: 'WEEKLY',
       label: 'Weekly',
-      glang: {
-        class: 'foam.glang.EndOfWeek'
-      },
-      timeFactor: 4
+      startExpr: { class: 'foam.glang.StartOfWeek' },
+      endExpr: { class: 'foam.glang.EndOfWeek' },
+      numBarGraphPoints: 4
     },
     {
       name: 'MONTHLY',
       label: 'Monthly',
-      glang: {
-        class: 'foam.glang.EndOfMonth'
-      },
-      timeFactor: 4
+      startExpr: { class: 'foam.glang.StartOfMonth' },
+      endExpr: { class: 'foam.glang.EndOfMonth' },
+      numBarGraphPoints: 4
     },
     {
       name: 'QUARTERLY',
       label: 'Quarterly',
-      glang: {
-        class: 'foam.glang.EndOfQuarter'
-      },
-      timeFactor: 4
+      startExpr: { class: 'foam.glang.StartOfQuarter' },
+      endExpr: { class: 'foam.glang.EndOfQuarter' },
+      numBarGraphPoints: 4
     },
     {
       name: 'ANNUALLY',
       label: 'Annually',
-      glang: {
-        class: 'foam.glang.EndOfYear'
-      },
-      timeFactor: 6
+      startExpr: { class: 'foam.glang.StartOfYear' },
+      endExpr: { class: 'foam.glang.EndOfYear' },
+      numBarGraphPoints: 6
     },
   ]
 });

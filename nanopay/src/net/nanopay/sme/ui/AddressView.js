@@ -35,6 +35,7 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
+      margin-bottom: 20px;
     }
     ^ .three-column{
       display: grid;
@@ -44,6 +45,12 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'showValidation',
+      value: true,
+      documentation: 'Use this property if the value of validationTextVisible is situational.'
+    },
     {
       class: 'Boolean',
       name: 'withoutCountrySelection',
@@ -62,7 +69,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PROVINCE_LABEL', message: 'Province/State' },
-    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' }
+    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
+    { name: 'PLACE_HOLDER', message: 'Please select...' }
   ],
 
   methods: [
@@ -72,21 +80,12 @@ foam.CLASS({
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
-        if ( countryId == 'US' ) {
+        if ( countryId === 'US' ) {
           return self.regionDAO.where(
-            self.AND(
-              self.EQ(self.Region.COUNTRY_ID, countryId || ''),
-              self.NOT(
-                self.IN(self.Region.NAME, ['Alaska', 'Hawaii', 'Utah', 'South Dakota', 'Iowa',
-                  'Arkansas', 'Louisiana', 'Mississippi', 'South Carolina',
-                  'West Virginia', 'Ohio', 'Michigan', 'Rhode Island', 'Vermont']
-                )
-              )
-            )
+            self.EQ(self.Region.COUNTRY_ID, countryId || '')
           );
-        } else {
-          return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
         }
+        return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
       });
 
       this
@@ -98,15 +97,16 @@ foam.CLASS({
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.COUNTRY_ID.clone().copyFrom({
-                view: {
-                  class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Select...',
-                  dao: this.customCountryDAO,
-                  objToChoice: function(a) {
-                    return [a.id, a.name];
+                  view: {
+                    class: 'foam.u2.view.ChoiceView',
+                    placeholder: this.PLACE_HOLDER,
+                    dao: this.customCountryDAO,
+                    objToChoice: function(a) {
+                      return [a.id, a.name];
+                    },
+                    mode$: this.mode$
                   },
-                  mode$: this.mode$
-                }
+                  validationTextVisible: this.showValidation
                 })
               })
             .end()
@@ -116,14 +116,15 @@ foam.CLASS({
                 prop: this.Address.REGION_ID.clone().copyFrom({
                   view: {
                     class: 'foam.u2.view.ChoiceView',
-                    placeholder: 'Select...',
+                    placeholder: this.PLACE_HOLDER,
                     objToChoice: function(region) {
                       return [region.id, region.name];
                     },
                     dao$: choices,
                     mode$: this.mode$
                   },
-                  label: this.PROVINCE_LABEL
+                  label: this.PROVINCE_LABEL,
+                  validationTextVisible: this.showValidation
                 })
               })
             .end()
@@ -134,36 +135,47 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NUMBER
+              prop: this.Address.STREET_NUMBER.clone().copyFrom({
+                validationTextVisible: this.showValidation
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NAME
+              prop: this.Address.STREET_NAME.clone().copyFrom({
+                validationTextVisible: this.showValidation
+              })
             })
           .end()
-        .end()
-        .start().addClass('label-input')
-          .tag(this.SectionedDetailPropertyView, {
-            data$: this.data$,
-            prop: this.Address.SUITE
-          })
         .end()
         .start()
           .addClass('two-column')
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.CITY
+              prop: this.Address.CITY.clone().copyFrom({
+                validationTextVisible: this.showValidation
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.POSTAL_CODE.clone().copyFrom({label: this.POSTAL_CODE})
+              prop: this.Address.POSTAL_CODE.clone().copyFrom({
+                label: this.POSTAL_CODE,
+                validationTextVisible: this.showValidation
+              })
             })
           .end()
+        .end()
+        .start().addClass('label-input')
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.Address.SUITE.clone().copyFrom({
+              validationTextVisible: this.showValidation
+            })
+          })
         .end();
     }
   ]

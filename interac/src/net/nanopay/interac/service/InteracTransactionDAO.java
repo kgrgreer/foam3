@@ -10,10 +10,13 @@ import net.nanopay.tx.model.Transaction;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
 
 public class InteracTransactionDAO
   extends ProxyDAO
 {
+  private Random random = SecureRandom.getInstanceStrong();
+
   public InteracTransactionDAO(X x) {
     this.setX(x);
     this.setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo());
@@ -65,7 +68,6 @@ public class InteracTransactionDAO
       /**
        * Generate 13 digit random number for IMPS reference number
        * */
-      Random random = new Random();
       char[] digits = new char[13];
       digits[0] = (char) (random.nextInt(9) + '1');
       for ( int i = 1; i < 13; i++ ) {

@@ -22,8 +22,9 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'notify',
     'stack',
-    'user',
+    'user'
   ],
 
   exports: [
@@ -31,8 +32,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' },
-    { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' }
+    { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
+    { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
+    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' },
+    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' },
+    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' }
   ],
 
   properties: [
@@ -63,10 +68,9 @@ foam.CLASS({
             'name',
             'flagImage',
             'denomination',
-            'institution',
-            'branch',
-            'accountNumber',
-            'status'
+            'summary',
+            'status',
+            'isDefault'
           ],
           contextMenuActions: [
             foam.core.Action.create({
@@ -88,8 +92,31 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               code: function(X) {
-                // Disable ability to delete a bank account
-                self.ctrl.notify(self.DELETE_BANK_MESSAGE, 'error');
+                if ( this.isDefault ) {
+                  self.notify(self.DELETE_DEFAULT, 'error');
+                  return;
+                }
+                self.user.accounts.remove(this).then(() =>{
+                  self.notify(self.SUCCESSFULLY_DELETED);
+                }).catch((err) => {
+                  self.notify(self.UNABLE_TO_DELETE, 'error');
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'Set as Default',
+              code: function(X) {
+                if ( this.isDefault ) {
+                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, 'warning');
+                  return;
+                }
+                this.isDefault = true;
+                self.user.accounts.put(this).then(() =>{
+                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`);
+                }).catch((err) => {
+                  this.isDefault = false;
+                  self.notify(self.UNABLE_TO_DEFAULT, 'error');
+                });
               }
             })
           ]
@@ -104,18 +131,13 @@ foam.CLASS({
           name: 'addBank',
           label: 'Add bank account',
           code: async function(X) {
-            await self.checkAvailability();
-            if ( ! self.availableCAD || ! self.availableUSD ) {
-              self.ctrl.notify(self.SINGULAR_BANK, 'warning');
-            } else {
-              X.controllerView.stack.push({
-                class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-                usdAvailable: self.availableUSD,
-                cadAvailable: self.availableCAD
-              }, self);
-            }
-          },
-          // isAvailable: function() { return self.available; }
+            var USEnabled = self.user.address.countryId != 'CA';
+            X.controllerView.stack.push({
+              class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+              usdAvailable: USEnabled,
+              cadAvailable: ! USEnabled
+            }, self);
+          }
         });
       }
     },
@@ -133,55 +155,12 @@ foam.CLASS({
       name: 'available',
       value: false,
       documentation: `used for disabling the button for adding a Bank Account when User has one of each currency (CAD && USD)`
-    },
-    {
-      class: 'Boolean',
-      name: 'availableCAD',
-      value: true,
-      documentation: `used for a check on CAD Bank Accounts, when User has one CAD BankAccount availableCAD`
-    },
-    {
-      class: 'Boolean',
-      name: 'availableUSD',
-      value: true,
-      documentation: `used for a check on USD Bank Accounts, when User has one USD BankAccount availableUSD`
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.checkAvailability();
-    },
-    {
-      name: 'checkAvailability',
-      code: async function() {
-        this.available = true;
-        this.availableCAD = true;
-        this.availableUSD = true;
-        var isCanadianBusiness = ctrl.user.businessAddress.countryId == 'CA';
-        var accountListCAD = await ctrl.user.accounts.where(
-            foam.mlang.predicate.Eq.create({
-              arg1: net.nanopay.account.Account.TYPE,
-              arg2: net.nanopay.bank.CABankAccount.name
-            })
-        ).select();
-        var accountListUSD = await ctrl.user.accounts.where(
-          foam.mlang.predicate.Eq.create({
-            arg1: net.nanopay.account.Account.TYPE,
-            arg2: net.nanopay.bank.USBankAccount.name
-          })
-        ).select();
-        if ( accountListCAD && accountListCAD.array.length > 0 && isCanadianBusiness ) {
-          this.availableCAD = false;
-        }
-        if ( accountListUSD && accountListUSD.array.length > 0 && ! isCanadianBusiness ) {
-          this.availableUSD = false;
-        }
-        if ( ! this.availableCAD && ! this.availableUSD ) {
-          this.available = false;
-        } else this.available = true;
-      }
     }
   ],
 
@@ -189,7 +168,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD') {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD' ) {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account

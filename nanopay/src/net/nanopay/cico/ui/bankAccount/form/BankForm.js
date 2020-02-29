@@ -153,9 +153,7 @@ foam.CLASS({
       // times, some business users wouldn't have one. This checks if the user
       // has a normal `.address` and if they don't, uses their business address
       // instead.
-      this.userAddress = this.Address.isInstance(user.address)
-        ? user.address
-        : user.businessAddress;
+      this.userAddress = user.address;
 
       if ( user.firstName.length > 70 ) {
         this.notify('First name cannot exceed 70 characters.', 'error');

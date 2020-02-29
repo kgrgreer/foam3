@@ -15,6 +15,9 @@ import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
+import net.nanopay.payment.PADType;
+import net.nanopay.payment.PADTypeLineItem;
+import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -160,13 +163,8 @@ public class CsvUtil {
           User user;
           String txnType;
           String refNo;
-          Transaction t = (Transaction) ((Transaction) obj).fclone();
-
-          user = (User) userDAO.find_(x,((Account) t.findSourceAccount(x)).getOwner());
-          // if user null, return
-          if ( user == null ) return;
-
           BankAccount bankAccount = null;
+          Transaction t = (Transaction) ((Transaction) obj).fclone();
 
           if ( t instanceof AlternaCOTransaction || t instanceof AlternaVerificationTransaction ) {
             txnType = "CR";
@@ -207,6 +205,22 @@ public class CsvUtil {
               notificationDAO.put(notification);
               return;
             }
+          }
+
+          user = (User) userDAO.find_(x, bankAccount.getOwner());
+          if ( user == null ) {
+            StringBuilder message = new StringBuilder();
+              message.append("BankAccount owner not found.");
+              message.append(" Transaction: "+t.getId());
+              message.append(" Account: " +t.getSourceAccount());
+
+              logger.error(message.toString());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(message.toString())
+                .build();
+              notificationDAO.put(notification);
+              return;
           }
 
           Branch branch = bankAccount.findBranch(x);
@@ -283,10 +297,6 @@ public class CsvUtil {
             if ( txn.getProcessDate() == null ) {
               txn.setProcessDate(generateProcessDate(x, now));
             }
-
-            if (txn.getCompletionDate() == null) {
-              txn.setCompletionDate(generateCompletionDate(x, now));
-            }
           } else if ( t instanceof AlternaCOTransaction ) {
             AlternaCOTransaction txn = (AlternaCOTransaction) t;
 
@@ -310,10 +320,6 @@ public class CsvUtil {
 
             if ( txn.getProcessDate() == null ) {
               txn.setProcessDate(generateProcessDate(x, now));
-            }
-
-            if (txn.getCompletionDate() == null) {
-              txn.setCompletionDate(generateCompletionDate(x, now));
             }
           } else if ( t instanceof AlternaVerificationTransaction ) {
             AlternaVerificationTransaction txn = (AlternaVerificationTransaction) t;
@@ -340,11 +346,14 @@ public class CsvUtil {
               txn.setProcessDate(generateProcessDate(x, now));
             }
 
+            // QUESTION: do we want to apply the clearing time rules to alterna
+            // verification transactions?
             if (txn.getCompletionDate() == null) {
               txn.setCompletionDate(generateCompletionDate(x, now));
             }
           }
 
+          alternaFormat.setTxnCode(getPADTypeCode(x, t));
           transactionDAO.put(t);
           out.put(alternaFormat, sub);
 
@@ -370,5 +379,17 @@ public class CsvUtil {
 
   public static String removeComma(String str) {
     return str.replace("," , " ");
+  }
+
+  public static String getPADTypeCode(X x, Transaction transaction) {
+
+    PADType padType = PADTypeLineItem.getPADTypeFrom(x, transaction);
+
+    if ( padType != null && padType.getId() != 700 ) {
+      return String.valueOf(padType.getId());
+    }
+
+    // we need to map 700 to 729 for Alterna EFT
+    return "729";
   }
 }

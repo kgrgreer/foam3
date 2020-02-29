@@ -368,11 +368,11 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.viewData.user.businessPhone ? this.viewData.user.businessPhone.number.substring(2) : '';
+        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.user.businessPhone = this.Phone.create({
+        this.viewData.user.phone = this.Phone.create({
           number: '+1 ' + newValue
         });
       }
@@ -493,41 +493,41 @@ foam.CLASS({
         })
       },
       factory: function() {
-        if ( this.viewData.user.businessAddress.countryId ) return this.viewData.user.businessAddress.countryId;
+        if ( this.viewData.user.address.countryId ) return this.viewData.user.address.countryId;
         return 'CA';
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.countryId = newValue;
+        this.viewData.user.address.countryId = newValue;
       }
     },
     {
       class: 'String',
       name: 'streetNumberField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.streetNumber ) return this.viewData.user.businessAddress.streetNumber;
+        if ( this.viewData.user.address.streetNumber ) return this.viewData.user.address.streetNumber;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.streetNumber = newValue.trim();
+        this.viewData.user.address.streetNumber = newValue.trim();
       }
     },
     {
       class: 'String',
       name: 'streetNameField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.streetName ) return this.viewData.user.businessAddress.streetName;
+        if ( this.viewData.user.address.streetName ) return this.viewData.user.address.streetName;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.streetName = newValue.trim();
+        this.viewData.user.address.streetName = newValue.trim();
       }
     },
     {
       class: 'String',
       name: 'suiteField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.suite ) return this.viewData.user.businessAddress.suite;
+        if ( this.viewData.user.address.suite ) return this.viewData.user.address.suite;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.suite = newValue.trim();
+        this.viewData.user.address.suite = newValue.trim();
       }
     },
     {
@@ -544,30 +544,30 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.user.businessAddress.regionId ) return this.viewData.user.businessAddress.regionId;
+        if ( this.viewData.user.address.regionId ) return this.viewData.user.address.regionId;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.regionId = newValue;
+        this.viewData.user.address.regionId = newValue;
       }
     },
     {
       class: 'String',
       name: 'cityField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.city ) return this.viewData.user.businessAddress.city;
+        if ( this.viewData.user.address.city ) return this.viewData.user.address.city;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.city = newValue;
+        this.viewData.user.address.city = newValue;
       }
     },
     {
       class: 'String',
       name: 'postalCodeField',
       factory: function() {
-        if ( this.viewData.user.businessAddress.postalCode ) return this.viewData.user.businessAddress.postalCode;
+        if ( this.viewData.user.address.postalCode ) return this.viewData.user.address.postalCode;
       },
       postSet: function(oldValue, newValue) {
-        this.viewData.user.businessAddress.postalCode = newValue;
+        this.viewData.user.address.postalCode = newValue;
       }
     },
     {

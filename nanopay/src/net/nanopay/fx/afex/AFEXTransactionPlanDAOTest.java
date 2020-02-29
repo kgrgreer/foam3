@@ -1,30 +1,25 @@
 
 package net.nanopay.fx.afex;
 
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.User;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import net.nanopay.bank.USBankAccount;
-import net.nanopay.fx.FXSummaryTransaction;
-import net.nanopay.invoice.model.Invoice;
-import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.CABankAccount;
-import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.fx.FXService;
 import foam.nanos.auth.Address;
-import static foam.mlang.MLang.*;
+import foam.nanos.auth.User;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.USBankAccount;
+import net.nanopay.fx.FXService;
+import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.payment.Institution;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.account.DigitalAccount;
 
 
 public class AFEXTransactionPlanDAOTest
@@ -74,7 +69,6 @@ public class AFEXTransactionPlanDAOTest
     user1.setLastName("AFEX");
     user1.setGroup("business");
     user1.setEmail("testAFEXTransaction@nanopay.net");
-    user1.setBusinessAddress(businessAddress);
     user1.setAddress(businessAddress);
     user1.setEmailVerified(true);
     localUserDAO.put(user1);
@@ -84,7 +78,6 @@ public class AFEXTransactionPlanDAOTest
     user2.setLastName("AFEX");
     user2.setGroup("business");
     user2.setEmail("testAFEXTransaction1@nanopay.net");
-    user2.setBusinessAddress(businessAddress);
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
     localUserDAO.put(user2);

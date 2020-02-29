@@ -4,14 +4,10 @@ foam.CLASS({
 
     javaImports: [
       'foam.core.X',
-      'foam.nanos.auth.EnabledAware',
-      'foam.nanos.auth.User',
-      'foam.nanos.logger.Logger',
       'foam.dao.DAO',
       'foam.mlang.MLang',
       'foam.dao.AbstractSink',
-      'foam.core.Detachable',
-      'foam.util.SafetyUtil'
+      'foam.core.Detachable'
     ],
 
     tableColumns: [
@@ -56,20 +52,20 @@ foam.CLASS({
         },
         {
           class: 'Reference',
-          of: 'net.nanopay.model.Currency',
+          of: 'foam.core.Currency',
           name: 'sourceCurrency'
         },
         {
           class: 'Reference',
-          of: 'net.nanopay.model.Currency',
+          of: 'foam.core.Currency',
           name: 'targetCurrency'
         },
         {
-            class: 'Currency',
+            class: 'UnitValue',
             name: 'sourceAmount'
         },
         {
-            class: 'Currency',
+            class: 'UnitValue',
             name: 'targetAmount'
         },
         {
@@ -85,7 +81,7 @@ foam.CLASS({
           name: 'hasSourceAmount'
         },
         {
-          class: 'Currency',
+          class: 'UnitValue',
           name: 'fee'
         },
         {

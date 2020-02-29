@@ -10,7 +10,7 @@ foam.CLASS({
       value: 'TOTAL'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'value',
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount;

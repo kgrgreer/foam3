@@ -87,6 +87,12 @@ foam.CLASS({
       color: #8e9090;
       font-size: 10px;
     }
+    ^ .foam-u2-TextField {
+      width: 100%;
+    }
+    ^ .net-nanopay-sme-ui-AddressView .two-column{
+      margin-bottom: 15px;
+    }
   `,
 
   messages: [
@@ -178,7 +184,7 @@ foam.CLASS({
         this.viewData.agree2 = this.TC2;
         this.viewData.agree3 = this.TC3;
       }
-      this.viewData.user.address = this.user.businessAddress;
+      this.viewData.user.address = this.user.address;
       let updatedUser = await this.userDAO.find(this.user.id);
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()

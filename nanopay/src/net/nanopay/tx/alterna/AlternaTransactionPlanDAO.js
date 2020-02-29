@@ -16,27 +16,22 @@ foam.CLASS({
   ],
 
   javaImports: [
-  'net.nanopay.bank.BankAccountStatus',
-    'foam.nanos.auth.EnabledAware',
-    'foam.nanos.auth.User',
+    'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.logger.Logger',
-    'foam.mlang.sink.Count',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*',
     'foam.dao.DAO',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.payment.PaymentProvider',
     'java.util.ArrayList',
-    'java.util.List'
+    'net.nanopay.payment.PADTypeLineItem'
   ],
 
   properties: [
@@ -71,7 +66,7 @@ foam.CLASS({
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof CABankAccount &&
-        destinationAccount instanceof DigitalAccount ) {
+        destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == destinationAccount.getOwner() ) {
         
         if ( ! useAlternaAsPaymentProvider(x, (BankAccount) sourceAccount) ) return getDelegate().put_(x, obj);
         
@@ -83,21 +78,28 @@ foam.CLASS({
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
-      } else if ( destinationAccount instanceof CABankAccount &&
-        sourceAccount instanceof DigitalAccount ) {
-        
+      } else if ( sourceAccount instanceof DigitalAccount &&
+                  destinationAccount instanceof CABankAccount &&
+                  sourceAccount.getOwner() == destinationAccount.getOwner() ) {
+      
         if ( ! useAlternaAsPaymentProvider(x, (BankAccount) destinationAccount) ) return getDelegate().put_(x, obj);
-        
+
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
         }
-        AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
+        Transaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
         // TODO: use EFT calculation process
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
         t.setIsQuoted(true);
         quote.addPlan(t);
       }

@@ -1,0 +1,14 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Create default notification settings for user",
+  "priority":100,
+  "ruleGroup":"UserCreate",
+  "documentation":"Creates default notification settings on user create",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.onboarding.ruler.NotificationSettingsRule"
+  },
+  "after":true,
+  "enabled":true
+})

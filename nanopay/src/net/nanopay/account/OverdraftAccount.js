@@ -73,12 +73,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      long bal = balance == null ? 0L : balance.getBalance();
+        long bal = balance == null ? 0L : balance.getBalance();
 
-        if ( amount < 0 &&
-             -amount > bal ) {
-          ((Logger) x.get("logger")).error("Insufficient balance in account and overdraft exceeded" + this.getId());
-          throw new RuntimeException("Insufficient balance in account and overdraft exceeded " + this.getId());
+        if ( amount < 0 && -amount > bal ) {
+          ((Logger) x.get("logger")).error("Insufficient balance in account (id: " + this.getId() +  ") and overdraft exceeded" );
+          throw new RuntimeException("Insufficient balance in account (id: " + this.getId() +  ") and overdraft exceeded");
         }
       `
     }

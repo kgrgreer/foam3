@@ -32,7 +32,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
-                    .setObjId(Long.toString(user.getId()))
+                    .setObjId(user.getId())
                     .setDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setClassification("Validate User Using SecureFact")

@@ -9,13 +9,8 @@ foam.CLASS({
    javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.mlang.predicate.Predicate',
-    'foam.mlang.MLang',
     'static foam.mlang.MLang.*',
-    'java.util.List',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
   ],
@@ -32,7 +27,7 @@ foam.CLASS({
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexBusinessDAO")
-                .setObjId(String.valueOf(afexBusiness.getId()))
+                .setObjId(afexBusiness.getId())
                 .setGroup("payment-ops")
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }

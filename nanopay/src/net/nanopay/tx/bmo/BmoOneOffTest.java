@@ -7,6 +7,7 @@ import foam.mlang.MLang;
 import foam.nanos.auth.User;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -31,7 +32,7 @@ public class BmoOneOffTest {
     this.transactionDAO = (DAO) x.get("transactionDAO");
   }
 
-  public void testCI(String email, long amount) {
+  public void testCI(String email, long amount, int padType) {
     User testUser                 = getUser(email);
     CABankAccount bankAccount     = getBankAccount(testUser);
     DigitalAccount digitalAccount = getDigitalAccount(testUser);
@@ -47,11 +48,12 @@ public class BmoOneOffTest {
     ciTransaction.setDestinationCurrency ("CAD");
     ciTransaction.setSourceAccount       (bankAccount.getId());
     ciTransaction.setDestinationAccount  (digitalAccount.getId());
+    PADTypeLineItem.addTo(ciTransaction, padType);
 
     transactionDAO.inX(x).put(ciTransaction);
   }
 
-  public void testCO(String email, long amount ) {
+  public void testCO(String email, long amount, int padType ) {
     User testUser                 = getUser(email);
     CABankAccount bankAccount     = getBankAccount(testUser);
     DigitalAccount digitalAccount = getDigitalAccount(testUser);
@@ -67,6 +69,7 @@ public class BmoOneOffTest {
     coTransaction.setDestinationCurrency ("CAD");
     coTransaction.setSourceAccount       (digitalAccount.getId());
     coTransaction.setDestinationAccount  (bankAccount.getId());
+    PADTypeLineItem.addTo(coTransaction, padType);
 
     transactionDAO.inX(x).put(coTransaction);
   }

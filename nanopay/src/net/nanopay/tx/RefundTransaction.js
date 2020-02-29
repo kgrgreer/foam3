@@ -11,7 +11,7 @@ foam.CLASS({
       visibility: foam.u2.Visibility.RO
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'total',
       visibility: foam.u2.Visibility.RO,
       label: 'Total Amount',

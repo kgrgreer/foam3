@@ -1,0 +1,3 @@
+// foam.Class
+p({"class":"foam.strategy.StrategyReference","id":"30c2262e-4d0b-47a4-9389-b7e6867d894a","desiredModelId":"foam.Class","strategy":"net.nanopay.account.Account"})
+p({"class":"foam.strategy.StrategyReference","id":"30c2262f-4d0b-47a4-9389-b7e6867d894a","desiredModelId":"foam.Class","strategy":"net.nanopay.tx.model.Transaction"})

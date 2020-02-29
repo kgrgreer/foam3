@@ -1,5 +1,11 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NOT;
+import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -11,18 +17,18 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.AbliiTransaction;
 import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.Transfer;
-import net.nanopay.tx.alterna.AlternaCITransaction;
-import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.alterna.AlternaVerificationTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import static foam.mlang.MLang.*;
-import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
 public class TransactionTest
   extends foam.nanos.test.Test {
@@ -38,6 +44,7 @@ public class TransactionTest
 
     testTransactionMethods();
     testAbliiTransaction();
+    testPADType();
     testVerificationTransaction();
     testFXTransaction();
     testLoanTransaction();
@@ -161,9 +168,10 @@ public class TransactionTest
     CABankAccount bank = (CABankAccount) ((DAO) x_.get("localAccountDAO"))
       .find(AND(EQ(CABankAccount.OWNER, sender_.getId()),INSTANCE_OF(CABankAccount.class)) ).fclone();
     bank.setStatus(BankAccountStatus.UNVERIFIED);
+    bank.setIsDefault(false);
     bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bank).fclone();
 
-    AlternaVerificationTransaction txn = new AlternaVerificationTransaction.Builder(x_)
+    BmoVerificationTransaction txn = new BmoVerificationTransaction.Builder(x_)
       .setPayerId(sender_.getId())
       .setDestinationAccount(bank.getId())
       .setAmount(45)
@@ -173,7 +181,7 @@ public class TransactionTest
 
     test(txn2.getStatus()== TransactionStatus.PENDING,"verification transaction is "+txn.getStatus().toString());
     test(txn2.getTransfers().length == 0 ,"The verification transaction has "+txn.getTransfers().length+" transfers");
-    test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
+    // test(txn2.getLineItems().length == 0 ,"The verification transaction has "+txn.getLineItems().length+" line items");
 
     TransactionQuote tq = new TransactionQuote.Builder(x_)
       .setRequestTransaction(txn)
@@ -181,8 +189,8 @@ public class TransactionTest
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
 
     test(tq.getPlan().getIsQuoted(),"verification transaction was quoted");
-    test(tq.getPlans().length == 1,"Only 1 plan is created for an Alterna Verification Transaction");
-    test(tq.getPlan().getClass() == AlternaVerificationTransaction.class,"transaction is class of Alterna verification transaction");
+    test(tq.getPlans().length == 1,"Only 1 plan is created for an Verification Transaction");
+    test(tq.getPlan() instanceof VerificationTransaction,"transaction is class of verification transaction");
   }
 
   public void testAbliiTransaction(){
@@ -193,8 +201,8 @@ public class TransactionTest
       .setPayerId(sender_.getId())
       .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
         .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
-        .setInvoiceId(inv.getId())
-        .setAmount(123)
+      .setInvoiceId(inv.getId())
+      .setAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();
@@ -216,9 +224,9 @@ public class TransactionTest
     // Non Composite
     Transaction txn4 = txn3.getNext()[0];
     Transaction txn5 = txn4.getNext()[0];
-    test(txn3.getClass() == AlternaCITransaction.class, " 2nd child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
+    test(txn3 instanceof CITransaction, " 2nd child is of type "+txn3.getClass().getName()+" should be CITransaction");
     test(txn4.getClass() == DigitalTransaction.class, " 3rd child is of type "+txn4.getClass().getName()+" should be DigitalTransaction");
-    test(txn5.getClass() == AlternaCOTransaction.class, " 4th child is of type "+txn5.getClass().getName()+" should be AlternaCOTransaction");
+    test(txn5 instanceof COTransaction, " 4th child is of type "+txn5.getClass().getName()+" should be COTransaction");
 
     test(txn3.getAmount()== txn5.getAmount(), "CI and CO transactions have same amount");
     test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and digital use same digital account");
@@ -262,7 +270,7 @@ public class TransactionTest
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber() == txn.getReferenceNumber(),"Reference Number copied in LimitedClone");
+    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
     test(! txn.isActive(), "isActive returns false");
 
@@ -286,6 +294,54 @@ public class TransactionTest
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
     test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
 
+  }
+
+  public void testPADType() {
+    DAO bankDAO = (DAO) x_.get("localAccountDAO");
+    DAO quoteDAO = (DAO) x_.get("localTransactionQuotePlanDAO");
+
+    CABankAccount bankAccount = (CABankAccount) bankDAO.find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)));
+    DigitalAccount digitalAccount = (DigitalAccount) bankDAO.find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class)));
+
+    Transaction txn = new Transaction.Builder(x_)
+      .setAmount(2000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    TransactionQuote tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn = tq.getPlan();
+
+    PADTypeLineItem padTypeLineItem = null;
+    for (TransactionLineItem lineItem : txn.getLineItems()) {
+      if ( lineItem instanceof PADTypeLineItem ) {
+        padTypeLineItem = (PADTypeLineItem) lineItem;
+      }
+    }
+
+    test(padTypeLineItem != null, "pad type line item must be set");
+    if ( padTypeLineItem == null ) return;
+    test(padTypeLineItem.getPadType() <= 0, "Quote plan should not set the default value");
+
+    Transaction txn2 = new Transaction.Builder(x_)
+      .setAmount(3000)
+      .setDestinationAccount(digitalAccount.getId())
+      .setSourceAccount(bankAccount.getId())
+      .setDestinationCurrency(digitalAccount.getDenomination())
+      .build();
+    PADTypeLineItem.addTo(txn2, 700);
+    tq = new TransactionQuote.Builder(x_)
+      .setRequestTransaction(txn2)
+      .build();
+
+    tq = (TransactionQuote) quoteDAO.inX(x_).put(tq);
+    txn2 = tq.getPlan();
+
+    test(PADTypeLineItem.getPADTypeFrom(x_, txn2).getId() == 700, "pad type set before quote");
   }
 
   public User addUser(String email) {

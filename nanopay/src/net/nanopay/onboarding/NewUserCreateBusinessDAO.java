@@ -1,11 +1,19 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.sink.Count;
-import foam.nanos.auth.AuthorizationException;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
@@ -13,16 +21,8 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
-import foam.nanos.auth.Address;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Map;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
 
 /**
  * When a new user is signing up and wants to create a business, this decorator
@@ -32,16 +32,16 @@ import static foam.mlang.MLang.EQ;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO localBusinessDAO_;
-  public DAO agentJunctionDAO_;
-  public DAO tokenDAO_;
-  public DAO invitationDAO_;
+  private DAO localBusinessDAO_;
+  private DAO agentJunctionDAO_;
+  private DAO tokenDAO_;
+  private DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
 
@@ -61,8 +61,18 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
 
+    // We want to use current user spid and context only when the user have
+    // spid.create.<user.spid> permission. Otherwise, set spid="nanopay" and use
+    // system user context for creating user and business.
+    User currentUser = (User) x.get("user");
+    boolean hasSpidCreatePermission = false;
+    if ( currentUser != null ) {
+      AuthService auth = (AuthService) x.get("auth");
+      hasSpidCreatePermission = auth.check(x, "spid.create." + currentUser.getSpid());
+    }
+
     // If we want use the system user, then we need to copy the http request/appconfig to system context
-    X sysContext = getX()
+    X sysContext = hasSpidCreatePermission ? x : getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
@@ -127,6 +137,12 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
           invitation.setStatus(InvitationStatus.COMPLETED);
           invitationDAO_.inX(businessContext).put(invitation);
 
+          CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(sysContext);
+          List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
+
+          if ( onboardings.size() > 0 )
+            createOnboardingCloneService.putOnboardingClone(sysContext, onboardings, user.getId());
+
           // Return here because we don't want to create a duplicate business
           // with the same name. Instead, we just want to create(external)/update(internal) the user and
           // add them to an existing business.
@@ -137,8 +153,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
 
     // Put the user so that it gets an id.
     // Remove business address collected from signup form.
-    Address businessAddress = user.getBusinessAddress();
-    user.setBusinessAddress(null);
+    Address businessAddress = user.getAddress();
+    user.setAddress(null);
     user = (User) super.put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;
@@ -149,7 +165,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setBusinessName(user.getOrganization())
       .setOrganization(user.getOrganization())
       .setAddress(businessAddress)
-      .setSpid("nanopay")
+      .setSpid(hasSpidCreatePermission ? currentUser.getSpid() : "nanopay")
       // We need to be able to send emails to businesses, but until now we were
       // avoiding giving businesses an email address. However, in Ablii users
       // are always acting as a business, meaning the payer and payee of every

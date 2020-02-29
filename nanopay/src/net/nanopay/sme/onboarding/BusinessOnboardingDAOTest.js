@@ -54,7 +54,6 @@ foam.CLASS({
         Business business = new Business();
         business.setId(8007);
         business.setAddress(businessAddress);
-        business.setBusinessAddress(businessAddress);
         localBusinessDAO.put(business);
 
         isSigningOffer(user, business, onboardService, x);
@@ -110,7 +109,6 @@ foam.CLASS({
         try {
           onboardService.put_(x, onboarding);
         } catch (RuntimeException ex) {
-          ex.printStackTrace();
           threw = true;
         }
 

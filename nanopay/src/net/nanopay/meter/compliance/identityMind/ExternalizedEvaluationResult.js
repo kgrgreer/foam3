@@ -1,15 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'ExternalizedEvaluationResult',
-  ids: [
-    'firedRules',
-    'profile',
-    'reportedRule'
-  ],
+
   properties: [
     {
-      class: 'Array',
-      name: 'firedRules'
+      name: 'firedRules',
+      type: 'foam.lib.json.UnknownFObjectArray',
+      javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()'
     },
     {
       class: 'FObjectProperty',

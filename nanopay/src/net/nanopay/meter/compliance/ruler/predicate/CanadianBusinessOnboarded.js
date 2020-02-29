@@ -22,7 +22,7 @@ foam.CLASS({
         return user instanceof Business
           && address != null
           && address.getCountryId().equals("CA")
-          && user.getOnboarded()
+          && ((Business) user).getOnboarded()
           && ComplianceStatus.REQUESTED == user.getCompliance();
       `
     }

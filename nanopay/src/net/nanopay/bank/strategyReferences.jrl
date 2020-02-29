@@ -1,0 +1,18 @@
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"5ce586f7-5e50-c03b-4303-d6fb5172d82a",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.CABankAccount"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.INBankAccount"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"9319664b-aa92-5aac-ae77-98daca6d754d",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.USBankAccount"
+})

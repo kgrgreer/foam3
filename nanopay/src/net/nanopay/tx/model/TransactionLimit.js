@@ -25,7 +25,7 @@ foam.CLASS({
       documentation: 'Transaction limit type. (Send or Receive)'
     },
     {
-      class: 'Currency',
+      class: 'UnitValue',
       name: 'amount',
       documentation: 'Transaction limit amount.'
     }

@@ -1,21 +1,19 @@
 package net.nanopay.retail;
 
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.getCurrentUser;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.getUserByEmail;
+import static net.nanopay.retail.utils.P2PTxnRequestUtils.isPartner;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
-import foam.nanos.auth.User;
-import foam.nanos.auth.UserUserJunction;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.User;
 import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.retail.model.P2PTxnRequest;
-import java.security.AccessControlException;
-
-import static foam.mlang.MLang.EQ;
-import static net.nanopay.retail.utils.P2PTxnRequestUtils.*;
 
 public class P2PTxnRequestUserInfoDAO
 extends ProxyDAO
