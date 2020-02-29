@@ -80,8 +80,7 @@ foam.CLASS({
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }
-
-            Logger logger   = (Logger) x.get("logger");
+            Logger logger = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
             List accountList = ((ArraySink)accounts.select(new ArraySink())).getArray();
             DAO reserveAccs = new MDAO(Account.getOwnClassInfo());

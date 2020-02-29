@@ -50,7 +50,7 @@ public class JoinBusinessWebAgent implements WebAgent {
     try {
       // Look up the token.
       if ( tokenUUID == null || "".equals(tokenUUID) ) throw new Exception("Token not found.");
-      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      DAO tokenDAO = (DAO) x.get("localTokenDAO");
       Token token = (Token) tokenDAO.find(EQ(Token.DATA, tokenUUID));
       if ( token == null ) throw new Exception("Token not found.");
 

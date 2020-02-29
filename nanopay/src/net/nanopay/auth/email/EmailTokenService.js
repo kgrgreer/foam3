@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode: `
         try {
-          DAO tokenDAO = (DAO) x.get("tokenDAO");
+          DAO tokenDAO = (DAO) x.get("localTokenDAO");
           AppConfig appConfig = (AppConfig) x.get("appConfig");          
           String url = appConfig.getUrl()
               .replaceAll("/$", "");

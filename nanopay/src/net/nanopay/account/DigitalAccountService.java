@@ -23,7 +23,7 @@ public class DigitalAccountService
      if ( (user instanceof Business || user.getGroup().equals("sme") ) && SafetyUtil.equals("CAD",denomination) )   {
        DAO accountDAO = (DAO) x.get("localAccountDAO");
        OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
-
+       overdraft.setName("OverdraftAccount for: " + overdraft.getOwner());
        DebtAccount debtAccount = (DebtAccount) overdraft.findDebtAccount(x);
        if ( debtAccount == null ) {
          debtAccount = (DebtAccount) overdraft.findDebtAccount(getX());

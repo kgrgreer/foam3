@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -44,7 +45,6 @@ foam.CLASS({
       ],
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
-        // TODO: Please call the java validator of the businessOnboarding here
 
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
@@ -66,9 +66,8 @@ foam.CLASS({
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
 
-        businessOnboarding.validate(x);
-
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localNotificationDAO = ((DAO) x.get("localNotificationDAO"));
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
@@ -85,6 +84,15 @@ foam.CLASS({
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
+          if ( businessOnboarding.getPEPHIORelated() ) {
+            Notification notification = new Notification();
+            notification.setEmailIsEnabled(true);
+            notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " + 
+                                  business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
+            notification.setNotificationType("A PEP/HIO related user has been Onboarded");
+            notification.setGroupId("fraud-ops");
+            localNotificationDAO.put(notification);
+          }
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
           
@@ -99,9 +107,7 @@ foam.CLASS({
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
-          business.setBusinessPhone(businessOnboarding.getPhone());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());

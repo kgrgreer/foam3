@@ -95,8 +95,7 @@ foam.CLASS({
           documentation: 'User\' Address.',
           factory: function() {
             return this.Address.create();
-          },
-          view: { class: 'foam.nanos.auth.AddressDetailView' }
+          }
         },
     ]
 });

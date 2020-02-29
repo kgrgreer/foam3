@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -97,9 +97,9 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create({ 
-          defaultColumns: ["name","balance","homeBalance","type","owner"],
-          dao: this.accountDAO,
+        return this.DAOControllerConfig.create({
+          defaultColumns: ["name","balance","homeBalance"],
+          dao: this.accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
         });
       }
     },
@@ -138,7 +138,7 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(self.TRUE),
+                    data: accountDAO.where(this.NOT(this.INSTANCE_OF(net.nanopay.bank.BankAccount))),
                     config
                   })
                     .addClass(this.myClass('accounts-table'))

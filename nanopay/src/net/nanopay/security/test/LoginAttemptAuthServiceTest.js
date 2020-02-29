@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'LoginAttemptAuthServiceTest',
   extends: 'foam.nanos.test.Test',
 
+  javaImports: [
+    'foam.nanos.session.Session'
+  ],
+
   constants: [
     {
       name: 'MAX_ATTEMPTS',
@@ -19,6 +23,11 @@ foam.CLASS({
         x = x.put("localUserDAO", new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()));
         foam.dao.DAO userDAO = (foam.dao.DAO) x.get("localUserDAO");
         ResetLoginCount(x, userDAO);
+
+        // Override session user and context for tests
+        Session session = x.get(Session.class);
+        session.setUserId(1000);
+        session.setContext(session.applyTo(x));
 
         net.nanopay.security.auth.LoginAttemptAuthService auth;
         try {

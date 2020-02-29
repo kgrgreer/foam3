@@ -55,6 +55,7 @@ foam.CLASS({
   exports: [
     'shadowAccountDAO'
   ],
+
   imports: [
     'accountDAO',
     'transactionDAO',
@@ -80,41 +81,29 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function() {
-        let resultDate = new Date (this.endDate.getTime());
-        resultDate.setDate(
-          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
-        );
-        
-        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      expression: function(endDate, timeFrame) {
+        var startDate = endDate;
+        for ( var i = 0 ; i < timeFrame.numBarGraphPoints ; i++ ) {
+          startDate = timeFrame.startExpr.f(new Date(startDate.getTime() - 1));
+        }
+        return startDate;
       },
-      preSet: function(_, n) {
-        var dayBeforeEndDate = new Date(this.endDate);
-        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
-
-        return this.EndOfDay.create({
-          delegate: this.IdentityExpr.create()
-        }).f(
-              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
-            )
+      postSet: function(_, n) {
+        var endDate = n || new Date();
+        for ( var i = 0 ; i < this.timeFrame.numBarGraphPoints ; i++ ) {
+          endDate = this.timeFrame.endExpr.f(new Date(endDate.getTime() + 1));
+        }
+        this.endDate = endDate;
+        this.startDate = undefined;
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function () {
-        return new Date();
-      },
-      preSet: function(o, n) {
-        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
-          return o;
-        } else {
-          return this.EndOfDay.create({
-            delegate: this.IdentityExpr.create()
-          }).f(
-                new Date(Math.min(Date.now(), n.getTime()))
-              )
-        }
+      factory: function () { return new Date() },
+      preSet: function(_, n) {
+        n = n || new Date();
+        return this.timeFrame.endExpr.f(n.getTime() > Date.now() ? new Date() : n);
       }
     },
     {
@@ -146,7 +135,7 @@ foam.CLASS({
                       ];
                       const quarterNames = ['Q1', 'Q2', 'Q3', 'Q4'];
 
-                      switch (self.dateFrequency) {
+                      switch (self.timeFrame) {
                         case net.nanopay.liquidity.ui.dashboard.DateFrequency.MONTHLY:
                           return `${monthNames[Number.parseInt(dateArray[0] - 1)]} ${dateArray[2]}`
 
@@ -192,6 +181,12 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'account',
       targetDAOKey: 'shadowAccountDAO',
+      factory: function() {
+        this.shadowAccountDAO.limit(1).select().then(a => {
+          if ( a.array.length ) this.account = a.array[0].id;
+        });
+        return net.nanopay.account.Account.ID.value;
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -213,8 +208,8 @@ foam.CLASS({
         return this.transactionDAO.where(
           this.AND(
             this.AND(
-              this.GTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, startDate),
-              this.LTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, endDate)
+              this.GTE(net.nanopay.tx.model.Transaction.LAST_MODIFIED, startDate),
+              this.LTE(net.nanopay.tx.model.Transaction.LAST_MODIFIED, endDate)
             ),
             this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
             this.OR(
@@ -234,7 +229,7 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
-      name: 'dateFrequency',
+      name: 'timeFrame',
       value: 'WEEKLY'
     }
   ],
@@ -249,7 +244,7 @@ foam.CLASS({
           .startContext({ data: this })
             .start(this.Cols).addClass(this.myClass('buttons'))
               .start().add(this.ACCOUNT).end()
-              .start().add(this.DATE_FREQUENCY).end()
+              .start().add(this.TIME_FRAME).end()
             .end()
           .endContext()
         .end()
@@ -284,12 +279,10 @@ foam.CLASS({
                   keyExpr: self.TransactionCICOType.create(),
                   config: config,
                   xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-                  yExpr$: self.dateFrequency$.map(d => d.glang.clone().copyFrom({
-                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                  yExpr$: self.timeFrame$.map(d => d.endExpr.clone().copyFrom({
+                    delegate: net.nanopay.tx.model.Transaction.LAST_MODIFIED
                   })),
-                  customDatasetStyling: customDatasetStyling,
-                  width: 1100,
-                  height: 320
+                  customDatasetStyling: customDatasetStyling
                 });
               })
             }))

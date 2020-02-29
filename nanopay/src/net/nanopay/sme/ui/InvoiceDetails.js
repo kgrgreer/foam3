@@ -195,7 +195,7 @@ foam.CLASS({
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
-          invoice$issueDate.toISOString().substring(0, 10): '';
+          invoice$issueDate.toISOString().substring(0, 10) : '';
       },
     },
     {
@@ -223,17 +223,21 @@ foam.CLASS({
     { name: 'REFERENCE_LABEL', message: 'Reference ID' },
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
+    { name: 'BILLING_INVOICE_NUMBER_LABEL', message: 'Billing Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'LINE_ITEMS', message: 'Items' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
     { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
+    { name: 'CYCLE_LABEL', message: 'Billing Cycle: '},
     { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
   ],
 
   methods: [
     function initE() {
       var self = this;
+      var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
 
       this
         .addClass(this.myClass())
@@ -241,13 +245,25 @@ foam.CLASS({
           .addClass('medium-header')
           .addClass('inline')
           .add(this.slot(function(invoice$invoiceNumber) {
-            return self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
+            return isBillingInvoice ?
+              self.BILLING_INVOICE_NUMBER_LABEL + invoice$invoiceNumber :
+              self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
           }))
         .end()
         .start()
+          .show( ! isBillingInvoice )
           .addClass(this.myClass('invoice-content-text'))
           .add(this.slot(function(invoice$purchaseOrder) {
             return self.PO_NO_LABEL + invoice$purchaseOrder;
+          }))
+        .end()
+        .start()
+          .show( isBillingInvoice )
+          .addClass(this.myClass('invoice-content-text'))
+          .add(this.slot(function(invoice) {
+            if ( isBillingInvoice )
+              return self.CYCLE_LABEL + invoice.billingStartDate.toISOString().substring(0, 10)
+                + " to " + invoice.billingEndDate.toISOString().substring(0, 10);
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
@@ -269,7 +285,7 @@ foam.CLASS({
                 .add(this.payer$.map(function(payer) {
                   return payer.then(function(payer) {
                     if ( payer != null ) {
-                      var address = payer.businessAddress;
+                      var address = payer.address;
                       return self.E()
                         .start().add(payer.label()).end()
                         .start().add(self.formatStreetAddress(address)).end()
@@ -335,6 +351,34 @@ foam.CLASS({
                   .add(this.issueDate$)
                 .end()
               .end()
+            .end()
+          .end()
+          .start()
+            .addClass('invoice-row')
+            .start()
+              .add(this.LINE_ITEMS)
+              .addClass('bold-label')
+            .end()
+            .start()
+              .add(this.slot(function(invoice$lineItems) {
+                if ( invoice$lineItems.length !== 0 ) {
+                  return self.E()
+                    .startContext({
+                      data: self.invoice,
+                      controllerMode: foam.u2.ControllerMode.VIEW
+                    })
+                      .add(self.Invoice.LINE_ITEMS)
+                    .endContext();
+                } else {
+                 return self.E()
+                   .start()
+                     .addClass(this.myClass('invoice-content-block'))
+                     .addClass(this.myClass('invoice-content-text'))
+                     .addClass(this.myClass('italic'))
+                     .add('No items provided')
+                   .end();
+                }
+              }))
             .end()
           .end()
         .end()

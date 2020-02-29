@@ -10,13 +10,16 @@ businessSectors
 businessTypes
 complianceItems
 capabilities
+clearingTimes
 corridors
 countries
 cronjobs
+csvUploadScripts
 currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 dugs
+exchangeRates
 emailTemplates
 exportDriverRegistrys
 fundTransferSystems
@@ -24,6 +27,7 @@ groupPermissionJunctions
 groups
 htmlDoc
 identificationTypes
+InstitutionPaymentProvider
 institutionPurposeCodes
 institutions
 jobTitles
@@ -41,6 +45,8 @@ payoutOptions
 paymentProviders
 permissions
 prerequisiteCapabilityJunctions
+purposeCodes
+purposeGroups
 questionnaires
 quickbooksToken
 regions
@@ -48,6 +54,7 @@ reports
 rules
 scripts
 services
+sessions
 spids
 tests
 themes

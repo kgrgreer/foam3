@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.payment.InstitutionPaymentProvider","id":0,"paymentProvider":1})
+p({"class":"net.nanopay.payment.InstitutionPaymentProvider","id":1,"paymentProvider":2})
+p({"class":"net.nanopay.payment.InstitutionPaymentProvider","id":2,"paymentProvider":3})

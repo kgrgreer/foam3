@@ -21,6 +21,8 @@ var classes = [
   'net.nanopay.tx.CreateExpediteApprovalRequest',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.ReverseCORule',
+  'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.tx.alterna.AlternaSFTPService',
@@ -34,7 +36,8 @@ var classes = [
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
-  'net.nanopay.tx.ruler.UserTransactionLimitRule',
+  'net.nanopay.tx.BulkTransaction',
+  'net.nanopay.tx.test.BulkTransactionTest',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -90,6 +93,7 @@ var classes = [
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
   'net.nanopay.model.BeneficialOwner',
+  'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
@@ -103,6 +107,8 @@ var classes = [
   'net.nanopay.model.PersonalIdentification',
   'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
+  'net.nanopay.bank.BankHolidayService',
+  'net.nanopay.bank.BankWeekend',
 
   // sps
   'net.nanopay.sps.GeneralRequestPacket',
@@ -195,6 +201,8 @@ var classes = [
   'net.nanopay.onboarding.model.Questionnaire',
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
+  'net.nanopay.admin.SkipUserEmailVerification',
+  'net.nanopay.admin.predicate.IsCurrentUser',
 
   // compliance Email notification
   'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
@@ -223,11 +231,13 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
   'net.nanopay.invoice.model.Invoice',
+  'net.nanopay.invoice.model.BillingInvoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
+  'net.nanopay.invoice.InvoiceLineItem',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -241,7 +251,6 @@ var classes = [
    'net.nanopay.accounting.ContactMismatchCode',
    'net.nanopay.accounting.AccountingContactEmailCache',
    'net.nanopay.accounting.AccountingErrorCodes',
-   'net.nanopay.accounting.AccountingLog',
 
    // xero
    'net.nanopay.accounting.xero.XeroToken',
@@ -292,6 +301,8 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnCreate',
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
+  'net.nanopay.tx.AccountRelationship',
+  'net.nanopay.tx.AccountRelationshipLineItem',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
@@ -300,6 +311,7 @@ var classes = [
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
   'net.nanopay.tx.ModifyCicoStatus',
+  'net.nanopay.tx.PurposeGroup',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -331,10 +343,14 @@ var classes = [
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummaryTransaction',
+  'net.nanopay.tx.BulkTransaction',
+  'net.nanopay.tx.BulkTransactionPlanDAO',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
   'net.nanopay.tx.NanopayLineItemFeeDAO',
   'net.nanopay.tx.NanopayLineItemTaxDAO',
+  'net.nanopay.tx.PurposeCode',
+  'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.TransactionQuoteDAO',
@@ -344,13 +360,19 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
+  'net.nanopay.tx.ruler.BusinessLimit',
+  'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
-  'net.nanopay.tx.ruler.AccountTransactionLimitRule',
-  'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.PropertyChangePredicate',
   'net.nanopay.tx.ruler.ChangePropertyAction',
+  'net.nanopay.tx.ruler.SendNotification',
+  'net.nanopay.tx.ruler.PropertyEQValue',
+  'net.nanopay.tx.ruler.PropertyNEQValue',
+  'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
+  'net.nanopay.tx.ruler.SendDeclinedCINotification',
+  'net.nanopay.meter.compliance.ruler.predicate.IsInstancePredicate',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -496,6 +518,7 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.PayerAssentTransactionDAO',
+  'net.nanopay.security.UserRegistrationSanitationDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
@@ -565,6 +588,18 @@ var classes = [
   'net.nanopay.meter.reports.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+
+  // clearing
+  'net.nanopay.meter.clearing.ClearingTimeService',
+  'net.nanopay.meter.clearing.ClearingTimesTrait',
+  'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate',
+  'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
+
+  // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ComplianceAuthService',
@@ -606,6 +641,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
+  'net.nanopay.meter.compliance.ruler.predicate.RecurringBeneficialOwnerComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
@@ -705,7 +741,6 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
-  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
@@ -748,6 +783,11 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
+
+  // goldman ingestion
+  'net.nanopay.tx.gs.GsTxCsvRow',
+  'net.nanopay.tx.gs.GsRowToTx',
+  'net.nanopay.script.CsvUploadScript'
 ];
 
 var abstractClasses = [

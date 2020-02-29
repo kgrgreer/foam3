@@ -14,8 +14,8 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'Double',
-      name: 'lastSpentAmount'
+      class: 'Long',
+      name: 'spent'
     }
   ],
 
@@ -24,8 +24,12 @@ foam.CLASS({
       name: 'update',
       args: [
         {
-          name: 'rule',
-          type: 'net.nanopay.tx.ruler.TransactionLimitRule'
+          name: 'limit',
+          type: 'Long'
+        },
+        {
+          name: 'period',
+          type: 'net.nanopay.util.Frequency'
         }
       ],
       javaCode: `
@@ -33,7 +37,7 @@ foam.CLASS({
       long delta = now - getLastActivity();
 
       setLastActivity(now);
-      setLastSpentAmount(rule.updateLimitAmount(getLastSpentAmount(), delta));
+      setSpent(Math.max(getSpent() - delta * limit / period.getMs(), 0));
       `
     }
   ],
@@ -44,17 +48,17 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
 
-        public synchronized boolean check(TransactionLimitRule rule, double amount) {
-          update(rule);
+        public synchronized boolean check(Long limit, net.nanopay.util.Frequency period, Long amount) {
+          update(limit, period);
 
-          if ( amount <= rule.getLimit() - getLastSpentAmount() ) {
+          if ( amount <= limit - getSpent() ) {
             return true;
           }
           return false;
         }
 
-        public synchronized void updateLastSpentAmount(Double amount) {
-          setLastSpentAmount(Math.max(0, getLastSpentAmount() + amount));
+        public synchronized void updateSpent(Long amount) {
+          setSpent(Math.max(0, getSpent() + amount));
         }
         `);
       }

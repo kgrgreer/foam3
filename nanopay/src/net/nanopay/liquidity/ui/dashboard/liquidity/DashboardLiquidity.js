@@ -11,25 +11,31 @@ foam.CLASS({
     'foam.dao.DAOSink',
     'foam.dao.EasyDAO',
     'foam.dao.PromisedDAO',
-    'foam.nanos.analytics.Candlestick',
-    'foam.u2.detail.SectionedDetailPropertyView',
-    'foam.u2.layout.Cols',
     'foam.glang.EndOfDay',
     'foam.glang.EndOfWeek',
     'foam.mlang.IdentityExpr',
+    'foam.mlang.predicate.IsClassOf',
+    'foam.nanos.analytics.Candlestick',
+    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
-    'org.chartjs.CandlestickDAOChartView',
     'net.nanopay.liquidity.ui.dashboard.DateFrequency',
+    'org.chartjs.CandlestickDAOChartView',
   ],
 
   imports: [
+    'accountBalanceAnnuallyCandlestickDAO',
     'accountBalanceDailyCandlestickDAO',
-    'accountBalanceWeeklyCandlestickDAO',
     'accountBalanceMonthlyCandlestickDAO',
     'accountBalanceQuarterlyCandlestickDAO',
-    'accountBalanceAnnuallyCandlestickDAO',
+    'accountBalanceWeeklyCandlestickDAO',
+    'accountDAO',
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
+  ],
+
+  exports: [
+    'digitalAccountDAO'
   ],
 
   css: `
@@ -79,16 +85,22 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      targetDAOKey: 'digitalAccountDAO',
       name: 'account',
-      view: function(_, x) {
-        var self = x.data;
-        var prop = this;
-        var v = foam.u2.view.ReferenceView.create(null, x);
-        v.fromProperty(prop);
-        v.dao = v.dao.where(foam.mlang.predicate.IsClassOf.create({
-          targetClass: self.DigitalAccount
+      factory: function() {
+        this.digitalAccountDAO.limit(1).select().then(a => {
+          if ( a.array.length ) this.account = a.array[0].id;
+        });
+        return net.nanopay.account.Account.ID.value;
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'digitalAccountDAO',
+      factory: function() {
+        return this.accountDAO.where(this.IsClassOf.create({
+          targetClass: this.DigitalAccount
         }));
-        return v;
       }
     },
     {
@@ -100,41 +112,29 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function() {
-        let resultDate = new Date (this.endDate.getTime());
-        resultDate.setDate(
-          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
-        );
-        
-        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      expression: function(endDate, timeFrame) {
+        var startDate = endDate;
+        for ( var i = 0 ; i < timeFrame.numLineGraphPoints ; i++ ) {
+          startDate = timeFrame.startExpr.f(new Date(startDate.getTime() - 1));
+        }
+        return startDate;
       },
-      preSet: function(_, n) {
-        var dayBeforeEndDate = new Date(this.endDate);
-        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
-
-        return this.EndOfDay.create({
-          delegate: this.IdentityExpr.create()
-        }).f(
-              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
-            )
+      postSet: function(_, n) {
+        var endDate = n || new Date();
+        for ( var i = 0 ; i < this.timeFrame.numBarGraphPoints ; i++ ) {
+          endDate = this.timeFrame.endExpr.f(new Date(endDate.getTime() + 1));
+        }
+        this.endDate = endDate;
+        this.startDate = undefined;
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function () {
-        return new Date();
-      },
-      preSet: function(o, n) {
-        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
-          return o;
-        } else {
-          return this.EndOfDay.create({
-            delegate: this.IdentityExpr.create()
-          }).f(
-                new Date(Math.min(Date.now(), n.getTime()))
-              )
-        }
+      factory: function () { return new Date() },
+      preSet: function(_, n) {
+        n = n || new Date();
+        return this.timeFrame.endExpr.f(n.getTime() > Date.now() ? new Date() : n);
       }
     },
     {
@@ -148,7 +148,6 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
-        var self = this;
         return {
           type: 'line',
           options: {
@@ -253,6 +252,7 @@ foam.CLASS({
                 return;
               }
 
+
               var liquiditySetting = await account.liquiditySetting$find;
 
               // Only put liquidity history that spans the range of the balance history.
@@ -273,22 +273,24 @@ foam.CLASS({
                 var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
                   .where(this.EQ(this.Candlestick.KEY, key));
 
-                var first = (await liquidityHistoryDAO
+                var first = await liquidityHistoryDAO
                   .where(this.LTE(this.Candlestick.CLOSE_TIME, minTime))
                   .orderBy(this.DESC(this.Candlestick.CLOSE_TIME))
                   .limit(1)
-                  .select()).array[0];
+                  .select()
+                first = first.array[0];
                 if ( first ) {
                   first = first.clone();
                   first.closeTime = minTime;
                   await dao.put(first);
                 }
 
-                var last = (await liquidityHistoryDAO
+                var last = await liquidityHistoryDAO
                   .where(this.GTE(this.Candlestick.CLOSE_TIME, maxTime))
                   .orderBy(this.Candlestick.CLOSE_TIME)
                   .limit(1)
-                  .select()).array[0];
+                  .select();
+                last = last.array[0]
                 if ( last ) {
                   last = last.clone();
                   last.closeTime = maxTime;

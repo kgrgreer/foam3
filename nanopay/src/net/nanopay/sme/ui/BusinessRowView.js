@@ -120,8 +120,8 @@ foam.CLASS({
               .addClass(this.myClass('business-location'))
               .add(this.slot(function(data) {
                 if ( data ) {
-                  var city = data.businessAddress.city;
-                  var region = data.businessAddress.regionId;
+                  var city = data.address.city;
+                  var region = data.address.regionId;
                   if ( city && region ) {
                     return `${city}, ${region}`;
                   } else if ( region ) {

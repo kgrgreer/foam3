@@ -133,24 +133,16 @@ foam.CLASS({
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
+  documentation: `Multifunctional model used for business onboarding`,
 
-  ids: ['userId'],
-
-  tableColumns: [
-    'userId',
-    'legalName',
-    'status',
-    'created',
-    'lastModified'
-  ],
+  ids: ['userId', 'businessId'],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
-
-  documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
     'foam.nanos.auth.Address',
@@ -158,7 +150,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding'
   ],
 
   imports: [
@@ -166,6 +158,21 @@ foam.CLASS({
     'pushMenu',
     'appConfig',
     'identificationTypeDAO',
+  ],
+
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
+
+  tableColumns: [
+    'userId',
+    'businessId',
+    'status',
+    'created',
+    'lastModified'
   ],
 
   sections: [
@@ -285,7 +292,14 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       name: 'businessId',
       section: 'adminReferenceSection',
-      label: 'Business Name'
+      label: 'Business Name',
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.businessId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
+        });
+      }
     },
     {
       class: 'Reference',
@@ -294,16 +308,22 @@ foam.CLASS({
       section: 'adminReferenceSection',
       postSet: function(_, n) {
         // TODO: fix: 'console.error :8080/#sme.main.dashboard:1 Uncaught (in promise) ...' postSet doesnt understand promised return- other then error shown this is not a blocker
-        this.userId$find.then((user) => {
-          if ( this.userId != n ) return;
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
+        try {
+          this.userId$find.then((user) => {
+            if ( this.userId != n ) return;
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+          });
+        } catch (_) {
+          // ignore error, this is here to catch the fact that userId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        };
       },
       tableCellFormatter: function(id, o) {
         var e = this.start('span').add(id).end();
-        o.userId$find.then(function(b) {
-          e.add(' - ', b.businessName || b.organization);
+        o.userId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -345,9 +365,9 @@ foam.CLASS({
       hidden: true,
       getter: function() {
         return this.userId$find.then((user) => {
-          return user.lastName ? user.firstName + " " + user.lastName : user.firstName;
+          if ( ! user ) return;
+          return user.lastName ? user.firstName + ' ' + user.lastName : user.firstName;
         });
-
       }
     },
     {
@@ -389,7 +409,7 @@ foam.CLASS({
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Select...',
+            placeholder: X.data.PLACE_HOLDER,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
               return [a.name, a.label];
@@ -575,7 +595,8 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+    net.nanopay.model.Business.ADDRESS.clone().copyFrom({
+      name: 'businessAddress',
       label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
@@ -625,10 +646,20 @@ foam.CLASS({
       ],
       validationTextVisible: true
     }),
-    foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
+    net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
-      placeholder: 'Select...',
+      view: function(args, X) {
+        return {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: X.data.PLACE_HOLDER,
+            dao: X.businessTypeDAO,
+            objToChoice: function(a) {
+              return [a.id, a.name];
+          }
+        };
+      },
+      
       validationPredicates: [
         {
           args: ['signingOfficer', 'businessTypeId'],
@@ -663,15 +694,16 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
+    net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Purchase of goods produced',
             'Completion of service contracts',
@@ -684,6 +716,7 @@ foam.CLASS({
             'Other'
           ]
         }
+      }
       },
       validationPredicates: [
         {
@@ -743,9 +776,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -753,6 +787,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -772,9 +807,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(arg, X) {
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -782,6 +818,7 @@ foam.CLASS({
           '$500,001 to $1,000,000',
           'Over $1,000,000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -801,9 +838,10 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      view: {
+      view: function(args, X){
+        return {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
+        placeholder: X.data.PLACE_HOLDER,
         choices: [
           '1 to 99',
           '100 to 199',
@@ -811,6 +849,7 @@ foam.CLASS({
           '500 to 999',
           'Over 1000'
         ]
+      }
       },
       validationPredicates: [
         {
@@ -832,12 +871,13 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      view: {
+      view: function(args, X) {
+        return {
         class: 'foam.u2.view.ChoiceWithOtherView',
         otherKey: 'Other',
         choiceView: {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Select...',
+          placeholder: X.data.PLACE_HOLDER,
           choices: [
             'Payables for products and/or services',
             'Working capital',
@@ -846,6 +886,7 @@ foam.CLASS({
             'Government fee and taxes',
             'Other'
           ]
+        }
         }
       },
       validationPredicates: [
@@ -865,7 +906,7 @@ foam.CLASS({
       ]
     }),
 
-    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+    net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
@@ -1142,7 +1183,47 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to update a submitted onboard profile.'
+    },
+    {
+      name: 'PLACE_HOLDER',
+      message: 'Please select...'
+    }
+  ],
+
   methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        DAO businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
+
+        BusinessOnboarding obj = (BusinessOnboarding) this;
+        BusinessOnboarding oldObj = (BusinessOnboarding) businessOnboardingDAO.find(this.getId());
+
+        if ( auth.check(x, "onboarding.update.*") ) return;
+
+        if (
+          oldObj != null &&
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
+          oldObj.getSigningOfficer()
+        ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+      `
+    },
     {
       name: 'authorizeOnCreate',
       javaCode: `

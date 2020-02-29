@@ -69,7 +69,6 @@ public class AscendantFXServiceTest
       businessAddress.setRegionId("ON");
       businessAddress.setAddress1("20 Ox Street");
       businessAddress.setPostalCode("M5V2J5");
-      payee_.setBusinessAddress(businessAddress);
       payee_.setAddress(businessAddress);
     }
     payee_ = (User) payee_.fclone();

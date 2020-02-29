@@ -60,3 +60,18 @@ foam.INTERFACE({
         }
     ]
 });
+
+foam.CLASS({
+    package: 'net.nanopay.fx',
+    name: 'ProxyFXService',
+    implements: [
+      'net.nanopay.fx.FXService'
+    ],
+    properties: [
+      {
+        class: 'Proxy',
+        of: 'net.nanopay.fx.FXService',
+        name: 'delegate'
+      }
+    ]
+  });

@@ -13,8 +13,9 @@ p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Bal
 p({"class":"foam.nanos.menu.Menu","id":"acceptanceDocumentDAO","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"accountingResultResponse","label":"Accounting Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountingReportDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"alarm","label":"Alarms","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"alarmDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"csvUploadScriptDAO","label":"CSV UploadScripts","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"csvUploadScriptDAO"}},"order":1000,"parent":"admin"})
 
-
+// line items
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTypeAccount","label":"LineItem User Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeAccountDAO"},"order":1000,"parent":"admin"})

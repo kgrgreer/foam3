@@ -1,0 +1,48 @@
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "scheduledTime": "2019-09-09T16:56:00.000Z",
+  "id": "ls.daily",
+  "description": "",
+  "code": 
+  """
+    import net.nanopay.liquidity.LiquiditySettingsCheckCron;
+    import net.nanopay.util.Frequency;
+    ls = new LiquiditySettingsCheckCron(Frequency.DAILY);
+    ls.execute(x);
+    print("Daily Liquidity Run.");
+  """
+})
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "scheduledTime": "2019-09-09T16:56:00.000Z",
+  "id": "ls.weekly",
+  "description": "",
+  "code": 
+  """
+    import net.nanopay.liquidity.LiquiditySettingsCheckCron;
+    import net.nanopay.liquidity.Frequency;
+    ls = new LiquiditySettingsCheckCron(Frequency.WEEKLY);
+    ls.execute(x);
+    print("Liquidity Weekly Run");
+  """
+})

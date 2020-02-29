@@ -1,1 +1,261 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"localTransactionQuotePlanDAO",     "lazy":false,  "serve":false, "serviceScript":"nd = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo()).build(); stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x).setDelegate(nd).build(); kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x).setDelegate(stpd).build(); kstp = new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x).setDelegate(kftp).build(); ktpd = new net.nanopay.tx.KotakTransactionPlanDAO.Builder(x).setDelegate(kstp).build(); nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x).setDelegate(ktpd).build(); nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x).setDelegate(nlifd).build(); atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x).setDelegate(nlitd).build(); afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x).setDelegate(atpd).build();gtpd = new net.nanopay.fx.GenericFXPlanDAO.Builder(x).setDelegate(afxtpd).build(); nfxtpd = new net.nanopay.tx.NanopayFXTransactionPlanDAO.Builder(x).setDelegate(gtpd).build(); cpd = new net.nanopay.tx.CompliancePlanDAO.Builder(x).setDelegate(nfxtpd).build(); tqd = new net.nanopay.tx.TransactionQuoteDAO.Builder(x).setDelegate(cpd).build(); dtpd = new net.nanopay.tx.DigitalTransactionPlanDAO(x, tqd); rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, dtpd); atd = new net.nanopay.tx.AbliiTransactionDAO.Builder(x).setDelegate(rtpd).build(); dpd = new net.nanopay.tx.DebtablePlanDAO.Builder(x).setDelegate(atd).build(); vd = new foam.dao.ValidatingDAO(x, dpd, new net.nanopay.tx.RequestTransactionValidator()); ltpd = new net.nanopay.tx.LoanTransactionPlanDAO(x,vd); drpd = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x).setDelegate(ltpd).build(); ptd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x).setDelegate(drpd).build(); return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.tx.PayerTransactionDAO.Builder(x).setDelegate(ptd).build()));"})
+r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "http",
+  "lazy": false,
+  "service": {
+    "class": "foam.nanos.jetty.HttpServer",
+    "port": 8080,
+    "forwardedForProxyWhitelist": [],
+    "welcomeFiles": ["welcome"],
+    "servletMappings": [{
+      "class": "foam.nanos.servlet.ServletMapping",
+      "servletObject": {
+        "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
+        "hostMapping": {
+          "ablii": "/nanopay/src/net/nanopay/sme/index_nolsb.html",
+          "localhost": "/nanopay/src/net/nanopay/index_nolsb.html",
+          "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
+        },
+        "defaultHost": "localhost"
+      },
+      "pathSpec": "/welcome"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.http.NanoRouter",
+      "pathSpec": "/service/*"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.servlet.ImageServlet",
+      "pathSpec": "/images/*",
+      "initParameters": {
+        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam2/src/foam/support/images:foam2/src/foam/u2/images"
+      }
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "org.eclipse.jetty.servlet.DefaultServlet",
+      "pathSpec": "/*",
+      "initParameters": {
+        "pathInfoOnly": "true",
+        "welcomeServlets": "true",
+        "dirAllowed": "false"
+      }
+    }],
+    "errorMappings": [{
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "errorCode": 404,
+      "location": "/nanopay/src/net/nanopay/ui/errorPage/errorPage.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "javax.ws.rs.NotAuthorizedException",
+      "location": "/nanopay/src/net/nanopay/ui/unauthorizedAccess/unauthorizedAccess.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "java.lang.Throwable",
+      "location": "/nanopay/src/net/nanopay/ui/errorPage/errorPage.html"
+    }],
+    "filterMappings": [{
+      "class": "foam.nanos.servlet.FilterMapping",
+      "filterClass": "net.nanopay.security.csp.CSPFilter",
+      "pathSpec": "/*",
+      "initParameters": {
+        "CONTENT_SECURITY_POLICY": """
+          default-src 'none';
+          child-src 'self';
+          worker-src 'self';
+          manifest-src 'self' /favicon/manifest.json;
+          connect-src 'self' data: blob: filesystem: ws:;
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          img-src 'self' data: blob: filesystem:;
+          media-src * data: blob: filesystem:;
+          object-src 'self' data: blob: filesystem:;
+          frame-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          report-uri /service/CSPReportWebAgent;
+        """
+      }
+    }]
+  }
+})
+p({
+  "class":"foam.nanos.boot.NSpec", "name":"localAccountDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    import net.nanopay.account.Account;
+    foam.dao.MDAO mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ID});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.ENABLED});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.IS_DEFAULT});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Account.DENOMINATION});
+    foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
+    
+    r = new foam.nanos.ruler.RulerDAO(x, hashingJDAO, "localAccountDAO");
+    
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setSeqNo(true)
+      .setCreatedAware(true)
+      .setCreatedByAware(true)
+      .setLastModifiedAware(true)
+      .setLastModifiedByAware(true)
+      .setDeletedAware(true)
+      .setOf(Account.getOwnClassInfo())
+      .setInnerDAO(r)
+      .setAuthorize(false)
+      .build();
+  """
+})
+p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})
+p({
+  "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",              "lazy":false,  "serviceScript":
+  """
+    import net.nanopay.tx.model.Transaction;
+    import foam.dao.MDAO;
+    import foam.dao.DAO;
+    import foam.nanos.analytics.DAOFoldManager;
+    import foam.nanos.analytics.FoldManagerDAODecorator;
+    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.ruler.RulerDAO;
+    import net.nanopay.tx.stripe.StripeTransactionDAO;
+    import net.nanopay.tx.UpdateInvoiceTransactionDAO;
+    import net.nanopay.tx.ExecuteMethodsTransactionDAO;
+    import net.nanopay.tx.CheckQuotedTransactionDAO;
+    import net.nanopay.tx.CompletedTransactionDAO;
+    import net.nanopay.tx.realex.RealexTransactionDAO;
+    import net.nanopay.tx.TransactionDAO;
+    import net.nanopay.security.HashingJDAO;
+    import net.nanopay.security.RandomNonceDAO;
+    import net.nanopay.fx.afex.AFEXTransactionDAO;
+    import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
+    MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.TYPE});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.PARENT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
+    fm = new DAOFoldManager.Builder(x)
+      .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
+      .setPeriodLengthMs(60 * 60 * 1000)    
+      .build();\nfoldingDAO = new FoldManagerDAODecorator.Builder(x)
+      .setDelegate(transactionMDao)
+      .setFm(fm)
+      .build();
+    TransactionDAO aa = new TransactionDAO(x, foldingDAO);
+    HashingJDAO a = new HashingJDAO(x, "SHA-256", true, aa, "transactions");
+    deletedAware = new DeletedAwareDAO(x, "transaction", a);
+    ctx = new foam.dao.ContextualizingDAO.Builder(x)
+      .setDelegate(deletedAware)
+      .build();
+    // TODO: Will make our own liquid rules journal and then re-enable the rule engine
+    // ruler = new RulerDAO(x, ctx, "localTransactionDAO");
+    foam.dao.ProxyDAO aware = new foam.nanos.auth.CreatedAwareDAO.Builder(x)
+      .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
+        .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
+          .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
+            .setDelegate(new foam.dao.GUIDDAO(ctx))
+            .build())
+          .build())
+        .build())
+      .build();
+    //AFEXTransactionDAO afex = new net.nanopay.fx.afex.AFEXTransactionDAO(x, aware);
+    //AscendantFXTransactionDAO ascendant = new net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO(x, afex);
+    DAO saved = new net.nanopay.tx.SaveChainedTransactionDAO(x, aware);
+    DAO child = new CompletedTransactionDAO.Builder(x)
+      .setDelegate(saved)
+      .build();
+    UpdateInvoiceTransactionDAO e = new UpdateInvoiceTransactionDAO(x, child);
+    DAO exec = new ExecuteMethodsTransactionDAO.Builder(x)
+      .setDelegate(e)
+      .build();
+    quoted = new CheckQuotedTransactionDAO(x, exec);
+    RealexTransactionDAO real = new net.nanopay.tx.realex.RealexTransactionDAO(x, quoted);
+    DAO stripe = new StripeTransactionDAO(x, real);
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x ,stripe));
+    """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionQuotePlanDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    nd = new foam.dao.NullDAO.Builder(x)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .build();
+    stpd = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
+      .setDelegate(nd)
+      .build();
+    kftp = new net.nanopay.tx.KotakFxTransactionPlanDAO.Builder(x)
+      .setDelegate(stpd)
+      .build(); 
+    kstp = new net.nanopay.tx.KotakSplitTransactionPlanDAO.Builder(x)
+      .setDelegate(kftp)
+      .build();
+    ktpd = new net.nanopay.tx.KotakTransactionPlanDAO.Builder(x)
+      .setDelegate(kstp)
+      .build();
+    nlifd = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
+      .setDelegate(ktpd)
+      .build();
+    nlitd = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
+      .setDelegate(nlifd)
+      .build();
+    atpd = new net.nanopay.tx.alterna.AlternaTransactionPlanDAO.Builder(x)
+      .setDelegate(nlitd)
+      .build();
+    bmopd = new net.nanopay.tx.bmo.BmoTransactionPlanDAO.Builder(x)
+      .setEnabled(false).setDelegate(atpd)
+      .build();
+    afextpd = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
+      .setEnabled(false)
+      .setDelegate(bmopd)
+      .build();
+    afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
+      .setEnabled(true)
+      .setDelegate(afextpd)
+      .build();
+    nfxtpd = new net.nanopay.tx.NanopayFXTransactionPlanDAO.Builder(x)
+      .setDelegate(afxtpd)
+      .build();
+    cpd = new net.nanopay.tx.CompliancePlanDAO.Builder(x)
+      .setDelegate(nfxtpd)
+      .build();
+    tqd = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
+      .setDelegate(cpd)
+      .build();
+    gcipd = new net.nanopay.tx.GenericCIPlanner.Builder(x)
+          .setDelegate(tqd)
+          .build();
+    fxtpdw = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
+      .setDelegate(gcipd)
+      .build();
+    dtpd = new net.nanopay.tx.DigitalTransactionPlanDAO(x, fxtpdw);
+    rtpd = new net.nanopay.tx.RetailTransactionPlanDAO(x, dtpd);
+    atd = new net.nanopay.tx.AbliiTransactionDAO.Builder(x)
+      .setDelegate(rtpd)
+      .build();
+    dpd = new net.nanopay.tx.DebtablePlanDAO.Builder(x)
+      .setDelegate(atd)
+      .build();
+    vd = new foam.dao.ValidatingDAO(x, dpd, new net.nanopay.tx.RequestTransactionValidator());
+    ltpd = new net.nanopay.tx.LoanTransactionPlanDAO(x,vd);
+    drpd = new net.nanopay.tx.DebtRepaymentPlanDAO.Builder(x)
+      .setDelegate(ltpd)
+      .build();
+    ptd = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
+      .setDelegate(drpd)
+      .build();
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.tx.PayerTransactionDAO.Builder(x)
+      .setDelegate(ptd)
+      .build()));
+  """
+})
+p({"class":"foam.nanos.boot.NSpec","id":"accountDAO","client":"\n  {\n    \"of\":\"net.nanopay.account.Account\",\n    \"cache\": true,\n    \"decorators\": [\n      {\n        \"class\":\"foam.nanos.fs.FileDAODecorator\"\n      }\n    ]\n  }\n  "})
+p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({"class":"foam.nanos.boot.NSpec","id":"exchangeRateDAO","client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"})

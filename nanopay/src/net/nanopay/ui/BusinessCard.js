@@ -94,7 +94,7 @@ foam.CLASS({
               .end()
               .start().addClass('companyAddress')
                 .add(this.business$.map(function(a) {
-                  return self.formatAddress(a.businessAddress);
+                  return self.formatAddress(a.Address);
                 }))
               .end()
             .end()
@@ -116,8 +116,8 @@ foam.CLASS({
               }))
               .br()
               .add(this.business$.map(function(a) {
-                if ( ! a.businessPhone ) return;
-                return a.businessPhone.number;
+                if ( ! a.phone ) return;
+                return a.phone.number;
               }))
             .end()
             .start().addClass('companyName').addClass('inline')

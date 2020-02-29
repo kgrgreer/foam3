@@ -31,7 +31,7 @@ foam.CLASS({
       DAO userUserDAO = (DAO) x.get("userUserDAO");
       DAO contactDAO = (DAO) x.get("contactDAO");
       DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-      DAO tokenDAO = (DAO) x.get("tokenDAO");
+      DAO tokenDAO = (DAO) x.get("localTokenDAO");
       TokenService externalToken = (TokenService) x.get("externalInvoiceToken");
 
       Calendar calendar = Calendar.getInstance();

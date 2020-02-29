@@ -568,6 +568,10 @@ foam.CLASS({
       display: inline-block;
       visibility: visible;
       border: 6px solid #604aff;
+      -webkit-border-before-width: 8px;
+      -webkit-border-end-width: 8px;
+      -webkit-border-start-width: 8px;
+      -webkit-border-after-width: 8px;
     }
 
     input[type='checkbox']:checked:after {
@@ -838,6 +842,14 @@ foam.CLASS({
       font-size: 11px !important;
       line-height: 22px;
       display: inline-block;
+    }
+
+    .generic-status-circle.Scheduled {
+      background: #406dea;
+    }
+
+    .Invoice-Status.Scheduled {
+      color: #406dea !important;
     }
 
     .generic-status-circle.Complete {

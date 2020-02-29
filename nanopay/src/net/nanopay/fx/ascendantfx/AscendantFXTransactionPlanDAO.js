@@ -114,7 +114,7 @@ foam.CLASS({
         if ( fxQuote.getId() < 1 ) {
           try {
             AscendantFXServiceProvider ascendantFXService = (AscendantFXServiceProvider) fxService;
-            if ( SafetyUtil.isEmpty(request.getPaymentMethod()) ) {
+            // if ( SafetyUtil.isEmpty(request.getPaymentMethod()) ) {
               for ( AscendantFXPaymentMethodType paymentMethod : AscendantFXPaymentMethodType.values() ) {
                 fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
                   request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
@@ -130,21 +130,20 @@ foam.CLASS({
                     quote.addPlan(summaryTransaction);
                   }
               }
-            } else {
-              fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
-                request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-                FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
-                if ( null != fxQuote && fxQuote.getId() > 0 ) {
-                  AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
-                  ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
-                  ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
-                  if ( null != disclosure ) {
-                    ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
-                  }
-                  FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, sourceAccount, destinationAccount, fxQuote);
-                  quote.addPlan(summaryTransaction);
-                }
-            }
+            // } else {
+            //   fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
+            //     request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+            //     FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
+            //     if ( null != fxQuote && fxQuote.getId() > 0 ) {
+            //       AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
+            //       ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
+            //       ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
+            //       if ( null != disclosure ) {
+            //         ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
+            //       }
+            //       quote.addPlan(ascendantFXTransaction);
+            //     }
+            // }
           } catch (Throwable t) {
             String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AscendantFX" ;
             Notification notification = new Notification.Builder(x)

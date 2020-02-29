@@ -243,7 +243,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isUSABasedCompany',
       expression: function(viewData) {
-        return foam.util.equals(viewData.user.businessAddress.countryId, 'US');
+        return foam.util.equals(viewData.user.Address.countryId, 'US');
       }
     },
     {

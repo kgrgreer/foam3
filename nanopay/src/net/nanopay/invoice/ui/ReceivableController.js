@@ -31,7 +31,8 @@ foam.CLASS({
 
   messages: [
     { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
   ],
 
   properties: [
@@ -138,7 +139,9 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.user.sales.remove(this);
+                self.user.sales.remove(this).then(() => {
+                  self.notify(self.DELETE_DRAFT, 'success')
+                });
               }
             })
           ]

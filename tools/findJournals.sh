@@ -3,6 +3,7 @@
 IN_FILE=
 INSTANCE=
 OUT_FILE=
+EXTRA_FILES=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -11,13 +12,15 @@ function usage {
     echo "  -I : Input File, no option defaults to stdin"
     echo "  -J : Instance"
     echo "  -O : Output File, no option defaults to stdout"
+    echo "  -E : Specify extra journal source directory"
 }
 
-while getopts "I:J:O:" opt ; do
+while getopts "I:J:O:E:" opt ; do
     case $opt in
         I) IN_FILE=$OPTARG ;;
         J) INSTANCE=$OPTARG ;;
         O) OUT_FILE=$OPTARG ;;
+        E) EXTRA_FILES=$OPTARG ;;
         ?) usage ; exit 1;;
     esac
 done
@@ -28,6 +31,10 @@ declare -a sources=(
   "deployment/$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')"
  # "interac/src"
 )
+
+if [ ! -z $EXTRA_FILES ]; then
+    sources+=($EXTRA_FILES)
+fi
 
 if [ ! -z $OUT_FILE ]; then
     rm $OUT_FILE

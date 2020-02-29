@@ -137,6 +137,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       account.setAccountNumber(bankAccountNo);
       account.setIsDefault(true);
       account.setDenomination("CAD");
+      account.setStatus(BankAccountStatus.VERIFIED);
       accountDAO.put_(x, account);
     }
   }

@@ -151,7 +151,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.create.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.create.%d", this.getId())) ) return;
 
         if ( ! (user instanceof Business) ) {
           throw new AuthorizationException("Only businesses can have beneficial owners.");
@@ -173,7 +173,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.read.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.read.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot see beneficial owners owned by other businesses.");
@@ -192,7 +192,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
 
-        if ( auth.check(x, String.format("beneficialOwner.update.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.update.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot edit beneficial owners owned by other businesses.");
@@ -210,7 +210,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = (User) x.get("user");
 
-        if ( auth.check(x, String.format("beneficialOwner.delete.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.delete.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");
@@ -221,10 +221,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function toSummary() {
-        return this.lastName ? this.firstName + " " + this.lastName : this.firstName;
+        return this.lastName ? this.firstName + ' ' + this.lastName : this.firstName;
       },
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
     }

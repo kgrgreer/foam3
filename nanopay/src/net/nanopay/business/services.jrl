@@ -1,2 +1,15 @@
-p({"class":"foam.nanos.boot.NSpec","name":"joinBusiness","authenticate":false,"authNotes":"This service does not require authentication to access because we need users to be able to link to it from emails without requiring them to log in. Since you need to know the token UUID to do anything with this service, it should be safe since the only place people can access that UUID is via the email we send them.","serviceClass":"net.nanopay.business.JoinBusinessWebAgent"})
-p({"class":"foam.nanos.boot.NSpec","name":"joinBusinessToken","serve":true,"serviceClass":"net.nanopay.business.JoinBusinessTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "joinBusiness",
+  "authenticate": false,
+  "authNotes": "This service does not require authentication to access because we need users to be able to link to it from emails without requiring them to log in. Since you need to know the token UUID to do anything with this service, it should be safe since the only place people can access that UUID is via the email we send them.",
+  "serviceClass": "net.nanopay.business.JoinBusinessWebAgent"
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "joinBusinessToken",
+  "serve": true,
+  "serviceClass": "net.nanopay.business.JoinBusinessTokenService",
+  "boxClass": "foam.nanos.auth.token.TokenServiceSkeleton",
+  "client": "{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
+})

@@ -5,3 +5,8 @@ p({"class":"net.nanopay.test.BusinessSectorDAOTest","id":"BusinessSectorDAOTest"
 p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest"})
 p({"class":"net.nanopay.test.api.AuthenticationFailureApiTest","id":"AuthenticationFailureApiTest"})
 p({"class":"net.nanopay.test.api.SessionAuthenticationFailureApiTest","id":"SessionAuthenticationFailureApiTest"})
+
+// DAO Security Tests
+p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOSecurityTestFind"})
+p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
+p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})

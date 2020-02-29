@@ -32,7 +32,7 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode: `
         try {
-          DAO tokenDAO = (DAO) x.get("tokenDAO");
+          DAO tokenDAO = (DAO) x.get("localTokenDAO");
           AppConfig appConfig = (AppConfig) x.get("appConfig");
           String url = appConfig.getUrl().replaceAll("/$", "");
 
@@ -72,7 +72,7 @@ foam.CLASS({
     {
       name: 'processToken',
       javaCode: `
-        DAO tokenDAO = (DAO) x.get("tokenDAO");
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
         Calendar calendar = Calendar.getInstance();
 
         FObject result = tokenDAO.find(MLang.AND(

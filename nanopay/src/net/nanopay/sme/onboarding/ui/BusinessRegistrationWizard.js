@@ -338,7 +338,7 @@ foam.CLASS({
       //   return false;
       // }
 
-      if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
+      if ( foam.util.equals(this.viewData.user.address.countryId, 'CA') ) {
         // if ( ! this.viewData.canadianScrollBoxOne ) {
         //   this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
         //   return false;
@@ -430,19 +430,19 @@ foam.CLASS({
      */
     function validateBusinessProfile() {
       var businessProfile = this.viewData.user;
-      var businessAddress = businessProfile.businessAddress;
+      var businessAddress = businessProfile.address;
 
       if ( businessAddress.errors_ ) {
         this.notify(businessAddress.errors_[0][1], 'error');
         return false;
       }
 
-      if ( ! this.validatePhone(businessProfile.businessPhone.number) ) {
+      if ( ! this.validatePhone(businessProfile.phone.number) ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
         return false;
       }
 
-      if ( businessProfile.businessPhone.number.length > 10 ) {
+      if ( businessProfile.phone.number.length > 10 ) {
         this.notify(this.ERROR_PHONE_LENGTH, 'error');
         return false;
       }

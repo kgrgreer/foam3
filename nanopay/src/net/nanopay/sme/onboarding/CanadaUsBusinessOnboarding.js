@@ -2,12 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboarding',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
-  ],
+  ids: ['userId', 'businessId'],
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
@@ -24,10 +22,16 @@ foam.CLASS({
     'countryDAO',
   ],
 
-  ids: ['userId'],
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'net.nanopay.sme.onboarding.OnboardingStatus'
+  ],
 
   tableColumns: [
     'userId',
+    'businessId',
     'status',
     'created',
     'lastModified'
@@ -76,16 +80,22 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        this.userId$find.then((user) => {
-          if ( this.userId != n ) return;
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
+        try {
+          this.userId$find.then((user) => {
+            if ( this.userId != n ) return;
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+          });
+        } catch (_) {
+          // ignore error, this is here to catch the fact that userId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        }
       },
       tableCellFormatter: function(id, o) {
         var e = this.start('span').add(id).end();
-        o.userId$find.then(function(b) {
-          e.add(' - ', b.businessName || b.organization);
+        o.userId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -96,12 +106,25 @@ foam.CLASS({
       label: 'Business Name',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        var m = foam.mlang.Expressions.create();
-        this.businessId$find.then((business) => {
-          business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
-          .then((o) => {
-            this.signingOfficer = o && o.id != 0 ;
+        try {
+          var m = foam.mlang.Expressions.create();
+          this.businessId$find.then((business) => {
+            if ( ! business ) return;
+            business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
+            .then((o) => {
+              this.signingOfficer = o && o.id != 0;
+            });
           });
+        } catch (_) {
+          // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        }
+      },
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.businessId$find.then((b) => {
+          if ( ! b ) return;
+          e.add(' - ', b.label());
         });
       }
     },
@@ -141,7 +164,7 @@ foam.CLASS({
               })
             );
           },
-          errorString: 'Must be at least a before now.'
+          errorString: 'Business Formation Date must be a date in the past.'
         }
       ]
     },
@@ -152,7 +175,6 @@ foam.CLASS({
       name: 'countryOfBusinessFormation',
       documentation: 'Country or Jurisdiction of Formation or Incorporation.',
       view: function(args, X) {
-        var self = this;
         var m = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -255,7 +277,43 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'PROHIBITED_MESSAGE',
+      message: 'You do not have permission to update a submitted onboard profile.'
+    }
+  ],
+
   methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        DAO canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+
+        CanadaUsBusinessOnboarding obj = (CanadaUsBusinessOnboarding) this;
+        CanadaUsBusinessOnboarding oldObj = (CanadaUsBusinessOnboarding) canadaUsBusinessOnboardingDAO.find(this.getId());
+
+        if ( auth.check(x, "onboarding.update.*") ) return;
+
+        if (
+          oldObj != null &&
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
+          oldObj.getSigningOfficer()
+        ) {
+          throw new AuthorizationException(PROHIBITED_MESSAGE);
+        }
+
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+      `
+    },
     {
       name: 'authorizeOnCreate',
       javaCode: `

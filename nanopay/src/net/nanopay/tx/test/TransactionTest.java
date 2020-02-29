@@ -18,6 +18,10 @@ import net.nanopay.tx.Transfer;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -163,7 +167,7 @@ public class TransactionTest
     bank.setStatus(BankAccountStatus.UNVERIFIED);
     bank = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bank).fclone();
 
-    AlternaVerificationTransaction txn = new AlternaVerificationTransaction.Builder(x_)
+    BmoVerificationTransaction txn = new BmoVerificationTransaction.Builder(x_)
       .setPayerId(sender_.getId())
       .setDestinationAccount(bank.getId())
       .setAmount(45)
@@ -181,8 +185,8 @@ public class TransactionTest
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
 
     test(tq.getPlan().getIsQuoted(),"verification transaction was quoted");
-    test(tq.getPlans().length == 1,"Only 1 plan is created for an Alterna Verification Transaction");
-    test(tq.getPlan().getClass() == AlternaVerificationTransaction.class,"transaction is class of Alterna verification transaction");
+    test(tq.getPlans().length == 1,"Only 1 plan is created for an Verification Transaction");
+    test(tq.getPlan() instanceof VerificationTransaction,"transaction is class of verification transaction");
   }
 
   public void testAbliiTransaction(){
@@ -216,9 +220,9 @@ public class TransactionTest
     // Non Composite
     Transaction txn4 = txn3.getNext()[0];
     Transaction txn5 = txn4.getNext()[0];
-    test(txn3.getClass() == AlternaCITransaction.class, " 2nd child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
+    test(txn3 instanceof CITransaction, " 2nd child is of type "+txn3.getClass().getName()+" should be CITransaction");
     test(txn4.getClass() == DigitalTransaction.class, " 3rd child is of type "+txn4.getClass().getName()+" should be DigitalTransaction");
-    test(txn5.getClass() == AlternaCOTransaction.class, " 4th child is of type "+txn5.getClass().getName()+" should be AlternaCOTransaction");
+    test(txn5 instanceof COTransaction, " 4th child is of type "+txn5.getClass().getName()+" should be COTransaction");
 
     test(txn3.getAmount()== txn5.getAmount(), "CI and CO transactions have same amount");
     test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and digital use same digital account");

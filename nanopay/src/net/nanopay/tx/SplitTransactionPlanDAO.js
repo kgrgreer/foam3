@@ -207,6 +207,37 @@ foam.CLASS({
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
+
+      // Split Digital -> Bank where owners differ
+      if ( sourceAccount instanceof DigitalAccount &&
+        destinationAccount instanceof BankAccount &&
+        sourceAccount.getOwner() != destinationAccount.getOwner() ) {
+
+        // craft digital to digital
+        foam.nanos.auth.User bankOwner = destinationAccount.findOwner(x);
+        Account digital = DigitalAccount.findDefault(x, bankOwner, request.getDestinationCurrency());
+        Transaction d = new Transaction();
+        d.copyFrom(request);
+        d.setDestinationAccount(digital.getId());
+
+        TransactionQuote q = new TransactionQuote();
+        q.setRequestTransaction(d);
+        q = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q);
+        d = q.getPlan();
+
+        // Don't create/use a summary transaction
+        // txn.addNext(d);
+
+        Transaction co = new Transaction();
+        co.copyFrom(request);
+        co.setSourceAccount(digital.getId());
+        q = new TransactionQuote();
+        q.setRequestTransaction(co);
+        q = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q);
+        d.addNext(q.getPlan());
+        // quote.addPlan(txn);
+        quote.addPlan(d);
+      }
       return super.put_(x, quote);`
     },
     {

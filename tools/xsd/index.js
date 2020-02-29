@@ -1,6 +1,6 @@
 'use strict';
 
-require('../../../NANOPAY/foam2/src/foam.js');
+require('../../foam2/src/foam.js');
 var stringify = require("json-stringify-pretty-compact");
 var _ = require('underscore');
 

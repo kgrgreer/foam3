@@ -42,7 +42,7 @@ public class ReportPaymentSummary extends AbstractReport {
   }
 
   // countDaily -> createdDate == today
-  private NumTotal countDaily(DAO transactions) {
+  private NumTotal countDaily(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -51,17 +51,17 @@ public class ReportPaymentSummary extends AbstractReport {
     c.set(Calendar.SECOND, 0);
     Date today = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, today)
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, today)
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
     return nt;
   }
 
   // countYesterday -> createdDate == yesterday
-  private NumTotal countYesterday(DAO transactions) {
+  private NumTotal countYesterday(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -72,12 +72,12 @@ public class ReportPaymentSummary extends AbstractReport {
     c.add(Calendar.DATE, -1);
     Date yesterday = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.AND(
         MLang.GTE(Transaction.CREATED, yesterday),
         MLang.LT(Transaction.CREATED, today))
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.AND(
         MLang.GTE(Transaction.CREATED, yesterday),
         MLang.LT(Transaction.CREATED, today))
@@ -86,7 +86,7 @@ public class ReportPaymentSummary extends AbstractReport {
   }
 
   // countWeekly -> createdDate in last 6 days + today
-  private NumTotal countWeekly(DAO transactions) {
+  private NumTotal countWeekly(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -96,17 +96,17 @@ public class ReportPaymentSummary extends AbstractReport {
     c.set(Calendar.SECOND, 0);
     Date sevenDaysBefore = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, sevenDaysBefore)
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, sevenDaysBefore)
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
     return nt;
   }
 
   // countMonthToDate -> createdDate in current month
-  private NumTotal countMonthToDate(DAO transactions) {
+  private NumTotal countMonthToDate(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -116,17 +116,17 @@ public class ReportPaymentSummary extends AbstractReport {
     c.set(Calendar.SECOND, 0);
     Date firstDayOfMonth = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, firstDayOfMonth)
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, firstDayOfMonth)
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
     return nt;
   }
 
   // countLastMonth -> createdDate in previous month
-  private NumTotal countLastMonth(DAO transactions) {
+  private NumTotal countLastMonth(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -138,12 +138,12 @@ public class ReportPaymentSummary extends AbstractReport {
     c.add(Calendar.MONTH, -1);
     Date lastMonth = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.AND(
         MLang.GTE(Transaction.CREATED, lastMonth),
         MLang.LT(Transaction.CREATED, thisMonth))
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.AND(
         MLang.GTE(Transaction.CREATED, lastMonth),
         MLang.LT(Transaction.CREATED, thisMonth))
@@ -152,7 +152,7 @@ public class ReportPaymentSummary extends AbstractReport {
   }
 
   //  countYearToDate -> createdDate in current calendar year
-  private NumTotal countYearToDate(DAO transactions) {
+  private NumTotal countYearToDate(X x, DAO transactions) {
     Date currentDate = new Date();
     Calendar c = Calendar.getInstance();
     c.setTime(currentDate);
@@ -163,50 +163,50 @@ public class ReportPaymentSummary extends AbstractReport {
     c.set(Calendar.SECOND, 0);
     Date thisYear = c.getTime();
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.where(
+    nt.num = ((Count) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, thisYear)
     ).select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.where(
+    nt.total = ((Double) ((Sum) transactions.inX(x).where(
       MLang.GTE(Transaction.CREATED, thisYear)
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
     return nt;
   }
 
   // summarize all the payments
-  private NumTotal countTotal(DAO transactions) {
+  private NumTotal countTotal(X x, DAO transactions) {
     NumTotal nt = new NumTotal();
-    nt.num = ((Count) transactions.select(new Count())).getValue();
-    nt.total = ((Double) ((Sum) transactions.select(SUM(Transaction.AMOUNT))).getValue()).longValue();
+    nt.num = ((Count) transactions.inX(x).select(new Count())).getValue();
+    nt.total = ((Double) ((Sum) transactions.inX(x).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
     return nt;
   }
 
 
-  private void appendTX(DAO transactions, String countryLabel, String statusLabel, Currency currency) {
+  private void appendTX(X x, DAO transactions, String countryLabel, String statusLabel, Currency currency) {
     this.sb.append(this.buildCSVLine(
       NUM_ELEMENTS,
       countryLabel,
       statusLabel,
-      Long.toString(countDaily(transactions).num),
-      currency.format(countDaily(transactions).total),
-      Long.toString(countYesterday(transactions).num),
-      currency.format(countYesterday(transactions).total),
-      Long.toString(countWeekly(transactions).num),
-      currency.format(countWeekly(transactions).total),
-      Long.toString(countMonthToDate(transactions).num),
-      currency.format(countMonthToDate(transactions).total),
-      Long.toString(countLastMonth(transactions).num),
-      currency.format(countLastMonth(transactions).total),
-      Long.toString(countYearToDate(transactions).num),
-      currency.format(countYearToDate(transactions).total),
-      Long.toString(countTotal(transactions).num),
-      currency.format(countTotal(transactions).total)
+      Long.toString(countDaily(x, transactions).num),
+      currency.format(countDaily(x, transactions).total),
+      Long.toString(countYesterday(x, transactions).num),
+      currency.format(countYesterday(x, transactions).total),
+      Long.toString(countWeekly(x, transactions).num),
+      currency.format(countWeekly(x, transactions).total),
+      Long.toString(countMonthToDate(x, transactions).num),
+      currency.format(countMonthToDate(x, transactions).total),
+      Long.toString(countLastMonth(x, transactions).num),
+      currency.format(countLastMonth(x, transactions).total),
+      Long.toString(countYearToDate(x, transactions).num),
+      currency.format(countYearToDate(x, transactions).total),
+      Long.toString(countTotal(x, transactions).num),
+      currency.format(countTotal(x, transactions).total)
     ));
   }
 
   // append the summary tx data for specific country/currency to the csv
   private void breakDown(X x, DAO transactions, String countryLabel, Currency currency) {
     // Retrieve all the root transaction from DAO
-    List transactionRootLst = ((ArraySink) transactions.where(
+    List transactionRootLst = ((ArraySink) transactions.inX(x).where(
       MLang.EQ(Transaction.PARENT, ""))
       .select(new ArraySink())).getArray();
 
@@ -215,7 +215,7 @@ public class ReportPaymentSummary extends AbstractReport {
     for (Object obj : transactionRootLst) {
       Transaction transaction = (Transaction) obj;
       if ((transaction.getState(x) == TransactionStatus.PENDING) ||
-          (transaction.getState(x) == TransactionStatus.SENT)) {
+        (transaction.getState(x) == TransactionStatus.SENT)) {
         // In Process (Any payment that has started processing but not yet completed)
         txsInProcess.put(transaction);
       } else if (transaction.getState(x) == TransactionStatus.COMPLETED) {
@@ -223,8 +223,8 @@ public class ReportPaymentSummary extends AbstractReport {
         txsCompleted.put(transaction);
       }
     }
-    appendTX(txsInProcess, countryLabel, "In Process", currency);
-    appendTX(txsCompleted, "", "Completed", currency);
+    appendTX(x, txsInProcess, countryLabel, "In Process", currency);
+    appendTX(x, txsCompleted, "", "Completed", currency);
   }
 
   // Main method to create the payment summary report for leadership

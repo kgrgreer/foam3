@@ -10,6 +10,7 @@ import net.nanopay.tx.model.Transaction;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
 
 public class InteracTransactionDAO
   extends ProxyDAO

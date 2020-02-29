@@ -1,0 +1,61 @@
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set Type on Existing ComplianceItems",
+  "description": "A migration script to fix searching by type on the Compliance Requests page and improve performance as well.",
+  "code": """
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.util.SafetyUtil;
+import java.util.List;
+import net.nanopay.meter.compliance.ComplianceItem;
+import net.nanopay.meter.compliance.dowJones.DowJonesResponse;
+import net.nanopay.meter.compliance.identityMind.IdentityMindResponse;
+import net.nanopay.meter.compliance.secureFact.lev.LEVResponse;
+
+DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+
+ArraySink sink = new ArraySink();
+
+complianceItemDAO.select(sink);
+
+List complianceItems = sink.getArray();
+
+int updated = 0;
+int skipped = 0;
+
+for ( ComplianceItem complianceItem : complianceItems ) {
+  if ( ! SafetyUtil.isEmpty(complianceItem.getType()) ) {
+    print(String.format("Skipping compliance item %d because its type is already set to %s.", new Object[] { complianceItem.getId(), complianceItem.getType() }));
+    skipped++;
+    continue;
+  }
+
+  if ( complianceItem.getDowJones() != 0 ) {
+    DowJonesResponse response = complianceItem.findDowJones(x);
+    if ( response == null ) {
+      print(String.format("WARNING: Couldn't find DowJonesResponse object for compliance item %d.", new Object[] { complianceItem.getId() }));
+      continue;
+    }
+    complianceItem.setType("Dow Jones (" + response.getSearchType() + ")");
+  } else if ( complianceItem.getIdentityMind() != 0 ) {
+    IdentityMindResponse response = complianceItem.findIdentityMind(x);
+    if ( response == null ) {
+      print(String.format("WARNING: Couldn't find IdentityMindResponse object for compliance item %d.", new Object[] { complianceItem.getId() }));
+      continue;
+    }
+    complianceItem.setType("IdentityMind (" + response.getApiName() + ")");
+  } else if ( complianceItem.getLevResponse() != 0 ) {
+    complianceItem.setType("Secure Fact (LEV)");
+  } else if ( complianceItem.getSidniResponse() != 0 ) {
+    complianceItem.setType("Secure Fact (SIDni)");
+  } else {
+    print(String.format("WARNING: Compliance item %d didn't reference anything.", new Object[] { complianceItem.getId() }));
+    continue;
+  }
+  complianceItemDAO.put(complianceItem);
+  updated++;
+}
+
+print(String.format("Updated %d compliance items and skipped %d.", new Object[] { updated, skipped }));
+"""
+})
