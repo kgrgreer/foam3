@@ -14,19 +14,21 @@ foam.CLASS({
     'auth',
     'countryDAO',
     'groupDAO',
-    'loginSuccess',
     'menuDAO',
     'notify',
+    'pushMenu',
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
     'validateEmail',
+    'validateNorthAmericanPhoneNumber',
     'appConfigService'
   ],
 
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.u2.Element',
     'net.nanopay.documents.AcceptanceDocument',
@@ -198,6 +200,10 @@ foam.CLASS({
     {
       name: 'choice',
       value: ['CA', 'US']
+    },
+    {
+      class: 'String',
+      name: 'phone'
     }
   ],
 
@@ -207,6 +213,7 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
+    { name: 'PHONE_LABEL', message: 'Phone Number' },
     { name: 'COUNTRY_LABEL', message: 'Country of operation' },
     { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
     { name: 'EMAIL', message: 'Email Address' },
@@ -219,7 +226,7 @@ foam.CLASS({
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
     { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
-    { name: 'AND', message: `and`},
+    { name: 'AND', message: `and` },
     { name: 'PRIVACY_LABEL', message: `Privacy Policy` },
     { name: 'QUEBEC_DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
 
@@ -298,6 +305,10 @@ foam.CLASS({
                 }
               }))
               .end()
+            .end()
+            .start().addClass('input-wrapper')
+              .start().add(this.PHONE_LABEL).addClass('input-label').end()
+                  .start(this.PHONE, { placeholder: '123-123-1234' }).end()
             .end()
 
             .start().addClass('input-wrapper')
@@ -394,6 +405,10 @@ foam.CLASS({
         this.notify(msg, 'error');
         return false;
       }
+      if ( ! this.validateNorthAmericanPhoneNumber(this.phone) ) {
+        this.notify('Please input a correctly formatted phone number.', 'error');
+        return false;
+      }
       if ( ! (this.isEmpty(msg = this.User.EMAIL.validateObj(this.emailField))) ) {
         this.notify(msg, 'error');
         return false;
@@ -420,15 +435,13 @@ foam.CLASS({
         .loginByEmail(null, this.emailField, this.passwordField)
         .then((user) => {
           if ( user && user.twoFactorEnabled ) {
-            this.loginSuccess = false;
             this.user.copyFrom(user);
             this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
-            this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
-            if ( this.loginSuccess ) {
+            if ( !! user ) {
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
               this.acceptanceDocumentService.
               updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
@@ -441,8 +454,10 @@ foam.CLASS({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
-              // This is required for signin
-              window.location.hash = '';
+              // This is required for signing when redirected from link
+              window.history.replaceState(null, null, window.location.origin);
+              this.pushMenu('sme.main.dashboard');
+              window.location.reload();
             }
           }
         })
@@ -478,6 +493,7 @@ foam.CLASS({
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
           signUpToken: this.signUpToken,
+          phone: this.Phone.create({ number: this.phone }),
           // Address is removed from the user and used as the business address for the business created in
           // the smeRegistrationDAO
           address: businessAddress,
