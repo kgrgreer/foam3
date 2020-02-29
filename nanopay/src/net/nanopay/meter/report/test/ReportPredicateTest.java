@@ -67,7 +67,6 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
       ArraySink sink1 = (ArraySink) paymentReportDAO.select(new ArraySink());
       test(sink1 != null, "The basic predicate for PaymentReport has no error");
     } catch (Exception e) {
-      e.printStackTrace();
       test(false, "The basic predicate for PaymentReport is not the right structure");
     }
 
@@ -75,7 +74,6 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
       ArraySink sink1 = (ArraySink) rejectedTransactionReportDAO.select(new ArraySink());
       test(sink1 != null, "The basic predicate for RejectedTransactionReport has no error");
     } catch (Exception e) {
-      e.printStackTrace();
       test(false, "The basic predicate for RejectedTransactionReport is not the right structure");
     }
 
