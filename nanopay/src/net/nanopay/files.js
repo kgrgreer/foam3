@@ -218,6 +218,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -1051,6 +1052,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/OnboardingPaymentOpsNotification' },
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
+  { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -1404,6 +1406,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/TransactionQuoteCorridorPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
@@ -1416,6 +1420,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/VerificationPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },

@@ -37,9 +37,10 @@ foam.CLASS({
         Predicate newPredicate = new True();
         Logger logger = (Logger) x.get("logger");
 
-        if ( predicate != null ) {
+        if ( predicate != null &&
+             predicate instanceof And ) {
           Predicate predicateContent = ((And) predicate).getArgs()[1];
-          if ( predicateContent instanceof Nary ) {
+          if ( predicateContent instanceof And ) {
             newPredicate = AND(
               OR(
                 GTE(

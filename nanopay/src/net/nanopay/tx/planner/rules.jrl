@@ -266,8 +266,11 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
-        "serviceProviderName":"afexServiceProvider",
+        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
+        "providerId":4,
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
       }
     ]
   },
@@ -296,8 +299,11 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.FXPlannerPredicate",
-        "serviceProviderName":"ascendantFXService",
+        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
+        "providerId":1,
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate",
       }
     ]
   },
@@ -398,6 +404,36 @@ p({
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.KotakTransactionPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
+  "name":"Verification Transaction Planner",
+  "documentation":"Planner for micro deposit to verify bank account",
+  "priority":70,
+   "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"requestTransaction",
+        "of":"net.nanopay.tx.cico.VerificationTransaction"
+        },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.planner.VerificationPlanner",
+    "verifierAccount":7
+  }
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -515,4 +551,3 @@ p({
   },
   "action":{"class":"net.nanopay.tx.planner.BMOCITransactionPlanner"}
 })
-
