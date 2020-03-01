@@ -18,12 +18,12 @@ import static foam.mlang.MLang.AND;
  */
 
 public class CreateOnboardingCloneService {
-  public DAO businessOnboardingDAO;
-  public DAO uSBusinessOnboardingDAO;
+  private DAO businessOnboardingDAO;
+  private DAO usBusinessOnboardingDAO;
 
   public CreateOnboardingCloneService(X x) {
     businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
-    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
   }
 
   public List getSourceOnboarding(Long businessId) {
@@ -31,7 +31,7 @@ public class CreateOnboardingCloneService {
       AND(
         EQ(BusinessOnboarding.BUSINESS_ID, businessId)
       )).select(new ArraySink());
-    uSBusinessOnboardingDAO.where(
+    usBusinessOnboardingDAO.where(
       AND(
         EQ(USBusinessOnboarding.BUSINESS_ID, businessId)
       )).select(businessOnBoardingSink);
@@ -61,7 +61,7 @@ public class CreateOnboardingCloneService {
       uSBusinessOnboardingClone.setUserId(userId);
       uSBusinessOnboardingClone.setStatus(OnboardingStatus.DRAFT);
 
-      uSBusinessOnboardingDAO.put_(x, uSBusinessOnboardingClone);
+      usBusinessOnboardingDAO.put_(x, uSBusinessOnboardingClone);
     }
   }
 }

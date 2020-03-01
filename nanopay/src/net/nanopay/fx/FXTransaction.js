@@ -18,17 +18,9 @@ Stores all Exchange Rate info.`,
 
   javaImports: [
     'foam.nanos.auth.User',
-    'java.util.Arrays',
-    'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.fx.FeesFields',
-    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
-    'net.nanopay.tx.AcceptAware',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -45,9 +37,9 @@ Stores all Exchange Rate info.`,
       name: 'fxRate',
       class: 'Double',
       section: 'amountSelection',
-      visibilityExpression: function(fxRate) {
-        if ( ! fxRate || fxRate == 1 ) return foam.u2.Visibility.HIDDEN;
-        return foam.u2.Visibility.RO;
+      visibility: function(fxRate) {
+        if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
+        return foam.u2.DisplayMode.RO;
       },
       view: function (_, X) {
         return X.data.slot(function(fxRate) {

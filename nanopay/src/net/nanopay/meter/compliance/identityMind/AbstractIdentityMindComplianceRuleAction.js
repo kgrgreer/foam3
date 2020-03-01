@@ -8,7 +8,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.HashMap',
     'java.util.Map',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -133,7 +133,7 @@ foam.CLASS({
     },
     {
       name: 'getApprovalStatus',
-      type: 'net.nanopay.approval.ApprovalStatus',
+      type: 'foam.nanos.approval.ApprovalStatus',
       args: [
         {
           name: 'status',

@@ -1,22 +1,17 @@
 package net.nanopay.liquidity.tx;
 
-import foam.core.X;
 import foam.core.Currency;
-import foam.dao.ArraySink;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
-import net.nanopay.liquidity.tx.TxLimitEntityType;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.util.Frequency;
 import net.nanopay.tx.test.TransactionTestUtil;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.util.Frequency;
 
 /*
   Test for TxLimitRule, creates a test rule with a source and destination user.
@@ -65,7 +60,8 @@ public class TxLimitRuleTest
     // create test rule to restrict users from transacting
     TxLimitRule txLimitRule = new TxLimitRule();
     txLimitRule.setEnabled(true);
-    txLimitRule.setId("Tx Limit Test Rule");
+    txLimitRule.setId("123123");
+    txLimitRule.setName("Tx Limit Test Rule");
     txLimitRule.setDescription("Tx Limit Test Rule");
     txLimitRule.setCreatedBy(sourceUser.getId());
     txLimitRule.setApplyLimitTo(entityType);
@@ -89,6 +85,7 @@ public class TxLimitRuleTest
       transaction.setDestinationAccount(destinationAccount.getId());
       transaction.setSourceCurrency("CAD");
       transaction.setAmount(txAmounts[i]);
+      transaction.setReferenceNumber("Manual Entry");
       transaction.setStatus(TransactionStatus.COMPLETED);
       transactionDAO.put(transaction);
       spent += txAmounts[i];
@@ -97,26 +94,18 @@ public class TxLimitRuleTest
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(sourceAccount.getId());
     transaction.setDestinationAccount(destinationAccount.getId());
+    transaction.setReferenceNumber("Manual Entry");
     transaction.setSourceCurrency("CAD");
     transaction.setAmount(txAmounts[txAmounts.length - 1]);
     transaction.setStatus(TransactionStatus.COMPLETED);
 
     // Compute the error message
-    DAO currencyDAO = ((DAO) x.get("currencyDAO"));
-    Currency currency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-    String availableLimit = currency.format(limit - spent);
-    String txAmount = currency.format(transaction.getAmount());
-    User user = txLimitRule.getSend() ? sourceUser : destinationUser;
-    Account account = txLimitRule.getSend() ? sourceAccount : destinationAccount;
     String errorMessage = 
-      "The " + txLimitRule.getPeriod().getLabel().toLowerCase()
-          + " limit was exceeded with a " + txAmount + " transaction " 
-          + (txLimitRule.getSend() ? "from " : "to ")
-          + txLimitRule.getApplyLimitTo().getLabel().toLowerCase() 
-          + (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? " " + user.label() :
-             txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ! SafetyUtil.isEmpty(account.getName()) ? " " + account.getName() : " " + account.getId() : "")
-          + ". Current available limit is " + availableLimit 
-          + ". If you require further assistance, please contact your administrator.";
+          "The " + 
+          txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+          txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+          (txLimitRule.getSend() ? "sending" : "receiving") + 
+          " limit was exceeded.";
 
     // make sure transaction throws expected RuntimeException
     test(

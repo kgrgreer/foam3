@@ -206,10 +206,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existingContact instanceof XeroContact ) {
-      if ( ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime() ) {
+    if ( existingContact instanceof XeroContact && 
+         ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime()) {
         return null;
-      }
     }
 
     User existingUser = (User) userDAO.find(
@@ -317,7 +316,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
            result.add(mismatchPair);
          }
         } catch(Exception e) {
-          e.printStackTrace();
           logger.error(e);
           ContactResponseItem errorItem = prepareResponseItemFrom(xeroContact);
           errorItem.setMessage(e.getMessage());
@@ -326,7 +324,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
       logger.error(e);
       return saveResult(x, "contactSync", getExceptionResponse(x,e));
     }
@@ -431,7 +428,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         return false;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       invoiceErrors.get("OTHER").add(errorItem);
       return false;
     }
@@ -562,7 +558,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
             successInvoice.add(prepareResponseItemFrom(xeroInvoice));
           }
         } catch (Exception e) {
-          e.printStackTrace();
           logger.error(e);
           invoiceErrors.get("OTHER").add(prepareResponseItemFrom(xeroInvoice));
         }
@@ -571,7 +566,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       invoiceResync(x,null);
 
     } catch (Exception e) {
-      e.printStackTrace();
       logger.error(e);
       return saveResult(x, "invoiceSync", getExceptionResponse(x,e));
     }
@@ -782,7 +776,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
                             .build();
       return response;
     } catch (Exception e) {
-      e.printStackTrace();
       logger.error(e);
       response.response = getExceptionResponse(x,e);
       return response;
@@ -865,7 +858,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         .setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]))
         .build());
     } catch ( Exception e ) {
-      e.printStackTrace();
       logger.error(e);
       ResultResponse response = getExceptionResponse(x,e);
       ArraySink sink = new ArraySink();

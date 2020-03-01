@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
   name: 'VerificationTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.CompositeTransaction',
 
   javaImports: [
     'foam.dao.DAO',
@@ -94,6 +94,7 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
+      //NOP delete after migration to 4.0
       return new Transfer[0];
       `
     },

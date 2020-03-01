@@ -11,17 +11,13 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.payment.PADType',
     'net.nanopay.payment.PADTypeLineItem',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.liquidity.LiquiditySettings',
     'static foam.mlang.MLang.*'
   ],

@@ -119,6 +119,11 @@ foam.CLASS({
       color: rgb(0, 153, 229);
       text-decoration-line: none;
     }
+
+    .foam-u2-stack-StackView {
+      overflow: scroll;
+      height: calc(100vh - 80px);
+    }
   `,
 
   constants: [
@@ -215,6 +220,11 @@ foam.CLASS({
         this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {
             this.appConfig.copyFrom(config.service);
+            
+            // Replace the detail view in non-liquid deployments to give more control over the users
+            if (this.appConfig.name != 'liquid') {
+              this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
+            }
           });
           this.AppStyles.create();
           this.NanoConnectStyles.create();

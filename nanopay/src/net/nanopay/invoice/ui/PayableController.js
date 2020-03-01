@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   implements: [
+    'foam.mlang.Expressions',
     'net.nanopay.accounting.AccountingIntegrationTrait',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',
@@ -43,7 +44,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.expenses;
+        return this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED));
       }
     },
     {
@@ -57,10 +58,8 @@ foam.CLASS({
           columns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: function(_, invoice) {
-                var additiveSubField = invoice.payee.businessName ?
-                  invoice.payee.businessName :
-                  invoice.payee.label();
+              tableCellFormatter: async function(_, invoice) {
+                var additiveSubField = await invoice.payee.label();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }

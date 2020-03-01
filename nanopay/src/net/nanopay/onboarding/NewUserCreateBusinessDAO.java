@@ -1,8 +1,15 @@
 package net.nanopay.onboarding;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Address;
@@ -16,17 +23,6 @@ import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
-import net.nanopay.onboarding.CreateOnboardingCloneService;
-import net.nanopay.sme.onboarding.BusinessOnboarding;
-import net.nanopay.sme.onboarding.OnboardingStatus;
-import net.nanopay.sme.onboarding.USBusinessOnboarding;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
 
 /**
  * When a new user is signing up and wants to create a business, this decorator
@@ -36,10 +32,10 @@ import static foam.mlang.MLang.EQ;
  * business is owned by the user, not the system.
  */
 public class NewUserCreateBusinessDAO extends ProxyDAO {
-  public DAO localBusinessDAO_;
-  public DAO agentJunctionDAO_;
-  public DAO tokenDAO_;
-  public DAO invitationDAO_;
+  private DAO localBusinessDAO_;
+  private DAO agentJunctionDAO_;
+  private DAO tokenDAO_;
+  private DAO invitationDAO_;
 
   public NewUserCreateBusinessDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -170,21 +166,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setOrganization(user.getOrganization())
       .setAddress(businessAddress)
       .setSpid(hasSpidCreatePermission ? currentUser.getSpid() : "nanopay")
-      // We need to be able to send emails to businesses, but until now we were
-      // avoiding giving businesses an email address. However, in Ablii users
-      // are always acting as a business, meaning the payer and payee of every
-      // invoice are always businesses, and therefore we need an email address
-      // somehow associated with a business so that we can send payment-related
-      // emails to it.
-      // We have a few options:
-      //   1. Set the email address of the business to the email address of the
-      //      user that creates it. Allow it to be updated later.
-      //   2. Send emails to everyone in the business when that business needs
-      //      to receive an email.
-      // I'm going with option 1 right now, but I don't know if it's a perfect
-      // solution or if there might be unforeseen consequences for letting
-      // businesses have email addresses.
-      .setEmail(user.getEmail())
       .setEmailVerified(true)
       .build();
 

@@ -23,13 +23,13 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.util.Frequency;
 
 public class PayrollDAO extends ProxyDAO {
-  protected DAO serviceProviderDAO_, userDAO_, transactionDAO_, accountDAO_, liquiditySettingsDAO_;
+  protected DAO localServiceProviderDAO_, userDAO_, transactionDAO_, accountDAO_, liquiditySettingsDAO_;
   protected Logger logger;
 
   public PayrollDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    serviceProviderDAO_   = (DAO) x.get("serviceProviderDAO");
+    localServiceProviderDAO_   = (DAO) x.get("localServiceProviderDAO");
     userDAO_              = (DAO) x.get("userDAO");
     transactionDAO_       = (DAO) x.get("transactionDAO");
     accountDAO_           = (DAO) x.get("accountDAO");
@@ -89,7 +89,7 @@ public class PayrollDAO extends ProxyDAO {
     sp.setEnabled(true);
     sp.setDescription("nanopay payroll");
 
-    serviceProviderDAO_.put(sp);
+    localServiceProviderDAO_.put(sp);
   }
 
   public void findOrCreateUser(long id, String group, String firstName, String lastName, String spid, String bankAccountNo) {

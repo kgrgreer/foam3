@@ -9,15 +9,10 @@ foam.CLASS({
    javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.mlang.predicate.Predicate',
-    'foam.mlang.MLang',
     'static foam.mlang.MLang.*',
-    'java.util.List',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
   ],
 
    methods: [

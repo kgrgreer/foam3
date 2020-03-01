@@ -13,22 +13,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
 
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.exception.UnsupportedTransactionException',
-    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
 
-    'net.nanopay.tx.PlanCostComparator',
-    'net.nanopay.tx.PlanETAComparator',
-    'net.nanopay.tx.PlanTransactionComparator',
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Collections'

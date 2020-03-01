@@ -4,16 +4,11 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.PaymentStatus',
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
-    'java.util.Date',
-    'java.util.Calendar'
+    'java.util.Date'
   ],
 
   methods: [

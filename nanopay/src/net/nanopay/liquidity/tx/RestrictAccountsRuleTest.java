@@ -83,7 +83,8 @@ public class RestrictAccountsRuleTest
 
     // create test rule to restrict source account from transacting with destination account
     rule_ = new RestrictAccountsRule();
-    rule_.setId("Restrict Accounts Test Rule");
+    rule_.setId("121");
+    rule_.setName("Restrict Accounts Test Rule");
     rule_.setDescription("Tests the RestrictAccountsRule.");
     rule_.setCreatedBy(user_.getId());
     rule_.setSourceAccount(sourceAccount_.getId());
@@ -98,6 +99,7 @@ public class RestrictAccountsRuleTest
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
     transaction_.setIsQuoted(true);
+    transaction_.setReferenceNumber("Manual Entry");
 
     // make sure transaction throws expected RuntimeException
     test(

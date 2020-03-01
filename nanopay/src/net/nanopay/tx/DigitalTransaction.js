@@ -11,8 +11,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.admin.model.ComplianceStatus'
-  ],
+    'net.nanopay.admin.model.ComplianceStatus',
+],
 
   properties: [
     {

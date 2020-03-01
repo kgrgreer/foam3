@@ -6,13 +6,7 @@ foam.CLASS({
   documentation: 'KeyStore that uses PKCS #11 as the API',
 
   javaImports: [
-    'sun.security.pkcs11.SunPKCS11',
-
-    'java.io.BufferedReader',
-    'java.io.File',
-    'java.io.FileInputStream',
-    'java.io.InputStreamReader',
-    'java.nio.charset.StandardCharsets',
+    'java.security.Security',
     'java.security.KeyStore'
   ],
 
@@ -30,7 +24,7 @@ foam.CLASS({
       transient: true,
       javaType: 'java.security.Provider',
       javaFactory: `
-        return new SunPKCS11(getConfig());
+        return Security.getProvider("SunPKCS11").configure(getConfig());
       `
     },
     {

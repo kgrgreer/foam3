@@ -8,8 +8,8 @@ foam.CLASS({
   implements: ['foam.core.Serializable'],
 
   javaImports: [
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'static foam.mlang.MLang.*',
   ],

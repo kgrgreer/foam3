@@ -33,7 +33,7 @@ import static foam.mlang.MLang.*;
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
-  public DAO whitelistedEmailDAO_;
+  private DAO whitelistedEmailDAO_;
 
   public BusinessInvitationDAO(X x, DAO delegate) {
     super(x, delegate);
@@ -173,7 +173,7 @@ public class BusinessInvitationDAO
         .build();
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
-    args.put("business", business.getBusinessName());
+    args.put("business", business.label());
     args.put("sendTo", invite.getEmail());
 
     // Encoding business name and email to handle special characters.

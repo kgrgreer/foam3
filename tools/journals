@@ -25,6 +25,7 @@ exchangeRates
 emailTemplates
 exportDriverRegistrys
 fundTransferSystems
+fxProviders
 groupPermissionJunctions
 groups
 htmlDoc
@@ -47,6 +48,7 @@ notifications
 notificationTemplates
 payoutOptions
 paymentCodes
+paymentProviderCorridorJunctions
 paymentProviders
 PADTypes
 permissions
@@ -57,6 +59,7 @@ questionnaires
 quickbooksToken
 regions
 reports
+rootAccounts
 ruleGroups
 rules
 scripts

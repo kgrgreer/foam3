@@ -10,13 +10,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.Detachable',
-    'foam.dao.AbstractSink',
     'foam.dao.DAO',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -39,7 +33,7 @@ foam.CLASS({
         },
         {
           name: 'approvalRequest',
-          type: 'net.nanopay.approval.ApprovalRequest'
+          type: 'foam.nanos.approval.ApprovalRequest'
         }
       ],
       javaCode: `

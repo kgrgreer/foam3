@@ -27,9 +27,8 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.gs.IngestionReport',
-      name: 'report',
-      documentation: 'bar to put to bar DAO'
+      of: 'net.nanopay.tx.gs.ProgressBarData',
+      name: 'progressBarData'
     },
     {
       class: 'String',
@@ -56,28 +55,39 @@ foam.CLASS({
     {
       name: 'startJob',
       javaCode: `
+        // no-op
       `
     },
     {
       name: 'executeJob',
       javaCode: `
-
+        // no-op
       `
     },
     {
       name: 'endJob',
       javaCode: `
         Long elapsed = System.currentTimeMillis() - getStartTime();
-        if (getFailed()){
-          getReport().setReport(getFailText());
-        }
-        else {
-          getReport().setReport(
-          "Ingestion took: "+ (elapsed/60000)+ " minutes and "+((elapsed%60000)/1000)+ " seconds\\n"+"Top up transactions created: "+ getTopUpCounter()+"\\nTransactions Created from file: "+getTxnCounter()+"\\nFailed rows: "+ getFailedRows()
+
+        if ( getFailed() ){
+          getProgressBarData().setReport(getFailText());
+        } else {
+          getProgressBarData().setReport(
+            "Ingestion took: " +
+            (elapsed / 60000) +
+            " minutes and " +
+            ((elapsed % 60000) / 1000) +
+            " seconds\\nTop up transactions created: " +
+            getTopUpCounter() +
+            "\\nTransactions Created from file: " +
+            getTxnCounter() +
+            "\\nFailed rows: " +
+            getFailedRows()
           );
         }
+
         foam.dao.DAO dao = (foam.dao.DAO) getX().get("ProgressBarDAO");
-        dao.put(getReport());
+        dao.put(getProgressBarData());
       `
     },
     {
@@ -85,7 +95,7 @@ foam.CLASS({
       synchronized: true,
       args: [{name: 'amount', type: 'Long'}],
       javaCode: `
-        setTxnCounter(getTxnCounter()+amount);
+        setTxnCounter(getTxnCounter() + amount);
       `
     },
     {
@@ -93,7 +103,7 @@ foam.CLASS({
       synchronized: true,
       args: [{name: 'amount', type: 'Long'}],
       javaCode: `
-        setTopUpCounter(getTopUpCounter()+amount);
+        setTopUpCounter(getTopUpCounter() + amount);
       `
     },
     {
@@ -101,7 +111,7 @@ foam.CLASS({
       synchronized: true,
       args: [{name: 'addition', type: 'String'}],
       javaCode: `
-        setFailedRows(getFailedRows()+ addition);
+        setFailedRows(getFailedRows() + addition);
       `
     }
   ]

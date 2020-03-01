@@ -23,16 +23,15 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-    'java.util.Iterator',
-    'java.util.List',
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.account.Account',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
+  ],
+
+  imports: [
+    'publicBusinessDAO'
   ],
 
   constants: [
@@ -90,12 +89,8 @@ foam.CLASS({
       name: 'firstName',
       validateObj: function(firstName) {
         if ( !! firstName ) {
-          var containsDigitRegex = /\d/;
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
             return 'First name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(firstName) ) {
-            return 'First name cannot contain numbers.';
           }
         }
       }
@@ -108,12 +103,8 @@ foam.CLASS({
       name: 'lastName',
       validateObj: function(lastName) {
         if ( !! lastName ) {
-          var containsDigitRegex = /\d/;
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
             return 'Last name cannot exceed 70 characters.';
-          }
-          if ( containsDigitRegex.test(lastName) ) {
-            return 'Last name cannot contain numbers.';
           }
         }
       }
@@ -221,8 +212,6 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        String containsDigitRegex = ".*\\\\d.*";
-
         if ( getBusinessId() != 0 ) {
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
           Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
@@ -240,12 +229,8 @@ foam.CLASS({
 
           if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
-            throw new IllegalStateException("First name cannot contain numbers.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
-          } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {
-            throw new IllegalStateException("Last name cannot contain numbers.");
           } else  if ( this.getBusinessId() == 0 && SafetyUtil.isEmpty(this.getEmail()) ) {
             throw new IllegalStateException("Email is required.");
           } else if ( ! isValidEmail ) {
@@ -401,7 +386,11 @@ foam.CLASS({
     {
       name: 'label',
       type: 'String',
-      code: function label() {
+      code: async function label() {
+        if ( this.businessId ) {
+          let business = await this.publicBusinessDAO.find(this.businessId);
+          return business.label();
+        }
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
@@ -411,6 +400,11 @@ foam.CLASS({
         return '';
       },
       javaCode: `
+        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
+        if ( this.getBusinessId() != 0 ) {
+          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
+          return business.label();
+        }
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

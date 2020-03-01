@@ -10,13 +10,9 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
-import foam.nanos.auth.AuthService;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
-import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
-import net.nanopay.model.Business;
-
 import static foam.mlang.MLang.*;
 
 /**
@@ -25,9 +21,9 @@ import static foam.mlang.MLang.*;
  * in that currency.
  */
 public class CanReceiveCurrencyDAO extends ProxyDAO {
-  public DAO userDAO;
-  public DAO bareUserDAO;
-  public DAO accountDAO;
+  protected DAO userDAO;
+  protected DAO bareUserDAO;
+  protected DAO accountDAO;
 
   public CanReceiveCurrencyDAO(X x, DAO delegate) {
     setX(x);
@@ -81,7 +77,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     boolean contactRecieveCurrency = (count.getValue() > 0);
   
     response.setResponse(contactRecieveCurrency);
-    if ( count.getValue() == 0 ) response.setMessage("We apologize for, this contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
+    if ( count.getValue() == 0 ) response.setMessage("This contact is not able to accept " + request.getCurrencyId() + " payments at this time.");
     return response;
   }
 
@@ -110,13 +106,11 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     response.setResponse(false);
     ArraySink accountSink = (ArraySink) accountDAO.where(AND(
       EQ(net.nanopay.account.Account.DELETED, false),
+      EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
       EQ(net.nanopay.account.Account.ENABLED, true),
       EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
       OR(
-        AND(
-          INSTANCE_OF(net.nanopay.account.DigitalAccount.class),
-          NOT(INSTANCE_OF(net.nanopay.account.AggregateAccount.class))
-        ),
+        CLASS_OF(net.nanopay.account.DigitalAccount.class),
         INSTANCE_OF(net.nanopay.account.ShadowAccount.class)
       )
     )).select(new ArraySink());

@@ -118,7 +118,7 @@ foam.CLASS({
               for ( AscendantFXPaymentMethodType paymentMethod : AscendantFXPaymentMethodType.values() ) {
                 fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
                   request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-                  FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, paymentMethod.getName());
+                  FXDirection.BUY.getName(), null, request.findSourceAccount(x).getOwner(), null, paymentMethod.getName());
                   if ( null != fxQuote && fxQuote.getId() > 0 ) {
                     AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
                     ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
@@ -133,7 +133,7 @@ foam.CLASS({
             // } else {
             //   fxQuote = ascendantFXService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
             //     request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-            //     FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
+            //     FXDirection.BUY.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
             //     if ( null != fxQuote && fxQuote.getId() > 0 ) {
             //       AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, request, fxQuote);
             //       ascendantFXTransaction.setPayerId(sourceAccount.getOwner());

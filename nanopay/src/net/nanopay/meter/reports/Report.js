@@ -13,6 +13,10 @@ foam.CLASS({
       output_ = val;
       outputIsSet_ = true;
       `
+    },
+    {
+      name: 'daoKey',
+      value: 'reportDAO'
     }
   ],
 
@@ -24,7 +28,7 @@ foam.CLASS({
           if ( this.output == "" )
             alert("Empty Output");
           else {
-            result = 'data:text/csv;charset=utf-8,' + this.output;
+            var result = 'data:text/csv;charset=utf-8,' + this.output;
             var encodedUri = encodeURI(result);
             var link = document.createElement('a');
             link.setAttribute('href', encodedUri);

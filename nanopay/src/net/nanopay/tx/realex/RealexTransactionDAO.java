@@ -1,38 +1,36 @@
 package net.nanopay.tx.realex;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.core.FObject;
-import foam.dao.AbstractSink;
-import java.util.*;
-import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import net.nanopay.cico.paymentCard.model.PaymentCard;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
-import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
-import com.realexpayments.remote.sdk.domain.Card;
-import com.realexpayments.remote.sdk.domain.Cvn.PresenceIndicator;
-import com.realexpayments.remote.sdk.domain.Card.CardType;
-import com.realexpayments.remote.sdk.domain.payment.PaymentRequest.PaymentType;
-import com.realexpayments.remote.sdk.domain.payment.PaymentRequest;
-import com.realexpayments.remote.sdk.http.HttpConfiguration;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+
+import java.util.List;
+import java.util.UUID;
+
 import com.realexpayments.remote.sdk.RealexClient;
 import com.realexpayments.remote.sdk.RealexException;
 import com.realexpayments.remote.sdk.RealexServerException;
-import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
-import com.realexpayments.remote.sdk.domain.Card;
 import com.realexpayments.remote.sdk.domain.PaymentData;
-import net.nanopay.cico.model.MobileWallet;
-import static foam.mlang.MLang.*;
+import com.realexpayments.remote.sdk.domain.payment.AutoSettle;
+import com.realexpayments.remote.sdk.domain.payment.PaymentRequest;
+import com.realexpayments.remote.sdk.domain.payment.PaymentRequest.PaymentType;
+import com.realexpayments.remote.sdk.domain.payment.PaymentResponse;
+import com.realexpayments.remote.sdk.http.HttpConfiguration;
+
+import foam.core.FObject;
+import foam.core.X;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.dao.ProxyDAO;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import net.nanopay.cico.model.MobileWallet;
 import net.nanopay.cico.model.RealexPaymentAccountInfo;
+import net.nanopay.cico.paymentCard.model.RealexPaymentCard;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.TxnProcessor;
 import net.nanopay.tx.TxnProcessorUserReference;
-import java.util.UUID;
-import net.nanopay.cico.paymentCard.model.RealexPaymentCard;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class RealexTransactionDAO
  extends ProxyDAO

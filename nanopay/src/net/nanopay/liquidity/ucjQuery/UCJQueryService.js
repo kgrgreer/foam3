@@ -1,12 +1,15 @@
 foam.INTERFACE({
   package: 'net.nanopay.liquidity.ucjQuery',
   name: 'UCJQueryService',
+  implements: [
+    'foam.nanos.auth.UserQueryService'
+  ],
+
   methods: [
     {
       name: 'getRoles',
-      type: 'List',
       async: true,
-      javaThrows: ['java.lang.RuntimeException'],
+      type: 'List',
       args: [
         {
           name: 'x',
@@ -20,9 +23,8 @@ foam.INTERFACE({
     },
     {
       name: 'getUsers',
-      type: 'List',
       async: true,
-      javaThrows: ['java.lang.RuntimeException'],
+      type: 'List',
       args: [
         {
           name: 'x',
@@ -36,9 +38,8 @@ foam.INTERFACE({
     },
     {
       name: 'getApproversByLevel',
-      type: 'List',
       async: true,
-      javaThrows: ['java.lang.RuntimeException'],
+      type: 'List',
       args: [
         {
           name: 'x',
@@ -56,9 +57,8 @@ foam.INTERFACE({
     },
     {
       name: 'getAllApprovers',
-      type: 'List',
       async: true,
-      javaThrows: ['java.lang.RuntimeException'],
+      type: 'List',
       args: [
         {
           name: 'x',
@@ -67,8 +67,12 @@ foam.INTERFACE({
         {
           name: 'modelToApprove',
           type: 'String'
+        },
+        {
+          name: 'requestingUser',
+          type: 'foam.nanos.auth.User'
         }
       ]
-    },
+    }
   ]
 });

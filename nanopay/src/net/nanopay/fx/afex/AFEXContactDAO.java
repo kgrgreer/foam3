@@ -1,19 +1,17 @@
 package net.nanopay.fx.afex;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.AuthService;
-import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
-import foam.nanos.notification.Notification;
-import static foam.mlang.MLang.*;
-
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
-import net.nanopay.fx.ascendantfx.AscendantFXUser;
-import net.nanopay.fx.FXUserStatus;
 import net.nanopay.model.Business;
 
 /**

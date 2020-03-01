@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ExpediteCICOApprovalRequest',
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   documentation: 'Approval request subclass for expediting cico transactions',
 
@@ -9,19 +9,19 @@ foam.CLASS({
     {
       name: 'classification',
       value: 'Expedite transaction',
-      visibilityExpression: function(classification) {
+      visibility: function(classification) {
         return classification ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       name: 'daoKey',
       value: 'localTransactionDAO',
-      visibilityExpression: function(daoKey) {
+      visibility: function(daoKey) {
         return daoKey ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     }
   ]

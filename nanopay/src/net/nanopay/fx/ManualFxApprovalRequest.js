@@ -4,43 +4,43 @@ foam.CLASS({
 
   documentation: 'Approval request that stores a CAD to INR FX rate',
 
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {
       class: 'String',
       name: 'dealId',
-      visibilityExpression: function(dealId) {
+      visibility: function(dealId) {
         return dealId ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       class: 'Double',
       name: 'fxRate',
-      visibilityExpression: function(fxRate) {
+      visibility: function(fxRate) {
         return fxRate ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       class: 'DateTime',
       name: 'valueDate',
-      visibilityExpression: function(valueDate) {
+      visibility: function(valueDate) {
         return valueDate ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       class: 'DateTime',
       name: 'expiryDate',
-      visibilityExpression: function(expiryDate) {
+      visibility: function(expiryDate) {
         return expiryDate ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       }
     }
   ]

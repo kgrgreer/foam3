@@ -6,6 +6,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.tx.model.Transaction',
@@ -59,20 +60,27 @@ foam.CLASS({
 
         String permissionPrefix = obj instanceof ShadowAccount ? "shadowaccount" : getPermissionPrefix();
 
-        Long accountId = 
+        Long accountId =
           (
             obj instanceof AccountApprovableAware &&
             ! ( obj instanceof ShadowAccount )
-          ) ? 
-          ((AccountApprovableAware) obj).getOutgoingAccountRead(x) : 
+          ) ?
+          ((AccountApprovableAware) obj).getOutgoingAccountRead(x) :
           0;
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
-        String readPermission = createPermission(permissionPrefix, "view", accountId);
-        String approvePermission = createPermission(permissionPrefix, "approve", accountId);
-        String makePermission = createPermission(permissionPrefix, "make", accountId);
+        if ( obj instanceof User ) {
+          User userToRead = (User) obj;
 
-        if ( ! ( authService.check(x, readPermission) || authService.check(x, approvePermission) || authService.check(x, makePermission) ) ) {
+          User currentUser = (User) x.get("user");
+
+          if ( userToRead.getId() == currentUser.getId() ) return;
+        }
+
+        if ( ! (
+          authService.check(x, createPermission(permissionPrefix, "view",    accountId)) ||
+          authService.check(x, createPermission(permissionPrefix, "approve", accountId)) ||
+          authService.check(x, createPermission(permissionPrefix, "make",    accountId)) ) ) {
           throw new AuthorizationException();
         }
       `
@@ -85,6 +93,14 @@ foam.CLASS({
 
         String permission = createPermission(getPermissionPrefix(), "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
+
+        if ( oldObj instanceof User ) {
+          User userToRead = (User) oldObj;
+
+          User currentUser = (User) x.get("user");
+
+          if ( userToRead.getId() == currentUser.getId() ) return;
+        }
 
         if ( ! authService.check(x, permission) ) {
           throw new AuthorizationException();

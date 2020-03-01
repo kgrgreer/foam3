@@ -6,17 +6,12 @@ foam.CLASS({
   documentation: 'The base model for storing all individual securities.',
 
   javaImports: [
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.DigitalAccount',
-    'foam.core.Currency'
+    'foam.core.Currency',
+    'foam.dao.DAO'    
   ],
 
   imports: [
-    'exchangeRateService'
+    'securitiesDAO'
   ],
 
   searchColumns: [
@@ -46,50 +41,24 @@ foam.CLASS({
       order: 3
     },
     {
-      class: 'Long',
       name: 'balance',
       label: 'Balance (local)',
       section: 'balanceDetails',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return obj.denomination.format(value);
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.securitiesDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
+            })
+          }));
+        }))
       },
       tableWidth: 145
-    },
-    {
-      class: 'Long',
-      name: 'homeBalance',
-      label: 'Balance (home)',
-      section: 'balanceDetails',
-      documentation: `
-        replace the table cell formatter to return the market value in home currency.
-      `,
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, axiom) {
-              var self = this;
-
-              this.add(
-                obj.slot(homeDenomination => {
-                  return Promise.all([
-                    obj.denomination == homeDenomination ?
-                      Promise.resolve(1) :
-                      obj.exchangeRateService.exchange(obj.denomination, homeDenomination,
-                         obj.findBalance(self.__subSubContext__)),
-                    self.__subSubContext__.currencyDAO.find(homeDenomination)
-                  ]).then(arr => {
-                    let [b, c] = arr;
-                    var displayBalance = c.format(Math.floor((b || 0) ));
-                    self.tooltip = displayBalance;
-                    return displayBalance;
-                  })
-                })
-              );
-            },
-      tableWidth: 145
-    },
+    }
   ],
   methods: [
   {

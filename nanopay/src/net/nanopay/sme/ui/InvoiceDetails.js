@@ -49,7 +49,7 @@ foam.CLASS({
     ^ .invoice-note {
       display: inline-block;
       max-height: 260px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
@@ -283,11 +283,11 @@ foam.CLASS({
               .end()
               .start().addClass(this.myClass('invoice-content-text'))
                 .add(this.payer$.map(function(payer) {
-                  return payer.then(function(payer) {
+                  return payer.then(async function(payer) {
                     if ( payer != null ) {
                       var address = payer.address;
                       return self.E()
-                        .start().add(payer.label()).end()
+                        .start().add(await payer.label()).end()
                         .start().add(self.formatStreetAddress(address)).end()
                         .start().add(self.formatRegionAddress(address)).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
@@ -304,10 +304,10 @@ foam.CLASS({
               .end()
               .start().addClass(this.myClass('invoice-content-text'))
                 .add(this.payee$.map(function(payee) {
-                  return payee.then(function(payee) {
+                  return payee.then(async function(payee) {
                     if ( payee != null ) {
                       return self.E()
-                        .start().add(payee.label()).end();
+                        .start().add(await payee.label()).end();
                     }
                   });
                 }))

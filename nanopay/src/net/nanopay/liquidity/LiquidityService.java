@@ -1,5 +1,14 @@
 package net.nanopay.liquidity;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.SUM;
+
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.dao.AbstractSink;
@@ -11,24 +20,17 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
+import net.nanopay.account.BalanceService;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.tx.CompletedTransactionDAO;
 import net.nanopay.tx.ComplianceTransaction;
-import net.nanopay.util.Frequency;
-import net.nanopay.liquidity.Liquidity;
-import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-
-import java.text.NumberFormat;
-import java.util.HashMap;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.util.Frequency;
 
 public class LiquidityService
   extends    ContextAwareSupport
@@ -38,6 +40,7 @@ public class LiquidityService
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
   protected Logger logger_;
+  protected BalanceService balanceService_;
 
   protected Logger getLogger() {
     if ( logger_ == null ) {
@@ -50,6 +53,11 @@ public class LiquidityService
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
 
     return accountDAO_;
+  }
+  protected BalanceService getBalanceService() {
+    if ( balanceService_ == null ) balanceService_ = (BalanceService) getX().get("balanceService");
+
+    return balanceService_;
   }
 
   protected DAO getLiquiditySettingsDAO() {
@@ -87,7 +95,7 @@ public class LiquidityService
   }
 
   public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
-    long pendingBalance = (long) account.findBalance(getX());
+    long pendingBalance =  getBalanceService().findBalance_(getX(),account);
     pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(
         OR(
@@ -198,15 +206,16 @@ public class LiquidityService
     } else {
       direction = "has fallen below ";
     }
-    AppConfig appConfig = (AppConfig) x_.get("appConfig");
+    User user = (User) account.findOwner(x_);
+    String url = user.findGroup(getX()).getAppConfig(getX()).getUrl();
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
     args.put("account",     "your account "+account.getName()+",");
     args.put("greeting",     "Hi");
-    args.put("name",        account.findOwner(x_).getFirstName());
+    args.put("name",        user.getFirstName());
     args.put("direction",   direction);
     args.put("threshold",   formatter.format(threshold/100.00));
-    args.put("link",        appConfig.getUrl());
+    args.put("link",        url);
 
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
@@ -236,9 +245,9 @@ public class LiquidityService
       }
     } catch (Exception e) {
       Notification notification = new Notification();
-      notification.setEmailName("Failure to Rebalance");
+      notification.setNotificationType("Failure to Rebalance");
       notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
-      notification.setEmailIsEnabled(true);
+      notification.setEmailIsEnabled(false);
       notification.setUserId(ls.getUserToEmail());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }

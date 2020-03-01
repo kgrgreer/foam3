@@ -17,7 +17,7 @@ import net.nanopay.invoice.model.Invoice;
  * Business.
  */
 public class InvoiceToContactDAO extends ProxyDAO {
-  public DAO localUserDAO_;
+  private DAO localUserDAO_;
 
   public InvoiceToContactDAO(X x, DAO delegate) {
     super(x, delegate);

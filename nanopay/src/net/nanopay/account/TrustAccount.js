@@ -4,16 +4,13 @@ foam.CLASS({
   extends: 'net.nanopay.account.ZeroAccount',
 
   javaImports: [
-    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'foam.core.Currency',
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.dao.Sink',
-    'foam.mlang.MLang',
     'foam.mlang.sink.Count',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -49,7 +46,7 @@ foam.CLASS({
         cls.extras.push(`
           static public DAO find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
-            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
+            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
             User user = zeroAccountUser(x, spid , currency);
 
             DAO accounts = ((DAO)x.get("localAccountDAO"))

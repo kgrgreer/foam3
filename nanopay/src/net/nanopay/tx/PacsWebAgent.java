@@ -120,7 +120,6 @@ public class PacsWebAgent
       out.println("<pre>");
       t.printStackTrace(out);
       out.println("</pre>");
-      t.printStackTrace();
       try {
         resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.toString());
       } catch ( java.io.IOException e ) {
@@ -137,7 +136,7 @@ public class PacsWebAgent
    * @return the error message
    */
   protected String getParsingError(X x, String buffer) {
-    Parser        parser = new foam.lib.json.ExprParser();
+    Parser        parser = foam.lib.json.ExprParser.instance();
     PStream       ps     = new StringPStream();
     ParserContext psx    = new ParserContextImpl();
 

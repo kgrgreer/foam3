@@ -10,19 +10,10 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
-    'java.lang.StringBuilder',
-    'net.nanopay.account.Account',
-    'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   messages: [
@@ -50,27 +41,6 @@ foam.CLASS({
       javaCode: `
         return false;
       `
-    },
-    {
-      name: 'executeBeforePut',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      type: 'net.nanopay.tx.model.Transaction',
-      javaCode: `
-      Transaction tx = super.executeBeforePut(x);
-
-      // An invoice is required to create an ablii transaction
-      if( tx.findInvoiceId(x) == null ) {
-        ((Logger) x.get("logger")).error("An invoice was not provided for this transaction");
-        throw new RuntimeException("An invoice for this transaction was not provided.");
-      }
-
-      return tx;
-    `
     },
     {
       name: 'authorizeOnCreate',

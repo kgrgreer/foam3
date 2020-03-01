@@ -8,13 +8,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'java.util.Date',
     'static foam.mlang.MLang.*',
   ],
@@ -28,11 +24,14 @@ foam.CLASS({
         try {
           String filterRegion = "";
           Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
-          if ( user.getAddress().getCountryId().equals("CA") ) {
-            filterRegion = "Canada,CANA,CA,CAN";
-          } else if ( user.getAddress().getCountryId().equals("US") ) {
-            filterRegion = "United States,USA,US";
+          if ( user.getAddress().getCountryId() != null ) {
+            if ( user.getAddress().getCountryId().equals("CA") ) {
+              filterRegion = "Canada,CANA,CA,CAN";
+            } else if ( user.getAddress().getCountryId().equals("US") ) {
+              filterRegion = "United States,USA,US";
+            }
           }
+          
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(user.getId())
             .setFirstName(user.getFirstName())

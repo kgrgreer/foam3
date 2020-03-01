@@ -1,36 +1,32 @@
-foam.CLASS({
+ foam.CLASS({
   package: 'net.nanopay.tx.alterna',
   name: 'AlternaCOTransaction',
   extends: 'net.nanopay.tx.cico.COTransaction',
 
   javaImports: [
-    'java.util.Arrays',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
     {
       class: 'String',
       name: 'confirmationLineNumber',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnCode',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnDate',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'returnType',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     },
     {
       class: 'String',
@@ -43,7 +39,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: foam.u2.Visibility.RO
+      visibility: 'RO'
     }
   ],
 
@@ -58,13 +54,15 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setConfirmationLineNumber(((AlternaCOTransaction)other).getConfirmationLineNumber());
-        setReturnCode(((AlternaCOTransaction)other).getReturnCode());
-        setReturnDate(((AlternaCOTransaction)other).getReturnDate());
-        setReturnType(((AlternaCOTransaction)other).getReturnType());
-        setPadType(((AlternaCOTransaction)other).getPadType());
-        setTxnCode(((AlternaCOTransaction)other).getTxnCode());
-        setDescription(((AlternaCOTransaction)other).getDescription());
+        if ( other instanceof AlternaCOTransaction ) {
+          setConfirmationLineNumber(((AlternaCOTransaction)other).getConfirmationLineNumber());
+          setReturnCode(((AlternaCOTransaction)other).getReturnCode());
+          setReturnDate(((AlternaCOTransaction)other).getReturnDate());
+          setReturnType(((AlternaCOTransaction)other).getReturnType());
+          setPadType(((AlternaCOTransaction)other).getPadType());
+          setTxnCode(((AlternaCOTransaction)other).getTxnCode());
+          setDescription(((AlternaCOTransaction)other).getDescription());
+       }
       `
     },
     {

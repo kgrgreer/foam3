@@ -5,8 +5,11 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   requires: [
@@ -39,6 +42,7 @@ foam.CLASS({
     'name',
     'cashOutFrequency',
     'denomination',
+    'createdBy',
     'lowLiquidity',
     'highLiquidity'
   ],
@@ -73,6 +77,14 @@ foam.CLASS({
       required: true,
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
       section: 'basicInfo',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.liquiditySettingsUserDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
       view: (_, X) => {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -80,12 +92,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Users',
-              dao: X.userDAO.where(
-                X.data.AND(
-                  X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-                  X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-                )
-              ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+              dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
             }
           ]
         };
@@ -110,9 +117,9 @@ foam.CLASS({
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
-      `	,
+      `,
       section: 'basicInfo',
-      updateMode: 'RO',
+      updateVisibility: 'RO',
       postSet: function(o, n) {
         if ( this.lowLiquidity ) this.lowLiquidity.denomination = n;
         if ( this.highLiquidity ) this.highLiquidity.denomination = n;
@@ -122,7 +129,18 @@ foam.CLASS({
             if ( high != null ) high.denomination_ = (String) val;
             Liquidity low = this.getLowLiquidity();
             if ( low != null ) low.denomination_ = (String) val;
-      `
+      `,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.currencyDAO
+            }
+          ]
+        };
+      }
     },
     {
       class: 'FObjectProperty',
@@ -186,7 +204,7 @@ foam.CLASS({
           }
         }
         if ( this.lowLiquidity.rebalancingEnabled && this.lowLiquidity.pushPullAccount == 0 ) {
-          return 'Please select push/pull account.';
+          return 'Please select push/pull account based off denomination.';
         }
       }
     },
@@ -227,7 +245,7 @@ foam.CLASS({
           function(curr) {
             var highLiquidity = curr ? curr.format(obj.highLiquidity.threshold != null ? obj.highLiquidity.threshold : 0) : obj.highLiquidity.threshold;
             self.add(highLiquidity);
-          })
+          });
       },
       validationTextVisible: true,
       validationStyleEnabled: true,
@@ -242,7 +260,7 @@ foam.CLASS({
               return 'High Liquidity reset balance should be greater than Low liquidity threshold value.';
             }
           }
-          if ( this.lowLiquidity.threshold > this.highLiquidity.threshold ) {
+          if ( this.lowLiquidity.threshold >= this.highLiquidity.threshold ) {
             return 'High Liquidity threshold should be greater than Low liquidity values.';
           }
         }
@@ -252,14 +270,79 @@ foam.CLASS({
           }
         }
         if ( this.highLiquidity.rebalancingEnabled && this.highLiquidity.pushPullAccount == 0 ) {
-          return 'Please select push/pull account.';
+          return 'Please select push/pull account based off denomination.';
         }
       }
     },
     {
       class: 'DateTime',
+      name: 'created',
+      documentation: 'Created date',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdByAgent',
+      documentation: `The unique identifier of the agent
+        who created this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => {
+            if ( user ) {
+              this.add(user.legalName);
+            }
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }
+    },
+    {
+      class: 'DateTime',
       name: 'lastModified',
-      documentation: 'Last modified date'
+      documentation: 'Last modified date',
+      createVisibility: 'HIDDEN',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      documentation: `The unique identifier of the individual person, or real user,
+        who last modified this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.label()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
     },
     {
       class: 'foam.core.Enum',
@@ -267,14 +350,14 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

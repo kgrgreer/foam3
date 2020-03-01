@@ -1,32 +1,25 @@
 package net.nanopay.tx.test;
 
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
-import foam.nanos.app.AppConfig;
-import foam.nanos.app.Mode;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.FeeTransfer;
 import net.nanopay.tx.Transfer;
-
-import static foam.mlang.MLang.*;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class TransactionDAOTest
   extends foam.nanos.test.Test
@@ -75,7 +68,7 @@ public class TransactionDAOTest
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
-      sender_.setGroup("basicUser");
+      sender_.setGroup("business");
       sender_.setFirstName("Francis");
       sender_.setLastName("Filth");
     }
@@ -90,7 +83,7 @@ public class TransactionDAOTest
     }
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
-    receiver_.setGroup("basicUser");
+    receiver_.setGroup("business");
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
@@ -213,9 +206,9 @@ public class TransactionDAOTest
     test( senderInitialBalance + tx.getAmount() ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
     tx.setStatus(TransactionStatus.DECLINED);
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
-    test(tx.getStatus() == TransactionStatus.DECLINED, "CashIn transaction remains in status DECLINED" );
-    test(((Count) tx.getAssociatedTransactions(x_).select(MLang.COUNT())).getValue() == 1, "A reverse txn was made");
-    test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
+    test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction remains in status COMPLETED" );
+    Long balance = (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    test( senderInitialBalance +tx.getAmount() == balance, "After transaction is 'attempted' DECLINED from COMPLETED balance is unchanged. initialBalance: "+(senderInitialBalance + tx.getAmount()) +" balance: "+balance );
   }
 
   public void testCashOut() {
@@ -288,8 +281,8 @@ public class TransactionDAOTest
     if ( null != tx ) {
       Transfer[] transfers = tx.getTransfers();
       for ( Transfer transfer : transfers ) {
-        if ( transfer instanceof FeeTransfer ) {
-          if ( transfer.getAmount() > 0 ) fee = fee + transfer.getAmount();
+        if ( transfer instanceof FeeTransfer && transfer.getAmount() > 0 ) {
+          fee += transfer.getAmount();
         }
       }
     }

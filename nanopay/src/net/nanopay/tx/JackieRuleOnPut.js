@@ -12,12 +12,9 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode'
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   methods: [

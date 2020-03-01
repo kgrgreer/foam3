@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.nanos.ticket.Ticket',
 
   javaImports: [
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'java.util.Calendar',
     'java.util.Date'
   ],
@@ -48,13 +48,17 @@ foam.CLASS({
         return cal.getTime();
       `,
       section: 'infoSection',
-      writePermissionRequired: true
+      //writePermissionRequired: true,
+      readVisibility: 'RO',
+      createVisibility: 'RW',
+      updateVisibility: 'RW'
     },
     {
       name: 'approvalStatus',
       class: 'foam.core.Enum',
-      of: 'net.nanopay.approval.ApprovalStatus',
+      of: 'foam.nanos.approval.ApprovalStatus',
       value: 'REQUESTED',
+      createVisibility: 'HIDDEN',
       visibility: 'RO',
       section: 'infoSection'
     },
@@ -62,7 +66,9 @@ foam.CLASS({
       name: 'savedGroup',
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      hidden: true
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      section: 'metaSection'
     },
     {
       name: 'title',

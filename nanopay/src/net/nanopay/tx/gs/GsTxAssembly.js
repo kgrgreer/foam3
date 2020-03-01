@@ -394,7 +394,7 @@ foam.CLASS({
 
         DigitalAccount da = new DigitalAccount.Builder(x)
           .setDenomination(row.getCurrency())  
-          .setOwner(8005) // liquiddev@nanopay.net
+          .setOwner(1348) // admin@nanopay.net
           .setName(name)
           .build();
         return ((Account) accountDAO.put(da)).getId();
@@ -424,12 +424,13 @@ foam.CLASS({
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
           txn2.setReferenceNumber("System Generated");
+          txn2 = walk_(txn2,txn.getCreated().getTime());
           verifyBalance(x,txn2);
         }  
 
-        DAO accountDAO = ((DAO) x.get("accountDAO"));
+        DAO accountDAO = ((DAO) x.get("localAccountDAO"));
         DAO currencyDAO = ((DAO) x.get("currencyDAO"));
-        DAO transactionDAO = ((DAO) x.get("transactionDAO"));        
+        DAO transactionDAO = ((DAO) x.get("localTransactionDAO"));
 
         Account source = txn.findSourceAccount(x);
 
@@ -454,6 +455,10 @@ foam.CLASS({
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
             secCI.setReferenceNumber("System Generated");
+            TransactionQuote quote = new TransactionQuote();
+            quote.setRequestTransaction(secCI);
+            secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+            secCI = walk_(secCI,txn.getCreated().getTime());
             transactionDAO.put(secCI); // top up the sending security account
             for ( Transfer tr : secCI.getTransfers() ){
               long add1 = 0;
@@ -477,7 +482,7 @@ foam.CLASS({
         // Check if account for topping up needs to be created
         if ( b == null ) {
           b = new BankAccount.Builder(x)
-            .setOwner(8005)  // liquiddev@nanopay.net
+            .setOwner(1348)  // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
@@ -523,6 +528,11 @@ foam.CLASS({
           if (ci.getStatus() != net.nanopay.tx.model.TransactionStatus.COMPLETED){
             ci.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
           }
+
+          TransactionQuote quote = new TransactionQuote();
+          quote.setRequestTransaction(ci);
+          ci = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+          ci = walk_(ci,txn.getCreated().getTime());
           Transaction tx = (Transaction) transactionDAO.put(ci);
           for ( Transfer tr : tx.getTransfers() ){
             long add3 = 0;
@@ -643,7 +653,7 @@ foam.CLASS({
             .setName("Trust Account "+txn.getSourceCurrency())
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
-            .setOwner(8005) // liquiddev@nanopay.net
+            .setOwner(1348) // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
@@ -667,7 +677,7 @@ foam.CLASS({
             .setName(" Trust Account "+ txn.getDestinationCurrency())
             .build();
           BankAccount destBank = new BankAccount.Builder(x)
-            .setOwner(8005) // liquiddev@nanopay.net
+            .setOwner(1348) // admin@nanopay.net
             .setAccountNumber("000000")
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
             .setDenomination(txn.getDestinationCurrency())

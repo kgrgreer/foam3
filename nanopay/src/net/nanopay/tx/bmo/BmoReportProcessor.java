@@ -1,9 +1,21 @@
 package net.nanopay.tx.bmo;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
@@ -12,18 +24,10 @@ import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
+import net.nanopay.tx.bmo.eftfile.BmoEftFile;
+import net.nanopay.tx.cico.EFTFileUtil;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
 
@@ -76,12 +80,15 @@ public class BmoReportProcessor {
 
       try {
 
+        logger.info("updating eft file report " + file.getName());
+        updateEFTFileReport(file);
+
         logger.info("start process report " + file.getName());
         this.processReport(file);
         logger.info("finishing process report " + file.getName());
 
-        FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
 
+        
       } catch ( Exception e ) {
 
         try {
@@ -237,24 +244,22 @@ public class BmoReportProcessor {
     }
   }
 
-  public void postProcessReport() {
-
-    Collection<File> files = FileUtils.listFiles(new File(REPORT_PROCESSED_FOLDER), null, false);
-
-    for ( File file : files ) {
-
-      try {
-
-        String fileCreateNumber = this.getFileCreationNumber(file);
-
-        if ( ! SafetyUtil.isEmpty(fileCreateNumber) ) {
-          FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + "/" + fileCreateNumber + "/" + file.getName()));
-        }
-      } catch ( Exception e ) {
-        this.logger.error("Error when post process report, ", e);
+  protected void updateEFTFileReport(File file) {
+    String fileNumber = null;
+    try {
+      // Save Report File
+      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, "text/csv"); 
+      fileNumber = getFileCreationNumber(file);
+      DAO eftFileDAO = ((DAO) x.get("bmoEftFileDAO")).inX(x);
+      BmoEftFile eftFile = (BmoEftFile) eftFileDAO.find(fileNumber);
+      if ( eftFile != null ) {
+        eftFile.setReport(f.getId());
+        eftFileDAO.put(eftFile);
       }
+    } catch ( Exception e ) {
+      this.logger.error("Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e);
     }
-
   }
 
   public Transaction getTransactionBy(int fileCreationNumber,  String referenceNumber) {

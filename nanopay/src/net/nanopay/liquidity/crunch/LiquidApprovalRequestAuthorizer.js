@@ -7,9 +7,11 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware'
+    'foam.nanos.approval.Approvable',
+    'foam.nanos.approval.RoleApprovalRequest',
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.dao.DAO'
   ],
 
   methods: [
@@ -52,7 +54,10 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode:  `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
-        if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
+        if ( user != null && 
+             ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) && 
+             ((RoleApprovalRequest) newObj).getIsFulfilled() ) 
+          return;
 
         RoleApprovalRequest request = (RoleApprovalRequest) oldObj;
 
@@ -62,6 +67,23 @@ foam.CLASS({
 
         if ( user.getId() == request.getInitiatingUser() ){
           throw new AuthorizationException("You cannot approve your own request");
+        }
+
+        Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
+
+        String className;
+        if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
+          String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
+          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase(); 
+        } else {
+          className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
+        }
+        
+        String permission = createPermission(className, "approve", accountId);
+        AuthService authService = (AuthService) x.get("auth");
+
+        if ( ! authService.check(x, permission) ) {
+          throw new AuthorizationException();
         }
       `
     },

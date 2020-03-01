@@ -8,13 +8,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessDirector',
     'java.util.Calendar',
@@ -31,11 +26,14 @@ foam.CLASS({
         try {
           String filterRegion = "";
           Date filterLRDFrom = fetchLastExecutionDate(x, business.getId(), "Dow Jones Entity");
-          if ( business.getAddress().getCountryId().equals("CA") ) {
-            filterRegion = "Canada,CANA,CA,CAN";
-          } else if ( business.getAddress().getCountryId().equals("US") ) {
-            filterRegion = "United States,USA,US";
+          if ( business.getAddress().getCountryId() != null ) {
+            if ( business.getAddress().getCountryId().equals("CA") ) {
+              filterRegion = "Canada,CANA,CA,CAN";
+            } else if ( business.getAddress().getCountryId().equals("US") ) {
+              filterRegion = "United States,USA,US";
+            }
           }
+          
           EntityNameSearchData searchData = new EntityNameSearchData.Builder(x)
             .setSearchId(business.getId())
             .setEntityName(business.getOrganization())

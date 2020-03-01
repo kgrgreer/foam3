@@ -49,6 +49,7 @@ foam.CLASS({
 
         // Set Liquid-specific property values here.
         cData.group = 'liquidBasic';
+        cData.jobTitle = this.data.jobTitle;
 
         this.config.dao.put(cData).then((o) => {
           this.data = o;

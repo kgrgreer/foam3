@@ -1,21 +1,21 @@
 package net.nanopay.tx.bmo;
 
-import foam.core.X;
-import foam.dao.DAO;
-import foam.nanos.notification.email.EmailMessage;
-import foam.util.Emails.EmailsUtility;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+
+import foam.dao.DAO;
+import foam.nanos.notification.Notification;
+import org.apache.commons.lang3.StringUtils;
+
+import foam.core.X;
+import foam.nanos.notification.email.EmailMessage;
+import foam.util.Emails.EmailsUtility;
 
 public class BmoFormatUtil {
 
@@ -89,8 +89,7 @@ public class BmoFormatUtil {
   }
 
   public static void sendEmail(X x, String subject, Exception e) {
-    EmailMessage message = new EmailMessage();
-
+    DAO notificationDAO = (DAO) x.get("notificationDAO");
     String body = "Exception" + System.lineSeparator();
     body = body + e.getMessage() + System.lineSeparator();
     body = body + System.lineSeparator();
@@ -98,10 +97,13 @@ public class BmoFormatUtil {
     PrintStream ps = new PrintStream(os);
     e.printStackTrace(ps);
     body = body + os.toString();
-
-    message.setTo(new String[]{"ops@nanopay.net"});
-    message.setSubject(subject);
-    message.setBody(body);
-    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
+    
+    Notification notification = new Notification();
+    notification.setGroupId("payment-ops");
+    notification.setNotificationType("BMO EFT");
+    notification.setIssuedDate(new Date());
+    notification.setBody(subject + "\n" + body);
+    notification.setEmailIsEnabled(true);
+    notificationDAO.put(notification);
   }
 }

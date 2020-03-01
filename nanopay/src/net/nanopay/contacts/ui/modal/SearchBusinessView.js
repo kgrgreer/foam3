@@ -162,7 +162,7 @@ foam.CLASS({
       type: 'Int',
       name: 'connectedCount',
       documentation: `
-        The number of connected businesses in the 
+        The number of connected businesses in the
         connctedBusiness dao after filtering.
       `
     },
@@ -170,7 +170,7 @@ foam.CLASS({
       type: 'Int',
       name: 'unconnectedCount',
       documentation: `
-        The number of unconnected businesses in the 
+        The number of unconnected businesses in the
         unconnctedBusiness dao after filtering.
       `
     },
@@ -196,7 +196,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'connectedBusinesses',
       documentation: `
-        This property is to query all connected businesses related to 
+        This property is to query all connected businesses related to
         the current acting business.
       `,
       expression: function(filter) {
@@ -211,6 +211,10 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
+                      this.OR(
+                        this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                        this.CONTAINS_IC(this.Business.OPERATING_BUSINESS_NAME, filter)
+                      ),
                       this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
@@ -230,7 +234,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'unconnectedBusinesses',
       documentation: `
-        This property is to query all unconnected businesses related to 
+        This property is to query all unconnected businesses related to
         the current acting business.
       `,
       expression: function(filter) {
@@ -245,7 +249,10 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.OR(
+                        this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                        this.CONTAINS_IC(this.Business.OPERATING_BUSINESS_NAME, filter)
+                      ),
                       this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
                       this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
@@ -291,7 +298,7 @@ foam.CLASS({
       type: 'Boolean',
       name: 'showDefault',
       documentation: `
-        Only show the default searching text when the searching keyword 
+        Only show the default searching text when the searching keyword
         is shorter than 2 chars.
       `,
       expression: function(filter) {
@@ -357,7 +364,8 @@ foam.CLASS({
                 })
                   .on('click', function() {
                     // Add contact
-                    self.loading ? '' : self.addSelected(business);
+                    if( ! self.loading )
+                      self.addSelected(business);
                   })
                 .end();
             })
@@ -410,25 +418,25 @@ foam.CLASS({
         .end();
     },
 
-    async function addSelected(business) {
+    function addSelected(business) {
       this.loading = true
       newContact = this.Contact.create({
         organization: business.organization,
         businessName: business.organization,
         businessId: business.id,
-        email: business.email,
         type: 'Contact',
         group: 'sme'
       });
 
-      try {
-        await this.user.contacts.put(newContact);
+      this.user.contacts.put(newContact).then(() => {
         this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
         this.closeDialog();
-      } catch (err) {
+        this.loading = false;
+      }).catch( err => {
         this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
-      }
-      this.loading = false;
+        this.closeDialog();
+        this.loading = false;
+      })
     }
   ],
 

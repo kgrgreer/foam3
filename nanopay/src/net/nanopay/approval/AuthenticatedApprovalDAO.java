@@ -10,6 +10,8 @@ import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalRequest;
 
 import static foam.mlang.MLang.EQ;
 

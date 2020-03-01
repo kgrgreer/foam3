@@ -12,6 +12,8 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'getDefaultCurrencyDAO',
+    'currencyDAO',
     'ctrl',
     'errors',
     'invoice',
@@ -28,9 +30,13 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.Currency',
     'foam.nanos.auth.User',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CanReceiveCurrency',
+    'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'foam.u2.dialog.Popup',
@@ -140,7 +146,7 @@ foam.CLASS({
       margin-left: 30px;
       text-decoration: underline;
     }
-    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view, 
+    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view,
     ^ .error-box {
       border-color: #f91c1c;
       background: #fff6f6;
@@ -237,6 +243,16 @@ foam.CLASS({
     {
       name: 'TOOLTIP_BODY',
       message: 'Please edit this invoice in your accounting software and sync again.'
+    },
+    {
+      name: 'EXTERNAL_USER_MESSAGE',
+      message: `The contact you've selected is not associated with a business on the platform.
+          You will not be receiving payments from this busines until they have been onboarded to the platform, however you do
+          have the ability to mark invoices as complete if paid outside of the platform.`
+    },
+    {
+      name: 'EXTERNAL_TITLE',
+      message: 'Attention to Payment'
     }
   ],
 
@@ -249,7 +265,9 @@ foam.CLASS({
 
   properties: [
     'type',
+    'contact',
     {
+      class: 'String',
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
       expression: function(invoice) {
@@ -326,19 +344,44 @@ foam.CLASS({
       name: 'xPosition',
       value: 0
     },
-     {
+    {
       type: 'Int',
       name: 'yPosition',
       value: 0
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredCurrencyDAO',
+      factory: function() {
+        return this.currencyDAO;
+      }
+    },
+    {
+      class: 'Array',
+      name: 'currencies'
     }
   ],
 
   methods: [
+    async function init() {
+      this.onContactIdChange();
+      if ( this.type != 'payable' ) {
+        await this.user.accounts.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
+          .select({
+            put: (b) => {
+              this.currencies.push(b.denomination);
+            }
+          });
+        this.currencyType = this.currencies[0];
+        this.filteredCurrencyDAO = this.currencyDAO.where(this.IN(this.Currency.ID, this.currencies));
+      }
+    },
     function initE() {
       var self = this;
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
+      
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
       } else {
@@ -348,7 +391,6 @@ foam.CLASS({
 
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
-
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
       this.ctrl
@@ -385,6 +427,11 @@ foam.CLASS({
                     return isInvalid && type === 'payable' && showAddBank;
                   }))
               .end()
+              .start({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.EXTERNAL_USER_MESSAGE, title: this.EXTERNAL_TITLE })
+              .show(this.slot(function(type, contact) {
+                return contact != null ? type != 'payable' && contact.businessId == 0 : false;
+              }))
+              .end()
             .endContext()
           .end()
           .start()
@@ -404,9 +451,6 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start().show(! (this.type === 'payable'))
-              .add(this.RECEIVABLE_ERROR_MSG)
-            .end()
           .end()
         .end()
         .startContext({ data: this.invoice })
@@ -417,7 +461,7 @@ foam.CLASS({
                 .on('mouseleave', this.toggleTooltip)
                 .on('mousemove', this.setCoordinates)
                 .startContext({ data: this })
-                  .start(this.CURRENCY_TYPE, { mode: displayMode })
+                  .start(this.CURRENCY_TYPE, { mode: displayMode, dao$: this.filteredCurrencyDAO$ })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .enableClass('error-box-outline', this.slot( function(isInvalid, type, showAddBank) {
                         return isInvalid && type === 'payable' && ! showAddBank;
@@ -441,6 +485,11 @@ foam.CLASS({
                 function(isInvalid, showAddBank) {
                   return isInvalid && ! showAddBank;
                 }))
+                .start()
+                .addClass('validation-failure-container')
+                .show(! (this.type === 'payable'))
+                  .add(this.RECEIVABLE_ERROR_MSG)
+                .end()
                 .start().show(this.type === 'payable').addClass('validation-failure-container')
                   .start('img')
                     .addClass('small-error-icon')
@@ -548,12 +597,14 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onContactIdChange() {
-      this.checkUser(this.invoice.destinationCurrency);
+    async function onContactIdChange() {
+      if ( this.type == 'payable' ) await this.setDefaultCurrency();
+      this.contact = await this.user.contacts.find(this.invoice.contactId);
+      this.checkUser(this.currencyType);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.id;
-      this.checkUser(this.currencyType.id);
+      this.selectedCurrency = this.currencyType;
+      this.checkUser(this.currencyType);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
@@ -578,6 +629,17 @@ foam.CLASS({
     function setCoordinates(e) {
       this.xPosition = e.x + this.TOOLTIP_OFFSET;
       this.yPosition = e.y + this.TOOLTIP_OFFSET;
+    },
+    async function setDefaultCurrency() {
+      var request = this.GetDefaultCurrency.create({
+        contactId: this.invoice.contactId
+      });
+      var responseObj = await this.getDefaultCurrencyDAO.put(request);
+      if ( responseObj.response ) {
+        this.currencyType = responseObj.response;
+        this.selectedCurrency = responseObj.response;
+        this.invoice.destinationCurrency = responseObj.response;
+      }
     }
   ],
 
@@ -594,4 +656,3 @@ foam.CLASS({
     }
   ]
 });
-

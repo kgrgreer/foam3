@@ -9,7 +9,7 @@ foam.CLASS({
 
   imports: [
     'homeDenomination',
-    'accountDAO',
+    'tableViewAccountDAO',
     'balanceDAO',
     'user'
   ],
@@ -51,6 +51,10 @@ foam.CLASS({
       line-height: 1.2;
       margin-bottom: 4px;
     }
+
+    ^ .net-nanopay-account-AccountDAOBrowserView-browse-view-container {
+      margin: 0;
+    }
   `,
 
   requires: [
@@ -86,9 +90,13 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({
-          defaultColumns: ["name","balance","homeBalance"],
+          defaultColumns: [
+            ['name', { tableWidth: undefined }],
+            ['balance', { tableWidth: 200 }],
+            ['homeBalance', { tableWidth: 200 }]
+          ],
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.accountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
+          dao: this.tableViewAccountDAO.where(this.OR(this.INSTANCE_OF(net.nanopay.account.ShadowAccount),
             this.INSTANCE_OF(net.nanopay.account.AggregateAccount),
             foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
 foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
@@ -104,7 +112,7 @@ foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.Digita
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(homeDenomination, currency, accountDAO, config) {
+        .add(self.slot(function(homeDenomination, currency, tableViewAccountDAO, config) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))

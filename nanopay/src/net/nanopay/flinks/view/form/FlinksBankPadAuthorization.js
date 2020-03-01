@@ -5,6 +5,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO as bankAccountDAO',
+    'bannerizeCompliance',
     'fail',
     'form',
     'isConnecting',
@@ -134,6 +135,7 @@ foam.CLASS({
         } finally {
           this.isConnecting = false;
         }
+        this.bannerizeCompliance();
         this.pushViews('Complete');
       }
     }

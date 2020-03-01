@@ -1,7 +1,12 @@
 package net.nanopay.approval.test;
 
+import static foam.mlang.MLang.DOT;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.NEQ;
+import static foam.mlang.MLang.NEW_OBJ;
+
 import foam.core.Detachable;
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
@@ -11,12 +16,19 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
-import foam.nanos.ruler.*;
+import foam.nanos.ruler.Operations;
+import foam.nanos.ruler.Rule;
+import foam.nanos.ruler.RuleAction;
+import foam.nanos.ruler.RuleGroup;
+import foam.nanos.ruler.RulerDAO;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
-import net.nanopay.approval.*;
-
-import static foam.mlang.MLang.*;
+import foam.nanos.approval.ApprovalDAO;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalRequestUtil;
+import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.approval.SendGroupRequestApprovalDAO;
+import net.nanopay.approval.AuthenticatedApprovalDAO;
 
 public class ApprovalDAOTest
 extends Test {
@@ -119,7 +131,8 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
 
   private void createUserRule(X ctx) {
     Rule rule = new Rule();
-    rule.setId("rule1. testing approval");
+    rule.setId("12323");
+    rule.setName("rule1. testing approval");
     RuleGroup rg = new RuleGroup();
     rg.setId("test approval_CREATE");
     DAO rgDAO = ((DAO) (ctx.get("ruleGroupDAO")));
@@ -138,7 +151,8 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     ruleDAO.put(rule);
 
     Rule rule2 = new Rule();
-    rule2.setId("rule2. testing approval");
+    rule2.setId("2");
+    rule2.setName("rule2. testing approval");
     RuleGroup rg2 = new RuleGroup();
     rg2.setId("test approval_UPDATE");
     rgDAO.put(rg2);

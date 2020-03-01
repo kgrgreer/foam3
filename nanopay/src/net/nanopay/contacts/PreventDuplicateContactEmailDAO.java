@@ -39,10 +39,6 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
 
     Contact toPut = (Contact) obj;
 
-    if ( toPut == null ) {
-      throw new RuntimeException("Cannot put null.");
-    }
-
     if ( toPut.getBusinessId() != 0 && SafetyUtil.equals(toPut.getEmail(), "") ) {
       return super.put_(x, toPut);
     }

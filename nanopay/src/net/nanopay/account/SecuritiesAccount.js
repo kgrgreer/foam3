@@ -6,14 +6,9 @@ foam.CLASS({
   documentation: 'The base model for creating and managing all Security accounts.',
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
-    'java.util.List',
-    'net.nanopay.account.Balance',
-    'net.nanopay.account.SecurityAccount',
     'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count'
+    'foam.nanos.auth.LifecycleState'
   ],
 
   searchColumns: [
@@ -40,36 +35,7 @@ foam.CLASS({
       section: 'accountDetails',
       value: 'USD',
       order: 3,
-    },
-    {
-    // balance of all sub accounts I suppose
-      class: 'Long',
-      name: 'balance',
-      label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the bank account.',
-      storageTransient: true,
-      visibility: 'RO',
-      tableCellFormatter: function(value, obj, id) {
-        return this.findBalance(this.__subContext__,id);
-      },
-      /*tableCellFormatter: function(value, obj, id) {
-        var self = this;
-        // React to homeDenomination because it's used in the currency formatter.
-        this.add(obj.homeDenomination$.map(function(_) {
-          return obj.findBalance(self.__subSubContext__).then(
-            function(balance) {
-              return self.__subSubContext__.securitiesDAO.find(obj.denomination).then(
-                function(curr) {
-                  var displayBalance = curr.format(balance != null ? balance : 0);
-                  self.tooltip = displayBalance;
-                  return displayBalance;
-                })
-            })
-        }));
-      },*/
-      tableWidth: 145
-    },
-
+    }
   ],
 
   methods: [
@@ -118,13 +84,13 @@ foam.CLASS({
       javaCode: `
         SecurityAccount sa = new SecurityAccount();
         sa.setDenomination(unit);
-        sa.setName(unit+ " subAccount for "+getId());
+        sa.setName(unit + " subAccount for " + getId());
         sa.setSecuritiesAccount(this.getId());
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        sa.setLifecycleState(LifecycleState.ACTIVE);
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
         return sa;
       `
     },
-
   ]
 });

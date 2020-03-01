@@ -22,7 +22,7 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            if ( ((AccountApproverMap) ucj.getData()).getAccounts().size() == 0 ) {
+            if ( ( ucj.getData() instanceof AccountApproverMap ) && ((AccountApproverMap) ucj.getData()).getAccounts().size() == 0 ) {
               DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
               ucjDAO.remove(ucjDAO.find(ucj.getId()));
             }

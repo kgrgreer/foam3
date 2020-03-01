@@ -5,7 +5,7 @@ foam.CLASS({
   abstract: true,
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   documentation: 'Business rule base class.',
@@ -28,7 +28,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
+      name: 'id', 
+      tableWidth: 125
+    },
+    {
+      name: 'name',
       section: 'basicInfo',
       label: 'Rule Name',
       tableWidth: 400
@@ -53,7 +57,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
-      value: 'CREATE',
+      value: 'CREATE_OR_UPDATE',
       visibility: 'RO',
     },
     {
@@ -124,6 +128,11 @@ foam.CLASS({
       }
     },
     {
+      name: 'createdByAgent',
+      visibility: 'HIDDEN',
+      section: 'basicInfo' // Sort of a hack to avoid creating an empty section
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
@@ -142,14 +151,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -169,7 +178,7 @@ foam.CLASS({
         property. In this case, we are using the name.
       `,
       code: function(x) {
-        return this.id;
+        return this.name || this.id;
       }
     },
     {
