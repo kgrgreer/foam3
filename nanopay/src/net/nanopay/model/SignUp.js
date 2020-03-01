@@ -79,6 +79,8 @@ foam.CLASS({
         arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());
         arrayOfProperties.push(arrayOfProperties.shift());
+
+        this.LOGIN.label = 'Create account';
       }
     },
     {

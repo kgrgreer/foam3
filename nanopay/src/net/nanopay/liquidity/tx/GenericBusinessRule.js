@@ -26,6 +26,7 @@ foam.CLASS({
 
   searchColumns: [
     'id',
+    'name',
     'enabled',
     'businessRuleAction',
     'createdBy',
@@ -33,7 +34,7 @@ foam.CLASS({
   ],
 
   properties: [
-    { name: 'id' },
+    { name: 'name' },
     { name: 'description' },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
@@ -96,7 +97,7 @@ foam.CLASS({
         // NOTIFY
         if (this.getBusinessRuleAction() == BusinessRuleAction.NOTIFY)
           return new BusinessRuleNotificationAction.Builder(getX())
-            .setBusinessRuleId(this.getId())
+            .setBusinessRuleId(this.getName())
             .setGroupId("liquidBasic")
             .build();
 

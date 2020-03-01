@@ -3,7 +3,6 @@ foam.CLASS({
  name: 'InstitutionAuthorizerTest',
  extends: 'foam.nanos.test.Test',
  documentation: `class to test InstitutionDAO security`,
- flags: ['java'],
 
  javaImports: [
   'foam.core.X',

@@ -1,3 +1,314 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "userDAO",
+      "browseTitle": "Users",
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
+      "predicate": {
+        "class":"foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "ACTIVE"
+            }
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.auth.User",
+              "name": "group"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "liquidBasic"
+            }
+          }
+      ]
+      },
+      "CRUDActionsAuth": {
+        "class": "foam.comics.v2.CRUDActionsAuth",
+        "create": ["user.make"],
+        "update": ["user.make"],
+        "delete": ["user.make"]
+      },
+      "browseViews": [
+        {
+          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+          "name": "Users",
+          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
+        }
+      ]
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts",
+  "label": "Accounts",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "tableViewAccountDAO",
+          "cannedQueries": [
+            {
+              "class": "foam.comics.v2.CannedQuery",
+              "label": "All",
+              "predicate": {
+                "class": "foam.mlang.predicate.And",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "lifecycleState"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": "ACTIVE"
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "isDefault"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": false
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Or",
+                    "args": [
+                      {
+                        "class": "foam.mlang.predicate.IsInstanceOf",
+                        "targetClass": "net.nanopay.account.ShadowAccount"
+                      },
+                      {
+                        "class": "foam.mlang.predicate.IsInstanceOf",
+                        "targetClass": "net.nanopay.account.AggregateAccount"
+                      },
+                      {
+                        "class": "foam.mlang.predicate.IsClassOf",
+                        "targetClass": "net.nanopay.account.SecuritiesAccount"
+                      },
+                      {
+                        "class": "foam.mlang.predicate.IsClassOf",
+                        "targetClass": "net.nanopay.account.DigitalAccount"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "class": "foam.comics.v2.CannedQuery",
+              "label": "Shadow Accounts",
+              "predicate": {
+                "class": "foam.mlang.predicate.And",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.IsInstanceOf",
+                    "targetClass": "net.nanopay.account.ShadowAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "lifecycleState"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": "ACTIVE"
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "isDefault"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": false
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "class": "foam.comics.v2.CannedQuery",
+              "label": "Aggregate Accounts",
+              "predicate": {
+                "class": "foam.mlang.predicate.And",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.IsInstanceOf",
+                    "targetClass": "net.nanopay.account.AggregateAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "lifecycleState"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": "ACTIVE"
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "isDefault"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": false
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "class": "foam.comics.v2.CannedQuery",
+              "label": "Virtual Accounts",
+              "predicate": {
+                "class": "foam.mlang.predicate.And",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.IsClassOf",
+                    "targetClass": "net.nanopay.account.DigitalAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "lifecycleState"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": "ACTIVE"
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "isDefault"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": false
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "class": "foam.comics.v2.CannedQuery",
+              "label": "Securities Accounts",
+              "predicate": {
+                "class": "foam.mlang.predicate.And",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.IsInstanceOf",
+                    "targetClass": "net.nanopay.account.SecuritiesAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "lifecycleState"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": "ACTIVE"
+                    }
+                  },
+                  {
+                    "class": "foam.mlang.predicate.Eq",
+                    "arg1": {
+                      "class": "__Property__",
+                      "forClass_": "net.nanopay.account.Account",
+                      "name": "isDefault"
+                    },
+                    "arg2": {
+                      "class": "foam.mlang.Constant",
+                      "value": false
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "predicate": {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "net.nanopay.account.Account",
+              "name": "lifecycleState"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": 1
+            }
+          },
+          "defaultColumns": [
+            "name",
+            "balance",
+            "homeBalance"
+          ],
+          "CRUDActionsAuth": {
+            "class": "foam.comics.v2.CRUDActionsAuth",
+            "create": ["account.make"],
+            "update": ["account.make.%"],
+            "delete": ["account.make.%"]
+          },
+          "filterExportPredicate":
+            {
+              "class": "foam.mlang.predicate.Neq",
+              "arg1": {
+                "class": "__Property__",
+                "forClass_": "foam.nanos.export.ExportDriverRegistry",
+                "name": "id"
+              },
+              "arg2": {
+                "class": "foam.mlang.Constant",
+                "value": "CSV"
+              }
+            }
+        }
+    }
+})
+
 // Remove unnecessary menu items
 r({
   "class": "foam.nanos.menu.Menu",
@@ -10,35 +321,6 @@ r({
 r({
   "class": "foam.nanos.menu.Menu",
   "id": "report"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "tickets"
-})
-
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "connect"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "alterna-eft"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "ascendantFXUsers"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBusinesses"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "afexBeneficiaries"
-})
-r({
-  "class": "foam.nanos.menu.Menu",
-  "id": "account-balance"
 })
 
 // Remove unnecessary right menu items

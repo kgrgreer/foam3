@@ -5,7 +5,7 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'foam.nanos.approval.ApprovableAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
 
@@ -24,9 +24,9 @@ foam.CLASS({
     'java.util.Map',
     'java.util.Set',
     'net.nanopay.account.Account',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
@@ -59,14 +59,14 @@ foam.CLASS({
       name: 'accountBasedCapability',
       label: 'Step 2: Choose a Transactional Role Template',
       of: 'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
-      visibilityExpression: function(requestType) {
+      visibility: function(requestType) {
         if (
           requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED
           // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
         ) {
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       validateObj: function(requestType, accountBasedCapability) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED &&
@@ -95,14 +95,14 @@ foam.CLASS({
       name: 'globalCapability',
       label: 'Step 2: Choose an Administrative Role Template',
       of: 'net.nanopay.liquidity.crunch.GlobalLiquidCapability',
-      visibilityExpression: function(requestType) {
+      visibility: function(requestType) {
         if (
           requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL
           // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_GLOBAL
         ) {
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       validateObj: function(requestType, globalCapability) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_GLOBAL &&
@@ -136,13 +136,8 @@ foam.CLASS({
 
         return {
           class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'userDAO',
-          dao: X.userDAO.where(
-            X.data.AND(
-              X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-              X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-            )
-          ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+          daoKey: 'liquiditySettingsUserDAO',
+          dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
         };
       },
       validateObj: function(users) {
@@ -154,17 +149,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isUsingTemplate',
-      visibilityExpression: function(requestType) {
+      visibility: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
           this.IS_USING_TEMPLATE.label = 'Step 4: Assign to multiple accounts using an Account Group (Legal Entity)';
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
         // if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
         //   this.IS_USING_TEMPLATE.label = 'Revoke Multiple Accounts Using an Account Group';
-        //   return foam.u2.Visibility.RW;
+        //   return foam.u2.DisplayMode.RW;
         // }
 
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -173,7 +168,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplate',
       label: 'Step 5: Choose an Account Group (Legal Entity)',
-      visibilityExpression: function(requestType, isUsingTemplate) {
+      visibility: function(requestType, isUsingTemplate) {
         if (
             isUsingTemplate &&
             (
@@ -181,9 +176,9 @@ foam.CLASS({
               // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       postSet: function(_, data) {
         this.capabilityAccountTemplateDAO.find(data).then((template) => {
@@ -203,7 +198,7 @@ foam.CLASS({
       class: 'Map',
       javaType: 'java.util.Map<String, CapabilityAccountData>',
       label: 'Create New Template Or Customize Chosen Account Group ',
-      visibilityExpression: function(requestType, isUsingTemplate) {
+      visibility: function(requestType, isUsingTemplate) {
         if (
             isUsingTemplate &&
             (
@@ -211,9 +206,9 @@ foam.CLASS({
               // || requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED
             )
           ) {
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, x) {
         return {
@@ -233,18 +228,18 @@ foam.CLASS({
       class: 'Reference',
       name: 'accountToAssignTo',
       of : 'net.nanopay.account.Account',
-      visibilityExpression: function(requestType, isUsingTemplate) {
+      visibility: function(requestType, isUsingTemplate) {
 
         if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
           this.ACCOUNT_TO_ASSIGN_TO.label = 'Step 5: Choose an account';
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
         // if ( ! isUsingTemplate && requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
         //   this.ACCOUNT_TO_ASSIGN_TO.label = 'Account To Revoke From';
-        //   return foam.u2.Visibility.RW;
+        //   return foam.u2.DisplayMode.RW;
         // }
 
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       },
       validateObj: function(isUsingTemplate, requestType, accountToAssignTo) {
         if (
@@ -294,17 +289,16 @@ foam.CLASS({
         }
         return n;
       },
-      javaType: 'java.lang.Integer',
       validateObj: function(approverLevel) {
         if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
           return this.approverLevelRangeError;
         }
       },
-      visibilityExpression: function(requestType) {
+      visibility: function(requestType) {
         if ( requestType == net.nanopay.liquidity.crunch.CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
-          return foam.u2.Visibility.RW;
+          return foam.u2.DisplayMode.RW;
         }
-        return foam.u2.Visibility.HIDDEN;
+        return foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -313,24 +307,24 @@ foam.CLASS({
       name: 'lifecycleState',
       label: 'Status',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      createMode: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
-      updateMode: 'RO',
-      readMode: 'RO'
+      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateVisibility: 'RO',
+      readVisibility: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      readMode: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
-      readMode: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subContext__.userDAO
           .find(value)
@@ -348,7 +342,7 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
 

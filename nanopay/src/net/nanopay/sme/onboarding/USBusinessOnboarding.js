@@ -347,9 +347,21 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          if ( this.userOwnsPercent ) {
+            this.userId$find.then((user) => {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            })
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+
+          if ( ! this.userOwnsPercent ) {
+            this.clearProperty('owner1');
+          }
         }
       }
     },
@@ -382,19 +394,25 @@ foam.CLASS({
           },
           errorString: 'Please select job title.'
         }
-      ]
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent && this.signingOfficer ) {
+          this.owner1.jobTitle = this.jobTitle;
+        }
+      },
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
-      createMode: 'RW',
+      createVisibility: 'RW',
       autoValidate: true
+      // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
       section: 'personalInformationSection',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -435,8 +453,8 @@ foam.CLASS({
       factory: function() {
         return this.PersonalIdentification.create({});
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: {
         class: 'foam.u2.detail.SectionedDetailView',
@@ -474,8 +492,8 @@ foam.CLASS({
         ],
         isHorizontal: true
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     }),
     {
@@ -498,8 +516,13 @@ foam.CLASS({
           }
         };
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.jobTitle = this.adminJobTitle;
+        }
+      },
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -515,18 +538,15 @@ foam.CLASS({
           },
           errorString: 'Please select job title.'
         }
-      ],
-      postSet: function(_, n) {
-        this.owner1.jobTitle = this.adminJobTitle;
-      }
+      ]
     },
     {
       class: 'PhoneNumber',
       name: 'adminPhone',
       section: 'homeAddressSection',
       label: 'Phone Number',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -616,23 +636,28 @@ foam.CLASS({
       width: 100,
       gridColumns: 6,
       validationPredicates: [
-      {
-        args: ['adminFirstName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.AND(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
-                }), 0)
-            ),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true)
-          );
-        },
-        errorString: 'Please enter first name with least 1 character.'
+        {
+          args: ['adminFirstName', 'signingOfficer'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+                e.GT(
+                  foam.mlang.StringLength.create({
+                    arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
+                  }), 0)
+              ),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true)
+            );
+          },
+          errorString: 'Please enter first name with least 1 character.'
+        }
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.adminFirstName;
+        }
       }
-    ]
     },
     {
       class: 'String',
@@ -641,7 +666,12 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.lastName = this.adminLastName;
+        }
+      }
     },
     {
       class: 'String',
@@ -825,14 +855,14 @@ foam.CLASS({
         isHorizontal: true
       }
     },
-    foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
       view: {
         class: 'foam.u2.TextField',
         placeholder: 'Enter your operating name'
       },
-      visibilityExpression: function(operatingUnderDifferentName) {
-        return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(operatingUnderDifferentName) {
+        return operatingUnderDifferentName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -915,8 +945,8 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       label: 'Federal Tax ID Number (EIN)',
       documentation: 'Federal Tax ID Number (EIN)',
-      visibilityExpression: function(countryOfBusinessFormation) {
-        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1106,9 +1136,9 @@ foam.CLASS({
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
           } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
           }
         });
       },
@@ -1161,8 +1191,8 @@ foam.CLASS({
 
         this.clearProperty('ownershipPercent');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1174,8 +1204,8 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) this.clearProperty('owner1');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners == 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1254,8 +1284,8 @@ foam.CLASS({
           'ownershipPercent'
         ]
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1286,8 +1316,8 @@ foam.CLASS({
 
         return sum;
       `,
-      visibilityExpression: function(totalOwnership) {
-        return Number(totalOwnership) > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(totalOwnership) {
+        return Number(totalOwnership) > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
@@ -1295,7 +1325,10 @@ foam.CLASS({
         {
           args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100);
+            return e.OR (
+              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+            );
           },
           errorString: 'The total Ownership should less than 100%'
         }
@@ -1307,8 +1340,8 @@ foam.CLASS({
       label: 'There are no beneficial owners with 25% or more ownership listed.',
       visibility: 'RO',
       documentation: 'If amountOfOwners property is zero, this message will be display',
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners === 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
     },
     {
@@ -1317,8 +1350,8 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       label: '',
       label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1343,8 +1376,8 @@ foam.CLASS({
       documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
       docName: 'USD_AFEX_Terms',
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1369,8 +1402,8 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'nanopayInternationalPaymentsCustomerAgreement', // TODO Make this the USD version. Waiting on USD doc from complaince
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1435,17 +1468,16 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
 
         USBusinessOnboarding obj = (USBusinessOnboarding) this;
-        USBusinessOnboarding oldObj = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(this.getId());
+        USBusinessOnboarding oldObj = (USBusinessOnboarding) usBusinessOnboardingDAO.find(this.getId());
 
         if ( auth.check(x, "onboarding.update.*") ) return;
 
         if (
           oldObj != null &&
-          oldObj.getStatus() == OnboardingStatus.SUBMITTED &&
-          oldObj.getSigningOfficer()
+          oldObj.getStatus() == OnboardingStatus.SUBMITTED
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
@@ -1516,15 +1548,35 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
+        this.phone.VERIFIED.writePermissionRequired = false;
+
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
-          } else {
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            }
+          } else if ( ! this.signingOfficer ) {
             this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = this.adminFirstName;
+              this.owner1.lastName = this.adminLastName;
+              this.owner1.jobTitle = this.adminJobTitle;
+            }
+          } else if ( ! userOwnsPercent ) {
+            this.clearProperty('owner1');
           }
         });
+        this.owner1.showValidation$ = this.signingOfficer$;
+        this.owner2.showValidation$ = this.signingOfficer$;
+        this.owner3.showValidation$ = this.signingOfficer$;
+        this.owner4.showValidation$ = this.signingOfficer$;
       }
     }
   ]

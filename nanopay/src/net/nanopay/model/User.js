@@ -10,7 +10,11 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.core.Validatable',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
+  ],
+
+  imports: [
+    'complianceHistoryDAO'
   ],
 
   javaImports: [
@@ -165,7 +169,7 @@ foam.CLASS({
           documents$: X.data.additionalDocuments$
         };
       },
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -173,11 +177,6 @@ foam.CLASS({
       name: 'jobTitle',
       label: 'Job Title',
       documentation: 'The job title of the individual person, or real user.',
-      validateObj: function(jobTitle) {
-        if ( ! jobTitle.trim() ) {
-          return 'Job title required.';
-        }
-      },
       section: 'business'
     },
     {
@@ -210,21 +209,12 @@ foam.CLASS({
       section: 'administrative'
     },
     {
-      class: 'String',
-      name: 'operatingBusinessName',
-      documentation: `The business name displayed to the public. This may differ
-        from the organization name.`,
-          // Is displayed on client if present taking place of organziation name.
-      createMode: 'HIDDEN',
-      section: 'business'
-    },
-    {
       class: 'Boolean',
       name: 'thirdParty',
       documentation: `Determines whether the User is taking instructions from and/or acting
         on behalf of a 3rd party.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -234,7 +224,7 @@ foam.CLASS({
       documentation: `A placeholder for the photo identification image, such as a
         passport, of the individual person, or real user.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       factory: function() {
         return this.PersonalIdentification.create();
       },
@@ -248,7 +238,7 @@ foam.CLASS({
         Exposed Person (PEP), Head of an International Organization (HIO)_, or
         related to any such person.
       `,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -282,7 +272,7 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       },
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'personal'
     },
     {
@@ -290,14 +280,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.Visibility.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -371,6 +361,25 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['service.compliancehistorydao', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.legalName}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
+          ))
+        });
+      }
+    },
     {
       name: 'viewAccounts',
       label: 'View Accounts',

@@ -12,7 +12,7 @@ foam.CLASS({
       class: 'Short',
       name: 'loginAttempts',
       value: 0,
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'administrative'
     },
     {
@@ -20,6 +20,7 @@ foam.CLASS({
       name: 'isPublic',
       class: 'Boolean',
       value: true,
+      writePermissionRequired: true,
       section: 'administrative'
     },
     {
@@ -42,11 +43,10 @@ foam.CLASS({
       name: 'signatures',
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
-      includeInSignature: false,
-      visibilityExpression: function(signatures) {
+      visibility: function(signatures) {
         return signatures ?
-          foam.u2.Visibility.RO :
-          foam.u2.Visibility.HIDDEN;
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
       },
     }
   ]
@@ -62,7 +62,6 @@ foam.CLASS({
       name: 'signatures',
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
-      includeInSignature: false,
     }
   ]
 });

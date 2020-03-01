@@ -30,6 +30,7 @@ foam.CLASS({
   imports: [
     'accountingIntegrationUtil',
     'agent',
+    'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'canadaUsBusinessOnboardingDAO',
@@ -103,6 +104,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hidePaymentCards',
+      label: '',
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
     'bankAccount',
@@ -110,7 +112,15 @@ foam.CLASS({
     'businessOnboarding',
     'onboardingStatus',
     'businessRegistrationDate',
-    'countryOfBusinessRegistration'
+    'countryOfBusinessRegistration',
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: false,
+      expression: function(businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) {
+        return businessOnboarding && businessRegistrationDate && countryOfBusinessRegistration;
+      }
+    }
   ],
 
   messages: [
@@ -118,6 +128,12 @@ foam.CLASS({
   ],
 
   methods: [
+    async function init() {
+      let business = await this.businessDAO.find(this.user.id);
+      this.onboardingStatus = business.onboarded;
+      this.countryOfBusinessRegistration = business.countryOfBusinessRegistration;
+      this.businessRegistrationDate = business.businessRegistrationDate;
+    },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
@@ -131,8 +147,7 @@ foam.CLASS({
                 }))
               .end()
               .start('span').hide(this.isIframe())
-                .add(this.slot((user$onboarded, businessOnboarding, businessRegistrationDate, countryOfBusinessRegistration) => {
-                  let complete = user$onboarded && (businessRegistrationDate && countryOfBusinessRegistration);
+                .add(this.slot((user$onboarded, businessOnboarding, complete) => {
                   let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: complete, isEmployee: isEmp, businessOnboarding: businessOnboarding }).end();
                 }))

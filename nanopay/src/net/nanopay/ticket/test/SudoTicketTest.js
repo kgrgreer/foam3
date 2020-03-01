@@ -20,14 +20,15 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketStatus',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.ticket.SudoTicket',
     'net.nanopay.ticket.SudoTicketApprovalRequestRule',
     'net.nanopay.ticket.SudoTicketApprovalResponseRule',
     'java.util.ArrayList',
-    'java.util.Arrays'
+    'java.util.Arrays',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -59,14 +60,14 @@ foam.CLASS({
     User user3 = (User) userDAO.put(new User.Builder(x).setGroup("group3").setFirstName("user_three").setLastName("user_three").setEmail("user3@nanopay.net").build());
 
     DAO ruleDAO = (DAO) x.get("ruleDAO");
-    SudoTicketApprovalRequestRule requestRule = (SudoTicketApprovalRequestRule) ruleDAO.find("SudoTicketApprovalRequestRule").fclone();
+    SudoTicketApprovalRequestRule requestRule = (SudoTicketApprovalRequestRule) ruleDAO.find(EQ(foam.nanos.ruler.Rule.NAME, "SudoTicketApprovalRequestRule")).fclone();
     test(requestRule != null, "Request rule found");
     requestRule.setApprovers(new ArrayList(Arrays.asList(user1.getId())));
     requestRule = (SudoTicketApprovalRequestRule) ruleDAO.put(requestRule);
     test(requestRule.getApprovers().size() == 1, "RequestRule has 1 approver");
     test(requestRule.getApprovers().get(0) == user1.getId(), "RequestRule has approver user1");
 
-    SudoTicketApprovalResponseRule responseRule = (SudoTicketApprovalResponseRule) ruleDAO.find("SudoTicketApprovalResponseRule").fclone();
+    SudoTicketApprovalResponseRule responseRule = (SudoTicketApprovalResponseRule) ruleDAO.find(EQ(foam.nanos.ruler.Rule.NAME, "SudoTicketApprovalResponseRule")).fclone();
     test(responseRule != null, "Response rule found");
     responseRule.setAssignToGroup(group3.getId());
     responseRule = (SudoTicketApprovalResponseRule) ruleDAO.put(responseRule);

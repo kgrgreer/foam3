@@ -13,6 +13,10 @@ foam.CLASS({
       output_ = val;
       outputIsSet_ = true;
       `
+    },
+    {
+      name: 'daoKey',
+      value: 'reportDAO'
     }
   ],
 
