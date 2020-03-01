@@ -80,7 +80,7 @@ foam.CLASS({
     'total',
     'created',
     'completionDate',
-    'referenceData'
+    'referenceNumber'
   ],
 
   tableColumns: [
@@ -92,7 +92,7 @@ foam.CLASS({
     'total',
     'created',
     'completionDate',
-    'referenceData'
+    'referenceNumber'
   ],
 
   sections: [
