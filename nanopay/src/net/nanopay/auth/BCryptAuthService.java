@@ -12,6 +12,9 @@ import foam.util.Password;
 import org.mindrot.jbcrypt.BCrypt;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.CLASS_OF;
 
 /**
  * BCryptAuthService
@@ -40,38 +43,22 @@ public class BCryptAuthService
   }
 
   @Override
-  public User login(X x, long userId, String password) throws AuthenticationException {
+  public User login(X x, String identifier, String password) throws AuthenticationException {
     try {
-      return super.login(x, userId, password);
+      return super.login(x, identifier, password);
     } catch (Throwable t) {
-      User user = (User) userDAO_.inX(x).find(userId);
-      if ( user == null ) {
-        throw new AuthenticationException("User not found");
-      }
-
-      if ( ! BCrypt.checkpw(password, user.getPassword()) ) {
-        throw new AuthenticationException("Incorrect password");
-      }
-
-      // hash using new method and update
-      user.setPassword(Password.hash(password));
-      user = (User) userDAO_.put(user);
-
-      // create session
-      Session session = x.get(Session.class);
-      session.setUserId(user.getId());
-      session.setContext(session.getContext().put("user", user));
-      sessionDAO_.put(session);
-      return user;
-    }
-  }
-
-  @Override
-  public User loginByEmail(X x, String email, String password) throws AuthenticationException {
-    try {
-      return super.loginByEmail(x, email, password);
-    } catch (Throwable t) {
-      User user = (User) userDAO_.inX(x).find(EQ(User.EMAIL, email.toLowerCase()));
+      User user = (User) userDAO_
+        .find(
+          EQ(User.EMAIL, identifier.toLowerCase())
+          // Future: when username fully implemented
+          // AND(
+          //   OR(
+          //     EQ(User.EMAIL, identifier.toLowerCase()),
+          //     EQ(User.USER_NAME, identifier)
+          //   ),
+          //   CLASS_OF(User.class)
+          // )
+        );
       if ( user == null ) {
         throw new AuthenticationException("User not found");
       }
