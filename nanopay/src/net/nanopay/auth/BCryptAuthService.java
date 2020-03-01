@@ -49,13 +49,15 @@ public class BCryptAuthService
     } catch (Throwable t) {
       User user = (User) userDAO_
         .find(
-          AND(
-            OR(
-              EQ(User.EMAIL, identifier.toLowerCase()),
-              EQ(User.USER_NAME, identifier)
-            ),
-            CLASS_OF(User.class)
-          )
+          EQ(User.EMAIL, identifier.toLowerCase())
+          // Future: when username fully implemented
+          // AND(
+          //   OR(
+          //     EQ(User.EMAIL, identifier.toLowerCase()),
+          //     EQ(User.USER_NAME, identifier)
+          //   ),
+          //   CLASS_OF(User.class)
+          // )
         );
       if ( user == null ) {
         throw new AuthenticationException("User not found");
