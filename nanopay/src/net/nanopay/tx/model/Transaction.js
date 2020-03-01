@@ -75,20 +75,24 @@ foam.CLASS({
   searchColumns: [
     'type',
     'status',
-    'payer',
-    'payee',
+    'sourceAccount',
+    'destinationAccount',
+    'total',
     'created',
-    'completionDate'
+    'completionDate',
+    'referenceData'
   ],
 
   tableColumns: [
     'type',
     'status',
+    'sourceAccount',
     'summary',
-    'payer',
-    'payee',
+    'destinationAccount',
+    'total',
     'created',
-    'completionDate'
+    'completionDate',
+    'referenceData'
   ],
 
   sections: [
