@@ -37,11 +37,17 @@ p({
           }
       ]
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["user.make"],
-        "update": ["user.make"],
-        "delete": ["user.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"user.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"user.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"user.make"
       },
       "browseViews": [
         {
@@ -286,11 +292,17 @@ p({
             "balance",
             "homeBalance"
           ],
-          "CRUDActionsAuth": {
-            "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["account.make"],
-            "update": ["account.make.%"],
-            "delete": ["account.make.%"]
+          "createPredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make"
+          },
+          "editPredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make.%"
+          },
+          "deletePredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make.%"
           },
           "filterExportPredicate":
             {
