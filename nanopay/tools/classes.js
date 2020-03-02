@@ -208,6 +208,7 @@ var classes = [
   'net.nanopay.fx.afex.CreatePaymentResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+  'net.nanopay.fx.afex.AddCompanyOfficerRequest',
   'net.nanopay.fx.afex.AFEXPaymentStatus',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
