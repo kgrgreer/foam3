@@ -9,49 +9,42 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.mlang.sink.Count',
     'static foam.mlang.MLang.*',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.payment.Institution',
-    'net.nanopay.model.Branch'
+    'net.nanopay.model.Branch',
+    'foam.dao.ArraySink',
+    'java.util.List'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-      BankAccount account = (BankAccount) obj;
-      Count count = new Count();
-      DAO institutionDAO = (DAO) x.get("institutionDAO");
-      DAO branchDAO = (DAO) x.get("branchDAO");
-
-      Institution institution = (Institution)  institutionDAO
-        .find(
-          EQ(Institution.INSTITUTION_NUMBER, account.getInstitutionNumber())
-        );
-
-      Branch branch = (Branch) branchDAO
-        .find(
-          EQ(Branch.BRANCH_ID, account.getBranchId())
-        );
-      if ( branch == null || institution == null ) return;
-      count = (Count) ((DAO) x.get("localAccountDAO"))
+        if ( ! ( obj instanceof BankAccount ) ) return;
+        BankAccount newAccount = (BankAccount) obj;
+        ArraySink bankAccounts = (ArraySink) ((DAO) x.get("localAccountDAO"))
         .where(
               AND(
                 INSTANCE_OF(BankAccount.class),
-                EQ(BankAccount.ENABLED, true),
-                EQ(BankAccount.OWNER, account.getOwner()),
+                EQ(BankAccount.OWNER, newAccount.getOwner()),
                 EQ(BankAccount.DELETED, false),
-                EQ(BankAccount.BRANCH, branch.getId()),
-                EQ(BankAccount.DENOMINATION, account.getDenomination()),
-                EQ(BankAccount.ACCOUNT_NUMBER, account.getAccountNumber()),
-                EQ(BankAccount.INSTITUTION, institution.getId())
-                  )
+                EQ(BankAccount.DENOMINATION, newAccount.getDenomination()),
+                EQ(BankAccount.ACCOUNT_NUMBER, newAccount.getAccountNumber())
+                )
               )
-        .select(count); 
-      if ( count.getValue() > 0 ) {
-        throw new RuntimeException("Bank account with same details already registered");
-      }
+        .select(new ArraySink());
+        List<BankAccount> newVar = bankAccounts.getArray();
+        if ( newVar.size() == 0 ) return;
+        for ( BankAccount bankAccount :  newVar ) {
+          Branch branch = bankAccount.findBranch(x);
+          if ( branch != null && branch.getBranchId() == newAccount.getBranchId() ) {
+            Institution institution = branch.findInstitution(x);
+            if ( institution.getInstitutionNumber() == newAccount.getInstitutionNumber() ) {
+              throw new RuntimeException("Bank account with same details already registered");
+            }
+          }
+        }
       `
     }
   ]
