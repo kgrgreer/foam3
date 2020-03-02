@@ -72,6 +72,9 @@ foam.CLASS({
     ^ .net-nanopay-ui-modal-TandCModal .net-nanopay-ui-modal-ModalHeader {
       display: none;
     }
+    ^ label > span {
+      display: none;
+    }
   `,
 
   properties: [

@@ -39,6 +39,38 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"99c4f61a-d96c-414e-bc45-ff6be05e96ce",
+  "name":"create a verification transaction when a new bank is added",
+  "priority":100,
+  "ruleGroup":"bankOperations",
+  "documentation":"create a verification Transaction for adding a new bank account",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.bank.BankAccountStatus",
+          "ordinal": 0
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.bank.ruler.VerifyBankRule",
+  },
+  "after":false,
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"f3a5e13a-5cac-11ea-bc55-0242ac130003",
   "name":"preventDuplicateAccounts",
   "priority":100,

@@ -48,3 +48,44 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Check username availability",
+  "priority": 100,
+  "ruleGroup": "smeBusinessCompliance",
+  "documentation": "Check if username is not being used by an existing user
+  in the system.",
+  "daoKey": "localUserDAO",
+  "operation": 0,
+  "after": false,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"foam.nanos.auth.User"
+      },
+      {
+        "class":"foam.mlang.predicate.Has",
+        "arg1":{
+          "class":"foam.mlang.expr.Dot",
+          "arg1":{
+            "class":"foam.mlang.ContextObject",
+            "key":"NEW"
+          },
+          "arg2":{
+            "class":"__Property__",
+            "forClass_":"foam.nanos.auth.User",
+            "name":"userName"
+          }
+        }
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.sme.ruler.CheckUserNameAvailabilityRule"
+  },
+  "enabled":false,
+  "saveHistory":true
+})

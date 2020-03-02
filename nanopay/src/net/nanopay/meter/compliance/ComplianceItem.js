@@ -17,15 +17,16 @@ foam.CLASS({
     'responseId',
     'type',
     'user',
-    'transaction',
     'entityLabel',
     'created'
   ],
 
   searchColumns: [
+    'responseId',
+    'type',
     'user',
     'entityLabel',
-    'type'
+    'created'
   ],
 
   properties: [

@@ -110,6 +110,7 @@ var classes = [
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
+  'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
@@ -270,6 +271,9 @@ var classes = [
   'net.nanopay.onboarding.BusinessRegistration',
   'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
+
+  // sign up
+  'net.nanopay.sme.ruler.CheckUserNameAvailabilityRule',
 
   // banner
   'net.nanopay.ui.banner.BannerData',
@@ -930,13 +934,15 @@ var classes = [
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
   'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmConfigOMNameDAO',
+  'net.nanopay.alarming.AlarmConfigOMNameSink',
   'net.nanopay.alarming.AlarmReason',
-  'net.nanopay.alarming.MonitoringReport',
-  'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
-  'net.nanopay.alarming.OMName',
   'net.nanopay.alarming.AlarmingUniqueNameDAO',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.OMName',
 
   // goldman ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
@@ -965,6 +971,8 @@ var classes = [
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
+  'net.nanopay.tx.planner.predicate.IsAFEXUserPredicate',
+  'net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate',
   'net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate',
   'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
@@ -977,6 +985,10 @@ var classes = [
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
+  'net.nanopay.tx.planner.BankDigitalPlanner',
+  'net.nanopay.tx.planner.DigitalBankPlanner',
+  'net.nanopay.tx.planner.BankToBankPlanner',
+  'net.nanopay.tx.planner.VerificationPlanner',
   'net.nanopay.tx.planner.AlternaCITransactionPlanner',
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',

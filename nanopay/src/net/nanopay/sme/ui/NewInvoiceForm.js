@@ -67,7 +67,6 @@ foam.CLASS({
     ^ .foam-u2-tag-Select {
       width: 100%;
       height: 40px;
-      margin-top: 10px;
     }
     ^ .invoice-input-box {
       font-size: 12px;
