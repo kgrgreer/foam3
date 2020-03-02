@@ -264,24 +264,17 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
-      name: 'label',
-      getter: function() {
-        var self = this;
-        return this.country$find.then((country) => {
-          if ( ! country ) return;
-          return `${ country.name } ${ self.BANK_ACCOUNT_LABEL }`;
-        });
-      }
-    },
-    {
       name: 'denomination',
       visibility: 'HIDDEN'
     }
   ],
   methods: [
     function toSummary() {
-      return `${this.label} (${this.denomination})`;
+      var self = this;
+      return this.country$find.then((country) => {
+        if ( ! country ) return;
+        return `${ country.name } ${ self.BANK_ACCOUNT_LABEL } (${self.denomination})`;
+      });
     },
     {
       name: 'getBankCode',
