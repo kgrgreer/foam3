@@ -139,7 +139,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldInvite',
-      label: 'Invite them to join Ablii',
+      label: 'Invite this contact to join Ablii',
       documentation: `
         True if the user wants to invite the contact to join Ablii.
       `,

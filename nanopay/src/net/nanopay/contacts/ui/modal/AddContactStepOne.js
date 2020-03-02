@@ -57,6 +57,7 @@ foam.CLASS({
       font-stretch: normal;
       font-style: normal;
       line-height: 1.43;
+      margin: 32px 0;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
       background-color: transparent;

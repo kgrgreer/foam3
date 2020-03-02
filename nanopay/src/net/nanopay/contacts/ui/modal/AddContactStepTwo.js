@@ -29,16 +29,17 @@ foam.CLASS({
   ],
 
   css: `
-    ^invite {
-      margin-top: 16px;
-    }
-    ^{
-      height: 76vh;
+    ^ {
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
       overflow-y: scroll;
-      padding: 24px;
     }
-    ^title-block {
-
+    ^container {
+      padding: 24px 24px 0;
+    }
+    ^instruction {
+      margin-bottom: 24px;
     }
     ^ .check-image {
       height: auto;
@@ -120,6 +121,8 @@ foam.CLASS({
     .Country-label {
       font-size: 16px;
       font-weight: bold;
+      margin-bottom: 6px;
+      margin-top: 24px;
     }
     .contact-bank-account .foam-u2-layout-Grid span {
       display: none;
@@ -132,6 +135,51 @@ foam.CLASS({
       top: 50px;
       position: relative;
       float: right;
+    }
+    ^invite {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-top: 16px;
+      margin-bottom: 32px;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-next {
+      min-width: 104px;
+      height: 36px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-option {
+      background-color: ffffff;
+      color: /*%PRIMARY3%*/ #406dea;
+      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
+      margin-right: 10px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-option:hover {
+      background-color: ffffff;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.43;
+      margin: 32px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      background-color: transparent;
+      color: #4d38e1;
+      border: none;
     }
   `,
 
@@ -197,62 +245,70 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start().addClass('title-block')
-          .start()
-            .addClass('contact-title')
-            .add(this.BANKING_TITLE)
+        .start().addClass(this.myClass('container'))
+          .start().addClass('title-block')
+            .start()
+              .addClass('contact-title')
+              .add(this.BANKING_TITLE)
+            .end()
+            .start().addClass('step-indicator')
+              .add(this.STEP_INDICATOR)
+            .end()
           .end()
-          .start().addClass('step-indicator')
-            .add(this.STEP_INDICATOR)
+          .start().hide(this.isEdit$)
+            .addClass('instruction')
+            .add(this.INSTRUCTION)
           .end()
-        .end()
-        .start().hide(this.isEdit$)
-          .addClass('instruction')
-          .add(this.INSTRUCTION)
-        .end()
-        .start()
-          .show(this.hasStrategyPermission$)
-          .addClass('Country-label')
-          .add('Country')
-        .end()
-        .start().enableClass('existing-account', this.viewData.isBankingProvided)
           .start()
-          .addClass('contact-bank-account')
-            .add(this.slot(function(bankAdded) {
-              if ( bankAdded || this.viewData.isBankingProvided ) {
+            .show(this.hasStrategyPermission$)
+            .addClass('Country-label')
+            .add('Country')
+          .end()
+          .start().enableClass('existing-account', this.viewData.isBankingProvided)
+            .start()
+            .addClass('contact-bank-account')
+              .add(this.slot(function(bankAdded) {
+                if ( bankAdded || this.viewData.isBankingProvided ) {
+                  return this.E().tag({
+                    class: 'foam.u2.detail.SectionedDetailView',
+                    of: 'net.nanopay.bank.BankAccount',
+                    data$: self.bankAccount$ // Bind value to the property
+                  });
+                }
+
                 return this.E().tag({
-                  class: 'foam.u2.detail.SectionedDetailView',
+                  class: 'foam.u2.view.FObjectView',
                   of: 'net.nanopay.bank.BankAccount',
                   data$: self.bankAccount$ // Bind value to the property
                 });
-              }
-
-              return this.E().tag({
-                class: 'foam.u2.view.FObjectView',
-                of: 'net.nanopay.bank.BankAccount',
-                data$: self.bankAccount$ // Bind value to the property
-              });
-            }))
+              }))
+            .end()
           .end()
-        .end()
-        .startContext({ data: this.wizard })
-          .start()
+          .startContext({ data: this.wizard })
+            .start()
             .hide(this.slot(function(isEdit, bankAccount) {
               return isEdit || this.INBankAccount.isInstance(bankAccount);
             }))
-            .addClass(this.myClass('invite'))
-            .add(this.wizard.SHOULD_INVITE)
+              .start()
+                .addClass('divider')
+              .end()
+              .start()
+                .addClass(this.myClass('invite'))
+                .add(this.wizard.SHOULD_INVITE)
+              .end()
+            .end()
+          .endContext()
+          .start(this.ADDING_BANK_ACCOUNT)
+            .addClass(this.myClass('adding-account'))
           .end()
-        .endContext()
-        .start(this.ADDING_BANK_ACCOUNT)
-          .addClass(this.myClass('adding-account'))
         .end()
-        .tag({
-          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
-          back: this.BACK,
-          option: this.OPTION,
-          next: this.NEXT
-        });
+        .start().addClass(this.myClass('button-container'))
+          .start(this.BACK).end()
+          .start().addClass(this.myClass('button-sub-container'))
+            .start(this.OPTION).end()
+            .start(this.NEXT).end()
+          .end()
+        .end();
     },
 
     function validateBank(bankAccount) {
