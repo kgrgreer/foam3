@@ -39,7 +39,6 @@ p({
     dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);
     dao.setUseBMO(true);
-    dao = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.BankAccountBranchDAO(x, dao);
     dao = new net.nanopay.bank.BankAccountInstitutionDAO(x, dao);
     dao = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, dao);
