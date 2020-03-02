@@ -34,10 +34,18 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
-      padding: 24px;
+    ^ {
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
-
+    ^container {
+      padding: 24px 24px 0;
+    }
+    ^ .instruction {
+      margin-bottom: 24px;
+    }
     /* Address View overrides */
     ^ .label {
       font-family: 'Lato';
@@ -56,11 +64,45 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       margin-bottom: 0 !important;
     }
+    ^disclaimer {
+      font-size: 16px;
+      color: #525455;
+      margin: 32px 0;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-next {
+      min-width: 104px;
+      height: 36px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.43;
+      margin: 32px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      background-color: transparent;
+      color: #4d38e1;
+      border: none;
+    }
   `,
 
   messages: [
     { name: 'BANKING_TITLE', message: 'Add business address' },
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
+    { name: 'DISCLAIMER', message: '* PO Boxes are not allowed' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
     { name: 'STEP_INDICATOR', message: 'Step 3 of 3' },
     { name: 'STREET_NUMBER', message: 'Street number can only contain numbers.' }
@@ -79,58 +121,60 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass('title-block')
-          .start()
-            .addClass('contact-title')
-            .add(this.BANKING_TITLE)
+        .start().addClass(this.myClass('container'))
+          .start().addClass('title-block')
+            .start()
+              .addClass('contact-title')
+              .add(this.BANKING_TITLE)
+            .end()
+            .start().addClass('step-indicator')
+              .add(this.STEP_INDICATOR)
+            .end()
           .end()
-          .start().addClass('step-indicator')
-            .add(this.STEP_INDICATOR)
+          .start('p')
+            .addClass('instruction')
+            .add(this.INSTRUCTION)
           .end()
-        .end()
-        .start('p')
-          .addClass('instruction')
-          .add(this.INSTRUCTION)
-        .end()
-        .startContext({ data: this.wizard.data })
-          .tag(this.wizard.data.BUSINESS_ADDRESS, {
-            customCountryDAO: this.PromisedDAO.create({
-              promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-                var q;
-                if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
-                  q = this.OR(
-                    this.EQ(this.Country.ID, 'CA'),
-                    this.EQ(this.Country.ID, 'US'),
-                    this.EQ(this.Country.ID, 'IN')
-                  );
-                } else if ( hasPermission ) {
-                  q = this.OR(
-                    this.EQ(this.Country.ID, 'CA'),
-                    this.EQ(this.Country.ID, 'US')
-                  );
-                } else {
-                  return this.auth.check(null, 'currency.read.INR').then((inrPermission) => {
-                    if ( inrPermission ) {
-                      q = this.OR(
-                        this.EQ(this.Country.ID, 'CA'),
-                        this.EQ(this.Country.ID, 'IN')
-                      );
-                    } else {
-                      q = this.EQ(this.Country.ID, 'CA');
-                    }
-                    return this.countryDAO.where(q);
-                  });
-                }
-                return this.countryDAO.where(q);
+          .startContext({ data: this.wizard.data })
+            .tag(this.wizard.data.BUSINESS_ADDRESS, {
+              customCountryDAO: this.PromisedDAO.create({
+                promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
+                  var q;
+                  if ( hasPermission && this.user.countryOfBusinessRegistration == 'CA' ) {
+                    q = this.OR(
+                      this.EQ(this.Country.ID, 'CA'),
+                      this.EQ(this.Country.ID, 'US'),
+                      this.EQ(this.Country.ID, 'IN')
+                    );
+                  } else if ( hasPermission ) {
+                    q = this.OR(
+                      this.EQ(this.Country.ID, 'CA'),
+                      this.EQ(this.Country.ID, 'US')
+                    );
+                  } else {
+                    return this.auth.check(null, 'currency.read.INR').then((inrPermission) => {
+                      if ( inrPermission ) {
+                        q = this.OR(
+                          this.EQ(this.Country.ID, 'CA'),
+                          this.EQ(this.Country.ID, 'IN')
+                        );
+                      } else {
+                        q = this.EQ(this.Country.ID, 'CA');
+                      }
+                      return this.countryDAO.where(q);
+                    });
+                  }
+                  return this.countryDAO.where(q);
+                })
               })
             })
-          })
-        .endContext()
-        .tag({
-          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
-          back: this.BACK,
-          next: this.NEXT
-        });
+          .endContext()
+        .start().addClass(this.myClass('disclaimer')).add(this.DISCLAIMER).end()
+        .end()
+        .start().addClass(this.myClass('button-container'))
+          .start(this.BACK).end()
+          .start(this.NEXT).end()
+        .end();
     },
 
     /** Add the bank account to the Contact. */

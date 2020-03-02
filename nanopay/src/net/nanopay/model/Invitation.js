@@ -24,6 +24,12 @@ foam.CLASS({
       documentation: 'Id of invitee if currently a user',
     },
     {
+      class: 'String',
+      name: 'businessName',
+      documentation: `Hard set to business name when invitee is
+      not a contact. Used to populate "name" email argument.`
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'invitee',

@@ -239,6 +239,7 @@ foam.CLASS({
       code: async function(X) {
         // Validate the contact fields.
         if ( this.wizard.data.errors_ ) {
+          debugger;
           this.notify(this.wizard.data.errors_[0][1], 'error');
           return;
         }

@@ -104,7 +104,7 @@ foam.CLASS({
           width: '45px',
           height: '35px'
         },
-        optionDestination: 'AddContactStepOne'
+        optionDestination: 'InviteContact'
       },
     ]
   },

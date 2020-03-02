@@ -137,7 +137,7 @@ public class SendInvitationDAO
     }
 
     args.put("message", invite.getMessage());
-    args.put("name", invite.getInvitee().label());
+    args.put("name", invite.getBusinessName() != null ? invite.getBusinessName() : invite.getInvitee().label());
     args.put("senderCompany", currentUser.label());
     args.put("link", url + urlPath);
     args.put("sendTo", invite.getEmail());

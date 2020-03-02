@@ -191,6 +191,12 @@ foam.CLASS({
         'AddContactStepThree': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
         },
+        'InviteContact': {
+          view: {
+            class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
+            data: this.data 
+          }
+        },
         'addContactConfirmation': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
         },
