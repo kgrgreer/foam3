@@ -196,8 +196,8 @@ public class TransactionBenchmark
 
     // If we don't use users with verfied emails, the transactions won't go
     // through for those users.
-    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), GT(User.ID, 10000L)));
-    users = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
+    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), GT(User.ID, 10000)));
+    users_ = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
 
     // initial funding of system.
     DigitalAccount adminDCA = DigitalAccount.findDefault(x, admin, "CAD");
