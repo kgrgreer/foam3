@@ -17,7 +17,6 @@ foam.CLASS({
     'responseId',
     'type',
     'user',
-    'transaction',
     'entityLabel',
     'created'
   ],
@@ -26,7 +25,6 @@ foam.CLASS({
     'responseId',
     'type',
     'user',
-    'transaction',
     'entityLabel',
     'created'
   ],
