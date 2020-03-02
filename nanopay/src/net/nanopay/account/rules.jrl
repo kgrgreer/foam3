@@ -69,3 +69,17 @@ p({
   "after":false,
   "enabled":false,
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"f3a5e13a-5cac-11ea-bc55-0242ac130003",
+  "name":"preventDuplicateAccounts",
+  "priority":100,
+  "ruleGroup":"DuplicateAccount",
+  "documentation":"Ensure that added accounts are not duplicates",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":false,
+  "action":{"class":"net.nanopay.account.PreventDuplicateBankAccountRule"},
+  "enabled":true,
+  "saveHistory":true
+})

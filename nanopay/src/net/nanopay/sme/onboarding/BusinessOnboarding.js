@@ -1109,9 +1109,9 @@ foam.CLASS({
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
+            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
           } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
+            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
           }
         });
       },
@@ -1172,8 +1172,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'publiclyTraded',
       section: 'ownershipAmountSection',
-      label: '',
-      label2: 'This is a publicly traded company',
+      label: 'This is a publicly traded company',
       postSet: function(_, n) {
         if ( n ) this.clearProperty('owner1');
       },
@@ -1320,8 +1319,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
-      label: '',
-      label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      label: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
       visibility: function(signingOfficer, amountOfOwners) {
         return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
@@ -1495,10 +1493,13 @@ foam.CLASS({
       name: 'init',
       code: function() {
         this.phone.VERIFIED.writePermissionRequired = false;
+        this.PHONE.label = '';
+        this.ADDRESS.label = '';
+        this.BUSINESS_ADDRESS.label = '';
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = 'I am one of the owners.';
+            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
             if ( this.userOwnsPercent ) {
@@ -1507,7 +1508,7 @@ foam.CLASS({
               this.owner1.jobTitle = user.jobTitle;
             }
           } else if ( ! this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of the owners.';
+            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
             if ( this.userOwnsPercent ) {
