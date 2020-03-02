@@ -132,7 +132,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'confirmRelationship',
       view: {
-        class: 'foam.u2.CheckBox'
+        class: 'foam.u2.CheckBox',
+        showLabel: false
       }
     },
     {
@@ -191,10 +192,7 @@ foam.CLASS({
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
         },
         'addContactConfirmation': {
-          view: { 
-            class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation',
-            data: this.data
-          }
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
         },
       };
     },

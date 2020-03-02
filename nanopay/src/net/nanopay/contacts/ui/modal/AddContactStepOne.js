@@ -14,7 +14,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.contacts.Contact',
-    'net.nanopay.contacts.ContactStatus'
+    'net.nanopay.contacts.ContactStatus',
+    'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   imports: [
@@ -27,21 +28,54 @@ foam.CLASS({
 
   css: `
     ^ {
+      display: flex;
+      flex-direction: column;
       max-height: 80vh;
       overflow-y: scroll;
-      padding: 24px;
+    }
+    ^container {
+      padding: 24px 24px 32px;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-next {
+      min-width: 104px;
+      height: 36px;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.43;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      background-color: transparent;
+      color: #4d38e1;
+      border: none;
+    }
+    ^confirm-container {
+      display: flex;
+      flex-direction: row;
+    }
+    ^confirm {
+      width: 24px;
+      padding-top: 4px;
     }
     ^confirm-explaination {
+      width: 432px;
       color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       line-height: 1.5;
-      margin-top: -25px;
-      margin-right: 6px;
-      width: 90%;
-      float: right;
-    }
-    ^confirm {
-      margin: 30px 0px 0px 16px;
     }
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
@@ -58,10 +92,10 @@ foam.CLASS({
     { name: 'EDIT_TITLE', message: 'Edit contact' },
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'BUSINESS_LABEL', message: 'Business name' },
-    { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
-    { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
+    { name: 'BUSINESS_PLACEHOLDER', message: 'ex. Vandelay Industries' },
+    { name: 'EMAIL_PLACEHOLDER', message: 'ex. \example@domain.com' },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' },
-    { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
+    { name: 'CONFIRM_EXPLAINATION', message: `I confirm that I have a business relationship with this contact and acknowledge that the bank account info entered by the contact business will be used for all deposits to their account.` },
   ],
 
   properties: [
@@ -87,89 +121,90 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.wizard.CONFIRM_RELATIONSHIP.label = '';
       var emailDisplayMode = this.isEdit ?
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       this.addClass(this.myClass())
-        .start().addClass('title-block')
-          .start()
-            .addClass('contact-title')
-            .addClass('popUpTitle')
-            .add(this.title$)
+        .start().addClass(this.myClass('container'))
+          .start().addClass('title-block')
+            .start()
+              .addClass('contact-title')
+              .addClass('popUpTitle')
+              .add(this.title$)
+            .end()
+            .start().addClass('step-indicator')
+              .add(this.STEP_INDICATOR)
+            .end()
           .end()
-          .start().addClass('step-indicator')
-            .add(this.STEP_INDICATOR)
+          .start().hide(this.isEdit$)
+            .addClass('instruction')
+            .add(this.INSTRUCTION)
           .end()
-        .end()
-        .start().hide(this.isEdit$)
-          .addClass('instruction')
-          .add(this.INSTRUCTION)
-        .end()
-        .startContext({ data: this.wizard.data })
-          .start('p')
-            .addClass('field-label')
-            .add(this.BUSINESS_LABEL)
-          .end()
-          .tag(this.wizard.data.ORGANIZATION, {
-            placeholder: this.BUSINESS_PLACEHOLDER,
-            onKey: true
-          })
-          .start('p')
-            .addClass('field-label')
-            .add(this.wizard.data.EMAIL.label)
-          .end()
-          .start()
-            .tag(this.wizard.data.EMAIL, {
-              mode: emailDisplayMode,
-              placeholder: this.EMAIL_PLACEHOLDER,
+          .startContext({ data: this.wizard.data })
+            .start('p')
+              .addClass('field-label')
+              .add(this.BUSINESS_LABEL)
+            .end()
+            .tag(this.wizard.data.ORGANIZATION, {
+              placeholder: this.BUSINESS_PLACEHOLDER,
               onKey: true
             })
-          .end()
-          .start()
-            .addClass('two-column')
+            .start('p')
+              .addClass('field-label')
+              .add(this.wizard.data.EMAIL.label)
+            .end()
             .start()
-              .start('p')
-                .addClass('field-label')
-                .add(this.wizard.data.FIRST_NAME.label)
-              .end()
-              .tag(this.wizard.data.FIRST_NAME, {
-                placeholder: 'Optional',
+              .tag(this.wizard.data.EMAIL, {
+                mode: emailDisplayMode,
+                placeholder: this.EMAIL_PLACEHOLDER,
                 onKey: true
               })
             .end()
             .start()
-              .start('p')
-                .addClass('field-label')
-                .add(this.wizard.data.LAST_NAME.label)
+              .addClass('two-column')
+              .start()
+                .start('p')
+                  .addClass('field-label')
+                  .add(this.wizard.data.FIRST_NAME.label)
+                .end()
+                .tag(this.wizard.data.FIRST_NAME, {
+                  placeholder: 'Optional',
+                  onKey: true
+                })
               .end()
-              .tag(this.wizard.data.LAST_NAME, {
-                placeholder: 'Optional',
-                onKey: true
-              })
+              .start()
+                .start('p')
+                  .addClass('field-label')
+                  .add(this.wizard.data.LAST_NAME.label)
+                .end()
+                .tag(this.wizard.data.LAST_NAME, {
+                  placeholder: 'Optional',
+                  onKey: true
+                })
+              .end()
             .end()
-          .end()
-        .endContext()
-        .startContext({ data: this.wizard })
-          .start()
+          .endContext()
+          .startContext({ data: this.wizard })
             .start()
-              .addClass('divider')
+              .start()
+                .addClass('divider')
+              .end()
+              .hide(this.isEdit)
             .end()
-            .hide(this.isEdit)
-            .start().addClass(this.myClass('confirm'))
-              .add(this.wizard.CONFIRM_RELATIONSHIP)
+            .start().addClass(this.myClass('confirm-container'))
+              .start().addClass(this.myClass('confirm'))
+                .add(this.wizard.CONFIRM_RELATIONSHIP)
+              .end()
+              .start().addClass(this.myClass('confirm-explaination'))
+                .add(this.CONFIRM_EXPLAINATION)
+                .hide(this.wizard.isEdit)
+              .end()
             .end()
-          .end()
-        .endContext()
-        .start('p')
-          .addClass(this.myClass('confirm-explaination'))
-          .add(this.INVITE_EXPLAINATION)
-          .hide(this.wizard.isEdit)
-        .end()
-        .tag({
-          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
-          back: this.BACK,
-          next: this.NEXT
-        });
+          .endContext()
+        .end()  
+        .start().addClass(this.myClass('button-container'))
+          .start(this.BACK).end()
+          .start(this.NEXT).end()
+        .end();
     }
   ],
 
@@ -195,7 +230,7 @@ foam.CLASS({
     },
     {
       name: 'next',
-      label: 'Continue',
+      label: 'Next',
       isEnabled: function(confirm, isEdit) {
         if ( isEdit ) return isEdit;
         return confirm;

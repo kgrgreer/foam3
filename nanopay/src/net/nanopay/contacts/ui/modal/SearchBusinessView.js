@@ -4,10 +4,9 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    The initial step in the ContactWizardModal. Let the user search company or
-    organization by the business name. If the business exists, then add the
-    existing directly. If the business does not exist, then invite the contact
-    to join Ablii.
+    Lets the user search company or organization by the business name.
+    If the business exists, then add the existing directly. If the business
+    does not exist, then create a new contact.
   `,
 
   implements: [
@@ -98,8 +97,6 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
       background-color: transparent;
       color: #4d38e1;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover {
       border: none;
     }
     ^align-text-center {
@@ -339,14 +336,6 @@ foam.CLASS({
       expression: function(businessNameFilter) {
         return businessNameFilter.length < 2;
       }
-    },
-    {
-      type: 'Boolean',
-      name: 'loading',
-      value: false,
-      documentation: `
-        When loading is true it will disable the click listenner to prevent mutiple input
-      `
     }
   ],
 
@@ -410,8 +399,7 @@ foam.CLASS({
                 })
                   .on('click', function() {
                     // Add contact
-                    if( ! self.loading )
-                      self.addSelected(business);
+                    self.addSelected(business);
                   })
                 .end();
             })

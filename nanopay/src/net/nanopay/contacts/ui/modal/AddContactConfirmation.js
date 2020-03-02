@@ -64,6 +64,10 @@ foam.CLASS({
       background-color: #fafafa;
       padding: 0 24px 0;
     }
+    ^ .net-nanopay-sme-ui-AbliiActionView-confirm {
+      min-width: 104px;
+      height: 36px;
+    }
     ^ .net-nanopay-sme-ui-AbliiActionView-back {
       color: #604aff;
       background-color: transparent;
@@ -77,8 +81,6 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
       background-color: transparent;
       color: #4d38e1;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover {
       border: none;
     }
   `,
@@ -90,16 +92,6 @@ foam.CLASS({
       name: 'data',
       documentation: 'Set this to the contact whose information you want to display.'
     }
-    // {
-    //   class: 'Boolean',
-    //   name: 'confirmBusinessRelationship',
-    //   documentation: 'True when user confirms they have a business relationship with contact.',
-    //   value: false,
-    //   view: {
-    //     class: 'foam.u2.CheckBox',
-    //     showLabel: false
-    //   }
-    // }
   ],
 
   methods: [

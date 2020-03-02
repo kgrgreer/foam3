@@ -9,7 +9,7 @@ foam.CLASS({
 
     #OPTIONS
     1) Search by Business Name
-    2) Search by Payment Code
+    2) Add by Payment Code
     3) Create from Scratch
     4) Send Invitation
   `,

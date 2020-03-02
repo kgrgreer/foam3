@@ -50,6 +50,7 @@ foam.CLASS({
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
       label: 'Company',
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
@@ -73,6 +74,7 @@ foam.CLASS({
       name: 'email',
       documentation: 'The email address of the Contact.',
       label: 'Email',
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -84,6 +86,7 @@ foam.CLASS({
     },
     {
       name: 'firstName',
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -98,6 +101,7 @@ foam.CLASS({
     },
     {
       name: 'lastName',
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {

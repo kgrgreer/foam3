@@ -37,6 +37,9 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 24px;
     }
+    ^title-block {
+
+    }
     ^ .check-image {
       height: auto;
       margin-top: 24px;
@@ -194,8 +197,18 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start('h2')
-          .add(this.BANKING_TITLE)
+        .start().addClass('title-block')
+          .start()
+            .addClass('contact-title')
+            .add(this.BANKING_TITLE)
+          .end()
+          .start().addClass('step-indicator')
+            .add(this.STEP_INDICATOR)
+          .end()
+        .end()
+        .start().hide(this.isEdit$)
+          .addClass('instruction')
+          .add(this.INSTRUCTION)
         .end()
         .start()
           .show(this.hasStrategyPermission$)
