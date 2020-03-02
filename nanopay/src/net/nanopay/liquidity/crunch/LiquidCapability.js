@@ -7,7 +7,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovableAware'
   ],
 
-  tableColumns: [ 'id' ],
+  tableColumns: [ 'name' ],
 
   sections: [
     {
@@ -26,10 +26,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
+      name: 'name',
       label: 'Name',
-      class: 'String',
-      required: true
+      required: true,
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
@@ -119,6 +118,14 @@ foam.CLASS({
       javaCode: `
         return getId();
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(x) {
+        console.log(this.name, this.id);
+        return this.name || this.id;
+      }
     }
   ]
 });
@@ -139,10 +146,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Arrays'
-  ],
-
-  tableColumns: [
-    'id'
   ],
 
   properties: [
@@ -315,10 +318,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Arrays'
-  ],
-
-  tableColumns: [
-    'id'
   ],
 
   properties: [
