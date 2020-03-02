@@ -407,6 +407,98 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"Bank to Digital Transaction Planner",
+  "documentation":"Planner for bank -> digital transaction where owners for both accounts are different",
+  "priority":90,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+                "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+         "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate",
+        "sameUser": false
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.BankDigitalPlanner"}
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Digital to Bank Transaction Planner",
+  "documentation":"Planner for digital -> bank transaction where owners for both accounts are different",
+  "priority":90,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.SameUserTxnPredicate",
+        "sameUser": false
+      }
+    ]}
+  },
+  "action":{"class":"net.nanopay.tx.planner.DigitalBankPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"Bank to Bank Transaction Planner",
+  "documentation":"Planner for Bank -> bank transactions",
+  "priority":95,
+  "ruleGroup":"transactionPlanner",
+  "daoKey":"transactionPlannerDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+       "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.core.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.DigitalBankPlanner"}
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
   "name":"Verification Transaction Planner",
   "documentation":"Planner for micro deposit to verify bank account",
