@@ -63,6 +63,13 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey":"tableViewTransactionDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "type",
+        "status",
+        "summary",
+        "created",
+        "completionDate"
+      ]
     }
   },
   "parent":"operation"
