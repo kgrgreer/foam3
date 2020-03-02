@@ -55,10 +55,8 @@ foam.CLASS({
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: function(_, invoice) {
-                var additiveSubField = invoice.payer.businessName ?
-                  invoice.payer.businessName :
-                  invoice.payer.label();
+              tableCellFormatter: async function(_, invoice) {
+                var additiveSubField = await invoice.payer.label();
                 this.add(additiveSubField);
               }
             }),

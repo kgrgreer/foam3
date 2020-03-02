@@ -8,7 +8,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.tx.ExpediteCICOApprovalRequest',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.model.TransactionStatus',

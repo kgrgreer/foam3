@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.liquidity.ui.dashboard.DateFrequency',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidityChart',
     'org.chartjs.CandlestickDAOChartView',
   ],
 
@@ -32,8 +33,8 @@ foam.CLASS({
     'accountDAO',
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
+    'liquidityFilteredAccountDAO'
   ],
-  
 
   css: `
     ^ {
@@ -42,10 +43,15 @@ foam.CLASS({
 
     ^ .property-account {
       display: inline-block;
+      min-width: 240px;
     }
 
     ^ .property-timeFrame {
       display: inline-block;
+    }
+
+    ^ .property-endDate {
+      padding: 0;
     }
 
     ^card-header-title {
@@ -75,6 +81,10 @@ foam.CLASS({
     {
       name: 'CARD_HEADER',
       message: 'LIQUIDITY',
+    },
+    {
+      name: 'LABEL_DISCLAIMER',
+      message: 'A future date will not be reflected on the graph'
     }
   ],
 
@@ -82,29 +92,26 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'filteredAccountDAO',
       name: 'account',
-      factory: function() {
-        this.filteredAccountDAO.limit(1).select().then(a => {
-          if ( a.array.length ) this.account = a.array[0].id;
-        });
-        return net.nanopay.account.Account.ID.value;
-      }
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'filteredAccountDAO',
-      factory: function() {
-        return this.accountDAO.where(this.IsClassOf.create({
-          targetClass: this.DigitalAccount
-        }));
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Accounts',
+              dao: X.data.liquidityFilteredAccountDAO
+            },
+          ],
+          search: true,
+          searchPlaceholder: 'Search...'
+        };
       }
     },
     {
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
-      value: 'WEEKLY'
+      value: 'DAILY'
     },
     {
       class: 'Date',
@@ -116,21 +123,26 @@ foam.CLASS({
         }
         return startDate;
       },
+      preSet: function(o, n) {
+        return n > new Date() ? o : n;
+      },
       postSet: function(_, n) {
         var endDate = n || new Date();
         for ( var i = 0 ; i < this.timeFrame.numBarGraphPoints ; i++ ) {
           endDate = this.timeFrame.endExpr.f(new Date(endDate.getTime() + 1));
         }
         this.endDate = endDate;
-        this.startDate = undefined;
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function () { return new Date() },
-      preSet: function(_, n) {
+      visibility: 'RO',
+      view: { class: 'foam.u2.DateView' }, // Override ModeAltView
+      factory: function() { return new Date(); },
+      preSet: function(o, n) {
         n = n || new Date();
+        if ( n > new Date() ) return o;
         return this.timeFrame.endExpr.f(n.getTime() > Date.now() ? new Date() : n);
       }
     },
@@ -145,16 +157,26 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
+        // WIP
         return {
           type: 'line',
           options: {
             scales: {
               xAxes: [{
                 type: 'time',
+                bounds: 'ticks',
                 time: {
+                  round: true,
                   displayFormats: {
-                    hour: 'MMM D',
-                    quarter: 'MMM YYYY'
+                    millisecond: 'll',
+                    second: 'll',
+                    minute: 'll',
+                    hour: 'll',
+                    day: 'll',
+                    week: 'll',
+                    month: 'll',
+                    quarter: 'll',
+                    year: 'll'
                   }
                 },
                 distribution: 'linear'
@@ -198,10 +220,12 @@ foam.CLASS({
         .start()
           .style({ 'height': '550px' })
           .addClass(this.myClass('chart'))
-          .add(this.CandlestickDAOChartView.create({
+          .add(this.DashboardLiquidityChart.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
-            customDatasetStyling$: this.styling$
+            customDatasetStyling$: this.styling$,
+            startDate$: this.startDate$,
+            endDate$: this.endDate$
           }))
         .end()
         .start(this.Cols)
@@ -213,7 +237,8 @@ foam.CLASS({
             data: this,
             prop: this.END_DATE
           })
-        .end();
+        .end()
+        .start('p').addClass('disclaimer').add(this.LABEL_DISCLAIMER).end();
     }
   ],
 
@@ -294,7 +319,7 @@ foam.CLASS({
                   await dao.put(last);
                 } else {
                   await dao.put(this.Candlestick.create({
-                    closeTime: maxTime,
+                    closeTime: this.endDate,
                     key: key,
                     total: liquiditySetting[threshold + 'Liquidity'].threshold,
                     count: 1
@@ -340,7 +365,29 @@ foam.CLASS({
               return `${c.format(v.yLabel)}`;
             }
           }
+        };
+
+        var unit = 'day';
+        switch ( this.timeFrame ) {
+          case this.DateFrequency.WEEKLY:
+            unit = 'week';
+            break;
+          case this.DateFrequency.MONTHLY:
+            unit = 'month';
+            break;
+          case this.DateFrequency.QUARTERLY:
+            unit = 'quarter';
+            break;
+          case this.DateFrequency.ANNUALLY:
+            unit = 'year';
+            break;
+          default:
+            unit = 'day';
         }
+
+        var xAxesMap = this.config.options.scales.xAxes[0];
+        xAxesMap.time.unit = unit;
+        xAxesMap.bounds = 'ticks';
 
         var style = {};
         style[a.id] = {
@@ -351,12 +398,14 @@ foam.CLASS({
         }
         style[a.liquiditySetting+':low'] = {
           steppedLine: true,
+          spanGaps: true,
           borderColor: ['#a61414'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
           label: this.LABEL_LOW_THRESHOLD
         }
         style[a.liquiditySetting+':high'] = {
           steppedLine: true,
+          spanGaps: true,
           borderColor: ['#32bf5e'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
           label: this.LABEL_HIGH_THRESHOLD,

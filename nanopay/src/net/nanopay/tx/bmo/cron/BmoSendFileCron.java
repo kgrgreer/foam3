@@ -1,207 +1,51 @@
 package net.nanopay.tx.bmo.cron;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
-
 import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
-import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
-import net.nanopay.tx.TransactionEvent;
-import net.nanopay.tx.bmo.BmoEftFileGenerator;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import net.nanopay.tx.bmo.BmoFileProcessor;
 import net.nanopay.tx.bmo.BmoFormatUtil;
-import net.nanopay.tx.bmo.BmoReportProcessor;
-import net.nanopay.tx.bmo.BmoSFTPClient;
-import net.nanopay.tx.bmo.BmoSFTPCredential;
-import net.nanopay.tx.bmo.cico.BmoCITransaction;
-import net.nanopay.tx.bmo.cico.BmoCOTransaction;
-import net.nanopay.tx.bmo.cico.BmoTransaction;
-import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.bmo.eftfile.BmoEftFile;
-import net.nanopay.tx.bmo.exceptions.BmoSFTPException;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.cico.EFTFileStatus;
+
 
 public class BmoSendFileCron implements ContextAgent {
 
-  private static ReentrantLock SEND_LOCK = new ReentrantLock();
+  protected Logger logger;
 
   @Override
   public void execute(X x) {
 
     /**
-     * get transactions
+     * GET and send generated files
      */
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO eftFileDAO = (DAO) x.get("bmoEftFileDAO");
+    logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
 
-    Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo())
-    );
-
-    Predicate condition2 = MLang.EQ(
-      Transaction.STATUS, TransactionStatus.PENDING
-    );
-
-
-    ArraySink sink = (ArraySink) transactionDAO.where(
-      MLang.AND(condition1, condition2)
+    ArraySink sink = (ArraySink) eftFileDAO.where(
+      MLang.OR(
+        MLang.EQ(BmoEftFile.STATUS, EFTFileStatus.GENERATED),
+        MLang.EQ(BmoEftFile.STATUS, EFTFileStatus.FAILED)
+      )
     ).select(new ArraySink());
-    ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
+    List<BmoEftFile> files = (ArrayList<BmoEftFile>) sink.getArray();
 
-    send(x, transactions);
-  }
-
-  public void send(X x, List<Transaction> transactions) {
-    Logger logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
-
-    // batch record
-    List<Transaction> ciTransactions = transactions.stream()
-      .filter(transaction -> transaction instanceof CITransaction)
-      .collect(Collectors.toList());
-
-    List<Transaction> coTransactions = transactions.stream()
-      .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof BmoVerificationTransaction))
-      .collect(Collectors.toList());
-
-    logger.info("Sending CI transactions.");
-    doEFT(x, ciTransactions);
-    logger.info("Finishing send CI transaction.");
-
-    try {
-      Thread.sleep(30L * 1000);
-    } catch (InterruptedException e) {
-    }
-
-    logger.info("Sending CO transactions.");
-    doEFT(x, coTransactions);
-    logger.info("Finishing send CO transactions.");
-  }
-
-  private void doEFT(X x, List<Transaction> transactions) {
-    if ( transactions == null || transactions.isEmpty() ) {
-      return;
-    }
-
-//    if ( transactions.size() > 1 ) {
-//      for ( int i = 1; i < transactions.size(); i++ ) {
-//        if ( ! transactions.get(i).getClass().getName().equals(transactions.get(i-1).getClass().getName()) ) {
-//          throw new RuntimeException("All transactions should be the same type.");
-//        }
-//      }
-//    }
-
-    BmoSFTPCredential sftpCredential = (BmoSFTPCredential) x.get("bmoSFTPCredential");
-    DAO transactionDAO               = (DAO) x.get("localTransactionDAO");
-    DAO bmoEftFileDAO                = (DAO) x.get("bmoEftFileDAO");
-    Logger logger                    = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));;
-
-    ArrayList<Transaction> passedTransaction = null;
-    File readyToSend = null;
-    try {
-      // boot up
-      BmoEftFileGenerator fileGenerator = new BmoEftFileGenerator(x);
-      transactions = transactions.stream().map(transaction -> (Transaction)transaction.fclone()).collect(Collectors.toList());
-
-      // 1. init file object
-      BmoEftFile eftFile = fileGenerator.initFile(transactions);
-      passedTransaction  = fileGenerator.getPassedTransactions();
-
-      // 2. creat the file on the disk
-      readyToSend = fileGenerator.createEftFile(eftFile);
-      passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Ready to send.").build()));
-
-      // 3. send file through sftp
-      if ( ! sftpCredential.getSkipSendFile() ) {
-
-        /* we will need to lock the sending process. We want to make sure only send one file at a time.*/
-        SEND_LOCK.lock();
-
-        new BmoSFTPClient(x, sftpCredential).upload(readyToSend);
-        passedTransaction.forEach(transaction -> {
-          transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Sending...").build());
-        });
-
-        /* Fetch and process the receipt file, any exception happened during this process, set the transaction status to Failed */
-        try {
-          File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();
-          passedTransaction.forEach(transaction -> {
-            transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Downloading receipt...").build());
-          });
-
-          if ( new BmoReportProcessor(x).processReceipt(receipt, eftFile.getHeaderRecord().getFileCreationNumber()) ) {
-            passedTransaction.forEach(transaction -> {
-              transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Verify receipt...").build());
-            });
-          } else {
-            throw new BmoSFTPException("Failed when verify receipt.");
-          }
-        } catch ( Exception e ) {
-          passedTransaction.forEach(transaction -> {
-            transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Failed when verify receipt.").build());
-            transaction.setStatus(TransactionStatus.FAILED);
-          });
-          throw e;
-        }
-
-        SEND_LOCK.unlock();
-      }
-
-      // 4. update the transaction status
-      passedTransaction.forEach(transaction -> {
-        transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Sent to BMO.").build());
-        ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());
-        transaction.setProcessDate(new Date());
-        transaction.setStatus(TransactionStatus.SENT);
-      });
-      bmoEftFileDAO.inX(x).put(eftFile);
-
-    } catch ( Exception e ) {
-      logger.error("BMO EFT : " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "BMO EFT Error during sending EFT file", e);
-      if(passedTransaction != null)
-        passedTransaction.forEach(transaction -> transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Error: " + e.getMessage()).build()));
-
-      if ( readyToSend != null ) {
-        try {
-          FileUtils.moveFile(readyToSend, new File(BmoEftFileGenerator.SEND_FAILED +
-            readyToSend.getName() + "_" + Instant.now().toEpochMilli()));
-        } catch (IOException ex) {
-          logger.error("BMO ERROR", e);
-        }
-      }
-
-    } finally {
-      if ( SEND_LOCK.isLocked() ) {
-        SEND_LOCK.unlock();
-      }
-      // update the transaction
-      for ( Transaction transaction : transactions ) {
-
-        try {
-          transactionDAO.inX(x).put(transaction);
-        } catch ( Exception e ) {
-          logger.error("Transaction " + transaction.getId() + " updated failed, please update manually", e);
-          BmoFormatUtil.sendEmail(x, "Transaction " + transaction.getId() + " updated failed, please update manually", e);
-        }
-
-      }
+    for ( BmoEftFile file : files ) {
+      /* Send and verify file */
+      try{
+        new BmoFileProcessor(x).sendAndVerify(file);  
+      } catch ( Exception e ) {
+        logger.error("BMO send file failed. " + e.getMessage(), e);
+        BmoFormatUtil.sendEmail(x, "BMO EFT Error sending and verifying EFT File. " + e.getMessage(), e); 
+      } 
     }
   }
-
 }

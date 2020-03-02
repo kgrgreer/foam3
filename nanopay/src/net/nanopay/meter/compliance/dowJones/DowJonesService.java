@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.logger.Logger;
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
 import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
 

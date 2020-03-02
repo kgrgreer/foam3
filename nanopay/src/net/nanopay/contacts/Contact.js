@@ -30,6 +30,10 @@ foam.CLASS({
     'net.nanopay.model.Business',
   ],
 
+  imports: [
+    'publicBusinessDAO'
+  ],
+
   constants: [
     {
       name: 'NAME_MAX_LENGTH',
@@ -382,7 +386,11 @@ foam.CLASS({
     {
       name: 'label',
       type: 'String',
-      code: function label() {
+      code: async function label() {
+        if ( this.businessId ) {
+          let business = await this.publicBusinessDAO.find(this.businessId);
+          return business.label();
+        }
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
@@ -392,6 +400,11 @@ foam.CLASS({
         return '';
       },
       javaCode: `
+        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
+        if ( this.getBusinessId() != 0 ) {
+          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
+          return business.label();
+        }
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'padding',
       value: 30
     },
-    
+
     {
       name: 'x',
       value: 0
@@ -82,19 +82,20 @@ foam.CLASS({
         this.add(this.Label.create({ color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif' }));
 
         // Balance and Denomination Indicator
+        // TODO: wire up securities findBalance
         this.data.findBalance(this.__subContext__).then(balance => {
           this.__subContext__.currencyDAO.find(this.data.denomination).then(denom => {
-
             // securities and cash colouring are for the liquid accounts
             let color;
-            if (this.data.name.toLowerCase().includes('securities')) {
-              color = '#406dea';
-            } else if (this.data.name.toLowerCase().includes('cash')) {
+            if ( type.includes('Securities') ) {
               color = '#d9170e';
-            } else if (type === 'Aggregate') {
+            } else if ( type.includes('Virtual') || type.includes('Digital') ) {
+              if ( denom.id === this.__subContext__.homeDenomination ) color = '#406dea';
+              else color = '#a96dad';
+            } else if ( type.includes('Aggregate') ) {
               color = '#9ba1a6';
             } else {
-              color = denom ? denom.colour : '#ffffff';
+              color = denom != null ? denom.colour : '#ffffff';
             }
 
             this.add(this.Line.create({
@@ -106,21 +107,21 @@ foam.CLASS({
               lineWidth: 6
             }));
 
-            const circleColour = balance && !(type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
+            const circleColour = balance && !type.includes('Aggregate') ? '#32bf5e' : '#cbcfd4';
             this.add(foam.graphics.Circle.create({ color: circleColour, x: this.width / 2 - 14, y: this.height - 14, radius: 5, border: null }));
 
             // Account Type
-            if (type == 'Digital') type = 'Virtual';
-            this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type + ' (' + denom ? denom.id : 'N/A' + ')' }));
+            if ( type.includes('Digital') ) type = 'Virtual';
+            this.add(this.Label.create({ color: 'gray', x: leftPos, y: 22, text: type }));
 
-            const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
-            const balanceFont = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
+            const balanceColour = type.includes('Aggregate') ? 'gray' : 'black';
+            const balanceFont = type.includes('Aggregate') ? '12px sans-serif' : 'bold 12px sans-serif';
             this.add(this.Label.create({
               color: balanceColour,
               font: balanceFont,
               x: leftPos,
               y: this.height - 21,
-              text$: this.__subContext__.homeDenomination$.map(_ => denom ? denom.format(balance) : 'N/A')
+              text$: this.__subContext__.homeDenomination$.map(_ => denom !== null ? denom.format(balance) : 'N/A')
             }))
           });
         });

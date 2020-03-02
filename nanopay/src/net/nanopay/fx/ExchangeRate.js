@@ -16,8 +16,13 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'fromCurrency', 'toCurrency', 'rate', 'expirationDate'
+    'fromCurrency',
+    'toCurrency',
+    'rate',
+    'expirationDate'
   ],
+
+  ids: [ 'fromCurrency', 'toCurrency' ],
 
   searchColumns: [
     'expirationDate',
@@ -29,10 +34,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
@@ -78,7 +79,6 @@ foam.CLASS({
       class: 'String',
       name: 'dealReferenceNumber',
       documentation: 'Reference number associated to exchange rate acceptance.',
-      javaFactory: 'return java.util.UUID.randomUUID().toString().replace("-", "");'
     },
     {
       class: 'Long',

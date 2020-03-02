@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'static foam.mlang.MLang.*',
     'java.util.List',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.KotakFxTransaction',
     'net.nanopay.fx.ManualFxApprovalRequest',

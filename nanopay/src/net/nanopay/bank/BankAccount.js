@@ -20,14 +20,13 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.Address',
+    'static foam.mlang.MLang.*',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.List',
-    'net.nanopay.account.Account',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.account.Account'
   ],
 
   tableColumns: [
@@ -73,7 +72,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
@@ -213,7 +212,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -263,15 +261,8 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
-      name: 'label',
-      getter: function() {
-        var self = this;
-        return this.country$find.then((country) => {
-          if ( ! country ) return;
-          return `${ country.name } ${ self.BANK_ACCOUNT_LABEL } (${ self.denomination })`;
-        });
-      }
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [
@@ -331,24 +322,6 @@ foam.CLASS({
         // length
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
-        }
-
-        // already exists
-        User user = (User) x.get("user");
-
-        ArraySink accountSink = (ArraySink) user.getAccounts(x)
-          .where(
-            AND(
-             EQ(Account.ENABLED, true),
-             INSTANCE_OF(BankAccount.class)
-            )
-          )
-          .select(new ArraySink());
-        List<BankAccount> userAccounts = accountSink.getArray();
-        for ( BankAccount account : userAccounts ) {
-          if ( account.getName().toLowerCase().equals(this.getName().toLowerCase()) ) {
-            throw new IllegalStateException("Bank account with same name already registered.");
-          }
         }
       `
     }

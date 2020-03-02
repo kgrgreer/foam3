@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package net.nanopay.plaid;
 
 import com.plaid.client.PlaidClient;
@@ -30,6 +36,10 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
 
   @Override
   public void runTest(X x) {
+    x = x.put("localUserDAO", new foam.nanos.auth.AuthorizationDAO.Builder(x)
+              .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer(foam.nanos.auth.User.class.getSimpleName().toLowerCase()))
+              .setDelegate(new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()))
+              .build());
 
     // 1. User creation
     x = TestUtils.mockDAO(x, "localUserDAO");
@@ -41,6 +51,7 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
       .setEmail("tester@nanopay.net")
       .setGroup("sme")
       .build();
+    ((DAO) x.get("localUserDAO")).put(user);
     X userContext = Auth.sudo(x, user);
 
     // always use sandbox credential here

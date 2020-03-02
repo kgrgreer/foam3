@@ -34,13 +34,13 @@ foam.CLASS({
      {
       name: 'country',
       value: 'CA',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/cad.png',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -72,7 +72,7 @@ foam.CLASS({
       name: 'branchId',
       type: 'String',
       label: 'Transit No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
@@ -102,7 +102,7 @@ foam.CLASS({
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       label: 'Inst. No.',
       section: 'accountDetails',
       storageTransient: true,
@@ -131,7 +131,7 @@ foam.CLASS({
         }
       },
       gridColumns: 6,
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails'
     },
     {
@@ -142,7 +142,6 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((institution, institutionDAO) => {
