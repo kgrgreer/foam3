@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Approval request to allow 5minutes delay in AFEX Client Onboarding',
 
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {

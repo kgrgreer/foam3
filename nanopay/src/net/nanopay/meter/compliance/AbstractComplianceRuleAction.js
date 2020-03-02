@@ -33,7 +33,7 @@ foam.CLASS({
         },
         {
           name: 'approvalRequest',
-          type: 'net.nanopay.approval.ApprovalRequest'
+          type: 'foam.nanos.approval.ApprovalRequest'
         }
       ],
       javaCode: `

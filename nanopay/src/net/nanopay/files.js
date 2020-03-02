@@ -3,16 +3,9 @@ FOAM_FILES([
   { name: 'net/nanopay/dao/EasyDAO'},
 
   // Approvable
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
-  { name: 'net/nanopay/liquidity/approvalRequest/PropertiesToUpdateView', flags: ['web'] },
-  { name: 'net/nanopay/liquidity/approvalRequest/Approvable' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsPredicate' },
-  { name: 'net/nanopay/liquidity/approvalRequest/ApprovableApprovalRequestsRule' },
-  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovablePredicate' },
-  { name: 'net/nanopay/liquidity/approvalRequest/FulfilledApprovableRule' },
+  { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
 
   // Payment
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
@@ -47,6 +40,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateAccountRule'},
+  { name: 'net/nanopay/account/PreventDuplicateBankAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountTreeView' },
@@ -225,6 +219,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -329,7 +324,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
-  { name: 'net/nanopay/fx/afex/AFEXCreateTradeRequestPDFRule' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
@@ -342,7 +336,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/KotakCOTransaction' },
   { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
-
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },
@@ -549,6 +542,7 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/ClientPlaidService' },
   { name: 'net/nanopay/plaid/PlaidResponseItem' },
   { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
+  { name: 'net/nanopay/plaid/PlaidAccountDetailTest' },
   { name: 'net/nanopay/plaid/model/PlaidBalances' },
   { name: 'net/nanopay/plaid/model/PlaidItem' },
   { name: 'net/nanopay/plaid/model/ACH' },
@@ -882,10 +876,11 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
-   { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/UCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedUCJQueryService' },
+   { name: 'net/nanopay/liquidity/ucjQuery/RoleUserQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReference' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/ReferenceSpec' },
    { name: 'net/nanopay/liquidity/ucjQuery/referencespec/WeakReferenceView' },
@@ -896,8 +891,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ucjQuery/ui/SelectOneSearchBar' },
    { name: 'net/nanopay/liquidity/ucjQuery/ui/rows' },
    { name: 'net/nanopay/liquidity/ucjQuery/RoleQueryView' },
-   { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
-   { name: 'net/nanopay/liquidity/approvalRequest/RoleApprovalRequest' },
    { name: 'net/nanopay/liquidity/ruler/AccountTemplateContains' },
    { name: 'net/nanopay/liquidity/ruler/ApprovalRuleActionOnCreate' },
    { name: 'net/nanopay/liquidity/ruler/IsSystemOrAdminUser' },
@@ -1033,6 +1026,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CompanyInformationView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessInformationView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/PrivacyView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PaymentCodeView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TransactionLimitView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BeneficialOwnerView', flags: ['web'] },
@@ -1059,6 +1053,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/OnboardingPaymentOpsNotification' },
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
+  { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -1135,6 +1130,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/resultresponse/ContactResponseItem' },
   { name: 'net/nanopay/accounting/resultresponse/InvoiceResponseItem' },
   { name: 'net/nanopay/accounting/AccountingResultReport' },
+  { name: 'net/nanopay/accounting/AccountingResultReportAuthorizerTest' },
   { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
@@ -1351,8 +1347,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
 
   // approval
-  { name: 'net/nanopay/approval/ApprovalRequest' },
-  { name: 'net/nanopay/approval/ApprovalStatus' },
   { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo
@@ -1411,12 +1405,29 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericCIPlanner' },
   { name: 'net/nanopay/tx/planner/GenericCOPlanner' },
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
-  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/DVPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/FOPplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityCIplanner' }, //needs migration.. 
-  { name: 'net/nanopay/tx/SecurityBucketPlanner' }, //needs migration..
-  { name: 'net/nanopay/tx/planner/predicate/PropertyIsInstance' }, //needs to be put to foam..
-
+  { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/TransactionQuoteCorridorPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
+  { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/KotakSplitTransactionPlanner' },
+  { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
+  { name: 'net/nanopay/tx/planner/DVPPlanner' },
+  { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
+  { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },
+  { name: 'net/nanopay/tx/planner/BankDigitalPlanner' },
+  { name: 'net/nanopay/tx/planner/DigitalBankPlanner' },
+  { name: 'net/nanopay/tx/planner/BankToBankPlanner' },
+  { name: 'net/nanopay/tx/planner/VerificationPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
 
 ]);

@@ -14,7 +14,6 @@ p({"class":"foam.nanos.auth.User","id":8024,"firstName":"Neil","lastName":"Thoma
 
 // Remove non-Liquid users.
 r({"class":"foam.nanos.auth.User","id":1002})
-r({"class":"foam.nanos.auth.User","id":1010})
 r({"class":"foam.nanos.auth.User","id":1011})
 r({"class":"foam.nanos.auth.User","id":1012})
 r({"class":"foam.nanos.auth.User","id":1013})
@@ -22,3 +21,6 @@ r({"class":"foam.nanos.auth.User","id":1020})
 r({"class":"foam.nanos.auth.User","id":1021})
 r({"class":"foam.nanos.auth.User","id":8004})
 r({"class":"foam.nanos.auth.User","id":8005})
+
+// developer@nanopay.net - needed for testing
+// r({"class":"foam.nanos.auth.User","id":1010})

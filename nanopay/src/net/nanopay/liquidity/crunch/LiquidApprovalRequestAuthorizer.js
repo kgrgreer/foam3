@@ -7,10 +7,10 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'net.nanopay.liquidity.approvalRequest.Approvable',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'foam.nanos.approval.Approvable',
+    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalStatus',
     'foam.dao.DAO'
   ],
 

@@ -11,8 +11,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
   ],
 
    methods: [

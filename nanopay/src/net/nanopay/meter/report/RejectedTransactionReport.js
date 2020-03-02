@@ -37,12 +37,6 @@ foam.CLASS({
     'dateRange'
   ],
 
-  css: `
-    .foam-u2-view-TableView-net-nanopay-meter-report-RejectedTransactionReport {
-      width: 1469px !important;
-    }
-  `,
-
   properties: [
     {
       class: 'DateTime',

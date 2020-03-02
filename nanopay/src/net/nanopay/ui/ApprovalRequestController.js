@@ -8,7 +8,7 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
-    'net.nanopay.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
   ],
 
   implements: [

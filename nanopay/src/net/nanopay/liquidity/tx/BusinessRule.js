@@ -5,7 +5,7 @@ foam.CLASS({
   abstract: true,
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   documentation: 'Business rule base class.',
@@ -28,7 +28,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
+      name: 'id', 
+      tableWidth: 125
+    },
+    {
+      name: 'name',
       section: 'basicInfo',
       label: 'Rule Name',
       tableWidth: 400
@@ -174,7 +178,7 @@ foam.CLASS({
         property. In this case, we are using the name.
       `,
       code: function(x) {
-        return this.id;
+        return this.name || this.id;
       }
     },
     {

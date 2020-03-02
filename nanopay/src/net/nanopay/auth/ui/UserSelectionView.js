@@ -30,19 +30,19 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       return this
         .start()
         .attrs({ name: "userSelectionView" })
           .addClass(this.myClass())
           .start().addClass('styleHolder_NameField')
             .add(this.data ?
-              this.fullObject$.map((obj) => {
+              this.fullObject$.map(async (obj) => {
                 var formatted = '';
                 if ( obj ) {
-                  formatted += obj.organization || obj.businessName;
+                  formatted += await obj.label();
                   if ( obj.legalName && obj.legalName.trim() ) {
-                    formatted += ` (${obj.legalName})`; 
+                    formatted += ` (${obj.legalName})`;
                   }
                 }
                 return formatted;
