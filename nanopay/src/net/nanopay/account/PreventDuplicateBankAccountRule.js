@@ -8,12 +8,12 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.payment.Institution',
     'net.nanopay.model.Branch',
-    'foam.dao.ArraySink',
     'java.util.List'
   ],
 
@@ -23,20 +23,21 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof BankAccount ) ) return;
         BankAccount newAccount = (BankAccount) obj;
-        ArraySink bankAccounts = (ArraySink) ((DAO) x.get("localAccountDAO"))
-        .where(
-              AND(
-                INSTANCE_OF(BankAccount.class),
-                EQ(BankAccount.OWNER, newAccount.getOwner()),
-                EQ(BankAccount.DELETED, false),
-                EQ(BankAccount.DENOMINATION, newAccount.getDenomination()),
-                EQ(BankAccount.ACCOUNT_NUMBER, newAccount.getAccountNumber())
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        List<BankAccount> bankAccounts = ((ArraySink) accountDAO
+          .where(
+                AND(
+                  INSTANCE_OF(BankAccount.class),
+                  EQ(BankAccount.OWNER, newAccount.getOwner()),
+                  EQ(BankAccount.DELETED, false),
+                  EQ(BankAccount.DENOMINATION, newAccount.getDenomination()),
+                  EQ(BankAccount.ACCOUNT_NUMBER, newAccount.getAccountNumber())
+                  )
                 )
-              )
-        .select(new ArraySink());
-        List<BankAccount> newVar = bankAccounts.getArray();
-        if ( newVar.size() == 0 ) return;
-        for ( BankAccount bankAccount :  newVar ) {
+          .select(new ArraySink()))
+          .getArray();
+        if ( bankAccounts.size() == 0 ) return;
+        for ( BankAccount bankAccount :  bankAccounts ) {
           Branch branch = bankAccount.findBranch(x);
           if ( branch != null && branch.getBranchId() == newAccount.getBranchId() ) {
             Institution institution = branch.findInstitution(x);
