@@ -1408,7 +1408,24 @@ p({
   "client": "{\"of\":\"net.nanopay.security.KeyPairEntry\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"publicKeyDAO",                     "serve":true,  "serviceScript":"return new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"publicKeys\").setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"publicKeyDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new net.nanopay.security.PublicKeyDAO.Builder(x)
+      .setDelegate(new foam.dao.EasyDAO.Builder(x)
+        .setAuthorize(true)
+        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
+        .setSeqNo(true)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("publicKeys")
+        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).build())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -2064,7 +2081,7 @@ p({
       .setValidated(true)
       .setRuler(false)
       .build();
-      
+
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
 
     return dao;
