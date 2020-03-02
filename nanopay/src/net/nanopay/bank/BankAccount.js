@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -266,6 +267,13 @@ foam.CLASS({
     }
   ],
   methods: [
+    function toSummary() {
+      var self = this;
+      return this.country$find.then((country) => {
+        if ( ! country ) return;
+        return `${ country.name } ${ self.BANK_ACCOUNT_LABEL } (${self.denomination})`;
+      });
+    },
     {
       name: 'getBankCode',
       type: 'String',
