@@ -71,6 +71,7 @@ var classes = [
   'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateAccountRule',
+  'net.nanopay.account.PreventDuplicateBankAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BusinessUserJunction',
