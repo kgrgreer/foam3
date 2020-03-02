@@ -18,12 +18,15 @@ foam.CLASS({
 
   css: `
     ^two-factor-qr-code {
-      width: 141px;
-      height: 141px;
+      align-items: center;
+      border: solid 1px #e2e2e3;
+      display: flex;
+      width: 157px;
+      height: 157px;
+      justify-content: center;
     }
     ^two-factor-key {
       display: flex;
-      justify-content: center;
       margin-top: 16px;
       min-width: 210px;
     }
@@ -102,7 +105,10 @@ foam.CLASS({
     ^qr-and-key {
       display: flex;
       flex-direction: column;
-      align-items: center;
+    }
+    ^ .image-qr-code {
+      width: 120px;
+      height: 120px
     }
   `,
 
@@ -168,10 +174,9 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('qr-and-key'))
                   .start().addClass(this.myClass('two-factor-qr-code'))
-                    .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
+                    .start('img').attrs({ src: this.twoFactorQrCode$ }).addClass('image-qr-code').end()
                   .end()
                   .start().addClass(this.myClass('two-factor-key'))
-                    .add('Key: ')
                     .add(this.slot(function(twoFactorKey) {
                       return (twoFactorKey.match(/.{4}/g) || []).join('-');
                     }))
@@ -231,7 +236,7 @@ foam.CLASS({
   actions: [
     {
       name: 'enableTwoFactor',
-      label: 'Enable',
+      label: 'Verify',
       code: function(x) {
         var self = this;
 

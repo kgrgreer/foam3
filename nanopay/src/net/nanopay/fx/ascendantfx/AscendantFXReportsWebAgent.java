@@ -95,7 +95,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
     Logger logger            = (Logger) x.get("logger");
 
-    HttpServletRequest req     = x.get(HttpServletRequest.class);
+    HttpServletRequest req       = x.get(HttpServletRequest.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
 
     String id = req.getParameter("userId");
@@ -157,7 +157,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
-    DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
@@ -173,7 +173,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
         EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true)
       )).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(
+    usBusinessOnboardingDAO.where(
       AND(
         EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
         EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
@@ -596,19 +596,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     try {
       java.util.List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
+      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
+      dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
       Document document = new Document();
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-      String reportGeneratedDate = df.format(new Date());
-
       document.open();
       document.add(new Paragraph("Beneficial Owners Information"));
       document.add(Chunk.NEWLINE);
 
       if ( beneficialOwners.size() == 0 ) {
-        List list = new List(List.UNORDERED);
-        list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
-        document.add(list);
+        document.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
       } else {
         document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
         document.add(Chunk.NEWLINE);
@@ -616,21 +615,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         for ( int i = 0; i < beneficialOwners.size(); i++ ) {
           List list = new List(List.UNORDERED);
           BeneficialOwner beneficialOwner = beneficialOwners.get(i);
-          String firstName = beneficialOwner.getFirstName();
-          String lastName = beneficialOwner.getLastName();
-          String jobTitle = beneficialOwner.getJobTitle();
-          String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-
-          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
-          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
-
-          list.add(new ListItem("First name: " + firstName));
-          list.add(new ListItem("Last name: " + lastName));
-          list.add(new ListItem("Job title: " + jobTitle));
-          list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-
+          list.add(new ListItem("First name: " + beneficialOwner.getFirstName()));
+          list.add(new ListItem("Last name: " + beneficialOwner.getLastName()));
+          list.add(new ListItem("Job title: " + beneficialOwner.getJobTitle()));
+          list.add(new ListItem("Percent ownership: " + Integer.toString(beneficialOwner.getOwnershipPercent()) + "%"));
+          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
+          list.add(new ListItem("Date of birth: " + dateOfBirth));
           if ( beneficialOwner.getAddress() != null ) {
             list.add(new ListItem("Suite No: " + beneficialOwner.getAddress().getSuite()));
             list.add(new ListItem("Residential street address: " + beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName()));
@@ -638,14 +629,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
             list.add(new ListItem("State/Province: " + beneficialOwner.getAddress().getRegionId()));
             list.add(new ListItem("Country: " + beneficialOwner.getAddress().getCountryId()));
             list.add(new ListItem("ZIP/Postal Code: " + beneficialOwner.getAddress().getPostalCode()));
-            list.add(new ListItem("Date of birth: " + dateOfBirth));
           }
-
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
       }
+      String reportGeneratedDate = df.format(new Date());
 
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));

@@ -1,1 +1,28 @@
-p({"class":"foam.nanos.script.Script","id":"benchmarkTransactionCreation","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nlc = x.get(\"logLevelFilterLogger\");\n//lc.setLogInfo(false);\nlc.setLogDebug(false);\n\nx = x.put(\"pmLogger\", null);\nb = new TransactionBenchmark();\nb.setQuoteTransactions(false);\nbuilder = new BenchmarkRunner.Builder(x).setInvocationCount(10000).setRunPerThread(true).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);\nprint(\"done\");\nprint(runner.getResult());\nl = x.get(\"logger\");\nlc.setLogInfo(true);\nl.info(new Object[] {runner.getResult()});","output":""})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactionCreation",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.bench.*;
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(false);
+    x = x.put("pmLogger", null);
+    b = new TransactionBenchmark();
+    b.setQuoteTransactions(false);
+    b.setDisableRules(true);
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(10000)
+      .setRunPerThread(true)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(true);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})

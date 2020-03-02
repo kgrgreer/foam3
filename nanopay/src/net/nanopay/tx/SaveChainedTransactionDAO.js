@@ -15,27 +15,27 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Boolean nu = "".equals(((Transaction) obj).getId());
+        Transaction txn = (Transaction)obj;
+        Transaction [] next = txn.getNext();
 
-      Transaction txn = (Transaction)obj;
-      Transaction [] next = txn.getNext();
-      if ( next != null ) {
+        if ( next == null || next.length == 0 ) {
+          return getDelegate().put_(x, txn);
+        }
+
+        // Nullify next and save self
         txn.setNext(null);
-      } else {
-        return getDelegate().put_(x, txn);
-      }
-      txn = (Transaction) getDelegate().put_(x, txn);
-      if ( next != null && next.length > 0 ) {
+        txn = (Transaction) getDelegate().put_(x, txn);
+
+        // Save chain
         for ( Transaction nextTransaction : next ) {
           if ( ((DAO) x.get("localTransactionDAO")).find(nextTransaction.getId()) != null ) {
             checkAndSaveNextTransaction(x, nextTransaction, txn);
-          } else { 
+          } else {
             nextTransaction.setParent(txn.getId());
             ((DAO) x.get("localTransactionDAO")).put_(x, nextTransaction);
           }
         }
-      }
-      return txn;
+        return txn;
       `
     },
     {

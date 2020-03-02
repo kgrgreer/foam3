@@ -10,7 +10,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'static foam.mlang.MLang.*',
-    'net.nanopay.account.SecurityAccount',
+    'net.nanopay.account.SecuritiesAccount',
     'net.nanopay.tx.TransactionQuote'
   ],
 
@@ -22,8 +22,8 @@ foam.CLASS({
         if ( ! ( nu instanceof TransactionQuote ) ) return false;
         TransactionQuote tq = (TransactionQuote) nu;
 
-        if ( tq.getSourceAccount() instanceof SecurityAccount &&
-          tq.getDestinationAccount() instanceof SecurityAccount ) 
+        if ( tq.getSourceAccount() instanceof SecuritiesAccount &&
+          tq.getDestinationAccount() instanceof SecuritiesAccount )
           return true;
 
         return false;

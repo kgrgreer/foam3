@@ -114,7 +114,7 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('business-name'))
               .add(this.slot(function(data) {
-                return data ? data.organization : '';
+                return data ? data.label() : '';
               }))
             .end()
             .start()
@@ -124,7 +124,7 @@ foam.CLASS({
                   var businessSector = await this.businessSectorDAO.find(data.businessSectorId);
                   var city = data.address.city;
                   var region = data.address.regionId;
-                  let industry = businessSector.name;
+                  let industry = businessSector ? businessSector.name : '';
                   if ( city && region ) {
                     return `${industry} • ${city}, ${region}`;
                   } else if ( region ) {

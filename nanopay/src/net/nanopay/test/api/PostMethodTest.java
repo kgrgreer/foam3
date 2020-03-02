@@ -33,7 +33,7 @@ public class PostMethodTest
           "    \"interfaceName\": \"foam.nanos.auth.AuthService\",\n" + 
           "    \"method\": \"checkUser\",\n" + 
           "    \"X\": \"X\",\n" + 
-          "    \"permission\":\"menu.read.doc\",\n" + 
+          "    \"permission\":\"menu.read.integration\",\n" + 
           "    \"user\":"+ user.toJSON() +
           "}";
       

@@ -23,6 +23,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"Observer"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Quote Transaction"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Notifications"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"StatusHistory"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"auth"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"signup"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"onboarding"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"dowjones-update"})
@@ -32,12 +33,61 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"ComplianceItem"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"(Default)"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"ClearingTime"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"transactionLimits"})
-p({"class":"foam.nanos.ruler.RuleGroup","id":"txlimits"})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"txlimits",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"referenceNumber",
+        "propValue":"Manual Entry"
+      },
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"lifecycleState",
+          "propValue":{
+            "class":"foam.nanos.auth.LifecycleState",
+            "ordinal":2
+          }
+        }
+      }
+    ]
+  }
+})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"liquid"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"approvables"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"businessRules"})
-p({"class":"foam.nanos.ruler.RuleGroup","id":"SecurityPlanner","predicate":{"class":"net.nanopay.tx.ruler.IsSecurityQuote"},"enabled":true})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"restrictAccountsRules",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"referenceNumber",
+      "propValue":"Manual Entry"
+    },
+    {
+      "class": "foam.mlang.predicate.Not",
+      "arg1":{
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"lifecycleState",
+        "propValue":{
+          "class":"foam.nanos.auth.LifecycleState","ordinal":2
+        }
+      }
+    }]
+  }
+})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictUsersRules"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"txapprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
 p({
   "class":"foam.nanos.ruler.RuleGroup",

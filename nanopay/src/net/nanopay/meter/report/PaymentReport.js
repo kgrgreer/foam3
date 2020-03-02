@@ -47,12 +47,6 @@ foam.CLASS({
     'dateRange'
   ],
 
-  css: `
-    .foam-u2-view-TableView-net-nanopay-meter-report-PaymentReport {
-      width: 1469px !important;
-    }
-  `,
-
   properties: [
     {
       class: 'DateTime',

@@ -15,10 +15,10 @@ public class HashedFObjectParser
 
   public HashedFObjectParser(HashingJournal hashingJournal, final Class defaultClass) {
     setDelegate(new Parser() {
-      private Parser parser1 = new FObjectParser(defaultClass);
+      private Parser parser1 = FObjectParser.create(defaultClass);
       private Parser parser2 = new Seq1(1,
-        new Optional(new Literal(",")),
-        new FObjectParser(net.nanopay.security.MessageDigest.class));
+        new Optional(Literal.create(",")),
+        FObjectParser.create(net.nanopay.security.MessageDigest.class));
 
       @Override
       public PStream parse(PStream ps, ParserContext x) {

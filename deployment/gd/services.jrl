@@ -13,6 +13,8 @@ p({
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
         "hostMapping": {
           "gd": "/gd.html",
+          "gd.ablii.com":"/gd.html",
+          "gd.sandbox.ablii.com":"/gd.html",
           "localhost": "/index.html"
         },
         "defaultHost": "localhost"

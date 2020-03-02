@@ -1,0 +1,217 @@
+// admin
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.acceptanceDocument",
+  "label":"Acceptance Documents",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"acceptanceDocumentDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.acceptanceDocumentUser",
+  "label":"Acceptance Documents for User",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userAcceptanceDocumentDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.accountingResultResponse",
+  "label":"Accounting Result Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"accountingReportDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.alarm",
+  "label":"Alarms",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"alarmDAO",
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.brokers",
+  "label":"Brokers",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"brokerDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.csvUploadScriptDAO",
+  "label":"CSV UploadScripts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"csvUploadScriptDAO"
+    }
+  },
+  "parent":"admin"
+})
+
+// line items
+p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemFees","label":"Line Item Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTax","label":"Line Item Taxes","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTaxDAO"},"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTypeAccount","label":"Line Item User Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeAccountDAO"},"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTypes","label":"Line Item Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"parent":"admin"})
+
+// integration
+p({"class":"foam.nanos.menu.Menu","id":"integration.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexBeneficiaries",
+  "label":"AFEX Beneficiaries",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBeneficiaryDAO"
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexBusiness",
+  "label":"AFEX Businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBusinessDAO"
+    }
+  },
+  "parent":"integration"
+})
+p({"class":"foam.nanos.menu.Menu","id":"integration.ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.ascendantuser",
+  "label":"AscendantFX Payee",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ascendantUserPayeeJunctionDAO"
+    }
+  },
+  "parent":"integration"
+})
+p({"class":"foam.nanos.menu.Menu","id":"integration.devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.flinksResponses",
+  "label":"FLinks Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"flinksAccountsDetailResponseDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.plaidResultReport",
+  "label":"Plaid Result Report",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"plaidResultReportDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"integration"
+})
+
+// root items
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "businesses",
+  "label": "Businesses",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "businessDAO"
+        }
+    }
+})
+
+// TODO: parity with "detailView":"net.nanopay.meter.ContactDetailView"
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "contacts",
+  "label": "Contacts",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "contactDAO"
+        }
+    }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "invoices",
+  "label": "Invoices",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "invoiceDAO"
+        }
+    }
+})
+
+// remove users and use the main user view
+r({"class":"foam.nanos.menu.Menu","id":"admin.users"})
+
+// remove support and use operations ticketing
+r({"class":"foam.nanos.menu.Menu","id":"admin.support"})
+r({"class":"foam.nanos.menu.Menu","id":"admin.support-email"})
+// support has access to admin.logs
+r({"class":"foam.nanos.menu.Menu","id":"supportLogs"})

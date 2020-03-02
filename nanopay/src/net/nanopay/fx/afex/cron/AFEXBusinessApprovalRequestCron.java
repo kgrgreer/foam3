@@ -11,9 +11,9 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalRequestUtil;
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalRequestUtil;
+import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.fx.afex.AFEXBusinessApprovalRequest;
 
 public class AFEXBusinessApprovalRequestCron implements ContextAgent {
