@@ -630,14 +630,19 @@ foam.CLASS({
       this.yPosition = e.y + this.TOOLTIP_OFFSET;
     },
     async function setDefaultCurrency() {
+      if ( this.invoice.contactId <= 0 ) return;
       var request = this.GetDefaultCurrency.create({
         contactId: this.invoice.contactId
       });
-      var responseObj = await this.getDefaultCurrencyDAO.put(request);
-      if ( responseObj.response ) {
-        this.currencyType = responseObj.response;
-        this.selectedCurrency = responseObj.response;
-        this.invoice.destinationCurrency = responseObj.response;
+      try {
+        var responseObj = await this.getDefaultCurrencyDAO.put(request);
+        if ( responseObj ) {
+          this.currencyType = responseObj.response;
+          this.selectedCurrency = responseObj.response;
+          this.invoice.destinationCurrency = responseObj.response;
+        }
+      } catch (e) {
+        console.error('Error fetch default currency: ', e.message);
       }
     }
   ],
