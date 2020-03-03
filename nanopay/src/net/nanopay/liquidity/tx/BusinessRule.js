@@ -5,7 +5,7 @@ foam.CLASS({
   abstract: true,
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   documentation: 'Business rule base class.',

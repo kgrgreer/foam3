@@ -13,9 +13,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'static foam.mlang.MLang.*'
   ],
 

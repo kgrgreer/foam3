@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'ComplianceApprovalRequest',
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {

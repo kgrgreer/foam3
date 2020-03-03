@@ -23,12 +23,12 @@ import foam.nanos.ruler.RuleGroup;
 import foam.nanos.ruler.RulerDAO;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
-import net.nanopay.approval.ApprovalDAO;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalRequestUtil;
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalDAO;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalRequestUtil;
+import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.approval.SendGroupRequestApprovalDAO;
 import net.nanopay.approval.AuthenticatedApprovalDAO;
-import net.nanopay.approval.SendGroupRequestApprovalDAO;
 
 public class ApprovalDAOTest
 extends Test {

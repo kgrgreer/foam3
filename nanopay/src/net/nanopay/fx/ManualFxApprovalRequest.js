@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Approval request that stores a CAD to INR FX rate',
 
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {

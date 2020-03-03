@@ -47,8 +47,8 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"alarmDAO",
-      "editEnabled":false,
-      "deleteEnabled":false
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"admin"
@@ -138,8 +138,8 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"flinksAccountsDetailResponseDAO",
-      "createEnabled":false,
-      "editEnabled":false,
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"integration"
@@ -153,8 +153,8 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"plaidResultReportDAO",
-      "createEnabled":false,
-      "editEnabled":false,
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"integration"
