@@ -560,9 +560,15 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'reconciled',
-      documentation: `Determines whether invoice has been reconciled.
-          Verifies that the appropriate send and receive amounts are correct.`
+      name: 'payeeReconciled',
+      documentation: `Determines whether invoice has been reconciled by payee.
+          Verifies that the receive amount is correct.`
+    },
+    {
+      class: 'Boolean',
+      name: 'payerReconciled',
+      documentation: `Determines whether invoice has been reconciled by payer.
+          Verifies that the sent amount is correct.`
     }
   ],
 
