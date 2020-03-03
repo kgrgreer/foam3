@@ -21,17 +21,23 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'search', 'payerId', 'payeeId', 'status'
+    'search',
+    'id',
+    'invoiceNumber',
+    'payerId',
+    'payeeId',
+    'issueDate',
+    'amount',
+    'status'
   ],
 
   tableColumns: [
-    'id', 
-    'invoiceNumber', 
+    'id',
+    'invoiceNumber',
     'payerId',
-    'payeeId', 
-    'issueDate', 
-    'dueDate', 
-    'amount', 
+    'payeeId',
+    'issueDate',
+    'amount',
     'status'
   ],
 
