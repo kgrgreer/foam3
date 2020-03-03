@@ -54,6 +54,20 @@ public class BankAccountBranchDAO
     }
 
     if ( institution == null ) {
+      //if branch isn't null, we do not have to store it again
+      if ( bankAccount.getCountry() == "US" && branch == null ) {
+        DAO branchDAO = (DAO) x.get("branchDAO");
+        branch = (Branch) branchDAO.find(
+          EQ(Branch.BRANCH_ID,bankAccount.getBranchId())
+          );
+        // if branch not store in branchDAO, create new one and store it
+        if ( branch == null ) {
+          Branch newBranch = new Branch.Builder(x)
+            .setBranchId(bankAccount.getBranchId())
+            .build();
+          branchDAO.put(newBranch);
+        }
+      }
       bankAccount = (BankAccount) super.put_(x, obj);
       String message = "Insititution not set for BankAccount with Id: " + bankAccount.getId();
       // flaging the account that doesn't have an institution!
