@@ -99,7 +99,6 @@ foam.CLASS({
                   self.notify(self.DELETE_DEFAULT, 'error');
                   return;
                 }
-                this.model_.label = `${ this.denomination } ${ self.BANK_ACCOUNT_LABEL }`;
                 self.ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
                   dao: self.user.accounts,
