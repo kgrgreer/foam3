@@ -91,7 +91,26 @@ foam.CLASS({
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
           dao: this.user.expenses.where(this.EQ(this.Invoice.PAYER_RECONCILED, false)).orderBy(this.DESC(this.Invoice.CREATED)),
-          createPredicate: foam.mlang.predicate.True
+          createPredicate: foam.mlang.predicate.True,
+          defaultColumns: [
+            this.Invoice.PAYEE_ID.clone().copyFrom({
+              label: 'Company',
+              tableCellFormatter: async function(_, invoice) {
+                var additiveSubField = await invoice.payee.label();
+                this.add(additiveSubField);
+                this.tooltip = additiveSubField;
+              }
+            }),
+            this.Invoice.INVOICE_NUMBER.clone().copyFrom({
+              label: 'Invoice No.',
+              tableWidth: 115
+            }),
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 115 }),
+            'invoiceFile'
+          ]
         });
       }
     },
