@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    The final step in the add contact flow confirming the contact's
-    information.
+    The final step in the add contact flow confirming the internal
+    contact's information.
   `,
 
   imports: [
@@ -23,17 +23,19 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
-    ^info-container {
-      margin: 24px;
-      padding: 16px 24px;
-      border: solid 1px #e2e2e3;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^operating-name {
       font-size: 24px;
       font-weight: 900;
       color: #604aff;
       margin-bottom: 16px;
+    }
+    ^info-container {
+      margin: 24px;
+      padding: 16px 24px;
+      border: solid 1px #e2e2e3;
     }
     ^info-slot {
       display: flex;
@@ -55,33 +57,6 @@ foam.CLASS({
       align-items: center;
       line-height: 1.43;
       width: 194px;
-    }
-    ^button-container {
-      height: 84px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-confirm {
-      min-width: 104px;
-      height: 36px;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back {
-      color: #604aff;
-      background-color: transparent;
-      border: none;
-      padding: 0;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.43;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      background-color: transparent;
-      color: #4d38e1;
-      border: none;
     }
   `,
 
@@ -116,9 +91,9 @@ foam.CLASS({
               .add('Business type')
             .end()
             .start().addClass(this.myClass('info-slot-value'))
-              .add(this.slot(async function(data) {
-                if ( data ) {
-                  var businessSector = await this.businessSectorDAO.find(data.businessSectorId);
+              .add(this.slot(async function(data$businessSectorId) {
+                if ( data$businessSectorId ) {
+                  var businessSector = await this.businessSectorDAO.find(data$businessSectorId);
                   return businessSector ? businessSector.name : '';
                 }
               }))
@@ -142,22 +117,22 @@ foam.CLASS({
               .add('Address')
             .end()
             .start().addClass(this.myClass('info-slot-value'))
-              .add(this.slot(async function(data) {
-                if ( data ) {
-                  var country = await this.countryDAO.find(data.address.countryId);
+              .add(this.slot(async function(data$address$countryId, data) {
+                if ( data$address$countryId ) {
+                  var country = await this.countryDAO.find(data$address$countryId);
                   return data.address.streetNumber + ' '
                     + data.address.streetName + ', '
                     + data.address.city + ', '
                     + data.address.regionId + ' '
-                    + country.name + ' '
+                    + (country ? country.name : '') + ' '
                     + data.address.postalCode;
                 }
               }))
             .end()
           .end()
         .end()
-        .start().addClass(this.myClass('button-container'))
-          .start(this.BACK).end()
+        .start().addClass('button-container')
+          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
           .start(this.CONFIRM).end()
         .end();
     }

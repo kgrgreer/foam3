@@ -56,25 +56,13 @@ foam.CLASS({
       background-color: #fafafa;
       padding: 0 24px 0;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-send {
-      min-width: 104px;
-      height: 36px;
-    }
     ^ .net-nanopay-sme-ui-AbliiActionView-back {
       color: #604aff;
-      background-color: transparent;
-      border: none;
       padding: 0;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.43;
       margin: 32px 0;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      background-color: transparent;
       color: #4d38e1;
-      border: none;
     }
   `,
 
@@ -118,6 +106,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      if ( this.wizard ) this.data = this.wizard.data;
       this
         .addClass(this.myClass())
         .start()
@@ -173,7 +162,7 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass(this.myClass('button-container'))
-          .start(this.BACK).end()
+          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
           .start(this.SEND).end()
         .end();
     }
@@ -184,7 +173,11 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        X.closeDialog();
+        if (X.subStack && X.subStack.depth > 1 ) {
+          X.subStack.back();
+        } else {
+          X.closeDialog();
+        }
       }
     },
     {

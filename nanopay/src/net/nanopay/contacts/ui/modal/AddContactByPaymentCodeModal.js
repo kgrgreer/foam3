@@ -3,10 +3,9 @@ foam.CLASS({
   name: 'AddContactByPaymentCodeModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
-  documentation: 'Add Contact By PaymentCode Modal',
+  documentation: 'Add Contact By Payment Code Modal',
 
   imports: [
-    'closeDialog',
     'ctrl',
     'user',
     'businessFromPaymentCode'
@@ -21,29 +20,14 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 593px;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     ^container {
-      height: 509px;
       padding: 24px;
     }
-    ^contact-title {
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    ^instruction {
-      color: #8e9090;
-      line-height: 1.43;
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
-    ^input-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: #2b2b2b;
-      margin-bottom: 8px;
+    ^payment-code-field {
+      position: relative;
     }
     ^payment-code-icon {
       height: 14px;
@@ -62,6 +46,7 @@ foam.CLASS({
       flex-direction: row;
       justify-content: center;
       align-items: center;
+      margin-bottom: 240px;
     }
     ^my-payment-code-title{
       display: flex;
@@ -82,32 +67,9 @@ foam.CLASS({
       line-height: 1.5;
       color: #8e9090;
     }
-    ^button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 84px;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
     ^ .net-nanopay-sme-ui-AbliiActionView-AddContactByPaymentCode {
       min-width: 104px;
       height: 36px;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back {
-      color: #604aff;
-      background-color: transparent;
-      border: none;
-      padding: 0;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.43;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      background-color: transparent;
-      color: #4d38e1;
-      border: none;
     }
   `,
 
@@ -161,10 +123,10 @@ foam.CLASS({
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
-          .start().addClass(this.myClass('instruction'))
+          .start().addClass('instruction')
             .add(this.INSTRUCTION)
           .end()
-          .start().addClass(this.myClass('input-title'))
+          .start().addClass('field-label')
             .add(this.INPUT_TITLE)
           .end()
           .start().addClass(this.myClass('payment-code-field'))
@@ -189,8 +151,8 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass(this.myClass('button-container'))
-          .start(this.BACK).end()
+        .start().addClass('button-container')
+          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
           .start(this.ADD_CONTACT_BY_PAYMENT_CODE).end()
         .end();
     }
@@ -215,12 +177,14 @@ foam.CLASS({
         let { data } = this.wizard;
         try {
           var business = await this.businessFromPaymentCode.getPublicBusinessInfo(X, this.paymentCodeValue);
-          data.organization = business.organization;
-          data.businessName = business.organization;
-          data.businessId = business.id;
-          data.address = business.address;
+          data.copyFrom({
+            organization: business.organization,
+            businessName: business.organization,
+            businessId: business.id,
+            address: business.address,
+            paymentCode: this.paymentCodeValue
+          });
           data.businessSectorId = business.businessSectorId;
-          data.paymentCode = this.paymentCodeValue;
           this.pushToId('addContactConfirmation');
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;

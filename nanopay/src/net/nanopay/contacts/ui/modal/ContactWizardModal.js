@@ -69,15 +69,6 @@ foam.CLASS({
       margin: 24px 0;
       width: 100%;
     }
-    ^ .foam-u2-ActionView-back {
-      color: /*%PRIMARY3%*/ #406dea !important;
-      float: left;
-    }
-    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
-      background-color: #ffffff;
-      margin-top: 16px;
-      padding: 0px !important;
-    }
     ^ .field-label {
       font-size: 12px;
       font-weight: 600;
@@ -89,7 +80,26 @@ foam.CLASS({
       display: grid;
       grid-gap: 16px;
       grid-template-columns: 1fr 1fr;
-    },
+    }
+    ^ .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back {
+      color: #604aff;
+      padding: 0;
+      margin: 32px 0;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
+      color: #4d38e1;
+    }
+    ^ .net-nanopay-sme-ui-AbliiActionView-next {
+      min-width: 104px;
+    }
 `,
 
   messages: [

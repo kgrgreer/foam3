@@ -74,30 +74,9 @@ foam.CLASS({
       font-style: italic;
       margin-bottom: 16px;
     }
-    ^instruction {
-      color: #8e9090;
-      line-height: 1.43;
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
     ^ .net-nanopay-contacts-ui-modal-SearchBusinessView-search-result span {
       width: 462px;
       overflow-wrap: break-word;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back {
-      color: #604aff;
-      background-color: transparent;
-      border: none;
-      padding: 0;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.43;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      background-color: transparent;
-      color: #4d38e1;
-      border: none;
     }
     ^align-text-center {
       text-align: center;
@@ -172,19 +151,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'businessNameFilter',
-      documentation: 'This property is the data binding for the search field',
-      view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
-        placeholder: 'Start typing to search',
-        onKey: true,
-        focused: true
-      }
-    },
-    {
-      class: 'String',
-      name: 'locationFilter',
+      name: 'filter',
       documentation: 'This property is the data binding for the search field',
       view: {
         class: 'foam.u2.TextField',
@@ -235,8 +202,8 @@ foam.CLASS({
         This property is to query all connected businesses related to
         the current acting business.
       `,
-      expression: function(businessNameFilter) {
-        if ( businessNameFilter.length < 2 ) {
+      expression: function(filter) {
+        if ( filter.length < 2 ) {
           return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
@@ -247,12 +214,10 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      // this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
                   );
-
                 dao
                   .select(this.Count.create())
                   .then((sink) => {
@@ -271,8 +236,8 @@ foam.CLASS({
         This property is to query all unconnected businesses related to
         the current acting business.
       `,
-      expression: function(businessNameFilter) {
-        if ( businessNameFilter.length < 2 ) {
+      expression: function(filter) {
+        if ( filter.length < 2 ) {
           return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
@@ -283,8 +248,7 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, businessNameFilter),
-                      // this.CONTAINS_IC(this.PublicBusinessInfo.FULL_ADDRESS, locationFilter),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
                       this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )
@@ -304,8 +268,8 @@ foam.CLASS({
       type: 'String',
       name: 'searchBusinessesCount',
       documentation: `Construct the searching count string.`,
-      expression: function(businessNameFilter, countBusinesses) {
-        if ( businessNameFilter.length > 1 ) {
+      expression: function(filter, countBusinesses) {
+        if ( filter.length > 1 ) {
           if ( this.countBusinesses > 1 ) {
             return `Showing ${countBusinesses} of ${countBusinesses} results`;
           } else {
@@ -322,8 +286,8 @@ foam.CLASS({
         Only show no matching text 'We couldn’t find a business with that name'
         when the searching keyword is longer than 1 char.
       `,
-      expression: function(businessNameFilter, countBusinesses) {
-        return countBusinesses === 0 && businessNameFilter.length > 1;
+      expression: function(filter, countBusinesses) {
+        return countBusinesses === 0 && filter.length > 1;
       }
     },
     {
@@ -333,8 +297,8 @@ foam.CLASS({
         Only show the default searching text when the searching keyword
         is shorter than 2 chars.
       `,
-      expression: function(businessNameFilter) {
-        return businessNameFilter.length < 2;
+      expression: function(filter) {
+        return filter.length < 2;
       }
     }
   ],
@@ -358,7 +322,7 @@ foam.CLASS({
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
-          .start().addClass(this.myClass('instruction'))
+          .start().addClass('instruction')
             .add(this.INSTRUCTION)
           .end()
           .start()
@@ -372,21 +336,10 @@ foam.CLASS({
             })
               .addClass(this.myClass('searchIcon'))
             .end()
-            .start(this.BUSINESS_NAME_FILTER)
+            .start(this.FILTER)
               .addClass(this.myClass('filter-search'))
             .end()
           .end()
-          // .start().addClass(this.myClass('search-field'))
-            // .start({
-            //   class: 'foam.u2.tag.Image',
-            //   data: this.SEARCH_ICON
-            // })
-            //   .addClass(this.myClass('searchIcon'))
-            // .end()
-          //   .start(this.LOCATION_FILTER)
-          //     .addClass(this.myClass('filter-search'))
-          //   .end()
-          // .end()
           .start()
             .addClass('divider')
           .end()
@@ -437,8 +390,8 @@ foam.CLASS({
               .addClass(this.myClass('center'))
               .addClass(this.myClass('search-result'))
               .addClass(this.myClass('align-text-center'))
-              .add(this.slot(function(businessNameFilter) {
-                return `${this.NO_MATCH_TEXT_2} “${businessNameFilter}”?`;
+              .add(this.slot(function(filter) {
+                return `${this.NO_MATCH_TEXT_2} “${filter}”?`;
               }))
             .end()
             .start().addClass(this.myClass('center'))
@@ -447,16 +400,18 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass(this.myClass('button-container'))
-          .start(this.BACK).end()
+          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
         .end();  
     },
 
     function addSelected(business) {
       let { data } = this.wizard;
-      data.organization = business.organization;
-      data.businessName = business.organization;
-      data.businessId = business.id;
-      data.address = business.address;
+      data.copyFrom({
+        organization: business.organization,
+        businessName: business.organization,
+        businessId: business.id,
+        address: business.address
+      });
       data.businessSectorId = business.businessSectorId;
       this.pushToId('addContactConfirmation');
     }
@@ -474,7 +429,7 @@ foam.CLASS({
       name: 'createNewWithBusiness',
       label: 'Create New',
       code: function(X) {
-        this.wizard.data.organization = this.businessNameFilter;
+        this.wizard.data.organization = this.filter;
         this.wizard.viewData.isEdit = false;
         X.viewData.isBankingProvided = false;
         X.pushToId('AddContactStepOne');

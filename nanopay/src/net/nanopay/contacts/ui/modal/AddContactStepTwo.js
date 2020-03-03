@@ -143,44 +143,7 @@ foam.CLASS({
       line-height: 1.5;
       margin-top: 16px;
       margin-bottom: 32px;
-    }
-    ^button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 84px;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-next {
-      min-width: 104px;
-      height: 36px;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-option {
-      background-color: ffffff;
-      color: /*%PRIMARY3%*/ #406dea;
-      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
-      margin-right: 10px;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-option:hover {
-      background-color: ffffff;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back {
-      color: #604aff;
-      background-color: transparent;
-      border: none;
-      padding: 0;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.43;
-      margin: 32px 0;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      background-color: transparent;
-      color: #4d38e1;
-      border: none;
-    }
+    }  
   `,
 
   messages: [
@@ -302,10 +265,10 @@ foam.CLASS({
             .addClass(this.myClass('adding-account'))
           .end()
         .end()
-        .start().addClass(this.myClass('button-container'))
-          .start(this.BACK).end()
+        .start().addClass('button-container')
+          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
           .start().addClass(this.myClass('button-sub-container'))
-            .start(this.OPTION).end()
+            .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
             .start(this.NEXT).end()
           .end()
         .end();

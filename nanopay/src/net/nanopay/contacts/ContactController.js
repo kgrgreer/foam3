@@ -12,7 +12,6 @@ foam.CLASS({
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
-    'net.nanopay.contacts.ui.modal.UpgradeContactModal',
     'net.nanopay.invoice.model.Invoice'
   ],
 
@@ -29,6 +28,13 @@ foam.CLASS({
     'stack',
     'user'
   ],
+
+  css: `
+  ^ .net-nanopay-sme-ui-SMEModal-inner {
+    position: absolute;
+    top: 0;
+  }
+  `,
 
   constants: [
     {
@@ -73,19 +79,6 @@ foam.CLASS({
                     .end();
                 }
               }
-            }),
-            this.Action.create({
-              name: 'upgrade',
-              label: 'Upgrade Contact',
-              isAvailable: function() {
-                return this.businessId === 0;
-              },
-              code: function(X) {
-                X.controllerView.add(self.Popup.create().tag({
-                  class: 'net.nanopay.contacts.ui.modal.UpgradeContactModal',
-                  data: this
-                }));
-              }
             })
           ],
           contextMenuActions: [
@@ -99,7 +92,7 @@ foam.CLASS({
                   class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
                   // Setting data enables the edit flow.
                   data: this
-                }));
+                }).style({'position': 'absolute'}));
               }
             }),
             this.Action.create({

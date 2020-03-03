@@ -28,7 +28,6 @@ foam.CLASS({
               throw new RuntimeException("PublicBusinessInfo was given a null argument.");
             };
             DAO businessSectorDAO = (DAO) x.get("businessSectorDAO");
-            
             BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
             setId(business.getId());
             setOrganization(business.getOrganization());
