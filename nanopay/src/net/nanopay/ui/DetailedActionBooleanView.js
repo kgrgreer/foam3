@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2',
+  package: 'net.nanopay.ui',
   name: 'DetailedActionBooleanView',
   extends: 'foam.u2.View',
 
