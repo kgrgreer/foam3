@@ -748,7 +748,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Account name: " + accountName));
       // It is unnecessary to show institution number for US bank accounts
       if ( accountCurrency.equals("USD") ) {
-        list.add(new ListItem("Routing number: " + branchNum));
+        list.add(new ListItem("Routing number: " + bankAccount.getBranchId()));
       } else {
         Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
         String institutionNum;
