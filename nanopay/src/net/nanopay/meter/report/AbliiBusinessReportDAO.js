@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.auth.LoginAttempt',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.FXSummaryTransaction',
@@ -49,7 +49,7 @@ foam.CLASS({
         // Retrieve the DAO
         DAO businessDAO             = (DAO) x.get("localBusinessDAO");
         DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
         DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
         DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");
@@ -61,7 +61,7 @@ foam.CLASS({
             Business business = (Business) obj;
     
             // format the sign up date
-            String signUpDate = dateFormat.format(business.getCreated());
+            String signUpDate = business.getCreated() == null ? "" : dateFormat.format(business.getCreated());
     
             // find the person who created the business account
             User createdBy = business.findCreatedBy(x);
@@ -94,7 +94,7 @@ foam.CLASS({
               if ( bo != null ) onboardSubmitDate = dateFormat.format(bo.getLastModified());
             }
             else if ( country.equals("US") ) {
-              USBusinessOnboarding ubo = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(
+              USBusinessOnboarding ubo = (USBusinessOnboarding) usBusinessOnboardingDAO.find(
                 MLang.AND(
                   MLang.EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
                   MLang.EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED)

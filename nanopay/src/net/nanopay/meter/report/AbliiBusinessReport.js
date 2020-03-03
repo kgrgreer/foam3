@@ -23,6 +23,8 @@ foam.CLASS({
     * Email Address
   `,
 
+  searchColumns: [],
+
   properties: [
     {
       class: 'String',

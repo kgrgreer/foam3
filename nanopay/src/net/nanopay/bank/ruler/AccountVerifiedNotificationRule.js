@@ -34,24 +34,26 @@ foam.CLASS({
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : null;
             Branch currBranch = (Branch) account.findBranch(x);
-            String institutionStr = " - ";
+            String institutionName = "";
             if ( config == null ) return;
 
             if ( currBranch != null ) {
               Institution currInstitution = (Institution) currBranch.findInstitution(x);
-              institutionStr = currInstitution == null ? " - " : ((currInstitution.getAbbreviation() == null  || currInstitution.getAbbreviation().isEmpty()) ? currInstitution.getName() : currInstitution.getAbbreviation());
+              institutionName = currInstitution == null ? null : currInstitution.toSummary();
             }
             HashMap<String, Object> args    = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
-            args.put("account",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
-            args.put("institution", institutionStr);
-            args.put("userEmail", User.EMAIL);
+            args.put("accountNumber",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("institution", institutionName);
+            args.put("institutionNumber", account.getInstitutionNumber());
             args.put("accountType", account.getType());
-        
+            args.put("userEmail", User.EMAIL);
+            args.put("sendTo", User.EMAIL);
+
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")
-                    .setNotificationType("BankNotifications")
+                    .setNotificationType("Latest_Activity")
                     .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("verifiedBank")

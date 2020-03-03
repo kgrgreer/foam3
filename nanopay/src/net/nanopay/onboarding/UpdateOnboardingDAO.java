@@ -22,7 +22,7 @@ import static foam.mlang.MLang.EQ;
 public class UpdateOnboardingDAO extends ProxyDAO {
   private DAO localBusinessDAO_;
   private DAO businessOnboardingDAO_;
-  private DAO uSBusinessOnboardingDAO_;
+  private DAO usBusinessOnboardingDAO_;
   private BusinessOnboarding businessOnboarding;
   private BusinessOnboarding newBusinessOnboardingClone;
   private USBusinessOnboarding uSBusinessOnboarding;
@@ -38,7 +38,7 @@ public class UpdateOnboardingDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");
-    uSBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
+    usBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
     businessId = 0;
     businessOnboarding = null;
     uSBusinessOnboarding = null;
@@ -71,7 +71,7 @@ public class UpdateOnboardingDAO extends ProxyDAO {
         AND(
           EQ(BusinessOnboarding.BUSINESS_ID, businessId)
         )).select(new ArraySink());
-      uSBusinessOnboardingDAO_.where(
+      usBusinessOnboardingDAO_.where(
         AND(
           EQ(USBusinessOnboarding.BUSINESS_ID, businessId)
         )).select(businessOnBoardingSink);

@@ -26,9 +26,9 @@ foam.CLASS({
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketComment',
     'foam.nanos.ticket.TicketStatus',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'java.util.List'
   ],
   

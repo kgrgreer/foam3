@@ -26,7 +26,7 @@ public abstract class EFTFileParser extends ContextAwareSupport
       ps.setString(line);
 
       FObject obj = (FObject) classInfo.getObjClass().newInstance();
-      Parser parser = new Repeat(new net.nanopay.tx.alterna.EFTStringParser(), new Literal("|"));
+      Parser parser = new Repeat(new net.nanopay.tx.alterna.EFTStringParser(), Literal.create("|"));
       PStream ps1 = ps.apply(parser, null);
       if ( ps1 == null ) throw new RuntimeException("format error");
 

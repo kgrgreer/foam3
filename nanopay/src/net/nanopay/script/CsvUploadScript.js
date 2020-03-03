@@ -8,5 +8,13 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'csv'
     },
+    {
+      class: 'String',
+      name: 'progressId'
+    },
+    {
+      class: 'String',
+      name: 'filename'
+    }
   ],
 });

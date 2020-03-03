@@ -4,7 +4,7 @@ p({
   "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.approval.ApprovalRequest.getOwnClassInfo())
+      .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
@@ -14,13 +14,13 @@ p({
       .setValidated(true)
       .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
-         new net.nanopay.approval.SendGroupRequestApprovalDAO(x,
+         new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
            new net.nanopay.approval.AuthenticatedApprovalDAO(x,
              new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
-               new net.nanopay.approval.ApprovalDAO(x, null)))))
-      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.approval.ApprovalRequest.CREATED})
+               new foam.nanos.approval.ApprovalDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo()).build())))))
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .build()
-      .orderBy(foam.mlang.MLang.DESC(net.nanopay.approval.ApprovalRequest.CREATED));
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
   """,
-  "client": "{\"of\":\"net.nanopay.approval.ApprovalRequest\"}"
+  "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
 })

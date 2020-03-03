@@ -10,7 +10,6 @@ foam.CLASS({
   css: `
     ^ {
       height: 92%;
-      border-bottom: solid 1px #edf0f5;
     }
 
     ^sections-container {
@@ -44,6 +43,7 @@ foam.CLASS({
       flex: 1;
       basis:0;
       padding-right: 128px;
+      padding-bottom: 50px;
     }
 
     ^left-section {

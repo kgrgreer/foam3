@@ -10,9 +10,9 @@ foam.ENUM({
       documentation: 'Allows the operation to proceed.'
     },
     {
-      name: 'PREVENT',
-      label: 'Prevent',
-      documentation: 'Prevents the operation from proceeding.'
+      name: 'RESTRICT',
+      label: 'Restrict',
+      documentation: 'Restricts the operation from proceeding.'
     },
     {
       name: 'NOTIFY',

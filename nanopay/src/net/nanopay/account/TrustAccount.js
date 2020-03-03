@@ -46,7 +46,7 @@ foam.CLASS({
         cls.extras.push(`
           static public DAO find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
-            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
+            ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
             User user = zeroAccountUser(x, spid , currency);
 
             DAO accounts = ((DAO)x.get("localAccountDAO"))
@@ -63,7 +63,7 @@ foam.CLASS({
             count = (Count) accounts.select(count);
             if ( count.getValue() == 0 ) {
               logger.error("No TrustAccounts found for ", user.getId());
-              throw new RuntimeException("No TrustAccounts found for "+user.getId());
+              throw new RuntimeException("No TrustAccounts found for "+user.getId()+ " currency: "+ currency);
             }
             return accounts;
           }

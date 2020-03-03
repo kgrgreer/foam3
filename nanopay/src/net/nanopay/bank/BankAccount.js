@@ -10,22 +10,24 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'institutionDAO',
     'branchDAO'
   ],
 
   javaImports: [
-    'net.nanopay.account.Account',
     'foam.core.Currency',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*',
     'foam.dao.ArraySink',
-    'foam.nanos.auth.User',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.*',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.account.Account'
   ],
 
   tableColumns: [
@@ -51,7 +53,11 @@ foam.CLASS({
       permissionRequired: true
     }
   ],
-  
+
+  messages: [
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
+  ],
+
   properties: [
     {
       name: 'name',
@@ -67,7 +73,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
@@ -207,7 +213,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -255,9 +260,16 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [
+    function toSummary() {
+      return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
+    },
     {
       name: 'getBankCode',
       type: 'String',
@@ -314,24 +326,6 @@ foam.CLASS({
         // length
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
-        }
-
-        // already exists
-        User user = (User) x.get("user");
-
-        ArraySink accountSink = (ArraySink) user.getAccounts(x)
-          .where(
-            AND(
-             EQ(Account.ENABLED, true),
-             INSTANCE_OF(BankAccount.class)
-            )
-          )
-          .select(new ArraySink());
-        List<BankAccount> userAccounts = accountSink.getArray();
-        for ( BankAccount account : userAccounts ) {
-          if ( account.getName().toLowerCase().equals(this.getName().toLowerCase()) ) {
-            throw new IllegalStateException("Bank account with same name already registered.");
-          }
         }
       `
     }

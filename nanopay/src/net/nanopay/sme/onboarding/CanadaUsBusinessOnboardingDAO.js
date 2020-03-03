@@ -8,6 +8,7 @@ foam.CLASS({
   `,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.notification.Notification',
     'net.nanopay.documents.AcceptanceDocumentService',
@@ -57,6 +58,8 @@ foam.CLASS({
 
         businessOnboarding.validate(x);
 
+        FObject fObject = getDelegate().put_(x, businessOnboarding);
+
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
@@ -79,7 +82,7 @@ foam.CLASS({
         notification.setGroupId("payment-ops");
         localNotificationDAO.put(notification);
 
-        return getDelegate().put_(x, businessOnboarding);
+        return fObject;
       `
     }
   ]

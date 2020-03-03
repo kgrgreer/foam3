@@ -2,16 +2,17 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localContactDAO",
   "serve": false,
+  "lazy":false,
   "serviceScript": 
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setValidated(true)
+      .setDeletedAware(false)
       .setDecorator(
-        new net.nanopay.contacts.CheckContactExistsDAO(x,
         new net.nanopay.contacts.CheckContactExistingTransaction(x,
         new net.nanopay.fx.afex.AFEXContactDAO(x, 
-        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), null, net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID)))))
+        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build(), net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
       .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localUserDAO"))
@@ -24,14 +25,23 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "contactDAO",
   "serve": true,
+  "lazy":false,
   "serviceScript": 
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
-      .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).build())
+      .setDeletedAware(false)
+      .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build()).build())
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
+  "client":
+  """
+    {
+      "of":"net.nanopay.contacts.Contact",
+      "remoteListenerSupport":false,
+      "cache":false
+    }
+  """
 })
