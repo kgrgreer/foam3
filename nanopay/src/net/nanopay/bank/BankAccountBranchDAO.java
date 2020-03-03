@@ -62,11 +62,12 @@ public class BankAccountBranchDAO
           );
         // if branch not store in branchDAO, create new one and store it
         if ( branch == null ) {
-          Branch newBranch = new Branch.Builder(x)
+          branch = new Branch.Builder(x)
             .setBranchId(bankAccount.getBranchId())
             .build();
-          branchDAO.put(newBranch);
+          branchDAO.put(branch);
         }
+        bankAccount.setBranch(branch.getId());
       }
       bankAccount = (BankAccount) super.put_(x, obj);
       String message = "Insititution not set for BankAccount with Id: " + bankAccount.getId();
