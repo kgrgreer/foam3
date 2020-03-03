@@ -718,14 +718,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       for ( BankAccount bankAccount :  bankAccounts) {
       document.add(new Paragraph("Bank Information"));
 
-      Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String branchNum;
-      if ( branch != null ) {
-        branchNum = branch.getBranchId();
-      } else {
-        branchNum = "N/A";
-      }
-
       String accountNum = bankAccount.getAccountNumber();
       String accountName = bankAccount.getName();
       String accountCurrency = bankAccount.getDenomination();
@@ -750,6 +742,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if ( accountCurrency.equals("USD") ) {
         list.add(new ListItem("Routing number: " + bankAccount.getBranchId()));
       } else {
+        Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
+        String branchNum;
+        if ( branch != null ) {
+          branchNum = branch.getBranchId();
+        } else {
+          branchNum = "N/A";
+        }
         Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
         String institutionNum;
         if ( institution != null ) {
