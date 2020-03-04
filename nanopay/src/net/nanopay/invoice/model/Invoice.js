@@ -144,9 +144,41 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'paymentDate',
-      documentation: `The date and time of when the invoice was paid.`,
+      documentation: `The date and time of when the invoice was payment was fully completed.`,
       label: 'Received',
       aliases: ['scheduled', 'paid']
+    },
+    {
+      class: 'Date',
+      name: 'processingDate',
+      documentation: `The date by which the invoice payment begun.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.processingDate.toISOString().substring(0, 10));
+      }
+    },
+    {
+      class: 'Date',
+      name: 'approvalDate',
+      documentation: `The date by which the invoice approval occured.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.approvalDate.toISOString().substring(0, 10));
+      }
+    },
+    {
+      class: 'Date',
+      name: 'paymentSentDate',
+      documentation: `The date by which the invoice payment was sent.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.paymentSentDate.toISOString().substring(0, 10));
+      }
+    },
+    {
+      class: 'Date',
+      name: 'paymentReceivedDate',
+      documentation: `The date by which the invoice payment was received.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.paymentReceivedDate.toISOString().substring(0, 10));
+      }
     },
     {
       class: 'DateTime',
