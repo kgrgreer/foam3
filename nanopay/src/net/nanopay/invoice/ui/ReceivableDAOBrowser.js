@@ -69,9 +69,8 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Receivables' },
-    { name: 'SUB_TITLE', message: `Here's a list of the funds you've requested from other people
-
-    ` }
+    { name: 'SUB_TITLE', message: `Here's a list of the funds you've requested from other people` },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' }
   ],
 
   classes: [
