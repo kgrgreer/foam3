@@ -563,6 +563,18 @@ foam.CLASS({
       of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
       visibility: 'RO'
+    },
+    {
+      class: 'Boolean',
+      name: 'payeeReconciled',
+      documentation: `Determines whether invoice has been reconciled by payee.
+          Verifies that the receive amount is correct.`
+    },
+    {
+      class: 'Boolean',
+      name: 'payerReconciled',
+      documentation: `Determines whether invoice has been reconciled by payer.
+          Verifies that the sent amount is correct.`
     }
   ],
 

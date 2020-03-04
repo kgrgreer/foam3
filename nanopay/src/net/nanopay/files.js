@@ -659,6 +659,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/PayableController', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ReceivableController', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/PayableDAOBrowser', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/ReceivableDAOBrowser', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
