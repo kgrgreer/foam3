@@ -19,7 +19,19 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.invoice.ui.PayableController2"
+      "class": "net.nanopay.invoice.ui.PayableDAOBrowser"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "sme.main.invoices.receivables",
+  "label": "Receivables",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.invoice.ui.ReceivableDAOBrowser"
     }
   }
 })

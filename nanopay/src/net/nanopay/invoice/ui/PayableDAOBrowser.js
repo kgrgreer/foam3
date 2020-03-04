@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
-  name: 'PayableController2',
+  name: 'PayableDAOBrowser',
   extends: 'foam.u2.View',
 
   requires: [
@@ -36,6 +36,7 @@ foam.CLASS({
     ^ {
       width: 1024px;
       margin: auto;
+      margin-top: 30px;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-sendMoney {
       position: relative;
@@ -58,6 +59,12 @@ foam.CLASS({
       background: none;
       border: none;
     }
+    ^ .net-nanopay-sme-ui-AbliiActionView-secondary {
+      border: 1px solid lightgrey;
+    }
+    ^ h1, h3 {
+      margin: 15px;
+    }
   `,
 
   messages: [
@@ -70,11 +77,17 @@ foam.CLASS({
       name: 'DAOBrowser',
       extends: 'foam.comics.v2.DAOBrowserView',
 
+      imports: [
+        'accountingIntegrationUtil'
+      ],
+
       methods: [
-        function dblclick(invoice) {
+        async function dblclick(invoice) {
+          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
           this.stack.push({
             class: 'net.nanopay.sme.ui.InvoiceOverview',
-            invoice: invoice,
+            invoice: updatedInvoice,
             isPayable: true
           });
         }
