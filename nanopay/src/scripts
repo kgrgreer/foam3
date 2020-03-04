@@ -867,7 +867,43 @@ p({
   "notes": "Please replace businessEmail with the desired Business Email before running script."
 })
 
-p({"class":"foam.nanos.script.Script","id":"On boarding businessRegistration -> tax #","code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport net.nanopay.sme.onboarding.USBusinessOnboarding;\nimport net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;\nimport net.nanopay.model.Business;\n\nusOnboardingDAO = x.get(\"usBusinessOnboardingDAO\");\ncadUSOnboardingDAO = x.get(\"canadaUsBusinessOnboardingDAO\");\nbusinessDAO = x.get(\"businessDAO\");\n\nusOnboardings = (usOnboardingDAO.select(new ArraySink())).getArray();\n\n// Set business tax id from onboarding registration number\nfor (USBusinessOnboarding onboard : usOnboardings) {\nbusinessId = onboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(onboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\n}\n\ncadUsOnboardings = (cadUSOnboardingDAO.select(new ArraySink())).getArray();\n\nfor (CanadaUsBusinessOnboarding cadOnboard : cadUsOnboardings) {\nbusinessId = cadOnboard.getBusinessId();\nbusiness = (Business) businessDAO.find(businessId);\nbusiness.setTaxIdentificationNumber(cadOnboard.getBusinessRegistrationNumber());\nbusinessDAO.put(business);\nprint(cadOnboard);\n}\n\nprint(\"Done\");"})
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "On boarding businessRegistration -> tax #",
+  "code": """
+    import foam.dao.DAO;
+    import foam.dao.ArraySink;
+    import net.nanopay.sme.onboarding.USBusinessOnboarding;
+    import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+    import net.nanopay.model.Business;
+
+    usOnboardingDAO = x.get("uSBusinessOnboardingDAO");
+    cadUSOnboardingDAO = x.get("canadaUsBusinessOnboardingDAO");
+    businessDAO = x.get("businessDAO");
+
+    usOnboardings = (usOnboardingDAO.select(new ArraySink())).getArray();
+
+    // Set business tax id from onboarding registration number
+    for (USBusinessOnboarding onboard : usOnboardings) {
+      businessId = onboard.getBusinessId();
+      business = (Business) businessDAO.find(businessId);
+      business.setTaxIdentificationNumber(onboard.getBusinessRegistrationNumber());
+      businessDAO.put(business);
+    }
+    
+    cadUsOnboardings = (cadUSOnboardingDAO.select(new ArraySink())).getArray();
+    
+    for (CanadaUsBusinessOnboarding cadOnboard : cadUsOnboardings) {
+      businessId = cadOnboard.getBusinessId();
+      business = (Business) businessDAO.find(businessId);
+      business.setTaxIdentificationNumber(cadOnboard.getBusinessRegistrationNumber());
+      businessDAO.put(business);
+      print(cadOnboard);
+    }
+    
+    print(\"Done\");
+  """
+})
 
 p({
   "class": "foam.nanos.script.Script",
