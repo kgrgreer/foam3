@@ -81,12 +81,7 @@ foam.CLASS({
         }
         if ( nu === 'user' ) {
           this.queryRef.of = foam.nanos.auth.User;
-          this.queryRef.dao = this.__context__['userDAO'].where(
-            this.AND(
-              this.EQ(this.User.LIFECYCLE_STATE, this.LifecycleState.ACTIVE),
-              this.EQ(this.User.GROUP, 'liquidBasic')
-            )
-          ).orderBy(this.User.LEGAL_NAME);
+          this.queryRef.dao = this.__context__['liquiditySettingsUserDAO'].orderBy(this.User.LEGAL_NAME);
           this.queryRef.clearProperty("targetDAOKey");
         }
       },

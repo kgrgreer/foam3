@@ -47,7 +47,7 @@ public class TransactionBenchmark
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
   protected Boolean quote_ = true;
   protected Boolean purge_ = true;
-  protected Boolean disableRules_ = true;
+  protected Boolean disableRules_ = false;
 
   public void setQuoteTransactions(Boolean quote) {
     quote_ = quote;
@@ -57,9 +57,9 @@ public class TransactionBenchmark
     purge_ = purge;
   }
 
-  // public void setDisableRules(Boolean rules) {
-  //   disableRules_ = rules;
-  // }
+  public void setDisableRules(Boolean rules) {
+    disableRules_ = rules;
+  }
 
   @Override
   public void teardown(X x, java.util.Map stats) {
@@ -132,7 +132,7 @@ public class TransactionBenchmark
     transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
 
-    User admin = (User) userDAO_.find(1);
+    User admin = (User) userDAO_.find(1L);
 
     DAO dao = accountDAO_.where(EQ(BankAccount.ACCOUNT_NUMBER,ADMIN_BANK_ACCOUNT_NUMBER)).limit(1);
     List banks = ((ArraySink) dao.select(new ArraySink())).getArray();
@@ -175,9 +175,9 @@ public class TransactionBenchmark
       accountDAO_.put_(x, bank);
     }
 
-    for ( int i = 1; i <= MAX_USERS; i++ ) {
+    for ( long i = 1; i <= MAX_USERS; i++ ) {
       User user = null;
-      int id = 10000 + i;
+      long id = 10000 + i;
       user = (User) userDAO_.find(id);
       if ( user == null ) {
         user = new User();
@@ -187,8 +187,10 @@ public class TransactionBenchmark
         user.setLastName("s");
         user.setEmail(s+"@nanopay.net");
         user.setEmailVerified(true);
-        user.setGroup("nanopay");
-        userDAO_.put(user);
+        // NOTE: use 'business' group so default digital account is created below.
+        user.setGroup("business");
+        user = (User) userDAO_.put(user);
+
       }
     }
 
@@ -207,10 +209,11 @@ public class TransactionBenchmark
     transactionDAO_.put_(x, ci);
     Long bal = (Long) adminDCA.findBalance(x);
     assert bal >= Long.valueOf(users_.size()) * STARTING_BALANCE;
+
     // distribute the funds to all user digital accounts
     for ( int i = 0 ; i < users_.size() ; i++ ) {
       User user = (User) users_.get(i);
-      user = (User) user.fclone();
+      //user = (User) user.fclone();
       DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
       accounts_.put(i, account);
       Transaction txn = (Transaction) new DigitalTransaction();
@@ -223,15 +226,19 @@ public class TransactionBenchmark
       assert balance >= STARTING_BALANCE;
     }
 
-    // if ( disableRules_ ) {
-    //   DAO ruleDAO = (DAO) x.get("ruleDAO");
-    //   List rules = ((ArraySink) ruleDAO.select(new ArraySink())).getArray();
-    //   for ( Object r : rules ) {
-    //     foam.nanos.ruler.Rule rule = (foam.nanos.ruler.Rule) r;
-    //     rule.setEnabled(false);
-    //     ruleDAO.put(rule);
-    //   }
-    // }
+    if ( disableRules_ ) {
+      DAO ruleDAO = (DAO) x.get("ruleDAO");
+      List rules = ((ArraySink) ruleDAO.select(new ArraySink())).getArray();
+      for ( Object r : rules ) {
+        foam.nanos.ruler.Rule rule = (foam.nanos.ruler.Rule) ((foam.core.FObject)r).fclone();
+        rule.setEnabled(false);
+        try {
+          ruleDAO.put(rule);
+        } catch ( Exception e ) {
+          logger_.error("failed to disable rule:", rule);
+        }
+      }
+    }
   }
 
   @Override
@@ -241,7 +248,7 @@ public class TransactionBenchmark
 
     int fi = (int) (Math.random() * users_.size());
     int ti = (int) (Math.random() * users_.size());
-    int amount = (int) ((Math.random() + 0.1) * 100);
+    long amount = (long) ((Math.random() + 0.1) * 100);
 
     User payer = (User) users_.get(fi);
     long payerId = ((User) users_.get(fi)).getId();

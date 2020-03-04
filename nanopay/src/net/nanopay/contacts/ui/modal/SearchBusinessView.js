@@ -204,6 +204,10 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
+                      this.OR(
+                        this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                        this.CONTAINS_IC(this.Business.OPERATING_BUSINESS_NAME, filter)
+                      ),
                       this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
@@ -238,7 +242,10 @@ foam.CLASS({
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.OR(
+                        this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                        this.CONTAINS_IC(this.Business.OPERATING_BUSINESS_NAME, filter)
+                      ),
                       this.NOT(this.IN(this.Business.ID, mapSink.delegate.array)),
                       this.IN(this.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), this.permissionedCountries)
                     )

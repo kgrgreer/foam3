@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
 
   implements: [
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
-  tableColumns: [ 'id' ],
+  tableColumns: [ 'name' ],
 
   sections: [
     {
@@ -26,10 +26,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
+      name: 'name',
       label: 'Name',
-      class: 'String',
-      required: true
+      required: true,
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
     // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
@@ -81,7 +80,7 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       name: 'notes',
@@ -119,6 +118,14 @@ foam.CLASS({
       javaCode: `
         return getId();
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(x) {
+        console.log(this.name, this.id);
+        return this.name || this.id;
+      }
     }
   ]
 });
@@ -139,10 +146,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Arrays'
-  ],
-
-  tableColumns: [
-    'id'
   ],
 
   properties: [
@@ -315,10 +318,6 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'java.util.Arrays'
-  ],
-
-  tableColumns: [
-    'id'
   ],
 
   properties: [
@@ -564,7 +563,10 @@ foam.CLASS({
         if ( getCanIngestFile() ) permissions.add("menu.read.fileupload");
 
         if ( getCanMakeRule() ) permissions.add("rule.make");
-        if ( getCanMakeUser() ) permissions.add("user.make");
+        if ( getCanMakeUser() ) {
+          permissions.add("user.make");
+          permissions.add("foam.nanos.auth.user.section.administrative");
+        }
         if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
         if ( getCanMakeCapability() ) permissions.add("capability.make");
 

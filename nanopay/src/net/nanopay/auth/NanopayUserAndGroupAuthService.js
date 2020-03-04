@@ -7,7 +7,6 @@ foam.CLASS({
   documentation: `This class adds Nanopay specific user and group auth rules.`,
 
   imports: [
-    'localUserDAO',
     'passwordEntropyService'
   ],
 
@@ -29,7 +28,9 @@ foam.CLASS({
     'net.nanopay.model.Business',
 
     'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+    'static foam.mlang.MLang.CLASS_OF'
   ],
 
   methods: [
@@ -105,27 +106,21 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, userId, password);
-      `
-    },
-    {
-      name: 'loginByEmail',
-      javaCode: `
-        return login_(x, email, password);
+        return login_(x, identifier, password);
       `
     },
     {
       name: 'login_',
       documentation: 'Helper logic function to reduce code duplication.',
-      type: 'foam.nanos.auth.User',
+      type: 'User',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'id',
-          type: 'Any'
+          name: 'identifier',
+          type: 'String'
         },
         {
           name: 'password',
@@ -133,8 +128,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        User user = ( id instanceof String ) ?
-          getUserByEmail(x, (String) id) : getUserById(x, (long) id);
+        User user = getUser(x, identifier);
 
         if ( user == null ) {
           throw new AuthenticationException("User not found.");
@@ -152,51 +146,33 @@ foam.CLASS({
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
-        return id instanceof String ?
-          super.loginByEmail(x, (String) id, password) :
-          super.login(x, (long) id, password);
+        return super.login(x, identifier, password);
       `
     },
     {
-      name: 'getUserById',
-      documentation: 'Convenience method to get a user by id',
-      type: 'foam.nanos.auth.User',
+      name: 'getUser',
+      documentation: 'Convenience method to get a user by username or email',
+      type: 'User',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'id',
-          type: 'Long'
-        }
-      ],
-      javaCode: `
-        return (User) ((DAO) getLocalUserDAO()).inX(x).find(id);
-      `
-    },
-    {
-      name: 'getUserByEmail',
-      documentation: 'Convenience method to get a user by email',
-      type: 'foam.nanos.auth.User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'email',
+          name: 'identifier',
           type: 'String'
         }
       ],
       javaCode: `
-        DAO localUserDAO = (DAO) getLocalUserDAO();
-        return (User) localUserDAO
+        return (User) ((DAO) getLocalUserDAO())
           .inX(x)
           .find(
             AND(
-              EQ(User.EMAIL, email.toLowerCase()),
-              EQ(User.LOGIN_ENABLED, true)
+              OR(
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
+              ),
+              CLASS_OF(User.class)
             )
           );
       `

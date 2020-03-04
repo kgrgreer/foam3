@@ -38,7 +38,7 @@ public class UpdateOnboardingDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     businessOnboardingDAO_ = (DAO) x.get("businessOnboardingDAO");
-    usBusinessOnboardingDAO_ = (DAO) x.get("usBusinessOnboardingDAO");
+    usBusinessOnboardingDAO_ = (DAO) x.get("uSBusinessOnboardingDAO");
     businessId = 0;
     businessOnboarding = null;
     uSBusinessOnboarding = null;

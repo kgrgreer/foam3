@@ -38,11 +38,17 @@ p({
             "balance",
             "homeBalance"
           ],
-          "CRUDActionsAuth": {
-            "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["account.make"],
-            "update": ["account.make.%"],
-            "delete": ["account.make.%"]
+          "createPredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make"
+          },
+          "editPredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make.%"
+          },
+          "deletePredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make.%"
           },
           "filterExportPredicate":
             {
@@ -72,8 +78,8 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "transactionDAO",
-          "editEnabled": false,
-          "deleteEnabled": false,
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
           "defaultColumns": [
             "summary",
             "lastModified",
@@ -82,9 +88,9 @@ p({
             "destinationCurrency",
             "destinationAmount"
           ],
-          "CRUDActionsAuth": {
-            "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["transaction.make"]
+          "createPredicate": {
+            "class":"foam.lib.PermissionPredicate",
+            "permission":"account.make"
           },
           "filterExportPredicate":
             {
@@ -120,32 +126,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "userDAO",
       "browseTitle": "Users",
-      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
-      "predicate": { 
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "foam.nanos.auth.User",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
-      },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["user.make"],
-        "update": ["user.make"],
-        "delete": ["user.make"]
-      },
-      "browseViews": [
-        {
-          "class": 'foam.comics.v2.namedViews.NamedViewCollection',
-          "name": "Users",
-          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
-        }
-      ]
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"]
     }
   }
 })
@@ -173,11 +154,17 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["liquiditysettings.make"],
-        "update": ["liquiditysettings.make"],
-        "delete": ["liquiditysettings.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"liquiditysettings.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"liquiditysettings.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"liquiditysettings.make"
       }
     }
   }
@@ -193,10 +180,10 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "net.nanopay.liquidity.approvalRequest.RoleApprovalRequest",
-      "createEnabled": false,
-      "editEnabled": false,
-      "deleteEnabled": false
+      "of": "foam.nanos.approval.RoleApprovalRequest",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   }
 })
@@ -259,16 +246,23 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "businessRuleAction",
         "createdBy"
       ],
       "of": "net.nanopay.liquidity.tx.GenericBusinessRule",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
       }
     }
   },
@@ -307,6 +301,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceAccount",
@@ -315,11 +310,17 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictAccountsRule",
       "browseTitle": "Restrict Accounts",
       "createTitle": "Create a New Rule to Restrict Accounts",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
       }
     }
   },
@@ -358,6 +359,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "createdBy",
         "sourceUser",
@@ -366,11 +368,17 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictUsersRule",
       "browseTitle": "Restrict Users",
       "createTitle": "Create a New Rule to Restrict Users",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
       }
     }
   },
@@ -411,15 +419,22 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "startAmount"
       ],
       "of": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
       }
     }
   },
@@ -458,6 +473,7 @@ p({
       },
       "defaultColumns": [
         "id",
+        "name",
         "enabled",
         "applyLimitTo",
         "send",
@@ -467,11 +483,17 @@ p({
       "of": "net.nanopay.liquidity.tx.TxLimitRule",
       "browseTitle": "Transaction Limits",
       "createTitle": "Create a New Transaction Limit",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"rule.make"
       }
     }
   },
@@ -511,11 +533,17 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capability.make"],
-        "update": ["capability.make"],
-        "delete": ["capability.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
       }
     }
   },
@@ -544,11 +572,17 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capability.make"],
-        "update": ["capability.make"],
-        "delete": ["capability.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capability.make"
       }
     }
   },
@@ -581,11 +615,17 @@ p({
       "daoKey": "capabilityRequestDAO",
       "browseTitle": "Role Assignment",
       "createTitle": "Execute a Role Assignment",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capabilityrequest.make"],
-        "update": ["capabilityrequest.make"],
-        "delete": ["capabilityrequest.make"]
+      "createPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capabilityrequest.make"
+      },
+      "editPredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capabilityrequest.make"
+      },
+      "deletePredicate": {
+        "class":"foam.lib.PermissionPredicate",
+        "permission":"capabilityrequest.make"
       }
     }
   },

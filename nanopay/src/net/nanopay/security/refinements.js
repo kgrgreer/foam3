@@ -20,6 +20,7 @@ foam.CLASS({
       name: 'isPublic',
       class: 'Boolean',
       value: true,
+      writePermissionRequired: true,
       section: 'administrative'
     },
     {
@@ -42,7 +43,6 @@ foam.CLASS({
       name: 'signatures',
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
-      includeInSignature: false,
       visibility: function(signatures) {
         return signatures ?
           foam.u2.DisplayMode.RO :
@@ -62,7 +62,6 @@ foam.CLASS({
       name: 'signatures',
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
-      includeInSignature: false,
     }
   ]
 });

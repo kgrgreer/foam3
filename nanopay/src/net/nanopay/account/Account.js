@@ -46,66 +46,6 @@ foam.CLASS({
 
   axioms: [
     {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'All',
-      predicateFactory: function(e) {
-        return e.AND(
-          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false),
-          e.OR(
-            e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
-            e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
-            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.SecuritiesAccount' }),
-            foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' })
-          )
-        );
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'Shadow Accounts',
-      predicateFactory: function(e) {
-        return e.AND(
-          e.INSTANCE_OF(net.nanopay.account.ShadowAccount),
-          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-        )
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'Aggregate Accounts',
-      predicateFactory: function(e) {
-        return e.AND(
-          e.INSTANCE_OF(net.nanopay.account.AggregateAccount),
-          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-        )
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'Virtual Accounts',
-      predicateFactory: function(e) {
-        return e.AND(
-          foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-        )
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'Securities Accounts',
-      predicateFactory: function(e) {
-        return e.AND(
-          e.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
-          e.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-          e.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-        )
-      }
-    },
-    {
       class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Table',
       view: { class: 'net.nanopay.account.AccountDAOBrowserView' },
@@ -211,7 +151,6 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      tableWidth: 168,
       section: 'accountDetails',
       order: 1
     },
@@ -362,7 +301,7 @@ foam.CLASS({
       documentation: 'The ID of the Agent who created the account.',
       section: 'administration',
       // visibility: 'RO',
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
@@ -423,14 +362,14 @@ foam.CLASS({
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
       section: 'administration',
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
 

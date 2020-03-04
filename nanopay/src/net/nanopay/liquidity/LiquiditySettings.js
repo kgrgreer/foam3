@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware'
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   requires: [
@@ -78,7 +78,7 @@ foam.CLASS({
       documentation: 'The user that is supposed to receive emails for this liquidity Setting',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj, axiom) {
-        this.__subSubContext__.userDAO
+        this.__subSubContext__.liquiditySettingsUserDAO
           .find(value)
           .then((user) => this.add(user.label()))
           .catch((error) => {
@@ -92,12 +92,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Users',
-              dao: X.userDAO.where(
-                X.data.AND(
-                  X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-                  X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-                )
-              ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+              dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
             }
           ]
         };
@@ -355,14 +350,14 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: foam.u2.DisplayMode.HIDDEN
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

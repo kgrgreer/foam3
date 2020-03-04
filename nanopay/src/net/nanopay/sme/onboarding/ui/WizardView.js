@@ -214,6 +214,7 @@ foam.CLASS({
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
+              x.user.address = o.address
             });
 
             await x.userDAO.find(x.agent.id).then((agent) => {

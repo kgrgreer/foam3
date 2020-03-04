@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"Create default notification settings for agentJunction",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d27","name":"Create default notification settings for agentJunction",
   "priority":100,
   "ruleGroup":"AgentJunctions",
   "documentation":"Creates default notification settings on agentJunction",
@@ -15,7 +15,7 @@ p({
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id": "Set loginEnabled as false for gd spid",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d28","name": "Set loginEnabled as false for gd spid",
   "priority": 100,
   "ruleGroup": "GD",
   "documentation": "Set loginEnabled to false for new user creation on spid gd",

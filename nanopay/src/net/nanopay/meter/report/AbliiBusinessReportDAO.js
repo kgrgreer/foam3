@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.auth.LoginAttempt',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.FXSummaryTransaction',
@@ -49,7 +49,7 @@ foam.CLASS({
         // Retrieve the DAO
         DAO businessDAO             = (DAO) x.get("localBusinessDAO");
         DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO usBusinessOnboardingDAO = (DAO) x.get("usBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
         DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
         DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");

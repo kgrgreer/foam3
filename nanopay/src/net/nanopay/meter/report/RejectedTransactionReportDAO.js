@@ -39,46 +39,47 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         if ( predicate != null ) {
-          if ( predicate instanceof Nary ) {
+          Predicate predicateContent = ((And) predicate).getArgs()[1];
+          if ( predicateContent instanceof Nary ) {
             newPredicate = AND(
               OR(
                 GTE(
                   Transaction.CREATED,
-                  ((Constant) ((Gt) ((And) predicate).getArgs()[0]).getArg2()).getValue()
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
                 ),
                 GTE(
                   Transaction.PROCESS_DATE,
-                  ((Constant) ((Gt) ((And) predicate).getArgs()[0]).getArg2()).getValue()
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
                 ),
                 GTE(
                   Transaction.COMPLETION_DATE,
-                  ((Constant) ((Gt) ((And) predicate).getArgs()[0]).getArg2()).getValue()
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
                 )
               ),
               LTE(
                 Transaction.CREATED,
-                ((Constant) ((Lt) ((And) predicate).getArgs()[1]).getArg2()).getValue()
+                ((Constant) ((Lt) ((And) predicateContent).getArgs()[1]).getArg2()).getValue()
               )
             );
-          } else if ( predicate instanceof Gt ) {
+          } else if ( predicateContent instanceof Gt ) {
             newPredicate = OR(
               GTE(
                 Transaction.CREATED,
-                ((Constant) ((Gt) predicate).getArg2()).getValue()
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
               ),
               GTE(
                 Transaction.PROCESS_DATE,
-                ((Constant) ((Gt) predicate).getArg2()).getValue()
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
               ),
               GTE(
                 Transaction.COMPLETION_DATE,
-                ((Constant) ((Gt) predicate).getArg2()).getValue()
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
               )
             );
-          } else if ( predicate instanceof Lt ) {
+          } else if ( predicateContent instanceof Lt ) {
             newPredicate = LTE(
               Transaction.CREATED,
-              ((Constant) ((Lt) predicate).getArg2()).getValue()
+              ((Constant) ((Lt) predicateContent).getArg2()).getValue()
             );
           } else {
             newPredicate = predicate;

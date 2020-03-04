@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 import net.nanopay.meter.compliance.ComplianceValidationStatus;
 

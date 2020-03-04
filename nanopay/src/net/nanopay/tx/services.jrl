@@ -98,7 +98,7 @@ p({
     import foam.dao.DAO;
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
-    
+
     MDAO mdao = new MDAO(Transaction.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
@@ -119,9 +119,6 @@ p({
       .build();
     inner = new net.nanopay.tx.TransactionDAO(x, inner);
     inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
-    inner = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
-      .setDelegate(inner)
-      .build();
 
     dao = new net.nanopay.tx.SaveChainedTransactionDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
@@ -137,7 +134,9 @@ p({
     dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
     dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
+    dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.TransactionValidator());
     dao = new foam.dao.GUIDDAO.Builder(x).setDelegate(dao).build();
+    //TODO: Replace below line with  this line: dao = new net.nanopay.tx.TransactionQuotingDAO(x, dao);
     dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
@@ -471,23 +470,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"securityPlannerDAO",
-  "lazy":false,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setNullify(true)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setRuler(true)
-      .setRulerDaoKey("securityPlannerDAO")
-      .setPm(true)
-      .setPipelinePm(true)
-      .build();
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"transactionEventDAO",
   "lazy":false,
   "serve":true,
@@ -517,6 +499,49 @@ p({
             "class":"foam.box.HTTPBox",
             "url":
             "service/exchangeRateService"
+          }
+        }
+      }
+    """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"paymentProviderCorridorJunctionDAO",
+  "serve":true,
+  "serviceScript":"""
+    import foam.dao.DAO;
+
+    dao = new foam.dao.MDAO(net.nanopay.payment.PaymentProviderCorridorJunction.getOwnClassInfo());
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.payment.PaymentProviderCorridorJunction.SOURCE_ID, net.nanopay.payment.PaymentProviderCorridorJunction.TARGET_ID });
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.payment.PaymentProviderCorridorJunction.SOURCE_ID });
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("paymentProviderCorridorJunctions")
+      .setOf(net.nanopay.payment.PaymentProviderCorridorJunction.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.payment.PaymentProviderCorridorJunction\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "corridorService",
+  "serve": true,
+  "serviceClass": "net.nanopay.payment.PaymentCorridorService",
+  "boxClass": "net.nanopay.payment.CorridorService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.payment.ClientCorridorService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/corridorService"
           }
         }
       }
