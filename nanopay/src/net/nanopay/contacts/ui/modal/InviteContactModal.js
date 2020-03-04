@@ -3,7 +3,9 @@ foam.CLASS({
   name: 'InviteContactModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
-  documentation: 'A modal that lets a user invite a contact to the platform.',
+  documentation: `
+    Lets the user invite an external user to the platform. Doesn't add a contact.
+  `,
 
   imports: [
     'ctrl',
@@ -163,7 +165,7 @@ foam.CLASS({
         .end()
         .start().addClass(this.myClass('button-container'))
           .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-          .start(this.SEND).end()
+          .start(this.NEXT).end()
         .end();
     }
   ],
@@ -181,7 +183,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'send',
+      name: 'next',
       label: 'Send Invitation',
       isEnabled: function(permission) {
         return permission;

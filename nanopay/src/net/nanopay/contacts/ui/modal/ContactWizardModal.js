@@ -43,6 +43,9 @@ foam.CLASS({
     }
 
     /* Styles for contact sub wizard views */
+    ^ .container {
+      padding: 24px;
+    }
     ^ .title-block {
       display: flex;
       justify-content: space-between;
@@ -182,15 +185,18 @@ foam.CLASS({
         this.startAt = 'AddContactStepOne';
       }
       this.views = {
-        'addContactMenu': {
+        'AddContactMenu': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactMenu' },
           startPoint: true
         },
-        'selectBusiness': {
+        'SearchBusiness': {
           view: { class: 'net.nanopay.contacts.ui.modal.SearchBusinessView' }
         },
         'AddContactByPaymentCode': {
-          view: { class: 'net.nanopay.contacts.ui.modal.AddContactByPaymentCodeModal' }
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactByPaymentCode' }
+        },
+        'AddContactConfirmation': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
         },
         'AddContactStepOne': {
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepOne' }
@@ -202,14 +208,8 @@ foam.CLASS({
           view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
         },
         'InviteContact': {
-          view: {
-            class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
-            data: this.data 
-          }
-        },
-        'addContactConfirmation': {
-          view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
-        },
+          view: { class: 'net.nanopay.contacts.ui.modal.InviteContactModal' }
+        }
       };
     },
 

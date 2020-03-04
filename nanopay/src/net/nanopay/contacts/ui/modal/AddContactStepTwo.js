@@ -4,8 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    This is the second step of the adding contact flow to allow user to 
-    add banking information for inviting a contact,
+    This is the second step of the create contact from scratch flow that allows
+    the user to add the banking information for the contact or save the contact
+    without bank account information provided. Gives option to invite external 
+    user to join Ablii.
   `,
 
   requires: [
@@ -240,7 +242,7 @@ foam.CLASS({
                 }
 
                 return this.E().tag({
-                  class: 'foam.u2.view.FObjectView',
+                  class: 'foam.u2.detail.SectionedDetailView',
                   of: 'net.nanopay.bank.BankAccount',
                   data$: self.bankAccount$ // Bind value to the property
                 });

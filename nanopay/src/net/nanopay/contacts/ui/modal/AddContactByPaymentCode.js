@@ -1,9 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
-  name: 'AddContactByPaymentCodeModal',
+  name: 'AddContactByPaymentCode',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
-  documentation: 'Add Contact By Payment Code Modal',
+  documentation: `
+    Lets the user add an internal user (public or private) as a contact
+    by inputting their payment code.
+  `,
 
   imports: [
     'ctrl',
@@ -22,9 +25,6 @@ foam.CLASS({
       justify-content: space-between;
       max-height: 80vh;
       overflow-y: scroll;
-    }
-    ^container {
-      padding: 24px;
     }
     ^payment-code-field {
       position: relative;
@@ -66,10 +66,6 @@ foam.CLASS({
       font-size: 12px;
       line-height: 1.5;
       color: #8e9090;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-AddContactByPaymentCode {
-      min-width: 104px;
-      height: 36px;
     }
   `,
 
@@ -119,7 +115,7 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        .start().addClass(this.myClass('container'))
+        .start().addClass('container')
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
@@ -153,7 +149,7 @@ foam.CLASS({
         .end()
         .start().addClass('button-container')
           .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-          .start(this.ADD_CONTACT_BY_PAYMENT_CODE).end()
+          .start(this.NEXT).end()
         .end();
     }
   ],
@@ -171,7 +167,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'AddContactByPaymentCode',
+      name: 'next',
       label: 'Add Contact',
       code: async function(X) {
         let { data } = this.wizard;
@@ -185,7 +181,7 @@ foam.CLASS({
             paymentCode: this.paymentCodeValue
           });
           data.businessSectorId = business.businessSectorId;
-          this.pushToId('addContactConfirmation');
+          this.pushToId('AddContactConfirmation');
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;
           this.ctrl.notify(msg, 'error');

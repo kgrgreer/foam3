@@ -1,4 +1,4 @@
-package net.nanopay.sme;
+package net.nanopay.contacts;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;

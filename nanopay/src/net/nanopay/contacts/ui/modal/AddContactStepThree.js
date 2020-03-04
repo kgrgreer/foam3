@@ -8,8 +8,9 @@ foam.CLASS({
   ],
 
   documentation: `
-    This is the third step of the adding contact flow to allow user to 
-    add related business address for inviting a contact.
+    This is the third and final step of the create contact from scratch flow
+    that allows the user to add the related business address for the contact
+    and add the contact.
   `,
 
   imports: [

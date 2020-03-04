@@ -1,15 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.sme',
+  package: 'net.nanopay.contacts',
   name: 'ClientBusinessFromPaymentCodeService',
 
   implements: [
-    'net.nanopay.sme.BusinessFromPaymentCodeInterface'
+    'net.nanopay.contacts.BusinessFromPaymentCodeInterface'
   ],
 
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.sme.BusinessFromPaymentCodeInterface',
+      of: 'net.nanopay.contacts.BusinessFromPaymentCodeInterface',
       name: 'delegate'
     }
   ]

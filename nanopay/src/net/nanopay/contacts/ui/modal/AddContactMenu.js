@@ -11,7 +11,7 @@ foam.CLASS({
     1) Search by Business Name
     2) Add by Payment Code
     3) Create from Scratch
-    4) Send Invitation
+    4) Send Invitation (doesn't add the contact)
   `,
 
   css: `
@@ -72,7 +72,7 @@ foam.CLASS({
           width: '50px',
           height: '50px'
         },
-        optionDestination: 'selectBusiness'
+        optionDestination: 'SearchBusiness'
       },
       {
         optionTitle: 'Add by Payment Code',

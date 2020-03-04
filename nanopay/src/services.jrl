@@ -213,7 +213,7 @@ p({
   "client":"{\"of\":\"net.nanopay.model.BusinessType\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec","name":"bankAccountVerification","serve":true,"boxClass":"net.nanopay.cico.service.BankAccountVerifierSkeleton","serviceClass":"net.nanopay.cico.service.BankAccountVerifierService","client":"{ \"class\":\"net.nanopay.cico.service.ClientBankAccountVerifierService\", \"delegate\": { \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/bankAccountVerification\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/bankAccountVerification\"} } }"})
+p({"class":"foam.nanos.boot.NSpec", "name":"bankAccountVerification",          "serve":true,  "boxClass":"net.nanopay.cico.service.BankAccountVerifierSkeleton", "serviceClass":"net.nanopay.cico.service.BankAccountVerifierService","client":"{ \"class\":\"net.nanopay.cico.service.ClientBankAccountVerifierService\", \"delegate\": { \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/bankAccountVerification\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/bankAccountVerification\"} } }"})
 
 p({
   "class":"foam.nanos.boot.NSpec",

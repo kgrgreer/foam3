@@ -29,13 +29,6 @@ foam.CLASS({
     'user'
   ],
 
-  css: `
-  ^ .net-nanopay-sme-ui-SMEModal-inner {
-    position: absolute;
-    top: 0;
-  }
-  `,
-
   constants: [
     {
       type: 'String',
@@ -92,7 +85,7 @@ foam.CLASS({
                   class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
                   // Setting data enables the edit flow.
                   data: this
-                }).style({'position': 'absolute'}));
+                }));
               }
             }),
             this.Action.create({

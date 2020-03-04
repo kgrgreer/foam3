@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    Lets the user search company or organization by the business name.
+    Lets the user search public companies by their operating business names.
     If the business exists, then add the existing directly. If the business
     does not exist, then create a new contact.
   `,
@@ -40,9 +40,6 @@ foam.CLASS({
       justify-content: space-between;
       height: 593px;
       overflow-y: scroll;
-    }
-    ^container {
-      margin: 24px;
     }
     ^ .foam-u2-ActionView-cancel,
     ^ .foam-u2-ActionView-cancel:hover {
@@ -318,7 +315,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('container'))
+          .addClass('container')
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
@@ -413,7 +410,7 @@ foam.CLASS({
         address: business.address
       });
       data.businessSectorId = business.businessSectorId;
-      this.pushToId('addContactConfirmation');
+      this.pushToId('AddContactConfirmation');
     }
   ],
 
@@ -422,7 +419,11 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        X.subStack.back();
+        if ( X.subStack.depth > 1 ) {
+          X.subStack.back();
+        } else {
+          X.closeDialog();
+        }
       }
     },
     {

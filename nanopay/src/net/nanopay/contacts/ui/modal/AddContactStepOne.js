@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    This is the first step of the adding contact flow to allow user to add 
-    business name and emails for inviting a contact.
+    This is the first step of the create contact from scratch flow that allows
+    the user to add the business name and email for the contact.
   `,
 
   implements: [
@@ -14,8 +14,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.contacts.Contact',
-    'net.nanopay.contacts.ContactStatus',
-    'foam.u2.detail.SectionedDetailPropertyView'
+    'net.nanopay.contacts.ContactStatus'
   ],
 
   imports: [

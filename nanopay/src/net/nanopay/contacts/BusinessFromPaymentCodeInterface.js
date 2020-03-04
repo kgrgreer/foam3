@@ -1,5 +1,5 @@
 foam.INTERFACE({
-    package: 'net.nanopay.sme',
+    package: 'net.nanopay.contacts',
     name: 'BusinessFromPaymentCodeInterface',
   
     documentation: `

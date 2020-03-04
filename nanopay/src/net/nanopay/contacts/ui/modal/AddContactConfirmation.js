@@ -4,8 +4,9 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    The final step in the add contact flow confirming the internal
-    contact's information.
+    The final step in add contact flow for adding internal users 
+    (search by business name & add by payment code flows) that 
+    confirms the contact's information.
   `,
 
   imports: [
@@ -133,7 +134,7 @@ foam.CLASS({
         .end()
         .start().addClass('button-container')
           .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-          .start(this.CONFIRM).end()
+          .start(this.NEXT).end()
         .end();
     }
   ],
@@ -153,7 +154,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'confirm',
+      name: 'next',
       label: 'Add contact',
       code: async function(X) {
         if ( ! await this.addContact() ) return;

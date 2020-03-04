@@ -27,8 +27,7 @@ foam.CLASS({
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Business',
-    'net.nanopay.payment.PaymentCode'
+    'net.nanopay.model.Business'
   ],
 
   constants: [
@@ -129,8 +128,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.payment.PaymentCode',
+      class: 'String',
       name: 'paymentCode',
       documentation: `Used to populate businessId by finding a business which
         shares the same payment code.`
