@@ -208,7 +208,6 @@ foam.CLASS({
                         this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                         this.CONTAINS_IC(this.Business.OPERATING_BUSINESS_NAME, filter)
                       ),
-                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
                   );
@@ -315,7 +314,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass('container')
+          .addClass('contact-container')
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
@@ -403,13 +402,16 @@ foam.CLASS({
 
     function addSelected(business) {
       let { data } = this.wizard;
+      // copy over contact properties
       data.copyFrom({
-        organization: business.organization,
-        businessName: business.organization,
+        organization: business.businessName,
         businessId: business.id,
         address: business.address
       });
+      // set confirmation display properties
       data.businessSectorId = business.businessSectorId;
+      data.operatingBusinessName = business.operatingBusinessName;
+      
       this.pushToId('AddContactConfirmation');
     }
   ],

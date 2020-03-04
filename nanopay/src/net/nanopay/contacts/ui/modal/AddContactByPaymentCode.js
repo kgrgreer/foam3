@@ -115,7 +115,7 @@ foam.CLASS({
     function initE() {
       this
         .addClass(this.myClass())
-        .start().addClass('container')
+        .start().addClass('contact-container')
           .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
@@ -173,14 +173,17 @@ foam.CLASS({
         let { data } = this.wizard;
         try {
           var business = await this.businessFromPaymentCode.getPublicBusinessInfo(X, this.paymentCodeValue);
+          // copy over contact properties
           data.copyFrom({
             organization: business.organization,
-            businessName: business.organization,
             businessId: business.id,
-            address: business.address,
-            paymentCode: this.paymentCodeValue
+            address: business.address
           });
+          // set confirmation display properties
           data.businessSectorId = business.businessSectorId;
+          data.operatingBusinessName = business.operatingBusinessName;
+          data.paymentCodeValue = this.paymentCodeValue;
+
           this.pushToId('AddContactConfirmation');
         } catch (err) {
           var msg = err.message || this.GENERIC_PUT_FAILED;

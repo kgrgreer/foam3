@@ -132,11 +132,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'paymentCode',
-      documentation: `Used for display purposes on add contact confirmation screen.`
-    },
-    {
       // TODO: This should probably be defined by a relationship.
       class: 'Reference',
       of: 'net.nanopay.model.Business',

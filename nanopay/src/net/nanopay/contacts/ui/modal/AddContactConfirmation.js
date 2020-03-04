@@ -77,14 +77,14 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass(this.myClass('info-container'))
           .start().addClass(this.myClass('operating-name'))
-            .add(this.data.businessName)
+            .add(this.data.operatingBusinessName)
           .end()
           .start().addClass(this.myClass('info-slot'))
             .start().addClass(this.myClass('info-slot-title'))
               .add('Legal Company Name')
             .end()
             .start().addClass(this.myClass('info-slot-value'))
-              .add(this.data.organization)
+              .add(this.data.businessName)
             .end()
           .end()
           .start().addClass(this.myClass('info-slot'))
@@ -100,15 +100,15 @@ foam.CLASS({
               }))
             .end()
           .end()
-          .add(this.slot(function(data$paymentCode) {
-            if ( data$paymentCode ) {
+          .add(this.slot(function(data$paymentCodeValue) {
+            if ( data$paymentCodeValue ) {
               return self.E()
                 .start().addClass(this.myClass('info-slot'))
                   .start().addClass(this.myClass('info-slot-title'))
                     .add('Payment Code')
                   .end()
                   .start().addClass(this.myClass('info-slot-value'))
-                    .add(data$paymentCode)
+                    .add(data$paymentCodeValue)
                   .end()
                 .end();
             }

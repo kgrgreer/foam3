@@ -43,7 +43,7 @@ foam.CLASS({
     }
 
     /* Styles for contact sub wizard views */
-    ^ .container {
+    ^ .contact-container {
       padding: 24px;
     }
     ^ .title-block {
