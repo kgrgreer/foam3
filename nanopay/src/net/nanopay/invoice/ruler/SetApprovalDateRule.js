@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ruler',
-  name: 'SetProcessingDateRule',
+  name: 'SetApprovalDateRule',
 
-  documentation: `Sets invoice processing date when paymentId is associated to invoices`,
+  documentation: `Sets invoice approval date when invoice has been approved`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -26,14 +26,14 @@ foam.CLASS({
           DAO invoiceDAO = (DAO) x.get("invoiceDAO");
           Invoice invoice = (Invoice) obj;
           invoice = (Invoice) invoice.fclone();
-          invoice.setProcessingDate(new Date());
+          invoice.setApprovalDate(new Date());
           try {
             invoiceDAO.put(invoice);
           } catch (Throwable e) {
-            ((Logger) x.get("logger")).error("Error updating processing date on invoice: " + invoice.getId());
+            ((Logger) x.get("logger")).error("Error updating approval date on invoice: " + invoice.getId());
           }
         }
-      }, "set processing date on invoice");
+      }, "set approval date on invoice");
       `
     }
   ]
