@@ -47,7 +47,7 @@ foam.CLASS({
       position: relative;
       top: -40px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-sync {
+    ^ .net-nanopay-sme-ui-AbliiActionView-sync, ^ .net-nanopay-sme-ui-AbliiActionView-sync:hover:not(:disabled) {
       position: relative;
       left: 680px;
       top: -25px;
@@ -65,12 +65,17 @@ foam.CLASS({
     ^ h1, h3 {
       margin: 15px;
     }
+    ^ h3 {
+      font-weight: 200;
+    }
   `,
 
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: `Here's a list of payments that people have requested from you` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' }
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
+    { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` }
   ],
 
   classes: [
@@ -136,6 +141,21 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           contextMenuActions: [
+            foam.core.Action.create({
+              name: 'reconcile',
+              label: 'Reconcile',
+              isAvailable: function() {
+                return ! this.payerReconciled && this.status != this.InvoiceStatus.DRAFT;
+              },
+              code: async function(X) {
+                this.payerReconciled = true;
+                self.user.expenses.put(this).then(() => {
+                  self.notify(self.RECONCILED_SUCCESS, 'success');
+                }).catch((err) => {
+                  self.notify(self.RECONCILED_ERROR, 'error');
+                });
+              }
+            }),
             foam.core.Action.create({
               name: 'viewDetails',
               label: 'View details',
