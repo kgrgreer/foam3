@@ -91,13 +91,6 @@ foam.CLASS({
     ^business-list {
       overflow-y: scroll;
     }
-    ^button-container {
-      height: 84px;
-      display: flex;
-      align-items: center;
-      background-color: #fafafa;
-      padding-left: 24px;
-    }
   `,
 
   constants: [
@@ -396,7 +389,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass(this.myClass('button-container'))
+        .start().addClass('button-container')
           .tag(this.BACK, { buttonStyle: 'TERTIARY' })
         .end();  
     },
