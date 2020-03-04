@@ -16,27 +16,3 @@ p({
   "desiredModelId":"net.nanopay.bank.BankAccount",
   "strategy":"net.nanopay.bank.USBankAccount"
 })
-p({
-  "class":"foam.strategy.StrategyReference",
-  "id":"10ee1260-ee2b-4f9f-b279-a80be89d6736",
-  "desiredModelId":"foam.nanos.ruler.Rule",
-  "strategy":"net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule"
-})
-p({
-  "class":"foam.strategy.StrategyReference",
-  "id":"707d2ce5-8533-495d-be16-1c4c00d4d76d",
-  "desiredModelId":"foam.nanos.ruler.Rule",
-  "strategy":"net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule"
-})
-p({
-  "class":"foam.strategy.StrategyReference",
-  "id":"7a05cd7d-1821-4fe5-8873-1039c5593011",
-  "desiredModelId":"foam.nanos.ruler.Rule",
-  "strategy":"net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule"
-})
-p({
-  "class":"foam.strategy.StrategyReference",
-  "id":"0bf0199e-ba62-44cc-b141-9c6917acbbc9",
-  "desiredModelId":"foam.nanos.ruler.Rule",
-  "strategy":"foam.nanos.ruler.Rule"
-})
