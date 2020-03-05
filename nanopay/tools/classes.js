@@ -937,6 +937,7 @@ var classes = [
   'net.nanopay.alarming.AlarmConfig',
   'net.nanopay.alarming.AlarmConfigOMNameDAO',
   'net.nanopay.alarming.AlarmConfigOMNameSink',
+  'net.nanopay.alarming.AlarmHostnameRuleAction',
   'net.nanopay.alarming.AlarmReason',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
