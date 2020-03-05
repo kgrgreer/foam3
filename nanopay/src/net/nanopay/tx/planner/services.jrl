@@ -17,7 +17,7 @@ p({
       .setRuler(false)
       .setPm(true)
       .setPipelinePm(true)
-      .setAuthenticated(false)
+      .setAuthorize(false)
       .build();
   """
 })
@@ -31,7 +31,7 @@ p({
         .setInnerDAO(x.get("localTransactionPlannerDAO"))
         .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
         .setRuler(false)
-        .setAuthenticated(true)
+        .setAuthorize(true)
         .setPm(true)
         .setPipelinePm(true)
         .setEnableInterfaceDecorators(false)
