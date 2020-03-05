@@ -76,7 +76,7 @@ p({
   "documentation": "Sets invoice processing date when transaction id is associated to invoice",
   "daoKey":"invoiceDAO",
   "operation":3,
-  "after": true,
+  "after": false,
   "predicate": {
     "class":"foam.mlang.predicate.And",
     "args":[
