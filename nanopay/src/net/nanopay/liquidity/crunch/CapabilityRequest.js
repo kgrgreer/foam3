@@ -5,7 +5,7 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'net.nanopay.liquidity.approvalRequest.ApprovableAware',
+    'foam.nanos.approval.ApprovableAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
 
@@ -24,9 +24,9 @@ foam.CLASS({
     'java.util.Map',
     'java.util.Set',
     'net.nanopay.account.Account',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.liquidity.approvalRequest.RoleApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
@@ -136,13 +136,8 @@ foam.CLASS({
 
         return {
           class: 'foam.u2.view.ReferenceArrayView',
-          daoKey: 'userDAO',
-          dao: X.userDAO.where(
-            X.data.AND(
-              X.data.EQ(foam.nanos.auth.User.GROUP, 'liquidBasic'),
-              X.data.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-            )
-          ).orderBy(foam.nanos.auth.User.LEGAL_NAME)
+          daoKey: 'liquiditySettingsUserDAO',
+          dao: X.liquiditySettingsUserDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
         };
       },
       validateObj: function(users) {
@@ -294,7 +289,6 @@ foam.CLASS({
         }
         return n;
       },
-      javaType: 'java.lang.Integer',
       validateObj: function(approverLevel) {
         if ( approverLevel < this.APPROVER_LEVEL.min || approverLevel > this.APPROVER_LEVEL.max ) {
           return this.approverLevelRangeError;

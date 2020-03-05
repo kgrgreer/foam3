@@ -26,10 +26,23 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'EMail',
-      name: 'email',
-      label: 'Email address',
-      documentation: 'The email address that was used in the login attempt.',
+      class: 'String',
+      name: 'loginIdentifierLegacy',
+      documentation: `The legacy email identifier used for login.`,
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      shortName: 'email',
+      javaPostSet: `
+        if ( ! foam.util.SafetyUtil.isEmpty(val) ) {
+          setLoginIdentifier(val);
+        }
+      `
+    },
+    {
+      class: 'String',
+      name: 'loginIdentifier',
+      label: 'Login Identifier',
+      documentation: 'The username or email address that was used in the login attempt.',
       visibility: 'RO'
     },
     {

@@ -55,10 +55,11 @@ foam.CLASS({
     },
 
     async function createOnboarding() {
+      var address = this.user.address.clone();
       var data = {
         userId: this.agent.id,
         businessId: this.user.id,
-        businessAddress: this.user.address
+        businessAddress: address
       };
       return this.user.address.countryId == 'CA'
         ? this.BusinessOnboarding.create(data)

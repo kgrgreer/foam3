@@ -16,7 +16,8 @@ foam.CLASS({
     'foam.u2.UnstyledTabs',
     'net.nanopay.settings.business.UserManagementView',
     'net.nanopay.sme.ui.CompanyInformationView',
-    'net.nanopay.sme.ui.IntegrationSettingsView'
+    'net.nanopay.sme.ui.IntegrationSettingsView',
+    'net.nanopay.sme.ui.PrivacyView'
   ],
 
   css: `
@@ -54,9 +55,10 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Business Settings' },
-    { name: 'COMPANY_TAB', message: 'Company profile' },
+    { name: 'COMPANY_TAB', message: 'Company Profile' },
     { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
     { name: 'INTEGRATION_TAB', message: 'Integrations' },
+    { name: 'PRIVACY_TAB', message: 'Privacy'},
     { name: 'GENERIC_ERROR', message: 'There was an unexpected error.' }
   ],
 
@@ -67,41 +69,59 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
-      var showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
-      this.auth
-        .check(null, 'menu.read.sme.userManagement')
-        .then((hasPermission) => {
-          var tabs = this.UnstyledTabs.create()
-            .start(this.Tab, {
-              label: this.COMPANY_TAB,
-              selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB'
-            })
-              .add(this.CompanyInformationView.create({}, this))
-            .end();
 
-          if ( hasPermission ) {
-            tabs.start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
-              this.UserManagementView.create({}, this)
-            ).end();
-          }
+      try {
+        const hasUMPermission = await this.auth.check(null, 'menu.read.sme.userManagement');
+        const hasIntegrationPermission = (await this.accountingIntegrationUtil.getPermission())[0];
+        const hasPrivacyPermission = await this.auth.check(null, 'business.rw.ispublic');
 
-          if ( showIntegrationTab[0] ) {
-            tabs.start(this.Tab, {
-              label: this.INTEGRATION_TAB,
-              selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB'
-            })
-              .add(this.IntegrationSettingsView.create({}, this))
-            .end();
-          }
-          this.addClass(this.myClass())
-            .start('h1').add(this.TITLE).end()
-            .start().addClass('section-line').end()
-            .tag(tabs);
-        })
-        .catch((err) => {
-          console.error(err);
-          this.notify(err.message || this.GENERIC_ERROR, 'error');
-        });
+        // display Company Profile tab
+        const tabs = this.UnstyledTabs.create()
+          .start(this.Tab, {
+            label: this.COMPANY_TAB,
+            selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB'
+          })
+            .add(this.CompanyInformationView.create({}, this))
+          .end();
+
+        // display User Management tab if user has permission
+        if ( hasUMPermission ) {
+          tabs.start(this.Tab, {
+            label: this.USER_MANAGEMENT_TAB,
+            selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB'
+          })
+            .add(this.UserManagementView.create({}, this))
+          .end();
+        }
+
+        // display Integrations tab if user has permission
+        if ( hasIntegrationPermission ) {
+          tabs.start(this.Tab, {
+            label: this.INTEGRATION_TAB,
+            selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB'
+          })
+            .add(this.IntegrationSettingsView.create({}, this))
+          .end();
+        }
+
+        // display Privacy tab if user has permission
+        if ( hasPrivacyPermission ) {
+          tabs.start(this.Tab, {
+            label: this.PRIVACY_TAB,
+            selected: this.preSelectedTab && this.preSelectedTab === 'PRIVACY_TAB'
+          })
+            .add(this.PrivacyView.create({}, this))
+          .end();
+        }
+
+        this.addClass(this.myClass())
+          .start('h1').add(this.TITLE).end()
+          .start().addClass('section-line').end()
+          .tag(tabs);
+      } catch (err) {
+        console.error(err);
+        this.notify(err.message || this.GENERIC_ERROR, 'error');
+      }
     }
   ]
 });

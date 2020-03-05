@@ -60,6 +60,7 @@ public class AuthenticationApiTest extends ApiTestBase {
     }
     catch (Exception ex)
     {
+      test(false, "Exception in test case:" + ex.getMessage());
       print(ex.toString());
     }
   }

@@ -233,6 +233,18 @@ foam.INTERFACE({
           name: 'directDebitUnenrollmentRequest'
         }
       ]
+    },
+    {
+      name: 'addCompanyOfficer',
+      documentation: 'This method is used to add a Company Officer to an existing Corporate Client accoun.',
+      async: true,
+      type: 'String',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.AddCompanyOfficerRequest',
+          name: 'addCompanyOfficerRequest'
+        }
+      ]
     }
   ]
 });
