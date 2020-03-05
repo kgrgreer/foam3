@@ -90,7 +90,7 @@ p({
   "serve": true,
   "serviceScript": """
     easyDAO = new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
