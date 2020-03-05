@@ -11,7 +11,7 @@ p({
       .setRulerDaoKey("feeEngineDAO")
       .setPm(true)
       .setPipelinePm(true)
-      .setAuthenticated(false)
+      .setAuthorize(false)
       .build();
   """
 })
@@ -25,7 +25,7 @@ p({
       .setInnerDAO(x.get("localFeeEngineDAO"))
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setRuler(false)
-      .setAuthenticated(true)
+      .setAuthorize(true)
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
