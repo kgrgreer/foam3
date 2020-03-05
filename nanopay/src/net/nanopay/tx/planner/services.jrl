@@ -5,7 +5,8 @@ p({
   "serviceScript":
   """
 
-    foam.dao.DAO dao = new foam.nanos.ruler.RulerDAO(x, null, "transactionPlannerDAO");
+    foam.dao.DAO dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, null);
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
     dao = new net.nanopay.tx.QuoteFillerDAO(x, dao);
 
