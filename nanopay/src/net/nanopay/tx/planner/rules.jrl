@@ -656,7 +656,7 @@ p({
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
-    "of":"net.nanopay.account.DigitalAccount"
+    "of":"net.nanopay.tx.BulkTransaction"
   },
-  "action":{"class":"net.nanopay.tx.BulkTransaction"}
+  "action":{"class":"net.nanopay.tx.planner.BulkTransaction"}
 })
