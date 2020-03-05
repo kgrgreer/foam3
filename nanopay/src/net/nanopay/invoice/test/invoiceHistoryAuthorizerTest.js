@@ -56,6 +56,7 @@ foam.CLASS({
 
         invoice.setPayeeId(payeeUser.getId());
         invoice.setPayerId(payerUser.getId());
+        invoice.setAmount(1000);
         invoice = (Invoice) invoiceDAO.put(invoice);
 
         historyRecord = (HistoryRecord) ((ArraySink) invoiceHistoryDAO.inX(x).where(
