@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'AbliiFeeRule',
 
   documentation: `
-      Rule that add fees for Ablii transactions
+      Rule that adds fees for Ablii transactions
   `,
 
   implements: ['foam.nanos.ruler.RuleAction'],
