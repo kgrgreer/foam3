@@ -317,11 +317,7 @@ public class ContactAuthorizationTest
 
       // Make the business user update the other user's contact.
       test(
-        TestUtils.testThrows(
-          () -> contactDAO.find_(businessUserContext_, result.getId()),
-          "Permission denied.",
-          AuthorizationException.class
-        ),
+        null == contactDAO.find_(businessUserContext_, result.getId()),
         "Non-admin users cannot find other users' contacts."
       );
     } catch (Throwable t) {
