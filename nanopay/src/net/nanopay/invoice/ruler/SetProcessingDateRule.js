@@ -9,8 +9,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.nanos.logger.Logger',
     'net.nanopay.invoice.model.Invoice',
 
     'java.util.Date'
@@ -23,15 +21,7 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-          Invoice invoice = (Invoice) obj;
-          invoice = (Invoice) invoice.fclone();
-          invoice.setProcessingDate(new Date());
-          try {
-            invoiceDAO.put(invoice);
-          } catch (Throwable e) {
-            ((Logger) x.get("logger")).error("Error updating processing date on invoice: " + invoice.getId());
-          }
+          ((Invoice) obj).setProcessingDate(new Date());
         }
       }, "set processing date on invoice");
       `
