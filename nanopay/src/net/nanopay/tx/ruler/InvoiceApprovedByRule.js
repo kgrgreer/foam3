@@ -20,6 +20,7 @@ foam.CLASS({
       {
         name: 'applyAction',
         javaCode: `
+            ((Invoice) obj).setApprovalDate(new Date());
             ((Invoice) obj).setApprovedBy(((User) x.get("agent")).getId());
         `
       }

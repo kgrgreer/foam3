@@ -297,7 +297,6 @@ var classes = [
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
   'net.nanopay.invoice.ruler.SetProcessingDateRule',
-  'net.nanopay.invoice.ruler.SetApprovalDateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
