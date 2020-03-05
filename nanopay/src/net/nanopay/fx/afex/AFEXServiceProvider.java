@@ -190,37 +190,45 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .select(new ArraySink())).getArray();
 
     for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
-      StringBuilder beneficialOwnerName = new StringBuilder();
-      beneficialOwnerName.append(beneficialOwner.getFirstName());
-      beneficialOwnerName.append(" ");
-      beneficialOwnerName.append(beneficialOwner.getLastName());
-      AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
-      request.setApiKey(clientKey);
-      request.setName(beneficialOwnerName.toString());
-      request.setPercentOwnership(String.valueOf(beneficialOwner.getOwnershipPercent()));
-      request.setDirector("true");
-      try {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        request.setDateOfBirth(dateFormat.format(beneficialOwner.getBirthday()));
-      } catch(Exception e) {
-        logger_.error("Failed parse beneficial owner birthday.", e);
-      }
-      Address address = beneficialOwner.getAddress();
-      if ( address != null ) {
-        request.setAddress1(address.getAddress());
-        request.setCity(address.getCity());
-        request.setCountryCode(address.getCountryId());
-        request.setStateRegion(address.getRegionId());
-        request.setZip(address.getPostalCode());
-      }
-
-      try {
-        afexClient.addCompanyOfficer(request);
-      } catch(Exception e) {
-        logger_.error("Failed to push beneficial owner: " + beneficialOwnerName.toString(), e);
-      }
+      pushBeneficialOwner(beneficialOwner, clientKey);
     } 
+  }
+
+  public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey) {
+    StringBuilder beneficialOwnerName = new StringBuilder();
+    beneficialOwnerName.append(beneficialOwner.getFirstName());
+    beneficialOwnerName.append(" ");
+    beneficialOwnerName.append(beneficialOwner.getLastName());
+    AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
+    request.setApiKey(clientKey);
+    request.setName(beneficialOwnerName.toString());
+    request.setPercentOwnership(String.valueOf(beneficialOwner.getOwnershipPercent()));
+    request.setDirector("true");
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+      request.setDateOfBirth(dateFormat.format(beneficialOwner.getBirthday()));
+    } catch(Exception e) {
+      logger_.error("Failed parse beneficial owner birthday.", e);
+    }
+    Address address = beneficialOwner.getAddress();
+    if ( address != null ) {
+      request.setAddress1(address.getAddress());
+      request.setCity(address.getCity());
+      request.setCountryCode(address.getCountryId());
+      request.setStateRegion(address.getRegionId());
+      request.setZip(address.getPostalCode());
+    }
+
+    addCompanyOfficer(request);
+  }
+
+  public void addCompanyOfficer(AddCompanyOfficerRequest request) {
+    try {
+      afexClient.addCompanyOfficer(request);
+    } catch(Exception e) {
+      logger_.error("Failed to push beneficial owner: " + request.getName(), e);
+    }
   }
 
   public boolean isFXEnrolled(Business business, User signingOfficer) {
