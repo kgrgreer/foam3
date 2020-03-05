@@ -90,6 +90,7 @@ foam.CLASS({
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
+              label: 'View details',
               isEnabled: function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },

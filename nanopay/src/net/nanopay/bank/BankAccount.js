@@ -268,11 +268,7 @@ foam.CLASS({
   ],
   methods: [
     function toSummary() {
-      var self = this;
-      return this.country$find.then((country) => {
-        if ( ! country ) return;
-        return `${ country.name } ${ self.BANK_ACCOUNT_LABEL } (${self.denomination})`;
-      });
+      return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
     },
     {
       name: 'getBankCode',

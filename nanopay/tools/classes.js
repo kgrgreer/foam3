@@ -209,6 +209,7 @@ var classes = [
   'net.nanopay.fx.afex.CreatePaymentResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+  'net.nanopay.fx.afex.AddCompanyOfficerRequest',
   'net.nanopay.fx.afex.AFEXPaymentStatus',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
@@ -993,6 +994,10 @@ var classes = [
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+  'net.nanopay.tx.planner.BulkTransactionPlanner',
+
+  // Fees
+  'net.nanopay.tx.planner.fees.AbliiFeeRule'
 ];
 
 var abstractClasses = [

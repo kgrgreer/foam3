@@ -137,11 +137,6 @@ foam.CLASS({
       },
       type: 'String',
       javaCode: `
-        DAO contactDAO = (DAO) getX().get("contactDAO");
-        if ( SafetyUtil.equals(this.getType(), "Contact") ) {
-          Contact contact = (Contact) contactDAO.find(this.getId());
-          return contact.label();
-        }
         return ! SafetyUtil.isEmpty(this.getOperatingBusinessName())
           ? this.getOperatingBusinessName()
           : ! SafetyUtil.isEmpty(this.getOrganization())
