@@ -144,7 +144,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'paymentDate',
-      documentation: `The date and time of when the invoice was payment was fully completed.`,
+      documentation: `The date and time of when the invoice payment was fully completed.`,
       label: 'Received',
       aliases: ['scheduled', 'paid']
     },
