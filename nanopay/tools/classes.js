@@ -994,6 +994,9 @@ var classes = [
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+
+  // Fees
+  'net.nanopay.tx.planner.fees.AbliiFeeRule'
 ];
 
 var abstractClasses = [
