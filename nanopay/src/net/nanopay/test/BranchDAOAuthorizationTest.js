@@ -89,13 +89,7 @@ foam.CLASS({
       }
       test(threw, "Non sme user can't add branch");
 
-      threw = false;
-      try {
-        branchDAO.inX(nonSmeContext).find(testBranch);
-      } catch ( AuthorizationException e ) {
-        threw = true;
-      }
-      test(threw, "Non sme user can't view branch");
+      test( branchDAO.inX(nonSmeContext).find(testBranch) == null, "Non sme user can't view branch");
 
       threw = false;
       try {
