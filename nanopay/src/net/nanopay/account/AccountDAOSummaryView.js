@@ -12,7 +12,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.AccountDAOSummaryViewView'
   ],
-
+  
   documentation: `
     A configurable summary view for a specific instance
   `,
