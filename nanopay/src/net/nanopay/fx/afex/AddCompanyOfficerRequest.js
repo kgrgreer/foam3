@@ -19,7 +19,7 @@ foam.CLASS({
       name: "Director"
     },
     {
-      class: 'Date',
+      class: 'String',
       name: "DateOfBirth"
     },
     {

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import foam.core.ContextAwareSupport;
@@ -32,6 +33,7 @@ import net.nanopay.bank.USBankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
@@ -69,7 +71,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return onboardBusiness(business, bankAccount);
   }
 
-  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException{
+  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException {
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     if ( bankAccount == null ||  bankAccount.getStatus() != BankAccountStatus.VERIFIED ) return false;
@@ -180,6 +182,45 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public void pushBeneficialOwners(Business business, String clientKey) {
+    if ( business == null ) return;
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
+      .select(new ArraySink())).getArray();
+
+    for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+      StringBuilder beneficialOwnerName = new StringBuilder();
+      beneficialOwnerName.append(beneficialOwner.getFirstName());
+      beneficialOwnerName.append(" ");
+      beneficialOwnerName.append(beneficialOwner.getLastName());
+      AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
+      request.setApiKey(clientKey);
+      request.setName(beneficialOwnerName.toString());
+      request.setPercentOwnership(String.valueOf(beneficialOwner.getOwnershipPercent()));
+      request.setDirector("true");
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        request.setDateOfBirth(dateFormat.format(beneficialOwner.getBirthday()));
+      } catch(Exception e) {
+        logger_.error("Failed parse beneficial owner birthday.", e);
+      }
+      Address address = beneficialOwner.getAddress();
+      if ( address != null ) {
+        request.setAddress1(address.getAddress());
+        request.setCity(address.getCity());
+        request.setCountryCode(address.getCountryId());
+        request.setStateRegion(address.getRegionId());
+        request.setZip(address.getPostalCode());
+      }
+
+      try {
+        afexClient.addCompanyOfficer(request);
+      } catch(Exception e) {
+        logger_.error("Failed to push beneficial owner: " + beneficialOwnerName.toString(), e);
+      }
+    } 
   }
 
   public boolean isFXEnrolled(Business business, User signingOfficer) {
