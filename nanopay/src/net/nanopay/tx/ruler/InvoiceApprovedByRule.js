@@ -13,7 +13,8 @@ foam.CLASS({
       'foam.core.X',
       'foam.nanos.auth.User',
       'net.nanopay.invoice.model.Invoice',
-      'net.nanopay.invoice.model.PaymentStatus'
+      'net.nanopay.invoice.model.PaymentStatus',
+      'java.util.Date'
     ],
 
     methods: [
