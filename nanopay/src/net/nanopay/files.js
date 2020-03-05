@@ -1432,6 +1432,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BulkTransactionPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
