@@ -313,10 +313,10 @@ p({
   "operation":1,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsPredicate"
+    "class":"foam.nanos.approval.ApprovableApprovalRequestsPredicate"
   },
   "action":{
-    "class":"net.nanopay.liquidity.approvalRequest.ApprovableApprovalRequestsRule"
+    "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
   },
   "enabled":true,
   "saveHistory":true
@@ -331,10 +331,10 @@ p({
   "operation":1,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.liquidity.approvalRequest.FulfilledApprovablePredicate",
+    "class":"foam.nanos.approval.FulfilledApprovablePredicate",
   },
   "action":{
-    "class":"net.nanopay.liquidity.approvalRequest.FulfilledApprovableRule"
+    "class":"foam.nanos.approval.FulfilledApprovableRule"
   },
   "enabled":true,
   "saveHistory":true

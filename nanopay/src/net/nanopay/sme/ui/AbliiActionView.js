@@ -22,10 +22,6 @@ foam.CLASS({
       margin-left: 8px;
     }
 
-    ^ img {
-      margin-right: 8px;
-    }
-
     ^:hover:not(:disabled) {
       cursor: pointer;
     }

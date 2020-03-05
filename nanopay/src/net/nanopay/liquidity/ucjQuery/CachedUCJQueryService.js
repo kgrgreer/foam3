@@ -315,6 +315,10 @@ foam.CLASS({
         {
           name: 'modelToApprove',
           type: 'String'
+        },
+        {
+          name: 'requestingUser',
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `  

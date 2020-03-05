@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.om.OMLogger;
 import net.nanopay.tx.bmo.exceptions.BmoSFTPException;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -18,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BmoSFTPClient {
 
+  protected X x_ = null;
   private SSHClient          sshClient          = null;
   private StatefulSFTPClient statefulSFTPClient = null;
   private BmoSFTPCredential  credential         = null;
@@ -29,12 +31,22 @@ public class BmoSFTPClient {
   private static final String POLLABLE_FOLDER         = "BMOCOM-SEND:/./POLLABLE";
 
   private static ReentrantLock SEND_LOCK = new ReentrantLock();
+  private static String OM_NAME = "BMO";
   private Logger logger;
 
   public BmoSFTPClient(X x, BmoSFTPCredential credential) {
+    setX(x);
     this.init(x, credential);
     this.logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
   };
+
+  public void setX(X x) {
+    x_ = x;
+  }
+
+  public X getX() {
+    return x_;
+  }
 
   private BmoSFTPClient init(X x, BmoSFTPCredential credential) {
     this.credential = credential;
@@ -64,14 +76,16 @@ public class BmoSFTPClient {
    * Check if the RECEIPT server has POLLABLE file
    */
   public Boolean unProcessedReceiptFiles() {
+    OMLogger omLogger = (OMLogger) getX().get("OMLogger");
     try {
-
+      omLogger.log(OM_NAME, "processReceiptFiles", "starting");
       this.logger.info("check unprocessed receipt files.");
 
       this.                     connect (this.credential.getReceiptFileLoginId());
       this.statefulSFTPClient.  cd      (POLLABLE_FOLDER);
       List<RemoteResourceInfo>  ls =
       this.statefulSFTPClient.  ls();
+      omLogger.log(OM_NAME, "processReceiptFiles", "complete");
 
       return ls.size() > 0;
 
@@ -88,8 +102,10 @@ public class BmoSFTPClient {
    * Upload the EFT file to BMO SEND server
    */
   public void upload(File file) {
+    OMLogger omLogger = (OMLogger) getX().get("OMLogger");
 
     try {
+      omLogger.log(OM_NAME, "upload", "starting");
 
       this.logger.info("Uploading.......");
 
@@ -103,7 +119,7 @@ public class BmoSFTPClient {
       this.                    connect (this.credential.getSendLoginId());
       this.statefulSFTPClient. cd      (SEND_FOLDER);
       this.statefulSFTPClient. put     (file.getAbsolutePath(), "");
-
+      omLogger.log(OM_NAME, "upload", "complete");
     } catch ( BmoSFTPException e ) {
       throw e;
     } catch (Exception e) {
@@ -119,8 +135,10 @@ public class BmoSFTPClient {
    * download the receipt file
    */
   public File downloadReceipt() {
+    OMLogger omLogger = (OMLogger) getX().get("OMLogger");
 
     try {
+      omLogger.log(OM_NAME, "downloadReceipt", "starting");
       this.connect(this.credential.getReceiptFileLoginId());
       this.statefulSFTPClient.cd(POLLABLE_FOLDER);
 
@@ -148,6 +166,7 @@ public class BmoSFTPClient {
       File newFile = new File(RECEIPT_DOWNLOAD_FOLDER + ls.get(0).getName());
       FileUtils.touch(newFile);
       this.statefulSFTPClient.get(ls.get(0).getPath(), newFile.getAbsolutePath());
+      omLogger.log(OM_NAME, "downloadReceipt", "complete");
 
       return newFile;
     } catch ( BmoSFTPException e ) {
@@ -169,8 +188,10 @@ public class BmoSFTPClient {
   }
 
   public void download(String loginId, String downloadPath) {
+    OMLogger omLogger = (OMLogger) getX().get("OMLogger");
 
     try {
+      omLogger.log(OM_NAME, "download", "starting");
       this.                    connect (loginId);
       this.statefulSFTPClient. cd      (POLLABLE_FOLDER);
 
@@ -181,6 +202,7 @@ public class BmoSFTPClient {
         FileUtils.touch(newFile);
         this.statefulSFTPClient.get(l.getPath(), newFile.getAbsolutePath());
       }
+      omLogger.log(OM_NAME, "download", "complete");
 
     } catch (Exception e) {
       this.logger.error("Error when downloading file", e);

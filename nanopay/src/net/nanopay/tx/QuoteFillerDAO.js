@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
-    pre load the quote with useful info. Liquid always knows source/destination accounts.
+    Groom the quote, so it has useful information to help with planning.
   `,
 
   javaImports: [
@@ -25,34 +25,17 @@ foam.CLASS({
         if ( ! ( obj instanceof TransactionQuote ) ) {
           return getDelegate().put_(x, obj);
         }
+
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
 
-        quote.setDestinationAccount((Account) txn.findDestinationAccount(getX())); // elevate destination account search to system.
+        //clear the incoming quote
+        txn.setNext(null);
+        quote.setPlans(null);
+        quote.setPlan(null);
         quote.setSourceAccount((Account) txn.findSourceAccount(x));
-
-        //TODO: move this all to rules or something when theres more time
-
-        if (quote.getSourceAccount() == null )
-          throw new RuntimeException("Unable to access the source account.");
-        if (quote.getDestinationAccount() == null )
-          throw new RuntimeException("Unable to access the destination account.");
-
-        if (quote.getSourceAccount().getLifecycleState() == LifecycleState.DELETED )
-          throw new RuntimeException("Unable to send from deleted account");
-        if (quote.getDestinationAccount().getLifecycleState() == LifecycleState.DELETED )
-          throw new RuntimeException("Unable to send to account "+quote.getDestinationAccount().getId());
-
-        if( quote.getDestinationAccount() instanceof net.nanopay.account.AggregateAccount )
-          throw new RuntimeException("Unable to send funds to an aggregate account");
-           if( quote.getSourceAccount() instanceof net.nanopay.account.AggregateAccount )
-                    throw new RuntimeException("Unable to send funds from an aggregate account");
-        if( quote.getDestinationAccount() instanceof net.nanopay.account.SecuritiesAccount && ! ( quote.getSourceAccount() instanceof net.nanopay.account.SecuritiesAccount ) )
-          throw new RuntimeException("Unable to send between Securities and Cash");
-        if( quote.getSourceAccount() instanceof net.nanopay.account.SecuritiesAccount && ! ( quote.getDestinationAccount() instanceof net.nanopay.account.SecuritiesAccount ) )
-          throw new RuntimeException("Unable to send between Cash and Securities");
-
+        quote.setDestinationAccount((Account) txn.findDestinationAccount(getX())); // elevate destination account search to system.
         if ( SafetyUtil.isEmpty(txn.getSourceCurrency()) ) {
           logger.log("Transaction Source Currency not specified, defaulting to source account denomination");
           txn.setSourceCurrency(quote.getSourceAccount().getDenomination());

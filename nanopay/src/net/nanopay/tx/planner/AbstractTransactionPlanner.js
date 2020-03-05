@@ -38,6 +38,17 @@ foam.CLASS({
       name: 'myTransfers_',
       class: 'List',
       javaFactory: 'return new ArrayList<Transfer>();'
+    },
+    {
+      name: 'multiPlan_',
+      documentation: 'true for planners which produce more then one plan',
+      class: 'Boolean',
+      value: false
+    },
+    {
+      name: 'alternatePlans_',
+      class: 'List',
+      javaFactory: 'return new ArrayList<Transaction>();'
     }
   ],
 
@@ -88,20 +99,32 @@ foam.CLASS({
         { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' }
       ],
       javaCode: `
-        txn.setId(UUID.randomUUID().toString());
-        txn.setTransfers((Transfer[]) getMyTransfers_().toArray(new Transfer[0]));
-        txn.setIsQuoted(true);
-        //likely can add logic for setting clearing/completion time based on planners here.
-        //auto add fx rate
-        //TODO: add cost by hitting Fee Engine
-        //TODO: hit tax engine
-        //TODO: signing
-        quote.addPlan(txn);
+        //if ( getMultiPlan_() ) { // for performance can disallow multiplans on some planners?
+          for ( Object altPlanO : getAlternatePlans_() ) {
+            Transaction altPlan = (Transaction) altPlanO;
+            altPlan.setIsQuoted(true);
+            altPlan.setTransfers((Transfer[]) getMyTransfers_().toArray(new Transfer[0]));
+            altPlan.setId(UUID.randomUUID().toString());
+            altPlan = (Transaction) ((DAO) getX().get("localFeeEngineDAO")).put(altPlan);
+            quote.addPlan(altPlan);
+          }
+        //}
+        if ( txn != null ) {
+          txn.setId(UUID.randomUUID().toString());
+          txn.setTransfers((Transfer[]) getMyTransfers_().toArray(new Transfer[0]));
+          txn.setIsQuoted(true);
+          //likely can add logic for setting clearing/completion time based on planners here.
+          //auto add fx rate
+          txn = (Transaction) ((DAO) getX().get("localFeeEngineDAO")).put(txn);
+          //TODO: hit tax engine
+          //TODO: signing
+          quote.addPlan(txn);
+        }
       `
     },
     {
       name: 'quoteTxn',
-      documentation: 'Takes care of recursive transactionQuotePlanDAO calls',
+      documentation: 'Takes care of recursive transactionQuotePlanDAO calls returns best txn',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
@@ -113,6 +136,22 @@ foam.CLASS({
         quote.setRequestTransaction(txn);
         quote = (TransactionQuote) d.put(quote);
         return quote.getPlan();
+      `
+    },
+    {
+      name: 'multiQuoteTxn',
+      documentation: 'Takes care of recursive transactionQuotePlanDAO calls returns ',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction[]',
+      javaCode: `
+        DAO d = (DAO) x.get("localTransactionQuotePlanDAO");
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(txn);
+        quote = (TransactionQuote) d.put(quote);
+        return quote.getPlans();
       `
     },
   ]

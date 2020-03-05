@@ -652,10 +652,10 @@ foam.CLASS({
                 .addClass('subheading')
                 .add(this.INVOICE_HISTORY)
               .end()
-              .start({
+              .tag({
                 class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
                 id: this.invoice.id
-              }).end()
+              })
             .end()
           .end()
         .end()

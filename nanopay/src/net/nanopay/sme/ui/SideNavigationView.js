@@ -186,7 +186,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      
       this.addClass(this.myClass())
         .start()
           .addClass('side-nav')
@@ -198,7 +197,9 @@ foam.CLASS({
               .addClass('account-button-info-block')
               .start()
                 .addClass('account-button-info-detail')
-                .add(this.user$.dot('businessName'))
+                .add(this.slot(function(user) {
+                  return this.E().add(user.label());
+                }))
               .end()
               .start()
                 .addClass('account-button-info-detail-small')

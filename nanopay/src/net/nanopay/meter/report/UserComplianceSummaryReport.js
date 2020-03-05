@@ -45,11 +45,7 @@ foam.CLASS({
     * Service - DJ News
   `,
 
-  css: `
-    .foam-u2-view-TableView-net-nanopay-meter-report-UserComplianceSummaryReport {
-      width: 3200px !important;
-    }
-  `,
+  searchColumns: [],
 
   properties: [
     {

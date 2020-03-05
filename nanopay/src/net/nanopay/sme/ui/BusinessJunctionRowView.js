@@ -107,7 +107,7 @@ foam.CLASS({
         .start('span')
           .addClass(this.myClass('business-name'))
           .add(this.slot(function(business) {
-            return business ? business.businessName : '';
+            return business ? business.label() : '';
           }))
         .end()
         .start()
