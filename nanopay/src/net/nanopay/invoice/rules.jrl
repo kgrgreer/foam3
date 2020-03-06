@@ -100,3 +100,58 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0941-75e97b3ad16d905",
+  "name": "Set invoice payment sent date on transaction settlement",
+  "priority": 100,
+  "ruleGroup":"UpdateInvoiceByTransaction",
+  "documentation": "Set invoice payment sent date on CI transaction settlement",
+  "daoKey":"transactionDAO",
+  "operation":3,
+  "after": true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.mlang.predicate.IsInstanceOf",
+            "targetClass":"net.nanopay.tx.cico.CITransaction"
+          },
+          {
+            "class":"foam.mlang.predicate.IsInstanceOf",
+            "targetClass":"net.nanopay.tx.bmo.cico.BmoCITransaction"
+          },
+          {
+            "class":"foam.mlang.predicate.IsInstanceOf",
+            "targetClass":"net.nanopay.tx.alterna.AlternaCITransaction"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"settled"
+      },
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+          "propName":"settled",
+          "isNew":false
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"invoiceId"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.invoice.ruler.SetPaymentSentDate"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
