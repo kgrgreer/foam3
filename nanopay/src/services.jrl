@@ -524,6 +524,7 @@ p({
       .setAuthorize(false)
       .setServiceProviderAware(true)
       .setDeletedAware(false)
+      .setApprovableAwareEnabled(false)
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
@@ -542,12 +543,6 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-      .setDaoKey("userDAO")
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setIsEnabled(false)
-      .setDelegate(dao)
-      .build();
     dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
     dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
@@ -628,6 +623,7 @@ p({
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
           .build())
         .setDeletedAware(false)
+        .setEnableInterfaceDecorators(false)
         .build();
   """,
   "client":
@@ -2080,14 +2076,6 @@ p({
   "serve": true,
   "serviceScript":
   """
-    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.ruler.Rule.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-      .setDaoKey("ruleDAO")
-      .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
-      .setIsEnabled(false)
-      .setDelegate(dao)
-      .build();
-
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
@@ -2096,8 +2084,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
       .setValidated(true)
-      .setDecorator(dao)
       .setRuler(false)
+      .setApprovableAware(true)
+      .setApprovableAwareEnabled(false)
       .build();
 
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
