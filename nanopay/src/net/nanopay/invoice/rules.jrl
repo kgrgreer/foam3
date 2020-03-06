@@ -150,7 +150,7 @@ p({
     ]
   },
   "action": {
-    "class": "net.nanopay.invoice.ruler.SetPaymentSentDate"
+    "class": "net.nanopay.invoice.ruler.SetPaymentSentDateRule"
   },
   "enabled":true,
   "saveHistory":true
@@ -205,7 +205,7 @@ p({
     ]
   },
   "action": {
-    "class": "net.nanopay.invoice.ruler.SetPaymentReceivedDate"
+    "class": "net.nanopay.invoice.ruler.SetPaymentReceivedDateRule"
   },
   "enabled":true,
   "saveHistory":true
