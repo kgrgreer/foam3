@@ -92,7 +92,7 @@ p({
   "name":"tcpServer",
   "lazy":false,
   "serve":true,
-  "serviceClass":"foam.nanos.mrac.TCPNioServer"
+  "serviceClass":"foam.nanos.medusa.TCPNioServer"
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"AuthenticatedNSpecDAO",              "serve":true,  "serviceClass":"foam.dao.ProxyDAO", "client":"{\"of\":\"foam.nanos.boot.NSpec\",\"cache\":true}"})
@@ -115,16 +115,16 @@ p({
 })
 
 //Medusa Node Port
-p({"class":"foam.nanos.boot.NSpec", "name":"singleJournal", "authenticate":false, "boxClass": "foam.dao.DAOSkeleton",          "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setRuler(false).setPermissioned(false).setGuid(false).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"singleJournals\").setMedusaNode(true).setOf(foam.nanos.mrac.MedusaEntry.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.mrac.MedusaEntry\", \"remoteListenerSupport\": false}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"singleJournal", "authenticate":false, "boxClass": "foam.dao.DAOSkeleton",          "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setRuler(false).setPermissioned(false).setGuid(false).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"singleJournals\").setMedusaNode(true).setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.medusa.MedusaEntry\", \"remoteListenerSupport\": false}"})
 
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "MNService",
   "serve": true,
   "authenticate": false,
-  "boxClass": "foam.nanos.mrac.MNServiceSkeleton",
+  "boxClass": "foam.nanos.medusa.MNServiceSkeleton",
   "serviceScript": """
-    return new foam.nanos.mrac.MNServiceImpl();
+    return new foam.nanos.medusa.MNServiceImpl();
   """,
   "client": """
     {
@@ -148,12 +148,12 @@ p({
       .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("entryRecords")
-      .setOf(foam.nanos.mrac.EntryRecord.getOwnClassInfo())
+      .setOf(foam.nanos.medusa.EntryRecord.getOwnClassInfo())
       .build();
   """,
   "client": """
     {
-      "of": "foam.nanos.mrac.EntryRecord"
+      "of": "foam.nanos.medusa.EntryRecord"
     }
   """
 })
@@ -261,4 +261,4 @@ p({
 })
 
 
-p({"class":"foam.nanos.boot.NSpec", "name":"clusterNodeDAO",                  "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setCluster(false).setRuler(false).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"clusterNodes\").setGuid(true).setOf(foam.nanos.mrac.ClusterNode.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.mrac.ClusterNode\", \"remoteListenerSupport\": false}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"clusterNodeDAO",                  "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setCluster(false).setRuler(false).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"clusterNodes\").setGuid(true).setOf(foam.nanos.medusa.ClusterNode.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.medusa.ClusterNode\", \"remoteListenerSupport\": false}"})

@@ -143,7 +143,7 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
-    import foam.nanos.mrac.*;
+    import foam.nanos.medusa.*;
 
     dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
@@ -241,7 +241,7 @@ p({
   """
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
-    import foam.nanos.mrac.*;
+    import foam.nanos.medusa.*;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
 
     // Add indexes
