@@ -75,13 +75,7 @@ foam.CLASS({
         }
         test(threw, "Non admin user can't add AccountingResultReport");
 
-        threw = false;
-        try {
-          AccountingResultReport b = (AccountingResultReport) accountingReportDAO.inX(nonAdminContext).find(testResultReport);
-        } catch ( AuthorizationException e ) {
-          threw = true;
-        }
-        test(threw, "Non admin user can't view AccountingResultReport");
+        test(accountingReportDAO.inX(nonAdminContext).find(testResultReport) == null, "Non admin user can't view AccountingResultReport");
 
         threw = false;
         try {

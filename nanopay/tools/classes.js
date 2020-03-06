@@ -210,6 +210,7 @@ var classes = [
   'net.nanopay.fx.afex.CreatePaymentResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+  'net.nanopay.fx.afex.AddCompanyOfficerRequest',
   'net.nanopay.fx.afex.AFEXPaymentStatus',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequest',
   'net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule',
@@ -296,6 +297,7 @@ var classes = [
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
+  'net.nanopay.invoice.ruler.SetProcessingDateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
@@ -937,6 +939,7 @@ var classes = [
   'net.nanopay.alarming.AlarmConfig',
   'net.nanopay.alarming.AlarmConfigOMNameDAO',
   'net.nanopay.alarming.AlarmConfigOMNameSink',
+  'net.nanopay.alarming.AlarmHostnameRuleAction',
   'net.nanopay.alarming.AlarmReason',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
@@ -963,6 +966,7 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
 
   // Planners
+  'net.nanopay.tx.planner.SummaryPopulatorDAO',
   'net.nanopay.tx.planner.TransactionPlannerDAO',
   'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
@@ -994,6 +998,10 @@ var classes = [
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+  'net.nanopay.tx.planner.BulkTransactionPlanner',
+
+  // Fees
+  'net.nanopay.tx.planner.fees.AbliiFeeRule'
 ];
 
 var abstractClasses = [

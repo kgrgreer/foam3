@@ -34,3 +34,9 @@ p({
   "enabled":false
 })
 
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"FeeEngine",
+  "documentation":"Fee Engine which deals with adding fees to transactions",
+  "enabled":true
+})

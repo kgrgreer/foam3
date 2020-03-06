@@ -34,7 +34,7 @@ p({
 
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad","label":"Canadian only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad-us","label":"Canadian Upgraded Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"canadaUsBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-us","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"usBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-us","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"uSBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "operation.clearingTimes",

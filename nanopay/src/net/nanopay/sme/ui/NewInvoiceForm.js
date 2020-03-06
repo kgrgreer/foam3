@@ -245,9 +245,9 @@ foam.CLASS({
     },
     {
       name: 'EXTERNAL_USER_MESSAGE',
-      message: `The contact you've selected is not associated with a business on the platform.
-          You will not be receiving payments from this busines until they have been onboarded to the platform, however you do
-          have the ability to mark invoices as complete if paid outside of the platform.`
+      message: `The contact you’ve selected needs to sign up to the platform in order to pay you.
+          The contact will receive an email notification only. If the contact chooses to pay
+          you in another way, you can mark the invoice as complete.`
     },
     {
       name: 'EXTERNAL_TITLE',
@@ -630,14 +630,19 @@ foam.CLASS({
       this.yPosition = e.y + this.TOOLTIP_OFFSET;
     },
     async function setDefaultCurrency() {
+      if ( this.invoice.contactId <= 0 ) return;
       var request = this.GetDefaultCurrency.create({
         contactId: this.invoice.contactId
       });
-      var responseObj = await this.getDefaultCurrencyDAO.put(request);
-      if ( responseObj.response ) {
-        this.currencyType = responseObj.response;
-        this.selectedCurrency = responseObj.response;
-        this.invoice.destinationCurrency = responseObj.response;
+      try {
+        var responseObj = await this.getDefaultCurrencyDAO.put(request);
+        if ( responseObj ) {
+          this.currencyType = responseObj.response;
+          this.selectedCurrency = responseObj.response;
+          this.invoice.destinationCurrency = responseObj.response;
+        }
+      } catch (e) {
+        console.error('Error fetch default currency: ', e.message);
       }
     }
   ],
