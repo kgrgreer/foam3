@@ -42,7 +42,7 @@ foam.CLASS({
       label: 'Source Condition',
       section: 'basicInfo',
       factory: function() {
-        return this.EQ(Account.NAME, 'Source Account');
+        return this.EQ(this.Account.NAME, 'Source Account');
       },
       javaFactory: `
         return MLang.EQ(Account.NAME, "Source Account");
