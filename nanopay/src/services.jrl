@@ -974,12 +974,6 @@ p({
     )
     .build();
 
-  dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("liquiditySettingsDAO")
-    .setOf(LiquiditySettings.getOwnClassInfo())
-    .setDelegate(dao)
-    .build();
-
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setSeqNo(true)
@@ -991,6 +985,8 @@ p({
     .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("liquiditysettings").build())
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
+    .setApprovableAware(true)
+    .setApprovableAwareEnabled(false)
     .build();
   """,
   "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
