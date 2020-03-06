@@ -22,6 +22,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'modelName',
+      factory: function(){
+        debugger;
+        return "test";
+      }
     },
   ],
 
