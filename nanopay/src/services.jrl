@@ -2309,3 +2309,25 @@ p({
   }
   """
 })
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"googleSheetsDataExport",
+  "serve":true,
+  "boxClass":"foam.nanos.export.ClientGoogleSheetsExportSkeleton",
+  "serviceClass":"foam.nanos.export.GoogleSheetsExportService",
+  "client":
+   """
+   {
+      "class":"foam.nanos.export.ClientGoogleSheetsExportService",
+      "delegate":
+      """
+      {
+        "class":"foam.box.HTTPBox",
+        "url":"service/googleSheetsExportService"
+      }
+      """
+  }
+  """
+  })
