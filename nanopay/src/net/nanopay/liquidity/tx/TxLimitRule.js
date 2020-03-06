@@ -70,6 +70,39 @@ foam.CLASS({
           });
       }
     },
+    {	
+      class: 'Reference',	
+      of: 'net.nanopay.model.Business',	
+      targetDAOKey: 'businessDAO',		
+      documentation: 'The business to limit.',	
+      name: 'businessToLimit',	
+      section: 'basicInfo',	
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Businesses',
+              dao: X.businessDAO.orderBy(net.nanopay.model.Business.BUSINESS_NAME)
+            }
+          ]
+        };
+      },
+      visibility: function(applyLimitTo) {
+        return (applyLimitTo == 'BUSINESS') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.businessDAO
+          .find(value)
+          .then((business) => {
+            this.add(business.label());
+          })
+          .catch((error) => {
+            this.add(value);
+          });
+      }  
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
@@ -209,6 +242,7 @@ foam.CLASS({
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
           .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? this.getAccountToLimit() :
+                 this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
           .setSend(this.getSend())
           .build();
@@ -252,6 +286,10 @@ foam.CLASS({
         if (this.getApplyLimitTo() == TxLimitEntityType.USER &&
             this.getUserToLimit() == 0) {
               throw new IllegalStateException("User to limit must be set");
+        }
+        else if (this.getApplyLimitTo() == TxLimitEntityType.BUSINESS &&
+            this.getBusinessToLimit() == 0) {
+              throw new IllegalStateException("Business to limit must be set");
         }
         else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
                  this.getAccountToLimit() == 0) {

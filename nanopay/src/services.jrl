@@ -622,6 +622,11 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("userDAO"))
+        .setDecorator(
+          new foam.dao.FilteredDAO.Builder(x)
+            .setPredicate(foam.mlang.MLang.CLASS_OF(foam.nanos.auth.User.class))
+            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
+          .build())
         .setDeletedAware(false)
         .build();
   """,
@@ -2066,10 +2071,14 @@ p({
   "serve": true,
   "serviceScript":
   """
-    setBusinessNameDAO = new net.nanopay.business.SetBusinessNameDAO.Builder(x)
-      .setReferenceProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS)
-      .setNameProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS_NAME)
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.ruler.Rule.getOwnClassInfo()).build();
+    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
+      .setDaoKey("ruleDAO")
+      .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
+      .setIsEnabled(false)
+      .setDelegate(dao)
       .build();
+
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setGuid(true)
@@ -2077,8 +2086,8 @@ p({
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
-      .setDecorator(setBusinessNameDAO)
       .setValidated(true)
+      .setDecorator(dao)
       .setRuler(false)
       .build();
 

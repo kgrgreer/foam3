@@ -397,6 +397,7 @@ p({
             foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "liquidBasic"),
             foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
           }))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
         .build())
       .setDeletedAware(false)
       .build();
