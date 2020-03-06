@@ -63,7 +63,7 @@ foam.CLASS({
       var user = invoice.createdBy === invoice.payer.id ?
         invoice.payer :
         invoice.payee;
-      this.name = user.label();
+      this.name = await user.label();
 
       return parentView
         .addClass(this.myClass())
@@ -80,7 +80,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp), ' by ', self.name)
+              .add(`${this.formatDate(record.timestamp)} by ${self.name}`)
             .end()
           .end()
         .end();

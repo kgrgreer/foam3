@@ -105,6 +105,7 @@ foam.CLASS({
             altPlan.setIsQuoted(true);
             altPlan.setTransfers((Transfer[]) getMyTransfers_().toArray(new Transfer[0]));
             altPlan.setId(UUID.randomUUID().toString());
+            altPlan = (Transaction) ((DAO) getX().get("localFeeEngineDAO")).put(altPlan);
             quote.addPlan(altPlan);
           }
         //}
@@ -114,7 +115,7 @@ foam.CLASS({
           txn.setIsQuoted(true);
           //likely can add logic for setting clearing/completion time based on planners here.
           //auto add fx rate
-          //TODO: add individual txn cost by hitting Fee Engine
+          txn = (Transaction) ((DAO) getX().get("localFeeEngineDAO")).put(txn);
           //TODO: hit tax engine
           //TODO: signing
           quote.addPlan(txn);

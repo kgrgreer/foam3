@@ -85,7 +85,7 @@ p({
           ],
           "createPredicate": {
             "class":"foam.lib.PermissionPredicate",
-            "permission":"account.make"
+            "permission":"transaction.make"
           },
           "filterExportPredicate":
             {
