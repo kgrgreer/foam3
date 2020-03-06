@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ClusterClientTransactionDAO',
-  extends: 'foam.nanos.mrac.ClusterClientDAO',
+  extends: 'foam.nanos.medusa.ClusterClientDAO',
 
   documentation: `Marshall put and remove operations to the ClusterServer.
 This DAO is specific to Transactions. Most models can be re-put without
@@ -24,7 +24,7 @@ retry.`,
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.mrac.*',
+    'foam.nanos.medusa.*',
     'net.nanopay.tx.model.Transaction'
   ],
 
