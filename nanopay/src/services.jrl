@@ -966,27 +966,36 @@ p({
   "serve": true,
   "serviceScript":
   """
-    dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
-      .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)
+  import net.nanopay.liquidity.LiquiditySettings;
+  import foam.dao.DAO;
+
+  DAO dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
+    .setFm(
+      new foam.nanos.analytics.DAOFoldManager.Builder(x)
         .setDao((foam.dao.DAO) x.get("liquidityThresholdCandlestickDAO"))
         .setPeriodLengthMs(60 * 60 * 1000)
-      .build())
+        .build()
+    )
     .build();
 
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setRuler(false)
-      .setSeqNo(true)
-      .setAuthorize(false) // FIXME
-      .setValidated(true)
-      .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
-      .setEnableInterfaceDecorators(false)
-      .setDecorator(dao)
-      .setJournalName("liquiditySettings")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
-      .build();
+  dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
+    .setDaoKey("liquiditySettingsDAO")
+    .setOf(LiquiditySettings.getOwnClassInfo())
+    .setDelegate(dao)
+    .build();
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setSeqNo(true)
+    .setRuler(false)
+    .setValidated(true)
+    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("liquiditySettings")
+    .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("liquiditysettings").build())
+    .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
+    .setDecorator(dao)
+    .build();
   """,
   "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
 })
