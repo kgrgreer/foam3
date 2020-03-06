@@ -30,13 +30,17 @@ p({
     .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
     .build();
 
-    return new foam.dao.EasyDAO.Builder(x)
+    dao = new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidCapabilities")
       .setDecorator(dao)
+      .setGuid(true)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { net.nanopay.liquidity.crunch.LiquidCapability.NAME });
+
+    return dao;
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
 })

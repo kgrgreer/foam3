@@ -7,7 +7,7 @@ p({
   "serviceScript": """
     auth = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
     auth = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(auth).build();
-    auth = new net.nanopay.liquidity.crunch.LiquidCapabilityAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.CachingAuthService(auth, new String[]{ "signingOfficerJunctionDAO", "blacklistDAO", "userCapabilityJunctionDAO", "localCapabilityDAO", "localAccountDAO" });
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
@@ -143,7 +143,7 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
-    import foam.nanos.mrac.*;
+    import foam.nanos.medusa.*;
 
     dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
@@ -241,7 +241,7 @@ p({
   """
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
-    import foam.nanos.mrac.*;
+    import foam.nanos.medusa.*;
     transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
 
     // Add indexes
@@ -667,4 +667,19 @@ p({
     }
   }
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"capabilityDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
 })

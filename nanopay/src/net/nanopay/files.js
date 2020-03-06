@@ -660,6 +660,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/PayableController', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ReceivableController', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/PayableDAOBrowser', flags: ['web'] },
+  { name: 'net/nanopay/invoice/ui/ReceivableDAOBrowser', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceStatusHistoryItemView', flags: ['web'] },
@@ -674,6 +676,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ruler/InvoiceVoidEmailRule' },
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
+  { name: 'net/nanopay/invoice/ruler/SetProcessingDateRule' },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
@@ -867,6 +870,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
+  { name: 'net/nanopay/ui/DetailedActionBooleanView', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -1373,6 +1377,7 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/Alarming' },
   { name: 'net/nanopay/alarming/AlarmConfig' },
   { name: 'net/nanopay/alarming/AlarmReason' },
+  { name: 'net/nanopay/alarming/AlarmHostnameRuleAction' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
@@ -1398,6 +1403,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
 
   // planners
+  { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
   { name: 'net/nanopay/tx/planner/TransactionPlannerDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
@@ -1430,5 +1436,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BulkTransactionPlanner' },
+
+  // Fees
+  { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
 
 ]);

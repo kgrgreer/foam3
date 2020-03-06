@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 FROM buildpack-deps:bionic-scm
 
 RUN apt-get update

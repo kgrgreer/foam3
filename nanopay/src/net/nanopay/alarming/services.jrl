@@ -37,17 +37,15 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"alarmDAO", "serve":true,
   "serviceScript":`
-    dao = new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.alarming.Alarm.getOwnClassInfo())
       .setSeqNo(true)
       .setPm(true)
       .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
-      .setOf(net.nanopay.alarming.Alarm.getOwnClassInfo())
-      .build();
-    ca = new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
-      .setDelegate(dao).build();
-    return new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(ca).build();
+      .setOrder(new foam.mlang.order.Comparator[] { net.nanopay.alarming.Alarm.LAST_MODIFIED, new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.alarming.Alarm.IS_ACTIVE).build() })
+     .build();
   `,
   "client":"{\"of\":\"net.nanopay.alarming.Alarm\"}"
 })
