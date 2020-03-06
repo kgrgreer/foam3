@@ -676,6 +676,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
   { name: 'net/nanopay/invoice/ruler/SetProcessingDateRule' },
+  { name: 'net/nanopay/invoice/ruler/SetPaymentReceivedDateRule' },
+  { name: 'net/nanopay/invoice/ruler/SetPaymentSentDateRule' },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },

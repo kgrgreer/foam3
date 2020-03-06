@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ruler',
-  name: 'SetPaymentSentDateRule',
+  name: 'SetPaymentReceivedDateRule',
 
-  documentation: `Sets invoice payment sent date when CI transaction is settled.`,
+  documentation: `Sets invoice payment received date when CO transaction is settled.`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -29,13 +29,13 @@ foam.CLASS({
           Invoice invoice = (Invoice) invoiceDAO.find(transaction.getInvoiceId());
 
           try {
-            invoice.setPaymentSentDate(new Date());
+            invoice.setPaymentReceivedDate(new Date());
             invoiceDAO.put(invoice);
           } catch (Throwable e) {
-            ((Logger) x.get("logger")).error("Payment sent date was not updated on invoice: " , invoice.getId(), " Error: ", e);
+            ((Logger) x.get("logger")).error("Payment received date was not updated on invoice: ", invoice.getId(), " Error: ", e);
           }
         }
-      }, "set payment sent date on invoice");
+      }, "set payment received date on invoice");
       `
     }
   ]
