@@ -23,6 +23,7 @@ foam.CLASS({
     'id',
     'businessName',
     'email',
+    'compliance',
     'viewAccounts'
   ],
 
