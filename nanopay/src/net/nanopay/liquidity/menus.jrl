@@ -55,7 +55,8 @@ p({
             "class": "foam.comics.v2.CRUDEnabledActionsAuth",
             "isEnabled": true,
             "enabledActionsAuth": {
-              "class": "foam.comics.v2.BasicEnabledActionsAuth"
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "account"
             }
           },
         }
@@ -83,9 +84,13 @@ p({
             "destinationCurrency",
             "destinationAmount"
           ],
-          "createPredicate": {
-            "class":"foam.lib.PermissionPredicate",
-            "permission":"transaction.make"
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "transaction"
+            }
           },
           "filterExportPredicate":
             {
@@ -102,7 +107,7 @@ p({
             },
           "browseViews": [
             {
-              "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+              "class": "foam.comics.v2.namedViews.NamedViewCollection",
               "name": "Transactions",
               "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
             }
@@ -149,18 +154,14 @@ p({
           "value": "ACTIVE"
         }
       },
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"liquiditysettings.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "account"
+        }
       },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"liquiditysettings.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"liquiditysettings.make"
-      }
     }
   }
 })
@@ -247,18 +248,14 @@ p({
         "createdBy"
       ],
       "of": "net.nanopay.liquidity.tx.GenericBusinessRule",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      }
     }
   },
   "parent": "rules"
@@ -305,17 +302,13 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictAccountsRule",
       "browseTitle": "Restrict Accounts",
       "createTitle": "Create a New Rule to Restrict Accounts",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -363,17 +356,13 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictUsersRule",
       "browseTitle": "Restrict Users",
       "createTitle": "Create a New Rule to Restrict Users",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -419,17 +408,13 @@ p({
         "startAmount"
       ],
       "of": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -478,17 +463,13 @@ p({
       "of": "net.nanopay.liquidity.tx.TxLimitRule",
       "browseTitle": "Transaction Limits",
       "createTitle": "Create a New Transaction Limit",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"rule.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -528,17 +509,13 @@ p({
           "value": "ACTIVE"
         }
       },
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capability"
+        }
       }
     }
   },
@@ -567,17 +544,13 @@ p({
           "value": "ACTIVE"
         }
       },
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capability.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capability"
+        }
       }
     }
   },
@@ -610,17 +583,13 @@ p({
       "daoKey": "capabilityRequestDAO",
       "browseTitle": "Role Assignment",
       "createTitle": "Execute a Role Assignment",
-      "createPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capabilityrequest.make"
-      },
-      "editPredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capabilityrequest.make"
-      },
-      "deletePredicate": {
-        "class":"foam.lib.PermissionPredicate",
-        "permission":"capabilityrequest.make"
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capabilityrequest"
+        }
       }
     }
   },
