@@ -186,7 +186,7 @@ foam.CLASS({
       }
       this.views = {
         'AddContactMenu': {
-          view: { class: 'net.nanopay.contacts.ui.modal.AddContactMenu' },
+          view: { class: 'net.nanopay.contacts.ui.modal.MenuToolBar' },
           startPoint: true
         },
         'SearchBusiness': {
