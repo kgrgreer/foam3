@@ -32,7 +32,6 @@ foam.CLASS({
     'foam.nanos.approval.Approvable',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'foam.nanos.approval.ApprovableAware',
-    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
@@ -58,7 +57,7 @@ foam.CLASS({
       type: 'void',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'RoleApprovalRequest' },
+        { name: 'request', type: 'ApprovalRequest' },
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`

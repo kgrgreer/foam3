@@ -8,7 +8,7 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.approval.Approvable',
-    'foam.nanos.approval.RoleApprovalRequest',
+    'foam.nanos.approval.ApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
     'foam.dao.DAO'
@@ -35,7 +35,7 @@ foam.CLASS({
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
-        RoleApprovalRequest request = (RoleApprovalRequest) obj;
+        ApprovalRequest request = (ApprovalRequest) obj;
 
         // TODO: make this less ugly
         if ( ! (user.getId() == request.getApprover()) ) {
@@ -56,10 +56,10 @@ foam.CLASS({
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
         if ( user != null && 
              ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) && 
-             ((RoleApprovalRequest) newObj).getIsFulfilled() ) 
+             ((ApprovalRequest) newObj).getIsFulfilled() ) 
           return;
 
-        RoleApprovalRequest request = (RoleApprovalRequest) oldObj;
+        ApprovalRequest request = (ApprovalRequest) oldObj;
 
         if ( ! (user.getId() == request.getApprover()) ) {
           throw new AuthorizationException("You are not the approver of this request");
