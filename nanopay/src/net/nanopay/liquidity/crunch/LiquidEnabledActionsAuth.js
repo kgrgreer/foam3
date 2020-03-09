@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   documentation: `
-    String arrays of permissions that will be checked on each CRUD action through availablePermissions
+    Defines liquid-CRUNCH CRUD permissions to be checked on front-end actions
+    in conjuction with the DAOControllerConfig (model.make and model.make.i)
   `,
 
   properties: [
