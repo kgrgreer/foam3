@@ -226,6 +226,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
+  'net.nanopay.fx.afex.AFEXSigningOfficerRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
