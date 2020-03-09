@@ -819,8 +819,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
-      document.add(new ListItem("Supporting documents:"));
-      if ( imgs != null ) {
+      if ( ! imgs.isEmpty() ) {
+        document.add(new ListItem("Supporting documents:"));
         for ( Image img : imgs) {
           img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
           - document.rightMargin(), 200);

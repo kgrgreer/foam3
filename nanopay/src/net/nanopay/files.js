@@ -387,11 +387,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
-  { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
-  { name: 'net/nanopay/tx/ruler/BusinessLimit' },
-  { name: 'net/nanopay/tx/ruler/BusinessLimitPredicate' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
@@ -675,6 +671,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ruler/InvoiceVoidEmailRule' },
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
+  { name: 'net/nanopay/invoice/ruler/SetProcessingDateRule' },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
@@ -1375,6 +1372,7 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/Alarming' },
   { name: 'net/nanopay/alarming/AlarmConfig' },
   { name: 'net/nanopay/alarming/AlarmReason' },
+  { name: 'net/nanopay/alarming/AlarmHostnameRuleAction' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
   { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
@@ -1416,6 +1414,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
 
   // planners
+  { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
   { name: 'net/nanopay/tx/planner/TransactionPlannerDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
@@ -1451,5 +1450,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/BmoCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BulkTransactionPlanner' },
+
+  // Fees
+  { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
 
 ]);
