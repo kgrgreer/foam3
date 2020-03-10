@@ -9,7 +9,7 @@ foam.CLASS({
       {
         name: 'viewApprovalRequests',
         label: 'View Approval Requests',
-        availablePermissions: ['service.approvalrequestdao', 'foam.nanos.auth.User.permission.viewApprovalRequests'],
+        availablePermissions: ['service.approvalRequestDAO', 'foam.nanos.auth.User.permission.viewApprovalRequests'],
         code: async function(X) {
           var m = foam.mlang.ExpressionsSingleton.create({});
           this.__context__.stack.push({
