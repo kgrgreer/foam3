@@ -11,11 +11,11 @@ foam.CLASS({
     'inviter',
     'timestamp',
   ],
-  
+
   sections: [
     {
       name: 'inviteSection',
-      title: 'Invite to Ablii'
+      title: 'Invite a contact'
     }
   ],
 
@@ -33,13 +33,6 @@ foam.CLASS({
       documentation: 'Id of invitee if currently a user'
     },
     {
-      class: 'String',
-      name: 'businessName',
-      section: 'inviteSection',
-      documentation: `Hard set to business name when invitee is
-      not a contact. Used to populate "name" email argument.`
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'invitee',
@@ -55,15 +48,52 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'message',
+      name: 'businessName',
       section: 'inviteSection',
-      documentation: 'Custom message for invitee'
+      documentation: `Hard set to business name when invitee is
+      not a contact. Used to populate "name" email argument.`,
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      validateObj: function(businessName) {
+        if (
+          typeof businessName !== 'string' ||
+          businessName.trim().length === 0
+        ) {
+          return 'Business name required';
+        }
+      },
     },
     {
       class: 'EMail',
       name: 'email',
       section: 'inviteSection',
       documentation: 'Email address of the invitee',
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
+      validateObj: function(email) {
+        var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if ( ! emailRegex.test(email) ) {
+          return 'Invalid email address.';
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'message',
+      section: 'inviteSection',
+      documentation: 'Custom message for invitee',
+      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 60, placeholder: 'Add a message to the invitation' },
+    },
+    {
+      class: 'Boolean',
+      name: 'invitePermission',
+      section: 'inviteSection',
+      label: `I have this contact's permission to invite them to Ablii`,
+      documentation: 'True if user confirms invitation permission',
+      view: { class: 'foam.u2.CheckBox' },
+      validateObj: function(invitePermission) {
+        if ( ! invitePermission ) {
+          return 'Permission required.';
+        }
+      }
     },
     {
       class: 'Long',
@@ -109,11 +139,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      hidden: true,
       documentation: 'Ablii signing officer\'s firstName'
     },
     {
       class: 'String',
       name: 'lastName',
+      hidden: true,
       documentation: 'Ablii signing officer\'s lastName'
     },
     {

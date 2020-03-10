@@ -24,6 +24,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'model'
+    },
+    {
+      class: 'String',
+      name: 'modelName',
+      expression: function(model) {
+        var array = model.split(".");
+        return array[array.length - 1];
+      }
     }
   ],
   
@@ -31,7 +39,7 @@ foam.CLASS({
     function initE() {
       this.start().addClass(this.myClass())
         .add(this.SMEModal.create().tag({
-          class: 'net.nanopay.ui.wizard.WizardSectionController',
+          class: `net.nanopay.contacts.ui.${this.modelName}WizardView`,
           data: this.model_
         }))
       .end()
