@@ -25,6 +25,8 @@ p({
   "serviceScript":
   """
     import net.nanopay.account.Account;
+    import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
+
     mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
@@ -35,6 +37,13 @@ p({
     inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "accounts");
     dao = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
+      .build();
+    
+    dao = new AccountApprovableAwareDAO.Builder(x)
+      .setOf(Account.getOwnClassInfo())
+      .setDaoKey("localAccountDAO")
+      .setDelegate(dao)
+      .setIsEnabled(false)
       .build();
     dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);
@@ -55,6 +64,7 @@ p({
       .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
+      .setApprovableAware(false)
      .build();
   """
 })

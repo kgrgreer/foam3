@@ -388,11 +388,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
-  { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
-  { name: 'net/nanopay/tx/ruler/BusinessLimit' },
-  { name: 'net/nanopay/tx/ruler/BusinessLimitPredicate' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
@@ -944,6 +940,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
    { name: 'net/nanopay/liquidity/crunch/RootAccounts' },
    { name: 'net/nanopay/liquidity/crunch/RemoveDeletedAccountFromAccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidEnabledActionsAuth' },
 
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/LiquidCurrencyView' },
