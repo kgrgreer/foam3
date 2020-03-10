@@ -225,6 +225,7 @@ foam.CLASS({
             if (this.appConfig.name != 'liquid') {
               this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
               this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.liquidity.ui.account.AccountDetailView");
+              this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.account.AccountDAOSummaryViewView");
               this.__subContext__.register(foam.comics.v2.DAOSummaryView, "net.nanopay.account.AccountDAOSummaryView");
             }
           });
