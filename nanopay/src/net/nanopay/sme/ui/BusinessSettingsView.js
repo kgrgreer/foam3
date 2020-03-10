@@ -69,7 +69,6 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
-
       try {
         const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission] = await Promise.all([
           this.auth.check(null, 'menu.read.sme.userManagement'),
