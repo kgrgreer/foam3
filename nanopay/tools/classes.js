@@ -354,6 +354,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.AddChildAccountToMakerOnAccountApproval',
    'net.nanopay.liquidity.crunch.RootAccounts',
    'net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate',
+   'net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
