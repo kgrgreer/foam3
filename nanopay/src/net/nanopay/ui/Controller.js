@@ -224,6 +224,8 @@ foam.CLASS({
             // Replace the detail view in non-liquid deployments to give more control over the users
             if (this.appConfig.name != 'liquid') {
               this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
+              this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.liquidity.ui.account.AccountDetailView");
+              this.__subContext__.register(foam.comics.v2.DAOSummaryView, "net.nanopay.account.AccountDAOSummaryView");
             }
           });
           this.AppStyles.create();
