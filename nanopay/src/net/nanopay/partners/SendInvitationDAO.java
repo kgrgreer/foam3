@@ -42,6 +42,19 @@ public class SendInvitationDAO
     boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
     boolean isInviter = invite.getCreatedBy() == user.getId();
 
+    Map tokenParams = new HashMap();
+    tokenParams.put("inviteeEmail", invite.getEmail());
+
+    DAO tokenDAO = (DAO) x.get("localTokenDAO");
+    Token token = new Token();
+    token.setParameters(tokenParams);
+    token.setExpiry(this.generateExpiryDate());
+    String tokenData = UUID.randomUUID().toString();
+    token.setData(tokenData);
+    token = (Token) tokenDAO.put(token);
+
+    invite.setTokenData(tokenData);
+
     // if this is a new invitation, get the id first
     if ( invite.getId() == 0 ) {
       invite = (Invitation) super.put_(x, invite).fclone();
@@ -112,23 +125,12 @@ public class SendInvitationDAO
     String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
 
     if ( invite.getIsContact() ) {
-      DAO tokenDAO = (DAO) x.get("localTokenDAO");
-      // Create new token and associate passed in external user to token.
-      Map tokenParams = new HashMap();
-      tokenParams.put("inviteeEmail", invite.getEmail());
-
-      Token token = new Token();
-      token.setParameters(tokenParams);
-      token.setExpiry(this.generateExpiryDate());
-      token.setData(UUID.randomUUID().toString());
-      token = (Token) tokenDAO.put(token);
-
       template = "contact-invite";
       try {
         urlPath = "?email="
           + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name())
           + "&token="
-          + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name())
+          + URLEncoder.encode(invite.getTokenData(), StandardCharsets.UTF_8.name())
           + "#sign-up";
       } catch (UnsupportedEncodingException e) {
         logger.error("Error generating contact token: ", e);

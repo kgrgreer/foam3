@@ -245,6 +245,7 @@ var classes = [
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
   'net.nanopay.admin.SkipUserEmailVerification',
   'net.nanopay.admin.predicate.IsCurrentUser',
+  'net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule',
 
   // compliance Email notification
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',

@@ -117,3 +117,5 @@ p({
   }
 })
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"businessInvitations"})
+
