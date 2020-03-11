@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ruler',
-  name: 'SetPaymentReceivedDateRule',
+  name: 'SetReceivedDateRule',
 
   documentation: `Sets invoice payment received date when CO transaction is settled.`,
 

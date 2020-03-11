@@ -203,7 +203,7 @@ p({
     ]
   },
   "action": {
-    "class": "net.nanopay.invoice.ruler.SetPaymentReceivedDateRule"
+    "class": "net.nanopay.invoice.ruler.SetReceivedDateRule"
   },
   "enabled":true,
   "saveHistory":true
