@@ -174,9 +174,9 @@ p({
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "defaultColumns": [
-        "classifiction",
+        "classification",
         "operation",
-        "initiatingUser",
+        "createdBy",
         "approver",
         "status",
         "lastModified"
