@@ -686,10 +686,6 @@ if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
-if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
-fi
-
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then

@@ -11,6 +11,7 @@ p({
       .setJournalName("alarmConfig")
       .setOf(net.nanopay.alarming.AlarmConfig.getOwnClassInfo())
       .setDecorator(new net.nanopay.alarming.AlarmConfigOMNameDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, net.nanopay.alarming.AlarmConfig.getOwnClassInfo())).build())
+      .setCluster(false)
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.alarming.AlarmConfig\"}"
@@ -45,6 +46,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
       .setOrder(new foam.mlang.order.Comparator[] { net.nanopay.alarming.Alarm.LAST_MODIFIED, new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.alarming.Alarm.IS_ACTIVE).build() })
+      .setCluster(false)
      .build();
   `,
   "client":"{\"of\":\"net.nanopay.alarming.Alarm\"}"
