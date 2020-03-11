@@ -36,9 +36,7 @@ foam.CLASS({
         };
 
         getDelegate().select_(x, proxy, skip, limit, order, predicate);
-
-        // Return the proxy's delegate - the caller may explicitly be expecting
-        // this array sink they passed.  See foam.dao.RequestResponseClientDAO
+        
         return proxy.getDelegate();
       `
     },
