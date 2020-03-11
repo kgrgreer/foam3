@@ -5,7 +5,8 @@ foam.CLASS({
   flags: ['java'],
 
   documentation: `
-
+    DAO decorator that filters out all the users
+    not associated with the current user
   `,
 
   javaImports: [
