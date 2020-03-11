@@ -5,7 +5,60 @@ p({"class":"foam.nanos.script.Script","id":"sftp","description":"sftp","lastRun"
 p({"class":"foam.nanos.script.Script","id":"showRandomDepositAmounts","description":"Show random bank account deposit amounts.","code":"dao = x.get(\"localAccountDAO\");\na = dao.select().getArray();\n\nfor ( int i = 0 ; i < a.size() ; i++ ) {\n  account = a.get(i);\n  if ( account instanceof net.nanopay.bank.BankAccount ) {\n    amount = account.getRandomDepositAmount();\n    amountFormatted = amount >= 10 ? amount.toString() : \"0\" + amount.toString();\n    print(account.getName() + \" [id = \" + account.getId() + \"]\" + \": $0.\" + amountFormatted);\n  }\n}\n"})
 p({"class":"foam.nanos.script.Script","id":"createMissingUserAccounts","description":"Create Balance for Users who don't already have one.","lastRun":"2017-12-12T20:21:12.903Z","server":true,"scheduled":false,"code":"userDAO = x.get(\"userDAO\");\nbalanceDAO = x.get(\"localBalanceDAO\");\n\nusers = userDAO.select().getArray();\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\naccount = balanceDAO.find(user.getId());\n\nif ( account == null ) {\naccount = new net.nanopay.account.Balance();\naccount.setId(user.getId());\naccount.setOwner(user.getId());\nprint(\"creating \" + user.getId());\nbalanceDAO.put(account);\n}\n}\n\nprint(\"done\");","output":"creating 1345\ncreating 1346\ncreating 1347\ncreating 1348\ncreating 1349\ncreating 1350\ncreating 1354\ncreating 1356\ncreating 1006\ncreating 1007\ncreating 1008\ncreating 1009\ndone\n","notes":""})
 p({"class":"foam.nanos.script.Script","id":"createTestTransactions","description":"Creates test transactions to and from users","lastRun":"2017-12-21T22:02:52.502Z","server":true,"scheduled":false,"code":"balanceDAO = x.get(\"localBalanceDAO\");\ntransactionDAO = x.get(\"localTransactionDAO\");\nuserDAO = x.get(\"userDAO\");\n\nusers = userDAO.select().getArray();\n\naccounts = balanceDAO.select().getArray();\n\nfor ( int i = 0 ; i < accounts.size() ; i++ ) {\naccount = accounts.get(i);\naccount.setBalance(1000000);\nprint(\"Balance set to 1000000 for account with id: \" + account.getId());\n}\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\naccount = balanceDAO.find(user.getId());\nif ( account == null ) {\naccount = new net.nanopay.account.Balance();\naccount.setId(user.getId());\naccount.setOwner(user.getId());\naccount.setBalance(1000000);\nprint(\"creating account for user with ID: \" + user.getId());\nbalanceDAO.put(account);\n}\n}\n\nfor ( int i = 0; i < 500 ; i++ ) {\nfi = (int) (Math.random()*users.size());\nti = (int) (Math.random()*users.size());\namount = (int) ((Math.random() + 0.1) * 10000);\nif ( users.get(ti).id != users.get(fi).id ) {\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setPayeeId(users.get(ti).id);\ntransaction.setPayerId(users.get(fi).id);\ntransaction.setAmount(amount);\nprint(\"sending \" + amount + \" to user with ID: \" + users.get(ti).id);\ntransactionDAO.put(transaction);\n}\n}\n\nprint(\"Done\"); ","output":"","notes":""})
-p({"class":"foam.nanos.script.Script","id":"benchmarkTransactions","lastRun":"2018-01-22T13:43:55.407Z","lastDuration":135,"scheduled":false,"code":"x.get(\"transactionDAO\").removeAll();\nx.get(\"transactionLimitDAO\").removeAll();\nbalanceDAO = x.get(\"localBalanceDAO\");\ntransactionDAO = x.get(\"localTransactionDAO\");\nuserDAO = x.get(\"userDAO\");\n\nusers = userDAO.select().getArray();\n\naccounts = balanceDAO.select().getArray();\n\nfor ( int i = 0 ; i < accounts.size() ; i++ ) {\naccount = accounts.get(i);\naccount.setBalance(1000000);\n//print(\"Balance set to 1000000 for account with id: \" + account.getId());\n}\n\nfor ( int i = 0 ; i < users.size() ; i++ ) {\nuser = users.get(i);\naccount = balanceDAO.find(user.getId());\nif ( account == null ) {\naccount = new net.nanopay.account.Balance();\naccount.setId(user.getId());\naccount.setOwner(user.getId());\n}\naccount.setBalance(1000000);\n//print(\"creating account for user with ID: \" + user.getId());\nbalanceDAO.put(account);\n}\n\npm = new foam.nanos.pm.PM(Object.class, \"Create 10k txns\");\nfor ( int i = 0; i < 1000 ; i++ ) {\nfi = (int) (Math.random()*users.size());\nti = (int) (Math.random()*users.size());\namount = (int) ((Math.random() + 0.1) * 10000);\namount = 1;\nif ( users.get(ti).id != users.get(fi).id ) {\ntransaction = new net.nanopay.tx.model.Transaction();\ntransaction.setPayeeId(users.get(ti).id);\ntransaction.setPayerId(users.get(fi).id);\ntransaction.setAmount(amount);\n// print(\"sending \" + amount + \" to user with ID: \" + users.get(ti).id);\n// transactionDAO.put(transaction);\n}\n}\n\npm.log(x);\nprint(\"Done\"); \n\n","output":"Done\n"})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactions",
+  "scheduled":false,
+  "code":"""
+    x.get("transactionDAO").removeAll();
+    balanceDAO = x.get("localBalanceDAO");
+    transactionDAO = x.get("localTransactionDAO");
+    userDAO = x.get("userDAO");
+
+    users = userDAO.select().getArray();
+
+    accounts = balanceDAO.select().getArray();
+
+    for ( int i = 0 ; i < accounts.size() ; i++ ) {
+      account = accounts.get(i);
+      account.setBalance(1000000);
+      //print("Balance set to 1000000 for account with id: " + account.getId());
+    }
+
+    for ( int i = 0 ; i < users.size() ; i++ ) {
+      user = users.get(i);
+      account = balanceDAO.find(user.getId());
+      if ( account == null ) {
+        account = new net.nanopay.account.Balance();
+        account.setId(user.getId());
+        account.setOwner(user.getId());
+      }
+      account.setBalance(1000000);
+      //print("creating account for user with ID: " + user.getId());
+      balanceDAO.put(account);
+    }
+
+    pm = new foam.nanos.pm.PM(Object.class, "Create 10k txns");
+    for ( int i = 0; i < 1000 ; i++ ) {
+      fi = (int) (Math.random()*users.size());
+      ti = (int) (Math.random()*users.size());
+      amount = (int) ((Math.random() + 0.1) * 10000);
+      amount = 1;
+      if ( users.get(ti).id != users.get(fi).id ) {
+        transaction = new net.nanopay.tx.model.Transaction();
+        transaction.setPayeeId(users.get(ti).id);
+        transaction.setPayerId(users.get(fi).id);
+        transaction.setAmount(amount);
+        // print("sending " + amount + " to user with ID: " + users.get(ti).id);
+        // transactionDAO.put(transaction);
+      }
+    }
+
+    pm.log(x);
+    print("Done"); 
+
+  """
+})
 p({"class":"foam.nanos.script.Script","id":"benchmarkRSASignatureGeneration","description":"Concurrent RSA Signature Generation Benchmark","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nx = x.put(\"pmLogger\", null);\nb = new SignatureGenerationBenchmark(\"RSA\", \"SHA256\");\nbuilder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(10000).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);"})
 p({"class":"foam.nanos.script.Script","id":"benchmarkRSASignatureVerification","description":"Concurrent RSA Signature Verification Benchmark","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nx = x.put(\"pmLogger\", null);\nb = new SignatureVerificationBenchmark(\"RSA\", \"SHA256\");\nbuilder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(10000).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);"})
 p({"class":"foam.nanos.script.Script","id":"benchmarkECSignatureGeneration","description":"Concurrent EC Signature Generation Benchmark","code":"import foam.nanos.bench.*;\nimport net.nanopay.bench.*;\n\nx = x.put(\"pmLogger\", null);\nb = new SignatureGenerationBenchmark(\"EC\", \"SHA256\");\nbuilder = new BenchmarkRunner.Builder(x).setThreadCount(2).setInvocationCount(10000).setBenchmark(b);\nrunner = builder.build();\nrunner.execute(x);"})

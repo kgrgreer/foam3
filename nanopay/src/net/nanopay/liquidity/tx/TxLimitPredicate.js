@@ -78,7 +78,8 @@ foam.CLASS({
 
         // Retrieve the users
         User user = account.findOwner((X) obj);
-        if (this.getEntityType() == TxLimitEntityType.USER) {
+        if (this.getEntityType() == TxLimitEntityType.USER || 
+            this.getEntityType() == TxLimitEntityType.BUSINESS) {
           return user.getId() == this.getId();
         }
 
