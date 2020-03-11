@@ -26,7 +26,6 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'net.nanopay.liquidity.crunch.ApproverLevel',
@@ -373,8 +372,8 @@ foam.CLASS({
             AND(
               EQ(ApprovalRequest.DAO_KEY, "capabilityRequestDAO"),
               EQ(ApprovalRequest.OBJ_ID, getApprovableKey()),
-              EQ(RoleApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
-              EQ(RoleApprovalRequest.IS_FULFILLED, false),
+              EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
+              EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
             )
           ).select(new ArraySink())).getArray();

@@ -32,7 +32,6 @@ foam.CLASS({
     'foam.nanos.approval.Approvable',
     'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability',
     'foam.nanos.approval.ApprovableAware',
-    'foam.nanos.approval.RoleApprovalRequest',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
@@ -58,19 +57,19 @@ foam.CLASS({
       type: 'void',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'RoleApprovalRequest' },
+        { name: 'request', type: 'ApprovalRequest' },
         { name: 'obj', type: 'FObject' }
       ],
       javaCode:`
       Logger logger = (Logger) x.get("logger");
 
       // AccountRoleApprovalRequest and set the outgoing account
-      AccountRoleApprovalRequest accountRequest = new AccountRoleApprovalRequest.Builder(getX())
+      AccountRoleApprovalRequest accountRequest = new AccountRoleApprovalRequest.Builder(x)
         .setDaoKey(request.getDaoKey())
         .setObjId(request.getObjId())
         .setClassification(request.getClassification())
         .setOperation(request.getOperation())
-        .setInitiatingUser(request.getInitiatingUser())
+        .setCreatedBy(request.getCreatedBy())
         .setStatus(request.getStatus()).build();
 
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
@@ -102,14 +101,14 @@ foam.CLASS({
   
       AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
   
-      List<Long> approverIds = ucjQueryService.getAllApprovers(getX(), modelName, accountRequest.getOutgoingAccount());
+      List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, accountRequest.getOutgoingAccount());
   
       if ( approverIds.size() <= 0 ) {
         logger.log("No Approvers exist for the model: " + modelName);
         throw new RuntimeException("No Approvers exist for the model: " + modelName);
       }
 
-      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getInitiatingUser() ){
+      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getCreatedBy() ){
         logger.log("The only approver of " + modelName + " is the maker of this request!");
         throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
@@ -118,13 +117,13 @@ foam.CLASS({
         AccountRoleApprovalRequest accountTrackingRequest = (AccountRoleApprovalRequest) accountRequest.fclone();
         accountTrackingRequest.setIsTrackingRequest(true);
 
-        sendSingleAccountRequest(x, accountTrackingRequest, accountTrackingRequest.getInitiatingUser());
+        sendSingleAccountRequest(x, accountTrackingRequest, accountTrackingRequest.getCreatedBy());
 
-        approverIds.remove(accountTrackingRequest.getInitiatingUser());
+        approverIds.remove(accountTrackingRequest.getCreatedBy());
       }
   
       for ( int i = 0; i < approverIds.size(); i++ ){
-        sendSingleAccountRequest(getX(), accountRequest, approverIds.get(i));
+        sendSingleAccountRequest(x, accountRequest, approverIds.get(i));
       }
       `
     }
