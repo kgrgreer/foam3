@@ -13,8 +13,6 @@ foam.CLASS({
       'foam.dao.DAO',
       'foam.nanos.auth.token.Token',
       'foam.nanos.auth.User',
-      'net.nanopay.model.Business',
-      'net.nanopay.model.Business',
       'net.nanopay.model.Invitation',
       'net.nanopay.model.InvitationStatus',
 
@@ -40,12 +38,13 @@ foam.CLASS({
                     EQ(Invitation.CREATED_BY, invitation.getCreatedBy()),
                     EQ(Invitation.EMAIL, invitation.getEmail())
                   )
-                ).fclone();
+                );
 
               if ( existingInvite != null ) {
                 tokenData = existingInvite.getTokenData();
-                existingInvite.setStatus(InvitationStatus.CANCELED);
-                businessInvitationDAO.put(existingInvite);
+//                existingInvite = (Invitation) existingInvite.fclone();
+//                existingInvite.setStatus(InvitationStatus.CANCELED);
+//                businessInvitationDAO.put(existingInvite);
               }
 
               if ( tokenData != null ) {

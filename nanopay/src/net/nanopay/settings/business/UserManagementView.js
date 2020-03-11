@@ -10,8 +10,8 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.Token',
+    'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
@@ -126,7 +126,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'removeInvitedUser',
+              name: 'Delete',
               isEnabled: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.agent.id != this.sourceId;
               },

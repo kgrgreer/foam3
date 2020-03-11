@@ -98,6 +98,22 @@ public class BusinessInvitationDAO
 
     invite.setCreatedBy(business.getId());
 
+    if ( existingInvite != null ) {
+      if ( invite.getStatus() == InvitationStatus.COMPLETED || invite.getStatus() == InvitationStatus.CANCELED) {
+        invite.setId(existingInvite.getId());
+        return super.put_(x, invite);
+      }
+
+      if ( invite.getStatus() == InvitationStatus.CANCELED) {
+        return super.put_(x, invite);
+      }
+
+      // Log duplicate invites.
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));
+      throw new RuntimeException("Invitation already exists");
+    }
+
     // Associated the business into the param. Add group type (admin, approver, employee)
     Map tokenParams = new HashMap();
     tokenParams.put("businessId", business.getId());
@@ -117,18 +133,6 @@ public class BusinessInvitationDAO
     token = (Token) tokenDAO.put(token);
 
     invite.setTokenData(tokenData);
-
-    if ( existingInvite != null ) {
-      if ( invite.getStatus() == InvitationStatus.COMPLETED || invite.getStatus() == InvitationStatus.CANCELED) {
-        invite.setId(existingInvite.getId());
-        return super.put_(x, invite);
-      }
-
-      // Log duplicate invites.
-      Logger logger = (Logger) x.get("logger");
-      logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));
-      throw new RuntimeException("Invitation already exists");
-    }
 
     if ( invite.getInternal() ) {
       // Inviting a user who's already on our platform to join a business.
@@ -164,7 +168,6 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    //DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
 
