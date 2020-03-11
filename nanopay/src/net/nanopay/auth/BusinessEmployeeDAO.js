@@ -14,28 +14,23 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
-    'foam.util.SafetyUtil',
-    'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.model.Business',
     'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
+    'foam.nanos.auth.UserUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
   methods: [
-    {
-      name: 'find_',
-      javaCode: `
-        return getCurrentUser(x);
-      `
-    },
     {
       name: 'select_',
       javaCode: `
         Sink s = sink != null ? sink : new ArraySink();
         ProxySink proxy = new ProxySink(x, s) {
           public void put(Object o, Detachable d) {
-            getDelegate().put(getCurrentUser(x), d);
+            User user = (User) o;
+            if ( isEmployee(x, user) ) {
+              getDelegate().put(user, d);
+            }
           }
         };
 
@@ -47,13 +42,24 @@ foam.CLASS({
       `
     },
     {
-      name: 'getCurrentUser',
-      type: 'foam.nanos.auth.User',
+      name: 'isEmployee',
+      type: 'Boolean',
       args: [
         { name: 'x', type: 'Context' },
+        { name: 'user', type: 'foam.nanos.auth.User' }
       ],
       javaCode: `
-        return (User) x.get("user");
+        if (user == null) return false;
+
+        User business = (Business) x.get("user");
+        DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+        UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
+          AND(
+            EQ(UserUserJunction.SOURCE_ID, user.getId()),
+            EQ(UserUserJunction.TARGET_ID, business.getId())
+          )
+        );
+        return junction != null;
       `
     }
   ]
