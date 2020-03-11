@@ -606,6 +606,7 @@ var classes = [
   'net.nanopay.auth.NanopayResetPasswordTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
+  'net.nanopay.auth.BusinessEmployeeDAO',
   'net.nanopay.auth.CheckCurrencyRule',
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.ruler.LogoutUserAction',
