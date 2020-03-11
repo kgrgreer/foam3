@@ -50,7 +50,7 @@ foam.CLASS({
         { name: 'user', type: 'foam.nanos.auth.User' }
       ],
       javaCode: `
-        if (user == null) return false;
+        if (user == null) return false; 
 
         User business = (Business) x.get("user");
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
