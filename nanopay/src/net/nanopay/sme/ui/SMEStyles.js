@@ -1049,5 +1049,8 @@ foam.CLASS({
       width: 857px;
       margin-left: 7px;
     }
+    .DAOBrowser-query-bar {
+      align-items: center !important;
+    }
   `
 });
