@@ -10,15 +10,15 @@ foam.ENUM({
   values: [
     {
       name: 'NOT_INVITED',
-      label: 'Not Invited'
+      label: 'Not Connected'
     },
     {
       name: 'INVITED',
-      label: 'Invited'
+      label: 'Not Connected'
     },
     {
       name: 'ACTIVE',
-      label: 'Active'
+      label: 'Connected'
     },
   ]
 });

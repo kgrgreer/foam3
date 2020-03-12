@@ -751,7 +751,7 @@ foam.CLASS({
       height: 6px;
       width: 6px;
       margin-bottom: 1px;
-      margin-right: 4px;
+      margin-right: 8px;
       border-radius: 50%;
     }
 
@@ -777,6 +777,13 @@ foam.CLASS({
 
     .contact-status-circle-Invited {
       background-color: #545d87;
+    }
+
+    .contact-status-circle-NotConnected {
+      background-color: /*%DESTRUCTIVE3%*/ #d9170e;
+    }
+    .contact-status-circle-Connected {
+      background-color: /*%APPROVAL3%*/ #32bf5e;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */

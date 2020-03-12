@@ -119,8 +119,14 @@ foam.CLASS({
         whether a individual person, or real user, can sign in or not.
       `,
       tableCellFormatter: function(state, obj) {
+        debugger;
         this.start()
-          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
+          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
+          .start('img')
+            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
+            .attrs({ src: this.__subContext__.theme.logo })
+            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+            .end()
           .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
             .add(state.label)
           .end()
