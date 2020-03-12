@@ -24,17 +24,12 @@ p({
   "serve":true,
   "serviceScript":"""
     import foam.dao.DAO;
-
-    DAO dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("capabilityDAO")
-    .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
-    .build();
-
+  
     dao = new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidCapabilities")
-      .setDecorator(dao)
       .setGuid(true)
+      .setApprovableAwareEnabled(false)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .build();
@@ -56,6 +51,7 @@ p({
       .setInnerDAO(x.get("localCapabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"

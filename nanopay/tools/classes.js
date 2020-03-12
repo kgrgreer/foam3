@@ -297,6 +297,7 @@ var classes = [
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
+  'net.nanopay.invoice.ruler.SetProcessingDateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
@@ -354,6 +355,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.AddChildAccountToMakerOnAccountApproval',
    'net.nanopay.liquidity.crunch.RootAccounts',
    'net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate',
+   'net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
@@ -487,11 +489,7 @@ var classes = [
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
-  'net.nanopay.tx.ruler.TransactionLimitRule',
-  'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
-  'net.nanopay.tx.ruler.BusinessLimit',
-  'net.nanopay.tx.ruler.BusinessLimitPredicate',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
@@ -609,6 +607,7 @@ var classes = [
   'net.nanopay.auth.NanopayResetPasswordTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
+  'net.nanopay.auth.BusinessEmployeeDAO',
   'net.nanopay.auth.CheckCurrencyRule',
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.ruler.LogoutUserAction',
@@ -938,6 +937,7 @@ var classes = [
   'net.nanopay.alarming.AlarmConfig',
   'net.nanopay.alarming.AlarmConfigOMNameDAO',
   'net.nanopay.alarming.AlarmConfigOMNameSink',
+  'net.nanopay.alarming.AlarmHostnameRuleAction',
   'net.nanopay.alarming.AlarmReason',
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
@@ -964,6 +964,7 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
 
   // Planners
+  'net.nanopay.tx.planner.SummaryPopulatorDAO',
   'net.nanopay.tx.planner.TransactionPlannerDAO',
   'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
@@ -995,6 +996,10 @@ var classes = [
   'net.nanopay.tx.planner.AlternaCOTransactionPlanner',
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
+  'net.nanopay.tx.planner.BulkTransactionPlanner',
+
+  // Fees
+  'net.nanopay.tx.planner.fees.AbliiFeeRule'
 ];
 
 var abstractClasses = [
