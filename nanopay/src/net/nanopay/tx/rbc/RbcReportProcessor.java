@@ -253,7 +253,7 @@ public class RbcReportProcessor {
     if( null == paymentInfo || null == paymentInfo.getTransactionInformationAndStatus() ) return;
 
     for( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
-      if( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSC != txnInfoStatus.getTransactionStatus() ) continue;
+      if( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSP != txnInfoStatus.getTransactionStatus() ) continue;
       try {
         Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction was settled by RBC.").build());
