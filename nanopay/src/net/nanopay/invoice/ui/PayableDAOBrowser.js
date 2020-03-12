@@ -317,9 +317,11 @@ foam.CLASS({
       .tag(this.primaryAction, {
         size: 'LARGE'
       })
-      .tag(this.SYNC, {
-        size: 'MEDIUM'
-      })
+      .startContext({ data: this })
+        .tag(this.SYNC, {
+          size: 'MEDIUM'
+        })
+      .endContext()
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView
@@ -331,7 +333,7 @@ foam.CLASS({
       name: 'sync',
       label: 'Sync with Accounting',
       code: function(X) {
-        X.ctrl.add(this.Popup.create().tag({
+        this.ctrl.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
