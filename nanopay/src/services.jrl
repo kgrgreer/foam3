@@ -773,6 +773,31 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "businessEmployeeDAO",
+  "serve": true,
+  "lazy": false,
+  "description": "A read-only version of bareUserDAO that returns all users associated with the current user",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setAuthorize(false)
+      .setRuler(false)
+      .setDecorator(new net.nanopay.auth.BusinessEmployeeDAO.Builder(x).build())
+      .setInnerDAO(x.get("bareUserDAO"))
+      .setDeletedAware(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.auth.User"
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "publicBusinessDAO",
   "serve": true,
   "description": "A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.",
