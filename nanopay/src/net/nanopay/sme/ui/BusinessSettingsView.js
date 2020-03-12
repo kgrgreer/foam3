@@ -69,11 +69,12 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
-
       try {
-        const hasUMPermission = await this.auth.check(null, 'menu.read.sme.userManagement');
-        const hasIntegrationPermission = (await this.accountingIntegrationUtil.getPermission())[0];
-        const hasPrivacyPermission = await this.auth.check(null, 'business.rw.ispublic');
+        const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission] = await Promise.all([
+          this.auth.check(null, 'menu.read.sme.userManagement'),
+          this.accountingIntegrationUtil.getPermission(),
+          this.auth.check(null, 'business.rw.ispublic')
+        ]);
 
         // display Company Profile tab
         const tabs = this.UnstyledTabs.create()

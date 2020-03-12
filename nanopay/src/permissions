@@ -271,6 +271,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.padCaptureDAO","descriptio
 p({"class":"foam.nanos.auth.Permission","id":"service.partnerJunctionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.paymentCardDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.publicBusinessDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.businessEmployeeDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.publicKeyDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.publicUserDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.quickbooksService","description":""})

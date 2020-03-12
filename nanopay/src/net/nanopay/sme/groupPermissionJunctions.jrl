@@ -53,6 +53,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.notificationDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.padCaptureDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.publicBusinessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.businessEmployeeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.quickbooksService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.resetPasswordToken"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.run.dig"})

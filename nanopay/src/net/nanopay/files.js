@@ -860,7 +860,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
-  { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
   { name: 'net/nanopay/ui/TopSideNavigation', flags: ['web'] },
   { name: 'net/nanopay/ui/TopNavigation', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
@@ -939,6 +938,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/CapabilityAccountTemplateMapView', flags: ['js', 'web'] },
    { name: 'net/nanopay/liquidity/crunch/RootAccounts' },
    { name: 'net/nanopay/liquidity/crunch/RemoveDeletedAccountFromAccountTemplate' },
+   { name: 'net/nanopay/liquidity/crunch/LiquidEnabledActionsAuth' },
 
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/LiquidCurrencyView' },
@@ -992,6 +992,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Business' },
   { name: 'net/nanopay/auth/PublicBusinessInfo' },
   { name: 'net/nanopay/auth/BusinessToPublicBusinessInfoDAO' },
+  { name: 'net/nanopay/auth/BusinessEmployeeDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/model/BusinessDirector' },
   { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },

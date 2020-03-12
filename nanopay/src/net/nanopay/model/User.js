@@ -364,7 +364,7 @@ foam.CLASS({
     {
       name: 'viewComplianceHistory',
       label: 'View Compliance History',
-      availablePermissions: ['service.compliancehistorydao', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
+      availablePermissions: ['service.complianceHistoryDAO', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.__context__.stack.push({
