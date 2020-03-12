@@ -42,9 +42,6 @@ foam.CLASS({
 
               if ( existingInvite != null ) {
                 tokenData = existingInvite.getTokenData();
-//                existingInvite = (Invitation) existingInvite.fclone();
-//                existingInvite.setStatus(InvitationStatus.CANCELED);
-//                businessInvitationDAO.put(existingInvite);
               }
 
               if ( tokenData != null ) {
