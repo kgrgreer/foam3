@@ -73,3 +73,4 @@ p({
 })
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"UpdateInvoiceDates"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"UpdateInvoiceByTransaction"})
