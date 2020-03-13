@@ -119,7 +119,6 @@ foam.CLASS({
         whether a individual person, or real user, can sign in or not.
       `,
       tableCellFormatter: function(state, obj) {
-        debugger;
         this.start()
           .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
           .start('img')

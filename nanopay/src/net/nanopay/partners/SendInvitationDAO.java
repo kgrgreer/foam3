@@ -55,7 +55,7 @@ public class SendInvitationDAO
         // Update the contact's status to invited.
         DAO contactDAO = (DAO) x.get("localContactDAO");
         Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
-        recipient.setSignUpStatus(ContactStatus.INVITED);
+        recipient.setSignUpStatus(ContactStatus.NOT_CONNECTED);
         contactDAO.put(recipient);
       }
 

@@ -759,31 +759,8 @@ foam.CLASS({
       color: #07941f;
     }
 
-    .contact-status-circle-Active {
-      background-color: #07941f;
-    }
-
-    .contact-status-NotInvited {
-      color: #424242;
-    }
-
-    .contact-status-circle-NotInvited {
-      background-color: #424242;
-    }
-
-    .contact-status-Invited {
-      color: #545d87;
-    }
-
-    .contact-status-circle-Invited {
-      background-color: #545d87;
-    }
-
     .contact-status-circle-NotConnected {
       background-color: /*%DESTRUCTIVE3%*/ #d9170e;
-    }
-    .contact-status-circle-Connected {
-      background-color: /*%APPROVAL3%*/ #32bf5e;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
