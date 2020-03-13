@@ -3,7 +3,9 @@ foam.CLASS({
     name: 'BusinessInvitationAndTokenCancelRule',
     extends: 'foam.dao.ProxyDAO',
 
-    documentation: ` A rule that set invitation as canceled and token as processed.`,
+    documentation: ` A rule that sets invitation as cancelled and the associated token as processed
+      when invite has been revoked.
+    `,
 
     implements: ['foam.nanos.ruler.RuleAction'],
 

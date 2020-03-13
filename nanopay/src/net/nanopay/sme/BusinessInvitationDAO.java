@@ -99,12 +99,12 @@ public class BusinessInvitationDAO
     invite.setCreatedBy(business.getId());
 
     if ( existingInvite != null ) {
-      if ( invite.getStatus() == InvitationStatus.COMPLETED || invite.getStatus() == InvitationStatus.CANCELED) {
+      if ( invite.getStatus() == InvitationStatus.COMPLETED ) {
         invite.setId(existingInvite.getId());
         return super.put_(x, invite);
       }
 
-      if ( invite.getStatus() == InvitationStatus.CANCELED) {
+      if ( invite.getStatus() == InvitationStatus.CANCELLED) {
         return super.put_(x, invite);
       }
 

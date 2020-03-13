@@ -42,25 +42,24 @@ public class SendInvitationDAO
     boolean noResponse = invite.getStatus() == InvitationStatus.SENT;
     boolean isInviter = invite.getCreatedBy() == user.getId();
 
-    Map tokenParams = new HashMap();
-    tokenParams.put("inviteeEmail", invite.getEmail());
-
-    DAO tokenDAO = (DAO) x.get("localTokenDAO");
-    Token token = new Token();
-    token.setParameters(tokenParams);
-    token.setExpiry(this.generateExpiryDate());
-    String tokenData = UUID.randomUUID().toString();
-    token.setData(tokenData);
-    token = (Token) tokenDAO.put(token);
-
-    invite.setTokenData(tokenData);
-
     // if this is a new invitation, get the id first
     if ( invite.getId() == 0 ) {
       invite = (Invitation) super.put_(x, invite).fclone();
     }
 
     if ( hoursSinceLastSend >= 2 && noResponse && isInviter ) {
+      Map tokenParams = new HashMap();
+      tokenParams.put("inviteeEmail", invite.getEmail());
+
+      DAO tokenDAO = (DAO) x.get("localTokenDAO");
+      Token token = new Token();
+      token.setParameters(tokenParams);
+      token.setExpiry(this.generateExpiryDate());
+      String tokenData = UUID.randomUUID().toString();
+      token.setData(tokenData);
+      token = (Token) tokenDAO.put(token);
+
+      invite.setTokenData(tokenData);
 
       sendInvitationEmail(x, invite, user);
 

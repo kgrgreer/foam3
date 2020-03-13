@@ -55,7 +55,7 @@ p({
     }
 
     pm.log(x);
-    print("Done"); 
+    print("Done");
 
   """
 })
@@ -1865,7 +1865,7 @@ p({
   "code": """
     /**
     * TITLE: setTokenOnBusinessInvitation
-    * DESCRIPTION: set token info on existing businessInviations
+    * DESCRIPTION: set token info on existing businessInvitations
     */
 
     import foam.core.X;
@@ -1883,6 +1883,7 @@ p({
 
     import java.util.Date;
     import java.util.HashMap;
+    import java.util.List;
 
 
     String email = null;
@@ -1895,67 +1896,70 @@ p({
     DAO businessInvitationDAO = x.get("businessInvitationDAO");
 
     emailMessages = ((ArraySink) emailMessageDAO
-      .where(EQ(EmailMessage.STATUS, Status.SENT)).select(new ArraySink())).getArray();
+      .where(EQ(EmailMessage.STATUS, Status.UNSENT)).select(new ArraySink())).getArray();
 
-      for( int i = 0; i < emailMessages.size(); i++ ) {
-        Map templateArgs = emailMessages.get(i).getTemplateArguments();
+    for( int i = 0; i < emailMessages.size(); i++ ) {
+      Map templateArgs = emailMessages.get(i).getTemplateArguments();
 
-        for ( String key : templateArgs.keySet() ) {
-          if ( key.equals("link") ) {
+      for ( String key : templateArgs.keySet() ) {
+        if ( key.equals("link") ) {
 
-            String link = templateArgs.get((String)key);
-            int j = link.indexOf("?");
-            Map paramsMap = new HashMap();
+          String link = templateArgs.get((String)key);
+          int j = link.indexOf("?");
+          Map paramsMap = new HashMap();
 
-            if ( j > -1 ) {
-              String searchURL = link.substring(j + 1);
-              params = searchURL.split("&");
+          if ( j > -1 ) {
+            String searchURL = link.substring(j + 1);
+            params = searchURL.split("&");
 
-              for ( String param : params ) {
-                temp = param.split("=");
+            for ( String param : params ) {
+              temp = param.split("=");
 
-                if ( temp[0].equals("businessId") ) {
-                  businessId = temp[1].substring(0, 4);
-                } else if ( temp[0].equals("email") ) {
-                  email = temp[1].replace("%40", "@");
-                } else if ( temp[0].equals("token") ) {
-                  tokenData = temp[1];
-                }
+              if ( temp[0].equals("businessId") ) {
+                businessId = temp[1] != null ? temp[1].substring(0, 4) : null;
+              } else if ( temp[0].equals("email") ) {
+                email = temp[1] != null ? temp[1].replace("%40", "@") : null;
+              } else if ( temp[0].equals("token") ) {
+                tokenData = temp[1] != null ? temp[1].substring(0, 36) : null;
               }
+            }
 
-              // check if token is not expired and not processed
-              if ( tokenData != null ) {
-                 tokenDAO = x.get("tokenDAO");
-                 Token tokenObj = (Token) tokenDAO.find(EQ(Token.DATA, tokenData));
-                 Date currentDate = new Date();
 
-                 if ( ! tokenObj.getProcessed() && tokenObj.getExpiry() != null && ! tokenObj.getExpiry().before(currentDate) ) {
-                    isValidToken = true;
-                 }
+            // check if token is not expired and not processed
+            if ( tokenData != null ) {
+              tokenDAO = x.get("tokenDAO");
+              Token tokenObj = (Token) tokenDAO.find(EQ(Token.DATA, tokenData));
+              Date currentDate = new Date();
+
+              if ( ! tokenObj.getProcessed() && tokenObj.getExpiry() != null && ! tokenObj.getExpiry().before(currentDate) ) {
+                isValidToken = true;
               }
+            }
 
-              // set tokenData on the Invitation
-              if ( email != null && isValidToken && businessId != null && businessInvitationDAO != null ) {
-                existingInvitation = businessInvitationDAO.find(AND(
+            // set tokenData on the Invitation
+            if ( email != null && isValidToken && businessId != null ) {
+              List existingInvitations = ((ArraySink) businessInvitationDAO.where(
+                AND(
                   new foam.mlang.predicate.Predicate [] {
                     EQ(Invitation.EMAIL, email),
-                    EQ(Invitation.CREATED_BY, businessId)
-                  })
-                );
+                    EQ(Invitation.CREATED_BY, Long.valueOf(businessId))
+                  }
+                )
+              ).select(new ArraySink())).getArray();
 
-                if ( existingInvitation != null ) {
-                  print("done : " + existingInvitation);
-                  existingInvitation.setTokenData(tokenData);
-                  businessInvitationDAO.put(existingInvitation);
-                }
+              for ( int k = 0; k < existingInvitations.size(); k++ ) {
+                print("done : " + ((Invitation) existingInvitations.get(k)));
+                ((Invitation) existingInvitations.get(k)).setTokenData(tokenData);
+                  businessInvitationDAO.put(((Invitation) existingInvitations.get(k)));
               }
-
-              businessId = null;
-              email = null;
-              tokenData = null;
             }
           }
         }
+        businessId = null;
+        email = null;
+        tokenData = null;
+        isValidToken = false;
       }
+    }
   """
 })

@@ -68,7 +68,7 @@ foam.CLASS({
     { name: 'DISABLED_FAILURE', message: 'Failed to disable ' },
     { name: 'ACTIVE_SUCCESS', message: ' successfully enabled' },
     { name: 'ACTIVE_FAILURE', message: 'Failed to enable ' },
-    { name: 'DELETE_SUCCESSS', message: ' successfully deleted ' },
+    { name: 'DELETE_SUCCESS', message: ' successfully deleted ' },
     { name: 'DELETE_FAILURE', message: 'Failed to delete ' }
   ],
 
@@ -143,10 +143,10 @@ foam.CLASS({
                     )
                   ).select({
                     put: (invite) => {
-                      invite.status = self.InvitationStatus.CANCELED;
+                      invite.status = self.InvitationStatus.CANCELLED;
                       self.businessInvitationDAO.put(invite).then(function() {
                         self.clientJunctionDAO.remove(junction).then(function(resp) {
-                          ctrl.add(self.NotificationMessage.create({ message: email + self.DELETE_SUCCESSS }));
+                          ctrl.add(self.NotificationMessage.create({ message: email + self.DELETE_SUCCESS }));
                         }).catch(function(err) {
                           var message = err ? err.message : self.DELETE_FAILURE;
                           ctrl.add(self.NotificationMessage.create({ message: message + " " + email, type: 'error' }));

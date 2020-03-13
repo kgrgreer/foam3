@@ -100,6 +100,32 @@ p({
   "daoKey": "businessInvitationDAO",
   "operation": 1,
   "after": true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.model.Invitation"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.model.InvitationStatus",
+          "ordinal":4
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.model.InvitationStatus",
+          "ordinal":4
+        }
+      }
+    ]
+  },
   "action": {
     "class": "net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule"
   },
