@@ -759,8 +759,11 @@ foam.CLASS({
       color: #07941f;
     }
 
-    .contact-status-circle-NotConnected {
-      background-color: /*%DESTRUCTIVE3%*/ #d9170e;
+    .contact-status-circle-Ready {
+      background-color: /*%APPROVAL3%*/ #32bf5e;
+    }
+    .contact-status-circle-Pending {
+      background-color: /*%GREY3%*/ #cbcfd4;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
