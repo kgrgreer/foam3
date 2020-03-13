@@ -1057,6 +1057,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
+  { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
