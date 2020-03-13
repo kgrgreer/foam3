@@ -245,6 +245,7 @@ var classes = [
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
   'net.nanopay.admin.SkipUserEmailVerification',
   'net.nanopay.admin.predicate.IsCurrentUser',
+  'net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule',
 
   // compliance Email notification
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',
@@ -297,6 +298,8 @@ var classes = [
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
   'net.nanopay.invoice.ruler.SetProcessingDateRule',
+  'net.nanopay.invoice.ruler.SetReceivedDateRule',
+  'net.nanopay.invoice.ruler.SetPaymentSentDateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
 
