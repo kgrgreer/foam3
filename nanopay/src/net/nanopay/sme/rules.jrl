@@ -100,10 +100,6 @@ p({
     "class":"foam.mlang.predicate.And",
     "args": [
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.model.Invitation"
-      },
-      {
         "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
         "propName":"status",
         "propValue": {
