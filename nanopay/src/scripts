@@ -1860,6 +1860,30 @@ p({
 })
 
 p({
+  "class":"foam.nanos.script.Script",
+  "id":"Contact update status 3.8",
+  "description":"Removed invited and not invited status from contact status enum. Script migrates the changes on existing contacts.",
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import net.nanopay.contacts.Contact;
+    import net.nanopay.contacts.ContactStatus;
+
+    DAO contactDAO = (DAO) x.get("contactDAO");
+    contacts = ((ArraySink) contactDAO.select(new ArraySink())).getArray();
+
+    for ( Contact contact : contacts ) {
+      if ( contact.getSignUpStatus() == null ) {
+        contact.setSignUpStatus(ContactStatus.ACTIVE);
+      } else {
+        contact.setSignUpStatus(ContactStatus.NOT_CONNECTED);
+      }
+      contactDAO.put(contact);
+    }
+    """
+})
+
+p({
   "class": "foam.nanos.script.Script",
   "id": "SetTokenOnBusinessInvitation (migration script)",
   "code": """
