@@ -75,8 +75,6 @@ foam.CLASS({
   searchColumns: [
     'type',
     'status',
-    'sourceAccount',
-    'destinationAccount',
     'total',
     'created',
     'completionDate',
