@@ -135,6 +135,7 @@ foam.CLASS({
       // TODO: This should probably be defined by a relationship.
       class: 'Reference',
       of: 'net.nanopay.model.Business',
+      javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`
     },

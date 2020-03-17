@@ -775,7 +775,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-<<<<<<< HEAD
   "name": "paymentCodeDAO",
   "serve": true,
   "serviceScript":
@@ -792,7 +791,12 @@ p({
   "client": """
   {
     "of": "net.nanopay.payment.PaymentCode"
-=======
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "businessEmployeeDAO",
   "serve": true,
   "lazy": false,
@@ -812,7 +816,6 @@ p({
   """
   {
     "of":"foam.nanos.auth.User"
->>>>>>> dc5307688d64235adb06dbad35c38fd92f976f22
   }
   """
 })
