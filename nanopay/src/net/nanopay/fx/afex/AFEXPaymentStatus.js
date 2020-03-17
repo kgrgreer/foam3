@@ -37,6 +37,10 @@ foam.ENUM({
     {
       name: 'RECONCILED',
       label: 'Reconciled'
+    },
+    {
+      name: 'VERIFIED',
+      label: 'Verified'
     }
   ]
 });
