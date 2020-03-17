@@ -22,11 +22,12 @@ foam.CLASS({
 
   searchColumns: [
     'search',
-    'id',
     'invoiceNumber',
     'payerId',
     'payeeId',
     'issueDate',
+    'payeeReconciled',
+    'payerReconciled',
     'amount',
     'status'
   ],

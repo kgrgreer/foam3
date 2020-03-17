@@ -332,11 +332,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'canApproveInvoice',
-      factory: function() {
-        this.auth.check(null, 'invoice.pay').then((canPay) => {
-          this.canApproveInvoice = canPay;
-        });
-        return false;
+      expression: async function(invoice$status) {
+        let canPay = await this.auth.check(null, 'invoice.pay');
+        return canPay && invoice$status === this.InvoiceStatus.PENDING_APPROVAL 
       }
     },
     {
@@ -763,11 +761,11 @@ foam.CLASS({
     {
       name: 'approve',
       label: 'Approve',
-      isAvailable: function(isPendingApproval) {
-        return this.isPayable && isPendingApproval;
+      isAvailable: function(isPendingApproval, canApproveInvoice) {
+        return this.isPayable && isPendingApproval && canApproveInvoice;
       },
-      isEnabled: function(canApproveInvoice) {
-        return canApproveInvoice;
+      isEnabled: function(isPendingApproval, canApproveInvoice) {
+        return canApproveInvoice && isPendingApproval;
       },
       availablePermissions: ['invoice.pay'],
       code: function(X) {
