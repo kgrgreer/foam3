@@ -99,6 +99,11 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: 'Ablii signing officer\'s phoneNumber'
-    }
+    },
+    {
+      class: 'String',
+      name: 'tokenData',
+      documentation: 'The token associated to the sent invitation'
+    },
   ]
 });

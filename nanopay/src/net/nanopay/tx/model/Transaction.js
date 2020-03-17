@@ -75,10 +75,8 @@ foam.CLASS({
   searchColumns: [
     'type',
     'status',
-    'sourceAccount',
-    'destinationAccount',
-    'created',
     'total',
+    'created',
     'completionDate',
     'referenceNumber'
   ],
@@ -87,9 +85,10 @@ foam.CLASS({
     'type',
     'status',
     'sourceAccount',
+    'summary',
     'destinationAccount',
-    'created',
     'total',
+    'created',
     'completionDate',
     'referenceNumber'
   ],

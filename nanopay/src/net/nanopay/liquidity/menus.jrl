@@ -38,25 +38,27 @@ p({
             "balance",
             "homeBalance"
           ],
-          "CRUDActionsAuth": {
-            "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["account.make"],
-            "update": ["account.make.%"],
-            "delete": ["account.make.%"]
-          },
           "filterExportPredicate":
-            {
-              "class": "foam.mlang.predicate.Neq",
-              "arg1": {
-                "class": "__Property__",
-                "forClass_": "foam.nanos.export.ExportDriverRegistry",
-                "name": "id"
-              },
-              "arg2": {
-                "class": "foam.mlang.Constant",
-                "value": "CSV"
-              }
+          {
+            "class": "foam.mlang.predicate.Neq",
+            "arg1": {
+              "class": "__Property__",
+              "forClass_": "foam.nanos.export.ExportDriverRegistry",
+              "name": "id"
+            },
+            "arg2": {
+              "class": "foam.mlang.Constant",
+              "value": "CSV"
             }
+          },
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "account"
+            }
+          },
         }
     }
 })
@@ -82,9 +84,13 @@ p({
             "destinationCurrency",
             "destinationAmount"
           ],
-          "CRUDActionsAuth": {
-            "class": "foam.comics.v2.CRUDActionsAuth",
-            "create": ["transaction.make"]
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "transaction"
+            }
           },
           "filterExportPredicate":
             {
@@ -101,7 +107,7 @@ p({
             },
           "browseViews": [
             {
-              "class": 'foam.comics.v2.namedViews.NamedViewCollection',
+              "class": "foam.comics.v2.namedViews.NamedViewCollection",
               "name": "Transactions",
               "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
             }
@@ -118,7 +124,7 @@ p({
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "userDAO",
+      "daoKey": "userUserDAO",
       "browseTitle": "Users",
       "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"]
     }
@@ -148,12 +154,14 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["liquiditysettings.make"],
-        "update": ["liquiditysettings.make"],
-        "delete": ["liquiditysettings.make"]
-      }
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "account"
+        }
+      },
     }
   }
 })
@@ -165,10 +173,18 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
+      "defaultColumns": [
+        "classification",
+        "operation",
+        "createdBy",
+        "approver",
+        "status",
+        "lastModified"
+      ],
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "foam.nanos.approval.RoleApprovalRequest",
+      "of": "foam.nanos.approval.ApprovalRequest",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
@@ -240,12 +256,14 @@ p({
         "createdBy"
       ],
       "of": "net.nanopay.liquidity.tx.GenericBusinessRule",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
-      }
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
+      },
     }
   },
   "parent": "rules"
@@ -292,11 +310,13 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictAccountsRule",
       "browseTitle": "Restrict Accounts",
       "createTitle": "Create a New Rule to Restrict Accounts",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -344,11 +364,13 @@ p({
       "of": "net.nanopay.liquidity.tx.RestrictUsersRule",
       "browseTitle": "Restrict Users",
       "createTitle": "Create a New Rule to Restrict Users",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -394,11 +416,13 @@ p({
         "startAmount"
       ],
       "of": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -447,11 +471,13 @@ p({
       "of": "net.nanopay.liquidity.tx.TxLimitRule",
       "browseTitle": "Transaction Limits",
       "createTitle": "Create a New Transaction Limit",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["rule.make"],
-        "update": ["rule.make"],
-        "delete": ["rule.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
       }
     }
   },
@@ -491,11 +517,13 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capability.make"],
-        "update": ["capability.make"],
-        "delete": ["capability.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capability"
+        }
       }
     }
   },
@@ -524,11 +552,13 @@ p({
           "value": "ACTIVE"
         }
       },
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capability.make"],
-        "update": ["capability.make"],
-        "delete": ["capability.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capability"
+        }
       }
     }
   },
@@ -561,11 +591,13 @@ p({
       "daoKey": "capabilityRequestDAO",
       "browseTitle": "Role Assignment",
       "createTitle": "Execute a Role Assignment",
-      "CRUDActionsAuth": {
-        "class": "foam.comics.v2.CRUDActionsAuth",
-        "create": ["capabilityrequest.make"],
-        "update": ["capabilityrequest.make"],
-        "delete": ["capabilityrequest.make"]
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "capabilityrequest"
+        }
       }
     }
   },

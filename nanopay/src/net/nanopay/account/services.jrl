@@ -25,6 +25,8 @@ p({
   "serviceScript":
   """
     import net.nanopay.account.Account;
+    import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
+
     mdao = new foam.dao.MDAO(Account.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.OWNER});
     mdao.addIndex(new foam.core.PropertyInfo[] {Account.NAME});
@@ -36,10 +38,16 @@ p({
     dao = new net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.account.Account.getOwnClassInfo()).build())
       .build();
+    
+    dao = new AccountApprovableAwareDAO.Builder(x)
+      .setOf(Account.getOwnClassInfo())
+      .setDaoKey("localAccountDAO")
+      .setDelegate(dao)
+      .setIsEnabled(false)
+      .build();
     dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);
     dao.setUseBMO(true);
-    dao = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.BankAccountBranchDAO(x, dao);
     dao = new net.nanopay.bank.BankAccountInstitutionDAO(x, dao);
     dao = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, dao);
@@ -56,6 +64,7 @@ p({
       .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
+      .setApprovableAware(false)
      .build();
   """
 })
@@ -153,7 +162,20 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"digitalAccount",                     "serve":true, "boxClass":"net.nanopay.account.DigitalAccountServiceInterfaceSkeleton", "serviceClass":"net.nanopay.account.DigitalAccountService","client":"{ \"class\":\"net.nanopay.account.ClientDigitalAccountService\", \"serviceName\": \"service/digitalAccount\" }"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"digitalAccount",
+  "serve":true, 
+  "boxClass":"net.nanopay.account.DigitalAccountServiceInterfaceSkeleton", 
+  "serviceClass":"net.nanopay.account.DigitalAccountService",
+  "client": """
+  { 
+    "class":"net.nanopay.account.ClientDigitalAccountService", 
+    "serviceName": "service/digitalAccount" 
+  }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"localZeroAccountUserAssociationDAO",                  "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setPm(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"zeroAccountUserAssociations\").setOf(net.nanopay.account.ZeroAccountUserAssociation.getOwnClassInfo()).build() /*.setDaoType(foam.dao.MDAO).build()*/;","client":"{\"of\":\"net.nanopay.account.ZeroAccountUserAssociation\"}"})
 
 p({

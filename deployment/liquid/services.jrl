@@ -7,7 +7,7 @@ p({
   "serviceScript": """
     auth = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
     auth = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(auth).build();
-    auth = new net.nanopay.liquidity.crunch.LiquidCapabilityAuthService.Builder(x).setDelegate(auth).build();
+    auth = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.CachingAuthService(auth, new String[]{ "signingOfficerJunctionDAO", "blacklistDAO", "userCapabilityJunctionDAO", "localCapabilityDAO", "localAccountDAO" });
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
@@ -166,6 +166,7 @@ p({
       .setDeletedAware(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
+      .setApprovableAware(false)
       .setAuthorize(false)
       .setOf(Account.getOwnClassInfo())
       .setInnerDAO(dao)
@@ -397,8 +398,9 @@ p({
             foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "liquidBasic"),
             foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
           }))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
         .build())
-      .setDeletedAware(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":
@@ -424,11 +426,7 @@ p({
   "lazy": false,
   "serviceScript":
   """
-    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("userDAO")
-    .setOf(foam.nanos.auth.User.getOwnClassInfo())
-    .build();
-    
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
     dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
@@ -464,24 +462,6 @@ p({
   "serviceScript": 
   """
     import foam.dao.DAO;
-    import net.nanopay.liquidity.tx.BusinessRule;
-
-    DAO dao = new net.nanopay.business.SetBusinessNameDAO.Builder(x)
-      .setReferenceProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS)
-      .setNameProperty(net.nanopay.tx.ruler.BusinessLimit.BUSINESS_NAME)
-      .setDelegate(null)
-      .build();
-
-    dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-      .setDaoKey("ruleDAO")
-      .setOf(BusinessRule.getOwnClassInfo())
-      .setDelegate(dao)
-      .build();
-      
-    dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
-      .setDelegate(dao)
-      .setName("rule")
-      .build();
 
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
@@ -490,9 +470,11 @@ p({
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
-      .setDecorator(dao)
       .setValidated(true)
       .setRuler(false)
+      .setApprovableAware(true)
+      .setApprovableAwareEnabled(true)
+      .setLifecycleAware(true)
       .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("rule").build())
       .build();
 
@@ -523,12 +505,6 @@ p({
         .setPeriodLengthMs(60 * 60 * 1000)
         .build()
     )
-    .build();
-  
-  dao = new foam.nanos.approval.ApprovableAwareDAO.Builder(x)
-    .setDaoKey("liquiditySettingsDAO")
-    .setOf(LiquiditySettings.getOwnClassInfo())
-    .setDelegate(dao)
     .build();
 
   return new foam.dao.EasyDAO.Builder(x)
@@ -658,4 +634,20 @@ p({
     }
   }
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"capabilityDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
+      .setEnableInterfaceDecorators(false)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("capability").build())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
 })

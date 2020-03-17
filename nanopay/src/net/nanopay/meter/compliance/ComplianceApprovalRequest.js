@@ -13,8 +13,8 @@ foam.CLASS({
       name: 'causeId',
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.DisplayMode.RW
-          : foam.u2.DisplayMode.HIDDEN;
+          ? 'RW'
+          : 'HIDDEN';
       }
     },
     {
@@ -22,8 +22,8 @@ foam.CLASS({
       name: 'causeDaoKey',
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.DisplayMode.RW
-          : foam.u2.DisplayMode.HIDDEN;
+          ? 'RW'
+          : 'HIDDEN';
       }
     },
     {
@@ -52,8 +52,8 @@ foam.CLASS({
       transient: true,
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.DisplayMode.RO
-          : foam.u2.DisplayMode.HIDDEN;
+          ? 'RO'
+          : 'HIDDEN';
       }
     }
   ]

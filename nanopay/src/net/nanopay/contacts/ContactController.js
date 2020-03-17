@@ -90,6 +90,7 @@ foam.CLASS({
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
+              label: 'View details',
               isEnabled: function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
@@ -104,11 +105,11 @@ foam.CLASS({
             this.Action.create({
               name: 'invite',
               isEnabled: function() {
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED;
+                return this.signUpStatus != self.ContactStatus.ACTIVE;
               },
               isAvailable: async function() {
                 let account = await self.accountDAO.find(this.bankAccount);
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
+                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'INBankAccount',
-  label: 'India',
+  label: 'India Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [

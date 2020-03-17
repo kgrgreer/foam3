@@ -1,23 +1,5 @@
 // operations
 p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operations","handler":{"class":"foam.nanos.menu.SubMenu"}})
-//p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","customDAOController":"net.nanopay.ui.ApprovalRequestController","title":"Approval Requests","createPredicate":{"class":"foam.mlang.predicate.False"},"editPredicate":{"class":"foam.mlang.predicate.False"}},"parent":"operation"})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.approvalRequests",
-  "label":"Approval Requests",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "class":"net.nanopay.ui.ApprovalRequestController",
-      "title":"Approval Requests",
-      "daoKey":"approvalRequestDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-    }
-  },
-  "parent":"operation"
-})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"bankaccounts",
@@ -34,7 +16,7 @@ p({
 
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad","label":"Canadian only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-cad-us","label":"Canadian Upgraded Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"canadaUsBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-us","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"usBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businessOnboarding-us","label":"US only Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"uSBusinessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "operation.clearingTimes",
@@ -63,6 +45,13 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey":"tableViewTransactionDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "type",
+        "status",
+        "summary",
+        "created",
+        "completionDate"
+      ]
     }
   },
   "parent":"operation"

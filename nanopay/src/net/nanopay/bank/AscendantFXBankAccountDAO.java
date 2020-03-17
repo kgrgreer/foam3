@@ -43,8 +43,8 @@ public class AscendantFXBankAccountDAO
     if ( hasFXProvisionPayerPermission ) {
 
       DAO ascendantFXUserDAO = (DAO) getX().get("ascendantFXUserDAO");
-      AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(MLang.AND(
-          MLang.EQ(AscendantFXUser.USER, accountOwner.getId())));
+      AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
+          MLang.EQ(AscendantFXUser.USER, accountOwner.getId()));
 
       if ( null == ascendantFXUser ) {
         ascendantFXUser = new AscendantFXUser();

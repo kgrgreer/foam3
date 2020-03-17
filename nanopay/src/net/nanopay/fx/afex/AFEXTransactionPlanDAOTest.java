@@ -9,6 +9,8 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.GroupPermissionJunction;
 import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -26,14 +28,17 @@ public class AFEXTransactionPlanDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
+  protected DAO groupDAO_;
   protected DAO userDAO_;
-  protected User user1 ;
+  protected User user1;
   protected User user2;
+  protected DAO permissionJunctionDAO_;
   BankAccount user1USBankAccount;
   BankAccount user1CABankAccount;
   BankAccount user2USBankAccount;
   BankAccount user2CABankAccount;
   DAO localUserDAO;
+  DAO localGroupDAO;
   DAO localAccountDAO;
   DAO localtxDAO;
   DAO invoiceDAO;
@@ -58,12 +63,27 @@ public class AFEXTransactionPlanDAOTest
     afexService = new AFEXServiceProvider(x_, afex);
     planDAO = new AFEXTransactionPlanDAO.Builder(x_).build();
 
+    permissionJunctionDAO_ = (DAO) x_.get("groupPermissionJunctionDAO");
+    groupDAO_ = (DAO) x_.get("localGroupDAO");
     localUserDAO = (DAO) x_.get("localUserDAO");
     localAccountDAO = (DAO) x_.get("localAccountDAO");
     Address businessAddress = new Address();
     businessAddress.setCity("Toronto");
     businessAddress.setCountryId("CA");
 
+    Group businessGroup = (Group) groupDAO_.find("business");
+    if ( businessGroup == null ) {
+      businessGroup = new Group.Builder(x_)
+        .setId("business")
+        .build();
+      businessGroup = (Group) groupDAO_.put(businessGroup);
+    }
+    permissionJunctionDAO_.put(
+                              new GroupPermissionJunction.Builder(x_)
+                              .setSourceId("business")
+                              .setTargetId("digitalaccount.default.create")
+                              .build()
+                              );
     user1 = new User();
     user1.setFirstName("AFEXPayer");
     user1.setLastName("AFEX");

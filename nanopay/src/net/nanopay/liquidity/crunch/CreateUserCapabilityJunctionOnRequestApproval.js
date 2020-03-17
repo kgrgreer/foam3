@@ -73,6 +73,7 @@ foam.CLASS({
                 AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
                 AccountApproverMap fullAccountMap = accountHierarchy.getAssignedAccountMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
                 ucj.setData(fullAccountMap);
+                ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
                 userCapabilityJunctionDAO.put(ucj);
               }
             } else if ( requestType == CapabilityRequestOperations.ASSIGN_GLOBAL ) {
@@ -86,6 +87,7 @@ foam.CLASS({
               for ( Long userId : users ) {
                 ucj.setSourceId(userId);
                 ucj.setTargetId(capability.getId());
+                ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
                 userCapabilityJunctionDAO.put_(getX(), ucj);
               }
             /** Commenting out revoke for liquid launch

@@ -66,3 +66,145 @@ p({
   "enabled":true,
   "saveHistory":true
 })
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97b3ad16d211",
+  "name": "Set invoice processing date on transaction create",
+  "priority":100,
+  "ruleGroup":"UpdateInvoiceDates",
+  "documentation": "Sets invoice processing date when transaction id is associated to invoice",
+  "daoKey":"invoiceDAO",
+  "operation":3,
+  "after": false,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"paymentId"
+      },
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+          "propName":"paymentId",
+          "isNew":false
+        }
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.invoice.ruler.SetProcessingDateRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0941-75e97b3ad16d905",
+  "name":"Set invoice payment sent date on transaction settlement",
+  "priority":100,
+  "ruleGroup":"UpdateInvoiceByTransaction",
+  "documentation": "Set invoice payment sent date on CI transaction settlement",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.cico.CITransaction"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.bmo.cico.BmoCITransaction"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.alterna.AlternaCITransaction"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"settled",
+        "propValue":true
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"settled",
+        "propValue":true,
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"invoiceId"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.invoice.ruler.SetPaymentSentDateRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"68bfcf0c-c718-98f8-0942-75e97b3ad16d905",
+  "name":"Set invoice payment received date on CO transaction settlement",
+  "priority":101,
+  "ruleGroup":"UpdateInvoiceByTransaction",
+  "documentation":"Set invoice payment received date on CO transaction settlement",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.cico.COTransaction"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.bmo.cico.BmoCOTransaction"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of":"net.nanopay.tx.alterna.AlternaCOTransaction"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"settled",
+        "propValue":true
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"settled",
+        "propValue":true,
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"invoiceId"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.invoice.ruler.SetReceivedDateRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

@@ -13,6 +13,11 @@ foam.ENUM({
       name: 'ACCOUNT',
       label: 'Account',
       documentation: 'Limits for accounts.'
+    },
+    {
+      name: 'BUSINESS',
+      label: 'Business',
+      documentation: 'Limits for businesses.'
     }
   ]
 });
