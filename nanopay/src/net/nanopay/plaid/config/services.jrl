@@ -57,7 +57,8 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("plaidResultReport")
       .setOf(net.nanopay.plaid.PlaidResultReport.getOwnClassInfo())
-      .setAuthorize(false)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.plaid.PlaidResultReportAuthorizer())
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.plaid.PlaidResultReport\"}"
