@@ -15,6 +15,7 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalRequestUtil;
 import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.fx.afex.AFEXBusinessApprovalRequest;
+import net.nanopay.fx.afex.AFEXCredentials;
 
 public class AFEXBusinessApprovalRequestCron implements ContextAgent {
 
@@ -32,15 +33,16 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
         EQ(AFEXBusinessApprovalRequest.STATUS, ApprovalStatus.REQUESTED))
       ).select(new ArraySink())).getArray();
 
+    AFEXCredentials credentials = (AFEXCredentials) x.get("AFEXCredentials");
+    System.out.println("Delay: " + credentials.getClientApprovalDelay());
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
       if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
         boolean bufferElapsed = false;
-        int bufferMinutes = 5;
         Calendar now = Calendar.getInstance();
         Calendar eta = Calendar.getInstance();
         eta.setTime(request.getCreated());
-        eta.add(Calendar.MINUTE, bufferMinutes);
+        eta.add(Calendar.MINUTE, credentials.getClientApprovalDelay());
         bufferElapsed = (now.after(eta));
         if ( bufferElapsed ) {
           request = (AFEXBusinessApprovalRequest) request.fclone();
