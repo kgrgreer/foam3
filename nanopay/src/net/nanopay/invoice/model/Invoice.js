@@ -608,6 +608,12 @@ foam.CLASS({
       name: 'payerReconciled',
       documentation: `Determines whether invoice has been reconciled by payer.
           Verifies that the sent amount is correct.`
+    },
+    {
+      class: 'Boolean',
+      name: 'manuallyCompleted',
+      documentation: 'Determine whether the payee manually completed the receivable',
+      value: false
     }
   ],
 

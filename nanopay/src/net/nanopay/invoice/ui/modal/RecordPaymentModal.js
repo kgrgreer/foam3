@@ -185,6 +185,7 @@ foam.CLASS({
         this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
+        this.invoice.manuallyCompleted = true;
         this.invoiceDAO.put(this.invoice);
         this.notify(this.SUCCESS_MESSAGE);
         X.closeDialog();
