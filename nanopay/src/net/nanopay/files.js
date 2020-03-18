@@ -265,7 +265,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
-  { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
   { name: 'net/nanopay/tx/ruler/AscendantFXTransactionAfterPutRule' },
 
