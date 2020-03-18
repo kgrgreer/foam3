@@ -196,8 +196,8 @@ public class PGPKeyUtil {
     PublicKeyDataDecryptorFactory b = new JcePublicKeyDataDecryptorFactoryBuilder().setProvider("BC").setContentProvider("BC").build(decKey);
     Iterator<PGPPublicKeyEncryptedData> it = enc.getEncryptedDataObjects(); 
     PGPPublicKeyEncryptedData pbe = null; 
-    while ( it.hasNext() ) { 
-      pbe = it.next(); 
+    while ( it.hasNext() ) {
+      pbe = it.next();
       if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break; 
     }
 		InputStream clear = pbe.getDataStream(b);
