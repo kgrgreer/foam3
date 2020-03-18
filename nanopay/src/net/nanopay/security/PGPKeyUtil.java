@@ -217,9 +217,9 @@ public class PGPKeyUtil {
         out.write(ch);
       }
     } else if ( message instanceof  PGPOnePassSignatureList ) {
-			throw new PGPException("Encrypted message contains a signed message - not literal data.");
+      throw new PGPException("Encrypted message contains a signed message - not literal data.");
     } else {
-			throw new PGPException("Message is not a simple encrypted file - type unknown.");
+      throw new PGPException("Message is not a simple encrypted file - type unknown.");
     }
     
     if ( pbe.isIntegrityProtected() ) {
