@@ -34,7 +34,6 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
       ).select(new ArraySink())).getArray();
 
     AFEXCredentials credentials = (AFEXCredentials) x.get("AFEXCredentials");
-    System.out.println("Delay: " + credentials.getClientApprovalDelay());
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
       if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
