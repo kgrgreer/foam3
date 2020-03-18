@@ -224,6 +224,9 @@ foam.CLASS({
             // Replace the detail view in non-liquid deployments to give more control over the users
             if (this.appConfig.name != 'liquid') {
               this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
+              this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.liquidity.ui.account.AccountDetailView");
+              this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.account.AccountDAOSummaryViewView");
+              this.__subContext__.register(foam.comics.v2.DAOSummaryView, "net.nanopay.account.AccountDAOSummaryView");
             }
           });
           this.AppStyles.create();
@@ -325,7 +328,7 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash != null && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView.' });
+          self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView' }, self);
           self.loginSuccess$.sub(resolve);
         });
       }

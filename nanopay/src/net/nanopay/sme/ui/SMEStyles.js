@@ -751,7 +751,7 @@ foam.CLASS({
       height: 6px;
       width: 6px;
       margin-bottom: 1px;
-      margin-right: 4px;
+      margin-right: 8px;
       border-radius: 50%;
     }
 
@@ -759,24 +759,11 @@ foam.CLASS({
       color: #07941f;
     }
 
-    .contact-status-circle-Active {
-      background-color: #07941f;
+    .contact-status-circle-Ready {
+      background-color: /*%APPROVAL3%*/ #32bf5e;
     }
-
-    .contact-status-NotInvited {
-      color: #424242;
-    }
-
-    .contact-status-circle-NotInvited {
-      background-color: #424242;
-    }
-
-    .contact-status-Invited {
-      color: #545d87;
-    }
-
-    .contact-status-circle-Invited {
-      background-color: #545d87;
+    .contact-status-circle-Pending {
+      background-color: /*%GREY3%*/ #cbcfd4;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
@@ -1044,6 +1031,13 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
+    }
+    .foam-u2-filter-FilterSearch-container-search {
+      width: 857px;
+      margin-left: 7px;
+    }
+    .DAOBrowser-query-bar {
+      align-items: center !important;
     }
   `
 });

@@ -132,7 +132,7 @@ p({"class":"foam.nanos.menu.Menu","id":"integration.devices","label":"Devices","
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"integration.flinksResponses",
-  "label":"FLinks Responses",
+  "label":"Flinks Responses",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{

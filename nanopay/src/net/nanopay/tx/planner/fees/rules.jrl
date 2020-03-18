@@ -1,0 +1,24 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"bb64181c-654e-4bc5-a31e-03642a34df50",
+  "documentation":"Ablii Fee rule",
+  "priority":100,
+  "ruleGroup":"FeeEngine",
+  "daoKey":"feeEngineDAO",
+  "enabled":false,
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.SummaryTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.FXSummaryTransaction"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.tx.planner.fees.AbliiFeeRule"}
+})

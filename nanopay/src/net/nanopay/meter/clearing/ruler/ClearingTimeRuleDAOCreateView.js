@@ -5,15 +5,12 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.u2.ViewSpecWithJava',
       name: 'viewView',
       expression: function() {
         return {
           class: 'foam.u2.view.FObjectView',
-          choices: [
-            [ 'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',      'TransactionType Clearing Time' ],
-            [ 'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',          'Institution Clearing Time' ],
-            [ 'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',             'Business Clearing Time' ]
-          ]
+          of: 'net.nanopay.meter.clearing.ruler.ClearingTimeRule'
         };
       }
     }

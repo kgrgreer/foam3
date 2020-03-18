@@ -130,7 +130,7 @@ foam.CLASS({
             .setObjId(objId)
             .setDaoKey(daoKey)
             .setOperation(Operations.CREATE)
-            .setInitiatingUser(initiatingUser)
+            .setCreatedBy(initiatingUser)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)

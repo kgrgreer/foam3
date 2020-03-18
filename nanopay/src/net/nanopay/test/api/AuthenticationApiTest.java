@@ -3,6 +3,7 @@ package net.nanopay.test.api;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
 import static foam.mlang.MLang.EQ;
@@ -17,6 +18,7 @@ public class AuthenticationApiTest extends ApiTestBase {
   
   // Create the transaction summary report
   public void runTest(X x) {
+    Logger logger = (Logger) x.get("logger");
     try 
     {
       // Enable the test user.
@@ -60,6 +62,8 @@ public class AuthenticationApiTest extends ApiTestBase {
     }
     catch (Exception ex)
     {
+      if ( logger != null)
+        logger.error(ex);
       test(false, "Exception in test case:" + ex.getMessage());
       print(ex.toString());
     }

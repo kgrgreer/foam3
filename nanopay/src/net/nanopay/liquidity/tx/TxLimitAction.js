@@ -87,6 +87,7 @@ foam.CLASS({
             .setMessage(
               "Remaining limit for " + txLimitRule.getApplyLimitTo().getLabel() + " " +
               (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
+               txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ||
                txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? account.getName() : "") 
               + " is " + availableLimit )
             .build());
