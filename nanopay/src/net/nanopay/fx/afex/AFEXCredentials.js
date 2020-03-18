@@ -34,6 +34,12 @@ foam.CLASS({
       class: 'Long',
       name: 'domesticFee',
       label: 'Domestic fee'
-    }
+    },
+    {
+      class: 'Int',
+      name: 'clientApprovalDelay',
+      value: 5,
+      documentation: 'Wait time in minutes before AFEX business is approved.'
+    },
   ]
 });
