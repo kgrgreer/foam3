@@ -194,36 +194,36 @@ public class PGPKeyUtil {
     }
     
     PublicKeyDataDecryptorFactory b = new JcePublicKeyDataDecryptorFactoryBuilder().setProvider("BC").setContentProvider("BC").build(decKey);
-    Iterator<PGPPublicKeyEncryptedData> it = enc.getEncryptedDataObjects();
-    PGPPublicKeyEncryptedData pbe = null;
-    while (it.hasNext()) {
-			pbe = it.next();
-      if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break;
-		}
+    Iterator<PGPPublicKeyEncryptedData> it = enc.getEncryptedDataObjects(); 
+    PGPPublicKeyEncryptedData pbe = null; 
+    while ( it.hasNext() ) { 
+      pbe = it.next(); 
+      if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break; 
+    }
 		InputStream clear = pbe.getDataStream(b);
 		PGPObjectFactory plainFact = new PGPObjectFactory(clear, new JcaKeyFingerprintCalculator());
 		Object message = plainFact.nextObject();
-		if (message instanceof  PGPCompressedData) {
+		if ( message instanceof  PGPCompressedData ) {
 			PGPCompressedData cData = (PGPCompressedData) message;
 			PGPObjectFactory pgpFact = new PGPObjectFactory(cData.getDataStream(), new JcaKeyFingerprintCalculator());
 			message = pgpFact.nextObject();
 		}
 
-		if (message instanceof  PGPLiteralData) {
+		if ( message instanceof  PGPLiteralData ) {
 			PGPLiteralData ld = (PGPLiteralData) message;
 			InputStream unc = ld.getInputStream();
 			int ch;
-			while ((ch = unc.read()) >= 0) {
+			while ( (ch = unc.read()) >= 0 ) {
 				out.write(ch);
 			}
-		} else if (message instanceof  PGPOnePassSignatureList) {
+		} else if ( message instanceof  PGPOnePassSignatureList ) {
 			throw new PGPException("Encrypted message contains a signed message - not literal data.");
 		} else {
 			throw new PGPException("Message is not a simple encrypted file - type unknown.");
 		}
 
-		if (pbe.isIntegrityProtected()) {
-			if (!pbe.verify()) {
+		if ( pbe.isIntegrityProtected() ) {
+			if ( ! pbe.verify() ) {
 				throw new PGPException("Message failed integrity check");
 			}
 		}
