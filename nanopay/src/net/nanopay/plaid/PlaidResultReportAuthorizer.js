@@ -27,7 +27,6 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         User user = (User) x.get("user");
-        DAO plaidResultReportDAO = (DAO) x.get("plaidResultReportDAO");
         AuthService authService = (AuthService) x.get("auth");
 
         PlaidResultReport plaidResultReport = (PlaidResultReport) obj;
@@ -41,7 +40,6 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         User user = (User) x.get("user");
-        DAO plaidResultReportDAO = (DAO) x.get("plaidResultReportDAO");
         AuthService authService = (AuthService) x.get("auth");
 
         PlaidResultReport plaidResultReport = (PlaidResultReport) oldObj;
@@ -54,15 +52,7 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode:`
-        User user = (User) x.get("user");
-        DAO plaidResultReportDAO = (DAO) x.get("plaidResultReportDAO");
-        AuthService authService = (AuthService) x.get("auth");
-
-        PlaidResultReport plaidResultReport = (PlaidResultReport) obj;
-        if (! (plaidResultReport.getNanopayUserId() == user.getId())  &&
-            ! authService.check(x, "plaidresultreport.delete" + obj.getProperty("id"))){
-          throw new AuthorizationException("You don't have permissions to view plaidResultReport");
-        }
+        throw new AuthorizationException("You don't have permissions to view plaidResultReport");
       `
     },
     {

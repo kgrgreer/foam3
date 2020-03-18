@@ -425,6 +425,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"menu.read.integration.flinksResponses"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"menu.read.integration.plaidResultReport"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"plaidresultreport.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"plaidresultreport.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"plaidresultreport.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"menu.read.rules"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"menu.read.rules.txlimitrules"})

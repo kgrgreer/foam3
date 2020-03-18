@@ -105,7 +105,7 @@ foam.CLASS({
         } catch ( AuthorizationException e ){
           threw = true;
         }
-        test(! threw, "Owner can delete plaidResultReport");
+        test(threw, "Owner can't delete plaidResultReport");
       `
     }
   ]
