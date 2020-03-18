@@ -6,23 +6,42 @@ foam.CLASS({
   documentation: 'Plans CO Transaction for RBC',
 
   javaImports: [
-    'foam.dao.DAO',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.rbc.RbcCOTransaction',
+  ],
+
+  constants: [
+    {
+      name: 'PROVIDER_ID',
+      type: 'String',
+      value: 'RBC'
+    },
+    {
+      name: 'INSTITUTION_NUMBER',
+      type: 'String',
+      value: '003'
+    },
   ],
 
   methods: [
     {
       name: 'plan',
       javaCode: `
-      Transaction t = new RbcCOTransaction.Builder(x).build();
-      t.copyFrom(requestTxn);
-      // TODO: use EFT calculation process
-      t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
+        TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
+        RbcCOTransaction t = new RbcCOTransaction();
+        t.copyFrom(requestTxn);
+        t.setInstitutionNumber(INSTITUTION_NUMBER);
+        addTransfer(trustAccount.getId(), t.getAmount());
+        addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 
-      return t;
+        t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
+        if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+          PADTypeLineItem.addEmptyLineTo(t);
+        }
+        return t;
 
       `
     },

@@ -6,25 +6,42 @@ foam.CLASS({
   documentation: 'Plans CI Transaction for RBC',
 
   javaImports: [
-    'foam.dao.DAO',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.rbc.RbcCITransaction',
+  ],
+
+  constants: [
+    {
+      name: 'PROVIDER_ID',
+      type: 'String',
+      value: 'RBC'
+    },
+    {
+      name: 'INSTITUTION_NUMBER',
+      type: 'String',
+      value: '003'
+    },
   ],
 
   methods: [
     {
       name: 'plan',
       javaCode: `
-
-      RbcCITransaction t = new RbcCITransaction.Builder(x).build();
+      TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
+      RbcCITransaction t = new RbcCITransaction();
       t.copyFrom(requestTxn);
-      // TODO: use EFT calculation process
+      t.setInstitutionNumber(INSTITUTION_NUMBER);
+      addTransfer(trustAccount.getId(), t.getAmount());
+      addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
+      
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
-
+      if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
+        PADTypeLineItem.addEmptyLineTo(t);
+      }
       return t;
-
       `
     },
   ]
