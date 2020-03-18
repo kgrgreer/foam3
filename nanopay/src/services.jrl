@@ -1439,25 +1439,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"publicKeyDAO",
-  "serve":true,
-  "serviceScript":
-  """
-    return new net.nanopay.security.PublicKeyDAO.Builder(x)
-      .setDelegate(new foam.dao.EasyDAO.Builder(x)
-        .setAuthorize(true)
-        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
-        .setSeqNo(true)
-        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-        .setJournalName("publicKeys")
-        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).build())
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"publicUserDAO",
   "serve":true,
   "description":"A DAO served to the client that lists all Users in the system. However, it only returns the public user info instead of the entire User object.",

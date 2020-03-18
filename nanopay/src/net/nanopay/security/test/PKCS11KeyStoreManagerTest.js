@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'foam.util.SecurityUtil',
     'net.nanopay.security.PKCS11KeyStoreManager',
     'javax.crypto.KeyGenerator',
@@ -26,25 +27,32 @@ foam.CLASS({
         }
 
         // reset soft hsm
-        if ( ! SecurityTestUtil.ResetSoftHSM() ) {
+        String token = SecurityTestUtil.ResetSoftHSM();
+        if ( SafetyUtil.isEmpty(token) ) {
           return;
         }
 
         // initialization tests
-        PKCS11KeyStoreManager_ValidConfiguration();
+        PKCS11KeyStoreManager_ValidConfiguration(token);
         PKCS11KeyStoreManager_InvalidLibrary();
         // PKCS11KeyStoreManager_InvalidPassphrase();
         PKCS11KeyStoreManager_InvalidSlotListIndex();
 
         // key storage tests
-        PKCS11KeyStoreManager_StoringSecretKey();
+        PKCS11KeyStoreManager_StoringSecretKey(token);
       `
     },
     {
       name: 'PKCS11KeyStoreManager_ValidConfiguration',
+      args: [
+        {
+          name: 'token',
+          type: 'String'
+        }
+      ],
       javaCode: `
         try {
-          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
+          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslot=" + token;
           Provider provider = Security.getProvider("SunPKCS11").configure(config);
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
             .setProvider(provider)
@@ -92,7 +100,7 @@ foam.CLASS({
       name: 'PKCS11KeyStoreManager_InvalidPassphrase',
       javaCode: `
         try {
-          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
+          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=9";
           Provider provider = Security.getProvider("SunPKCS11").configure(config);
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
             .setProvider(provider)
@@ -115,7 +123,7 @@ foam.CLASS({
       name: 'PKCS11KeyStoreManager_InvalidSlotListIndex',
       javaCode: `
         try {
-          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=1";
+          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=9";
           Provider provider = Security.getProvider("SunPKCS11").configure(config);
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
             .setProvider(provider)
@@ -136,9 +144,15 @@ foam.CLASS({
     },
     {
       name: 'PKCS11KeyStoreManager_StoringSecretKey',
+      args: [
+        {
+          name: 'token',
+          type: 'String'
+        }
+      ],
       javaCode: `
         try {
-          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslotListIndex=0";
+          String config = "--name=SoftHSM2\\nlibrary=/usr/local/lib/softhsm/libsofthsm2.so\\nslot=" + token;
           Provider provider = Security.getProvider("SunPKCS11").configure(config);
           PKCS11KeyStoreManager manager = new PKCS11KeyStoreManager.Builder(getX())
             .setProvider(provider)

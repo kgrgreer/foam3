@@ -1384,6 +1384,22 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/OMName' },
   { name: 'net/nanopay/alarming/AlarmingUniqueNameDAO' },
 
+  // RBC
+  { name: 'net/nanopay/tx/rbc/RbcTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcCITransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcCOTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcVerificationTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/rbc/RbcAssignedClientValue' },
+  { name: 'net/nanopay/tx/rbc/RbcReferenceNumber' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcBatchRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcCIRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcCORecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcBatchControl' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
+  { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
+
   // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
@@ -1425,6 +1441,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
   { name: 'net/nanopay/tx/planner/DVPPlanner' },
   { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcVerificationTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },

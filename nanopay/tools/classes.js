@@ -661,6 +661,8 @@ var classes = [
   'net.nanopay.security.Signature',
   'net.nanopay.security.PayerAssentTransactionDAO',
   'net.nanopay.security.UserRegistrationSanitationDAO',
+  'net.nanopay.security.PGPPublicKeyDAO',
+  'net.nanopay.security.PGPPrivateKeyDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
@@ -959,6 +961,22 @@ var classes = [
   'net.nanopay.tx.gs.ProgressBarData',
   'net.nanopay.tx.gs.GSReportAssembly',
 
+  // RBC
+  'net.nanopay.tx.rbc.RbcCITransaction',
+  'net.nanopay.tx.rbc.RbcCOTransaction',
+  'net.nanopay.tx.rbc.RbcVerificationTransaction',
+  'net.nanopay.tx.rbc.RbcTransactionPlanDAO',
+  'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
+  'net.nanopay.tx.rbc.RBCTransactionISO20022Util',
+  'net.nanopay.tx.rbc.RbcAssignedClientValue',
+  'net.nanopay.tx.rbc.RbcReferenceNumber',
+  'net.nanopay.tx.rbc.iso20022file.RbcBatchRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcCIRecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
+  'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
+  'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
+  
   // Ticket
   'net.nanopay.ticket.SudoTicket',
   'net.nanopay.ticket.SudoTicketApprovalRequestRule',
@@ -989,6 +1007,9 @@ var classes = [
   'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
+  'net.nanopay.tx.planner.RbcCITransactionPlanner',
+  'net.nanopay.tx.planner.RbcCOTransactionPlanner',
+  'net.nanopay.tx.planner.RbcVerificationTransactionPlanner',
   'net.nanopay.tx.planner.SecurityCIPlanner',
   'net.nanopay.tx.planner.SecurityCOPlanner',
   'net.nanopay.tx.planner.SecurityBucketPlanner',
