@@ -186,10 +186,10 @@ public class PGPKeyUtil {
     PGPObjectFactory pgpF = new PGPObjectFactory(in, new JcaKeyFingerprintCalculator());
 		PGPEncryptedDataList enc = null;
     Iterator<Object> oIt = pgpF.iterator();
-    while ( enc == null && oIt.hasNext() ) {
-      Object o = oIt.next();
-      if (o instanceof  PGPEncryptedDataList) {
-        enc = (PGPEncryptedDataList) o;
+    while ( enc == null && oIt.hasNext() ) { 
+      Object o = oIt.next(); 
+      if ( o instanceof  PGPEncryptedDataList ) { 
+        enc = (PGPEncryptedDataList) o; 
       } 
     }
     
