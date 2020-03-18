@@ -144,7 +144,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
       EFTFile eftFile = new EFTFile();
       eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile); 
       RbcCIRecord ciRecords = transactionISO20022Util.generateCIRecords(x, ciTransactions.toArray(new Transaction[ciTransactions.size()]), String.valueOf(eftFile.getId()));
-      if( ciRecords != null && ciRecords.getDebitMsg() != null ) {
+      if ( ciRecords != null && ciRecords.getDebitMsg() != null ) {
         ciRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
         this.passedTransactions.addAll(Arrays.asList(ciRecords.getTransactions()));
         eftFile.setFileName(eftFile.getId() + "-debit" + ".txt");
@@ -174,7 +174,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
       EFTFile eftFile = new EFTFile();
       eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile);
       RbcCORecord coRecords = transactionISO20022Util.generateCORecords(x, coTransactions.toArray(new Transaction[coTransactions.size()]), String.valueOf(eftFile.getId()));
-      if( coRecords != null && coRecords.getCreditMsg() != null ){
+      if ( coRecords != null && coRecords.getCreditMsg() != null ){
         coRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
         this.passedTransactions.addAll(Arrays.asList(coRecords.getTransactions()));
         eftFile.setFileName(eftFile.getId() + "-credit" + ".txt");

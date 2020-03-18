@@ -211,9 +211,9 @@ public class RbcReportProcessor {
    * Process failed payment
    */
   protected void processFailedPayment(net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo, long messageId) {
-    if( null == paymentInfo || null == paymentInfo.getTransactionInformationAndStatus() ) return;
+    if ( null == paymentInfo || null == paymentInfo.getTransactionInformationAndStatus() ) return;
 
-    for( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
+    for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
       try {
         String rejectReason = getRejectReason(txnInfoStatus.getStatusReasonInformation());
         Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
@@ -237,7 +237,7 @@ public class RbcReportProcessor {
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return;
 
       long fileMessageId = Long.valueOf(getFileId(cstmrPmtStsRpt));
-      for( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
+      for ( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
         processPaymentStatus(paymentInfo, fileMessageId);
       }
     } catch (Exception e) {
@@ -250,10 +250,10 @@ public class RbcReportProcessor {
    * Process payment status
    */
   protected void processPaymentStatus(net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo, long messageId) {
-    if( null == paymentInfo || null == paymentInfo.getTransactionInformationAndStatus() ) return;
+    if ( null == paymentInfo || null == paymentInfo.getTransactionInformationAndStatus() ) return;
 
-    for( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
-      if( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSP != txnInfoStatus.getTransactionStatus() ) continue;
+    for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
+      if ( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSP != txnInfoStatus.getTransactionStatus() ) continue;
       try {
         Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction was settled by RBC.").build());
@@ -300,15 +300,15 @@ public class RbcReportProcessor {
   }
 
   protected String getRejectReason(net.nanopay.iso20022.StatusReasonInformation8 reasonInfos[]) {
-    if( null == reasonInfos ) return "";
+    if ( null == reasonInfos ) return "";
     StringBuilder str = new StringBuilder();
 
     for ( net.nanopay.iso20022.StatusReasonInformation8 reason : reasonInfos ) {
-      if( null == reason.getReason() ) continue;
+      if ( null == reason.getReason() ) continue;
       String code = SafetyUtil.isEmpty(reason.getReason().getCd()) ? reason.getReason().getPrtry() : reason.getReason().getCd();
       str.append(code);
       str.append(" : ");
-      if( null != reason.getAdditionalInformation() ) {
+      if ( null != reason.getAdditionalInformation() ) {
         for ( String additionalInfo : reason.getAdditionalInformation() ) {
           str.append(additionalInfo);
           str.append(" ");
