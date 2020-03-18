@@ -198,7 +198,7 @@ public class PGPKeyUtil {
     PGPPublicKeyEncryptedData pbe = null; 
     while ( it.hasNext() ) {
       pbe = it.next();
-      if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break; 
+      if ( pbe != null && pbe.getKeyID() == decKey.getKeyID() ) break;
     }
 		InputStream clear = pbe.getDataStream(b);
 		PGPObjectFactory plainFact = new PGPObjectFactory(clear, new JcaKeyFingerprintCalculator());
