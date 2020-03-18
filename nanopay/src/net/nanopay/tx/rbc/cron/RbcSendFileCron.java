@@ -40,7 +40,7 @@ public class RbcSendFileCron implements ContextAgent {
 
     for ( EFTFile file : files ) {
       /* Send and verify file */
-      try{
+      try {
         new RbcFileProcessor(x).send(file);  
       } catch ( Exception e ) {
         logger.error("RBC send file failed. " + e.getMessage(), e);

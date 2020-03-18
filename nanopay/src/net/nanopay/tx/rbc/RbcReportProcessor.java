@@ -49,7 +49,7 @@ public class RbcReportProcessor {
    */
   public void decryptFolder(X x) {
     File folder = new File(RbcFTPSClient.DOWNLOAD_FOLDER);   
-    for (File file : folder.listFiles()) {
+    for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
       try {
         EFTFileUtil.storeEFTFile(x, file, "text/plain"); // Store file downloaded from RBC
@@ -66,7 +66,7 @@ public class RbcReportProcessor {
    */
   public void processReceipts() {
     /* Download status report files from RBC */
-    try{
+    try {
       rbcFTPSClient.batchDownload();
     } catch (Exception e) {
       this.logger.error("Error downloading status reports from RBC ", e);
@@ -80,9 +80,9 @@ public class RbcReportProcessor {
     }
 
     File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
-    for (File file : folder.listFiles()) {
+    for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
-      try{
+      try {
           processReceipt(file);
         } catch(Exception e) {
           logger.error("RBC Error while saving recipt", e);
@@ -136,9 +136,9 @@ public class RbcReportProcessor {
    */
   public void processReports() throws IOException, XMLStreamException {
     File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
-    for (File file : folder.listFiles()) {
+    for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
-      try{
+      try {
         processReport(file);
       } catch (Exception e) {
         this.logger.error("Error decrypting file: " + file.getName(), e);

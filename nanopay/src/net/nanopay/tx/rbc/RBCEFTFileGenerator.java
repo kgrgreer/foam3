@@ -144,7 +144,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
       EFTFile eftFile = new EFTFile();
       eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile); 
       RbcCIRecord ciRecords = transactionISO20022Util.generateCIRecords(x, ciTransactions.toArray(new Transaction[ciTransactions.size()]), String.valueOf(eftFile.getId()));
-      if( ciRecords != null && ciRecords.getDebitMsg() != null ){
+      if( ciRecords != null && ciRecords.getDebitMsg() != null ) {
         ciRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
         this.passedTransactions.addAll(Arrays.asList(ciRecords.getTransactions()));
         eftFile.setFileName(eftFile.getId() + "-debit" + ".txt");
@@ -170,7 +170,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
 
   protected EFTFile createCOEFTFile(List<Transaction> coTransactions) {
     RBCTransactionISO20022Util    transactionISO20022Util = new RBCTransactionISO20022Util();
-    try{
+    try {
       EFTFile eftFile = new EFTFile();
       eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile);
       RbcCORecord coRecords = transactionISO20022Util.generateCORecords(x, coTransactions.toArray(new Transaction[coTransactions.size()]), String.valueOf(eftFile.getId()));
@@ -227,7 +227,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
     Pattern p = Pattern.compile(pattern,Pattern.DOTALL);
     Matcher m = p.matcher(str);
 
-    while(m.find()){
+    while(m.find()) {
       String valueFromTags = m.group(1);
       m.appendReplacement(sb, starttag + valueFromTags.substring(0, Math.min(valueFromTags.length(), 10)) + endtag);
     }

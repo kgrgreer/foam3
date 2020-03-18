@@ -26,7 +26,7 @@ public class RbcProcessReportCron implements ContextAgent {
 
     try {
       // download status reports
-      try{
+      try {
         rbcFTPSClient.batchDownload();
       } catch (Exception e) {
         logger.error("Error downloading status reports from RBC ", e);
@@ -34,7 +34,7 @@ public class RbcProcessReportCron implements ContextAgent {
       }
 
       /* Decrypt status report files */
-      try{
+      try {
         reportProcessor.decryptFolder(x);
       } catch (Exception e) {
         logger.error("Error decrypting files from download folder", e);
@@ -42,7 +42,7 @@ public class RbcProcessReportCron implements ContextAgent {
       }       
 
       /* Process reports */
-      try{
+      try {
         reportProcessor.processReports();
       } catch (Exception e) {
         logger.error("Error processing reports from RBC ", e);

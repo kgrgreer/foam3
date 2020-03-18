@@ -56,18 +56,18 @@ public class PGPKeyUtil {
     PGPPublicKeyRingCollection pgpPub = new PGPPublicKeyRingCollection(in, new JcaKeyFingerprintCalculator());
     PGPPublicKey key = null;
     Iterator<PGPPublicKeyRing> rIt = pgpPub.getKeyRings();
-    while (key == null && rIt.hasNext()) {
+    while ( key == null && rIt.hasNext() ) {
       PGPPublicKeyRing kRing = rIt.next();
       Iterator<PGPPublicKey> kIt = kRing.getPublicKeys();
-      while (key == null && kIt.hasNext()) {
+      while ( key == null && kIt.hasNext() ) {
         PGPPublicKey k = kIt.next();
-        if (k.isEncryptionKey()) {
+        if ( k.isEncryptionKey() ) {
           key = k;
         }
       }
     }
 
-    if (key == null) {
+    if ( key == null ) {
       throw new IllegalArgumentException("Can't find encryption key in key ring.");
     }
 
@@ -85,9 +85,9 @@ public class PGPKeyUtil {
       if ( o instanceof PGPPublicKeyRing ) {
         PGPPublicKeyRing kRing = (PGPPublicKeyRing) o;
         Iterator<PGPPublicKey> kIt = kRing.getPublicKeys();
-        while (kIt.hasNext()) {
+        while ( kIt.hasNext() ) {
           PGPPublicKey k = kIt.next();
-          if (k.isEncryptionKey()) {
+          if ( k.isEncryptionKey() ) {
             return k;
           }
         }
@@ -139,7 +139,7 @@ public class PGPKeyUtil {
       PGPPublicKey encKey = pgpPubKey.getPGPPublicKey();
   
       // add provider only if it's not in the JVM
-      if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+      if ( Security.getProvider(BouncyCastleProvider.PROVIDER_NAME ) == null) {
         Security.addProvider(new BouncyCastleProvider());
       }
       
@@ -178,7 +178,7 @@ public class PGPKeyUtil {
     if ( decKey == null ) throw new RuntimeException("PGP Private Key not found: " + keyAlias); 
 
     // add provider only if it's not in the JVM
-    if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+    if ( Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null ) {
       Security.addProvider(new BouncyCastleProvider());
     }
 

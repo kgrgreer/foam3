@@ -50,7 +50,7 @@ public class ISO20022Util {
   public FObject fromXML(X x, File file, Class defaultClass) throws XMLStreamException, FileNotFoundException {
     FObject obj = null;
     if ( file == null ) return obj;
-    try{
+    try {
       FileInputStream inputStream = new FileInputStream(file);
       XMLInputFactory factory     = XMLInputFactory.newInstance();
       XMLStreamReader xmlReader   = factory.createXMLStreamReader(inputStream);
@@ -119,14 +119,14 @@ public class ISO20022Util {
             if ( prop != null ) {
               Class objClass = prop.getValueClass();
               
-              if (Enum.class.isAssignableFrom(objClass)) {
+              if ( Enum.class.isAssignableFrom(objClass) ) {
                 prop.set(obj, enumFromXML(x, reader, objClass));
               } else if ( String[].class.equals(objClass) ) {
                 prop.set(obj, stringArrFromXML(x, reader, prop.getShortName()));
                 if ( reader.getLocalName().equals(startTag) ) {
                   return obj;
                 }
-              } else if (objClass.isArray()) {
+              } else if ( objClass.isArray() ) {
                 prop.set(obj, arrayFromXML(x, reader, objClass, prop.getShortName()));
                 pause = true; // Needed to pause reading of next() since we already did that to know if there are more elements in the array
                 if ( reader.getLocalName().equals(startTag) ) {
@@ -160,9 +160,9 @@ public class ISO20022Util {
 
   public void setAttributeValue(X x, XMLStreamReader reader, FObject obj) {
     int attributes = reader.getAttributeCount();
-    if (attributes > 0 ) {
+    if ( attributes > 0 ) {
       Map<String, String> propMap = getObjectPropertyInfoMap(x, obj, null);
-      for (int i = 0; i < attributes; i++ ) {
+      for ( int i = 0; i < attributes; i++ ) {
         PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(
           propMap.get(reader.getAttributeLocalName(i)));
         if ( prop != null ) {
@@ -174,7 +174,7 @@ public class ISO20022Util {
       for ( Map.Entry<String, String> entry : propMap.entrySet() ) {
         PropertyInfo prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(propMap.get(entry.getValue()));
         if ( prop.getXMLTextNode() ) {
-          try{
+          try {
             reader.next();
             prop.set(obj, reader.getText());
           } catch(XMLStreamException e) {

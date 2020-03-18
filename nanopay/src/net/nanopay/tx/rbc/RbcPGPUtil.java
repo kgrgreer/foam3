@@ -22,7 +22,7 @@ public class RbcPGPUtil {
     File outputFile = new File(ENCRYPT_FOLDER + fileToEncrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    try{
+    try {
       PGPKeyUtil.encryptFile(x, fileToEncrypt, "rbc-pgpkey", fileOutputStream);
     } catch(Exception e) {
       FileUtils.deleteQuietly(outputFile);
@@ -36,7 +36,7 @@ public class RbcPGPUtil {
     File outputFile = new File(DECRYPT_FOLDER + fileToDecrypt.getName());
     FileUtils.touch(outputFile);
     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-    try{
+    try {
       PGPKeyUtil.decryptFile(x, new FileInputStream(fileToDecrypt), fileOutputStream, "nanopay-rbc-pgpkey");
     } catch(Exception e) {
       FileUtils.deleteQuietly(outputFile);

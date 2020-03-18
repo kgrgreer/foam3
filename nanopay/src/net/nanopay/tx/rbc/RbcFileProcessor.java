@@ -41,7 +41,7 @@ public class RbcFileProcessor {
     if ( eftFile == null ) return;
 
     DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
-    try{
+    try {
       foam.nanos.fs.File file = (foam.nanos.fs.File) fileDAO.find(eftFile.getFile());
       if ( file == null ) 
         throw new RuntimeException("RBC unable to find in file system for EFT File: " + eftFile.getFileName());
@@ -92,7 +92,7 @@ public class RbcFileProcessor {
   protected File createEncryptedFile(File file) throws RbcEftFileException{
     if ( file == null ) return null;
     File encrypted = null;
-    try{
+    try {
       encrypted = new RBCEFTFileGenerator(x).createEncryptedFile(file);
     } catch ( Exception e ) {
       logger.error("RBC Encrypting file : " + e.getMessage(), e);
