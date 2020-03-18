@@ -104,15 +104,15 @@ public class PGPKeyUtilTest
       ((DAO) x.get("keyPairDAO")).put(keyPairEntry);
 
       PublicKeyEntry rbcPublicKeyEntry = new PublicKeyEntry.Builder(x).setAlgorithm(publicKey.getAlgorithm())
-            .setAlias(RBC_ALIAS).setPublicKey(publicKey).build();
-          ((DAO) x.get("publicKeyDAO")).put(rbcPublicKeyEntry);
+        .setAlias(RBC_ALIAS).setPublicKey(publicKey).build();
+      ((DAO) x.get("publicKeyDAO")).put(rbcPublicKeyEntry);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
-  protected void cleanupFiles(){
-    try{
+  protected void cleanupFiles() {
+    try {
       Files.deleteIfExists(file);
       Files.deleteIfExists(Paths.get(outputFile));
       Files.deleteIfExists(Paths.get(outputFile));
