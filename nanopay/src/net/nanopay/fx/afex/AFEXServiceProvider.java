@@ -190,28 +190,29 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
 
     for ( User officer : signingOfficers ) {
-      pushSigningOfficer(officer, clientKey);
+      pushSigningOfficer(business, officer, clientKey);
     } 
   }
 
-  public void pushSigningOfficer(User user, String clientKey) {
+  public void pushSigningOfficer(Business business, User officer, String clientKey) {
     StringBuilder name = new StringBuilder();
-    name.append(user.getFirstName());
+    name.append(officer.getFirstName());
     name.append(" ");
-    name.append(user.getLastName());
+    name.append(officer.getLastName());
     AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
     request.setApiKey(clientKey);
     request.setName(name.toString());
-    //request.setPercentOwnership(String.valueOf(user.getOwnershipPercent()));
+    int ownership = getSigningOfficerOwnershipPercentage(business, officer);
+    request.setPercentOwnership(String.valueOf(ownership));
     request.setDirector("true");
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-      request.setDateOfBirth(dateFormat.format(user.getBirthday()));
+      request.setDateOfBirth(dateFormat.format(officer.getBirthday()));
     } catch(Exception e) {
       logger_.error("Failed parse beneficial owner birthday.", e);
     }
-    Address address = user.getAddress();
+    Address address = officer.getAddress();
     if ( address != null ) {
       request.setAddress1(address.getAddress());
       request.setCity(address.getCity());
@@ -220,7 +221,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setZip(address.getPostalCode());
     }
 
-    PersonalIdentification identification = user.getIdentification();
+    PersonalIdentification identification = officer.getIdentification();
     if ( identification != null ) {
       request.setCompanyOfficerIdentificationIssuingType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
       request.setCompanyOfficerIdentificationNumber(identification.getIdentificationNumber());
@@ -234,9 +235,20 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         logger_.error("Failed parse company officer identification expiration date.", e);
       }
     }
-    //request.setCompanyOfficerTaxIdentificationNumber(user.getTaxIdentificationNumber());
-    
+
     addCompanyOfficer(request);
+  }
+
+  private int getSigningOfficerOwnershipPercentage(Business business, User officer) {
+    if ( business == null ) return 0;
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
+      .select(new ArraySink())).getArray();
+      for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+        if ( beneficialOwner.getFirstName().equals(officer.getFirstName()) 
+            && beneficialOwner.getLastName().equals(officer.getLastName()) )
+          return beneficialOwner.getOwnershipPercent();
+      }
+      return 0;
   }
 
   public void pushBeneficialOwners(Business business, String clientKey) {
