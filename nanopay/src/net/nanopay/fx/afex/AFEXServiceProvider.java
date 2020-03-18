@@ -37,6 +37,7 @@ import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
 import net.nanopay.model.PadCapture;
+import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
@@ -79,11 +80,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
         if ( afexBusiness != null ) return true;
 
+        User signingOfficer = getSigningOfficer(this.x, business);
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        if ( hasFXProvisionPayerPermission) {
+        if ( hasFXProvisionPayerPermission && isFXEnrolled(business, signingOfficer) ) {
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
-          User signingOfficer = getSigningOfficer(this.x, business);
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
 
@@ -179,6 +180,23 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public boolean isFXEnrolled(Business business, User signingOfficer) {
+    Address businessAddress = business.getAddress();
+    if ( businessAddress == null || SafetyUtil.isEmpty(businessAddress.getCountryId()) ) return false;
+
+    if ( "US".equals(businessAddress.getCountryId()) ) return true;
+
+    if ( signingOfficer == null  ) return false;
+
+    DAO canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
+    CanadaUsBusinessOnboarding c = (CanadaUsBusinessOnboarding) canadaUsBusinessOnboardingDAO.find(AND(
+      EQ(CanadaUsBusinessOnboarding.USER_ID, signingOfficer.getId()),
+      EQ(CanadaUsBusinessOnboarding.BUSINESS_ID, business.getId()),
+      EQ(CanadaUsBusinessOnboarding.STATUS, net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED)
+    ));
+    return c != null;
   }
 
   public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
@@ -661,24 +679,26 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException {
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.findSourceAccount(x).getOwner());
+    AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,txn.findSourceAccount(x).getOwner());
     if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
 
     CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
     request.setClientAPIKey(afexBusiness.getApiKey());
-    request.setId(transaction.getReferenceNumber());
+    request.setId(txn.getReferenceNumber());
 
     try {
       CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request);
       if ( null == paymentStatusResponse ) throw new RuntimeException("Null response got for remote system." );
-
-      transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
+      
+      txn.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
+      txn.setAfexPaymentStatus(Enum.valueOf(AFEXPaymentStatus.class, paymentStatusResponse.getPaymentStatus().toUpperCase()));
 
     } catch(Throwable t) {
       logger_.error("Error updating AFEX transaction status.", t);
     }
 
-    return transaction;
+    return txn;
 
   }
 
@@ -756,7 +776,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
+  public AFEXBusiness getAFEXBusiness(X x, Long userId) {
     DAO dao = (DAO) x.get("afexBusinessDAO");
     return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
   }

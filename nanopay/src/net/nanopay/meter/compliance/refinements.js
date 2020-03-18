@@ -13,9 +13,6 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
       documentation: 'Admin user account approval status.',
-      tableCellFormatter: function(status) {
-        return status.label;
-      },
       readPermissionRequired: true,
       writePermissionRequired: true,
       section: 'administrative'
@@ -38,9 +35,6 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
       documentation: 'Admin bank account approval status.',
-      tableCellFormatter: function(status) {
-        return status.label;
-      },
       readPermissionRequired: true,
       writePermissionRequired: true
     }
@@ -62,9 +56,6 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
       documentation: 'Beneficial owner compliance status.',
-      tableCellFormatter: function(status) {
-        return status.label;
-      },
       readPermissionRequired: true,
       writePermissionRequired: true
     }

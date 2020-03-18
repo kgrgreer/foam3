@@ -1,0 +1,41 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionPlannerDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+
+    foam.dao.DAO dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, null);
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
+    dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
+    dao = new net.nanopay.tx.QuoteFillerDAO(x, dao);
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
+      .setDecorator(dao)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .setRuler(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"transactionPlannerDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+      return new foam.dao.EasyDAO.Builder(x)
+        .setInnerDAO(x.get("localTransactionPlannerDAO"))
+        .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+        .setRuler(false)
+        .setAuthorize(true)
+        .setPm(true)
+        .setPipelinePm(true)
+        .setEnableInterfaceDecorators(false)
+        .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.tx.TransactionQuote\"}"
+})

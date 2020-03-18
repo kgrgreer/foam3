@@ -30,6 +30,10 @@ foam.CLASS({
     'net.nanopay.model.Business',
   ],
 
+  imports: [
+    'publicBusinessDAO'
+  ],
+
   constants: [
     {
       name: 'NAME_MAX_LENGTH',
@@ -115,10 +119,17 @@ foam.CLASS({
         whether a individual person, or real user, can sign in or not.
       `,
       tableCellFormatter: function(state, obj) {
+        var format = obj.bankAccount && state != net.nanopay.contacts.ContactStatus.ACTIVE ? 'Ready' : 'Pending';
+        var label = state == net.nanopay.contacts.ContactStatus.ACTIVE ? state.label.replace(/\s+/g, '') : format;
         this.start()
-          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
-          .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
-            .add(state.label)
+          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + label).end()
+          .start('img')
+            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
+            .attrs({ src: this.__subContext__.theme.logo })
+            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+            .end()
+          .start().addClass('contact-status-' + label)
+            .add(label)
           .end()
         .end();
       }
@@ -382,7 +393,11 @@ foam.CLASS({
     {
       name: 'label',
       type: 'String',
-      code: function label() {
+      code: async function label() {
+        if ( this.businessId ) {
+          let business = await this.publicBusinessDAO.find(this.businessId);
+          return business.label();
+        }
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
@@ -392,6 +407,11 @@ foam.CLASS({
         return '';
       },
       javaCode: `
+        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
+        if ( this.getBusinessId() != 0 ) {
+          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
+          return business.label();
+        }
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

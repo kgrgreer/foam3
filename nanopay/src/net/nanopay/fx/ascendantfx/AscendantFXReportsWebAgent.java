@@ -95,7 +95,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
     Logger logger            = (Logger) x.get("logger");
 
-    HttpServletRequest req     = x.get(HttpServletRequest.class);
+    HttpServletRequest req       = x.get(HttpServletRequest.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
 
     String id = req.getParameter("userId");
@@ -157,7 +157,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
     DAO    businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
     DAO    canadaUsBusinessOnboardingDAO = (DAO) x.get("canadaUsBusinessOnboardingDAO");
-    DAO    uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+    DAO    usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
     DAO    userAcceptanceDocumentDAO = (DAO) getX().get("userAcceptanceDocumentDAO");
     Logger logger            = (Logger) x.get("logger");
 
@@ -173,7 +173,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         EQ(CanadaUsBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
         EQ(CanadaUsBusinessOnboarding.SIGNING_OFFICER, true)
       )).select(businessOnBoardingSink);
-    uSBusinessOnboardingDAO.where(
+    usBusinessOnboardingDAO.where(
       AND(
         EQ(USBusinessOnboarding.BUSINESS_ID, business.getId()),
         EQ(USBusinessOnboarding.STATUS, OnboardingStatus.SUBMITTED),
@@ -596,19 +596,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     try {
       java.util.List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
+      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
+      dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
       Document document = new Document();
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-      String reportGeneratedDate = df.format(new Date());
-
       document.open();
       document.add(new Paragraph("Beneficial Owners Information"));
       document.add(Chunk.NEWLINE);
 
       if ( beneficialOwners.size() == 0 ) {
-        List list = new List(List.UNORDERED);
-        list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
-        document.add(list);
+        document.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
       } else {
         document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
         document.add(Chunk.NEWLINE);
@@ -616,21 +615,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         for ( int i = 0; i < beneficialOwners.size(); i++ ) {
           List list = new List(List.UNORDERED);
           BeneficialOwner beneficialOwner = beneficialOwners.get(i);
-          String firstName = beneficialOwner.getFirstName();
-          String lastName = beneficialOwner.getLastName();
-          String jobTitle = beneficialOwner.getJobTitle();
-          String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-
-          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("yyyy-MM-dd");
-          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
           // currently we don't store the info for Ownership (direct/indirect), will add later
-
-          list.add(new ListItem("First name: " + firstName));
-          list.add(new ListItem("Last name: " + lastName));
-          list.add(new ListItem("Job title: " + jobTitle));
-          list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-
+          list.add(new ListItem("First name: " + beneficialOwner.getFirstName()));
+          list.add(new ListItem("Last name: " + beneficialOwner.getLastName()));
+          list.add(new ListItem("Job title: " + beneficialOwner.getJobTitle()));
+          list.add(new ListItem("Percent ownership: " + Integer.toString(beneficialOwner.getOwnershipPercent()) + "%"));
+          String dateOfBirth = beneficialOwner.getBirthday() != null ? dateOfBirthFormatter.format(beneficialOwner.getBirthday()) : "N/A";
+          list.add(new ListItem("Date of birth: " + dateOfBirth));
           if ( beneficialOwner.getAddress() != null ) {
             list.add(new ListItem("Suite No: " + beneficialOwner.getAddress().getSuite()));
             list.add(new ListItem("Residential street address: " + beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName()));
@@ -638,14 +629,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
             list.add(new ListItem("State/Province: " + beneficialOwner.getAddress().getRegionId()));
             list.add(new ListItem("Country: " + beneficialOwner.getAddress().getCountryId()));
             list.add(new ListItem("ZIP/Postal Code: " + beneficialOwner.getAddress().getPostalCode()));
-            list.add(new ListItem("Date of birth: " + dateOfBirth));
           }
-
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
           document.add(list);
           document.add(Chunk.NEWLINE);
         }
       }
+      String reportGeneratedDate = df.format(new Date());
 
       document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
@@ -696,7 +686,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
     DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
-    Image img = null;
+    ArrayList<Image> imgs = new ArrayList<Image>();
 
     Logger logger = (Logger) x.get("logger");
 
@@ -709,12 +699,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     accountDAO.orderBy(DESC(BankAccount.CREATED))
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId()),
         NEQ(Account.DELETED, true))).select(bankAccountsSink);
 
     java.util.List<BankAccount> bankAccounts =  bankAccountsSink.getArray();
-    if ( bankAccounts.size() < 1 ) return null;
 
     String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
@@ -803,11 +791,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
+        if ( usBankAccount.getVoidCheckImage() != null ) {
+          try {
+            foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
+            IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
+            Blob blob = getDelegate().find_(getX(), voidCheck.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          } catch (Exception e) {
+            logger.error(e);
+          }
+        }
+
         try {
-          foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
-          IdentifiedBlob voidCheck = (IdentifiedBlob) voidCheckImage.getData();
-          Blob blob = getDelegate().find_(getX(), voidCheck.getId());
-          img = Image.getInstance(((FileBlob) blob).getFile().getPath());
+          foam.nanos.fs.File supportingDocs[] = usBankAccount.getSupportingDocuments();
+          for ( foam.nanos.fs.File doc : supportingDocs ) {
+            IdentifiedBlob idBlob = (IdentifiedBlob) doc.getData();
+            Blob blob = getDelegate().find_(getX(), idBlob.getId());
+            imgs.add(Image.getInstance(((FileBlob) blob).getFile().getPath()));
+          }
         } catch (Exception e) {
           logger.error(e);
         }
@@ -818,11 +819,13 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       document.add(list);
-      if ( img != null ) {
-        img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
-        - document.rightMargin(), 200);
-        document.add(new ListItem("Bank void check:"));
-        document.add(img);
+      if ( ! imgs.isEmpty() ) {
+        document.add(new ListItem("Supporting documents:"));
+        for ( Image img : imgs) {
+          img.scaleToFit(document.getPageSize().getWidth() - document.leftMargin()
+          - document.rightMargin(), 200);
+          document.add(img);
+        }
       }
       document.add(Chunk.NEWLINE);
     }
@@ -1016,7 +1019,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
 
-  private void downloadZipFile(X x, Business business, File[] srcFiles) {
+ private void downloadZipFile(X x, Business business, File[] srcFiles) {
     HttpServletResponse response = x.get(HttpServletResponse.class);
     Logger              logger   = (Logger) x.get("logger");
 
@@ -1027,7 +1030,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
 
-    try(ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()))) {
+    DataOutputStream os = null;
+    ZipOutputStream zipos = null;
+    try {
+      zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
       zipos.setMethod(ZipOutputStream.DEFLATED);
 
       for (File file : srcFiles) {
@@ -1036,19 +1042,22 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
 
         zipos.putNextEntry(new ZipEntry(file.getName()));
-        try ( 
-          DataOutputStream os = new DataOutputStream(zipos);
-          FileInputStream is =  new FileInputStream(file)
-        ) {
-          byte[] b = new byte[100];
-          int length;
-          while ((length = is.read(b)) != -1) {
-            os.write(b, 0, length);
-          }
+        os = new DataOutputStream(zipos);
+        FileInputStream is = new FileInputStream(file);
+        byte[] b = new byte[100];
+        int length;
+        while((length = is.read(b))!= -1){
+          os.write(b, 0, length);
         }
+        is.close();
+        zipos.closeEntry();
+        os.flush();
       }
     } catch (Exception e) {
       logger.error(e);
+    } finally {
+      IOUtils.closeQuietly(os);
+      IOUtils.closeQuietly(zipos);
     }
   }
 }

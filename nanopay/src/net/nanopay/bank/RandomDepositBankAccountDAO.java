@@ -12,6 +12,7 @@ import net.nanopay.tx.cico.VerificationTransaction;
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
 {
+  //TODO: Delete this class and enable "VerifyBankRule" after planner rewrite merge.
   protected DAO transactionDAO_;
   protected DAO transactionQuotePlanDAO_;
 

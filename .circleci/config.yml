@@ -1,3 +1,4 @@
+
 # Javascript Node CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
@@ -6,11 +7,13 @@ version: 2
 jobs:
   build:
     docker:
-      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam-gradle:latest
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/java11:latest
     working_directory: ~/NANOPAY
     steps:
       - checkout
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run: echo "127.0.0.1  ablii" >> /etc/hosts
+      - run: echo "127.0.0.1  liquid" >> /etc/hosts
       - run: git submodule sync
       - run: git submodule update --init
 
@@ -37,11 +40,12 @@ jobs:
 
       - run: ./build.sh -ct
 
+      - run: ./build.sh -cQt
+      
       - save_cache:
           paths:
             - ~/.gradle
           key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
-
 workflows:
   version: 2
   build_and_test:

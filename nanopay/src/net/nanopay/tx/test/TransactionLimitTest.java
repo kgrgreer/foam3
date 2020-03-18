@@ -1,6 +1,5 @@
 package net.nanopay.tx.test;
 
-
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
@@ -15,21 +14,21 @@ import foam.nanos.ruler.RulerDAO;
 import foam.nanos.ruler.RulerProbe;
 import foam.nanos.ruler.TestedRule;
 import foam.nanos.test.Test;
-import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.liquidity.tx.TxLimitEntityType;
+import net.nanopay.liquidity.tx.TxLimitRule;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.ruler.BusinessLimit;
 import net.nanopay.tx.ruler.TransactionLimitProbeInfo;
 
 public class TransactionLimitTest extends Test {
 
   DigitalAccount sender_, receiver_;
   CABankAccount senderBank_;
-  BusinessLimit rule;
+  TxLimitRule rule;
 
   public void runTest(X x) {
     createAccounts(x);
@@ -41,8 +40,6 @@ public class TransactionLimitTest extends Test {
     createRule(x);
     x = x.put("localTransactionDAO", txnDAO);
     testTransactionLimitProbe(x);
-    testRule(x);
-    testUpdatedRule(x);
   }
 
   public void testTransactionLimitProbe(X x) {
@@ -57,7 +54,7 @@ public class TransactionLimitTest extends Test {
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     TestedRule txRule = null;
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName().equals("transactionLimits") ) {
+      if ( testedRule.getName() == "txlimits" ) {
         txRule = testedRule;
         break;
       }
@@ -72,7 +69,7 @@ public class TransactionLimitTest extends Test {
     probe.clearAppliedRules();
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
-      if ( testedRule.getName().equals("transactionLimits") ) {
+      if ( testedRule.getName() == "txlimits" ) {
         txRule = testedRule;
         break;
       }
@@ -80,47 +77,6 @@ public class TransactionLimitTest extends Test {
     test(((TransactionLimitProbeInfo)txRule.getProbeInfo()).getRemainingLimit() == 10000, "Remaining limit is 10000");
     test(! txRule.getPassed(), "Transaction fails to go through because of the limit.");
 
-  }
-
-  public void testRule(X x) {
-    DAO txDAO = (DAO) x.get("localTransactionDAO");
-    DigitalTransaction tx = new DigitalTransaction();
-    tx.setAmount(9990L);
-    tx.setSourceAccount(sender_.getId());
-    tx.setDestinationAccount(receiver_.getId());
-    tx = (DigitalTransaction) txDAO.put_(x, tx);
-    test(tx instanceof Transaction, "transaction for 9990 went though successfully. Limit is 10000");
-
-    DigitalTransaction tx2 = new DigitalTransaction();
-    tx2.setAmount(20L);
-    tx2.setSourceAccount(sender_.getId());
-    tx2.setDestinationAccount(receiver_.getId());
-    test(TestUtils.testThrows(
-      () -> txDAO.put_(x, tx2),
-      "This transaction exceeds your daily transaction limit. Your current available limit is $0.10. If you require further assistance, please contact us. ",
-      RuntimeException.class), "next transaction for 100L throws exception");
-
-    DigitalTransaction tx3 = new DigitalTransaction();
-    tx3.setAmount(10L);
-    tx3.setSourceAccount(sender_.getId());
-    tx3.setDestinationAccount(receiver_.getId());
-    tx3 = (DigitalTransaction) txDAO.put_(x, tx3);
-    test(tx3 instanceof Transaction, "transaction for 10 went though successfully. Limit is 10000");
-  }
-
-  public void testUpdatedRule(X x) {
-    BusinessLimit r = (BusinessLimit) ((DAO) x.get("ruleDAO")).find(rule);
-    r = (BusinessLimit) r.fclone();
-    r.setLimit(20000L);
-    r = (BusinessLimit) ((DAO) x.get("ruleDAO")).put(r);
-    DAO txDAO = (DAO) x.get("localTransactionDAO");
-
-    DigitalTransaction tx = new DigitalTransaction();
-    tx.setAmount(10000L);
-    tx.setSourceAccount(sender_.getId());
-    tx.setDestinationAccount(receiver_.getId());
-    txDAO.put_(x, tx);
-    test(tx instanceof Transaction, "transaction for 10000 went though successfully after limit was updated to 20000");
   }
 
   public void createAccounts(X x) {
@@ -152,20 +108,19 @@ public class TransactionLimitTest extends Test {
     tx.setSourceAccount(senderBank_.getId());
     tx.setDestinationAccount(sender_.getId());
     tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, tx).fclone();
-    tx.setStatus(TransactionStatus.COMPLETED);
-    ((DAO) x.get("localTransactionDAO")).put_(x, tx);
+    if (tx.getStatus() != TransactionStatus.COMPLETED) {
+      tx.setStatus(TransactionStatus.COMPLETED);
+      ((DAO) x.get("localTransactionDAO")).put_(x, tx);
+    }
   }
 
   public void createRule(X x) {
-    BusinessLimit limitRule = new BusinessLimit();
-    limitRule.setLimit(10000L);
-    limitRule.setDaoKey("transactionDAO");
-    RuleGroup rg = new RuleGroup();
-    rg.setId("limits");
-    DAO rgDAO = ((DAO) (x.get("ruleGroupDAO")));
-    rgDAO.put(rg);
-    limitRule.setRuleGroup("limits");
-    limitRule.setBusiness(sender_.getOwner());
-    rule = (BusinessLimit) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
+    TxLimitRule txLimitRule = new TxLimitRule();
+    txLimitRule.setLimit(10000L);
+    txLimitRule.setDenomination("CAD");
+    txLimitRule.setApplyLimitTo(TxLimitEntityType.BUSINESS);
+    txLimitRule.setBusinessToLimit(sender_.getOwner());
+    txLimitRule.setDaoKey("transactionDAO");
+    rule = (TxLimitRule) ((DAO)x.get("ruleDAO")).put(txLimitRule).fclone();
   }
 }

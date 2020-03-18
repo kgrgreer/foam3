@@ -45,7 +45,7 @@ foam.CLASS({
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
         user = (User) user.fclone();
 
-        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true && businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding != null && businessOnboarding.getSendInvitation() == true ) {
           if ( ! businessOnboarding.getSigningOfficer() && businessOnboarding.getSigningOfficerEmail() != null
                 && ! businessOnboarding.getSigningOfficerEmail().equals("") && ! businessOnboarding.getSigningOfficerEmail().equals(user.getEmail()) ) {
             DAO businessInvitationDAO = (DAO) x.get("businessInvitationDAO");
@@ -94,16 +94,13 @@ foam.CLASS({
               // Send invitation to email to the signing officer
               businessInvitationDAO.put_(x, invitation);
             }
-          }
 
-          businessOnboarding.setSendInvitation(false);
-          return getDelegate().put_(x, businessOnboarding);
+            businessOnboarding.setSendInvitation(false);
+            return getDelegate().put_(x, businessOnboarding);
+          }
         }
 
         BusinessOnboarding old = (BusinessOnboarding) getDelegate().find_(x, obj);
-
-        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
-        if ( old != null && ( old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ||  old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SAVED ) ) return getDelegate().put_(x, businessOnboarding);
 
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
@@ -111,7 +108,7 @@ foam.CLASS({
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding.getStatus() != OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -131,73 +128,73 @@ foam.CLASS({
         user.setPhone(businessOnboarding.getPhone());
         user.setAddress(businessOnboarding.getAddress());
 
-        // If the user is the signing officer
-        if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
-          // Agreenments (tri-party, dual-party & PEP/HIO)
+        if ( businessOnboarding.getStatus() == OnboardingStatus.SUBMITTED ) {
+          // If the user is the signing officer
+          if ( businessOnboarding.getSigningOfficer() ) {
+            user.setBirthday(businessOnboarding.getBirthday());
+            // Agreenments (tri-party, dual-party & PEP/HIO)
 
-          if ( businessOnboarding.getPEPHIORelated() ) {
-            Notification notification = new Notification();
-            notification.setEmailIsEnabled(true);
-            notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
-                                  business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
-            notification.setNotificationType("A PEP/HIO related user has been Onboarded");
-            notification.setGroupId("fraud-ops");
-            localNotificationDAO.put(notification);
-          }
-          user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
-          user.setThirdParty(businessOnboarding.getThirdParty());
+            if ( businessOnboarding.getPEPHIORelated() ) {
+              Notification notification = new Notification();
+              notification.setEmailIsEnabled(true);
+              notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
+                                    business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
+              notification.setNotificationType("A PEP/HIO related user has been Onboarded");
+              notification.setGroupId("fraud-ops");
+              localNotificationDAO.put(notification);
+            }
+            user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
+            user.setThirdParty(businessOnboarding.getThirdParty());
 
-          localUserDAO.put(user);
-          // Set the signing officer junction between the user and the business
-          business.getSigningOfficers(x).add(user);
+            localUserDAO.put(user);
+            // Set the signing officer junction between the user and the business
+            business.getSigningOfficers(x).add(user);
 
-          // Update the business because the put to signingOfficerJunctionDAO
-          // will have updated the email property of the business.
-          business = (Business) localBusinessDAO.find(business.getId());
-          business = (Business) business.fclone();
+            // Update the business because the put to signingOfficerJunctionDAO
+            // will have updated the email property of the business.
+            business = (Business) localBusinessDAO.find(business.getId());
+            business = (Business) business.fclone();
 
-          // * Step 6: Business info
-          // Business info: business address
-          business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setPhone(businessOnboarding.getPhone());
+            // * Step 6: Business info
+            // Business info: business address
+            business.setAddress(businessOnboarding.getBusinessAddress());
+            business.setPhone(businessOnboarding.getPhone());
 
-          // Business info: business details
-          business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
-          business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
-          business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+            // Business info: business details
+            business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
+            business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
+            business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
-          if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-            business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
-          }
+            if ( businessOnboarding.getOperatingUnderDifferentName() ) {
+              business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
+            }
 
-          // Business info: transaction details
-          SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-          suggestedUserTransactionInfo.setBaseCurrency("CAD");
-          suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
-          suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
-          suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
-          suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
-          suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+            // Business info: transaction details
+            SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
+            suggestedUserTransactionInfo.setBaseCurrency("CAD");
+            suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+            suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
+            suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
+            suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+            suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
-          business.setTargetCustomers(businessOnboarding.getTargetCustomers());
-          business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+            business.setTargetCustomers(businessOnboarding.getTargetCustomers());
+            business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-          // * Step 7: Percent of ownership
-          business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
-          for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
-            business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
-          }
+            // * Step 7: Percent of ownership
+            business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
+            for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+              business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
+            }
 
-          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
             business.setOnboarded(true);
 
-          if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
-            business.setCompliance(ComplianceStatus.REQUESTED);
+            if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
+              business.setCompliance(ComplianceStatus.REQUESTED);
+            }
+
+            localBusinessDAO.put(business);
           }
-
-          localBusinessDAO.put(business);
-
         }
 
         return getDelegate().put_(x, businessOnboarding);

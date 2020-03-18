@@ -84,7 +84,7 @@ foam.CLASS({
     { name: 'LABEL_SUPPORTED', message: 'Supported file types:' },
     { name: 'LABEL_MAX_SIZE', message: 'Max Size:' },
     { name: 'ERROR_FILE_TYPE', message: 'Invalid file type' },
-    { name: 'ERROR_FILE_SIZE', message: 'File size exceeds 8MB' }
+    { name: 'ERROR_FILE_SIZE', message: 'File size exceeds 15MB' }
   ],
 
   properties: [
@@ -117,7 +117,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'maxSize',
-      value: 8,
+      value: 15,
       documentation: 'Dictates maximum file size in MB (Megabyte).'
     },
     {

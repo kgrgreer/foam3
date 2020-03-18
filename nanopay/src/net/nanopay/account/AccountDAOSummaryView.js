@@ -86,13 +86,15 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Card',
     'foam.u2.layout.GUnit',
     'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
-    'net.nanopay.account.AccountBalanceView'
+    'net.nanopay.account.AccountBalanceView',
+    'net.nanopay.account.AggregateAccount'
   ],
   imports: [
     'transactionDAO',
@@ -209,17 +211,46 @@ foam.CLASS({
                     .end()
                   })
                 .end()
-            .start(self.CardBorder).addClass(this.myClass('transactions-table'))
-              .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
-              .start(foam.comics.v2.DAOBrowserView, {
-                data: self.transactionDAO
-                  .where(self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id),
-                                 self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)))
-                  .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
-                  .limit(20),
-              })
-              .end()
-            .end();
+            .callIf(! self.AggregateAccount.isInstance(self.data), function() {
+              this
+                .start(self.CardBorder).addClass(self.myClass('transactions-table'))
+                  .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
+                  .start(foam.comics.v2.DAOBrowserView, {
+                    config: self.DAOControllerConfig.create({ 
+                      editEnabled: false,
+                      deleteEnabled: false,
+                      dao: self.transactionDAO
+                      .where(
+                        self.AND(
+                          self.OR
+                          (
+                            self.EQ(
+                              net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id
+                            ),
+                            self.EQ(
+                              net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id
+                            )
+                          ),
+                          self.EQ(
+                            net.nanopay.tx.model.Transaction.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE
+                          )
+                        )
+                      )
+                      .orderBy(self.DESC(net.nanopay.tx.model.Transaction.CREATED))
+                      .limit(20),
+                      defaultColumns: [
+                        "summary",
+                        "lastModified",
+                        "sourceAccount",
+                        "destinationAccount",
+                        "destinationCurrency",
+                        "destinationAmount"
+                      ]
+                    }),
+                  })
+                  .end()
+                .end();
+            })
         }));
     }
   ]

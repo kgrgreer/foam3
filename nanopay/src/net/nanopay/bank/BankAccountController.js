@@ -36,7 +36,9 @@ foam.CLASS({
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted.' },
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
-    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' }
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default.' },
+    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' },
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
   ],
 
   properties: [
@@ -64,7 +66,9 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            'name',
+            this.BankAccount.NAME.clone().copyFrom({
+              tableWidth: 168
+            }),
             'flagImage',
             'denomination',
             'summary',
@@ -95,16 +99,20 @@ foam.CLASS({
                   self.notify(self.DELETE_DEFAULT, 'error');
                   return;
                 }
-                self.user.accounts.remove(this).then(() =>{
-                  self.notify(self.SUCCESSFULLY_DELETED);
-                }).catch((err) => {
-                  self.notify(self.UNABLE_TO_DELETE, 'error');
-                });
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.user.accounts,
+                  data: this
+                }));
               }
             }),
             foam.core.Action.create({
               name: 'Set as Default',
               code: function(X) {
+                if ( this.isDefault ) {
+                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, 'warning');
+                  return;
+                }
                 this.isDefault = true;
                 self.user.accounts.put(this).then(() =>{
                   self.notify(`${ this.name } ${ self.IS_DEFAULT }`);

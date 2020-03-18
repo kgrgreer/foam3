@@ -1023,20 +1023,77 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return null;
   }
 
+  @Override
+  public String addCompanyOfficer(AddCompanyOfficerRequest addCompanyOfficerRequest) {
+    try {
+      credentials = getCredentials();
+      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v2/AddCompanyOfficer");
+
+      httpPost.addHeader("API-Key", addCompanyOfficerRequest.getApiKey());
+      httpPost.addHeader("Content-Type", "application/json");
+      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+
+      StringEntity params = null;
+
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(addCompanyOfficerRequest);
+        params =new StringEntity(requestJson);
+      } catch(Exception e) {
+        logger.error(e);
+      }
+
+      httpPost.setEntity(params);
+
+      logMessage(addCompanyOfficerRequest.getApiKey(), "AddCompanyOfficer", parseHttpPost(httpPost), false);
+
+      omLogger.log("AFEX AddCompanyOfficer starting");
+
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+
+      omLogger.log("AFEX AddCompanyOfficer complete");
+
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("AddCompanyOfficer", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(credentials.getApiKey(), "AddCompanyOfficer", response, true);
+        return response;
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX AddCompanyOfficer timeout");
+      logger.error(e);
+    }
+
+    return null;
+  }
+
   protected void logMessage(String apiKey, String methodName, String msg, boolean isResponse) {
-    // String msgType = isResponse ? "Response" : "Request";
-    // StringBuilder sb = new StringBuilder();
-    // sb.append("{ apiKey: ");
-    // sb.append(apiKey);
-    // sb.append(", name: ");
-    // sb.append(methodName);
-    // sb.append(", " + msgType +" : ");
-    // sb.append(msg);
-    // logger.debug(sb.toString());
+    String msgType = isResponse ? "Response" : "Request";
+    StringBuilder sb = new StringBuilder();
+    sb.append("{ apiKey: ");
+    sb.append(apiKey);
+    sb.append(", name: ");
+    sb.append(methodName);
+    sb.append(", " + msgType +" : ");
+    sb.append(msg);
+    logger.debug(sb.toString());
   }
   
   protected String parseHttpPost(HttpPost httpPost) {
-    // return EntityUtils.toString(httpPost.getEntity())
+    try {
+      return EntityUtils.toString(httpPost.getEntity());
+    } catch (Exception e) {
+
+    }
     return "";
   }
 
@@ -1047,9 +1104,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     sb.append(methodName);
     sb.append(" failed with: ");
     sb.append(httpResponse.getStatusLine().getStatusCode());
-    // sb.append(" - ");
-    // sb.append(httpResponse.getStatusLine().getReasonPhrase());
-    // sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+    sb.append(" - ");
+    sb.append(httpResponse.getStatusLine().getReasonPhrase());
+    try {
+      sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+    } catch (Exception e) {
+
+    }
     EntityUtils.consumeQuietly(httpResponse.getEntity());
     return sb.toString();
   }

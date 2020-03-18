@@ -119,16 +119,8 @@ foam.CLASS({
                     .add(menu.label)
                   .end()
                   .on('click', function() {
-                    self.dao_
-                      .select(self.COUNT())
-                      .then((sink) => {
-                        if ( sink.value === 1 ) {
-                          self.notify(self.ONE_BUSINESS_MSG, 'error');
-                        } else {
-                          self.pushMenu(menu.id);
-                        }
-                        self.remove();
-                      });
+                    self.pushMenu(menu.id);
+                    self.close();
                   });
             }
 

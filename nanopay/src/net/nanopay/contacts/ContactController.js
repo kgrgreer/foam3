@@ -26,7 +26,8 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'stack',
-    'user'
+    'user',
+    'publicBusinessDAO',
   ],
 
   constants: [
@@ -53,9 +54,23 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Contact.ORGANIZATION.clone().copyFrom({
-              tableWidth: undefined
+            foam.core.Property.create({
+              name: 'company',
+              label: 'Company',
+              tableCellFormatter: function(X, obj) {
+                if ( ! obj.businessId ) {
+                  this.start().add(obj.organization).end();
+                } else {
+                  self.publicBusinessDAO
+                    .find(obj.businessId)
+                    .then( (business) =>
+                      this.start().add(business.label()).end()
+                  );
+                }
+              }
             }),
+            'legalName',
+            'email',
             'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
@@ -75,6 +90,7 @@ foam.CLASS({
           contextMenuActions: [
             this.Action.create({
               name: 'edit',
+              label: 'View details',
               isEnabled: function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
@@ -89,11 +105,11 @@ foam.CLASS({
             this.Action.create({
               name: 'invite',
               isEnabled: function() {
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED;
+                return this.signUpStatus != self.ContactStatus.ACTIVE;
               },
               isAvailable: async function() {
                 let account = await self.accountDAO.find(this.bankAccount);
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
+                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
                 X.controllerView.add(self.Popup.create(null, X).tag({

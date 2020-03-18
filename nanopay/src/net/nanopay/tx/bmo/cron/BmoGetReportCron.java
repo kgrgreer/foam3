@@ -28,8 +28,6 @@ public class BmoGetReportCron implements ContextAgent {
       // 2. process
       new BmoReportProcessor(x).processReports();
 
-      // 3. post process
-      new BmoReportProcessor(x).postProcessReport();
     } catch ( Exception e ) {
       logger.error("Error during process report file. ", e);
       BmoFormatUtil.sendEmail(x, "BMO EFT error during processing the report", e);

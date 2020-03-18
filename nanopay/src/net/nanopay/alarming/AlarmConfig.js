@@ -14,7 +14,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       visibility: 'RO',
     },
@@ -106,7 +106,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'sendEmail',
+      label: 'Notify',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'manual',
+      value: false
     }
   ]
 });

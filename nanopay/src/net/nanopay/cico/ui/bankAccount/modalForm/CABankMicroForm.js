@@ -14,10 +14,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'bankAccountVerification',
+    'bannerizeCompliance',
     'ctrl',
-    'user',
-    'accountDAO'
+    'onComplete',
+    'user'
   ],
 
   css: `
@@ -139,7 +141,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         var isVerified = await this.bankAccountVerification
-          .verify(null, this.bank.id, this.amount*100);
+          .verify(null, this.bank.id, Math.round(this.amount*100));
       } catch (error) {
         this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
         return;
@@ -159,6 +161,7 @@ foam.CLASS({
         }
         // Force the view to update.
         this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.bannerizeCompliance();
         this.closeDialog();
       }
     }

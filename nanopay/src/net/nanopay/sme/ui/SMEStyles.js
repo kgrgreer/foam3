@@ -193,8 +193,8 @@ foam.CLASS({
     }
 
     .carrot {
-      width: 0; 
-      height: 0; 
+      width: 0;
+      height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-top: 5px solid white;
@@ -751,7 +751,7 @@ foam.CLASS({
       height: 6px;
       width: 6px;
       margin-bottom: 1px;
-      margin-right: 4px;
+      margin-right: 8px;
       border-radius: 50%;
     }
 
@@ -759,24 +759,11 @@ foam.CLASS({
       color: #07941f;
     }
 
-    .contact-status-circle-Active {
-      background-color: #07941f;
+    .contact-status-circle-Ready {
+      background-color: /*%APPROVAL3%*/ #32bf5e;
     }
-
-    .contact-status-NotInvited {
-      color: #424242;
-    }
-
-    .contact-status-circle-NotInvited {
-      background-color: #424242;
-    }
-
-    .contact-status-Invited {
-      color: #545d87;
-    }
-
-    .contact-status-circle-Invited {
-      background-color: #545d87;
+    .contact-status-circle-Pending {
+      background-color: /*%GREY3%*/ #cbcfd4;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
@@ -1030,6 +1017,27 @@ foam.CLASS({
 
     .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
       transform: translate(-100%, 16px);
+    }
+
+    /* signIn & signUp */
+    .foam-u2-view-LoginView .foam-u2-detail-VerticalDetailView {
+      width: 78%;
+    }
+    .title-top {
+      padding-bottom: 2vh;
+    }
+    .center-footer {
+      width: 78%;
+    }
+    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
+      padding-top: 75px;
+    }
+    .foam-u2-filter-FilterSearch-container-search {
+      width: 857px;
+      margin-left: 7px;
+    }
+    .DAOBrowser-query-bar {
+      align-items: center !important;
     }
   `
 });

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'ComplianceApprovalRequest',
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {
@@ -11,19 +11,19 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'causeId',
-      visibilityExpression: function(causeDaoKey) {
+      visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.Visibility.RW
-          : foam.u2.Visibility.HIDDEN;
+          ? 'RW'
+          : 'HIDDEN';
       }
     },
     {
       class: 'String',
       name: 'causeDaoKey',
-      visibilityExpression: function(causeDaoKey) {
+      visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.Visibility.RW
-          : foam.u2.Visibility.HIDDEN;
+          ? 'RW'
+          : 'HIDDEN';
       }
     },
     {
@@ -50,10 +50,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'causeObject',
       transient: true,
-      visibilityExpression: function(causeDaoKey) {
+      visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
-          ? foam.u2.Visibility.RO
-          : foam.u2.Visibility.HIDDEN;
+          ? 'RO'
+          : 'HIDDEN';
       }
     }
   ]

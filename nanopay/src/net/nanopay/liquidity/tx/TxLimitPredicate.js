@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.model.Business',
@@ -30,6 +31,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'send'
+    },
+    {
+      class: 'Boolean',
+      name: 'includeChildAccounts',
+      documentation: 'Whether to include child accounts when the entity type is ACCOUNT.'
     }
   ],
   methods: [
@@ -40,14 +46,15 @@ foam.CLASS({
         Transaction tx = (Transaction) NEW_OBJ.f(obj);
 
         // Only check digital transactions
-        if ( ! ( tx instanceof DigitalTransaction )) {
+        if ( ! ( tx instanceof DigitalTransaction ||
+                 tx instanceof FXTransaction ) ) {
           return false;
         }    
 
         // Always matches for transactions
-        if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
-          return true;
-        }
+        // if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
+        //   return true;
+        // }
 
         // When there is no ID to match, always return false
         if (this.getId() == 0) {
@@ -57,20 +64,23 @@ foam.CLASS({
         // Retrieve the account
         Account account = getSend() ? tx.findSourceAccount((X) obj) : tx.findDestinationAccount((X) obj);
         if (this.getEntityType() == TxLimitEntityType.ACCOUNT) {
+          // When including children, use the custom predicate
+          if (this.getIncludeChildAccounts()) {
+            IsChildAccountPredicate isChildAccountPredicate = new IsChildAccountPredicate.Builder((X) obj)
+              .setParentId(this.getId())
+              .build();
+            return isChildAccountPredicate.f(account);
+          }
+
+          // Check if account IDs match exactly
           return account.getId() == this.getId();
         }
 
         // Retrieve the users
         User user = account.findOwner((X) obj);
-        if (this.getEntityType() == TxLimitEntityType.USER) {
+        if (this.getEntityType() == TxLimitEntityType.USER || 
+            this.getEntityType() == TxLimitEntityType.BUSINESS) {
           return user.getId() == this.getId();
-        }
-
-        // Check business
-        if (this.getEntityType() == TxLimitEntityType.BUSINESS &&
-            user instanceof Business) {
-          Business business = (Business) user;
-          return business.getId() == this.getId();
         }
 
         // otherwise this is an unknown entity type

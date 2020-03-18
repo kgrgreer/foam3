@@ -12,6 +12,7 @@ foam.CLASS({
 
   tableColumns: [
     'name',
+    'hostname',
     'lastModified',
     'isActive',
     'stop',
@@ -40,6 +41,12 @@ foam.CLASS({
       name: 'name',
     },
     {
+      class: 'String',
+      name: 'hostname',
+      visibility: 'RO',
+      javaFactory: 'return System.getProperty("hostname", "localhost");'
+    },
+    {
       class: 'Boolean',
       name: 'isActive'
     },
@@ -57,6 +64,11 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'note',
+      view: { class: 'foam.u2.tag.TextArea' }
     }
   ],
 
@@ -66,16 +78,19 @@ foam.CLASS({
       label: 'Stop Alarm',
       code: function() {
         let self = this;
+        this.note = '';
         this.isActive = false;
         this.reason = this.AlarmReason.NONE;
         this.alarmDAO.put(this);
         this.alarmDAO.cmd(this.AbstractDAO.RESET_CMD);
 
         this.monitoringReportDAO.find(this.EQ(this.MonitoringReport.NAME, this.name)).then((monitorReport)=> {
-          monitorReport.startCount = 0;
-          monitorReport.endCount = 0;
-          monitorReport.timeoutCount = 0;
-          self.monitoringReportDAO.put(monitorReport);
+          if ( monitorReport ) {
+            monitorReport.startCount = 0;
+            monitorReport.endCount = 0;
+            monitorReport.timeoutCount = 0;
+            self.monitoringReportDAO.put(monitorReport);
+          }
         });
       }
     },
