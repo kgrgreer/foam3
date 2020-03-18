@@ -39,6 +39,7 @@ import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
 import net.nanopay.model.PadCapture;
+import net.nanopay.model.PersonalIdentification;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
@@ -201,7 +202,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
     request.setApiKey(clientKey);
     request.setName(name.toString());
-    request.setPercentOwnership(String.valueOf(user.getOwnershipPercent()));
+    //request.setPercentOwnership(String.valueOf(user.getOwnershipPercent()));
     request.setDirector("true");
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -233,7 +234,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         logger_.error("Failed parse company officer identification expiration date.", e);
       }
     }
-    request.setCompanyOfficerTaxIdentificationNumber(user.getTaxIdentificationNumber());
+    //request.setCompanyOfficerTaxIdentificationNumber(user.getTaxIdentificationNumber());
     
     addCompanyOfficer(request);
   }
@@ -244,7 +245,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .select(new ArraySink())).getArray();
 
     for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
-      pushBeneficialOwner(beneficialOwner, clientKey);
+      if ( beneficialOwner.getOwnershipPercent() >= 25 ) { // Only push when ownership percentage is greater than 25
+        pushBeneficialOwner(beneficialOwner, clientKey);
+      }
     } 
   }
 
