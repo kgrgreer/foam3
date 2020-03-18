@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.logger.Logger',
     'java.util.List',
+    'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'static foam.mlang.MLang.EQ'
@@ -37,10 +38,12 @@ foam.CLASS({
           
           AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(x, txn.getPayeeId(), txn.getPayerId());
+          Account sourceAccount = txn.findSourceAccount(x);
+          Account destinationAccount = txn.findDestinationAccount(x);
+          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner());
 
           if ( beneficiary == null ) {
-            ((Logger) x.get("logger")).error("beneficiary not found for transaction " + txn.getId() + " with beneficiary id " + txn.getPayeeId() + " with owner id " + txn.getPayerId() );
+            ((Logger) x.get("logger")).error("beneficiary not found for transaction " + txn.getId() + " with beneficiary id " + destinationAccount.getOwner() + " with owner id " + sourceAccount.getOwner() );
             return;
           }
 
