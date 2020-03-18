@@ -77,7 +77,13 @@ foam.CLASS({
                 }
        return ['No status to choose'];
       }
-    }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
+      name: 'afexPaymentStatus',
+      value: 'PENDING'
+    },
   ],
 
   methods: [
