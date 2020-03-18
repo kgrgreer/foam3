@@ -548,6 +548,8 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
   { name: 'net/nanopay/plaid/model/PlaidError' },
   { name: 'net/nanopay/plaid/ui/PlaidView', flags: ['web'] },
+  { name: 'net/nanopay/plaid/PlaidResultReportAuthorizer' },
+  { name: 'net/nanopay/plaid/PlaidResultReportAuthorizerTest' },
 
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
