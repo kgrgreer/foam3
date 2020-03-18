@@ -153,7 +153,7 @@ foam.CLASS({
 
       const invoice = await this.invoiceDAO.find(record.objectId);
       // name of the payee
-      const payee = invoice.manuallyCompleted ? await invoice.payee.label() : null;
+      const payee = invoice.completedByPayee ? await invoice.payee.label() : null;
 
       return parentView
         .addClass(this.myClass())
@@ -164,7 +164,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .callIfElse(invoice.manuallyCompleted, function() {
+              .callIfElse(invoice.completedByPayee, function() {
                 this.add(`${payee} marked invoice as `);
               }, function() {
                 this.add('Invoice status changed to ');
@@ -174,7 +174,7 @@ foam.CLASS({
               .add(attributes.labelText)
             .end()
             .callIf(hasDisplayDate &&
-              (attributes.labelText === 'Scheduled' || invoice.manuallyCompleted),
+              (attributes.labelText === 'Scheduled' || invoice.completedByPayee),
               function() {
                 this.start('span').addClass('statusTitle')
                   .add(` on ${self.formatDate(displayDate, false)}`)

@@ -611,7 +611,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'manuallyCompleted',
+      name: 'completedByPayee',
       documentation: 'Determine whether the payee manually completed the receivable',
       value: false
     }
