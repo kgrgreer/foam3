@@ -153,7 +153,7 @@ foam.CLASS({
 
       const invoice = await this.invoiceDAO.find(record.objectId);
       // name of the payee
-      const payee = invoice.completedByPayee ? await invoice.payee.label() : null;
+      const payee = await invoice.payee.label();
 
       return parentView
         .addClass(this.myClass())

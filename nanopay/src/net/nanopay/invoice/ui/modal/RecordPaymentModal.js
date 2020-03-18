@@ -170,10 +170,11 @@ foam.CLASS({
 
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        var paymentDate = new Date(X.data.paymentDate);
-        var dateCheck = paymentDate > new Date();
+        const paymentDate = new Date(X.data.paymentDate);
+        const issueDate = new Date(this.invoice.issueDate);
+        const isInvalidPaymentDate = paymentDate > new Date() || paymentDate < issueDate;
 
-        if ( isNaN(paymentDate) || dateCheck ) {
+        if ( isNaN(paymentDate) || isInvalidPaymentDate ) {
           this.add(this.notify(this.MSG_INVALID_DATE, 'error'));
           return;
         }
