@@ -184,7 +184,7 @@ foam.CLASS({
         // when user selects payment date, the date is set in UTC time zone
         // so we need to take difference between UTC time zone and user's local time zone
         // into account when calculating payment date
-        paymentDateInTime += new Date().getTimezoneOffset() * 60000;
+        paymentDateInTime += this.paymentDate.getTimezoneOffset() * 60000;
  
         this.invoice.paymentDate = new Date(paymentDateInTime);
         this.invoice.chequeAmount = X.data.chequeAmount;
