@@ -319,7 +319,8 @@ p({
           );
         }}
       )
-      .build();
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
   """,
   "client": """
     {
