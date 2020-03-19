@@ -170,7 +170,7 @@ foam.CLASS({
 
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        const paymentDateInTime = this.paymentDate.getTime();
+        let paymentDateInTime = this.paymentDate.getTime();
         const issueDateInTime = this.invoice.issueDate.getTime();
         const currentDateInTime = new Date().getTime();
         const isInvalidPaymentDate =
@@ -181,9 +181,12 @@ foam.CLASS({
           return;
         }
         
-        const paymentDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
-        
-        this.invoice.paymentDate = paymentDate;
+        // when user selects payment date, the date is set in UTC time zone
+        // so we need to take difference between UTC time zone and user's local time zone
+        // into account when calculating payment date
+        paymentDateInTime += new Date().getTimezoneOffset() * 60000;
+ 
+        this.invoice.paymentDate = new Date(paymentDateInTime);
         this.invoice.chequeAmount = X.data.chequeAmount;
         this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
