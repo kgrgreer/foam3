@@ -129,6 +129,7 @@ var classes = [
   'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
+  'net.nanopay.bank.test.USBankAccountTest',
   'net.nanopay.bank.BankWeekend',
   'net.nanopay.bank.DefaultBankAccountRule',
   'net.nanopay.bank.IsDefaultRule',
