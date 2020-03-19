@@ -194,8 +194,8 @@ foam.CLASS({
       let permIndia = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
       let permUs = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
       this.presetLabel.push('Canada')
-      if ( permUs ) this.something.push('USA')
-      if ( permIndia ) this.something.push('India');
+      if ( permUs ) this.presetLabel.push('USA')
+      if ( permIndia ) this.presetLabel.push('India');
       if ( permIndia || permUs ) {
         this.hasStrategyPermission = true;
       }
