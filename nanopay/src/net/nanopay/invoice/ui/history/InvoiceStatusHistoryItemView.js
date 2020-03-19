@@ -9,7 +9,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
@@ -154,6 +155,8 @@ foam.CLASS({
       const invoice = await this.invoiceDAO.find(record.objectId);
       // name of the payee
       const payee = await invoice.payee.label();
+      // a flag for checking if the invoice was completed by the payee
+      const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
 
       return parentView
         .addClass(this.myClass())
@@ -164,7 +167,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .callIfElse(invoice.completedByPayee, function() {
+              .callIfElse(completedByPayee, function() {
                 this.add(`${payee} marked invoice as `);
               }, function() {
                 this.add('Invoice status changed to ');
@@ -174,7 +177,7 @@ foam.CLASS({
               .add(attributes.labelText)
             .end()
             .callIf(hasDisplayDate &&
-              (attributes.labelText === 'Scheduled' || invoice.completedByPayee),
+              (attributes.labelText === 'Scheduled' || completedByPayee),
               function() {
                 this.start('span').addClass('statusTitle')
                   .add(` on ${self.formatDate(displayDate, false)}`)

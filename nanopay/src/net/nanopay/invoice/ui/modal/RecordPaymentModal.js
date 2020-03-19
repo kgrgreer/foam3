@@ -49,7 +49,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
-    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
+    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid paid date.' },
     { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
     { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
@@ -170,23 +170,24 @@ foam.CLASS({
 
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        let paymentDate = new Date(X.data.paymentDate);
-        const issueDate = new Date(this.invoice.issueDate);
-        const isInvalidPaymentDate = paymentDate > new Date() || paymentDate < issueDate;
+        const paymentDateInTime = this.paymentDate.getTime();
+        const issueDateInTime = this.invoice.issueDate.getTime();
+        const currentDateInTime = new Date().getTime();
+        const isInvalidPaymentDate =
+          isNaN(paymentDateInTime) || paymentDateInTime > currentDateInTime || paymentDateInTime < issueDateInTime;
 
-        if ( isNaN(paymentDate) || isInvalidPaymentDate ) {
+        if ( isInvalidPaymentDate ) {
           this.add(this.notify(this.MSG_INVALID_DATE, 'error'));
           return;
         }
         
-        paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
+        const paymentDate = this.paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         
         this.invoice.paymentDate = paymentDate;
         this.invoice.chequeAmount = X.data.chequeAmount;
         this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
-        this.invoice.completedByPayee = true;
         this.invoiceDAO.put(this.invoice);
         this.notify(this.SUCCESS_MESSAGE);
         X.closeDialog();
