@@ -7,6 +7,8 @@ WEB_PORT=8080
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
 DEBUG_DEV=0
+PROFILER=0
+PROFILER_PORT=8849
 NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
@@ -23,6 +25,8 @@ function usage {
     echo "  -D 0 or 1           : Debug mode."
     echo "  -H <hostname>       : hostname "
     echo "  -h                  : Display help."
+    echo "  -j 0 or 1           : JProfiler enabled"
+    echo "  -J PORT            : JProfiler PORT"
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -P <debug port>     : Port to run debugger on."
     echo "  -S <y/n>            : Suspend on debug launch."
@@ -32,12 +36,14 @@ function usage {
     echo "  -Z <0/1>            : Daemonize."
 }
 
-while getopts "C:D:H:hN:P:S:U:V:W:Z:" opt ; do
+while getopts "C:D:H:hj:J:N:P:S:U:V:W:Z:" opt ; do
     case $opt in
         C) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
         H) HOST_NAME=$OPTARG;;
         h) usage; exit 0;;
+        j) PROFILER=$OPTARG;;
+        J) PROFILER_PORT=$OPTARG;;
         N) NANOPAY_HOME=$OPTARG;;
         P) DEBUG_PORT=$OPTARG;;
         S) DEBUG_SUSPEND=$OPTARG;;
@@ -70,6 +76,12 @@ JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
+if [ "$PROFILER" -eq 1 ]; then
+    JAVA_OPTS="${JAVA_OPTS} -agentpath:=port=$PROFILER_PORT"
+fi
+if [ "$DEBUG" -eq 1 ]; then
+    JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND=},address=${DEBUG_PORT} ${JAVA_OPTS}"
+fi
 
 if [ ! -z $VERSION ]; then
     JAR="${NANOPAY_HOME}/lib/nanopay-${VERSION}.jar"

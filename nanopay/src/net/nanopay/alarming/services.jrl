@@ -59,6 +59,7 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.alarming.OMName.getOwnClassInfo())
+      .setCluster(false)
       .build();
     `
   ,"client":"{\"of\":\"net.nanopay.alarming.OMName\"}"

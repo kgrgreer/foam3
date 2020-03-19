@@ -275,7 +275,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -496,8 +496,8 @@ function usage {
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
     echo "  -o : old maven build"
-    echo "  -p : short cut for setting MODE to PRODUCTION"
-    echo "  -q : short cut for setting MODE to STAGING"
+    echo "  -p : Enable profiling on default port"
+    echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
@@ -570,6 +570,8 @@ EXPLICIT_JOURNALS=
 export JAVA_OPTS=
 INSTALL=0
 PACKAGE=0
+PROFILER=0
+PROFILER_PORT=8849
 RUN_JAR=0
 RUN_MIGRATION=0
 RESTART_ONLY=0
@@ -589,7 +591,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcC:dD:E:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:eghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -623,12 +625,9 @@ while getopts "bcC:dD:E:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
-        p) MODE=PRODUCTION
-           echo "MODE=${MODE}"
-           ;;
-        q) MODE=STAGING
-           echo "MODE=${MODE}"
-           ;;
+        p) PROFILER=1 ;;
+        P) PROFILER=1
+           PROFILER_PORT=$OPTARG ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
            JOURNAL_SPECIFIED=1

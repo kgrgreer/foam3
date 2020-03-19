@@ -40,7 +40,7 @@ retry.`,
 
       ClusterConfigService service = (ClusterConfigService) x.get("clusterConfigService");
       if ( service != null &&
-           service.getConfig() != null &&
+           service.getConfigId() != null &&
            ! service.getIsPrimary() ) {
 
         foam.core.FObject old = getDelegate().find_(x, obj.getProperty("id"));
