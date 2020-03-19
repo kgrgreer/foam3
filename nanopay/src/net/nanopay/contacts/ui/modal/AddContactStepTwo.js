@@ -159,7 +159,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasStrategyPermission',
       value: false
-    },
+    }
   ],
 
   methods: [
@@ -183,8 +183,8 @@ foam.CLASS({
       } else if ( this.wizard.bankAccount ) {
         this.bankAccount = this.wizard.bankAccount;
       }
-      var permUs = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
-      var permIndia = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
+      let permIndia = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
+      let permUs = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
       if ( permIndia || permUs ) {
         this.hasStrategyPermission = true;
       }
@@ -217,7 +217,7 @@ foam.CLASS({
               return this.E().tag({
                 class: 'foam.u2.view.FObjectView',
                 of: 'net.nanopay.bank.BankAccount',
-                data$: self.bankAccount$, // Bind value to the property
+                data$: self.bankAccount$ // Bind value to the property
               });
             }))
           .end()
