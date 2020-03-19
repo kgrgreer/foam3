@@ -173,6 +173,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizard/WizardController', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/InvitationWizardView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/ScratchWizardView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/PaymentCodeSearchWizardView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
   { name: 'net/nanopay/ui/ContentCard', flags: ['web'] },
   { name: 'net/nanopay/ui/BusinessCard', flags: ['web'] },
@@ -994,6 +995,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/AddContactStepThree', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/AddContactByPaymentCode', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/Scratch', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/PaymentCodeSearch', flags: ['web'] },
   { name: 'net/nanopay/contacts/BusinessFromPaymentCodeInterface' },
   { name: 'net/nanopay/contacts/ClientBusinessFromPaymentCodeService' },
 

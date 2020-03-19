@@ -110,7 +110,19 @@ foam.CLASS({
       factory: function() {
         return foam.nanos.auth.Address.create();
       }
-    })
+    }),
+    {
+      name: 'disclaimer',
+      section: 'stepThree',
+      label: '',
+      view: function() {
+        return foam.u2.Element.create()
+          .start()
+            .addClass('disclaimer')
+            .add('* PO Boxes are not Allowed')
+          .end();
+      }
+    },
   ]
 
 });

@@ -42,6 +42,10 @@ foam.CLASS({
       margin: 12px 0;
       width: 100%;
     }
+    .disclaimer {
+      font-size: 16px;
+      color: #525455;
+    }
     .foam-u2-CheckBox-label span {
       color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
@@ -59,7 +63,6 @@ foam.CLASS({
     .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
       border-color: transparent;
     }
-
     .foam-u2-tag-Input, .foam-u2-view-StringView {
       width: 100%;
     }
@@ -184,7 +187,6 @@ foam.CLASS({
 
     /** Add the bank account to the Contact. */
     async function addBankAccount() {
-      debugger;
       this.isConnecting = true;
       var contact = this.contact;
       var bankAccount = this.data.bankAccount;
