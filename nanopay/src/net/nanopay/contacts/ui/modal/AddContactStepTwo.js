@@ -160,10 +160,6 @@ foam.CLASS({
       name: 'hasStrategyPermission',
       value: false
     },
-    {
-      class: 'Array',
-      name: 'presetLabel'
-    }
   ],
 
   methods: [
@@ -187,18 +183,15 @@ foam.CLASS({
       } else if ( this.wizard.bankAccount ) {
         this.bankAccount = this.wizard.bankAccount;
       }
-    },
-
-    async function initE() {
-      var self = this;
-      let permUs = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
-      let permIndia = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
-      this.presetLabel.push('Canada')
-      if ( permUs ) this.presetLabel.push('USA')
-      if ( permIndia ) this.presetLabel.push('India');
+      var permUs = await this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d');
+      var permIndia = await this.auth.check(null, 'strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b');
       if ( permIndia || permUs ) {
         this.hasStrategyPermission = true;
       }
+    },
+
+    function initE() {
+      var self = this;
 
       this.addClass(this.myClass())
         .start('h2')
@@ -225,7 +218,6 @@ foam.CLASS({
                 class: 'foam.u2.view.FObjectView',
                 of: 'net.nanopay.bank.BankAccount',
                 data$: self.bankAccount$, // Bind value to the property
-                presetLabel: self.presetLabel
               });
             }))
           .end()
