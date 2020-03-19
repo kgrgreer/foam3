@@ -131,9 +131,9 @@ foam.CLASS({
       }
     },
 
-    function formatDate(timestamp, addTime=true) {
+    function formatDate(timestamp, displayTime=true) {
       var locale = 'en-US';
-      var time = addTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
+      var time = displayTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
       return time
         + `${timestamp.toLocaleString(locale, { month: 'short' })} `
         + `${timestamp.getDate()} `
