@@ -1,6 +1,6 @@
 p({"class":"foam.nanos.auth.Group","id":"system","description":"System Internal","defaultMenu":"set-personal"})
 p({"class":"foam.nanos.auth.Group","id":"basicUser","description":"Minimal access group.","parent":"","defaultMenu":"set-personal","logo":"/images/nanopay_blue_white_206x42.png"})
-p({"class":"foam.nanos.auth.Group","id":"tester","description":"Tester","parent":"basicUser","defaultMenu":"tests","logo":"/images/nanopay_blue_white_206x42.png"})
+p({"class":"foam.nanos.auth.Group","id":"tester","description":"Tester","parent":"basicUser","defaultMenu":"admin.tests","logo":"/images/nanopay_blue_white_206x42.png"})
 p({"class":"foam.nanos.auth.Group","id":"admin","description":"nanoPay Admin","parent":"","defaultMenu":"admin.data","logo":"/images/nanopay_blue_white_206x42.png"})
 p({"class":"foam.nanos.auth.Group","id":"business","description":"Members of the self-serve portal. This group might be split into several tiers with different permissions later.","parent":"basicUser","defaultMenu":"dashboard","logo":"/images/nanopay_blue_white_206x42.png"})
 p({"class":"foam.nanos.auth.Group","id":"support","description":"nanopay Support","parent":"basicUser","defaultMenu":"operation.transactions"})

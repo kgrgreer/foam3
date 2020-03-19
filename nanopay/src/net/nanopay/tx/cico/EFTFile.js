@@ -23,6 +23,11 @@ foam.CLASS({
       of: 'net.nanopay.payment.PaymentProvider'
     },
     {
+      name: 'content',
+      class: 'String',
+      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 }
+    },
+    {
       name: 'file',
       class: 'Reference',
       of: 'foam.nanos.fs.File'

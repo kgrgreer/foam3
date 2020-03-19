@@ -1,5 +1,30 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"keyStoreManager",                  "serviceScript":"import net.nanopay.security.PKCS11KeyStoreManager;\nimport java.security.KeyStore;\nimport java.io.*;\n\nString hsmToken = null;\nBufferedReader br = new BufferedReader(new FileReader(\"/opt/nanopay/keys/547ca49cda2957dc997890d2d132d2c8\"));\n\nStringBuilder sb = new StringBuilder();\nString line = br.readLine();\n\nwhile (line != null) {\n  sb.append(line);\n  sb.append(System.lineSeparator());\n  line = br.readLine();\n}\n\nhsmToken = sb.toString().replaceAll(\"(\\\\r|\\\\n)\", \"\");\n\nreturn new PKCS11KeyStoreManager.Builder(x)\n  .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {\n    public KeyStore.ProtectionParameter getProtectionParameter() {\n      return new KeyStore.PasswordProtection(hsmToken.toCharArray());\n    }\n}).build();"})
-p({"class":"foam.nanos.boot.NSpec", "name":"CSPViolationsDAO",                 "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setCluster(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setSeqNo(true).setJournalName(\"CSPViolation\").setOf(net.nanopay.security.csp.CSPViolation.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.security.csp.CSPViolation\"}", "description":"DAO containing CSP violation reports that are sent to the server by the clients."})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "keyStoreManager",
+  "serviceScript": """
+    import net.nanopay.security.PKCS11KeyStoreManager;
+    import java.security.KeyStore;
+    import java.io.*;
+    String hsmToken = null;
+    BufferedReader br = new BufferedReader(new FileReader("/opt/nanopay/keys/547ca49cda2957dc997890d2d132d2c8"));
+    StringBuilder sb = new StringBuilder();
+    String line = br.readLine();
+    while (line != null) {
+      sb.append(line);
+      sb.append(System.lineSeparator());
+      line = br.readLine();
+    }
+    hsmToken = sb.toString().replaceAll("(\\\\r|\\\\n)\", "\");
+    return new PKCS11KeyStoreManager.Builder(x)
+      .setLoadStoreParameter(new KeyStore.LoadStoreParameter() {
+        public KeyStore.ProtectionParameter getProtectionParameter() {
+          return new KeyStore.PasswordProtection(hsmToken.toCharArray());
+        }
+      }).build();
+  """
+})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"CSPViolationsDAO",                 "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setSeqNo(true).setJournalName(\"CSPViolation\").setOf(net.nanopay.security.csp.CSPViolation.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.security.csp.CSPViolation\"}", "description":"DAO containing CSP violation reports that are sent to the server by the clients."})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -32,4 +57,48 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "PIIWebAgent",
   "serviceClass": "net.nanopay.security.pii.PIIWebAgent"
+})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"encryptedUserDAO",                 "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, foam.nanos.auth.User.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedUsers\"))));","client":"{\"of\":\"foam.nanos.auth.User\"}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"encryptedBankAccountDAO",          "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, net.nanopay.bank.BankAccount.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedBankAccounts\"))));","client":"{\"of\":\"net.nanopay.bank.BankAccount\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"privateKeyDAO",                    
+  "serviceScript":"""
+    easyDAO = new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo())
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("privateKeys")
+      .setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo())
+      .build();
+    pgpPrivateKeyDAO = new net.nanopay.security.PGPPrivateKeyDAO.Builder(x)
+      .setDelegate(easyDAO)
+      .build();
+    privateKeyDAO = new net.nanopay.security.PrivateKeyDAO.Builder(x)
+      .setAlias("net.nanopay.security.PrivateKeyDAO")
+      .setDelegate(pgpPrivateKeyDAO)
+      .build();
+    return privateKeyDAO;
+  """
+})
+p({"class":"foam.nanos.boot.NSpec", "name":"keyPairDAO",                       "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.security.KeyPairEntry.getOwnClassInfo(), \"keyPairs\"); return new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingJDAO).setSeqNo(true).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.security.KeyPairEntry\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "publicKeyDAO",
+  "serve": true,
+  "serviceScript": """
+    easyDAO = new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("publicKeys")
+      .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
+      .build();
+    pgpPublicKeyDAO = new net.nanopay.security.PGPPublicKeyDAO.Builder(x).setDelegate(easyDAO).build();
+    return new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(pgpPublicKeyDAO).build();
+  """,
+  "client": "{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"
 })

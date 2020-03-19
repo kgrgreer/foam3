@@ -370,8 +370,14 @@ function setenv {
 
     export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
+    export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
+
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
+    fi
+
+    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
+        mkdir -p "${PROJECT_HOME}/.foam"
     fi
 
     if [ ! -d "$NANOPAY_HOME" ]; then

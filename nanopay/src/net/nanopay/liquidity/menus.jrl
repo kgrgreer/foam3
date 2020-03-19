@@ -173,10 +173,18 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
+      "defaultColumns": [
+        "classification",
+        "operation",
+        "createdBy",
+        "approver",
+        "status",
+        "lastModified"
+      ],
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
-      "of": "foam.nanos.approval.RoleApprovalRequest",
+      "of": "foam.nanos.approval.ApprovalRequest",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}

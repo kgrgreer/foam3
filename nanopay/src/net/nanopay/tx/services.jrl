@@ -30,6 +30,10 @@ p({
       .setEnabled(true)
       .setDelegate(dao)
       .build();
+    dao = new net.nanopay.tx.rbc.RbcTransactionPlanDAO.Builder(x)
+      .setEnabled(false)
+      .setDelegate(dao)
+      .build();     
     dao = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
       .setEnabled(true)
       .setDelegate(dao)
@@ -548,3 +552,22 @@ p({
       }
     """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name": "eftFileDAO",                   
+  "lazy": false,  
+  "serve": true, 
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("eftFile")
+      .setOf(net.nanopay.tx.cico.EFTFile.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """, 
+  "client": "{\"of\":\"net.nanopay.tx.cico.EFTFile\"}"
+  })

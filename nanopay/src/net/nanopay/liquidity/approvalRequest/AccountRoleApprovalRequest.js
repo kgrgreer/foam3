@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.approvalRequest',
   name: 'AccountRoleApprovalRequest',
-  extends: 'foam.nanos.approval.RoleApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   tableColumns: [
     'classification',

@@ -115,11 +115,11 @@ foam.CLASS({
       },
       gridColumns: 6
     },
-    // {
-    //   name: 'branch',
-    //   //visibility: 'HIDDEN'
-    //   label: 'Routing No.',
-    // },
+    {
+      name: 'branch',
+      //visibility: 'HIDDEN'
+      label: 'Routing No.',
+    },
     // {
     //   name: 'institution',
     //   visibility: 'HIDDEN'
