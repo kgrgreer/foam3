@@ -18,7 +18,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'model_',
       expression: function(model) {
-        return (foam.lookup(model)).create();
+        return (foam.lookup(model)).create({}, this);
       }
     },
     {

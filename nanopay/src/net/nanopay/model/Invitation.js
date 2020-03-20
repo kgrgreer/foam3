@@ -86,9 +86,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'invitePermission',
       section: 'inviteSection',
-      label: `I have this contact's permission to invite them to Ablii`,
       documentation: 'True if user confirms invitation permission',
-      view: { class: 'foam.u2.CheckBox' },
+      view: { class: 'foam.u2.CheckBox', label: `I have this contact's permission to invite them to Ablii` },
       validateObj: function(invitePermission) {
         if ( ! invitePermission ) {
           return 'Permission required.';

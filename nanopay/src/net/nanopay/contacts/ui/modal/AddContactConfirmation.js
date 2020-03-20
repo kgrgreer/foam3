@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'AddContactConfirmation',
-  extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
+  extends: 'foam.u2.View',
 
   documentation: `
     The final step in add contact flow for adding internal users 
@@ -11,22 +11,10 @@ foam.CLASS({
 
   imports: [
     'businessSectorDAO',
-    'countryDAO',
-    'addContact'
-  ],
-
-  requires: [
-    'net.nanopay.contacts.Contact'
+    'countryDAO'
   ],
 
   css: `
-    ^ {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      max-height: 80vh;
-      overflow-y: scroll;
-    }
     ^operating-name {
       font-size: 24px;
       font-weight: 900;
@@ -34,7 +22,6 @@ foam.CLASS({
       margin-bottom: 16px;
     }
     ^info-container {
-      margin: 24px;
       padding: 16px 24px;
       border: solid 1px #e2e2e3;
     }
@@ -61,18 +48,9 @@ foam.CLASS({
     }
   `,
 
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.contacts.Contact',
-      name: 'data',
-      documentation: 'Set this to the contact whose information you want to display.'
-    }
-  ],
-
   methods: [
     function initE() {
-      this.data = this.wizard.data;
+      var self = this;
       this
         .addClass(this.myClass())
         .start().addClass(this.myClass('info-container'))
@@ -131,35 +109,7 @@ foam.CLASS({
               }))
             .end()
           .end()
-        .end()
-        .start().addClass('button-container')
-          .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-          .start(this.NEXT).end()
         .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'back',
-      label: 'Go back',
-      code: function(X) {
-        var defaultContact = net.nanopay.contacts.Contact.create({
-          type: 'Contact',
-          group: 'sme'
-        });
-        this.data = defaultContact;
-        this.wizard.data = defaultContact;
-        X.subStack.back();
-      }
-    },
-    {
-      name: 'next',
-      label: 'Add contact',
-      code: async function(X) {
-        if ( ! await this.addContact() ) return;
-        X.closeDialog();
-      }
     }
   ]
 });

@@ -8,6 +8,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'ctrl',
     'user',
     'businessFromPaymentCode'
   ],
@@ -28,7 +29,6 @@ foam.CLASS({
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      margin-top: 32px;
       margin-bottom: 240px;
     }
     .my-payment-code-title{
@@ -64,6 +64,15 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'isConnecting',
+      documentation: 'True while waiting for a DAO method call to complete.',
+      value: false
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -71,23 +80,6 @@ foam.CLASS({
       self
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            // if ( ! currentIndex ) {
-            //   return self.E().addClass(self.myClass('section-container'))
-            //   .tag(self.sectionView, {
-            //     section: sections[currentIndex],
-            //     data$: self.data$
-            //   })
-            //   .start().addClass('my-payment-code-container')
-            //     .start().addClass('my-payment-code-title')
-            //       .add('My Payment Code')
-            //     .end()
-            //     .start().addClass('my-payment-code-value')
-            //       .select(self.user.paymentCode, (paymentCode) => {
-            //         return self.E().start().add(paymentCode.id).end();
-            //       })
-            //     .end()
-            //   .end();
-            // }
             return self.E().addClass(self.myClass('section-container'))
               .tag(self.sectionView, {
                 section: sections[currentIndex],
@@ -102,7 +94,22 @@ foam.CLASS({
             .end()
           .endContext()
         .end();
-    }
+    },
+    /** Add the contact to the user's contacts. */
+    async function addContact() {
+      this.isConnecting = true;
+      try {
+      contact = await this.user.contacts.put(this.data.contact);
+      this.ctrl.notify(this.CONTACT_ADDED);
+      } catch (e) {
+        var msg = e.message || this.GENERIC_PUT_FAILED;
+        this.ctrl.notify(msg, 'error');
+        this.isConnecting = false;
+        return false;
+      }
+      this.isConnecting = false;
+      return true;
+    },
   ],
 
   actions: [
@@ -122,10 +129,6 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      // isEnabled: function(data$errors_, data$bankAccount$errors_, currentIndex) {
-      //   if ( currentIndex === 1 ) return ! data$bankAccount$errors_;
-      //   return ! data$errors_;
-      // },
       isAvailable: function(nextIndex) {
         return nextIndex !== -1;
       },
@@ -142,12 +145,10 @@ foam.CLASS({
           // set confirmation display properties
           contact.businessSectorId = business.businessSectorId;
           contact.operatingBusinessName = business.operatingBusinessName;
-          contact.paymentCodeValue = this.paymentCodeValue;
-          debugger;
-
+          contact.paymentCodeValue = paymentCodeValue;
           this.currentIndex = this.nextIndex;
         } catch (err) {
-          var msg = err.message || this.GENERIC_PUT_FAILED;
+          var msg = err.message;
           this.ctrl.notify(msg, 'error');
         }
       }
@@ -155,18 +156,14 @@ foam.CLASS({
     {
       name: 'save',
       label: 'Save',
-      // isEnabled: function(data$businessAddress$errors_, isConnecting) {
-      //   return ! data$businessAddress$errors_ && ! isConnecting;
-      // },
       isAvailable: function(nextIndex) {
         return nextIndex === -1;
       },
-      // code: async function(X) { 
-      //   if ( ! await this.addContact(true) ) return;
-      //   if ( ! await this.addBankAccount() ) return;
-      //   X.pushMenu('sme.main.contacts');
-      //   X.closeDialog();
-      // }
+      code: async function(X) { 
+        if ( ! await this.addContact() ) return;
+        X.pushMenu('sme.main.contacts');
+        X.closeDialog();
+      }
     }
   ]
 });

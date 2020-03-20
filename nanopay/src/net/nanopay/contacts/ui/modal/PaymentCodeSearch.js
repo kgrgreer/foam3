@@ -2,11 +2,13 @@ foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'PaymentCodeSearch',
 
+  requires: [
+    'net.nanopay.contacts.Contact'
+  ],
+
   imports: [
     'user'
   ],
-
-  exports: [ 'as data' ],
 
   sections: [
     {
@@ -16,7 +18,7 @@ foam.CLASS({
     },
     {
       name: 'confirm',
-      title: 'confirm'
+      title: ''
     }
   ],
 
@@ -37,28 +39,33 @@ foam.CLASS({
     {
       name: 'myPaymentCode',
       section: 'search',
-      getter: async function() {
-        debugger;
-        return await this.user.paymentCode.select().array[0];
+      label: '',
+      view: function(_, X) {
+        return foam.u2.Element.create()
+          .start().addClass('my-payment-code-container')
+            .start().addClass('my-payment-code-title')
+              .add('My Payment Code')
+            .end()
+            .start().addClass('my-payment-code-value')
+              .select(X.data.user.paymentCode, (paymentCode) => {
+                return foam.u2.Element.create().start().add(paymentCode.id).end();
+              })
+            .end()
+          .end();
       }
     },
     {
-      name: 'confirm',
+      class: 'FObjectProperty',
+      name: 'contact',
       section: 'confirm',
       label: '',
-      // view: {
-      //   class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation',
-      //   data: this.contact
-      // }
-    },
-    // {
-    //   class: 'FObjectProperty',
-    //   name: 'contact',
-    //   hidden: true,
-    //   factory: function() {
-    //     return net.nanopay.contacts.Contact.create();
-    //   },
-    // }
+      factory: function() {
+        return this.Contact.create({
+          type: 'Contact',
+          group: 'sme'
+        });
+      },
+      view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
+    }
   ]
-
 });
