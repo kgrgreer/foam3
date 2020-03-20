@@ -3,6 +3,7 @@ foam.CLASS({
   name: 'RBCTransactionISO20022Util',
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
@@ -16,6 +17,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
+    'net.nanopay.model.Business',
     'net.nanopay.model.Branch',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.iso20022.CustomerCreditTransferInitiationV03',
@@ -149,6 +151,15 @@ foam.CLASS({
           User payee = destAccount.findOwner(x);
           Address payeeAddress = payee == null ? null : payee.getAddress();
 
+          String senderEmail = payee.getEmail();
+          if ( payee instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
+            Business business = (Business) payee;
+            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+            if ( signingOfficers.size() > 0 ) {
+              senderEmail = signingOfficers.get(0).getEmail();
+            }
+          }
+
           net.nanopay.iso20022.CreditTransferTransactionInformation10 cdtTrfTxInf = new net.nanopay.iso20022.CreditTransferTransactionInformation10();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
           String refNumber = String.valueOf(getRefNumber(x, txn));
@@ -222,7 +233,7 @@ foam.CLASS({
           // Remittance Information
           net.nanopay.iso20022.RemittanceLocation2 rltdRmtInf = new net.nanopay.iso20022.RemittanceLocation2();
           rltdRmtInf.setRemittanceLocationMethod(net.nanopay.iso20022.RemittanceLocationMethod2Code.EMAL);
-          rltdRmtInf.setRemittanceLocationElectronicAddress(payee.getEmail());
+          rltdRmtInf.setRemittanceLocationElectronicAddress(senderEmail);
           net.nanopay.iso20022.NameAndAddress10 rmtLctnPstlAdr = new net.nanopay.iso20022.NameAndAddress10();
           rmtLctnPstlAdr.setName(getName(payee));
           net.nanopay.iso20022.PostalAddress6 adr = new net.nanopay.iso20022.PostalAddress6();
@@ -390,6 +401,15 @@ foam.CLASS({
           User sender = sourceAccount.findOwner(x);
           Address senderAddress = sender.getAddress();
           Address payerBankAddress = sourceAccount.getBankAddress();
+
+          String senderEmail = sender.getEmail();
+          if ( sender instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
+            Business business = (Business) sender;
+            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+            if ( signingOfficers.size() > 0 ) {
+              senderEmail = signingOfficers.get(0).getEmail();
+            }
+          }
           
           net.nanopay.iso20022.DirectDebitTransactionInformation9 drctDbtTxInf = new net.nanopay.iso20022.DirectDebitTransactionInformation9();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
@@ -473,7 +493,7 @@ foam.CLASS({
           // Remittance Information
           net.nanopay.iso20022.RemittanceLocation2 rltdRmtInf = new net.nanopay.iso20022.RemittanceLocation2();
           rltdRmtInf.setRemittanceLocationMethod(net.nanopay.iso20022.RemittanceLocationMethod2Code.EMAL);
-          rltdRmtInf.setRemittanceLocationElectronicAddress(sender.getEmail());
+          rltdRmtInf.setRemittanceLocationElectronicAddress(senderEmail);
           net.nanopay.iso20022.NameAndAddress10 rmtLctnPstlAdr = new net.nanopay.iso20022.NameAndAddress10();
           rmtLctnPstlAdr.setName(getName(sender));
           net.nanopay.iso20022.PostalAddress6 adr = new net.nanopay.iso20022.PostalAddress6();
