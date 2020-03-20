@@ -48,7 +48,7 @@ foam.CLASS({
       const isFirstHistoryEvent = record.updates.length === 0;
       const updatesContainRelevantChange = record.updates.some((update) => {
         if ( update.name === 'status' ) {
-          return update.oldValue.name !== 'DRAFT'
+          return update.oldValue.name !== 'DRAFT';
         }
         return update.name === 'paymentDate';
       });
@@ -65,7 +65,7 @@ foam.CLASS({
         }
       } else if ( updatesContainRelevantChange ) {
         this.invoiceStatusHistoryItemView.outputRecord(parentView, record);
-        if ( updatesContainApprovalChange ) {
+        if ( updatesContainApprovalChange && currentUser === record.user ) {
           this.invoiceApprovedHistoryItemView.outputRecord(parentView, record);
         }
       }
