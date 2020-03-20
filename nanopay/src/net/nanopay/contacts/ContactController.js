@@ -56,7 +56,7 @@ foam.CLASS({
           columns: [
             foam.core.Property.create({
               name: 'company',
-              label: 'Company',
+              label: 'Business',
               tableCellFormatter: function(X, obj) {
                 if ( ! obj.businessId ) {
                   this.start().add(obj.organization).end();
@@ -69,8 +69,6 @@ foam.CLASS({
                 }
               }
             }),
-            'legalName',
-            'email',
             'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
