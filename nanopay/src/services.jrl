@@ -1636,7 +1636,8 @@ p({
       .setPermissionPrefix("loginAttempt")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
-      .build();
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.auth.LoginAttempt\"}"
 })
