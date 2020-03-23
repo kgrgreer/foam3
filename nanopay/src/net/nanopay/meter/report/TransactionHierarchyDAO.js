@@ -28,11 +28,7 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-
-        String id = (String) ((Constant)((Eq)((And)((Or) predicate).getArgs()[0]).getArgs()[0]).getArg2()).getValue();
-        
-        // This is for testing purpose only, it will be removed before merge
-        // String id = "448ff913-ca39-e78c-daec-9f6fb971e74c";
+        String id = (String) ((Constant)((Eq)((And) predicate).getArgs()[1]).getArg2()).getValue();
         Transaction transaction = (Transaction) transactionDAO.find(id);
 
         TransactionReport transactionDetail = new TransactionReport();
