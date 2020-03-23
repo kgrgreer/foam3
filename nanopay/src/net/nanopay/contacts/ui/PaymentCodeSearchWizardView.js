@@ -64,6 +64,10 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -155,7 +159,7 @@ foam.CLASS({
     },
     {
       name: 'save',
-      label: 'Save',
+      label: 'Add Contact',
       isAvailable: function(nextIndex) {
         return nextIndex === -1;
       },

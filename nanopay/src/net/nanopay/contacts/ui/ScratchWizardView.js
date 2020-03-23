@@ -71,7 +71,6 @@ foam.CLASS({
 
   messages: [
     { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
-    { name: 'CONTACT_UPDATED', message: 'Personal contact updated.' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
     { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added.  An email invitation was sent.' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }

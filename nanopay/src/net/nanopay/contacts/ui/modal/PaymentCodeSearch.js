@@ -29,10 +29,10 @@ foam.CLASS({
       documentation: 'Payment code provided by user.',
       section: 'search',
       label: 'Payment Code',
+      placeholder: 'Type your contact’s payment code',
+      type: 'search',
       view: {
         class: 'foam.u2.view.IconTextFieldView',
-        type: 'search',
-        placeHolder: 'Type your contact’s payment code',
         icon: 'images/ablii/payment-code.png'
       }
     },

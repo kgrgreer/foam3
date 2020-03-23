@@ -27,6 +27,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToReceive',
     'stack',
     'user',
+    'pushMenu',
     'publicBusinessDAO',
   ],
 
@@ -183,10 +184,12 @@ foam.CLASS({
         return this.Action.create({
           name: 'addContact',
           label: 'Add a Contact',
-          code: function(X) {
-            X.controllerView.add(this.Popup.create().tag({
-              class: 'net.nanopay.contacts.ui.modal.MenuToolBar'
-            }));
+          code: async function(X) {
+            // X.controllerView.add(this.Popup.create().tag({
+            //   class: 'net.nanopay.contacts.ui.modal.MenuToolBar'
+            // }));
+            var menu = await X.menuDAO.find('sme.menu.toolbar');
+            this.pushMenu(menu.id);
           }
         });
       }

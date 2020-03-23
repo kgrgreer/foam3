@@ -88,7 +88,8 @@ foam.CLASS({
           .where(
             this.AND(
               this.STARTS_WITH(this.Menu.ID, 'sme.menu'),
-              this.EQ(this.Menu.PARENT, 'sme')
+              this.EQ(this.Menu.PARENT, 'sme'),
+              this.NEQ(this.Menu.ID, 'sme.menu.toolbar')
             )
           )
           .orderBy(this.Menu.ORDER);

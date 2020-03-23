@@ -39,6 +39,19 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
+  "id": "sme.menu.toolbar",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.sme.ui.SMEModalWrapper",
+      "view": "net.nanopay.contacts.ui.modal.MenuToolBar"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
   "id": "sme.menu.search",
   "label": "Search by Business Name",
   "icon": "images/ablii/search.png",
