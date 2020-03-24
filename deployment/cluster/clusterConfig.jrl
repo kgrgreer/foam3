@@ -5,12 +5,9 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8080,
-  "socketPort":8082,
-  "electionPort":8083,
+  "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":0,
-  "isPrimary":true
+  "type":0
 })
 
 p({
@@ -20,9 +17,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8085,
-  "socketPort":8087,
-  "electionPort":8088,
+  "port":8085,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":0
 })
@@ -34,9 +29,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8090,
-  "socketPort":8092,
-  "electionPort":8093,
+  "port":8090,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":0
 })
@@ -48,9 +41,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8100,
-  "socketPort":8102,
-  "electionPort":8103,
+  "port":8100,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":1
 })
@@ -62,9 +53,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8110,
-  "socketPort":8112,
-  "electionPort":8113,
+  "port":8110,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":1
 })
@@ -76,9 +65,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "zone":0,
-  "servicePort":8120,
-  "socketPort":8122,
-  "electionPort":8123,
+  "port":8120,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":1
 })
