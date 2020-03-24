@@ -288,6 +288,7 @@ for(int j = 0; j < emails.length; j+=2) {
     user.setDesiredPassword(passwords.length<j+2?passwords[0]:passwords[j+1]);
     user.setStatus(AccountStatus.ACTIVE);
     user.setCompliance(ComplianceStatus.PASSED);
+    user.setSpid("nanopay");
     userDAO.put(user);
 
     UserUserJunction junction = new UserUserJunction();

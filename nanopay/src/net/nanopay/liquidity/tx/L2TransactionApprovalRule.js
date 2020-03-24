@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'L2TransactionApprovalRule',
   extends: 'net.nanopay.liquidity.tx.BusinessRule',
 
+  imports: [
+    'accountDAO',
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
@@ -87,19 +91,15 @@ foam.CLASS({
           ]
         };
       },
-      tableCellFormatter: function(value) {
-        var self = this;
-        this.__subSubContext__.accountDAO.find(value).then((account)=> {
-          account.name ? self.add(account.name) : self.add(account.id);
-        });
-      },
       visibility: function(useAccountTemplate) {
         return ! useAccountTemplate ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       postSet: function(_, nu) {
-        if ( ! this.useAccountTemplate && !! nu ) {
-          this.sourceAccount$find.then((account) => {
-            this.denomination = account.denomination;
+        if ( ! this.useAccountTemplate && !! nu && this.accountDAO ) {
+          this.accountDAO.find(nu).then((account)=>{
+            if ( account ) {
+              this.denomination = account.denomination;
+            }
           });
         }
       }
