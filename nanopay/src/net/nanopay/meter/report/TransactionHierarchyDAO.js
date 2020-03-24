@@ -55,15 +55,28 @@ foam.CLASS({
 
         for (int i = 0; i < arraySink_txnList.getArray().size(); i++) {
           Transaction childTxn = (Transaction) arraySink_txnList.getArray().get(i);
-          ArraySink arraySink_childTxn = new ArraySink();
+          ArraySink arraySink_digitalTxn = new ArraySink();
 
           transactionDAO.where(AND(
             EQ(Transaction.PARENT, childTxn.getId()),
             OR(INSTANCE_OF(DigitalTransaction.class), INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
-          )).select(arraySink_childTxn);
+          )).select(arraySink_digitalTxn);
 
-          for (int j = 0; j< arraySink_childTxn.getArray().size(); j++) {
-            childTxnList.add((Transaction) arraySink_childTxn.getArray().get(j));
+          for (int j = 0; j < arraySink_digitalTxn.getArray().size(); j++) {
+            Transaction digitalTxn = (Transaction) arraySink_digitalTxn.getArray().get(j);
+            childTxnList.add(digitalTxn);
+
+            ArraySink arraySink_CICOTxn = new ArraySink();
+
+            transactionDAO.where(AND(
+              EQ(Transaction.PARENT, digitalTxn.getId()),
+              OR(INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
+            )).select(arraySink_CICOTxn);
+
+            for (int k = 0; k < arraySink_CICOTxn.getArray().size(); k++) {
+              Transaction cicoTxn = (Transaction) arraySink_CICOTxn.getArray().get(j);
+              childTxnList.add(cicoTxn);
+            }
           }
         }
 
