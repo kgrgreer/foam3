@@ -224,9 +224,7 @@ foam.CLASS({
         if ( this.currentIndex > 0 ) {
           this.currentIndex = this.prevIndex;
         } else {
-          //How do i get back to MenuToolBar??
-          X.pushMenu('sme.main.contacts');
-          X.closeDialog();
+          X.pushMenu('sme.menu.toolbar');
         }
       }
     },

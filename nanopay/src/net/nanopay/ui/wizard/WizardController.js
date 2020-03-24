@@ -10,7 +10,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.detail.WizardSectionView',
-    'net.nanopay.sme.ui.SMEModal'
+    'net.nanopay.sme.ui.MenuRedirectSMEModal'
   ],
 
   properties: [
@@ -38,7 +38,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-        .add(this.SMEModal.create().tag({
+        .add(this.MenuRedirectSMEModal.create({ menu: 'sme.main.contacts' }).tag({
           class: `net.nanopay.contacts.ui.${this.modelName}WizardView`,
           data: this.model_
         }))

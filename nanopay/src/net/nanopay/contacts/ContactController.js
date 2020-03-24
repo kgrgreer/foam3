@@ -185,9 +185,6 @@ foam.CLASS({
           name: 'addContact',
           label: 'Add a Contact',
           code: async function(X) {
-            // X.controllerView.add(this.Popup.create().tag({
-            //   class: 'net.nanopay.contacts.ui.modal.MenuToolBar'
-            // }));
             var menu = await X.menuDAO.find('sme.menu.toolbar');
             this.pushMenu(menu.id);
           }

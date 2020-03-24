@@ -93,9 +93,7 @@ foam.CLASS({
         if (X.subStack && X.subStack.depth > 1 ) {
           X.subStack.back();
         } else {
-          //How do i get back to MenuToolBar??
-          X.pushMenu('sme.main.contacts');
-          X.closeDialog();
+          X.pushMenu('sme.menu.toolbar');
         }
       }
     },
