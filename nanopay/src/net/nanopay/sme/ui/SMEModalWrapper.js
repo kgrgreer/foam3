@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'SMEModalWrapper',
   extends: 'foam.u2.View',
   
-  documentation: `Wraps given view in a SMEModalWrapper.`,
+  documentation: `Wraps given view in a MenuRedirectSMEModal.`,
 
   requires: [
     'net.nanopay.sme.ui.MenuRedirectSMEModal'
