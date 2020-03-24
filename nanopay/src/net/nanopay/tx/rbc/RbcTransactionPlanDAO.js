@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.rbc',
   name: 'RbcTransactionPlanDAO',
-  extends: 'foam.dao.ProxyDAO',
+  extends: 'net.nanopay.tx.cico.CABankTransactionPlanDAO',
 
   implements: [
     'foam.nanos.auth.EnabledAware'
@@ -41,7 +41,12 @@ foam.CLASS({
       name: 'PROVIDER_ID',
       type: 'String',
       value: 'RBC'
-    }
+    },
+    {
+      name: 'institutionNumber',
+      type: 'String',
+      value: '003'
+    },
   ],
 
   properties: [
@@ -89,6 +94,8 @@ foam.CLASS({
 
       RbcCITransaction t = new RbcCITransaction.Builder(x).build();
       t.copyFrom(request);
+      t.setInstitutionNumber(institutionNumber);
+      t.setTransfers(createCITransfers(t, institutionNumber));
 
       // TODO: use EFT calculation process
       t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
@@ -106,8 +113,10 @@ foam.CLASS({
         throw new RuntimeException("Bank account needs to be verified for cashout"); 
       }
 
-      Transaction t = new RbcCOTransaction.Builder(x).build();
+      RbcCOTransaction t = new RbcCOTransaction.Builder(x).build();
       t.copyFrom(request);
+      t.setInstitutionNumber(institutionNumber);
+      t.setTransfers(createCOTransfers(t, institutionNumber));
       // TODO: use EFT calculation process
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);

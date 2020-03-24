@@ -288,6 +288,7 @@ for(int j = 0; j < emails.length; j+=2) {
     user.setDesiredPassword(passwords.length<j+2?passwords[0]:passwords[j+1]);
     user.setStatus(AccountStatus.ACTIVE);
     user.setCompliance(ComplianceStatus.PASSED);
+    user.setSpid("nanopay");
     userDAO.put(user);
 
     UserUserJunction junction = new UserUserJunction();
@@ -1920,7 +1921,7 @@ p({
     DAO businessInvitationDAO = x.get("businessInvitationDAO");
 
     emailMessages = ((ArraySink) emailMessageDAO
-      .where(EQ(EmailMessage.STATUS, Status.UNSENT)).select(new ArraySink())).getArray();
+      .where(EQ(EmailMessage.STATUS, Status.SENT)).select(new ArraySink())).getArray();
 
     for( int i = 0; i < emailMessages.size(); i++ ) {
       Map templateArgs = emailMessages.get(i).getTemplateArguments();
@@ -2025,8 +2026,8 @@ p({
 
         FileInputStream privateKeyIs = new FileInputStream(privateKeyFile);
         PgpPrivateKeyWrapper privateKey = new PgpPrivateKeyWrapper(
-        PGPKeyUtil.findSecretKey(privateKeyIs, paraphrase.toCharArray())); 
-        
+        PGPKeyUtil.findSecretKey(privateKeyIs, paraphrase.toCharArray()));
+
         if ( privateKey == null ) print("privateKey is null");
 
         SecretKey key = privateKeyDAO.getSecretKey();
@@ -2062,7 +2063,7 @@ p({
 
 
     print("DONE");
-  
+
   """,
   "output": ""
 })

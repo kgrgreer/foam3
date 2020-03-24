@@ -42,8 +42,8 @@ p({
   "enabled":false,
   "schedule":{
     "class":"foam.nanos.cron.CronSchedule",
-    "minute":-1,
-    "hour":16,
+    "minute":0,
+    "hour":-1,
     "dayOfMonth":-1,
     "month":-1,
     "dayOfWeek":-1,

@@ -52,6 +52,12 @@ foam.CLASS({
       name: 'statusUpdateTime',
       label: 'Status Update Time',
       tableWidth: 180
-    }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'childTransaction',
+      visibility: 'HIDDEN'
+    },
   ]
 });

@@ -132,7 +132,7 @@ public class RbcFTPSClient {
     omLogger.log("RBC login starting");
     
     try {
-      this.ftpsClient.connect(credential.getHost());
+      this.ftpsClient.connect(credential.getHost(), credential.getPort());
       this.logger.info("Connect : " + this.ftpsClient.getReplyString());
 
       result = this.ftpsClient.login(credential.getUsername(), credential.getPassword());
