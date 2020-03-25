@@ -30,6 +30,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
+    'foam.nanos.auth.token.Token',
     'foam.u2.Element'
   ],
 
@@ -555,6 +556,16 @@ foam.CLASS({
 
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
+        var tokenParam = searchParams.get('token');
+
+        console.log("tokenParam : " + tokenParam);
+
+        self.client.authenticationTokenService.processToken(null, null, searchParams.get('token')).then(() => {
+        }).catch(e => {
+            if ( e.message === 'Token has already been used' ) {
+              console.log(e.message);
+            }
+        });
 
         if ( locHash === '#reset' ) {
           view = { class: 'foam.nanos.auth.ChangePasswordView' };
