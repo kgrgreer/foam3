@@ -85,7 +85,11 @@ function setup_jce {
     cd tmp_jce
     curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
     unzip jce_policy-8.zip
-    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    if [[ $IS_MAC -eq 1 ]]; then
+        sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+      elif [[ $IS_LINUX -eq 1 ]]; then
+        cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+      fi
     cd ..
     rm -rf tmp_jce
 
