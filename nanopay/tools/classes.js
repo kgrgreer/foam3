@@ -273,8 +273,6 @@ var classes = [
   'net.nanopay.sme.ruler.OnboardingPaymentOperationNotification',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
-  'net.nanopay.onboarding.BusinessRegistration',
-  'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
   // sign up
@@ -978,7 +976,7 @@ var classes = [
   'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
   'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
   'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
-  
+
   // Ticket
   'net.nanopay.ticket.SudoTicket',
   'net.nanopay.ticket.SudoTicketApprovalRequestRule',
