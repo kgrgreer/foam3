@@ -1,0 +1,389 @@
+//Medusa Node
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"nSpecDAO",
+  "serve":true,
+  "authenticate": false,
+  "serviceClass":"foam.dao.ProxyDAO",
+  "client":"{\"of\":\"foam.nanos.boot.NSpec\",\"cache\":true}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "threadPool",
+  "lazy": false,
+  "serve": false,
+  "serviceClass": "foam.nanos.pool.ThreadPoolAgency"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "memory",
+  "serviceScript": """
+    memoryWebAgent = new foam.nanos.http.MemoryWebAgent();
+    return new foam.nanos.http.RefreshWebAgent(memoryWebAgent);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "threads",
+  "serviceClass": "foam.nanos.http.ThreadsWebAgent"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"http",
+  "lazy":false,
+  "service":{
+    "class":"foam.nanos.jetty.HttpServer",
+    "port":8080,
+    "forwardedForProxyWhitelist":[],
+    "welcomeFiles": ["welcome"],
+    "servletMappings": [{
+      "class": "foam.nanos.servlet.ServletMapping",
+      "servletObject": {
+        "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
+        "hostMapping": {
+          "ablii": "/ablii.html",
+          "localhost": "/index.html"
+        },
+        "defaultHost": "localhost"
+      },
+      "pathSpec": "/welcome"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.http.NanoRouter",
+      "pathSpec": "/service/*"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.servlet.ResourceImageServlet",
+      "pathSpec": "/images/*",
+      "initParameters": {
+        "paths": "images"
+      }
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "org.eclipse.jetty.servlet.DefaultServlet",
+      "pathSpec": "/*",
+      "initParameters": {
+        "pathInfoOnly": "true",
+        "welcomeServlets": "true",
+        "dirAllowed": "false"
+      }
+    }],
+    "errorMappings": [{
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "errorCode": 404,
+      "location": "/errorPage.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "javax.ws.rs.NotAuthorizedException",
+      "location": "/unauthorizedAccess.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "java.lang.Throwable",
+      "location": "/errorPage.html"
+    }],
+    "filterMappings": [{
+      "class": "foam.nanos.servlet.FilterMapping",
+      "filterClass": "net.nanopay.security.csp.CSPFilter",
+      "pathSpec": "/*",
+      "initParameters": {
+        "CONTENT_SECURITY_POLICY": """
+          default-src 'none';
+          child-src 'self';
+          worker-src 'self';
+          connect-src 'self' data: blob: filesystem: ws:;
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          img-src 'self' data: blob: filesystem:;
+          media-src * data: blob: filesystem:;
+          object-src 'self' data: blob: filesystem:;
+          frame-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          report-uri /service/CSPReportWebAgent;
+        """
+      }
+    }]
+  }
+})
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"tcpServer",
+//   "lazy":false,
+//   "serve":true,
+//   "serviceClass":"foam.nanos.medusa.TCPNioServer"
+// })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"AuthenticatedNSpecDAO",
+  "serve":true,
+  "serviceClass":"foam.dao.ProxyDAO",
+  "client":"{\"of\":\"foam.nanos.boot.NSpec\",\"cache\":true}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "auth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
+  "serviceScript": """
+    return new foam.nanos.auth.SystemAuthService.Builder(x)
+      .setDelegate(new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
+      .setDelegate(new foam.nanos.auth.PasswordExpiryAuthService.Builder(x)
+      .setDelegate(new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
+      .setDelegate(new foam.nanos.auth.CachingAuthService(new foam.nanos.auth.UserAndGroupAuthService(x)))
+      .build()).build()).build()).build();
+  """,
+  "client": "{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaEntryDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ledger")
+      .setRuler(false)
+      .setCluster(false)
+      .setDecorator(new foam.nanos.medusa.MedusaEntryHashingDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntrySigningDAO.Builder(x)
+          .setDelegate(new foam.nanos.medusa.ReplayDetailsDAO.Builder(x)
+            .setDelegate(new foam.nanos.medusa.ReplayDAO.Builder(x)
+              .setDelegate(new foam.nanos.medusa.MedusaEntryBroadcastDAO.Builder(x)
+                .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+                .build())
+              .build())
+            .build())
+          .build())
+        .build())
+      .build();
+  `,
+  "client":"{\"of\":\"foam.nanos.medusa.MedusaEntry\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "service":{"class":"foam.nanos.app.AppConfig"}
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ping",
+  "lazy": "false",
+  "authenticate": false,
+  "serviceClass": "foam.nanos.http.PingService"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"scriptDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.script.Script.getOwnClassInfo())
+      .setGuid(true)
+      .setPm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("scripts")
+      .setCluster(false)
+      .setRuler(false)
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(null))
+      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.script.Script\"}"
+})
+
+//Log services
+p({
+  "class":
+  "foam.nanos.boot.NSpec",
+  "name":"localLogMessageDAO",
+  "lazy":false,
+  "serviceScript":"""
+    new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.logger.LogMessage.getOwnClassInfo())
+      .setAuthorize(false)
+      .setSeqNo(true)
+      .setPm(true)
+      .setRuler(false)
+      .setInnerDAO(new foam.dao.WriteOnlyJDAO(x, new foam.dao.MDAO(foam.nanos.logger.LogMessage.getOwnClassInfo()), foam.nanos.logger.LogMessage.getOwnClassInfo(), "../logs/logs"))
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.logger.LogMessage.CREATED))
+        .setSize(5000)
+        .build())
+      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.logger.LogMessage.CREATED})
+      .setOrder(new foam.mlang.order.Comparator[] {foam.mlang.MLang.DESC(foam.nanos.logger.LogMessage.CREATED)})
+      .setDecorator(new foam.nanos.logger.StdoutLoggerDAO.Builder(x)
+        .setDelegate(new foam.nanos.logger.LogMessageDAO.Builder(x)
+          .setDelegate(new foam.nanos.logger.RepeatLogMessageDAO.Builder(x)
+            .setDelegate(new foam.nanos.logger.NotificationLogMessageDAO.Builder(x)
+              .build())
+            .build())
+          .build())
+        .build())
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "logMessageDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.logger.LogMessage.getOwnClassInfo())
+      .setInnerDAO(((foam.dao.DAO) x.get("localLogMessageDAO")))
+      .build();
+  """,
+  "client": """
+    {
+      "of": "foam.nanos.logger.LogMessage"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"logLevelFilterLogger",
+  "lazy":false,
+  "service":{"class":"foam.nanos.logger.LogLevelFilterLogger"}
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"logger",
+  "lazy":false,
+  "serviceScript":"""
+    import foam.nanos.logger.ProxyLogger;
+    import foam.nanos.logger.LogLevelFilterLogger;
+    import foam.nanos.logger.DAOLogger;
+    ProxyLogger logLevelFilterLogger = (ProxyLogger) x.get("logLevelFilterLogger");
+    logLevelFilterLogger.setX(x);
+    DAOLogger daoLogger = new DAOLogger(x);
+    daoLogger.setDelegate((foam.dao.DAO) x.get("localLogMessageDAO"));
+    logLevelFilterLogger.setDelegate(daoLogger);
+    return logLevelFilterLogger;
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "clusterConfigService",
+  "lazy": false,
+  "serve": false,
+  "serviceClass": "foam.nanos.medusa.DefaultClusterConfigService"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localClusterConfigDAO",
+  "lazy": true,
+  "serve": false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("clusterConfig")
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .build();
+   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "clusterConfigDAO",
+  "lazy": true,
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
+      .setInnerDAO((foam.dao.DAO) x.get("localClusterConfigDAO"))
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.ClusterConfig\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"cronDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setGuid(true)
+      .setOf(foam.nanos.cron.Cron.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("cronjobs")
+      .setDecorator(new foam.nanos.cron.CronScheduleDAO.Builder(x)
+        .setDelegate(new foam.nanos.script.ScriptRunnerDAO(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.cron.Cron.getOwnClassInfo()).build()))
+        .build())
+      .setCluster(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"cronScheduler",
+  "lazy":false,
+  "serviceClass":"foam.nanos.cron.CronScheduler"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localSessionDAO",
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.session.Session.getOwnClassInfo())
+      .setGuid(true)
+      .setCreatedAware(true)
+      .setCreatedByAware(true)
+      .setJournalName("sessions")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setDecorator(new foam.dao.ValidatingDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.session.Session.getOwnClassInfo()).build()))
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sessionDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.session.Session.getOwnClassInfo())
+      .setPm(true)
+      .setAuthorize(false)
+      .setInnerDAO(((foam.dao.DAO) x.get("localSessionDAO")))
+      .setCluster(false)
+      .setRuler(false)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.session.Session.LAST_USED).build() })
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.session.Session\"}",
+  "authNotes": "Users must have the 'service.sessionDAO' permission to access this service. Due to the highly sensitive nature of sessions, only superadmins should have permission to access this service."
+})

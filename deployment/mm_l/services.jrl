@@ -11,10 +11,18 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "daggerService",
+  "name": "internalMedusaEntryDAO",
   "lazy": false,
   "serve": false,
-  "serviceClass": "foam.nanos.medusa.DefaultDaggerService"
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .build();
+   `
 })
 
 p({
@@ -29,11 +37,9 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryIdDAO.Builder(x)
-        .setDelegate(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
-          .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
-            .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
-            .build())
+      .setDecorator(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
+          .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
           .build())
         .build())
       .build();
@@ -52,11 +58,9 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryIdDAO.Builder(x)
-        .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
-          .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
-            .setDelegate((foam.dao.DAO) x.get("localMedusaEntryDAO"))
-            .build())
+      .setDecorator(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
+          .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
           .build())
         .build())
       .build();

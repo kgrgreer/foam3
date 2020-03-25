@@ -10,7 +10,8 @@ p({
       .setJournalName("ledger")
       .setRuler(false)
       .setCluster(false)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryHashingDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.MedusaEntryIdDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaEntryHashingDAO.Builder(x)
         .setDelegate(new foam.nanos.medusa.MedusaEntrySigningDAO.Builder(x)
           .setDelegate(new foam.nanos.medusa.ReplayDetailsDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.ReplayDAO.Builder(x)
@@ -20,6 +21,7 @@ p({
               .build())
             .build())
           .build())
+        .build())
         .build())
       .build();
   `,
