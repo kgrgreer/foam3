@@ -15,6 +15,7 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.mlang.Constant',
     'foam.mlang.predicate.*',
+    'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
@@ -49,34 +50,48 @@ foam.CLASS({
 
         List<Transaction> txnList = txnSink.getArray();
         ArraySink arraySink_txnList = new ArraySink();
-        txnList.get(0).getChildren(x).select(arraySink_txnList);
-
         List<Transaction> childTxnList = new ArrayList<>();
 
-        for (int i = 0; i < arraySink_txnList.getArray().size(); i++) {
-          Transaction childTxn = (Transaction) arraySink_txnList.getArray().get(i);
-          ArraySink arraySink_digitalTxn = new ArraySink();
+        if (txnList.isEmpty() || txnList.get(0) == null) {
+          throw new RuntimeException("Error when trying to find the child transaction of " + id);
+        }
 
-          transactionDAO.where(AND(
-            EQ(Transaction.PARENT, childTxn.getId()),
-            OR(INSTANCE_OF(DigitalTransaction.class), INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
-          )).select(arraySink_digitalTxn);
+        if (txnList.get(0) instanceof CompositeTransaction) {
+          txnList.get(0).getChildren(x).select(arraySink_txnList);
 
-          for (int j = 0; j < arraySink_digitalTxn.getArray().size(); j++) {
-            Transaction digitalTxn = (Transaction) arraySink_digitalTxn.getArray().get(j);
-            childTxnList.add(digitalTxn);
-
-            ArraySink arraySink_CICOTxn = new ArraySink();
+          for (int i = 0; i < arraySink_txnList.getArray().size(); i++) {
+            Transaction childTxn = (Transaction) arraySink_txnList.getArray().get(i);
+            ArraySink arraySink_digitalTxn = new ArraySink();
 
             transactionDAO.where(AND(
-              EQ(Transaction.PARENT, digitalTxn.getId()),
-              OR(INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
-            )).select(arraySink_CICOTxn);
+              EQ(Transaction.PARENT, childTxn.getId()),
+              OR(INSTANCE_OF(DigitalTransaction.class), INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
+            )).select(arraySink_digitalTxn);
 
-            for (int k = 0; k < arraySink_CICOTxn.getArray().size(); k++) {
-              Transaction cicoTxn = (Transaction) arraySink_CICOTxn.getArray().get(j);
-              childTxnList.add(cicoTxn);
+            for (int j = 0; j < arraySink_digitalTxn.getArray().size(); j++) {
+              Transaction digitalTxn = (Transaction) arraySink_digitalTxn.getArray().get(j);
+              childTxnList.add(digitalTxn);
+
+              ArraySink arraySink_CICOTxn = new ArraySink();
+
+              transactionDAO.where(AND(
+                EQ(Transaction.PARENT, digitalTxn.getId()),
+                OR(INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
+              )).select(arraySink_CICOTxn);
+
+              for (int k = 0; k < arraySink_CICOTxn.getArray().size(); k++) {
+                Transaction cicoTxn = (Transaction) arraySink_CICOTxn.getArray().get(j);
+                childTxnList.add(cicoTxn);
+              }
             }
+          }
+        } else {
+          childTxnList.add(txnList.get(0));
+          txnList.get(0).getChildren(x).select(arraySink_txnList);
+
+          if (! arraySink_txnList.getArray().isEmpty() && arraySink_txnList.getArray().get(0) != null) {
+            List<Transaction> txnList2 = arraySink_txnList.getArray();
+            childTxnList.add(txnList2.get(0));
           }
         }
 
