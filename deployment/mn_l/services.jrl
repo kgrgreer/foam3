@@ -6,7 +6,7 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
       .setRuler(false)
       .setCluster(false)
       .setDecorator(new foam.nanos.medusa.MedusaEntryIdDAO.Builder(x)
