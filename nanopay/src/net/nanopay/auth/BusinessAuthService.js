@@ -10,16 +10,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'bareUserDAO',
-    'groupDAO',
     'localUserDAO'
   ],
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.session.Session',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.NanoService',
     'net.nanopay.admin.model.AccountStatus'
@@ -36,39 +32,17 @@ foam.CLASS({
     {
       name: 'getCurrentUser',
       javaCode: `
-        // fetch context and check if not null or user id is 0
-        Session session = x.get(Session.class);
-        if ( session == null || session.getUserId() == 0 ) {
-          throw new AuthenticationException("Not logged in");
-        }
-
-        // get user from session id
         User user = (User) x.get("user");
         if ( user == null ) {
-          throw new AuthenticationException("User not found: " + session.getUserId());
+          throw new AuthenticationException("User not found");
         }
-        
-        // get the most updated user
         User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
 
         // check user status is not disabled
         if ( AccountStatus.DISABLED == updatedUser.getStatus() ) {
           throw new AuthenticationException("User disabled");
         }
-
-        // check if user group enabled
-        Group group = (Group) x.get("group");
-        if ( group != null && ! group.getEnabled() ) {
-          throw new AuthenticationException("User group disabled");
-        }
-
-        // check for two-factor authentication
-        if ( updatedUser.getTwoFactorEnabled() && ! session.getContext().getBoolean("twoFactorSuccess") ) {
-          throw new AuthenticationException("User requires two-factor authentication");
-        }
-        
-        session.setContext(session.getContext().put("user", updatedUser));
-        return updatedUser;
+        return getDelegate().getCurrentUser(x);
     `
     }
   ]
