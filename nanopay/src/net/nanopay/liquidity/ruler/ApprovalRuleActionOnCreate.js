@@ -152,9 +152,6 @@ foam.CLASS({
               approvalRequest.setApprover(approver);
               approvalRequestDAO.put(approvalRequest);
             }
-          } else if ( approvers.size() == 1 && approvers.get(0) == initiatingUser ) {
-            ((Logger) x.get("logger")).error(
-              "ApprovalRuleActionOnCreate - The only approver for this level is the initiating user of the request.", classification, objId);
           } else if ( getDefaultApprover() > 0 ) {
             approvalRequest.setApprover(getDefaultApprover());
             approvalRequestDAO.put(approvalRequest);

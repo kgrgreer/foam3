@@ -7,7 +7,6 @@ foam.CLASS({
     'classification',
     'operation',
     'outgoingAccount',
-    'initiatingUser',
     'approver',
     'status'
   ],
