@@ -5,7 +5,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
-      .setAuthorize(false)
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer.Builder(x).setPermissionPrefix("approve").build())
       .setPm(true)
       .setPipelinePm(true)
       .setSeqNo(true)
@@ -14,10 +14,12 @@ p({
       .setValidated(true)
       .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
-         new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
-           new net.nanopay.approval.AuthenticatedApprovalDAO(x,
-             new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
-               new foam.nanos.approval.ApprovalDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.approval.ApprovalRequest.getOwnClassInfo()).build())))))
+        new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
+          new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
+            new foam.nanos.approval.ApprovalDAO(x, new foam.dao.NullDAO(x, foam.nanos.approval.ApprovalRequest.getOwnClassInfo()))
+          )
+        )
+      )
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.approval.ApprovalRequest.CREATED})
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
