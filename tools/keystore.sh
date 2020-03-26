@@ -17,7 +17,7 @@ fi
 if [ -z "$HOME" ]; then
     HOME="/opt/nanopay"
 fi
-HOME="$HOME"/keys
+HOME="$HOME"/var/keys
 
 if [[ -d $HOME && -f $HOME/passphrase ]]; then
     printf "INFO :: Keystore already setup...\n"
