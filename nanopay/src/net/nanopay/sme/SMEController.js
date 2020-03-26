@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
+    'net.nanopay.sme.ui.InvalidTokenErrorPageView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -558,12 +559,11 @@ foam.CLASS({
         var searchParams = new URLSearchParams(location.search);
         var tokenParam = searchParams.get('token');
 
-        console.log("tokenParam : " + tokenParam);
-
         self.client.authenticationTokenService.processToken(null, null, searchParams.get('token')).then(() => {
         }).catch(e => {
             if ( e.message === 'Token has already been used' ) {
-              console.log(e.message);
+              view = { class: 'net.nanopay.sme.ui.InvalidTokenErrorPageView' };
+              self.stack.push(view, self);
             }
         });
 

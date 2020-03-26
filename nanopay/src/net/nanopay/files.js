@@ -1059,6 +1059,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
   { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
+  { name: 'net/nanopay/sme/ui/InvalidTokenErrorPageView', flags: ['web']  },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
