@@ -105,7 +105,7 @@ public class RestrictAccountsRuleTest
     test(
       TestUtils.testThrows(
         () -> transactionDAO_.put(transaction_),
-        "Operation prevented by business rule: " + rule_.getId(),
+        "Operation prevented by business rule: " + rule_.getName(),
         RuntimeException.class
       ),
       "Send transaction between restricted accounts throws RuntimeException."
