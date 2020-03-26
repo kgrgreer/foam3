@@ -1646,17 +1646,15 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())
-      .setJournalName("loginAttempts")
+      .setSeqNo(true)
       .setPermissionPrefix("loginAttempt")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setSeqNo(true)
+      .setJournalName("loginAttempts")
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.auth.LoginAttempt\"}"
 })
-
-p({"class":"foam.nanos.boot.NSpec", "name":"RollingJournal",                   "description":"Decorator around RoutingJournal; it enables rolling journals for single journal system.","serviceScript":"import foam.dao.FileJournal;\nimport net.nanopay.security.snapshooter.RollingJournal;\n\nfileJournal = new FileJournal.Builder(x).setFile(RollingJournal.getNextJournal()).build();\nreturn new RollingJournal.Builder(x).setDelegate(fileJournal).setJournalNumber(RollingJournal.getNextJournalNumber()).build();"})
 
 p({
   "class": "foam.nanos.boot.NSpec",
