@@ -56,9 +56,11 @@ foam.CLASS({
           throw new RuntimeException("Error when trying to find the child transaction of " + id);
         }
 
+        // If it is a one-to-many transactions
         if (txnList.get(0) instanceof CompositeTransaction) {
           txnList.get(0).getChildren(x).select(arraySink_txnList);
 
+          // Iterate through all the compliance transactions
           for (int i = 0; i < arraySink_txnList.getArray().size(); i++) {
             Transaction childTxn = (Transaction) arraySink_txnList.getArray().get(i);
             ArraySink arraySink_digitalTxn = new ArraySink();
@@ -68,6 +70,7 @@ foam.CLASS({
               OR(INSTANCE_OF(DigitalTransaction.class), INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
             )).select(arraySink_digitalTxn);
 
+            // Iterate to get all the digital transactions
             for (int j = 0; j < arraySink_digitalTxn.getArray().size(); j++) {
               Transaction digitalTxn = (Transaction) arraySink_digitalTxn.getArray().get(j);
               childTxnList.add(digitalTxn);
@@ -79,6 +82,7 @@ foam.CLASS({
                 OR(INSTANCE_OF(CITransaction.class), INSTANCE_OF(COTransaction.class))
               )).select(arraySink_CICOTxn);
 
+              // Iterate to get all of the cash-in and cash-out transactions
               for (int k = 0; k < arraySink_CICOTxn.getArray().size(); k++) {
                 Transaction cicoTxn = (Transaction) arraySink_CICOTxn.getArray().get(j);
                 childTxnList.add(cicoTxn);
@@ -86,6 +90,7 @@ foam.CLASS({
             }
           }
         } else {
+          // If it is a one-to-one transaction
           childTxnList.add(txnList.get(0));
           txnList.get(0).getChildren(x).select(arraySink_txnList);
 
