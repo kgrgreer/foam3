@@ -8,17 +8,54 @@ foam.CLASS({
     If the business exists, then add the existing directly. If the business
     does not exist, then create a new contact.
   `,
+
+  imports: [
+    'ctrl',
+    'user'
+  ],
   
   css: `
     ^ {
       display: flex;
       flex-direction: column;
       width: 540px;
-      max-height: 80vh;
       overflow-y: scroll;
     }
     ^section-container {
       padding: 24px 24px 32px;
+    }
+    .business-list-container {
+      height: 272px;
+    }
+    .business-list {
+      overflow-y: scroll;
+    }
+    .search-count {
+      color: #8e9090;
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.43;
+      text-align: center;
+    }
+    .create-new-block {
+      margin-top: 120px;
+    }
+    .center {
+      display: flex;
+      justify-content: center;
+    }
+    .search-result {
+      color: #8e9090;
+      font-size: 14px;
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+    .align-text-center {
+      text-align: center;
+    }
+    .foam-u2-layout-Cols {
+      margin-top: 0 !important;
+      justify-content: center !important;
     }
     ^button-container {
       display: flex;
@@ -34,14 +71,27 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'isConnecting',
+      documentation: 'True while waiting for a DAO method call to complete.',
+      value: false
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
+
+      this.data.contact$.sub(function() {
+        self.currentIndex = self.nextIndex;
+      })
+
       this.addClass(this.myClass());
-      self
-        .start(self.Rows)
-          .add(self.slot(function(sections, currentIndex) {
-            debugger;
+      this
+        .start(this.Rows)
+          .add(this.slot(function(sections, currentIndex) {
             return self.E().addClass(self.myClass('section-container'))
               .tag(self.sectionView, {
                 section: sections[currentIndex],
@@ -51,11 +101,25 @@ foam.CLASS({
           .startContext({ data: this })
             .start().addClass(this.myClass('button-container'))
               .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-              .start(this.NEXT).end()
               .start(this.SAVE).end()
             .end()
           .endContext()
         .end();
+    },
+    /** Add the contact to the user's contacts. */
+    async function addContact() {
+      this.isConnecting = true;
+      try {
+      contact = await this.user.contacts.put(this.data.contact);
+      this.ctrl.notify(this.CONTACT_ADDED);
+      } catch (e) {
+        var msg = e.message || this.GENERIC_PUT_FAILED;
+        this.ctrl.notify(msg, 'error');
+        this.isConnecting = false;
+        return false;
+      }
+      this.isConnecting = false;
+      return true;
     }
   ],
 
@@ -72,24 +136,14 @@ foam.CLASS({
       }
     },
     {
-      name: 'next',
-      label: 'Next',
-      isAvailable: function(nextIndex) {
-        return nextIndex !== -1;
-      },
-      code: function() { 
-        this.currentIndex = this.nextIndex;
-      }
-    },
-    {
       name: 'save',
       label: 'Add Contact',
       isAvailable: function(nextIndex) {
         return nextIndex === -1;
       },
-      code: function(X) { 
-        debugger;
-        // X.pushMenu('sme.main.contacts');
+      code: async function(X) { 
+        if ( ! await this.addContact() ) return;
+        X.pushMenu('sme.main.contacts');
       }
     }
   ]
