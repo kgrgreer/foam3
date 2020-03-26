@@ -36,10 +36,9 @@ foam.CLASS({
         if ( user == null ) {
           throw new AuthenticationException("User not found");
         }
-        User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
 
         // check user status is not disabled
-        if ( AccountStatus.DISABLED == updatedUser.getStatus() ) {
+        if ( AccountStatus.DISABLED == user.getStatus() ) {
           throw new AuthenticationException("User disabled");
         }
         return getDelegate().getCurrentUser(x);
