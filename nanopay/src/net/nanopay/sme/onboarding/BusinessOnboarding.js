@@ -155,6 +155,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'agent',
     'pushMenu',
     'appConfig',
     'identificationTypeDAO'
@@ -310,19 +311,25 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        // TODO: fix: 'console.error :8080/#sme.main.dashboard:1 Uncaught (in promise) ...' postSet doesnt understand promised return- other then error shown this is not a blocker
-        try {
-          this.userId$find.then((user) => {
-            if ( this.userId != n ) return;
-            this.firstName = user.firstName;
-            this.lastName = user.lastName;
-            this.jobTitle = user.jobTitle;
-            this.phone = user.phone;
-          });
-        } catch (_) {
-          // ignore error, this is here to catch the fact that userId is a copied property to a
-          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
-        };
+        // // TODO: fix: 'console.error :8080/#sme.main.dashboard:1 Uncaught (in promise) ...' postSet doesnt understand promised return- other then error shown this is not a blocker
+        // try {
+        //   this.userId$find.then((user) => {
+        //     if ( this.userId != n ) return;
+        //     this.firstName = user.firstName;
+        //     this.lastName = user.lastName;
+        //     this.jobTitle = user.jobTitle;
+        //     this.phone = user.phone;
+        //   });
+        // } catch (_) {
+        //   // ignore error, this is here to catch the fact that userId is a copied property to a
+        //   // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
+        // };
+        if ( this.userId === n ) {
+          this.firstName = this.agent.firstName;
+          this.lastName = this.agent.lastName;
+          this.jobTitle = this.agent.jobTitle;
+          this.phone = this.agent.phone;
+        }
       },
       tableCellFormatter: function(id, o) {
         var e = this.start('span').add(id).end();
@@ -409,13 +416,11 @@ foam.CLASS({
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
 
-          if ( this.userOwnsPercent ) {
-            this.userId$find.then((user) => {
-              this.owner1.firstName = user.firstName;
-              this.owner1.lastName = user.lastName;
-              this.owner1.jobTitle = user.jobTitle;
-            })
-          }
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.agent.firstName;
+          this.owner1.lastName = this.agent.lastName;
+          this.owner1.jobTitle = this.agent.jobTitle;
+        }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
@@ -568,7 +573,7 @@ foam.CLASS({
         };
       },
       postSet: function() {
-        if ( this.userOwnsPercent ) {
+        if ( this.userOwnsPercent && ! this.signingOfficer ) {
           this.owner1.jobTitle = this.adminJobTitle;
         }
       },
@@ -706,7 +711,7 @@ foam.CLASS({
         }
       ],
       postSet: function() {
-        if ( this.userOwnsPercent ) {
+        if ( this.userOwnsPercent && ! this.signingOfficer ) {
           this.owner1.firstName = this.adminFirstName;
         }
       }
@@ -720,7 +725,7 @@ foam.CLASS({
       width: 100,
       gridColumns: 6,
       postSet: function() {
-        if ( this.userOwnsPercent ) {
+        if ( this.userOwnsPercent && ! this.signingOfficer ) {
           this.owner1.lastName = this.adminLastName;
         }
       }
@@ -1107,13 +1112,11 @@ foam.CLASS({
           this.userOwnsPercent = false;
         };
 
-        this.userId$find.then((user) => {
-          if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
-          } else {
-            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
-          }
-        });
+        if ( this.signingOfficer ) {
+          this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
+        } else {
+          this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
+        }
       },
       validationPredicates: [
         {
@@ -1137,32 +1140,26 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       label: '',
       postSet: function(_, newV) {
-        if ( this.signingOfficer && newV ) {
-          this.userId$find.then((user) => {
-            this.owner1.firstName = user.firstName;
-            this.owner1.lastName = user.lastName;
-            this.owner1.jobTitle = user.jobTitle;
-          });
+        if ( newV ) {
+          if ( this.signingOfficer ) {
+            this.owner1.firstName = this.agent.firstName;
+            this.owner1.lastName = this.agent.lastName;
+            this.owner1.jobTitle = this.agent.jobTitle;
+          } else {
+            this.owner1.firstName = this.adminFirstName;
+            this.owner1.lastName = this.adminLastName;
+            this.owner1.jobTitle = this.adminJobTitle;
+          }
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-          return;
-        } else if ( ! this.signingOfficer && newV ) {
-          this.owner1.firstName = this.adminFirstName;
-          this.owner1.lastName = this.adminLastName;
-          this.owner1.jobTitle = this.adminJobTitle;
-          this.owner1.birthday = this.birthday;
-          this.owner1.address = this.address;
-          this.owner1.ownershipPercent = this.ownershipPercent;
-          return;
+        } else {
+          if ( (this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName) &&
+               (this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName) ) {
+            this.clearProperty('owner1');
+          }
+          this.clearProperty('ownershipPercent');
         }
-
-        if ( this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName
-            && this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName ) {
-          this.clearProperty('owner1');
-        }
-
-        this.clearProperty('ownershipPercent');
       },
       visibility: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -1479,29 +1476,29 @@ foam.CLASS({
         this.ADDRESS.label = '';
         this.BUSINESS_ADDRESS.label = '';
 
-        this.userId$find.then((user) => {
-          if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
-            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
+        if ( this.signingOfficer ) {
+          this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.agent.firstName;
 
-            if ( this.userOwnsPercent ) {
-              this.owner1.firstName = user.firstName;
-              this.owner1.lastName = user.lastName;
-              this.owner1.jobTitle = user.jobTitle;
-            }
-          } else if ( ! this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
-            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
-
-            if ( this.userOwnsPercent ) {
-              this.owner1.firstName = this.adminFirstName;
-              this.owner1.lastName = this.adminLastName;
-              this.owner1.jobTitle = this.adminJobTitle;
-            }
-          } else if ( ! this.userOwnsPercent ) {
+          if ( this.userOwnsPercent ) {
+            this.owner1.firstName = this.agent.firstName;
+            this.owner1.lastName = this.agent.lastName;
+            this.owner1.jobTitle = this.agent.jobTitle;
+          } else {
             this.clearProperty('owner1');
           }
-        });
+        } else {
+          this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+          if ( this.userOwnsPercent ) {
+            this.owner1.firstName = this.adminFirstName;
+            this.owner1.lastName = this.adminLastName;
+            this.owner1.jobTitle = this.adminJobTitle;
+          } else {
+            this.clearProperty('owner1');
+          }
+        }
 
         this.owner1.showValidation$ = this.signingOfficer$;
         this.owner2.showValidation$ = this.signingOfficer$;
