@@ -155,7 +155,6 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'notify',
     'pushMenu',
     'appConfig',
     'identificationTypeDAO'
@@ -409,9 +408,21 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          if ( this.userOwnsPercent ) {
+            this.userId$find.then((user) => {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            })
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+        }
+
+        if ( ! this.userOwnsPercent ) {
+          this.clearProperty('owner1');
         }
       }
     },
@@ -432,6 +443,11 @@ foam.CLASS({
             }
           }
         };
+      },
+      postSet: function() {
+        if ( this.userOwnsPercent && this.signingOfficer ) {
+          this.owner1.jobTitle = this.jobTitle;
+        }
       },
       validationPredicates: [
         {
@@ -550,6 +566,11 @@ foam.CLASS({
             }
           }
         };
+      },
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.jobTitle = this.adminJobTitle;
+        }
       },
       visibility: function(signingOfficer) {
         return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
@@ -684,6 +705,11 @@ foam.CLASS({
           errorString: 'Please enter first name with least 1 character.'
         }
       ],
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.adminFirstName;
+        }
+      }
     },
     {
       class: 'String',
@@ -693,6 +719,11 @@ foam.CLASS({
       documentation: 'Signing officer \' last name',
       width: 100,
       gridColumns: 6,
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.lastName = this.adminLastName;
+        }
+      }
     },
     {
       class: 'String',
@@ -1105,32 +1136,33 @@ foam.CLASS({
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
       label: '',
-      postSet: async function(_, newV) {
-        if ( newV ) {
-          if ( this.signingOfficer ) {
-            try {
-              const user = await this.userId$find;
-              this.owner1.firstName = user.firstName;
-              this.owner1.lastName = user.lastName;
-              this.owner1.jobTitle = user.jobTitle;
-            } catch (e) {
-              this.notify(e.message, 'errors');
-            }
-          } else {
-            this.owner1.firstName = this.adminFirstName;
-            this.owner1.lastName = this.adminLastName;
-            this.owner1.jobTitle = this.adminJobTitle;
-          }
+      postSet: function(_, newV) {
+        if ( this.signingOfficer && newV ) {
+          this.userId$find.then((user) => {
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
+          });
           this.owner1.birthday = this.birthday;
           this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
-        } else {
-          if ( (this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName) &&
-               (this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName) ) {
-            this.clearProperty('owner1');
-          }
-          this.clearProperty('ownershipPercent');
+          return;
+        } else if ( ! this.signingOfficer && newV ) {
+          this.owner1.firstName = this.adminFirstName;
+          this.owner1.lastName = this.adminLastName;
+          this.owner1.jobTitle = this.adminJobTitle;
+          this.owner1.birthday = this.birthday;
+          this.owner1.address = this.address;
+          this.owner1.ownershipPercent = this.ownershipPercent;
+          return;
         }
+
+        if ( this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName
+            && this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName ) {
+          this.clearProperty('owner1');
+        }
+
+        this.clearProperty('ownershipPercent');
       },
       visibility: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -1248,12 +1280,10 @@ foam.CLASS({
       },
       javaGetter: `
         int sum = 0;
-
         if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
         if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
         if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
         if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
-
         return sum;
       `,
       visibility: function(totalOwnership) {
@@ -1381,19 +1411,15 @@ foam.CLASS({
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         DAO businessOnboardingDAO = (DAO) x.get("businessOnboardingDAO");
-
         BusinessOnboarding obj = (BusinessOnboarding) this;
         BusinessOnboarding oldObj = (BusinessOnboarding) businessOnboardingDAO.find(this.getId());
-
         if ( auth.check(x, "onboarding.update.*") ) return;
-
         if (
           oldObj != null &&
           oldObj.getStatus() == OnboardingStatus.SUBMITTED
         ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
-
         if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
       `
     },
@@ -1402,13 +1428,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1417,13 +1440,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1432,13 +1452,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1447,13 +1464,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.delete." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1464,6 +1478,30 @@ foam.CLASS({
         this.PHONE.label = '';
         this.ADDRESS.label = '';
         this.BUSINESS_ADDRESS.label = '';
+
+        this.userId$find.then((user) => {
+          if ( this.signingOfficer ) {
+            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            }
+          } else if ( ! this.signingOfficer ) {
+            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
+            this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = this.adminFirstName;
+              this.owner1.lastName = this.adminLastName;
+              this.owner1.jobTitle = this.adminJobTitle;
+            }
+          } else if ( ! this.userOwnsPercent ) {
+            this.clearProperty('owner1');
+          }
+        });
 
         this.owner1.showValidation$ = this.signingOfficer$;
         this.owner2.showValidation$ = this.signingOfficer$;
