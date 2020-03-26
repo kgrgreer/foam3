@@ -37,5 +37,17 @@ p({
   "black":"#1e1f21",
   "inputHeight":"40px",
   "inputVerticalPadding":"10px",
-  "inputHorizontalPadding":"8px"
+  "inputHorizontalPadding":"8px",
+  "customCSS":
+  """
+    .us-business-onboarding {
+      display: none;
+    }
+    .accounting-software{
+      display: none;
+    }
+    .latest-ablii-items {
+      display: none;
+    }
+  """
 })

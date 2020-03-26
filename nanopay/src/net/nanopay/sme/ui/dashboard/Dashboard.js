@@ -423,15 +423,25 @@ foam.CLASS({
           .end();
 
         split.topButtons.add(top);
+
         split.line.add(line)
+          .addClass('latest-ablii-items')
           .hide(this.isIframe());
+
         split.leftTopPanel.add(topL)
+          .addClass('latest-ablii-items')
           .hide(this.isIframe());
+
         split.leftBottomPanel.add(botL)
+          .addClass('latest-ablii-items')
           .hide(this.isIframe());
+
         split.rightTopPanel.add(topR)
+          .addClass('latest-ablii-items')
           .hide(this.isIframe());
+
         split.rightBottomPanel.add(botR)
+          .addClass('latest-ablii-items')
           .hide(this.isIframe());
 
         this.addClass(this.myClass()).add(split);
