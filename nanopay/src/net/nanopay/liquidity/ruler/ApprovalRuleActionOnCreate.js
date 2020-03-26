@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.tx.model.Transaction',
@@ -129,6 +130,7 @@ foam.CLASS({
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
+            .setApprovableCreateKey(ApprovableAware.getApprovableCreateKey(x, obj))
             .setOperation(Operations.CREATE)
             .setCreatedBy(initiatingUser)
             .setOutgoingAccount(accountId)
