@@ -148,11 +148,11 @@ foam.CLASS({
               .end()
               .start('span')
                 .hide(this.isIframe())
+                .addClass('us-business-onboarding')
                 .add(this.slot((user$onboarded, businessOnboarding, complete) => {
                   let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
                   return this.E()
                     .start()
-                    .addClass('us-business-onboarding')
                     .tag({
                       class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard',
                       type: this.UnlockPaymentsCardType.INTERNATIONAL,
