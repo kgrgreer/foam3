@@ -402,15 +402,17 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.agent.firstName;
 
-        if ( this.userOwnsPercent ) {
-          this.owner1.firstName = this.agent.firstName;
-          this.owner1.lastName = this.agent.lastName;
-          this.owner1.jobTitle = this.agent.jobTitle;
-        }
+          if ( this.userOwnsPercent ) {
+            this.owner1.firstName = this.agent.firstName;
+            this.owner1.lastName = this.agent.lastName;
+            this.owner1.jobTitle = this.agent.jobTitle;
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
         }
 
         if ( ! this.userOwnsPercent ) {
@@ -1495,3 +1497,4 @@ foam.CLASS({
     }
   ]
 });
+
