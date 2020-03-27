@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.UserAndGroupAuthService',
+    'foam.nanos.auth.LifecycleState',
     'foam.util.Auth',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
@@ -51,6 +52,7 @@ foam.CLASS({
       User admin = new User();
       admin.setId(1300);
       admin.setFirstName("Unit");
+      admin.setLifecycleState(LifecycleState.ACTIVE);
       admin.setLastName("Test");
       admin.setEmail("test.nanopay1@mailinator.com");
       admin.setGroup("admin");
@@ -152,6 +154,7 @@ foam.CLASS({
       payee.setLastName("Business");
       payee.setEmail("test@mailinator.com");
       payee.setGroup("business");
+      payee.setLifecycleState(LifecycleState.ACTIVE);
       payee = (User) userDAO.put_(x, payee);
       X payeeContext = Auth.sudo(x, payee);
 
@@ -226,6 +229,7 @@ foam.CLASS({
       payer.setId(1380);
       payer.setFirstName("payer");
       payer.setLastName("Business");
+      payer.setLifecycleState(LifecycleState.ACTIVE);
       payer.setEmail("test@mailinator.com");
       payer.setGroup("business");
       payer = (User) userDAO.put_(x, payer);
@@ -303,6 +307,7 @@ foam.CLASS({
       businessUser.setLastName("Business");
       businessUser.setEmail("test@mailinator.com");
       businessUser.setGroup("business");
+      businessUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(businessUser);
       X businessUserContext = Auth.sudo(x, businessUser);
 
@@ -362,6 +367,7 @@ foam.CLASS({
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
       relatedUser.setGroup("business");
+      relatedUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
@@ -455,6 +461,7 @@ foam.CLASS({
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
       relatedUser.setGroup("business");
+      relatedUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
@@ -489,6 +496,7 @@ foam.CLASS({
       unrelatedUser.setLastName("Account");
       unrelatedUser.setEmail("test.unrelated@mailinator.com");
       unrelatedUser.setGroup("business");
+      unrelatedUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(unrelatedUser);
       X unrelatedUserContext = Auth.sudo(x, unrelatedUser);
 
@@ -528,6 +536,7 @@ foam.CLASS({
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
       relatedUser.setGroup("business");
+      relatedUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
@@ -588,6 +597,7 @@ foam.CLASS({
       payerUser.setLastName("payer");
       payerUser.setEmail("payer@mailinator.com");
       payerUser.setGroup("business");
+      payerUser.setLifecycleState(LifecycleState.ACTIVE);
 
       // Regular business user
       User regUser = new User();
@@ -595,6 +605,7 @@ foam.CLASS({
       regUser.setFirstName("RelatedUser");
       regUser.setLastName("Account");
       regUser.setEmail("test.related@mailinator.com");
+      regUser.setLifecycleState(LifecycleState.ACTIVE);
       regUser.setGroup("business");
 
       // Invoice2: access regUser

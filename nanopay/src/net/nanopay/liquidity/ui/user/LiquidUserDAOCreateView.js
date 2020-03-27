@@ -45,7 +45,6 @@ foam.CLASS({
       },
       code: function() {
         var cData = this.data.clone();
-        cData.lifecycleState = this.LifecycleState.PENDING;
 
         // Set Liquid-specific property values here.
         cData.group = 'liquidBasic';

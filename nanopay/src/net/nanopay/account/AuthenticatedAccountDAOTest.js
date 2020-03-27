@@ -10,6 +10,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.nanos.auth.*',
+    'foam.nanos.auth.LifecycleState',
     'foam.util.Auth',
     'java.util.List',
     'static foam.mlang.MLang.*'
@@ -29,6 +30,7 @@ foam.CLASS({
       user1.setLastName("Rilke");
       user1.setEmail("ranier@mailinator.com");
       user1.setGroup("basicUser");
+      user1.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(user1);
       X user1Context = Auth.sudo(x, user1);
 
@@ -37,6 +39,7 @@ foam.CLASS({
       user2.setFirstName("Franz");
       user2.setLastName("Kappus");
       user2.setEmail("franzkappus@mailinator.com");
+      user2.setLifecycleState(LifecycleState.ACTIVE);
       user2.setGroup("basicUser");
       userDAO.put(user2);
       X user2Context = Auth.sudo(x, user2);
