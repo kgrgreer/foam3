@@ -311,22 +311,9 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        // // TODO: fix: 'console.error :8080/#sme.main.dashboard:1 Uncaught (in promise) ...' postSet doesnt understand promised return- other then error shown this is not a blocker
-        // try {
-        //   this.userId$find.then((user) => {
-        //     if ( this.userId != n ) return;
-        //     this.firstName = user.firstName;
-        //     this.lastName = user.lastName;
-        //     this.jobTitle = user.jobTitle;
-        //     this.phone = user.phone;
-        //   });
-        // } catch (_) {
-        //   // ignore error, this is here to catch the fact that userId is a copied property to a
-        //   // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
-        // };
-        if ( this.userId === n ) {
+        if ( this.userId === this.agent.id ) {
           this.firstName = this.agent.firstName;
-          this.lastName = this.agent.lastName;
+          this.lastName = this.agent.lsastName;
           this.jobTitle = this.agent.jobTitle;
           this.phone = this.agent.phone;
         }
