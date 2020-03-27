@@ -48,12 +48,31 @@ foam.CLASS({
     'email',
   ],
 
+  sections: [
+    {
+      name: 'stepOne',
+      title: 'Create a contact',
+      subTitle: 'Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.'
+    },
+    {
+      name: 'stepTwo',
+      title: 'Add banking information',
+      subTitle: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.'
+    },
+    {
+      name: 'stepThree',
+      title: 'Add business address',
+      subTitle: 'In order to send payments to this business, we’ll need you to verify their business address below.'
+    }
+  ],
+
   properties: [
     {
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
+      section: 'stepOne',
       label: 'Company',
-      view: { class: 'foam.u2.tag.Input' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
@@ -71,13 +90,15 @@ foam.CLASS({
       documentation: `A field for the legal first and last name of the Contact,
         if different than the provided first name.  The field will default to first
         name, last name.`,
+      hidden: true,
       label: 'Name'
     },
     {
       name: 'email',
       documentation: 'The email address of the Contact.',
+      section: 'stepOne',
       label: 'Email',
-      view: { class: 'foam.u2.tag.Input' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -89,7 +110,9 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      view: { class: 'foam.u2.tag.Input' },
+      section: 'stepOne',
+      gridColumns: 6,
+      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -100,16 +123,36 @@ foam.CLASS({
     },
     {
       name: 'middleName',
+      hidden: true,
       validateObj: function(middleName) {}
     },
     {
       name: 'lastName',
-      view: { class: 'foam.u2.tag.Input' },
+      section: 'stepOne',
+      gridColumns: 6,
+      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
             return 'Last name cannot exceed 70 characters.';
           }
+        }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'confirm',
+      section: 'stepOne',    
+      documentation: `True if the user confirms their relationship with the contact.`,
+      view: {
+        class: 'foam.u2.CheckBox',
+        label: `I confirm that I have a business relationship with this contact and
+        acknowledge that the bank account info entered by the contact
+        business will be used for all deposits to their account.`
+    },
+      validateObj: function(confirm) {
+        if ( ! confirm ) {
+          return 'Confirmation required.';
         }
       }
     },
@@ -122,6 +165,7 @@ foam.CLASS({
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
       `,
+      hidden: true,
       tableCellFormatter: function(state, obj) {
         this.start()
           .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
@@ -137,19 +181,22 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       javaValue: '0',
       name: 'businessId',
-      documentation: `A unique identifier for the business associated with the Contact.`
+      documentation: `A unique identifier for the business associated with the Contact.`,
+      hidden: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
       documentation: `The ID for the individual person, or real user,
-        who registers with our platform.`
+        who registers with our platform.`,
+      hidden: true,
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
+      hidden: true,
       value: false
     },
     {
@@ -157,16 +204,54 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
-        if created while registering the Contact.`
+        if created while registering the Contact.`,
+      hidden: true,
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'createBankAccount',
+      section: 'stepTwo',
+      factory: function() {
+        return net.nanopay.bank.BankAccount.create();
+      },
+      view: {
+        class: 'foam.u2.view.FObjectView',
+        of: 'net.nanopay.bank.BankAccount'
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'shouldInvite',
+      section: 'stepTwo',
+      documentation: `
+        True if the user wants to invite the contact to join Ablii.
+      `,
+      view: {
+        class: 'foam.u2.CheckBox',
+        label: 'Invite this contact to join Ablii'
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
+      section: 'stepThree',
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       factory: function() {
         return this.Address.create();
+      }
+    },
+    {
+      name: 'disclaimer',
+      section: 'stepThree',
+      label: '',
+      view: function() {
+        return foam.u2.Element.create()
+          .start()
+            .addClass('disclaimer')
+            .add('* PO Boxes are not Allowed')
+          .end();
       }
     },
     {
@@ -174,6 +259,7 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
+      hidden: true,
       storageTransient: true
     },
     {
@@ -182,13 +268,15 @@ foam.CLASS({
       documentation: `Verifies that the email address of the Contact is valid.
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
-      `
+      `,
+      hidden: true,
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'businessPhone',
       documentation: 'The phone number of the business.',
+      hidden: true,
       factory: function() {
         return this.Phone.create();
       },
@@ -197,12 +285,14 @@ foam.CLASS({
     {
       class: 'PhoneNumber',
       name: 'businessPhoneNumber',
-      documentation: 'The phone number of the business.'
+      documentation: 'The phone number of the business.',
+      hidden: true,
     },
     {
       class: 'Boolean',
       name: 'businessPhoneVerified',
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      hidden: true,
     }
   ],
 

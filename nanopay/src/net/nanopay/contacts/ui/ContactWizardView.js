@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
-  name: 'ScratchWizardView',
+  name: 'ContactWizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
   documentation: `
@@ -87,14 +87,20 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.contacts.Contact',
       name: 'contact',
-      documentation: 'The added contact.'
+      documentation: 'The contact returned after put to contactDAO'
     }
   ],
   
   methods: [
+    function init() {
+      this.sections = this.sections.filter((section) => section.fromClass === 'Contact');
+      this.data.copyFrom({
+        type: 'Contact',
+        group: 'sme'
+      });  
+    },
     function initE() {
       var self = this;
-
       this.addClass(this.myClass());
       self
         .start(self.Rows)
@@ -122,24 +128,14 @@ foam.CLASS({
           .endContext()
         .end();
     },
-
-    /** Add the contact to the user's contacts. */
-    async function addContact(bankAccountSet) {
+    // /** Add the contact to the user's contacts. */
+    async function addContact() {
       this.isConnecting = true;
-      var contact = this.Contact.create({
-        type: 'Contact',
-        group: 'sme',
-        organization: this.data.organization,
-        email: this.data.email,
-        firstName: this.data.firstName,
-        lastName: this.data.lastName,
-        businessAddress: bankAccountSet ? this.data.businessAddress : ''
-      });
       try {
-      contact = await this.user.contacts.put(contact);
+        this.contact = await this.user.contacts.put(this.data);
         if ( this.data.shouldInvite ) {
           try {
-            await this.sendInvite(false, contact.id);
+            await this.sendInvite(false);
             this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
           } catch (err) {
             var msg = err.message || this.GENERIC_PUT_FAILED;
@@ -155,16 +151,15 @@ foam.CLASS({
         return false;
       }
       this.isConnecting = false;
-      this.contact = contact;
       return true;
     },
 
-    /** Send the Contact an email inviting them to join Ablii. */
-    async function sendInvite(showToastMsg, inviteeId) {
+    // /** Send the Contact an email inviting them to join Ablii. */
+    async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
         createdBy: this.user.id,
-        inviteeId: inviteeId,
+        inviteeId: this.data.id,
         businessName: this.data.organization,
         message: ''
       });
@@ -180,17 +175,15 @@ foam.CLASS({
         this.ctrl.notify(msg, 'error');
         return false;
       }
-
       return true;
     },
 
-    /** Add the bank account to the Contact. */
+    // /** Add the bank account to the Contact. */
     async function addBankAccount() {
       this.isConnecting = true;
       var contact = this.contact;
-      var bankAccount = this.data.bankAccount;
+      var bankAccount = this.data.createBankAccount;
       bankAccount.owner = contact.id;
-
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
         await this.updateContactBankInfo(contact, result.id);
@@ -199,12 +192,11 @@ foam.CLASS({
         this.ctrl.notify(msg, 'error');
         return false;
       }
-
       this.isConnecting = false;
       return true;
     },
 
-    /** Sets the reference from the Contact to the Bank Account.  */
+    // /** Sets the reference from the Contact to the Bank Account.  */
     async function updateContactBankInfo(contact, bankAccountId) {
       try {
         contact.bankAccount = bankAccountId;
@@ -229,18 +221,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'option',
-      label: 'Save without banking',
-      isAvailable: function(currentIndex) {
-        return currentIndex === 1;
-      },
-      code: async function(X) {
-        if ( ! await this.addContact(false) ) return;
-        X.pushMenu('sme.main.contacts');
-        X.closeDialog();
-      }
-    },
-    {
       name: 'next',
       label: 'Next',
       isEnabled: function(data$errors_, data$bankAccount$errors_, currentIndex) {
@@ -255,6 +235,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'option',
+      label: 'Save without banking',
+      isAvailable: function(currentIndex) {
+        return currentIndex === 1;
+      },
+      code: async function(X) {
+        if ( ! await this.addContact(false) ) return;
+        X.pushMenu('sme.main.contacts');
+        X.closeDialog();
+      }
+    },
+    {
       name: 'save',
       label: 'Save',
       isEnabled: function(data$businessAddress$errors_, isConnecting) {
@@ -264,7 +256,7 @@ foam.CLASS({
         return nextIndex === -1;
       },
       code: async function(X) { 
-        if ( ! await this.addContact(true) ) return;
+        if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
         X.pushMenu('sme.main.contacts');
         X.closeDialog();

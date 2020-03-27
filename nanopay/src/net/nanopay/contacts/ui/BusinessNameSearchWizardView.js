@@ -10,6 +10,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'auth',
     'ctrl',
     'user'
   ],
@@ -19,6 +20,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 540px;
+      max-height: 80vh;
       overflow-y: scroll;
     }
     ^section-container {
@@ -81,6 +83,13 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      var permission = 'CA' === this.user.address.countryId ? 'currency.read.USD' : 'currency.read.CAD';
+      var otherCountry = 'CA' === this.user.address.countryId ? 'US' : 'CA';
+      this.auth.check(null, permission).then((hasPermission) => {
+        if ( hasPermission ) this.data.permissionedCountries = [this.user.address.countryId, otherCountry];
+      })
+    },
     function initE() {
       var self = this;
 

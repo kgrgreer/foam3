@@ -92,7 +92,7 @@ p({
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.ui.wizard.WizardController",
-      "model": "net.nanopay.contacts.ui.modal.Scratch"
+      "model": "net.nanopay.contacts.Contact"
     }
   }
 })
