@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'BusinessAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
-  documentation: 'Allows businesses to be acted as.',
+  documentation: 'Nanopay businesses specific Auth checks.',
 
   implements: [
     'foam.nanos.NanoService'
@@ -33,14 +33,12 @@ foam.CLASS({
       name: 'getCurrentUser',
       javaCode: `
         User user = (User) x.get("user");
-        if ( user == null ) {
-          throw new AuthenticationException("User not found");
-        }
-
         // check user status is not disabled
-        if ( AccountStatus.DISABLED == user.getStatus() ) {
+        if ( user != null &&
+             AccountStatus.DISABLED == user.getStatus() ) {
           throw new AuthenticationException("User disabled");
         }
+
         return getDelegate().getCurrentUser(x);
     `
     }
