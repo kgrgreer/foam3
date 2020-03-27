@@ -104,10 +104,6 @@ public class BusinessInvitationDAO
         return super.put_(x, invite);
       }
 
-      if ( invite.getStatus() == InvitationStatus.CANCELLED) {
-        return super.put_(x, invite);
-      }
-
       // Log duplicate invites.
       Logger logger = (Logger) x.get("logger");
       logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));

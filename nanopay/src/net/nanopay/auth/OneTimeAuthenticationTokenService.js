@@ -108,7 +108,7 @@ foam.CLASS({
         DAO tokenDAO = (DAO) getTokenDAO();
         Token tokenResult = (Token) tokenDAO.find(EQ(Token.DATA, token));
 
-        if ( tokenResult == null ) {
+        if ( token != null && tokenResult == null ) {
           throw new RuntimeException("Token not found");
         }
 

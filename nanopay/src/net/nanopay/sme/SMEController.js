@@ -31,7 +31,6 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
-    'foam.nanos.auth.token.Token',
     'foam.u2.Element'
   ],
 
@@ -559,9 +558,9 @@ foam.CLASS({
         var searchParams = new URLSearchParams(location.search);
         var tokenParam = searchParams.get('token');
 
-        self.client.authenticationTokenService.processToken(null, null, searchParams.get('token')).then(() => {
+        self.client.authenticationTokenService.processToken(null, null, tokenParam).then(() => {
         }).catch(e => {
-            if ( e.message === 'Token has already been used' ) {
+            if ( tokenParam != null && e.message === 'Token not found' ) {
               view = { class: 'net.nanopay.sme.ui.InvalidTokenErrorPageView' };
               self.stack.push(view, self);
             }
@@ -578,7 +577,7 @@ foam.CLASS({
             param: {
               email: searchParams.get('email'),
               disableEmail_: searchParams.has('email'),
-              token_: searchParams.get('token'),
+              token_: tokenParam,
               organization: searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '',
