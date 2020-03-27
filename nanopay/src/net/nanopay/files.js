@@ -164,7 +164,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ui/UserSelectionView', flags: ['web'] },
   { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
-  { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
   { name: 'net/nanopay/auth/ServiceProviderURL' },
   { name: 'net/nanopay/auth/UserCreateServiceProviderURLRule' },
