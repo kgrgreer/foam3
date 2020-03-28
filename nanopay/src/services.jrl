@@ -34,7 +34,6 @@ p({
     auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(auth).build();
-    auth = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(auth).build();
     return auth;
@@ -713,6 +712,7 @@ p({
       .setPipelinePm(true)
       .setDeletedAware(false)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
   """,

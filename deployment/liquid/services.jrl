@@ -13,7 +13,6 @@ p({
     auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(auth).build();
-    auth = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(auth).build();
     return auth;
@@ -135,7 +134,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"localAccountDAO",
   "lazy":false,
   "serviceScript":
@@ -143,7 +142,6 @@ p({
     import net.nanopay.account.Account;
     import foam.dao.DAO;
     import net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO;
-    import foam.nanos.medusa.*;
 
     dao = new foam.dao.MDAO(Account.getOwnClassInfo());
 
@@ -154,11 +152,7 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.LIFECYCLE_STATE });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
-    if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new MMDAO(x, "localAccountDAO", dao, "singleJournal", "accounts");
-    } else {
-      dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
-    }
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
     dao = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
@@ -236,45 +230,50 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localTransactionDAO",
+  "class":"foam.nanos.boot.NSpec", "name":"bareTransactionDAO",
   "lazy":false,
   "serviceScript":
   """
     import foam.core.PropertyInfo;
     import net.nanopay.tx.model.Transaction;
-    import foam.nanos.medusa.*;
-    transactionMDao = new foam.dao.MDAO(Transaction.getOwnClassInfo());
+    import foam.dao.MDAO;
+    import foam.dao.DAO;
+    import foam.nanos.analytics.DAOFoldManager;
+    import foam.nanos.analytics.FoldManagerDAODecorator;
+    import foam.nanos.auth.DeletedAwareDAO;
+    import foam.nanos.ruler.RulerDAO;
+    import net.nanopay.tx.stripe.StripeTransactionDAO;
+    import net.nanopay.tx.UpdateInvoiceTransactionDAO;
+    import net.nanopay.tx.CheckQuotedTransactionDAO;
+    import net.nanopay.tx.CompletedTransactionDAO;
+    import net.nanopay.tx.realex.RealexTransactionDAO;
+    import net.nanopay.tx.TransactionDAO;
+    import net.nanopay.security.HashingJDAO;
+    import net.nanopay.security.RandomNonceDAO;
+    import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
 
-    // Add indexes
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.CREATED});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_MODIFIED});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LIFECYCLE_STATE});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.TYPE});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.PARENT});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
-    transactionMDao.addIndex(new PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
-
-    // Set DAO chain
-    dao = new foam.nanos.analytics.DAOFoldManager.Builder(x)
-      .setDao(x.get("accountBalanceHourlyCandlestickDAO"))
+    MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_MODIFIED});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LIFECYCLE_STATE});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS, Transaction.PARENT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.STATUS, Transaction.DESTINATION_ACCOUNT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.TYPE});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.PARENT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
+    transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
+    dao = new DAOFoldManager.Builder(x)
+      .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
       .setPeriodLengthMs(60 * 60 * 1000)
       .build();
-    dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
+    dao = new FoldManagerDAODecorator.Builder(x)
       .setDelegate(transactionMDao)
       .setFm(dao)
       .build();
     dao = new net.nanopay.tx.TransactionDAO(x, dao);
-
-
-    if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new MMDAO(x, "localTransactionDAO", dao, "singleJournal", "transactions");
-    } else {
-      dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
-    }
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, dao, "transactions");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.LiquidTransactionValidator());
     dao = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
       .setDelegate(dao)
@@ -286,28 +285,31 @@ p({
       .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
         .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
           .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
-            .setDelegate(dao)
+            .setDelegate(new foam.dao.GUIDDAO(dao))
             .build())
           .build())
         .build())
       .build();
-    dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
-    dao = new net.nanopay.tx.UpdateInvoiceTransactionDAO(x, dao);
-    dao = new net.nanopay.tx.ExecuteMethodsTransactionDAO.Builder(x)
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
+  """,
+  "documentation":"An authenticated base transaction DAO with bare minimal decorators. Used by localTransactionDAO."
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionDAO",
+  "lazy":false,
+  "serviceScript": """
+    // TODO: Will make our own liquid rules journal and then re-enable the rule engine
+    dao = new foam.nanos.ruler.RulerDAO(x, x.get("bareTransactionDAO"), "localTransactionDAO");
+    dao = new net.nanopay.tx.SaveChainedTransactionDAO(x, dao);
+    dao = new net.nanopay.tx.CompletedTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
-
-    if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new net.nanopay.tx.ClusterClientTransactionDAO.Builder(x)
-        .setServiceName("transactionDAO")
-        .setDelegate(dao)
-        .build();
-    }
-    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao);    
+    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao, true);
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
   """
 })
-
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTransactionQuotePlanDAO",
@@ -332,13 +334,9 @@ p({
     dao = new net.nanopay.tx.QuoteFillerDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.GuidTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setNullify(true)
@@ -347,19 +345,11 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec","id":"balanceDAO","client":"{\"of\":\"net.nanopay.account.Balance\",\"requestResponseCaching\":true,\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
-p({
-  "class":
-  "foam.nanos.boot.NSpec",
-  "id":"exchangeRateDAO",
-  "client":"{\"of\":\"net.nanopay.fx.ExchangeRate\",\"requestResponseCaching\":true,\"cache\":true}"
-})
-
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "userDAO",
-  "serve": true,  
-  "description": "Client authenticated userDAO", 
+  "serve": true,
+  "description": "Client authenticated userDAO",
   "authenticate": false,
   "serviceScript":
   """
@@ -367,7 +357,7 @@ p({
         .setPm(true)
         .setPipelinePm(true)
         .setValidated(true)
-        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator()) 
+        .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator())
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
         .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
@@ -399,7 +389,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.User.getOwnClassInfo()) 
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setInnerDAO(x.get("userDAO"))
       .setDecorator(
         new foam.dao.FilteredDAO.Builder(x)
@@ -431,36 +421,31 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "localUserDAO",
+  "name": "bareUserDAO",
   "lazy": false,
+  "description": "Bare boned userDAO wrapped with essential decorators.",
+  "authenticate": false,
   "serviceScript":
   """
-    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
-    dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
-    dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
-    dao = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(dao).build();
-    dao = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, dao);
-    dao = new net.nanopay.onboarding.CreateBusinessDAO(x, dao);
-    dao = new net.nanopay.onboarding.email.RegistrationSubmissionEmailDAO(x, dao);
-    dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
-    dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
-    dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
-    dao = new net.nanopay.contacts.PreventDuplicateContactEmailDAO(x, dao);
-    dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
-    dao = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, dao);
-
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setEnableInterfaceDecorators(false)
-      .setRuler(true)
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
       .setSeqNo(true)
+      .setSeqStartingValue(1000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
+      .setServiceProviderAware(true)
       .setDeletedAware(false)
-      .setValidated(true)
-      .setInnerDAO(x.get("bareUserDAO"))
-      .setDecorator(dao)
       .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+    return dao;
+  """,
+  "client": """
+    { "of":"foam.nanos.auth.User" }
   """
 })
 
@@ -468,7 +453,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "ruleDAO",
   "serve": true,
-  "serviceScript": 
+  "serviceScript":
   """
     import foam.dao.DAO;
 
@@ -499,9 +484,9 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"liquiditySettingsDAO",
-  "serve":true,  
+  "serve":true,
   "serviceScript":
   """
   import net.nanopay.liquidity.LiquiditySettings;
@@ -526,7 +511,7 @@ p({
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
     .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
 })
 
@@ -558,16 +543,16 @@ p({
   "client":
   """
     {
-      "of":"net.nanopay.tx.model.Transaction", 
+      "of":"net.nanopay.tx.model.Transaction",
       "remoteListenerSupport": false,
-      "serverBox": { 
-        "class":"foam.box.SessionClientBox", 
-        "url":"service/transactionDAO", 
-        "delegate": { 
+      "serverBox": {
+        "class":"foam.box.SessionClientBox",
+        "url":"service/transactionDAO",
+        "delegate": {
           "class":"foam.box.TimeoutBox",
           "timeout":60000,
           "delegate": {
-            "class":"foam.box.HTTPBox", 
+            "class":"foam.box.HTTPBox",
             "url":"service/transactionDAO"
           }
         }
@@ -624,19 +609,19 @@ p({
       .setEnableInterfaceDecorators(false)
       .build();
   """,
-  "client": 
+  "client":
   """
   {
-    "of":"net.nanopay.tx.model.Transaction", 
-    "remoteListenerSupport": false, 
-    "serverBox": { 
-      "class":"foam.box.SessionClientBox", 
-      "url":"service/tableViewTransactionDAO", 
-      "delegate": { 
-        "class":"foam.box.TimeoutBox", 
+    "of":"net.nanopay.tx.model.Transaction",
+    "remoteListenerSupport": false,
+    "serverBox": {
+      "class":"foam.box.SessionClientBox",
+      "url":"service/tableViewTransactionDAO",
+      "delegate": {
+        "class":"foam.box.TimeoutBox",
         "timeout":25000,
         "delegate": {
-          "class":"foam.box.HTTPBox", 
+          "class":"foam.box.HTTPBox",
           "url":"service/tableViewTransactionDAO"
         }
       }
