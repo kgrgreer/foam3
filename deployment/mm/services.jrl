@@ -21,6 +21,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
+      .setEnableInterfaceDecorators(false)
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
       })
