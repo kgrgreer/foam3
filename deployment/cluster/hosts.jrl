@@ -1,0 +1,29 @@
+p({
+  "class":"foam.net.Host",
+  "id":"mm1"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mm2"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mm3"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn1"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn2"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn3"
+})

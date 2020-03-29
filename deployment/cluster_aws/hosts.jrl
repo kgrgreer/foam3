@@ -1,0 +1,35 @@
+p({
+  "class":"foam.net.Host",
+  "id":"mm1",
+  "address":"172.19.241.156",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mm2",
+  "address":"172.19.240.89",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mm3",
+  "address":"172.19.241.252",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn1",
+  "address":"172.19.240.231",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn2",
+  "address":"172.19.241.181"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn3",
+  "address":"172.19.240.53",
+})
