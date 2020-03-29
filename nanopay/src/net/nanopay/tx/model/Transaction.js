@@ -195,9 +195,11 @@ foam.CLASS({
 
   properties: [
     {
+      // TODO: what is this.
       class: 'String',
       name: 'mode',
-      hidden: true
+      hidden: true,
+      includeInDigest: false
     },
     {
       name: 'name',
@@ -217,7 +219,8 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.account.Balance',
       javaFactory: 'return new Balance[0];',
-      hidden: true
+      hidden: true,
+      includeInDigest: false
     },
     {
       name: 'type',
@@ -251,7 +254,8 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
-      hidden: true
+      hidden: true,
+      includeInDigest: false
     },
     {
       class: 'String',
@@ -264,7 +268,7 @@ foam.CLASS({
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
       tableWidth: 150,
-      includeInDigest: true
+//      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -383,18 +387,18 @@ foam.CLASS({
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
-    {
-      name: 'invoiceNumber',
-      hidden: true,
-      factory: function() {
-        return this.invoiceId;
-      },
-      tableCellFormatter: function(value, obj) {
-        this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
-          if ( invoice ) this.start().add(invoice.invoiceNumber).end();
-        });
-      }
-    },
+    // {
+    //   name: 'invoiceNumber',
+    //   hidden: true,
+    //   factory: function() {
+    //     return this.invoiceId;
+    //   },
+    //   tableCellFormatter: function(value, obj) {
+    //     this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
+    //       if ( invoice ) this.start().add(invoice.invoiceNumber).end();
+    //     });
+    //   }
+    // },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
@@ -432,7 +436,8 @@ foam.CLASS({
       factory: function() {
         return ['No status to choose'];
       },
-      documentation: 'Returns available statuses for each transaction depending on current status'
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      storageTransient: true
     },
     {
     // can this also be storage transient and just take the first entry in the historicStatus array?
@@ -442,6 +447,7 @@ foam.CLASS({
       value: 'COMPLETED',
       javaFactory: 'return TransactionStatus.COMPLETED;',
       hidden: true,
+      includeInDigest: false
     },
     {
       class: 'String',
@@ -477,6 +483,7 @@ foam.CLASS({
         };
       },
       storageTransient: true,
+      includeInDigest: false,
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -492,6 +499,7 @@ foam.CLASS({
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
+      includeInDigest: false,
       section: 'paymentInfoDestination',
       createVisibility: 'HIDDEN',
       readVisibility: function(payee, referenceNumber) {
@@ -523,12 +531,15 @@ foam.CLASS({
       name: 'payeeId',
       section: 'paymentInfoDestination',
       storageTransient: true,
+      includeInDigest: false,
       visibility: 'HIDDEN',
     },
     {
       class: 'Long',
       name: 'payerId',
       label: 'payer',
+      storageTransient: true,
+      includeInDigest: false,
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
       readVisibility: function(payerId) {
@@ -541,7 +552,6 @@ foam.CLASS({
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
-      storageTransient: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -651,6 +661,7 @@ foam.CLASS({
       name: 'total',
       label: 'Total Amount',
       transient: true,
+      includeInDigest: false,
       visibility: 'HIDDEN',
       expression: function(amount) {
         return amount;
@@ -665,7 +676,7 @@ foam.CLASS({
           .addClass('amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
-      }
+      },
     },
     {
       class: 'UnitValue',
@@ -873,6 +884,7 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       storageTransient: true,
+      includeInDigest: false,
       expression: function(statusHistory) {
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
@@ -886,17 +898,22 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      // TODO/REVIEW causing class cast exception during medusa replay
+      includeInDigest: false,
     },
     {
       name: 'reverseLineItems',
       label: '',
+      includeInDigest: false,
       section: 'reverseLineItemsSection',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}'
+      javaValue: 'new TransactionLineItem[] {}',
+      // TODO/REVIEW causing class cast exception during medusa replay
+      includeInDigest: false,
     },
     {
       class: 'DateTime',
@@ -928,6 +945,7 @@ foam.CLASS({
       label: 'Payer/Payee Name',
       documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
       transient: true,
+      includeInDigest: false,
       hidden: true,
       searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
     },

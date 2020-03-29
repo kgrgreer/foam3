@@ -1,4 +1,6 @@
 p({"class":"net.nanopay.account.TrustAccount", "id":1, "owner":101, "denomination":"CAD", "name":"nanopay Alterna Trust Account CAD"})
+p({"class":"net.nanopay.account.TrustAccount","id":20,"owner":101,"reserveAccount":21,"status":1,"enabled":true,"name":"BMO Trust Account CAD","isDefault":true})
+p({"class":"net.nanopay.bank.CABankAccount","id":21,"owner":101,"branch":20,"accountNumber":"99999999","status":1,"enabled":true,"name":"BMO Reserve Account CAD","isDefault":true})
 p({"class":"net.nanopay.account.DigitalAccount", "id":2, "owner":101, "denomination":"CAD", "name":"nanopay Fee Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":3, "owner":101, "denomination":"CAD", "name":"nanopay Broker Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":4, "owner":101, "denomination":"CAD", "isDefault":true, "name":"stripe digital account to mimic payer CAD"})

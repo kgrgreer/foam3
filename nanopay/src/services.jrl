@@ -130,22 +130,33 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "branchDAO",
-  "serve": true,
+  "name": "localBranchDAO",
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setAuthorize(true)
+      .setOf(net.nanopay.model.Branch.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("branches")
+      .setAuthorize(true)
       .setSeqNo(true)
-      .setOf(net.nanopay.model.Branch.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.model.Branch\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "branchDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return x.get("localBranchDAO")
+  """,
+  "client": "{\"of\":\"net.nanopay.model.Branch\"}"
+});
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -2092,16 +2103,17 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
+      .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setGuid(true)
       .setContextualize(true)
-      .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("rules")
       .setValidated(true)
       .setRuler(false)
+      .setCluster(false)
       .setApprovableAware(true)
       .setApprovableAwareEnabled(false)
+      .setPm(true)
       .build();
 
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
