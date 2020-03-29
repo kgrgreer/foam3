@@ -3,6 +3,10 @@
 
 TEST=0
 HOME="$NANOPAY_HOME"
+MACOS='darwin*'
+LINUXOS='linux-gnu'
+IS_MAC=0
+IS_LINUX=0
 
 while getopts "t" opt ; do
     case $opt in
@@ -39,8 +43,21 @@ else
     mkdir -p $HOME
 fi
 
-# create passphrase
-python -c 'print open("/dev/random").read(24).encode("base64").strip("=\n")' > "$HOME/passphrase"
+#determine OS environment
+if [[ $OSTYPE =~ $MACOS ]]; then
+    IS_MAC=1
+elif [[ $OSTYPE =~ $LINUXOS ]]; then
+    IS_LINUX=1
+fi
+
+#create passphrase
+if [[ $IS_MAC -eq 1 ]]; then
+    echo "INFO :: Creating passphrase using python on MACOS"
+    python -c 'print open("/dev/random").read(24).encode("base64").strip("=\n")' > "$HOME/passphrase"
+elif [[ $IS_LINUX -eq 1 ]]; then
+    echo "INFO :: Creating passphrase using python on LINUX"
+    dd if=/dev/random bs=24 count=1 | base64 | tr -d '\n' > $HOME/passphrase
+fi
 
 # creates a keystore with a dummy entry
 keytool \

@@ -38,7 +38,8 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      javaFactory: 'return new DefaultClearingTimeRulePredicate();'
+      javaFactory: 'return new DefaultClearingTimeRulePredicate();',
+      visibility: 'HIDDEN'
     },
     {
       name: 'action',
