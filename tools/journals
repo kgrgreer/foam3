@@ -29,6 +29,7 @@ fundTransferSystems
 fxProviders
 groupPermissionJunctions
 groups
+hosts
 htmlDoc
 identificationTypes
 InstitutionPaymentProvider
