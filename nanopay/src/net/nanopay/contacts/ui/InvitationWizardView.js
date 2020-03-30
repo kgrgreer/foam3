@@ -60,11 +60,18 @@ foam.CLASS({
       message: 'There was a problem sending the invitation.'
     }
   ],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'disableMenuMode',
+      value: false
+    }
+  ],
   
   methods: [
     function initE() {
       var self = this;
-
       this.addClass(this.myClass());
       self
         .start(self.Rows)
@@ -90,7 +97,10 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        if (X.subStack && X.subStack.depth > 1 ) {
+        if ( X.data.disableMenuMode ) {
+          X.closeDialog();
+        }
+        else if (X.subStack && X.subStack.depth > 1 ) {
           X.subStack.back();
         } else {
           X.pushMenu('sme.menu.toolbar');

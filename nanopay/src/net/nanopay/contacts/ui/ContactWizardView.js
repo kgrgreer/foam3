@@ -213,6 +213,7 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
+        this.isConnecting = false;
         if ( this.currentIndex > 0 ) {
           this.currentIndex = this.prevIndex;
         } else {
@@ -223,8 +224,8 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      isEnabled: function(data$errors_, data$bankAccount$errors_, currentIndex) {
-        if ( currentIndex === 1 ) return ! data$bankAccount$errors_;
+      isEnabled: function(data$errors_, data$createBankAccount$errors_, currentIndex) {
+        if ( currentIndex === 1 ) return ! data$createBankAccount$errors_;
         return ! data$errors_;
       },
       isAvailable: function(nextIndex) {
@@ -242,7 +243,6 @@ foam.CLASS({
       },
       code: async function(X) {
         if ( ! await this.addContact(false) ) return;
-        X.pushMenu('sme.main.contacts');
         X.closeDialog();
       }
     },
@@ -258,7 +258,6 @@ foam.CLASS({
       code: async function(X) { 
         if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
-        X.pushMenu('sme.main.contacts');
         X.closeDialog();
       }
     }

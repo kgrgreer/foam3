@@ -17,6 +17,7 @@ foam.CLASS({
     'ctrl',
     'errors',
     'invoice',
+    'pushMenu',
     'notificationDAO',
     'notify',
     'stack',
@@ -442,10 +443,7 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.Popup.create({ onClose: self.checkUser.bind(self) }).tag({
-                      class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
-                      data: contact
-                    }));
+                    // disabled until new edit contact flow is implemented
                   });
                 })
               .end()
@@ -653,9 +651,7 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        X.view.add(X.view.Popup.create().tag({
-          class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
-        }));
+        X.pushMenu('sme.menu.toolbar');
       }
     }
   ]

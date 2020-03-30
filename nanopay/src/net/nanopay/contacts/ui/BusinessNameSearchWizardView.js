@@ -73,6 +73,10 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'CONTACT_ADDED', message: 'Personal contact added.' }
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -152,7 +156,7 @@ foam.CLASS({
       },
       code: async function(X) { 
         if ( ! await this.addContact() ) return;
-        X.pushMenu('sme.main.contacts');
+        X.closeDialog();
       }
     }
   ]

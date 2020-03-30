@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'PaymentCodeSearchWizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     Lets user add internal contact using a paymentcode.
   `,
@@ -11,6 +15,11 @@ foam.CLASS({
     'ctrl',
     'user',
     'businessFromPaymentCode'
+  ],
+
+  requires: [
+    'net.nanopay.contacts.Contact',
+    'foam.mlang.sink.Count'
   ],
 
   css: `
@@ -66,6 +75,7 @@ foam.CLASS({
 
   messages: [
     { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
+    { name: 'CONTACT_EXISTS_ERROR', message: 'Contact with this payment code already exists.' },
   ],
 
   properties: [
@@ -138,6 +148,12 @@ foam.CLASS({
         let { paymentCodeValue, contact } = this.data;
         try {
           var business = await this.businessFromPaymentCode.getPublicBusinessInfo(X, paymentCodeValue);
+          // check if contact associated with given payment code already exists
+          var sink = await this.user.contacts.where(this.EQ(this.Contact.BUSINESS_ID, business.id)).select(this.Count.create());
+          if ( sink.value != 0 ) {
+            this.ctrl.notify(this.CONTACT_EXISTS_ERROR, 'error');
+            return;
+          }
           // copy over contact properties
           contact.copyFrom({
             organization: business.organization,
@@ -163,7 +179,6 @@ foam.CLASS({
       },
       code: async function(X) { 
         if ( ! await this.addContact() ) return;
-        X.pushMenu('sme.main.contacts');
         X.closeDialog();
       }
     }

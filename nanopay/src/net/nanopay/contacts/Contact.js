@@ -11,6 +11,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable'
   ],
 
@@ -31,7 +32,15 @@ foam.CLASS({
   ],
 
   imports: [
-    'publicBusinessDAO'
+    'auth',
+    'countryDAO',
+    'publicBusinessDAO',
+    'user'
+  ],
+
+  requires: [
+    'foam.nanos.auth.Country',
+    'foam.dao.PromisedDAO'
   ],
 
   constants: [
@@ -212,7 +221,7 @@ foam.CLASS({
       name: 'createBankAccount',
       section: 'stepTwo',
       factory: function() {
-        return net.nanopay.bank.BankAccount.create();
+        return net.nanopay.bank.BankAccount.create({ isDefault: true });
       },
       view: {
         class: 'foam.u2.view.FObjectView',
@@ -237,7 +246,43 @@ foam.CLASS({
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
       section: 'stepThree',
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: X.data.PromisedDAO.create({
+            promise: X.data.auth.check(null, 'currency.read.USD').then((hasPermission) => {
+              var q;
+              if ( hasPermission && X.data.user.countryOfBusinessRegistration == 'CA' ) {
+                q = X.data.OR(
+                  X.data.EQ(X.data.Country.ID, 'CA'),
+                  X.data.EQ(X.data.Country.ID, 'US'),
+                  X.data.EQ(X.data.Country.ID, 'IN')
+                );
+              } else if ( hasPermission ) {
+                q = X.data.OR(
+                  X.data.EQ(X.data.Country.ID, 'CA'),
+                  X.data.EQ(X.data.Country.ID, 'US')
+                );
+              } else {
+                return X.data.auth.check(null, 'currency.read.INR').then((inrPermission) => {
+                  if ( inrPermission ) {
+                    q = X.data.OR(
+                      X.data.EQ(X.data.Country.ID, 'CA'),
+                      X.data.EQ(X.data.Country.ID, 'IN')
+                    );
+                  } else {
+                    q = X.data.EQ(X.data.Country.ID, 'CA');
+                  }
+                  return X.data.countryDAO.where(q);
+                });
+              }
+              return X.data.countryDAO.where(q);
+            })
+          })
+        };
+      },
+      // view: { class: 'net.nanopay.sme.ui.AddressView', customCountryDAO: dao },
       factory: function() {
         return this.Address.create();
       }

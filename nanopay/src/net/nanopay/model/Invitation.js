@@ -52,6 +52,9 @@ foam.CLASS({
       section: 'inviteSection',
       documentation: `Hard set to business name when invitee is
       not a contact. Used to populate "name" email argument.`,
+      visibility: function(isContact) {
+        return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      },
       view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
       validateObj: function(businessName) {
         if (
@@ -67,6 +70,9 @@ foam.CLASS({
       name: 'email',
       section: 'inviteSection',
       documentation: 'Email address of the invitee',
+      visibility: function(isContact) {
+        return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      },
       view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
       validateObj: function(email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
