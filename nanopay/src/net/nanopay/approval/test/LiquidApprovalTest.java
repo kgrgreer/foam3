@@ -155,7 +155,7 @@ public class LiquidApprovalTest extends Test {
 
   private void checkApprovalRequests(X x, User systemUser, User user, ArraySink approvalRequests, String message1, String message2) {
     String modelName = User.getOwnClassInfo().getObjClass().getSimpleName();
-    List<Long> approverIds = userQueryService.getAllApprovers(x, modelName, user);
+    List<Long> approverIds = userQueryService.getAllApprovers(x, modelName);
     List<Long> requestApproverIds = new ArrayList<>();
     boolean requestsMarkedRequested = true;
     for ( int j = 0; j < approvalRequests.getArray().size(); j++ ) {
