@@ -1,0 +1,21 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "description":"",
+  "lazy":false,
+  "parameters":false,
+  "pm":true,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacy":"Privacy Policy",
+    "privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "urlLabel":"Powered by nanopay",
+    "termsAndCondLabel":"Terms and Conditions",
+    "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
+    "mode":2,
+    "appLink":"",
+    "playLink":"https://play.google.com/store?hl=en",
+    "enableInternationalPayment":true
+  }
+})

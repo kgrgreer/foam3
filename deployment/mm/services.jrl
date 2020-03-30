@@ -32,6 +32,9 @@ p({
     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
       foam.nanos.medusa.MedusaEntry.HASH
     });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.HAS_CONSENSUS
+    });
     return dao;
    `
 })
@@ -68,9 +71,11 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
-        .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
-          .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
+      .setDecorator(new foam.nanos.medusa.MedusaEntryAgencyDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
+          .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
+            .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
+            .build())
           .build())
         .build())
       .build();

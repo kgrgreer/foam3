@@ -63,6 +63,7 @@ public class TransactionBenchmark
 
   @Override
   public void teardown(X x, java.util.Map stats) {
+    Logger logger = (Logger) x.get("logger");
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
     stats.put("Transactions (M)", (txns.getValue() / 1000.0));
@@ -94,7 +95,7 @@ public class TransactionBenchmark
         // nop
       }
     }
-    logger_.info(this.getClass().getSimpleName(), "teardown", "counts", sb.toString());
+    logger.info(this.getClass().getSimpleName(), "teardown", "counts", sb.toString());
 
     if ( purge_ ) {
       while ( dao != null &&
@@ -104,12 +105,12 @@ public class TransactionBenchmark
           Count before = (Count) mdao.select(new Count());
           mdao.removeAll();
           Count after = (Count) mdao.select(new Count());
-          logger_.info(this.getClass().getSimpleName(), "teardown", "purge", (before.getValue() - after.getValue()));
+          logger.info(this.getClass().getSimpleName(), "teardown", "purge", (before.getValue() - after.getValue()));
           break;
         } else if ( dao instanceof foam.dao.ProxyDAO ) {
           dao = ((foam.dao.ProxyDAO) dao).getDelegate();
         } else {
-          logger_.info(this.getClass().getSimpleName(), "teardown", "purge", "FAILED");
+          logger.info(this.getClass().getSimpleName(), "teardown", "purge", "FAILED");
           break;
         }
       }
