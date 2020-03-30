@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
     'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
@@ -82,6 +83,7 @@ foam.CLASS({
         admin.setLastName("Rilke");
         admin.setEmail("ranier@mailinator.com");
         admin.setGroup("admin");
+        admin.setLifecycleState(LifecycleState.ACTIVE);
         userDAO.inX(x).put(admin);
         X adminContext = Auth.sudo(x, admin);
 
@@ -92,6 +94,7 @@ foam.CLASS({
         basicUser.setLastName("Kappus");
         basicUser.setEmail("franzkappus@mailinator.com");
         basicUser.setGroup("basicUser");
+        basicUser.setLifecycleState(LifecycleState.ACTIVE);
         userDAO.inX(x).put(basicUser);
         X basicUserContext = Auth.sudo(x, basicUser);
 

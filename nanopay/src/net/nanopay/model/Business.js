@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'Business',
   extends: 'foam.nanos.auth.User',
 
+  implements: [
+    'foam.core.Validatable',
+    'foam.nanos.auth.Authorizable'
+  ],
+
   imports: [
     'ctrl',
     'invoiceDAO'
@@ -18,6 +23,29 @@ foam.CLASS({
     business information to be updated and retrieved.  The body parameters refer to
     the business as the 'organization'.
   `,
+
+  javaImports: [
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.dao.ProxyDAO',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthenticationException',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.admin.model.AccountStatus',
+    'static foam.mlang.MLang.*'
+  ],
 
   tableColumns: [
     'id',
@@ -394,31 +422,6 @@ foam.CLASS({
     }
  ],
 
-  javaImports: [
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthenticationException',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.UserUserJunction',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.notification.NotificationSetting',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'net.nanopay.model.BusinessUserJunction',
-    'static foam.mlang.MLang.*'
-  ],
-
-  implements: [
-    'foam.core.Validatable',
-    'foam.nanos.auth.Authorizable'
-  ],
-
   methods: [
     {
       name: `validate`,
@@ -622,6 +625,22 @@ foam.CLASS({
         User user = (User) userDAO.find(businessUserJunction.getTargetId());
 
         return user;
+      `
+    },
+    {
+      name: 'validateAuth',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        // check if business is enabled
+        if ( ! this.getEnabled() && AccountStatus.DISABLED == this.getStatus()) {
+          throw new AuthenticationException("Business disabled");
+        }
+
+        if ( this instanceof LifecycleAware && ((LifecycleAware) this).getLifecycleState() != LifecycleState.ACTIVE ) {
+          throw new AuthenticationException("Business is not active");
+        }
       `
     }
   ],

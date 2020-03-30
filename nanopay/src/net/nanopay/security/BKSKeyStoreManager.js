@@ -8,7 +8,7 @@ foam.CLASS({
   properties: [
     ['type', 'BKS'],
     ['provider', 'BC' ],
-    ['keyStorePath', '/opt/nanopay/keys/keystore.bks'],
-    ['passphrasePath', '/opt/nanopay/keys/passphrase']
+    ['keyStorePath', '/opt/nanopay/var/keys/keystore.bks'],
+    ['passphrasePath', '/opt/nanopay/var/keys/passphrase']
   ]
 });

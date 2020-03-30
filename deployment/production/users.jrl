@@ -1,5 +1,5 @@
 // In production we don't want to leave these test users around in case they open security holes.
-r({"class":"foam.nanos.auth.User","id":1010})
-r({"class":"foam.nanos.auth.User","id":1011})
-r({"class":"foam.nanos.auth.User","id":1012})
-r({"class":"foam.nanos.auth.User","id":8005})
+r({"class":"foam.nanos.auth.User","id":1010,"lifecycleState":1})
+r({"class":"foam.nanos.auth.User","id":1011,"lifecycleState":1})
+r({"class":"foam.nanos.auth.User","id":1012,"lifecycleState":1})
+r({"class":"foam.nanos.auth.User","id":8005,"lifecycleState":1})
