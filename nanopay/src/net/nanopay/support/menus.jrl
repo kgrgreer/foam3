@@ -1,4 +1,4 @@
 p({"class":"foam.nanos.menu.Menu","id":"integration.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"integration.uml-doc","label":"UML Documents","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
-p({"class":"foam.nanos.menu.Menu","id":"documentation", "label":"Documentation"})
+p({"class":"foam.nanos.menu.Menu","id":"documentation","label":"Documentation","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"documentation.google-api-export","label":"Google APIs Export","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"google-api-export","daoKey":"nanopayDocumentDAO"},"parent":"documentation"})

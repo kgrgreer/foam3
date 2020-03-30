@@ -7,7 +7,7 @@ foam.CLASS({
 
   properties: [
     ['type', 'JCEKS'],
-    ['keyStorePath', '/opt/nanopay/keys/keystore.jceks'],
-    ['passphrasePath', '/opt/nanopay/keys/passphrase']
+    ['keyStorePath', '/opt/nanopay/var/keys/keystore.jceks'],
+    ['passphrasePath', '/opt/nanopay/var/keys/passphrase']
   ]
 });

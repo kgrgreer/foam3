@@ -6,7 +6,8 @@ foam.INTERFACE({
   ],
 
   javaImports: [
-    'foam.core.X'
+    'foam.core.X',
+    'foam.nanos.approval.ApprovableAware'
   ],
 
   methods: [
