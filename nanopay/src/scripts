@@ -2067,3 +2067,5 @@ p({
   """,
   "output": ""
 })
+
+p({"class":"foam.nanos.script.Script","id":"lifecycle state on business","description":"Sets lifecycle state on business to active","code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport net.nanopay.model.Business;\nimport foam.nanos.auth.LifecycleState;\n\nDAO businessDAO = (DAO) x.get(\"businessDAO\");\nbusinesses = ((ArraySink) businessDAO.select(new ArraySink())).getArray();\n\nfor ( Business business : businesses ) {\nif ( business.getLifecycleState() == LifecycleState.PENDING ) {\n business.setLifecycleState(LifecycleState.ACTIVE);\n}\nbusinessDAO.put(business);\n}"})

@@ -148,12 +148,6 @@ public class LiquidApprovalTest extends Test {
     userToReject = (User) userDAO.find(userToReject.getId());
     test(userToReject.getLifecycleState().equals(LifecycleState.REJECTED), "Rejected user LifecycleState is REJECTED after rejecting approval request");
 
-    String nameUpdate = "Liquid-Rejection-Update";
-    String message5 = "Approvable object created for User to reject after user update";
-    String message6 = "Approvable object status for User to reject updated to APPROVED after request was approved";
-    String message7 = "User to reject firstName successfully updated after approvable request was approved";
-    fetchApprovable(x, userToReject, nameUpdate, message5, message6, message7);
-
     String message8 = "Approval request created to remove rejected user";
     String message9 = "Rejected user removed, LifecycleState updated to DELETED";
     removeUser(x, userToReject, message8, message9);
@@ -161,7 +155,7 @@ public class LiquidApprovalTest extends Test {
 
   private void checkApprovalRequests(X x, User systemUser, User user, ArraySink approvalRequests, String message1, String message2) {
     String modelName = User.getOwnClassInfo().getObjClass().getSimpleName();
-    List<Long> approverIds = userQueryService.getAllApprovers(x, modelName, user);
+    List<Long> approverIds = userQueryService.getAllApprovers(x, modelName);
     List<Long> requestApproverIds = new ArrayList<>();
     boolean requestsMarkedRequested = true;
     for ( int j = 0; j < approvalRequests.getArray().size(); j++ ) {
