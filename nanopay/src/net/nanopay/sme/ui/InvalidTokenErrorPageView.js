@@ -5,17 +5,12 @@ foam.CLASS({
 
   documentation: 'Redirecting to this page when a user with an invalid token (via invitation) tries to sign-up',
 
-  requires: [
-  ],
-
-  imports: [
-  ],
-
   css: `
-    .net-nanopay-sme-SMEController > .stack-wrapper {
+    ^ {
       background-color: white;
+      width: 100%;
+      height: 100%;
     }
-
     ^ .top-bar {
       width: 100%;
       height: 64px;
@@ -54,24 +49,7 @@ foam.CLASS({
       margin-bottom: 60px;
     }
 
-    ^ .Message-Content-1 {
-      margin-left: -100;
-      width: 590px;
-      height: 63px;
-      font-family: Lato;
-      font-size: 16px;
-      font-weight: normal;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.31;
-      letter-spacing: normal;
-      //text-align: center;
-      color: var(--black);
-    }
-
-    ^ .Message-Content-2 {
-      margin-left: -140;
-      width: 640px;
+    ^ .Message-Content {
       height: 63px;
       font-family: Lato;
       font-size: 16px;
@@ -107,10 +85,10 @@ foam.CLASS({
         .start().addClass('Message-Container')
           .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
            .br()
-           .start().addClass('Message-Content-1')
+           .start().addClass('Message-Content').style({ 'margin-left': '-100', 'width': '590px'})
              .add(this.MESSAGE_1)
            .end()
-           .start().addClass('Message-Content-2')
+           .start().addClass('Message-Content').style({ 'margin-left': '-140', 'width': '640px'})
               .add(this.MESSAGE_2)
            .end()
          .end()
