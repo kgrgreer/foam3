@@ -48,10 +48,23 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "businessFromPaymentCode",
-  "serve":true,
+  "name": "paymentCodeService",
+  "serve": true,
   "authenticate": true,
-  "boxClass":"net.nanopay.contacts.BusinessFromPaymentCodeInterfaceSkeleton",
-  "serviceClass": "net.nanopay.contacts.BusinessFromPaymentCodeService",
-  "client": "{ \"class\":\"net.nanopay.contacts.ClientBusinessFromPaymentCodeService\", \"delegate\": { \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/businessFromPaymentCode\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/businessFromPaymentCode\"} } }"
+  "boxClass":"net.nanopay.contacts.PaymentCodeServiceInterfaceSkeleton",
+  "serviceClass": "net.nanopay.contacts.PaymentCodeService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.contacts.ClientPaymentCodeService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/paymentCodeService"
+          }
+        }
+      }
+    """
 })

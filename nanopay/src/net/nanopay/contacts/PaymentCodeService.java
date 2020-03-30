@@ -8,9 +8,9 @@ import net.nanopay.auth.PublicBusinessInfo;
 import net.nanopay.model.Business;
 import net.nanopay.payment.PaymentCode;
 
-public class BusinessFromPaymentCodeService
+public class PaymentCodeService
     extends    ContextAwareSupport
-    implements BusinessFromPaymentCodeInterface, NanoService {
+    implements PaymentCodeServiceInterface, NanoService {
   protected DAO paymentCodeDAO;
   protected DAO businessDAO; 
 

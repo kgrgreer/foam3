@@ -1,6 +1,6 @@
 foam.INTERFACE({
     package: 'net.nanopay.contacts',
-    name: 'BusinessFromPaymentCodeInterface',
+    name: 'PaymentCodeServiceInterface',
   
     documentation: `
       A nanoService for retrieving a PublicBusinessInfo object from a payment code

@@ -14,7 +14,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'user',
-    'businessFromPaymentCode'
+    'paymentCodeService'
   ],
 
   requires: [
@@ -147,7 +147,7 @@ foam.CLASS({
       code: async function(X) { 
         let { paymentCodeValue, contact } = this.data;
         try {
-          var business = await this.businessFromPaymentCode.getPublicBusinessInfo(X, paymentCodeValue);
+          var business = await this.paymentCodeService.getPublicBusinessInfo(X, paymentCodeValue);
           // check if contact associated with given payment code already exists
           var sink = await this.user.contacts.where(this.EQ(this.Contact.BUSINESS_ID, business.id)).select(this.Count.create());
           if ( sink.value != 0 ) {

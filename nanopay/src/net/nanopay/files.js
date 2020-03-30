@@ -990,8 +990,8 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/AddContactConfirmation', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/PaymentCodeSearch', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/BusinessNameSearch', flags: ['web'] },
-  { name: 'net/nanopay/contacts/BusinessFromPaymentCodeInterface' },
-  { name: 'net/nanopay/contacts/ClientBusinessFromPaymentCodeService' },
+  { name: 'net/nanopay/contacts/PaymentCodeServiceInterface' },
+  { name: 'net/nanopay/contacts/ClientPaymentCodeService' },
 
   // sme
   { name: 'net/nanopay/model/Business' },
