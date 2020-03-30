@@ -313,7 +313,7 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( this.userId === this.agent.id ) {
           this.firstName = this.agent.firstName;
-          this.lastName = this.agent.lsastName;
+          this.lastName = this.agent.lastName;
           this.jobTitle = this.agent.jobTitle;
           this.phone = this.agent.phone;
         }
