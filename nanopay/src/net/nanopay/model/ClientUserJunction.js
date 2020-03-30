@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'ClientUserJunction',
-  label: 'user information',  // this label is used on DeleteModal
   documentation: `
     Model used to represent UserUserJunction objects on the GUI.
     Represents a user and it's access to another user.
@@ -65,18 +64,6 @@ foam.CLASS({
         .end();
       }
     }
-  ],
-
-  methods: [
-  {
-    name: 'toSummary',
-    type: 'String',
-    code: function() {
-      return `${this.email}`;
-    },
-    javaCode: `
-      return  this.getEmail();
-    `
-  }
+  ]
 ]
 });
