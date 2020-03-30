@@ -40,7 +40,7 @@ jobs:
 
       - run: ./build.sh -ct
 
-      - run: ./build.sh -cQt
+      - run: ./build.sh -cjQt
       
       - save_cache:
           paths:
