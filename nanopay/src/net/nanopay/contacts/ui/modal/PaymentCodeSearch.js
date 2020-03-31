@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'PaymentCodeSearch',
 
+  documentation: 'Property modal for PaymentCodeSearchWizardView.',
+
   requires: [
     'net.nanopay.contacts.Contact'
   ],
@@ -14,10 +16,13 @@ foam.CLASS({
     {
       name: 'search',
       title: 'Search by Payment Code',
-      subTitle: 'Search a business on Ablii to add them to your contacts.  You can ask your contact for their Payment Code.'
+      subTitle: `
+      Search a business on Ablii to add them to your contacts. You can ask your
+      contact for their Payment Code.
+      `
     },
     {
-      name: 'confirm',
+      name: 'confirmation',
       title: ''
     }
   ],
@@ -38,6 +43,7 @@ foam.CLASS({
     },
     {
       name: 'myPaymentCode',
+      documentation: `Display property for user's payment code`,
       section: 'search',
       label: '',
       view: function(_, X) {
@@ -57,7 +63,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'contact',
-      section: 'confirm',
+      documentation: `
+        The contact object of the business associated to the given payment code.
+      `,
+      section: 'confirmation',
       label: '',
       factory: function() {
         return this.Contact.create({
@@ -65,7 +74,7 @@ foam.CLASS({
           group: 'sme'
         });
       },
-      view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
+      view: { class: 'net.nanopay.contacts.ui.modal.ContactConfirmationView' }
     }
   ]
 });

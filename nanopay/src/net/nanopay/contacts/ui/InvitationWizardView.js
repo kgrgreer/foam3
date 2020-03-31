@@ -65,6 +65,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'disableMenuMode',
+      documentation: `Set to true when inviting a contact directly from
+      contact controller.`,
       value: false
     }
   ],

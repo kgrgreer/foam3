@@ -2,8 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Invitation',
 
-  documentation: 'Objects will determine whether an invitation to the ' +
-      'platform or a connection request will be sent',
+  documentation: `
+    Objects will determine whether an invitation to the platform or a connection request will be sent.
+    Used as a property model in InvitationWizardView for contact invitation.
+  `,
 
   tableColumns: [
     'id',
@@ -14,7 +16,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'inviteSection',
+      name: 'invitation',
       title: 'Invite a contact'
     }
   ],
@@ -29,8 +31,8 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'inviteeId',
+      documentation: 'Id of invitee if currently a user',
       hidden: true,
-      documentation: 'Id of invitee if currently a user'
     },
     {
       class: 'FObjectProperty',
@@ -49,9 +51,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessName',
-      section: 'inviteSection',
-      documentation: `Hard set to business name when invitee is
-      not a contact. Used to populate "name" email argument.`,
+      documentation: 'Business name of the invitee.',
+      section: 'invitation',
       visibility: function(isContact) {
         return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
@@ -68,8 +69,8 @@ foam.CLASS({
     {
       class: 'EMail',
       name: 'email',
-      section: 'inviteSection',
-      documentation: 'Email address of the invitee',
+      documentation: 'Email address of the invitee.',
+      section: 'invitation',
       visibility: function(isContact) {
         return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
@@ -84,15 +85,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'message',
-      section: 'inviteSection',
-      documentation: 'Custom message for invitee',
+      documentation: 'Custom message for invitee.',
+      section: 'invitation',
       view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 60, placeholder: 'Add a message to the invitation' },
     },
     {
       class: 'Boolean',
       name: 'invitePermission',
-      section: 'inviteSection',
-      documentation: 'True if user confirms invitation permission',
+      documentation: 'True if user confirms invitation permission.',
+      section: 'invitation',
       view: { class: 'foam.u2.CheckBox', label: `I have this contact's permission to invite them to Ablii` },
       validateObj: function(invitePermission) {
         if ( ! invitePermission ) {
@@ -103,28 +104,28 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'createdBy',
-      hidden: true,
       documentation: 'Id of user sending the invite/request',
+      hidden: true
     },
     {
       class: 'DateTime',
       name: 'timestamp',
       label: 'Date',
-      hidden: true,
       documentation: 'Timestamp of when invitation was sent',
+      hidden: true
     },
     {
       class: 'Boolean',
       name: 'internal',
-      hidden: true,
       documentation: 'True if the invited user already existed, false ' +
           'otherwise',
+      hidden: true
     },
     {
       class: 'Boolean',
       name: 'isContact',
-      hidden: true,
-      documentation: `True if the invited user is a Contact.`
+      documentation: `True if the invited user is a Contact.`,
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
@@ -135,35 +136,35 @@ foam.CLASS({
     {
       class: 'String',
       name: 'group',
-      hidden: true,
       documentation: `
         Used in Ablii when inviting someone who is not on the platform to join a
         Business.
-      `
+      `,
+      hidden: true
     },
     {
       class: 'String',
       name: 'firstName',
-      hidden: true,
-      documentation: 'Ablii signing officer\'s firstName'
+      documentation: 'Ablii signing officer\'s firstName',
+      hidden: true
     },
     {
       class: 'String',
       name: 'lastName',
-      hidden: true,
-      documentation: 'Ablii signing officer\'s lastName'
+      documentation: 'Ablii signing officer\'s lastName',
+      hidden: true
     },
     {
       class: 'String',
       name: 'jobTitle',
-      hidden: true,
-      documentation: 'Ablii signing officer\'s jobTitle'
+      documentation: 'Ablii signing officer\'s jobTitle',
+      hidden: true
     },
     {
       class: 'PhoneNumber',
       name: 'phoneNumber',
-      hidden: true,
-      documentation: 'Ablii signing officer\'s phoneNumber'
+      documentation: 'Ablii signing officer\'s phoneNumber',
+      hidden: true
     }
   ]
 });

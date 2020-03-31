@@ -27,10 +27,11 @@ foam.CLASS({
       padding: 24px 24px 32px;
     }
     .business-list-container {
-      height: 272px;
+      position: relative;
     }
     .business-list {
       overflow-y: scroll;
+      height: 288px;
     }
     .search-count {
       color: #8e9090;
@@ -40,7 +41,9 @@ foam.CLASS({
       text-align: center;
     }
     .create-new-block {
-      margin-top: 120px;
+      position: absolute;
+      top: 110;
+      left: 110;
     }
     .center {
       display: flex;
@@ -50,7 +53,7 @@ foam.CLASS({
       color: #8e9090;
       font-size: 14px;
       font-style: italic;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
     .align-text-center {
       text-align: center;

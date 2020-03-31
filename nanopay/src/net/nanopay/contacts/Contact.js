@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: `
     The base model, as part of the Self-Serve project, for representing people who,
     although they are not registered on the platform, can still receive invoices from
-    platform users.
+    platform users. Used as a property model in ContactWizardView for the three steps
+    of contact creation.
   `,
 
   implements: [
@@ -61,17 +62,27 @@ foam.CLASS({
     {
       name: 'stepOne',
       title: 'Create a contact',
-      subTitle: 'Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.'
+      subTitle: `
+        Create a new contact by entering in their business information below.
+        If you have their banking information, you can start sending payments
+        to the contact right away.
+      `
     },
     {
       name: 'stepTwo',
       title: 'Add banking information',
-      subTitle: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.'
+      subTitle: `
+        Enter the contact’s bank account information. Please make sure that this is
+        accurate as payments will go directly to the specified account.
+      `
     },
     {
       name: 'stepThree',
       title: 'Add business address',
-      subTitle: 'In order to send payments to this business, we’ll need you to verify their business address below.'
+      subTitle: `
+        In order to send payments to this business, we’ll need you to verify their
+        business address below.
+      `
     }
   ],
 
@@ -151,8 +162,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'confirm',
-      section: 'stepOne',    
       documentation: `True if the user confirms their relationship with the contact.`,
+      section: 'stepOne',
       view: {
         class: 'foam.u2.CheckBox',
         label: `I confirm that I have a business relationship with this contact and
@@ -169,12 +180,12 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.contacts.ContactStatus',
       name: 'signUpStatus',
-      label: 'Status',
-      tableWidth: 170,
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
       `,
       hidden: true,
+      label: 'Status',
+      tableWidth: 170,
       tableCellFormatter: function(state, obj) {
         this.start()
           .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
@@ -219,6 +230,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'createBankAccount',
+      documentation: 'A before put bank account object a user creates for the contact.',
       section: 'stepTwo',
       factory: function() {
         return net.nanopay.bank.BankAccount.create({ isDefault: true });
@@ -231,10 +243,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldInvite',
+      documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
-      documentation: `
-        True if the user wants to invite the contact to join Ablii.
-      `,
       view: {
         class: 'foam.u2.CheckBox',
         label: 'Invite this contact to join Ablii'
@@ -282,13 +292,13 @@ foam.CLASS({
           })
         };
       },
-      // view: { class: 'net.nanopay.sme.ui.AddressView', customCountryDAO: dao },
       factory: function() {
         return this.Address.create();
       }
     },
     {
       name: 'disclaimer',
+      documentation: 'Display property for disclaimer.',
       section: 'stepThree',
       label: '',
       view: function() {

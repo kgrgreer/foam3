@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   documentation: `
-    Lets user add internal contact using a paymentcode.
+    Lets the user add public and private companies as contacts using
+    payment codes.
   `,
 
   imports: [

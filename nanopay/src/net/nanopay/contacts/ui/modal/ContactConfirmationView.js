@@ -1,12 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
-  name: 'AddContactConfirmation',
+  name: 'ContactConfirmationView',
   extends: 'foam.u2.View',
 
   documentation: `
     The final step in add contact flow for adding internal users 
     (search by business name & add by payment code flows) that 
-    confirms the contact's information.
+    displays the contact's information for the user to confirm.
   `,
 
   imports: [

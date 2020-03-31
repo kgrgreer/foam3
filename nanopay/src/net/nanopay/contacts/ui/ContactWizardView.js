@@ -3,9 +3,7 @@ foam.CLASS({
   name: 'ContactWizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
-  documentation: `
-    Lets user create a contact from scratch.
-  `,
+  documentation: 'Lets the user create a contact from scratch.',
 
   requires: [
     'net.nanopay.bank.BankAccountStatus',
@@ -35,12 +33,6 @@ foam.CLASS({
     }
     ^section-container {
       padding: 24px 24px 32px;
-    }
-    .divider {
-      background-color: #e2e2e3;
-      height: 1px;
-      margin: 12px 0;
-      width: 100%;
     }
     .disclaimer {
       font-size: 16px;
@@ -87,12 +79,13 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.contacts.Contact',
       name: 'contact',
-      documentation: 'The contact returned after put to contactDAO'
+      documentation: 'The contact returned after put to contactDAO.'
     }
   ],
   
   methods: [
     function init() {
+      // filter out inherited sections
       this.sections = this.sections.filter((section) => section.fromClass === 'Contact');
       this.data.copyFrom({
         type: 'Contact',
@@ -153,7 +146,6 @@ foam.CLASS({
       this.isConnecting = false;
       return true;
     },
-
     // /** Send the Contact an email inviting them to join Ablii. */
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
@@ -177,7 +169,6 @@ foam.CLASS({
       }
       return true;
     },
-
     // /** Add the bank account to the Contact. */
     async function addBankAccount() {
       this.isConnecting = true;
@@ -195,7 +186,6 @@ foam.CLASS({
       this.isConnecting = false;
       return true;
     },
-
     // /** Sets the reference from the Contact to the Bank Account.  */
     async function updateContactBankInfo(contact, bankAccountId) {
       try {

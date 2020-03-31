@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'BusinessNameSearch',
 
+  documentation: 'Property modal for BusinessNameSearchWizardView.',
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -17,8 +19,8 @@ foam.CLASS({
 
   imports: [
     'publicBusinessDAO',
-    'user',
-    'pushMenu'
+    'pushMenu',
+    'user'
   ],
 
   sections: [
@@ -30,7 +32,7 @@ foam.CLASS({
       business name and location.`
     },
     {
-      name: 'confirm',
+      name: 'confirmation',
       title: ''
     }
   ],
@@ -190,7 +192,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'list',
+      name: 'businessList',
+      documentation: 'Display property for the list of queried businesses.',
       section: 'search',
       label: '',
       view: function(_, X) {
@@ -265,7 +268,8 @@ foam.CLASS({
                   .style({
                     'background-color': '#604aff',
                     'border': '1px solid #4a33f4',
-                    'font-family': `'Lato', sans-serif`
+                    'font-family': `'Lato', sans-serif`,
+                    'margin-top': '20px'
                   })
                   .on('click', function() {
                     X.data.pushMenu('sme.menu.create')
@@ -279,9 +283,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'contact',
-      section: 'confirm',
+      documentation: 'The contact object of the selected business.',
+      section: 'confirmation',
       label: '',
-      view: { class: 'net.nanopay.contacts.ui.modal.AddContactConfirmation' }
+      view: { class: 'net.nanopay.contacts.ui.modal.ContactConfirmationView' }
     }
   ]
 });
