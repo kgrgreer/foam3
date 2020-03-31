@@ -197,7 +197,6 @@ foam.CLASS({
       name: 'submit',
       label: 'Finish',
       isAvailable: function(data$errors_, nextIndex) {
-      console.log("err : " + data$errors_);
         return ! data$errors_ && nextIndex === -1;
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
@@ -210,7 +209,6 @@ foam.CLASS({
             sendInvitation: true
           })).
           then(async () => {
-          console.log("then");
             await x.userDAO.find(x.user.id).then((o) => {
               x.user = o;
               x.user.onboarded = o.onboarded;
