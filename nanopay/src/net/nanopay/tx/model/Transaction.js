@@ -387,18 +387,6 @@ foam.CLASS({
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
-    // {
-    //   name: 'invoiceNumber',
-    //   hidden: true,
-    //   factory: function() {
-    //     return this.invoiceId;
-    //   },
-    //   tableCellFormatter: function(value, obj) {
-    //     this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
-    //       if ( invoice ) this.start().add(invoice.invoiceNumber).end();
-    //     });
-    //   }
-    // },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
@@ -899,7 +887,6 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       updateVisibility: 'RO',
-      // TODO/REVIEW causing class cast exception during medusa replay
       includeInDigest: false,
     },
     {

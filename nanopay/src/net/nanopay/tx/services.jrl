@@ -139,9 +139,10 @@ p({
           .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("localTransactionDAO").build())
           .setDelegate(inner)
           .build();
+    } else {
+      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
     }
-//    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
-
+    
     dao = new net.nanopay.tx.SaveChainedTransactionDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo()))
       .build();

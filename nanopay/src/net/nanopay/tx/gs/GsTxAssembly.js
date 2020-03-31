@@ -145,7 +145,7 @@ foam.CLASS({
             verifyBalance(getX(),getTransaction());
             addAllTransfers(getTransaction());
             getOutputDAO().put(getTransaction());
-//Thread.sleep(100);
+            Thread.sleep(100);
             if ( getPbd() != null )
               ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
             getTrackingJob().incrementTxnCounter(getTxnCount());
@@ -442,7 +442,6 @@ foam.CLASS({
             return true; 
 
           // Calculate the number of remaining securities and top up the source account
-
           long addd = 0;
           if ( hm.get(source.getId()) != null ) addd = (Long) hm.get(source.getId());
           long remainder = addd - txn.getAmount(); // is this the correct account ?
@@ -493,7 +492,6 @@ foam.CLASS({
         }
 
         // Create a top up transaction if necessary
-
         long add2 = 0;
         if (hm.get(source.getId()) != null) add2 = (long) hm.get(source.getId());
         Long topUp = add2 - txn.getAmount();
