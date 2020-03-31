@@ -34,7 +34,6 @@ p({
     auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(auth).build();
     auth = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(auth).build();
-    auth = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(auth).build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(auth).build();
     return auth;
@@ -319,7 +318,8 @@ p({
           );
         }}
       )
-      .build();
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
   """,
   "client": """
     {
@@ -698,6 +698,7 @@ p({
       .setPipelinePm(true)
       .setDeletedAware(false)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
   """,
@@ -1463,25 +1464,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"publicKeyDAO",
-  "serve":true,
-  "serviceScript":
-  """
-    return new net.nanopay.security.PublicKeyDAO.Builder(x)
-      .setDelegate(new foam.dao.EasyDAO.Builder(x)
-        .setAuthorize(true)
-        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo())
-        .setSeqNo(true)
-        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-        .setJournalName("publicKeys")
-        .setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).build())
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"publicUserDAO",
   "serve":true,
   "description":"A DAO served to the client that lists all Users in the system. However, it only returns the public user info instead of the entire User object.",
@@ -1678,7 +1660,8 @@ p({
       .setPermissionPrefix("loginAttempt")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
-      .build();
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED));
   """,
   "client": "{\"of\":\"net.nanopay.auth.LoginAttempt\"}"
 })
@@ -2147,6 +2130,33 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "genTxnReport",
   "serviceClass": "net.nanopay.meter.report.GenTxnReportWebAgent"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "transactionHierarchyDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.meter.report.TransactionHierarchyDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.meter.report.TransactionReport.getOwnClassInfo()).build())
+      .setX(x)
+      .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.meter.report.TransactionReport.getOwnClassInfo())
+      .setDecorator(dao)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "net.nanopay.meter.report.TransactionReport"
+    }
+  """
 })
 
 p({

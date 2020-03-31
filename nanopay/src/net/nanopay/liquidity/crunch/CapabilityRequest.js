@@ -51,7 +51,10 @@ foam.CLASS({
       javaType: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
       class: 'Enum',
       of: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
-      label: 'Step 1: Action'
+      label: 'Step 1: Action',
+      tableHeaderFormatter: function(axiom) {
+        this.add('Request Type');
+      },
     },
     {
       class: 'Reference',

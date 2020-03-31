@@ -133,6 +133,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/bank/BankHolidayService' },
+  { name: 'net/nanopay/bank/test/USBankAccountTest' },
   { name: 'net/nanopay/bank/BankWeekend' },
   { name: 'net/nanopay/bank/DefaultBankAccountRule' },
   { name: 'net/nanopay/bank/IsDefaultRule' },
@@ -163,7 +164,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ui/UserSelectionView', flags: ['web'] },
   { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
-  { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
   { name: 'net/nanopay/auth/ServiceProviderURL' },
   { name: 'net/nanopay/auth/UserCreateServiceProviderURLRule' },
@@ -266,7 +266,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXTransactionPlanDAO' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
-  { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
   { name: 'net/nanopay/tx/ruler/AscendantFXTransactionAfterPutRule' },
 
@@ -550,6 +549,8 @@ FOAM_FILES([
   { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
   { name: 'net/nanopay/plaid/model/PlaidError' },
   { name: 'net/nanopay/plaid/ui/PlaidView', flags: ['web'] },
+  { name: 'net/nanopay/plaid/PlaidResultReportAuthorizer' },
+  { name: 'net/nanopay/plaid/PlaidResultReportAuthorizerTest' },
 
   { name: 'net/nanopay/cico/model/EFTReturnFileCredentials' },
   { name: 'net/nanopay/cico/service/BankAccountVerifier' },
@@ -673,6 +674,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
   { name: 'net/nanopay/invoice/ruler/SetProcessingDateRule' },
+  { name: 'net/nanopay/invoice/ruler/SetReceivedDateRule' },
+  { name: 'net/nanopay/invoice/ruler/SetPaymentSentDateRule' },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
@@ -1062,6 +1065,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/OnboardingPaymentOperationNotification' },
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
+  { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -1387,6 +1391,22 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/OMName' },
   { name: 'net/nanopay/alarming/AlarmingUniqueNameDAO' },
 
+  // RBC
+  { name: 'net/nanopay/tx/rbc/RbcTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcCITransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcCOTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcVerificationTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcTransactionPlanDAO' },
+  { name: 'net/nanopay/tx/rbc/RbcAssignedClientValue' },
+  { name: 'net/nanopay/tx/rbc/RbcReferenceNumber' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcBatchRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcCIRecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcCORecord' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcBatchControl' },
+  { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
+  { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
+
   // goldman ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
@@ -1428,6 +1448,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' }, //needs deletion..
   { name: 'net/nanopay/tx/planner/DVPPlanner' },
   { name: 'net/nanopay/tx/planner/FOPPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCITransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcCOTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcVerificationTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCIPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityCOPlanner' },
   { name: 'net/nanopay/tx/planner/SecurityBucketPlanner' },

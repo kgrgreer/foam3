@@ -29,7 +29,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("liquidCapabilities")
       .setGuid(true)
-      .setApprovableAwareEnabled(false)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
       .build();
@@ -64,6 +63,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
+      .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
@@ -87,6 +87,7 @@ p({
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
+      .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("capabilityDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
       .setAuthorize(false)

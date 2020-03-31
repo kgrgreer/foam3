@@ -21,3 +21,8 @@ p({"class":"net.nanopay.alarming.AlarmConfig","id":"b61fcea8-03d5-7186-1397-50bf
 
 // Transaction
 p({"class":"net.nanopay.alarming.AlarmConfig","id":"2a45f923-11df-d73c-5cff-bbb390bdae19","name":"Transaction Alarm","monitorType":3,"sendEmail":false,"alarmReasonType":5,"manual":true})
+
+// RBC
+p({"class":"net.nanopay.alarming.AlarmConfig","id":"9b7c7e06-b4ce-1065-c6b0-f57b9cebfbb4","name":"RBC Send File","preRequest":"RBC send file starting","postRequest":"RBC send file complete","timeOutRequest":"RBC send file failed","alarmValue":90,"sendEmail":false})
+p({"class":"net.nanopay.alarming.AlarmConfig","id":"caddd085-ec82-04a8-4d65-46dab96816a8","name":"RBC Download File","preRequest":"RBC download file starting","postRequest":"RBC download file complete","timeOutRequest":"RBC download file failed","alarmValue":90,"sendEmail":false})
+p({"class":"net.nanopay.alarming.AlarmConfig","id":"18a54343-f048-db19-f0ae-ae6fd685b176","name":"RBC Login","preRequest":"RBC login starting","postRequest":"RBC login complete","timeOutRequest":"RBC login failed","alarmValue":90,"monitorType":1,"sendEmail":false})

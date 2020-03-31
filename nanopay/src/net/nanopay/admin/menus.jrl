@@ -81,10 +81,58 @@ p({
 })
 
 // line items
-p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemFees","label":"Line Item Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTax","label":"Line Item Taxes","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTaxDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTypeAccount","label":"Line Item User Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeAccountDAO"},"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"admin.lineItemTypes","label":"Line Item Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"parent":"admin"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.lineItemFees",
+  "label":"Line Item Fees",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"lineItemFeeDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.lineItemTax",
+  "label":"Line Item Taxes",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"lineItemTaxDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.lineItemTypeAccount",
+  "label":"Line Item User Accounts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"lineItemTypeAccountDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.lineItemTypes",
+  "label":"Line Item Types",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"lineItemTypeDAO"
+    }
+  },
+  "parent":"admin"
+})
 
 // integration
 p({"class":"foam.nanos.menu.Menu","id":"integration.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"parent":"integration"})
@@ -114,7 +162,19 @@ p({
   },
   "parent":"integration"
 })
-p({"class":"foam.nanos.menu.Menu","id":"integration.ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.ascendantFXUsers",
+  "label":"AscendantFX Users",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"ascendantFXUserDAO"
+    }
+  },
+  "parent":"integration"
+})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"integration.ascendantuser",

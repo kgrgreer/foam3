@@ -54,8 +54,7 @@ foam.CLASS({
 
   tableColumns: [
     'organization',
-    'legalName',
-    'email',
+    'status'
   ],
 
   sections: [
@@ -91,7 +90,7 @@ foam.CLASS({
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
       section: 'stepOne',
-      label: 'Company',
+      label: 'Business',
       view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
       validateObj: function(organization) {
         if (
@@ -187,10 +186,17 @@ foam.CLASS({
       label: 'Status',
       tableWidth: 170,
       tableCellFormatter: function(state, obj) {
+        var format = obj.bankAccount && state != net.nanopay.contacts.ContactStatus.ACTIVE ? 'Ready' : 'Pending';
+        var label = state == net.nanopay.contacts.ContactStatus.ACTIVE ? state.label.replace(/\s+/g, '') : format;
         this.start()
-          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
-          .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
-            .add(state.label)
+          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + label).end()
+          .start('img')
+            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
+            .attrs({ src: this.__subContext__.theme.logo })
+            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+            .end()
+          .start().addClass('contact-status-' + label)
+            .add(label)
           .end()
         .end();
       }
@@ -232,6 +238,7 @@ foam.CLASS({
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
       section: 'stepTwo',
+      label: '',
       factory: function() {
         return net.nanopay.bank.BankAccount.create({ isDefault: true });
       },

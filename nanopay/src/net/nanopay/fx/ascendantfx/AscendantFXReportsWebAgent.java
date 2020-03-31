@@ -718,14 +718,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       for ( BankAccount bankAccount :  bankAccounts) {
       document.add(new Paragraph("Bank Information"));
 
-      Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String branchNum;
-      if ( branch != null ) {
-        branchNum = branch.getBranchId();
-      } else {
-        branchNum = "N/A";
-      }
-
       String accountNum = bankAccount.getAccountNumber();
       String accountName = bankAccount.getName();
       String accountCurrency = bankAccount.getDenomination();
@@ -747,16 +739,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
       // It is unnecessary to show institution number for US bank accounts
+
+      // Get bankaccount branch and institution
+        Branch branch = (Branch) bankAccount.findBranch(x);
+        Institution institution = null;
+        String branchNum;
+        String institutionNum;
+        if ( branch != null ) {
+          branchNum = branch.getBranchId();
+          institution = branch.findInstitution(x);
+          institutionNum = institution == null ? "N/A" : institution.getInstitutionNumber();
+        } else {
+          branchNum = "N/A";
+          institutionNum = "N/A";
+        }
+
       if ( accountCurrency.equals("USD") ) {
         list.add(new ListItem("Routing number: " + branchNum));
       } else {
-        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-        String institutionNum;
-        if ( institution != null ) {
-          institutionNum = institution.getInstitutionNumber();
-        } else {
-          institutionNum = "N/A";
-        }
         list.add(new ListItem("Transit number: " + branchNum));
         list.add(new ListItem("Institution number: " + institutionNum));
       }

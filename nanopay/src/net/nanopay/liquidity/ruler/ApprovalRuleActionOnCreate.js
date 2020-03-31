@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.tx.model.Transaction',
@@ -129,6 +130,7 @@ foam.CLASS({
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
+            .setApprovableCreateKey(ApprovableAware.getApprovableCreateKey(x, obj))
             .setOperation(Operations.CREATE)
             .setCreatedBy(initiatingUser)
             .setOutgoingAccount(accountId)
@@ -152,9 +154,6 @@ foam.CLASS({
               approvalRequest.setApprover(approver);
               approvalRequestDAO.put(approvalRequest);
             }
-          } else if ( approvers.size() == 1 && approvers.get(0) == initiatingUser ) {
-            ((Logger) x.get("logger")).error(
-              "ApprovalRuleActionOnCreate - The only approver for this level is the initiating user of the request.", classification, objId);
           } else if ( getDefaultApprover() > 0 ) {
             approvalRequest.setApprover(getDefaultApprover());
             approvalRequestDAO.put(approvalRequest);

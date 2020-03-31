@@ -57,7 +57,7 @@ foam.CLASS({
           columns: [
             foam.core.Property.create({
               name: 'company',
-              label: 'Company',
+              label: 'Business',
               tableCellFormatter: function(X, obj) {
                 if ( ! obj.businessId ) {
                   this.start().add(obj.organization).end();
@@ -70,8 +70,6 @@ foam.CLASS({
                 }
               }
             }),
-            'legalName',
-            'email',
             'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
@@ -102,11 +100,11 @@ foam.CLASS({
             this.Action.create({
               name: 'invite',
               isEnabled: function() {
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED;
+                return this.signUpStatus != self.ContactStatus.ACTIVE;
               },
               isAvailable: async function() {
                 let account = await self.accountDAO.find(this.bankAccount);
-                return this.signUpStatus === self.ContactStatus.NOT_INVITED && ! self.INBankAccount.isInstance(account);
+                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
                 var invite = net.nanopay.model.Invitation.create({

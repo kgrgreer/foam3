@@ -163,6 +163,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     cal.add(Calendar.DATE, 1);
     approval.setExpiryDate(cal.getTime());
     approval.setStatus(ApprovalStatus.APPROVED);
+    approval.setIsFulfilled(true);
     approvalDAO.put_(x, approval);
 
     kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());

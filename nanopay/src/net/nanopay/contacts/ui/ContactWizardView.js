@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation'
   ],
@@ -195,6 +196,21 @@ foam.CLASS({
         var msg = err.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, 'error');
       }
+    },
+    function validateBank(bankAccount) {	
+      if ( this.CABankAccount.isInstance(bankAccount) && bankAccount.institutionNumber == '' ) {	
+        this.ctrl.notify('Please enter an Inst. No.', 'error');	
+        return;	
+      }	
+      try {	
+        bankAccount.validate();	
+      } catch (e) {	
+        if ( bankAccount.errors_ ) {	
+          this.ctrl.notify(bankAccount.errors_[0][1], 'error');	
+          return false;	
+        }	
+      }	
+      return true;	
     }
   ],
 
@@ -221,7 +237,8 @@ foam.CLASS({
       isAvailable: function(nextIndex) {
         return nextIndex !== -1;
       },
-      code: function() { 
+      code: function() {
+        if ( this.currentIndex === 1 && ! this.validateBank(this.data.createBankAccount) ) return;
         this.currentIndex = this.nextIndex;
       }
     },
