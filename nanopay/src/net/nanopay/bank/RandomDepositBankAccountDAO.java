@@ -8,6 +8,7 @@ import foam.nanos.auth.User;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
+import net.nanopay.tx.rbc.RbcVerificationTransaction;
 
 public class RandomDepositBankAccountDAO
   extends ProxyDAO
@@ -17,12 +18,14 @@ public class RandomDepositBankAccountDAO
   protected DAO transactionQuotePlanDAO_;
 
   private boolean useBMO;
+  private boolean useRBC;
 
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
 
     this.setUseBMO(true);
+    this.setUseRBC(false);
   }
 
   public DAO getTransactionDAO() {
@@ -57,8 +60,10 @@ public class RandomDepositBankAccountDAO
 
       // create new transaction and store
       VerificationTransaction transaction = null;
-      if ( this.isUseBMO() ) {
+     if ( this.getUseBMO() ) {
         transaction = new BmoVerificationTransaction();
+      } else if ( this.getUseRBC() ) {
+        transaction = new RbcVerificationTransaction();
       } else {
         transaction = new AlternaVerificationTransaction();
       }
@@ -74,11 +79,19 @@ public class RandomDepositBankAccountDAO
     return super.put_(x, account);
   }
 
-  public boolean isUseBMO() {
+  public boolean getUseBMO() {
     return useBMO;
   }
 
   public void setUseBMO(boolean useBMO) {
     this.useBMO = useBMO;
+  }
+
+  public boolean getUseRBC() {
+    return useRBC;
+  }
+
+  public void setUseRBC(boolean useRBC) {
+    this.useRBC = useRBC;
   }
 }

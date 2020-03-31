@@ -129,7 +129,6 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'agent',
     'pushMenu',
     'appConfig',
     'identificationTypeDAO'
@@ -284,12 +283,18 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'userId',
       section: 'adminReferenceSection',
-      postSet: function(_, n) {
-        if ( this.userId === this.agent.id ) {
-          this.firstName = this.agent.firstName;
-          this.lastName = this.agent.lastName;
-          this.jobTitle = this.agent.jobTitle;
-          this.phone = this.agent.phone;
+      postSet: async function(_, n) {
+        try {
+          const user = await this.userId$find;
+          if ( this.userId === n ) {
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+            this.jobTitle = user.jobTitle;
+            this.phone = user.phone;
+          }
+        } catch (e) {
+          // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
+          // multiPartId model but doesn't copy the postSet thus causing an error in the dao view.
         }
       },
       tableCellFormatter: function(id, o) {
@@ -371,17 +376,19 @@ foam.CLASS({
           [false, 'No, I am not'],
         ],
       },
-      postSet: function() {
+      postSet: async function() {
         if ( this.signingOfficer ) {
+          const user = await this.userId$find;
+
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
-          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.agent.firstName;
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
           if ( this.userOwnsPercent ) {
-            this.owner1.firstName = this.agent.firstName;
-            this.owner1.lastName = this.agent.lastName;
-            this.owner1.jobTitle = this.agent.jobTitle;
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
           }
         } else {
           this.adminJobTitle = '';
@@ -1102,12 +1109,14 @@ foam.CLASS({
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
       label: '',
-      postSet: function(_, newV) {
+      postSet: async function(_, newV) {
         if ( newV ) {
           if ( this.signingOfficer ) {
-            this.owner1.firstName = this.agent.firstName;
-            this.owner1.lastName = this.agent.lastName;
-            this.owner1.jobTitle = this.agent.jobTitle;
+            const user = await this.userId$find;
+
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
           } else {
             this.owner1.firstName = this.adminFirstName;
             this.owner1.lastName = this.adminLastName;
@@ -1509,20 +1518,22 @@ foam.CLASS({
     },
     {
       name: 'init',
-      code: function() {
+      code: async function() {
         this.phone.VERIFIED.writePermissionRequired = false;
         this.PHONE.label = '';
         this.ADDRESS.label = '';
         this.BUSINESS_ADDRESS.label = '';
 
         if ( this.signingOfficer ) {
+          const user = await this.userId$find;
+
           this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
-          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.agent.firstName;
+          this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
 
           if ( this.userOwnsPercent ) {
-            this.owner1.firstName = this.agent.firstName;
-            this.owner1.lastName = this.agent.lastName;
-            this.owner1.jobTitle = this.agent.jobTitle;
+            this.owner1.firstName = user.firstName;
+            this.owner1.lastName = user.lastName;
+            this.owner1.jobTitle = user.jobTitle;
           } else {
             this.clearProperty('owner1');
           }

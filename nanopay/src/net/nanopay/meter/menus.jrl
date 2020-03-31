@@ -9,7 +9,9 @@ p({
     "daoKey":"accountDAO",
     "title":"Bank Accounts",
     "customDAOController":"net.nanopay.meter.BankAccountController",
-    "detailView":"net.nanopay.meter.BankAccountDetailView"
+    "detailView":{
+      "class":"net.nanopay.meter.BankAccountDetailView"
+    }
   },
   "parent":""
 })

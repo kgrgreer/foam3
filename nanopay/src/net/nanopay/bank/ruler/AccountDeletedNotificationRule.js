@@ -16,7 +16,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.payment.Institution',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -27,11 +29,14 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             if ( ! ( obj instanceof BankAccount ) ) return;
-            DAO          userDAO = (DAO) x.get("userDAO");
-            BankAccount  account = (BankAccount) obj;
-            User           owner = (User) userDAO.find(account.getOwner());
-            Group          group = owner.findGroup(x);
-            AppConfig     config = group != null ? (AppConfig) group.getAppConfig(x) : null;
+            DAO                 userDAO = (DAO) x.get("userDAO");
+            DAO          institutionDAO = (DAO) x.get("institutionDAO");
+
+            BankAccount         account = (BankAccount) obj;
+            User                  owner = (User) userDAO.find(account.getOwner());
+            Group                 group = owner.findGroup(x);
+            AppConfig            config = group != null ? (AppConfig) group.getAppConfig(x) : null;
+            Institution     institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER,account.getInstitutionNumber()));
 
             if ( config == null ) return;
             if ( owner instanceof Contact ) return;
@@ -40,6 +45,8 @@ foam.CLASS({
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("institutionNumber", account.getInstitutionNumber());
+            args.put("institutionName", institution == null ? null : institution.toSummary());
             args.put("business", owner.label());
 
             Notification deletedNotification = new Notification.Builder(x)
