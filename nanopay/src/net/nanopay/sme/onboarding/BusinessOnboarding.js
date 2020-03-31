@@ -101,32 +101,6 @@ foam.CLASS({
         showTitle: false
       },
     },
-    {
-      name: 'validationPredicates',
-      factory: function() {
-        var i = this.index;
-        return [
-          {
-            args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', `owner${i}$errors_`],
-            predicateFactory: function(e) {
-              return e.OR(
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-                e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
-                e.AND(
-                  e.EQ(i, 1),
-                  e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, true)
-                ),
-                e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
-                e.EQ(foam.mlang.IsValid.create({
-                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER'+i]
-                }), true)
-              );
-            },
-            errorString: `Owner #${i} is invalid.`
-          }
-        ];
-      }
-    }
   ]
 });
 
@@ -195,14 +169,14 @@ foam.CLASS({
     },
     {
       name: 'personalInformationSection',
-      title: 'Enter the personal information',
+      title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify the identity…'
     },
     {
       name: 'signingOfficerEmailSection',
-      title: 'Enter the signing officer\'s email',
-      help: `For security, we require the approval of a signing officer before you can continue.
-          I can email the signing officer directly for the approval.`,
+      title: 'Enter a signing officer\'s information',
+      help: `Before you proceed we’ll need to invite a signing officer to approve the application.
+             I can email the signing officer directly for you.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
@@ -222,7 +196,7 @@ foam.CLASS({
     },
     {
       name: 'transactionDetailsSection',
-      title: 'Enter the transaction details',
+      title: 'Enter the business transaction details',
       help: `Thanks! Now let’s get some details on the company's transactions.`,
     },
     {
@@ -722,7 +696,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
-      label: 'Enter the signing officer\'s email',
+      label: 'Enter a signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
       placeholder: 'example@email.com',
@@ -1199,19 +1173,95 @@ foam.CLASS({
     }),
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
-      index: 1
+      index: 1,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner1$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, true),
+            e.AND(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER1']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner1 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
-      index: 2
+      index: 2,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner2$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 2),
+            e.AND(
+              e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 2),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER2']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner2 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
-      index: 3
+      index: 3,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner3$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 3),
+            e.AND(
+              e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 3),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER3']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner3 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
-      index: 4
+      index: 4,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner4$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4),
+            e.AND(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER4']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner4 is invalid.'
+      }
+     ]
     },
     {
       name: 'beneficialOwnersTable',
