@@ -18,7 +18,6 @@ var classes = [
   'net.nanopay.tx.RetailTransactionPlanDAO',
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CreateExpediteApprovalRequest',
-  'net.nanopay.tx.ClusterClientTransactionDAO',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.CABankTransactionPlanDAO',
   'net.nanopay.tx.cico.CITransaction',
