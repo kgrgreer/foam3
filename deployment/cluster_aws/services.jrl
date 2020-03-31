@@ -13,7 +13,7 @@ p({
     "urlLabel":"Powered by nanopay",
     "termsAndCondLabel":"Terms and Conditions",
     "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
-    "mode":2,
+    "mode":4,
     "appLink":"",
     "playLink":"https://play.google.com/store?hl=en",
     "enableInternationalPayment":true
