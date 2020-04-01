@@ -1,4 +1,12 @@
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "clusterConfigMonitor",
+  "lazy": false,
+  "serve": false,
+  "serviceClass": "foam.nanos.medusa.ClusterConfigMonitor"
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"electoralService",
   "lazy":false,
@@ -66,24 +74,19 @@ p({
   "lazy": false,
   "serve": true,
   "serviceScript": `
-    delegate = new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
-        .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
-        .build())
-      .build();
-      // NOTE: NSpecFactory.start doesn't work in this setup
-      // as the delegate is terminated at the AgencyDAO.
-    delegate.start();
-
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.MedusaEntryAgencyDAO.Builder(x)
-        .setDelegate(delegate)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
+          .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
+            .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
+            .build())
+          .build())
         .build())
-      .build();
+      .build()
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
 })

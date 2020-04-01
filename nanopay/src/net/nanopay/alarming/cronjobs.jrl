@@ -10,7 +10,7 @@ p({
     "second":0
   },
   "scheduledTime":"2019-09-09T16:56:00.000Z",
-  "enabled":true,
+  "enabled":false,
   "id":"Alarming and Monitoring",
   "lastRun":"2019-09-09T16:55:32.134Z",
   "lastDuration":301,
