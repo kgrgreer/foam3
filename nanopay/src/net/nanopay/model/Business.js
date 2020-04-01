@@ -270,7 +270,7 @@ foam.CLASS({
         User from the Address model.`,
       factory: function() {
         return this.Address.create();
-      },
+      }
     },
     {
       class: 'Boolean',
