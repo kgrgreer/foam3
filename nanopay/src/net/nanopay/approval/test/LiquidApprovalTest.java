@@ -7,7 +7,7 @@ import foam.nanos.test.Test;
 
 
 public class LiquidApprovalTest extends ApprovalTestExecutor {
-  public LiquidApprovalTests() {
+  public LiquidApprovalTest() {
     super("all_successful", new ApprovalTestExecutorState[] { 
       new ApprovalTestExecutorState(ApprovalStatus.APPROVED, LifecycleState.ACTIVE), // create
       new ApprovalTestExecutorState(ApprovalStatus.APPROVED, LifecycleState.ACTIVE), // update
