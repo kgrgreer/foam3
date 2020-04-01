@@ -433,7 +433,28 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"brokerDAO",                        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.model.Broker.getOwnClassInfo(), \"brokers\")));", "client":"{\"of\":\"net.nanopay.model.Broker\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"brokerDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.model.Broker.getOwnClassInfo())
+      .setJournalName("brokers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"net.nanopay.model.Broker"
+    }
+  """
+})
+
 //p({
 //  "class": "foam.nanos.boot.NSpec",
 //  "name": "recurringInvoiceDAO",
