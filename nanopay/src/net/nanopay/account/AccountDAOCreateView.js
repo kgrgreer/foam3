@@ -56,7 +56,6 @@ foam.CLASS({
         var cData = this.data;
 
         cData = cData.clone();
-        cData.lifecycleState = foam.nanos.auth.LifecycleState.PENDING;
         cData.owner = this.__subContext__.user.id;
         cData.enabled = true;
 
