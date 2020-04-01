@@ -1,1 +1,2 @@
 p({"class":"net.nanopay.approval.test.ApprovalDAOTest","id":"approval_dao_test"})
+p({"class":"net.nanopay.approval.test.LiquidApprovalTest","id":"LiquidApprovalTest","testSuite":"liquid"})
