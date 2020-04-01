@@ -117,6 +117,7 @@ foam.CLASS({
               tableCellFormatter: async function(_, invoice) {
                 var additiveSubField = await invoice.payer.label();
                 this.add(additiveSubField);
+                this.tooltip = additiveSubField;
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
@@ -139,7 +140,6 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
-          editColumnsEnabled: false,
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
