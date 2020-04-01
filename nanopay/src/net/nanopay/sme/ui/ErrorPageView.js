@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'InvalidTokenErrorPageView',
-  extends: 'foam.u2.View',
+  name: 'ErrorPageView',
+  extends: 'foam.u2.Element',
 
-  documentation: 'Redirecting to this page when a user with an invalid token (via invitation) tries to sign-up',
+  documentation: 'General Error Page View',
 
   css: `
     ^ {
@@ -62,16 +62,15 @@ foam.CLASS({
     }
   `,
 
-  messages: [
-    { name: 'INSTRUCTIONS', message: 'We’re Sorry' },
-    { name: 'MESSAGE_1', message: 'It looks like you’re trying to accept an invitation, but the invitation has been revoked.' },
-    { name: 'MESSAGE_2', message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.' }
+
+  properties: [
+    'title',
+    'info_1',
+    'info_2'
   ],
 
   methods: [
-    function initE() {
-      this.SUPER();
-      var self = this;
+    function init() {
 
       this
         .addClass(this.myClass())
@@ -83,13 +82,13 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass('Message-Container')
-          .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
+          .start().addClass('Instructions-Text').add(this.title$).end()
            .br()
            .start().addClass('Message-Content').style({ 'margin-left': '-100', 'width': '590px'})
-             .add(this.MESSAGE_1)
+             .add(this.info_1$)
            .end()
            .start().addClass('Message-Content').style({ 'margin-left': '-140', 'width': '640px'})
-              .add(this.MESSAGE_2)
+              .add(this.info_2$)
            .end()
          .end()
        .end();
