@@ -419,10 +419,7 @@ foam.CLASS({
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
       createVisibility: 'HIDDEN',
-      readVisibility: function(lifecycleState){
-        return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(lifecycleState){
+      readVisibility: function(lifecycleState) {
         return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },

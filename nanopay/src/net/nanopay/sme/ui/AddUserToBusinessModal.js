@@ -162,7 +162,7 @@ foam.CLASS({
             this.closeDialog();
           })
           .catch((err) => {
-            this.notify(this.INVITATION_ERROR, 'error');
+            this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, 'error');
           });
       }
     },
