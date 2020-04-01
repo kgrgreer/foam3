@@ -2069,3 +2069,36 @@ p({
 })
 
 p({"class":"foam.nanos.script.Script","id":"lifecycle state on business","description":"Sets lifecycle state on business to active","code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport net.nanopay.model.Business;\nimport foam.nanos.auth.LifecycleState;\n\nDAO businessDAO = (DAO) x.get(\"businessDAO\");\nbusinesses = ((ArraySink) businessDAO.select(new ArraySink())).getArray();\n\nfor ( Business business : businesses ) {\nif ( business.getLifecycleState() == LifecycleState.PENDING ) {\n business.setLifecycleState(LifecycleState.ACTIVE);\n}\nbusinessDAO.put(business);\n}"})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Toggle verification transaction planners",
+  "description":"Toggle which payment provider will plan verification transactions.",
+  "code": """
+  useBMO = false;
+  useRBC = true;
+
+  localAccountDAO = x.get("localAccountDAO");
+  pointer = localAccountDAO;
+
+  while ( pointer != null ) {
+    if ( pointer.getClass().getName().equals("net.nanopay.bank.RandomDepositBankAccountDAO") ) {
+      print("BMO enabled: " + pointer.getUseBMO());
+      print("RBC enabled: " + pointer.getUseRBC());
+      pointer.setUseBMO(useBMO);
+      pointer.setUseRBC(useRBC);
+      print("BMO enabled set to: " + pointer.getUseBMO());
+      print("RBC enabled set to: " + pointer.getUseRBC());
+      break;
+    }
+
+    if ( pointer.getClass().getName().equals("foam.dao.NullDAO") ) {
+      break;
+    }
+    
+    pointer = pointer.getDelegate();
+  }
+
+  print("done");
+    """
+})
