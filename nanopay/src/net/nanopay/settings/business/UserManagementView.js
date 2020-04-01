@@ -10,7 +10,6 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
-    'foam.nanos.auth.token.Token',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
@@ -25,7 +24,6 @@ foam.CLASS({
     'agentJunctionDAO',
     'businessInvitationDAO',
     'user',
-    'tokenDAO'
   ],
 
   exports: [
@@ -68,7 +66,6 @@ foam.CLASS({
     { name: 'DISABLED_FAILURE', message: 'Failed to disable ' },
     { name: 'ACTIVE_SUCCESS', message: ' successfully enabled' },
     { name: 'ACTIVE_FAILURE', message: 'Failed to enable ' },
-    { name: 'DELETE_SUCCESS', message: ' successfully deleted ' },
     { name: 'DELETE_FAILURE', message: 'Failed to delete ' }
   ],
 
@@ -134,28 +131,24 @@ foam.CLASS({
                 var junction = this;
                 var email = this.email;
 
-                self.businessInvitationDAO
-                  .where(
-                    self.AND(
-                      self.EQ(self.Invitation.EMAIL, this.email),
-                      self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
-                      self.EQ(self.Invitation.CREATED_BY, self.user.id)
-                    )
-                  ).select({
-                    put: (invite) => {
-                      invite.status = self.InvitationStatus.CANCELLED;
-                      self.businessInvitationDAO.put(invite).then(function() {
-                        self.clientJunctionDAO.remove(junction).then(function(resp) {
-                          ctrl.add(self.NotificationMessage.create({ message: email + self.DELETE_SUCCESS }));
-                        }).catch(function(err) {
-                          var message = err ? err.message : self.DELETE_FAILURE;
-                          ctrl.add(self.NotificationMessage.create({ message: message + " " + email, type: 'error' }));
-                        });
-                      }).catch(function(err) {
-                        var message = err ? err.message : self.DELETE_FAILURE;
-                        ctrl.add(self.NotificationMessage.create({ message: message + " " + email, type: 'error' }));
-                      })
-                   }
+                self.clientJunctionDAO.remove(junction).then(function() {
+                  self.businessInvitationDAO
+                    .where(
+                      self.AND(
+                        self.EQ(self.Invitation.EMAIL, email),
+                        self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
+                        self.EQ(self.Invitation.CREATED_BY, self.user.id)
+                      )
+                    ).select().then(function(invite) {
+                      ctrl.add(self.Popup.create().tag({
+                        class: 'foam.u2.DeleteModal',
+                        dao: self.businessInvitationDAO,
+                        data: invite.array[0]
+                      }))
+                    });
+                }).catch(function(err) {
+                  var message = err ? err.message : self.DELETE_FAILURE;
+                  ctrl.add(self.NotificationMessage.create({ message: email + " " + message, type: 'error' }));
                 });
               }
             })
