@@ -185,7 +185,7 @@ foam.CLASS({
       code: function() {
         if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({
+        dao.put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
           status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
           sendInvitation: false
         }));
@@ -204,7 +204,7 @@ foam.CLASS({
         this.submitted = true;
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
-          put(this.data.clone().copyFrom({
+          put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
             status: (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
             sendInvitation: true
           })).
@@ -237,7 +237,7 @@ foam.CLASS({
       label: 'Save & Exit',
       code: function(x) {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({
+        dao.put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
           status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
           sendInvitation: true
           })).
