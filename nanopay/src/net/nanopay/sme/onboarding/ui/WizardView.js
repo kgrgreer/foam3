@@ -6,6 +6,7 @@ foam.CLASS({
   imports: [
     'auth',
     'userDAO',
+    'pushMenu',
     'theme'
   ],
 
@@ -223,7 +224,7 @@ foam.CLASS({
 
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
-            x.stack.back();
+            x.pushMenu('sme.main.dashboard');
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
@@ -243,7 +244,7 @@ foam.CLASS({
           })).
           then(function() {
             x.ctrl.notify('Progress saved.');
-            x.stack.back();
+            x.pushMenu('sme.main.dashboard');
           }, function() {
             x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
           });
