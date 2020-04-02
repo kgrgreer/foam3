@@ -1529,7 +1529,6 @@ p({
         new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.retail.NewP2PTxnRequestDAO.getOwnClassInfo()).build())))))
       .setJournalName("p2pTxnRequests")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-
       .build())
   """,
   "client": "{\"of\":\"net.nanopay.retail.model.P2PTxnRequest\"}"
