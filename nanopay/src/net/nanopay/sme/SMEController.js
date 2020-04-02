@@ -448,6 +448,11 @@ foam.CLASS({
         }
 
         var hash = location.hash.substr(1);
+
+        if ( hash == 'sme.main.onboarding' ) {
+          this.onboardingUtil.initOnboardingView();
+        }
+
         menu = await this.client.menuDAO.find(hash);
 
         // Any errors in finding the menu location to redirect
