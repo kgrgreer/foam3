@@ -160,7 +160,7 @@ foam.CLASS({
       name: 'processingDate',
       documentation: `The date by which the invoice payment begun.`,
       tableCellFormatter: function(_, invoice) {
-        this.add(invoice.processingDate.toISOString().substring(0, 10));
+        this.add(invoice.processingDate ? invoice.processingDate.toISOString().substring(0, 10) : null);
       }
     },
     {
@@ -168,7 +168,7 @@ foam.CLASS({
       name: 'approvalDate',
       documentation: `The date by which the invoice approval occured.`,
       tableCellFormatter: function(_, invoice) {
-        this.add(invoice.approvalDate.toISOString().substring(0, 10));
+        this.add(invoice.approvalDate ? invoice.approvalDate.toISOString().substring(0, 10) : null);
       }
     },
     {
@@ -176,7 +176,7 @@ foam.CLASS({
       name: 'paymentSentDate',
       documentation: `The date by which the invoice payment was sent.`,
       tableCellFormatter: function(_, invoice) {
-        this.add(invoice.paymentSentDate.toISOString().substring(0, 10));
+        this.add(invoice.paymentSentDate ? invoice.paymentSentDate.toISOString().substring(0, 10) : null);
       }
     },
     {
@@ -184,7 +184,7 @@ foam.CLASS({
       name: 'paymentReceivedDate',
       documentation: `The date by which the invoice payment was received.`,
       tableCellFormatter: function(_, invoice) {
-        this.add(invoice.paymentReceivedDate.toISOString().substring(0, 10));
+        this.add(invoice.paymentReceivedDate ? invoice.paymentReceivedDate.toISOString().substring(0, 10) : null);
       }
     },
     {
