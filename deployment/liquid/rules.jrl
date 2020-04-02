@@ -471,6 +471,24 @@ p({
   "saveHistory": true
 })
 
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d182",
+  "name":"Outstanding Requests Prevent Deletion",
+  "priority":110,
+  "ruleGroup":"liquid",
+  "documentation":"Cannot approve deletion of an approvable aware object if it has outstanding requests",
+  "daoKey":"approvalRequestDAO",
+  "operation":1,
+  "predicate":{
+    "class":"net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionPredicate"
+  },
+  "action":{
+    "class":"net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+)}
 
 p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"68afcf0c-c718-98f8-0841-75e97a3ad16d23","name": "Send notification to account owner when account has been added."}) //Ablii MicroDeposit stuff
 

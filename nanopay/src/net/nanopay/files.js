@@ -6,6 +6,8 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
   { name: 'net/nanopay/liquidity/approvalRequest/AccountRoleApprovalRequest' },
+  { name: 'net/nanopay/liquidity/approvalRequest/OutstandingRequestsPreventDeletionPredicate' },
+  { name: 'net/nanopay/liquidity/approvalRequest/OutstandingRequestsPreventDeletionRule' },
 
   // Payment
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
