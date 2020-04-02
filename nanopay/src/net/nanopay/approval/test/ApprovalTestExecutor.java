@@ -47,6 +47,8 @@ public class ApprovalTestExecutor extends Test {
 
     // Get the expected actions and states for this test
     test(this.states != null, "Test states must be set");
+    if (this.states == null)
+      return;
 
     // Add a user
     this.logger.info(prefix, "Creating user");
@@ -222,7 +224,7 @@ public class ApprovalTestExecutor extends Test {
 
     // Check if the user already exists
     User user = (User) getLocalUserDAO(x).inX(getSystemX()).find(EQ(User.EMAIL, email));
-    test(user == null, "User already exists: " + email);
+    test(user == null, "Checking if user already exists: " + email);
 
     // Create a new user
     user = new User.Builder(x)
@@ -237,8 +239,8 @@ public class ApprovalTestExecutor extends Test {
 
     // Add to the context
     user = (User) getLocalUserDAO(x).inX(x).put(user);
-    test(user != null, "User not created: " + this.getTestPrefix());
-    test(user.getLifecycleState().equals(LifecycleState.PENDING), "Created User LifecycleState is PENDING: " + this.getTestPrefix());
+    test(user != null, "Checking if user created: " + this.getTestPrefix());
+    test(user.getLifecycleState().equals(LifecycleState.PENDING), "Checking if created User LifecycleState is PENDING: " + user.getLifecycleState() + " - " + this.getTestPrefix());
     return user;
   }
 
@@ -249,7 +251,7 @@ public class ApprovalTestExecutor extends Test {
     String oldLastName = user.getLastName();
 
     // Change a field
-    test(!oldLastName.equals(this.getTestPrefix()), "Last name already updated: " + this.getTestPrefix());
+    test(!oldLastName.equals(this.getTestPrefix()), "Checking if last name already updated: " + this.getTestPrefix());
     user.setLastName(this.getTestPrefix());
 
     // Put the user
@@ -257,8 +259,8 @@ public class ApprovalTestExecutor extends Test {
 
     // Test that the user has not been updated
     User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
-    test(foundUser != null, "User not found after unapproved update");
-    test(foundUser.getLastName().equals(oldLastName), "Last name updated before being approved: " + foundUser.getLastName());
+    test(foundUser != null, "Checking if user found after unapproved update");
+    test(foundUser.getLastName().equals(oldLastName), "Checking if last name updated before being approved: " + foundUser.getLastName());
   }
 
   private void removeUser(X x, User user) {
@@ -273,7 +275,7 @@ public class ApprovalTestExecutor extends Test {
 
     // make sure the user still exists
     User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
-    test(foundUser != null, "User not found after unapproved delete");
+    test(foundUser != null, "Checking if user found after unapproved delete");
   }
 
   private ApprovalRequest testApprovalRequestCreation(X x, User user, User requestingUser, User approvingUser, Operations operation) {
@@ -281,18 +283,12 @@ public class ApprovalTestExecutor extends Test {
     ApprovalRequest approvalRequest = null;
     ArraySink approvalRequests = null;
 
-    // Retrieve approval requests
-    if (operation != Operations.UPDATE) {
-      DAO requests = ApprovalRequestUtil.getAllRequests(x, String.valueOf(user.getId()), "User");
-      approvalRequests = (ArraySink) requests.select(new ArraySink());
-    } else {
-      // Update keys are different than create keys
-      approvalRequests = (ArraySink) getApprovalRequestDAO(x).inX(x).where(AND(
-        CONTAINS_IC(ApprovalRequest.OBJ_ID, "dbareUserDAO:o" + String.valueOf(user.getId())),
-        EQ(ApprovalRequest.CLASSIFICATION, "User"),
-        EQ(ApprovalRequest.OPERATION, Operations.UPDATE)
-      )).select(new ArraySink());
-    }
+    approvalRequests = (ArraySink) this.getApprovalRequestDAO(x).inX(this.getSystemX()).where(AND(
+      CONTAINS_IC(ApprovalRequest.OBJ_ID, String.valueOf(user.getId())),
+      EQ(ApprovalRequest.CLASSIFICATION, "User"),
+      EQ(ApprovalRequest.OPERATION, operation),
+      EQ(ApprovalRequest.IS_FULFILLED, false)
+    )).select(new ArraySink());
 
     // Make sure they are all set to REQUESTED
     List<Long> requestApproverIds = new ArrayList<>();
@@ -306,7 +302,7 @@ public class ApprovalTestExecutor extends Test {
         continue;
 
       // Make sure any other requests are REQUESTED
-      test(request.getStatus() == ApprovalStatus.REQUESTED, "ApprovalRequest set to " + request.getStatus() + ": " + request.getId());
+      test(request.getStatus() == ApprovalStatus.REQUESTED, "ApprovalRequest(" + operation + ") set to " + request.getStatus() + ": " + request.getId() + ", user: " + request.getApprover());
 
       // Look for the approving user 
       if (request.getApprover() == approvingUser.getId())
@@ -325,10 +321,10 @@ public class ApprovalTestExecutor extends Test {
     Collections.sort(approverIds);
     
     // Test to see if they match
-    test(approverIds.equals(requestApproverIds), "UCJ approvers and approval requests match");
+    test(approverIds.equals(requestApproverIds), "Checking if UCJ approvers and approval requests approvers match");
     
     // Test that an approval request has been found for the approving user
-    test(approvalRequest != null, "No approval request found for approving user");
+    test(approvalRequest != null, "Checking if approval request found for approving user: " + approvingUser.getId());
     return approvalRequest;
   }
 
@@ -340,22 +336,22 @@ public class ApprovalTestExecutor extends Test {
         EQ(Approvable.OBJ_ID, String.valueOf(user.getId()))
       )
     );
-    test(foundApprovable != null, "Approvable found after update");
+    test(foundApprovable != null, "Checking if Approvable found after update");
     test(foundApprovable.getStatus() == expectedStatus, "Expected status: " + expectedStatus + ". Actual status: " + foundApprovable.getStatus());
     
     // Test that the user has not been updated
     User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
-    test(foundUser != null, "User found for update applied check");
+    test(foundUser != null, "Checking if user found for update applied check");
 
     // Check if the update should have been applied
     if (updateApplied)
       test(updateApplied ? 
           foundUser.getLastName().equals(this.getTestPrefix()) : 
-        ! foundUser.getLastName().equals(this.getTestPrefix()), "Update should be applied: " + updateApplied);
+        ! foundUser.getLastName().equals(this.getTestPrefix()), "Checking if update has been applied: " + updateApplied);
   }
 
   private void applyApprovalAction(X x, ApprovalStatus status, ApprovalRequest request, User user, Operations operation) {
-    test(request != null, "No ApprovalRequest found for approving user: " + this.getTestPrefix());
+    test(request != null, "Checking if ApprovalRequest found for approving user: " + this.getTestPrefix());
     
     // Mark the request with the appropriate status
     request = (ApprovalRequest) request.fclone();
@@ -366,25 +362,25 @@ public class ApprovalTestExecutor extends Test {
 
     // Check the approval
     ApprovalRequest foundRequest = (ApprovalRequest) this.getApprovalRequestDAO(x).inX(this.getSystemX()).find(request.getId());
-    test(foundRequest.getStatus() == status, "ApprovalRequest status not updated to: " + status + " - " + this.getTestPrefix());
+    test(foundRequest.getStatus() == status, "Checking if ApprovalRequest status updated to: " + status + " - " + this.getTestPrefix());
 
     ArraySink approvalRequests = (ArraySink) this.getApprovalRequestDAO(x).inX(this.getSystemX()).where(AND(
       CONTAINS_IC(ApprovalRequest.OBJ_ID, String.valueOf(user.getId())),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
       EQ(ApprovalRequest.OPERATION, operation)
     )).select(new ArraySink());
-    test(approvalRequests.getArray().size() == 1, "More than 1 executed approval requests found: " + approvalRequests.getArray().size());
+    test(approvalRequests.getArray().size() == 1, "Checking if more than 1 executed approval requests found: " + approvalRequests.getArray().size());
 
     ApprovalRequest approvedRequest = (ApprovalRequest) approvalRequests.getArray().get(0);
-    test(approvedRequest.getStatus() == status, "Found approval request must be: " + status);
+    test(approvedRequest.getStatus() == status, "Checking if found approval request status is: " + status + " - " + approvedRequest.getStatus());
   }
 
   private User checkUserStatus(X x, LifecycleState lifecycleState, User user) {
     User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
-    test(foundUser != null, "Cannot find user to check lifecycle state: " + lifecycleState + " - " + this.getTestPrefix());
+    test(foundUser != null, "Checking if can find user to check lifecycle state: " + lifecycleState + " - " + this.getTestPrefix());
 
     // Check the lifecycle state
-    test(foundUser.getLifecycleState() == lifecycleState, "Found user lifecycle state incorrect. Expected: " + lifecycleState + ". Actual: " + foundUser.getLifecycleState());
+    test(foundUser.getLifecycleState() == lifecycleState, "Checking if found user lifecycle state is correct. Expected: " + lifecycleState + ". Actual: " + foundUser.getLifecycleState());
     return foundUser;
   }  
 }
