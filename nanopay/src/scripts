@@ -2102,3 +2102,10 @@ p({
   print("done");
     """
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"lifecycle state set to ACTIVE for users",
+  "description":"To set the lifecycle state on all existing users to ACTIVE",
+  "code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.nanos.auth.User;\nimport foam.nanos.auth.LifecycleState;\n\nDAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");\nusers = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();\n\nfor ( User user : users ) {\nif ( user.getLifecycleState() == LifecycleState.PENDING ) {\n print(user.getEmail());\n\n User clonedUser = user.fclone();\n clonedUser.setLifecycleState(LifecycleState.ACTIVE);\n bareUserDAO.put(clonedUser);\n}\n}",
+})

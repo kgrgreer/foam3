@@ -19,7 +19,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'java.util.List',
-    'foam.nanos.auth.AuthService'
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   implements: [
@@ -114,6 +115,7 @@ foam.CLASS({
               account.setDenomination(denomination);
               account.setIsDefault(true);
               account.setOwner(user.getId()); // required until user.getAccounts()
+              account.setLifecycleState(LifecycleState.ACTIVE);
               account = (DigitalAccount) accountDAO.put(account);
             }
           }
