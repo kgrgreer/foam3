@@ -31,9 +31,10 @@ foam.CLASS({
         TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
         BmoCOTransaction t = new BmoCOTransaction();
         t.copyFrom(requestTxn);
+        t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
-        addTransfer(trustAccount.getId(), t.getAmount());
-        addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
+        quote.addTransfer(trustAccount.getId(), t.getAmount());
+        quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 
         t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
         if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {

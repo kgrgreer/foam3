@@ -9,11 +9,18 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
+  ],
+
+  properties: [
+    {
+      name: 'multiPlan_',
+      value: true
+    }
   ],
 
   methods: [
@@ -26,6 +33,7 @@ foam.CLASS({
         if ( requestTxn.getType().equals("Transaction") ) {
           txn = new SummaryTransaction(x);
           txn.copyFrom(requestTxn);
+          txn.addNext(createCompliance(requestTxn));
         } else {
           txn = (Transaction) requestTxn.fclone();
         }
@@ -35,8 +43,8 @@ foam.CLASS({
 
         Account sourceAccount = quote.getSourceAccount();
         Account destinationAccount = quote.getDestinationAccount();
-        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
-        DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
+        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
+        DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), destinationAccount.getDenomination());
        
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
@@ -65,16 +73,20 @@ foam.CLASS({
           for ( Transaction DP : digitalPlans ) {
             for ( Transaction COP : cashOutPlans ) {
               Transaction t = (Transaction) txn.fclone();
-              DP.addNext(COP);
-              CIP.addNext(DP);
-              t.addNext(CIP);
+              Transaction ci = (Transaction) CIP.fclone();
+              Transaction dp = (Transaction) DP.fclone();
+              Transaction co = (Transaction) COP.fclone();
+              dp.addNext(co);
+              ci.addNext(dp);
+              dp.setInitialStatus(TransactionStatus.COMPLETED);
+              ComplianceTransaction ct = createCompliance(txn);
+              ct.addNext(ci);
+              t.addNext(ct);
               t.addLineItems(CIP.getLineItems(), CIP.getReverseLineItems());
               t.addLineItems(DP.getLineItems(), DP.getReverseLineItems());
               t.addLineItems(COP.getLineItems(), COP.getReverseLineItems());
               t.setStatus(TransactionStatus.COMPLETED);
-              // TODO move to fee engine
-              t.addLineItems(new TransactionLineItem[] { new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(75l).setCurrency(sourceAccount.getDenomination()).build()}, null);
-              getAlternatePlans_().add(t);
+              quote.getAlternatePlans_().add(t);
             }
           }
         }

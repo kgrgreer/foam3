@@ -65,7 +65,6 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public SummaryPopulatorDAO(foam.core.X x, foam.dao.DAO delegate) {
-            System.err.println("Direct constructor use is deprecated. Use Builder instead.");
             setDelegate(delegate);
           }
         `);

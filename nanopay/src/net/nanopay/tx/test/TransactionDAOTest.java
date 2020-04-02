@@ -27,6 +27,7 @@ public class TransactionDAOTest
   User sender_, receiver_;
   X x_;
   CABankAccount senderBankAccount_;
+  DigitalAccount senderDigitalAccount_;
   DAO txnDAO;
   public void runTest(X x) {
     txnDAO = (DAO) x.get("localTransactionDAO");
@@ -87,6 +88,10 @@ public class TransactionDAOTest
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
+
+    if ( senderDigitalAccount_ == null ) {
+      senderDigitalAccount_ = DigitalAccount.findDefault(x_, sender_, "CAD");
+    }
 
     return x_;
   }
@@ -190,6 +195,7 @@ public class TransactionDAOTest
     setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
+    txn.setDestinationAccount(senderDigitalAccount_.getId());
     txn.setAmount(1l);
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
@@ -219,7 +225,7 @@ public class TransactionDAOTest
     txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Bank account needs to be verified for cashout",
+      "Unable to find a plan for requested transaction.",
       RuntimeException.class), "Exception: Bank account needs to be verified for cashout");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
@@ -270,6 +276,7 @@ public class TransactionDAOTest
     Transaction txn = new Transaction();
     txn.setAmount(100000L);
     txn.setSourceAccount(senderBankAccount_.getId());
+    txn.setDestinationAccount(senderDigitalAccount_.getId());
     txn.setPayeeId(sender_.getId());
     txn = (Transaction) ((Transaction)((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);

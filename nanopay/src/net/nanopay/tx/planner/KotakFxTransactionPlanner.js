@@ -68,11 +68,11 @@ foam.CLASS({
       // funds would have been moved by ops team already by this point.
       Transfer t = new Transfer();
       t.setAccount(requestTxn.getSourceAccount());
-      t.setAmount(requestTxn.getAmount());
+      t.setAmount(-requestTxn.getAmount());
       Transfer[] transfers = new Transfer[1];
       transfers[0] = t;
 
-      TrustAccount trustAccount = TrustAccount.find(getX(), requestTxn.findSourceAccount(x));
+      TrustAccount trustAccount = TrustAccount.find(x, requestTxn.findSourceAccount(x));
       KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
       kotakCO.setAmount(requestTxn.getAmount());
       kotakCO.setSourceAccount(requestTxn.getSourceAccount());

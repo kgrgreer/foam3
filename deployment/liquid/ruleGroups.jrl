@@ -45,3 +45,38 @@ p({
     }]
   }
 })
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"genericPlanner",
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"AlternaPlanner",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"BMOPlanner",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"RBCPlanner",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"SecurityPlanner",
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"transactionPlanner",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"FeeEngine",
+  "enabled":false
+})

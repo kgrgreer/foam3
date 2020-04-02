@@ -21,11 +21,12 @@ foam.CLASS({
 
       COTransaction cashOut = new COTransaction();
       cashOut.copyFrom(requestTxn);
+      cashOut.setName("Cash Out of "+cashOut.getSourceCurrency());
       // use destinations trust, need system context.
       TrustAccount trustAccount = TrustAccount.find(getX(), quote.getDestinationAccount());
 
-      addTransfer(trustAccount.getId(), cashOut.getAmount());
-      addTransfer(quote.getSourceAccount().getId(), -cashOut.getAmount());
+      quote.addTransfer(trustAccount.getId(), cashOut.getAmount());
+      quote.addTransfer(quote.getSourceAccount().getId(), -cashOut.getAmount());
 
       cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
 
@@ -33,6 +34,12 @@ foam.CLASS({
 
       `
     },
+    {
+      name: 'forceBestPlan',
+      javaCode: `
+        return true;
+      `
+    }
   ]
 });
 

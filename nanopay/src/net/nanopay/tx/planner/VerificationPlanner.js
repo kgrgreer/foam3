@@ -22,29 +22,31 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
+        // TODO: Uncomment this code when we enable proper verification transactions.
+        // Transaction tOut = new Transaction();
+        // tOut.copyFrom(requestTxn);
+        // Transaction tIn = new Transaction();
+        // tIn.copyFrom(requestTxn);
 
-        Transaction tOut = new Transaction();
-        tOut.copyFrom(requestTxn);
-        Transaction tIn = new Transaction();
-        tIn.copyFrom(requestTxn);
+        // tOut.setSourceAccount(getVerifierAccount());
 
-        tOut.setSourceAccount(getVerifierAccount());
+        // tIn.setDestinationAccount(getVerifierAccount());
 
-        tIn.setDestinationAccount(getVerifierAccount());
+        // Transaction[] outs = multiQuoteTxn(x, tOut);
+        // Transaction[] ins = multiQuoteTxn(x, tIn);
 
-        Transaction[] outs = multiQuoteTxn(x, tOut);
-        Transaction[] ins = multiQuoteTxn(x, tIn);
-
-        for ( Transaction t1 : ins ) {
-          for ( Transaction t2 : outs ) {
-            VerificationTransaction vt = (VerificationTransaction) requestTxn.fclone();
-            vt.setName("Verification Transaction");
-            vt.addNext(t1);
-            vt.addNext(t2);
-            getAlternatePlans_().add(vt);
-          }
-        }
-        return null;
+        // for ( Transaction t1 : ins ) {
+        //   for ( Transaction t2 : outs ) {
+        //     VerificationTransaction vt = (VerificationTransaction) requestTxn.fclone();
+        //     vt.setName("Verification Transaction");
+        //     vt.addNext(t1);
+        //     vt.addNext(t2);
+        //     quote.getAlternatePlans_().add(vt);
+        //   }
+        // }
+        // return null;
+        requestTxn = (VerificationTransaction) requestTxn.fclone();
+        return requestTxn;
       `
     }
   ]

@@ -5,16 +5,18 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'NanopayFXTransactionPlanDAO',
-  extends: 'foam.dao.ProxyDAO',
+  package: 'net.nanopay.tx.planner',
+  name: 'NanopayFXTransactionPlanner',
+  extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
-  documentation: ``,
+  documentation: `Planner for nanopay FX transactions`,
 
   javaImports: [
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'foam.dao.DAO',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -27,6 +29,7 @@ foam.CLASS({
     'net.nanopay.model.Broker',
     'net.nanopay.account.DigitalAccount',
   ],
+
 
   constants: [
     {
@@ -46,36 +49,31 @@ foam.CLASS({
     },
   ],
 
-  properties: [
-  ],
-
   methods: [
     {
-      name: 'put_',
-      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = quote.getRequestTransaction();
-      if (SafetyUtil.equals(request.getSourceCurrency(), request.getDestinationCurrency())) return getDelegate().put_(x, obj);
+      name: 'plan',
+      javaCode: `
+      //src and dest currency are different
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
-      if ( ! (sourceAccount instanceof DigitalAccount) || ! (destinationAccount instanceof DigitalAccount) ) return getDelegate().put_(x, obj);
-      // Check if NanoPayFXTransactionPlanDAO can handle the currency combination
-      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
-          request.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
+      // Check if NanoPayFXTransactionPlanner can handle the currency combination
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, requestTxn.getSourceCurrency(),
+        requestTxn.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
       if ( null != fxService ) {
 
         // Get Rates
         FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(),
-            request.getAmount(), request.getDestinationAmount(), FXDirection.BUY.getName(), null, sourceAccount.getOwner(), null);
-        if ( null == fxQuote ) return getDelegate().put_(x, obj);
+          requestTxn.getAmount(), requestTxn.getDestinationAmount(), FXDirection.BUY.getName(), null, sourceAccount.getOwner(), null);
+        if ( null == fxQuote ) return null;
 
-        Broker broker = (Broker) ((DAO) getX().get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
-        User brokerUser = (User) ((DAO) getX().get("localUserDAO")).find_(x, broker.getUserId());
-        Account brokerSourceAccount = DigitalAccount.findDefault(getX(), brokerUser, sourceAccount.getDenomination());
-        Account brokerDestinationAccount = DigitalAccount.findDefault(getX(), brokerUser, destinationAccount.getDenomination());
+        Broker broker = (Broker) ((DAO) x.get("brokerDAO")).find_(x, NANOPAY_BROKER_ID);
+        User brokerUser = (User) ((DAO) x.get("localUserDAO")).find_(x, broker.getUserId());
+        Account brokerSourceAccount = DigitalAccount.findDefault(x, brokerUser, sourceAccount.getDenomination());
+        Account brokerDestinationAccount = DigitalAccount.findDefault(x, brokerUser, destinationAccount.getDenomination());
 
         FXTransaction fxTransaction = new FXTransaction.Builder(x).build();
 
-        fxTransaction.copyFrom(request);
+        fxTransaction.copyFrom(requestTxn);
         //fxTransaction.setStatus(TransactionStatus.COMPLETED); // act like digital
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
@@ -83,28 +81,24 @@ foam.CLASS({
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
         fxTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
-          //TODO/REVIEW - where does this go now?
           fxTransaction.setAccepted(true);
         }
 
-        Transfer[] transfers = new Transfer [] {
-          new Transfer.Builder(x).setAccount(sourceAccount.getId()).setAmount(-request.getTotal()).build(),
-          new Transfer.Builder(x).setAccount(brokerSourceAccount.getId()).setAmount(request.getTotal()).build(),
-
-          new Transfer.Builder(x).setAccount(brokerDestinationAccount.getId()).setAmount(-fxTransaction.getDestinationAmount()).build(),
-          new Transfer.Builder(x).setAccount(destinationAccount.getId()).setAmount(fxTransaction.getDestinationAmount()).build()
-        };
-        fxTransaction.add(transfers);
+        quote.addTransfer(sourceAccount.getId(), -requestTxn.getTotal());
+        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getTotal());
+        quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
+        quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
           fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
         }
         fxTransaction.setIsQuoted(true);
-        quote.addPlan(fxTransaction);
+        return fxTransaction;
       }
 
-      return super.put_(x, quote);`
+      return null;
+      `
     },
   ]
 });
