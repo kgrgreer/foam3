@@ -113,6 +113,15 @@ foam.CLASS({
         maxLength: 3,
         onKey: true
       },
+      validateObj: function(institutionNumber) {
+        var instNumberRegex = /^[0-9]{3}$/;
+
+        if ( institutionNumber === '' ) {
+          return 'Please enter an institution number.';
+        } else if ( ! instNumberRegex.test(institutionNumber) ) {
+          return 'Institution number must be 3 digits long.';
+        }
+      },
       gridColumns: 2,
       preSet: function(o, n) {
         if ( n === '' ) return n;

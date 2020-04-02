@@ -85,6 +85,19 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'CONFIRM_RELATIONSHIP',
+      message: `I confirm that I have a business relationship with this contact and
+        acknowledge that the bank account info entered by the contact
+        business will be used for all deposits to their account.`
+    },
+    {
+      name: 'INVITE_LABEL',
+      message: 'Invite this contact to join Ablii'
+    }
+  ],
+
   properties: [
     {
       name: 'organization',
@@ -109,7 +122,7 @@ foam.CLASS({
       documentation: `A field for the legal first and last name of the Contact,
         if different than the provided first name.  The field will default to first
         name, last name.`,
-      hidden: true,
+      visibility: 'HIDDEN',
       label: 'Name'
     },
     {
@@ -142,7 +155,7 @@ foam.CLASS({
     },
     {
       name: 'middleName',
-      hidden: true,
+      visibility: 'HIDDEN',
       validateObj: function(middleName) {}
     },
     {
@@ -163,11 +176,12 @@ foam.CLASS({
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'stepOne',
-      view: {
-        class: 'foam.u2.CheckBox',
-        label: `I confirm that I have a business relationship with this contact and
-        acknowledge that the bank account info entered by the contact
-        business will be used for all deposits to their account.`
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.CONFIRM_RELATIONSHIP
+        }
     },
       validateObj: function(confirm) {
         if ( ! confirm ) {
@@ -182,7 +196,7 @@ foam.CLASS({
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
       `,
-      hidden: true,
+      visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
       tableCellFormatter: function(state, obj) {
@@ -208,7 +222,7 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'Reference',
@@ -216,13 +230,13 @@ foam.CLASS({
       name: 'realUser',
       documentation: `The ID for the individual person, or real user,
         who registers with our platform.`,
-      hidden: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
-      hidden: true,
+      visibility: 'HIDDEN',
       value: false
     },
     {
@@ -231,13 +245,15 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      hidden: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
+      of: 'net.nanopay.bank.BankAccount',
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
       section: 'stepTwo',
+      storageTransient: true,
       label: '',
       factory: function() {
         return net.nanopay.bank.BankAccount.create({ isDefault: true });
@@ -252,9 +268,12 @@ foam.CLASS({
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
-      view: {
-        class: 'foam.u2.CheckBox',
-        label: 'Invite this contact to join Ablii'
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.INVITE_LABEL
+        }
       }
     },
     {
@@ -267,6 +286,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',
+          showDisclaimer: true,
           customCountryDAO: X.data.PromisedDAO.create({
             promise: X.data.auth.check(null, 'currency.read.USD').then((hasPermission) => {
               var q;
@@ -304,24 +324,11 @@ foam.CLASS({
       }
     },
     {
-      name: 'disclaimer',
-      documentation: 'Display property for disclaimer.',
-      section: 'stepThree',
-      label: '',
-      view: function() {
-        return foam.u2.Element.create()
-          .start()
-            .addClass('disclaimer')
-            .add('* PO Boxes are not Allowed')
-          .end();
-      }
-    },
-    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
-      hidden: true,
+      visibility: 'HIDDEN',
       storageTransient: true
     },
     {
@@ -331,14 +338,14 @@ foam.CLASS({
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `,
-      hidden: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'businessPhone',
       documentation: 'The phone number of the business.',
-      hidden: true,
+      visibility: 'HIDDEN',
       factory: function() {
         return this.Phone.create();
       },
@@ -348,13 +355,13 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'businessPhoneNumber',
       documentation: 'The phone number of the business.',
-      hidden: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'businessPhoneVerified',
       writePermissionRequired: true,
-      hidden: true,
+      visibility: 'HIDDEN'
     }
   ],
 

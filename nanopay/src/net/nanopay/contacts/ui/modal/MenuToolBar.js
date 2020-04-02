@@ -82,7 +82,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
-      expression: function() {
+      factory: function() {
         return this.menuDAO
           .where(
             this.AND(
@@ -108,30 +108,27 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('options'))
           .select(this.dao$proxy, function(menu) {
-            return this.E()
-              .call(function() {
-                this.start()
-                  .addClass(self.myClass('option'))
-                  .on('click', function() {
-                    self.pushMenu(menu.id);
+            return this.E().start()
+              .addClass(self.myClass('option'))
+              .on('click', function() {
+                self.pushMenu(menu.id);
+              })
+              .start()
+                .addClass(self.myClass('option-icon-container'))
+                .start('img')
+                  .addClass(self.myClass('option-icon'))
+                  .style({
+                    'width': menu.order == 4 ? '45px' : '50px',
+                    'height': menu.order == 4 ? '35px' : '50px'
                   })
-                  .start()
-                    .addClass(self.myClass('option-icon-container'))
-                    .start('img')
-                      .addClass(self.myClass('option-icon'))
-                      .style({
-                        'width': menu.order == 4 ? '45px' : '50px',
-                        'height': menu.order == 4 ? '35px' : '50px'
-                      })
-                      .attr('src', menu.icon)
-                    .end()
-                  .end()
-                  .start()
-                    .addClass(self.myClass('option-title'))
-                    .add(menu.label)
-                  .end()
+                  .attr('src', menu.icon)
                 .end()
-              });
+              .end()
+              .start()
+                .addClass(self.myClass('option-title'))
+                .add(menu.label)
+              .end()
+            .end();
           })
         .end(); 
     }

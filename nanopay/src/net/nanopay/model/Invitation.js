@@ -26,26 +26,26 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       tableWidth: 50,
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'Long',
       name: 'inviteeId',
       documentation: 'Id of invitee if currently a user',
-      hidden: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'invitee',
-      hidden: true,
+      visibility: 'HIDDEN',
       storageTransient: true
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'inviter',
-      hidden: true,
+      visibility: 'HIDDEN',
       storageTransient: true
     },
     {
@@ -105,33 +105,33 @@ foam.CLASS({
       class: 'Long',
       name: 'createdBy',
       documentation: 'Id of user sending the invite/request',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
       name: 'timestamp',
       label: 'Date',
       documentation: 'Timestamp of when invitation was sent',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'internal',
       documentation: 'True if the invited user already existed, false ' +
           'otherwise',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'isContact',
       documentation: `True if the invited user is a Contact.`,
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.model.InvitationStatus',
       name: 'status',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -140,37 +140,37 @@ foam.CLASS({
         Used in Ablii when inviting someone who is not on the platform to join a
         Business.
       `,
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'firstName',
       documentation: 'Ablii signing officer\'s firstName',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'lastName',
       documentation: 'Ablii signing officer\'s lastName',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'jobTitle',
       documentation: 'Ablii signing officer\'s jobTitle',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: 'Ablii signing officer\'s phoneNumber',
-      hidden: true
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'tokenData',
       documentation: 'The token associated to the sent invitation',
-      hidden: true
+      visibility: 'HIDDEN'
     },
   ]
 });
