@@ -44,7 +44,7 @@ foam.CLASS({
     'invoice',
     'invoiceDAO',
     'notify',
-    'transactionQuotePlanDAO',
+    'transactionPlannerDAO',
     'user',
     'viewData',
     'wizard',
@@ -136,7 +136,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       name: 'quote',
       documentation: `
-        Stores the fetched transaction quote from transactionQuotePlanDAO.
+        Stores the fetched transaction quote from transactionPlannerDAO.
         Pass a transaction quote as (quote) into view if setting isReadOnly.
         (This will populate values within the view)
       `,
@@ -485,7 +485,7 @@ foam.CLASS({
         amount: this.invoice.amount,
         destinationAmount: this.invoice.targetAmount,
       });
-      var quote = await this.transactionQuotePlanDAO.put(
+      var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
@@ -503,7 +503,7 @@ foam.CLASS({
         destinationAmount: this.invoice.amount
       });
 
-      var quote = await this.transactionQuotePlanDAO.put(
+      var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })

@@ -12,6 +12,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.liquidity.LiquiditySettings',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
     'foam.util.SafetyUtil',
@@ -30,16 +32,64 @@ foam.CLASS({
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
 
-        //clear the incoming quote
+        // ---- clear the incoming quote
         txn.setNext(null);
-        quote.setPlans(null);
+        quote.setPlans(new Transaction[] {});
         quote.setPlan(null);
-        quote.setSourceAccount((Account) txn.findSourceAccount(x));
-        quote.setDestinationAccount((Account) txn.findDestinationAccount(getX())); // elevate destination account search to system.
+
+        // ---- set source account
+        Account account = txn.findSourceAccount(x);
+        if ( account == null ) {
+          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
+          if ( user == null ) {
+            ((Logger) x.get("logger")).error("Payer not found for " + txn.getId());
+            throw new RuntimeException("Payer not found");
+          }
+          account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          txn.setSourceAccount(account.getId());
+          quote.setSourceAccount(account);
+        } else {
+          quote.setSourceAccount(account);
+        }
+
+        // ---- set destination account
+        Account destAccount = txn.findDestinationAccount(x);
+        if ( destAccount == null ) {
+          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
+          if ( user == null ) {
+            ((Logger) x.get("logger")).error("Payee not found for " + txn.getId());
+            throw new RuntimeException("Payee not found");
+          }
+          DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
+          
+          // Once Ablii has digital account support, will need to make AFEX support CAD digital accounts as well.
+          // AFEX planner will know which trust account to use for AFEXTransaction and then add on
+          // a digitalTransaction to move funds to the destination digitalAccount
+          // afexTransactionPlanner:
+          //   - AFEXTransaction for : US-USD -> CA-CAD
+          //   - DigitalTransaction for : CA-CAD -> CA-Digital
+          LiquiditySettings digitalAccLiquidity = accountDigital.findLiquiditySetting(x);
+          if ( digitalAccLiquidity == null || (! digitalAccLiquidity.getHighLiquidity().getEnabled()) ) {
+            Account bankAccount = BankAccount.findDefault(x, user, txn.getDestinationCurrency());
+            if ( bankAccount != null ) {
+              destAccount = bankAccount;
+            }
+          } 
+          if ( destAccount == null ) {
+            destAccount = accountDigital;
+          }
+          txn.setDestinationAccount(destAccount.getId());
+          quote.setDestinationAccount(destAccount);
+        } else {
+          quote.setDestinationAccount(destAccount);
+        }
+
+         // ---- Fill in empty currencies
         if ( SafetyUtil.isEmpty(txn.getSourceCurrency()) ) {
           logger.log("Transaction Source Currency not specified, defaulting to source account denomination");
           txn.setSourceCurrency(quote.getSourceAccount().getDenomination());
         }
+
         if ( SafetyUtil.isEmpty(txn.getDestinationCurrency()) ) {
           logger.log("Transaction Source Currency not specified, defaulting to source account denomination");
           txn.setDestinationCurrency(quote.getDestinationAccount().getDenomination());
@@ -47,6 +97,7 @@ foam.CLASS({
 
         quote.setSourceUnit(txn.getSourceCurrency());
         quote.setDestinationUnit(txn.getDestinationCurrency());
+        txn.freeze();
         return getDelegate().put_(x, quote);
       `
     },
@@ -57,7 +108,6 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public QuoteFillerDAO(foam.core.X x, foam.dao.DAO delegate) {
-            System.err.println("Direct constructor use is deprecated. Use Builder instead.");
             setDelegate(delegate);
           }
         `);

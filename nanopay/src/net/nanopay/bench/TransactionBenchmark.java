@@ -40,7 +40,7 @@ public class TransactionBenchmark
   protected DAO branchDAO_;
   protected DAO institutionDAO_;
   protected DAO transactionDAO_;
-  protected DAO transactionQuotePlanDAO_;
+  protected DAO transactionPlannerDAO;
   protected DAO userDAO_;
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
@@ -129,7 +129,7 @@ public class TransactionBenchmark
     branchDAO_ = (DAO)x.get("branchDAO");
     institutionDAO_ = (DAO)x.get("institutionDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
-    transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
+    transactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
 
     User admin = (User) userDAO_.find(1L);
@@ -263,7 +263,7 @@ public class TransactionBenchmark
       transaction.setAmount(amount);
 
       if ( quote_ ) {
-        TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
+        TransactionQuote quote = (TransactionQuote) transactionPlannerDAO.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
         transaction = quote.getPlan();
       } else {
         Account payerAccount = (DigitalAccount) accounts_.get(fi);

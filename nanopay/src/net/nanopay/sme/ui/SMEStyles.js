@@ -1039,5 +1039,19 @@ foam.CLASS({
     .DAOBrowser-query-bar {
       align-items: center !important;
     }
+    .foam-u2-filter-BooleanFilterView-container > input[type='checkbox']:checked:after {
+      width: 16px;
+      height: 18px;
+      margin-right: 2px;
+      padding-left: 2px;
+      position: relative;
+      left: -2px;
+      top: -2px;
+      background-color: white;
+      display: inline-block;
+      visibility: visible;
+      color: #604aff;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
   `
 });

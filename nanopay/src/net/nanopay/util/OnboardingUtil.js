@@ -74,6 +74,7 @@ foam.CLASS({
           class: 'net.nanopay.sme.onboarding.ui.WizardView',
           data: businessOnboarding ? businessOnboarding : await this.createOnboarding()
         });
+        location.hash = 'sme.main.onboarding';
       }
       return;
     }

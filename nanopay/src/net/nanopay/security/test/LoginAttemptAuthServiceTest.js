@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.nanos.session.Session'
+    'foam.nanos.session.Session',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   constants: [
@@ -227,9 +228,12 @@ foam.CLASS({
       ],
       javaCode: `
         userDAO.inX(x).put(new foam.nanos.auth.User.Builder(x)
-          .setId(1000).setEmail("kirk@nanopay.net").setGroup("admin")
+          .setId(1000)
+          .setEmail("kirk@nanopay.net")
+          .setGroup("admin")
           .setPassword(foam.util.Password.hash("Test123"))
           .setLoginAttempts((short) 0)
+          .setLifecycleState(LifecycleState.ACTIVE)
           .build());
       `
     },

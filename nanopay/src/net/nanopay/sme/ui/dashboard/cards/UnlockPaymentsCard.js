@@ -325,6 +325,7 @@ foam.CLASS({
                   class: 'net.nanopay.sme.onboarding.ui.WizardView',
                   data: o
                 });
+                location.hash = 'sme.main.onboarding';
               });
             }  else if ( ! this.isCanadianBusiness ) {
               this.uSBusinessOnboardingDAO.find(
@@ -341,6 +342,7 @@ foam.CLASS({
                   class: 'net.nanopay.sme.onboarding.ui.WizardView',
                   data: o
                 });
+                location.hash = 'sme.main.onboarding';
               });
             }
           }  else if ( ! isDomesticOnboarding && this.isCanadianBusiness ) {
@@ -358,6 +360,7 @@ foam.CLASS({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o
               });
+              location.hash = 'sme.main.onboarding';
             });
           } else {
             this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());

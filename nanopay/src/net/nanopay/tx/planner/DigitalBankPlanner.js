@@ -11,6 +11,13 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  properties: [
+    {
+      name: 'multiPlan_',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -24,7 +31,6 @@ foam.CLASS({
         digitalTxn.copyFrom(requestTxn);
         digitalTxn.setDestinationAccount(digital.getId());
 
-
         // cash out 
         Transaction co = new Transaction();
         co.copyFrom(requestTxn);
@@ -34,8 +40,8 @@ foam.CLASS({
         Transaction[] COs = multiQuoteTxn(x, co);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : COs ) {
-            tx2.addNext(tx1);
-            getAlternatePlans_().add(tx2);
+            tx1.addNext(tx2);
+            quote.getAlternatePlans_().add(tx1);
           }
         }
         return null;

@@ -51,7 +51,10 @@ foam.CLASS({
       javaType: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
       class: 'Enum',
       of: 'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
-      label: 'Step 1: Action'
+      label: 'Step 1: Action',
+      tableHeaderFormatter: function(axiom) {
+        this.add('Request Type');
+      },
     },
     {
       class: 'Reference',
@@ -305,7 +308,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       label: 'Status',
-      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      value: foam.nanos.auth.LifecycleState.PENDING,
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
       updateVisibility: 'RO',
       readVisibility: 'RO'

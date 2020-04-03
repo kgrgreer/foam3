@@ -288,6 +288,7 @@ for(int j = 0; j < emails.length; j+=2) {
     user.setDesiredPassword(passwords.length<j+2?passwords[0]:passwords[j+1]);
     user.setStatus(AccountStatus.ACTIVE);
     user.setCompliance(ComplianceStatus.PASSED);
+    user.setSpid("nanopay");
     userDAO.put(user);
 
     UserUserJunction junction = new UserUserJunction();
@@ -697,8 +698,6 @@ if ( USER_ID == x.get("user").getId() ) {
 executeCalls(context);
   """
 })
-
-p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})
 
 p({
   "class": "foam.nanos.script.Script",
@@ -1124,7 +1123,7 @@ p({
     transaction.setAmount(invAmount);
 
     TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(transaction).build();
-    quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
+    quote = (TransactionQuote) localTransactionPlannerDAO.put(quote);
     Transaction plan = quote.getPlan();
     if ( plan == null ) {
       throw new RuntimeException("Failed to quote Invoice: "+transaction);
@@ -1142,7 +1141,7 @@ p({
   invoiceDAO = x.get("invoiceDAO");
   transactionDAO = x.get("localTransactionDAO");
   userDAO = (DAO) x.get("localUserDAO");
-  localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+  localTransactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
   logger = (Logger) x.get("logger");
   successCount = 0;
   failedCount = 0;
@@ -2064,4 +2063,46 @@ p({
 
   """,
   "output": ""
+})
+
+p({"class":"foam.nanos.script.Script","id":"lifecycle state on business","description":"Sets lifecycle state on business to active","code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport net.nanopay.model.Business;\nimport foam.nanos.auth.LifecycleState;\n\nDAO businessDAO = (DAO) x.get(\"businessDAO\");\nbusinesses = ((ArraySink) businessDAO.select(new ArraySink())).getArray();\n\nfor ( Business business : businesses ) {\nif ( business.getLifecycleState() == LifecycleState.PENDING ) {\n business.setLifecycleState(LifecycleState.ACTIVE);\n}\nbusinessDAO.put(business);\n}"})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Toggle verification transaction planners",
+  "description":"Toggle which payment provider will plan verification transactions.",
+  "code": """
+  useBMO = false;
+  useRBC = true;
+
+  localAccountDAO = x.get("localAccountDAO");
+  pointer = localAccountDAO;
+
+  while ( pointer != null ) {
+    if ( pointer.getClass().getName().equals("net.nanopay.bank.RandomDepositBankAccountDAO") ) {
+      print("BMO enabled: " + pointer.getUseBMO());
+      print("RBC enabled: " + pointer.getUseRBC());
+      pointer.setUseBMO(useBMO);
+      pointer.setUseRBC(useRBC);
+      print("BMO enabled set to: " + pointer.getUseBMO());
+      print("RBC enabled set to: " + pointer.getUseRBC());
+      break;
+    }
+
+    if ( pointer.getClass().getName().equals("foam.dao.NullDAO") ) {
+      break;
+    }
+    
+    pointer = pointer.getDelegate();
+  }
+
+  print("done");
+    """
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"lifecycle state set to ACTIVE for users",
+  "description":"To set the lifecycle state on all existing users to ACTIVE",
+  "code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.nanos.auth.User;\nimport foam.nanos.auth.LifecycleState;\n\nDAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");\nusers = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();\n\nfor ( User user : users ) {\nif ( user.getLifecycleState() == LifecycleState.PENDING ) {\n print(user.getEmail());\n\n User clonedUser = user.fclone();\n clonedUser.setLifecycleState(LifecycleState.ACTIVE);\n bareUserDAO.put(clonedUser);\n}\n}",
 })

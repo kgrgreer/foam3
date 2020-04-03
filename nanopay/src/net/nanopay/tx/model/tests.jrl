@@ -32,7 +32,7 @@ quote = new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(txn
 threw = false;
 message = "";
 try {
-  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
+  quote = x.get("localTransactionPlannerDAO").put_(x, quote);
 } catch (RuntimeException e) {
   message = e.getMessage();
   threw = true;
@@ -43,7 +43,7 @@ test( threw && message.equals("Unable to find a plan for requested transaction."
 payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);
 payer = localUserDAO.put_(x, payer).fclone();
 try {
-  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
+  quote = x.get("localTransactionPlannerDAO").put_(x, quote.fclone());
   test(true, "Able to put if sender business user has passed compliance.");
 } catch (RuntimeException e) {
   test(false, e.getMessage());
@@ -55,7 +55,7 @@ payee = localUserDAO.put_(x, payee).fclone();
 threw = false;
 message = "";
 try {
-  quote = x.get("localTransactionQuotePlanDAO").put_(x, quote);
+  quote = x.get("localTransactionPlannerDAO").put_(x, quote.fclone());
 } catch (RuntimeException e) {
   message = e.getMessage();
   threw = true;

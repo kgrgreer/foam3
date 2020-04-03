@@ -4,11 +4,16 @@ p({
   "lazy":false,
   "serviceScript":
   """
-
     foam.dao.DAO dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, null);
+    dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
+      .setDelegate(dao)
+      .build();
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
     dao = new net.nanopay.tx.QuoteFillerDAO(x, dao);
+    dao = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
+      .setDelegate(dao)
+      .build(); 
 
     return new foam.dao.EasyDAO.Builder(x)
       .setNullify(true)

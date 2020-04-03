@@ -33,7 +33,7 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+    DAO transactionQuoteDAO = (DAO) x.get("localTransactionPlannerDAO");
     User sender = setupUser(x, "sender");
     User receiver = setupUser(x, "receiver");
     Account sourceBank = setupBankAccount(x, sender);
@@ -129,7 +129,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-    DAO transactionQuoteDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+    DAO transactionQuoteDAO = (DAO) x.get("localTransactionPlannerDAO");
     BulkTransaction bulk = createBulkTransaction(x, sender, new User[] {receiver});
     PADTypeLineItem.addTo(bulk, 700);
     bulk.setExplicitCI(true);

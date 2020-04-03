@@ -240,7 +240,7 @@ return DigitalAccount.findDefault(x, user, "CAD");
       javaCode: `
 Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
-DAO planDAO = (DAO)x.get("localTransactionQuotePlanDAO");
+DAO planDAO = (DAO)x.get("localTransactionPlannerDAO");
 
 Transaction requestTransaction = new Transaction.Builder(x)
   //.setStatus(TransactionStatus.PENDING)
@@ -283,7 +283,7 @@ throw new RuntimeException("Plan transaction not instance of AlternaCITransactio
       javaCode: `
 Logger logger = (Logger) x.get("logger");
 DAO transactionDAO = (DAO)x.get("localTransactionDAO");
-DAO planDAO = (DAO)x.get("localTransactionQuotePlanDAO");
+DAO planDAO = (DAO)x.get("localTransactionPlannerDAO");
 
 Transaction requestTransaction = new Transaction.Builder(x)
   //.setStatus(TransactionStatus.PENDING)

@@ -58,7 +58,8 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
-        { name: 'obj', type: 'FObject' }
+        { name: 'obj', type: 'FObject' },
+        { name: 'approverIds', type: 'List', javaType: 'List<Long>' }
       ],
       javaCode:`
       Logger logger = (Logger) x.get("logger");
@@ -67,6 +68,7 @@ foam.CLASS({
       AccountRoleApprovalRequest accountRequest = new AccountRoleApprovalRequest.Builder(x)
         .setDaoKey(request.getDaoKey())
         .setObjId(request.getObjId())
+        .setApprovableCreateKey(ApprovableAware.getApprovableCreateKey(x, obj))
         .setClassification(request.getClassification())
         .setOperation(request.getOperation())
         .setCreatedBy(request.getCreatedBy())
@@ -83,34 +85,6 @@ foam.CLASS({
       } else {
         logger.error("Using an invalid operation!");
         throw new RuntimeException("Using an invalid operation!");
-      }
-  
-      DAO requestingDAO;
-  
-      if ( accountRequest.getDaoKey().equals("approvableDAO") ){
-        DAO approvableDAO = (DAO) x.get("approvableDAO");
-  
-        Approvable approvable = (Approvable) approvableDAO.find(accountRequest.getObjId());
-  
-        requestingDAO = (DAO) x.get(approvable.getDaoKey());
-      } else {
-        requestingDAO = (DAO) x.get(request.getDaoKey());
-      }
-  
-      String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
-  
-      AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
-  
-      List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, accountRequest.getOutgoingAccount());
-  
-      if ( approverIds.size() <= 0 ) {
-        logger.log("No Approvers exist for the model: " + modelName);
-        throw new RuntimeException("No Approvers exist for the model: " + modelName);
-      }
-
-      if ( approverIds.size() == 1 && approverIds.get(0) == accountRequest.getCreatedBy() ){
-        logger.log("The only approver of " + modelName + " is the maker of this request!");
-        throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
       }
   
       if ( getIsTrackingRequestSent() ){

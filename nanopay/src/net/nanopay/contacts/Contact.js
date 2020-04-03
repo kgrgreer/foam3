@@ -44,15 +44,14 @@ foam.CLASS({
 
   tableColumns: [
     'organization',
-    'legalName',
-    'email',
+    'status'
   ],
 
   properties: [
     {
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
-      label: 'Company',
+      label: 'Business',
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||

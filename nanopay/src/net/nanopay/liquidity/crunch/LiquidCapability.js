@@ -72,7 +72,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      value: foam.nanos.auth.LifecycleState.PENDING,
       hidden: true
     },
     {
@@ -562,13 +562,23 @@ foam.CLASS({
         // add file upload permission for file ingesters
         if ( getCanIngestFile() ) permissions.add("menu.read.fileupload");
 
-        if ( getCanMakeRule() ) permissions.add("rule.make");
+        if ( getCanMakeRule() ) {
+          permissions.add("rule.make");
+          permissions.add("rule.make.*");
+        }
         if ( getCanMakeUser() ) {
           permissions.add("user.make");
+          permissions.add("user.make.*");
           permissions.add("foam.nanos.auth.user.section.administrative");
         }
-        if ( getCanMakeLiquiditysettings() ) permissions.add("liquiditysettings.make");
-        if ( getCanMakeCapability() ) permissions.add("capability.make");
+        if ( getCanMakeLiquiditysettings() ) {
+          permissions.add("liquiditysettings.make");
+          permissions.add("liquiditysettings.make.*");
+        }
+        if ( getCanMakeCapability() ) {
+          permissions.add("capability.make");
+          permissions.add("capability.make.*");
+        }
 
         return ( String[] ) permissions.toArray(new String[0]);
       `
@@ -583,7 +593,10 @@ foam.CLASS({
       Returns true if that boolean is true.
       `,
       javaCode: `
-        if ( Arrays.asList(getPermissionsGranted()).contains(permission) ) return true;
+        String[] permissionsGranted = this.getPermissionsGranted();
+        for ( String permissionName : permissionsGranted ) {
+          if ( this.stringImplies(permissionName, permission) ) return true; 
+        }
 
         try {
           String[] permissionComponents = permission.split("\\\\.");

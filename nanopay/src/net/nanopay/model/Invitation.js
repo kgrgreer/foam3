@@ -105,5 +105,18 @@ foam.CLASS({
       name: 'tokenData',
       documentation: 'The token associated to the sent invitation'
     },
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return `${this.email}`;
+      },
+      javaCode: `
+        return  this.getEmail();
+      `
+    }
   ]
 });

@@ -240,7 +240,7 @@ foam.CLASS({
         t = assembleIFLs(t,sourceRow,destRow);
         TransactionQuote quote = new TransactionQuote();
         quote.setRequestTransaction(t);
-        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
         t = walk_(t,cleanTimeStamp(row1.getTimeStamp()));
         return t;
       `
@@ -340,7 +340,7 @@ foam.CLASS({
         t = assembleIFLs(t,row1,row1);
         TransactionQuote quote = new TransactionQuote();
         quote.setRequestTransaction(t);
-        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+        t = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
         t = walk_(t,cleanTimeStamp(row1.getTimeStamp()));
         return t;
       `
@@ -453,7 +453,7 @@ foam.CLASS({
             secCI.setReferenceNumber("System Generated");
             TransactionQuote quote = new TransactionQuote();
             quote.setRequestTransaction(secCI);
-            secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+            secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
             secCI = walk_(secCI,txn.getCreated().getTime());
             transactionDAO.put(secCI); // top up the sending security account
             for ( Transfer tr : secCI.getTransfers() ){
@@ -526,7 +526,7 @@ foam.CLASS({
 
           TransactionQuote quote = new TransactionQuote();
           quote.setRequestTransaction(ci);
-          ci = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionQuotePlanDAO")).put(quote)).getPlan();
+          ci = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
           ci = walk_(ci,txn.getCreated().getTime());
           Transaction tx = (Transaction) transactionDAO.put(ci);
           for ( Transfer tr : tx.getTransfers() ){

@@ -107,6 +107,11 @@ public class RbcReportProcessor {
         updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.ACCEPTED);
       } else if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) { 
         updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.REJECTED);
+        try {
+          processFailedReport(pain.getCstmrPmtStsRpt());
+        } catch (Exception e) {
+          this.logger.error("Error when processing the updating transaction. ", e);
+        }
       }
     } catch (Exception e) {
       this.logger.error("Error when processing the receipt file. ", e);
@@ -141,8 +146,8 @@ public class RbcReportProcessor {
       try {
         processReport(file);
       } catch (Exception e) {
-        this.logger.error("Error decrypting file: " + file.getName(), e);
-        throw e;
+        this.logger.error("Error processing report file: " + file.getName(), e);
+        BmoFormatUtil.sendEmail(x, "Error processing report file: " + file.getName(), e);
       }
     }
   }

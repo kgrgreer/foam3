@@ -65,7 +65,6 @@ foam.CLASS({
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         business = (Business) business.fclone();
         business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
-        business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
         localBusinessDAO.put(business);
 

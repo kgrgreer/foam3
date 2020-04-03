@@ -16,7 +16,6 @@ foam.CLASS({
       buildJavaClass: function (cls) {
         cls.extras.push(`
           public RandomNonceDAO(foam.dao.DAO delegate) {
-            System.err.println("Direct constructor use is deprecated. Use Builder instead.");
             setDelegate(delegate);
           }
         `);

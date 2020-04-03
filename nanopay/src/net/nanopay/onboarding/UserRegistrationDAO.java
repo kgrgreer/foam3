@@ -70,7 +70,11 @@ public class UserRegistrationDAO
     }
 
     // Set user SPID and group defined by service.
-    user.setSpid(hasSpidCreatePermission ? currentUser.getSpid() : spid_);
+    if (hasSpidCreatePermission && ( ! SafetyUtil.isEmpty(currentUser.getSpid()) )) {
+      user.setSpid(currentUser.getSpid());
+    } else {
+      user.setSpid(spid_);
+    }
     user.setGroup(group_);
 
     // We want the system user to be putting the User we're trying to create. If
