@@ -27,6 +27,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'USER_PAYMENT_CODE_LABEL', message: 'My Payment Code' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -50,7 +54,7 @@ foam.CLASS({
         return foam.u2.Element.create()
           .start().addClass('my-payment-code-container')
             .start().addClass('my-payment-code-title')
-              .add('My Payment Code')
+              .add(X.data.USER_PAYMENT_CODE_LABEL)
             .end()
             .start().addClass('my-payment-code-value')
               .select(X.data.user.paymentCode, (paymentCode) => {
