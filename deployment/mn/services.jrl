@@ -21,7 +21,7 @@ p({
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
       })
-      .setDelegate(new foam.nanos.medusa.ReplayDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryUniqueDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryAgencyDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryIdDAO.Builder(x)
