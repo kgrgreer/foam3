@@ -64,7 +64,7 @@ transaction.setAmount(100l);
 transaction.setSourceCurrency("CAD");
 transaction.setDestinationCurrency("USD");
 quote.setRequestTransaction(transaction);
-TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO")).put_(x_, quote);
 Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, resultQoute.getPlan().getTransaction());
 </code>
 

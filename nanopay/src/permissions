@@ -300,7 +300,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.ticketMessageDAO","descrip
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.tableViewTransactionDAO","description":"Permission to access the service named 'tableViewTransactionDAO'."})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionFeeDAO","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"service.transactionQuotePlanDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.transactionPlannerDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.twofactor","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.userDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.whitelistedEmailDAO","description":""})
@@ -538,5 +538,6 @@ p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.US","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.CA","description":"Permission to send payment from Canada to Canada."})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.US.US","description":"Permission to send payment from US to US."})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.IN","description":"Permission to send payment from Canada to India."})
+p({"class":"foam.nanos.auth.Permission","id":"transactionquote.create","description":"Permission to create transactionQuote."})
 
 

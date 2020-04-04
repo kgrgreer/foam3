@@ -21,11 +21,12 @@ foam.CLASS({
 
       CITransaction cashIn = new CITransaction();
       cashIn.copyFrom(requestTxn);
+      cashIn.setName("Cash In of "+cashIn.getSourceCurrency());
       // i think these are backwards.. should use the trust of the dest accnt here.
       TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount());
 
-      addTransfer(trustAccount.getId(), - cashIn.getAmount());
-      addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
+      quote.addTransfer(trustAccount.getId(), - cashIn.getAmount());
+      quote.addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
 
       cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
 
@@ -33,6 +34,12 @@ foam.CLASS({
 
       `
     },
+    {
+      name: 'forceBestPlan',
+      javaCode: `
+        return true;
+      `
+    }
   ]
 });
 

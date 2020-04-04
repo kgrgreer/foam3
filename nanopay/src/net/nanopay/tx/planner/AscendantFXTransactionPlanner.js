@@ -247,10 +247,8 @@ foam.CLASS({
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
         summary.setIsQuoted(true);
-        Long fee = sourceAccount.getDenomination().equals(destinationAccount.getDenomination()) ? 75l : 500l;
-        // TODO move to fee engine       
-        summary.addLineItems(new TransactionLineItem[] {new net.nanopay.tx.InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(fee).setCurrency(sourceAccount.getDenomination()).build()}, null);
         summary.addNext(tx);
+        summary.addNext(createCompliance(tx));
         return summary;
       `
     }

@@ -152,7 +152,7 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.LIFECYCLE_STATE });
     dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.account.Account.PARENT });
 
-    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "accounts");
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, false, dao, "accounts");
     dao = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
@@ -244,7 +244,7 @@ p({
     import foam.nanos.ruler.RulerDAO;
     import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
-    import net.nanopay.tx.CheckQuotedTransactionDAO;
+    import net.nanopay.tx.planner.TransactionQuotingDAO;
     import net.nanopay.tx.CompletedTransactionDAO;
     import net.nanopay.tx.realex.RealexTransactionDAO;
     import net.nanopay.tx.TransactionDAO;
@@ -306,42 +306,8 @@ p({
     dao = new net.nanopay.tx.CompletedTransactionDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.tx.CheckQuotedTransactionDAO(x, dao, true);
+    dao = new net.nanopay.tx.planner.TransactionQuotingDAO(x, dao, false);
     return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, dao));
-  """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localTransactionQuotePlanDAO",
-  "lazy":false,
-  "serviceScript":
-  """
-    dao = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
-      .setDelegate(null)
-      .build();
-    dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-    dao = new net.nanopay.fx.GenericFXPlanDAO.Builder(x)
-          .setDelegate(dao)
-          .build();
-    dao = new net.nanopay.tx.GenericCIPlanner.Builder(x)
-          .setDelegate(dao)
-          .build();
-    dao = new net.nanopay.tx.DigitalTransactionPlanDAO(x, dao);
-    dao = new net.nanopay.tx.planner.TransactionPlannerDAO(x, dao);
-    dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
-    dao = new net.nanopay.tx.QuoteFillerDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
-
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-      .setPm(true)
-      .setPipelinePm(true)
-      .setNullify(true)
-      .setDecorator(dao)
-      .build();
   """
 })
 

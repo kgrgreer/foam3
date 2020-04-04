@@ -18,9 +18,9 @@ foam.CLASS({
         SecurityTransaction secTx = new SecurityTransaction.Builder(x).build();
         secTx.copyFrom(requestTxn);
         secTx.setName("Digital Security Transaction");
-        addTransfer(((SecuritiesAccount) quote.getSourceAccount()).getSecurityAccount(x, quote.getSourceUnit()).getId(), -secTx.getAmount());
-        addTransfer(((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId(), secTx.getAmount());
-
+        secTx.setDestinationAmount(secTx.getAmount());
+        quote.addTransfer(((SecuritiesAccount) quote.getSourceAccount()).getSecurityAccount(x, quote.getSourceUnit()).getId(), -secTx.getAmount());
+        quote.addTransfer(((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId(), secTx.getAmount());
         return secTx;
       `
     }

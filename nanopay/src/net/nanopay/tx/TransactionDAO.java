@@ -78,7 +78,7 @@ public class TransactionDAO
     Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
 
     if ( canExecute(x, txn, oldTxn) ) {
-      txn = (Transaction) executeTransaction(x, txn, oldTxn);
+      txn = (Transaction) executeTransaction(x, txn);
     } else {
       txn = (Transaction) super.put_(x, txn);
     }
@@ -107,33 +107,9 @@ public class TransactionDAO
     return false;
   }
 
-  FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
-    X y = getX().put("balanceDAO",getBalanceDAO());
-    Transfer[] ts = txn.getTransfers(); // just get transfers we no longer auto generate any
+  FObject executeTransaction(X x, Transaction txn) {
 
-        // legacy support for REVERSE
-     /*
-    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
-         txn.getStatus() == TransactionStatus.REVERSE &&
-         oldTxn != null &&
-         oldTxn.getStatus() != TransactionStatus.REVERSE ) {
-      Logger logger = (Logger) x.get("logger");
-      logger.warning(this.getClass().getSimpleName(), "executeTransaction", txn.getId(), "adding REVERSE transfers");
-      List all = new ArrayList();
-      Collections.addAll(all, ts);
-      all.add(new Transfer.Builder(x)
-              .setDescription("nanopay Alterna Trust Account (CAD) Cash-Out DECLINED")
-              .setAccount(1L)
-              .setAmount(-txn.getTotal())
-              .build());
-      all.add(new Transfer.Builder(x)
-              .setDescription("Cash-Out DECLINED")
-              .setAccount(txn.getSourceAccount())
-              .setAmount(txn.getTotal())
-              .build());
-      ts = (Transfer[]) all.toArray(new Transfer[0]);
-    }
-    */
+    Transfer[] ts = txn.getTransfers();
 
     return lockAndExecute(x, txn, ts);
   }

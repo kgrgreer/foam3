@@ -1064,46 +1064,13 @@ foam.CLASS({
       `
     },
     {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        if (! canTransfer(x, oldTxn) ) {
-          return new Transfer[0];
-        }
-
-        List all = new ArrayList();
-        TransactionLineItem[] lineItems = getLineItems();
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
-          }
-        }
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
       javaCode: `
+
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {

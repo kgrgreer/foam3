@@ -672,8 +672,6 @@ executeCalls(context);
   """
 })
 
-p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})
-
 p({
   "class": "foam.nanos.script.Script",
   "id": "AFX to AFEX Business Migration",
@@ -1098,7 +1096,7 @@ p({
     transaction.setAmount(invAmount);
 
     TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(transaction).build();
-    quote = (TransactionQuote) localTransactionQuotePlanDAO.put(quote);
+    quote = (TransactionQuote) localTransactionPlannerDAO.put(quote);
     Transaction plan = quote.getPlan();
     if ( plan == null ) {
       throw new RuntimeException("Failed to quote Invoice: "+transaction);
@@ -1116,7 +1114,7 @@ p({
   invoiceDAO = x.get("invoiceDAO");
   transactionDAO = x.get("localTransactionDAO");
   userDAO = (DAO) x.get("localUserDAO");
-  localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+  localTransactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
   logger = (Logger) x.get("logger");
   successCount = 0;
   failedCount = 0;
@@ -1404,7 +1402,6 @@ p({
     permissionArray.add("session.read.*");
     permissionArray.add("transaction.read.*");
     permissionArray.add("user.read.*");
-    permissionArray.add("service.businessRegistrationDAO");
     permissionArray.add("service.run.authenticationToken");
     permissionArray.add("spid.create."+NAME);
     permissionArray.add("spid.read."+NAME);
@@ -2074,4 +2071,11 @@ p({
 
   print("done");
     """
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"lifecycle state set to ACTIVE for users",
+  "description":"To set the lifecycle state on all existing users to ACTIVE",
+  "code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.nanos.auth.User;\nimport foam.nanos.auth.LifecycleState;\n\nDAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");\nusers = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();\n\nfor ( User user : users ) {\nif ( user.getLifecycleState() == LifecycleState.PENDING ) {\n print(user.getEmail());\n\n User clonedUser = user.fclone();\n clonedUser.setLifecycleState(LifecycleState.ACTIVE);\n bareUserDAO.put(clonedUser);\n}\n}",
 })

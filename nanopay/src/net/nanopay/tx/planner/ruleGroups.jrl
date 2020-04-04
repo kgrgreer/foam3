@@ -40,3 +40,22 @@ p({
   "documentation":"Fee Engine which deals with adding fees to transactions",
   "enabled":true
 })
+
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"AlternaPlanner",
+  "documentation":"Alterna CICO operations",
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"BMOPlanner",
+  "documentation":"BMO CICO operations",
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"RBCPlanner",
+  "documentation":"RBC CICO operations",
+  "enabled":true
+})

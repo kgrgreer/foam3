@@ -109,7 +109,9 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.expenses.where(this.EQ(this.Invoice.PAYER_RECONCILED, false)).orderBy(this.DESC(this.Invoice.CREATED)),
+          dao: this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED))
+              .orderBy(this.Invoice.PAYEE_RECONCILED)
+              .orderBy(this.Invoice.PAYER_RECONCILED),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({

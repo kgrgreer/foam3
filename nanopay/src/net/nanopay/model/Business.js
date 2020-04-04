@@ -51,6 +51,7 @@ foam.CLASS({
     'id',
     'businessName',
     'email',
+    'address',
     'compliance',
     'viewAccounts'
   ],
@@ -268,6 +269,7 @@ foam.CLASS({
       name: 'address',
       documentation: `Returns the postal address of the business associated with the
         User from the Address model.`,
+      section: 'business',
       factory: function() {
         return this.Address.create();
       }

@@ -48,6 +48,8 @@ foam.CLASS({
 
   methods: [
     function outputRecord(parentView, record) {
+      const currentUser = this.user.id;
+      const recordUser = this.getId(record.user);
       const isFirstHistoryEvent = record.updates.length === 0;
       const updatesContainRelevantChange = record.updates.some((update) => {
         if ( update.name === 'status' ) {
@@ -59,8 +61,6 @@ foam.CLASS({
         return update.name === 'approvedBy';
       });
       if ( isFirstHistoryEvent ) {
-        const recordUser = this.getId(record.user);
-        const currentUser = this.user.id;
         if ( currentUser === recordUser ) {
           this.invoiceCreatedHistoryItemView.outputRecord(parentView, record);
         } else {

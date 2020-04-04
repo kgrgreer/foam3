@@ -9,6 +9,7 @@ import foam.core.X;
 import foam.dao.*;
 import foam.mlang.predicate.*;
 import foam.nanos.auth.User;
+import foam.nanos.ruler.RuleGroup;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -32,7 +33,7 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
   DigitalAccount receiver_Dig;
 
   public void runTest(X x) {
-
+    DAO ruleGroupDAO = (DAO) x.get("ruleGroupDAO");
     DAO paymentReportDAO = (DAO) x.get("paymentReportDAO");
     DAO rejectedTransactionReportDAO = (DAO) x.get("rejectedTransactionReportDAO");
 
@@ -44,6 +45,12 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
     receiver = addUser(x, "txntest2@transactiontest.ca");
 
     setup();
+    RuleGroup alterna = (RuleGroup) ruleGroupDAO.find("AlternaPlanner");
+    RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner");
+    alterna.setEnabled(false);
+    bmo.setEnabled(false);
+    ruleGroupDAO.put(alterna);
+    ruleGroupDAO.put(bmo);
 
     Transaction txn = new Transaction();
     txn.setAmount(1000000);

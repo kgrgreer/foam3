@@ -28,7 +28,7 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'userDAO',
-    'transactionQuotePlanDAO',
+    'transactionPlannerDAO',
     'quickbooksService',
     'xeroService',
   ],
@@ -398,7 +398,7 @@ foam.CLASS({
         destinationAmount: this.invoice.amount
       });
 
-      var quote = await this.transactionQuotePlanDAO.put(
+      var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
