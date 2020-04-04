@@ -10,8 +10,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarmConfig")
       .setOf(net.nanopay.alarming.AlarmConfig.getOwnClassInfo())
-      .setDecorator(new net.nanopay.alarming.AlarmConfigOMNameDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, net.nanopay.alarming.AlarmConfig.getOwnClassInfo())).build())
-      .setCluster(false)
+      .setDecorator(new net.nanopay.alarming.AlarmConfigOMNameDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, net.nanopay.alarming.AlarmConfig.getOwnClassInfo()))
+        .build())
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.alarming.AlarmConfig\"}"
@@ -24,10 +25,10 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.alarming.MonitoringReport.getOwnClassInfo())
+      .setNullify(true)
       .setSeqNo(true)
       .setPm(true)
       .setPipelinePm(true)
-      .setCluster(false)
       .setRuler(true)
       .setIndex(new foam.core.PropertyInfo[] { net.nanopay.alarming.MonitoringReport.NAME })
       .build();
@@ -37,7 +38,8 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"alarmDAO", "serve":true,
+  "name":"alarmDAO",
+  "serve":true,
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.alarming.Alarm.getOwnClassInfo())
@@ -46,8 +48,10 @@ p({
       .setPipelinePm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
-      .setCluster(false)
-      .setOrder(new foam.mlang.order.Comparator[] { net.nanopay.alarming.Alarm.LAST_MODIFIED, new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.alarming.Alarm.IS_ACTIVE).build() })
+      .setOrder(new foam.mlang.order.Comparator[] {
+        net.nanopay.alarming.Alarm.LAST_MODIFIED,
+        new foam.mlang.order.Desc.Builder(x).setArg1(
+          net.nanopay.alarming.Alarm.IS_ACTIVE).build()})
       .setCluster(false)
      .build();
   `,
