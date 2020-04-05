@@ -1,5 +1,4 @@
 p({
-p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTransactionDAO",
   "lazy":false,
