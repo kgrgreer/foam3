@@ -218,4 +218,11 @@ public class TransactionDAO
   public FObject find_(X x, Object o) {
     return super.find_(x, o);
   }
+
+  public Object cmd_(X x, Object cmd) {
+    if ( foam.dao.MDAO.GET_MDAO_CMD.equals(cmd) ) {
+      return this;
+    }
+    return super.cmd_(x, cmd);
+  }
 }
