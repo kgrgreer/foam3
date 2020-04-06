@@ -2148,6 +2148,7 @@ p({
   print(\"Initializing Migrate Deleted: true to LifecycleAware: ACTIVE for Accounts script\");
   print(\"...\");
   DAO localAccountDAO = (DAO) x.get(\"localAccountDAO\");
+  localAccountDAO = localAccountDAO.delegate.delegate.delegate.delegate.delegate.delegate.delegate;
   accounts = ((ArraySink) localAccountDAO.select(new ArraySink())).getArray();
   
   for ( Account account : accounts ) {
