@@ -21,45 +21,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      display: flex;
-      flex-direction: column;
-      width: 540px;
-      max-height: 80vh;
-      overflow-y: scroll;
-    }
-    .step-indicator {
+    ^step-indicator {
       display: flex;
       justify-content: flex-end;
     }
-    ^section-container {
-      padding: 24px 24px 32px;
-    }
-    .disclaimer {
-      font-size: 16px;
-      color: #525455;
-    }
-    .foam-u2-CheckBox-label span {
-      color: /*%BLACK%*/ #1e1f21;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    ^button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 84px;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
-    .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
-    .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
-      border-color: transparent;
-    }
-    .foam-u2-tag-Input, .foam-u2-view-StringView {
-      width: 100%;
-    }
-
   `,
 
   messages: [
@@ -95,12 +60,12 @@ foam.CLASS({
     },
     function initE() {
       var self = this;
-      this.addClass(this.myClass());
+      this.addClass('wizard');
       self
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            return self.E().addClass(self.myClass('section-container'))
-              .start().addClass('step-indicator')
+            return self.E().addClass('section-container')
+              .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
                   return `Step ${currentIndex + 1} of 3`
                 }))
@@ -111,7 +76,7 @@ foam.CLASS({
               });
           }))
           .startContext({ data: this })
-            .start().addClass(this.myClass('button-container'))
+            .start().addClass('button-container')
               .tag(this.BACK, { buttonStyle: 'TERTIARY' })
               .start().addClass(this.myClass('button-sub-container'))
                 .tag(this.OPTION, { buttonStyle: 'SECONDARY' })

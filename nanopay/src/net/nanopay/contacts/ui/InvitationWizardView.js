@@ -18,38 +18,6 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
-  css: `
-    ^ {
-      display: flex;
-      flex-direction: column;
-      width: 540px;
-      max-height: 80vh;
-      overflow-y: scroll;
-    }
-    ^section-container {
-      padding: 24px 24px 32px;
-    }
-    .foam-u2-tag-Input {
-      width: 100%;
-    }
-    ^button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 84px;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back {
-      color: #604aff;
-      padding: 0;
-      margin: 32px 0;
-    }
-    ^ .net-nanopay-sme-ui-AbliiActionView-back:hover {
-      color: #4d38e1;
-    }
-  `,
-
   messages: [
     {
       name: 'INVITE_SUCCESS',
@@ -74,18 +42,18 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass());
+      this.addClass('wizard');
       self
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            return self.E().addClass(self.myClass('section-container'))
+            return self.E().addClass('section-container')
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
               });
           }))
           .startContext({ data: this })
-            .start().addClass(this.myClass('button-container'))
+            .start().addClass('button-container')
               .tag(this.BACK, { buttonStyle: 'TERTIARY' })
               .start(this.NEXT).end()
             .end()

@@ -13,6 +13,39 @@ foam.CLASS({
     'net.nanopay.sme.ui.MenuRedirectSMEModal'
   ],
 
+  css: `
+    .wizard {
+      display: flex;
+      flex-direction: column;
+      width: 540px;
+      max-height: 80vh;
+      overflow-y: scroll;
+    }
+    .section-container {
+      padding: 24px 24px 32px;
+    }
+    .foam-u2-tag-Input, .foam-u2-view-StringView {
+      width: 100%;
+    }
+    .foam-u2-CheckBox-label span {
+      color: /*%BLACK%*/ #1e1f21;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
+    .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
+    .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
+      border-color: transparent;
+    }
+  `,
+
   properties: [
     {
       class: 'FObjectProperty',

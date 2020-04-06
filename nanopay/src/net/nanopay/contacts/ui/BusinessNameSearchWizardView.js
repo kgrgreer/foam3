@@ -20,16 +20,6 @@ foam.CLASS({
   ],
   
   css: `
-    ^ {
-      display: flex;
-      flex-direction: column;
-      width: 540px;
-      max-height: 80vh;
-      overflow-y: scroll;
-    }
-    ^section-container {
-      padding: 24px 24px 32px;
-    }
     .business-list-container {
       position: relative;
     }
@@ -66,18 +56,6 @@ foam.CLASS({
       margin-top: 0 !important;
       justify-content: center !important;
     }
-    ^button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 84px;
-      background-color: #fafafa;
-      padding: 0 24px 0;
-    }
-    .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
-    .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
-      border-color: transparent;
-    }
   `,
 
   messages: [
@@ -108,18 +86,18 @@ foam.CLASS({
         self.currentIndex = self.nextIndex;
       })
 
-      this.addClass(this.myClass());
+      this.addClass('wizard');
       this
         .start(this.Rows)
           .add(this.slot(function(sections, currentIndex) {
-            return self.E().addClass(self.myClass('section-container'))
+            return self.E().addClass('section-container')
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
               });
           }))
           .startContext({ data: this })
-            .start().addClass(this.myClass('button-container'))
+            .start().addClass('button-container')
               .tag(this.BACK, { buttonStyle: 'TERTIARY' })
               .start(this.SAVE).end()
             .end()
