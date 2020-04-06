@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-241-156",
+  "id":"172.19.241.156",
   "name":"mm1",
   "enabled":true,
   "realm":"nanopay",
@@ -15,7 +15,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-240-89",
+  "id":"172.19.240.89",
   "name":"mm2",
   "enabled":true,
   "realm":"nanopay",
@@ -30,7 +30,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-241-252",
+  "id":"172.19.241.252",
   "name":"mm3",
   "enabled":true,
   "realm":"nanopay",
@@ -45,7 +45,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-240-231",
+  "id":"172.19.240.231",
   "name":"mn1",
   "enabled":true,
   "realm":"nanopay",
@@ -60,7 +60,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-241-181",
+  "id":"172.19.241.181",
   "name":"mn2",
   "enabled":true,
   "realm":"nanopay",
@@ -75,7 +75,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ip-172-19-240-53",
+  "id":"172.19.240.53",
   "name":"mn3",
   "enabled":true,
   "realm":"nanopay",
