@@ -2079,3 +2079,60 @@ p({
   "description":"To set the lifecycle state on all existing users to ACTIVE",
   "code":"import foam.dao.ArraySink;\nimport foam.dao.DAO;\nimport foam.nanos.auth.User;\nimport foam.nanos.auth.LifecycleState;\n\nDAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");\nusers = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();\n\nfor ( User user : users ) {\nif ( user.getLifecycleState() == LifecycleState.PENDING ) {\n print(user.getEmail());\n\n User clonedUser = user.fclone();\n clonedUser.setLifecycleState(LifecycleState.ACTIVE);\n bareUserDAO.put(clonedUser);\n}\n}",
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Migrate Deleted: true to LifecycleAware: ACTIVE for Users",
+  "description":"To set the lifecycle state to DELETED if deleted: true for Users",
+  "code":"""
+  import foam.dao.ArraySink;
+  import foam.dao.DAO;
+  import foam.nanos.auth.User;
+  import foam.nanos.auth.LifecycleState;
+  print(\"Initializing Migrate Deleted: true to LifecycleAware: ACTIVE for Users script\");
+  print(\"...\");
+  
+  DAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");
+  users = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();
+  
+  for ( User user : users ) {
+    if ( user.getDeleted() ) {
+      print(\"Migrating user: \" + user.getEmail());
+      
+      User clonedUser = user.fclone();
+      clonedUser.setLifecycleState(LifecycleState.DELETED);
+      bareUserDAO.put(clonedUser);
+    }
+  }
+  print(\"Finished Migrate Deleted: true to LifecycleAware: ACTIVE for Users script\");
+  """
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Migrate Deleted: true to LifecycleAware: ACTIVE for Accounts",
+  "description":"To set the lifecycle state to DELETED if deleted: true for Accounts",
+  "code":"""
+  import foam.dao.ArraySink;
+  import foam.dao.DAO;
+  import net.nanopay.account.Account;
+  import foam.nanos.auth.LifecycleState;
+  
+  print(\"Initializing Migrate Deleted: true to LifecycleAware: ACTIVE for Accounts script\");
+  print(\"...\");
+  DAO localAccountDAO = (DAO) x.get(\"localAccountDAO\");
+  localAccountDAO = localAccountDAO.delegate.delegate.delegate.delegate.delegate.delegate.delegate;
+  accounts = ((ArraySink) localAccountDAO.select(new ArraySink())).getArray();
+  
+  for ( Account account : accounts ) {
+    if ( account.getDeleted() ) {
+      print(\"Migrating account: \" + account.getName());
+      
+      Account clonedAccount = account.fclone();
+      clonedAccount.setLifecycleState(LifecycleState.DELETED);
+      localAccountDAO.put(clonedAccount);
+    }
+  }
+  print(\"Finished Migrate Deleted: true to LifecycleAware: ACTIVE for Accounts script\");
+  """
+})

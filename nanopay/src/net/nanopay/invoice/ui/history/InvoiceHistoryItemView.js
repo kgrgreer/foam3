@@ -60,6 +60,7 @@ foam.CLASS({
       const updatesContainApprovalChange = record.updates.some((update) => {
         return update.name === 'approvedBy';
       });
+
       if ( isFirstHistoryEvent ) {
         if ( currentUser === recordUser ) {
           this.invoiceCreatedHistoryItemView.outputRecord(parentView, record);

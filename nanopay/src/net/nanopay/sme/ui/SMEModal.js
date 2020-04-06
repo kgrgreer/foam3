@@ -6,10 +6,6 @@ foam.CLASS({
   documentation: ``,
 
   css: `
-    ^inner {
-      position: relative;
-    }
-
     ^X {
       position: absolute;
       top: -30px;

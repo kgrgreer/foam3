@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.core.MethodInfo',
     'foam.dao.DAO',
     'foam.dao.AbstractSink',
+    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
@@ -59,6 +60,11 @@ foam.CLASS({
       name: 'defaultApprover',
       documentation: 'The default approver when there is no approvers found in the UCJ for the approverLevel.',
       value: 1348
+    },
+    {
+      class: 'Boolean',
+      name: 'isTrackingRequestSent',
+      value: true
     }
   ],
 
@@ -122,9 +128,22 @@ foam.CLASS({
           List<Long> approvers = ucjQueryService.getApproversByLevel(
             x, modelName, accountId, getApproverLevel());
 
-          User user = (User) x.get("user");
-          User agent = (User) x.get("agent");
-          Long initiatingUser = agent != null ? agent.getId() : user.getId();
+          // Get initiating user
+          User initiatingUser = null;
+          try {
+            initiatingUser = ((CreatedByAware) ((DAO) x.get(daoKey)).find(objId)).findCreatedBy(x);
+          } catch (Exception ex) {
+            ((Logger) x.get("logger")).warning("CreatedByAware lookup failed with exception.", ex);
+          }
+
+          // Fallback if initiating user was not found
+          if (initiatingUser == null) {
+            ((Logger) x.get("logger")).info("Falling back to agent/user for initiating user.");
+            initiatingUser = x.get("agent") != null ? ((User) x.get("agent")) : ((User) x.get("user"));
+          }
+
+          // Context for putting approval requests as the initiating user
+          X initiatingUserX = x.put("user", initiatingUser);
 
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
             .setClassification(classification)
@@ -132,31 +151,35 @@ foam.CLASS({
             .setDaoKey(daoKey)
             .setApprovableCreateKey(ApprovableAware.getApprovableCreateKey(x, obj))
             .setOperation(Operations.CREATE)
-            .setCreatedBy(initiatingUser)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)
             .build();
 
-          if ( approvers.size() == 1 && approvers.get(0) == initiatingUser ) {
+          if ( approvers.size() == 1 && approvers.get(0) == initiatingUser.getId() ) {
             ((Logger) x.get("logger")).error(
               "ApprovalRuleActionOnCreate - The only approver for this level is the initiating user of the request.", classification, objId);
           } else if ( approvers.size() > 0) {
             // sending a tracking request to the initiating user
-            approvalRequest.clearId();
-            approvalRequest.setApprover(initiatingUser);
-            approvalRequestDAO.put(approvalRequest);
+            if ( getIsTrackingRequestSent() ) {
+              approvalRequest.clearId();
+              approvalRequest.setApprover(initiatingUser.getId());
+              approvalRequest.setIsTrackingRequest(true);
+              approvalRequestDAO.inX(initiatingUserX).put(approvalRequest);
+            }
 
-            approvers.remove(initiatingUser);
+            // tracking request sent, skip the initiating user as an approver
+            approvers.remove(initiatingUser.getId());
 
             for ( Long approver : approvers ) {
               approvalRequest.clearId();
+              approvalRequest.setIsTrackingRequest(false);
               approvalRequest.setApprover(approver);
-              approvalRequestDAO.put(approvalRequest);
+              approvalRequestDAO.inX(initiatingUserX).put(approvalRequest);
             }
           } else if ( getDefaultApprover() > 0 ) {
             approvalRequest.setApprover(getDefaultApprover());
-            approvalRequestDAO.put(approvalRequest);
+            approvalRequestDAO.inX(initiatingUserX).put(approvalRequest);
           } else {
             ((Logger) x.get("logger")).error(
               "ApprovalRuleActionOnCreate - No approvers found.", classification, objId);

@@ -424,7 +424,12 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        if ( ! this.isApproving ) {
+        // Calling put here makes display 'invoice was created' message in invoice history.
+        // We want to show this message only when we are creating a new invoice.
+        
+        // a flag for determining if we are creating a new invoice
+        const isNewInvoice = this.invoice.id === 0;
+        if ( isNewInvoice ) {
           this.invoice = await this.invoiceDAO.put(this.invoice);
         }
       } catch (error) {
