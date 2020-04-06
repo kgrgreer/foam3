@@ -61,9 +61,6 @@ foam.CLASS({
         return update.name === 'approvedBy';
       });
 
-      const recordUser = this.getId(record.user);
-      const currentUser = this.user.id;
-
       if ( isFirstHistoryEvent ) {
         if ( currentUser === recordUser ) {
           this.invoiceCreatedHistoryItemView.outputRecord(parentView, record);
