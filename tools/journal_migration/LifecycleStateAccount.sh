@@ -4,7 +4,7 @@
 # which will be set to ACTIVE (ordinal 1)
 
 # if $JOURNAL_HOME echo's blank then uncomment the bottom line
-# export JOURNAL_HOME="/opt/nanopay/journals"
+export JOURNAL_HOME="/opt/nanopay/journals"
 
 echo "Initializing LifecycleStateAccount.sh migration script"
 echo "Current JOURNAL_HOME is: $JOURNAL_HOME"
@@ -15,8 +15,11 @@ echo "Looking for $JOURNAL_HOME/accounts ..."
 if [ -f "$JOURNAL_HOME/accounts" ]
 then
     echo "Found $JOURNAL_HOME/accounts"
-    echo "Migrating $JOURNAL_HOME/accounts ..."
+    echo "Stripping digest..."
+    perl -p -i -e 's/},{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/accounts
+    echo "Finished stripping digest..."
 
+    echo "Migrating $JOURNAL_HOME/accounts ..."
     # If somehow the journals already have lifecycleState, we will remove it first
     # case 1: if at the end of the entry
     perl -p -i -e 's/,\"lifecycleState\":[0-9]}/}/g;' "$JOURNAL_HOME"/accounts
@@ -38,6 +41,10 @@ echo "Looking for $JOURNAL_HOME/bankAccounts ..."
 if [ -f "$JOURNAL_HOME/bankAccounts" ]
 then
     echo "Found $JOURNAL_HOME/bankAccounts"
+    echo "Stripping digest..."
+    perl -p -i -e 's/},{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/bankAccounts
+    echo "Finished stripping digest..."
+
     echo "Migrating $JOURNAL_HOME/bankAccounts ..."
 
     # If somehow the journals already have lifecycleState, we will remove it first
