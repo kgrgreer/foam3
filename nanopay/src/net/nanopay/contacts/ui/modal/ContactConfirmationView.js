@@ -48,6 +48,13 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'BUSINESS_NAME_LABEL', message: 'Legal Company Name' },
+    { name: 'BUSINESS_TYPE_LABEL', message: 'Business type' },
+    { name: 'PAYMENT_CODE_LABEL', message: 'Payment Code' },
+    { name: 'ADDRESS_LABEL', message: 'Address' }
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -59,7 +66,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('info-slot'))
             .start().addClass(this.myClass('info-slot-title'))
-              .add('Legal Company Name')
+              .add(this.BUSINESS_NAME_LABEL)
             .end()
             .start().addClass(this.myClass('info-slot-value'))
               .add(this.data.businessName)
@@ -67,7 +74,7 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('info-slot'))
             .start().addClass(this.myClass('info-slot-title'))
-              .add('Business type')
+              .add(this.BUSINESS_TYPE_LABEL)
             .end()
             .start().addClass(this.myClass('info-slot-value'))
               .add(this.slot(async function(data$businessSectorId) {
@@ -83,7 +90,7 @@ foam.CLASS({
               return self.E()
                 .start().addClass(this.myClass('info-slot'))
                   .start().addClass(this.myClass('info-slot-title'))
-                    .add('Payment Code')
+                    .add(this.PAYMENT_CODE_LABEL)
                   .end()
                   .start().addClass(this.myClass('info-slot-value'))
                     .add(data$paymentCodeValue)
@@ -93,7 +100,7 @@ foam.CLASS({
           }))
           .start().addClass(this.myClass('info-slot'))
             .start().addClass(this.myClass('info-slot-title'))
-              .add('Address')
+              .add(this.ADDRESS_LABEL)
             .end()
             .start().addClass(this.myClass('info-slot-value'))
               .add(this.slot(async function(data$address$countryId, data) {
