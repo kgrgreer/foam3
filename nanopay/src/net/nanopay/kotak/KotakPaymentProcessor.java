@@ -28,6 +28,7 @@ import net.nanopay.kotak.model.paymentRequest.Payment;
 import net.nanopay.kotak.model.paymentRequest.RequestHeaderType;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
+import net.nanopay.model.Business;
 import net.nanopay.tx.KotakPaymentTransaction;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.model.Transaction;
@@ -55,7 +56,8 @@ public class KotakPaymentProcessor implements ContextAgent {
           INBankAccount destinationBankAccount = getAccountById(x, kotakTransaction.getDestinationAccount());
           User payee = destinationBankAccount.findOwner(x);
           Account sourceBankAccount = root.findSourceAccount(x);
-          User payer = sourceBankAccount.findOwner(x);
+          Business payer = (Business) sourceBankAccount.findOwner(x);
+          User signingOfficer = payer.findSigningOfficer(x);
 
           /**
            * Payment request Header
@@ -84,10 +86,10 @@ public class KotakPaymentProcessor implements ContextAgent {
           Address payeeAdd = getAddress(payee);
 
           requestInstrument.setBeneAcctNo(destinationBankAccount.getAccountNumber());
-          requestInstrument.setBeneName(getName(payee));
+          requestInstrument.setBeneName(getName(payee).replaceAll("[^A-Za-z0-9]",""));
           requestInstrument.setBeneMb(payee.getPhoneNumber());
-          requestInstrument.setBeneAddr1(payeeAdd.getAddress());
-          requestInstrument.setCountry(credentials.getRemitterCountry()); // this is the remitter country, it should be us.
+          requestInstrument.setBeneAddr1(payeeAdd.getAddress().replaceAll("[^A-Za-z0-9]",""));
+          requestInstrument.setCountry(payer.getAddress().getCountryId());
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakTransaction.getChargeBorneBy());
 
@@ -97,9 +99,9 @@ public class KotakPaymentProcessor implements ContextAgent {
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
-            payer.getLegalName() + "~" +
+            signingOfficer.getLegalName().replaceAll("[^A-Za-z0-9]"," ") + "~" +
             beneACType + "~" +
-            payer.getAddress().getAddress() + "~" +
+            payer.getAddress().getAddress().replaceAll("[^A-Za-z0-9]"," ") + "~" +
             payer.getId() + "~" +
             remitPurpose + "~~" +
             relationShip + "~"});
