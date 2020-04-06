@@ -7,6 +7,21 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "internalMedusaEntryDAO",
+  "lazy": false,
+  "serve": false,
+  "serviceScript": `
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setRuler(false)
+      .setCluster(false)
+      .build();
+  `
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"medusaEntryDAO",
   "lazy":false,
