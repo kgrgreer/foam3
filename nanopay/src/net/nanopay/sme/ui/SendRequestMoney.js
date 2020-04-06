@@ -427,10 +427,9 @@ foam.CLASS({
         // Calling put here makes display 'invoice was created' message in invoice history.
         // We want to show this message only when we are creating a new invoice.
         
-        // a flag for determining if we are making changes to an invoice that was already created before
-        // or we are creating a new invoice
-        const invoiceCreated = this.invoice.id > 0;
-        if ( ! invoiceCreated ) {
+        // a flag for determining if we are creating a new invoice or not
+        const isNewInvoice = this.invoice.id === 0;
+        if ( isNewInvoice ) {
           this.invoice = await this.invoiceDAO.put(this.invoice);
         }
       } catch (error) {
