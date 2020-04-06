@@ -14,6 +14,10 @@ foam.CLASS({
     'ctrl',
     'user'
   ],
+
+  exports: [
+    'as wizard'
+  ],
   
   css: `
     ^ {

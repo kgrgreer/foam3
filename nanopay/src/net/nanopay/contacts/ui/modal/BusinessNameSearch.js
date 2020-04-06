@@ -19,7 +19,6 @@ foam.CLASS({
 
   imports: [
     'publicBusinessDAO',
-    'pushMenu',
     'user'
   ],
 
@@ -196,89 +195,7 @@ foam.CLASS({
       documentation: 'Display property for the list of queried businesses.',
       section: 'search',
       label: '',
-      view: function(_, X) {
-        return foam.u2.Element.create()
-          .start().addClass('business-list-container')
-            .start().addClass('business-list')
-              .select(X.data.unconnectedBusinesses$proxy, (business) => {
-                return foam.u2.Element.create({}, X)
-                  .start({
-                    class: 'net.nanopay.sme.ui.BusinessRowView',
-                    data: business
-                  })
-                    .on('click', function() {
-                      var contact = net.nanopay.contacts.Contact.create({
-                        type: 'Contact',
-                        group: 'sme',
-                        organization: business.businessName,
-                        businessId: business.id,
-                        address: business.address
-                      });
-                      contact.businessSectorId = business.businessSectorId;
-                      contact.operatingBusinessName = business.operatingBusinessName;
-                      X.data.contact = contact;
-                    })
-                  .end();
-              })
-              .select(X.data.connectedBusinesses$proxy, (business) => {
-                return foam.u2.Element.create({}, X)
-                  .tag({
-                    class: 'net.nanopay.sme.ui.BusinessRowView',
-                    data: business
-                  });
-              })
-            .end()
-            .start() 
-              .show(X.data.slot(function(countBusinesses) {
-                return countBusinesses !== 0;
-              }))
-              .addClass('search-count')
-              .add(X.data.dot('searchBusinessesCount'))
-            .end()
-            .start().show(X.data.slot(function(filter) {
-              return filter.length < 2;
-            }))
-              .addClass('create-new-block')
-              .start()
-                .addClass('center')
-                .addClass('search-result')
-                .add('Matching businesses will appear here')
-              .end()
-            .end()
-            .start().show(X.data.slot(function(filter, countBusinesses) {
-              return countBusinesses === 0 && filter.length > 1;
-            }))
-              .addClass('create-new-block')
-              .start()
-                .addClass('center')
-                .addClass('search-result')
-                .add('We couldn’t find a business with that name.')
-              .end()
-              .start()
-                .addClass('center')
-                .addClass('search-result')
-                .addClass('align-text-center')
-                .add(X.data.slot(function(filter) {
-                  return `Create a personal contact for “${filter}”?`;
-                }))
-              .end()
-              .start()
-                .addClass('center')
-                .start(foam.core.Action.create({ label: 'Create New' }, X))
-                  .style({
-                    'background-color': '#604aff',
-                    'border': '1px solid #4a33f4',
-                    'font-family': `'Lato', sans-serif`,
-                    'margin-top': '20px'
-                  })
-                  .on('click', function() {
-                    X.data.pushMenu('sme.menu.create')
-                  })
-                .end()
-              .end()
-            .end()
-          .end();
-      }
+      view: { class: 'net.nanopay.contacts.ui.modal.BusinessListView' }
     },
     {
       class: 'FObjectProperty',
