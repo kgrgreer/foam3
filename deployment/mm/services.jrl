@@ -59,15 +59,15 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-//      .setDecorator(new foam.nanos.medusa.MedusaEntryReplayingDAO.Builder(x)
-        .setDecorator(new foam.nanos.medusa.MedusaEntryLinkDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.MedusaEntryReplayingDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryLinkDAO.Builder(x)
           .setDelegate(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
               .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
               .build())
             .build())
           .build())
-//        .build())
+        .build())
       .build();
    `
 })
