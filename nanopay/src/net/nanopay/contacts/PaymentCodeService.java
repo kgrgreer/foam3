@@ -4,6 +4,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.auth.PublicBusinessInfo;
 import net.nanopay.model.Business;
 import net.nanopay.payment.PaymentCode;
@@ -22,7 +23,7 @@ public class PaymentCodeService
       throw new RuntimeException("Invalid Payment Code");
     }
     Business business = (Business) businessDAO.find(validatedPaymentCode.getOwner());
-    if ( business == null || ((Long) business.getId()).equals(loggedInBusiness.getId())) {
+    if ( business == null || ((Long) business.getId()).equals(loggedInBusiness.getId()) || business.getCompliance() != ComplianceStatus.PASSED ) {
       throw new RuntimeException("Invalid Payment Code");
     }
     PublicBusinessInfo publicBusinessInfo = new PublicBusinessInfo(x, business);

@@ -10,6 +10,11 @@ foam.CLASS({
     'wizard'
   ],
 
+  messages: [
+    { name: 'DEFAULT_RESULT_MSG', message: 'Matching businesses will appear here' },
+    { name: 'FAILED_RESULT_MSG', message: 'We couldn’t find a business with that name.' }
+  ],
+
   methods: [
     function initE() {
       let { data }  = this.wizard;
@@ -59,7 +64,7 @@ foam.CLASS({
           .start()
             .addClass('center')
             .addClass('search-result')
-            .add('Matching businesses will appear here')
+            .add(this.DEFAULT_RESULT_MSG)
           .end()
         .end()
         .start().show(this.slot(function(wizard$data$filter, wizard$data$countBusinesses) {
@@ -69,7 +74,7 @@ foam.CLASS({
           .start()
             .addClass('center')
             .addClass('search-result')
-            .add('We couldn’t find a business with that name.')
+            .add(this.FAILED_RESULT_MSG)
           .end()
           .start()
             .addClass('center')
