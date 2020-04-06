@@ -43,8 +43,17 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.sme.ui.SMEModalWrapper",
-      "view": "net.nanopay.contacts.ui.modal.MenuToolBar"
+      "class": "foam.u2.ModalWrapper",
+      "wrapper": {
+        "class": "net.nanopay.sme.ui.MenuRedirectSMEModal",
+        "menu": "sme.main.contacts"
+      },
+      "view": {
+        "class": "foam.nanos.menu.MenuToolBar",
+        "classification": "sme.menu",
+        "parent": "sme",
+        "title": "Add a contact"
+      }
     }
   }
 })
