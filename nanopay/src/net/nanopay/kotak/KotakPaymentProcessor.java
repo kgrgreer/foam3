@@ -86,9 +86,9 @@ public class KotakPaymentProcessor implements ContextAgent {
           Address payeeAdd = getAddress(payee);
 
           requestInstrument.setBeneAcctNo(destinationBankAccount.getAccountNumber());
-          requestInstrument.setBeneName(getName(payee).replaceAll("[^A-Za-z0-9]",""));
+          requestInstrument.setBeneName(getName(payee).replaceAll("[^A-Za-z0-9]"," "));
           requestInstrument.setBeneMb(payee.getPhoneNumber());
-          requestInstrument.setBeneAddr1(payeeAdd.getAddress().replaceAll("[^A-Za-z0-9]",""));
+          requestInstrument.setBeneAddr1(payeeAdd.getAddress().replaceAll("[^A-Za-z0-9]"," "));
           requestInstrument.setCountry(payer.getAddress().getCountryId());
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakTransaction.getChargeBorneBy());
