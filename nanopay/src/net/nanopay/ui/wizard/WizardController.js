@@ -18,11 +18,11 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 540px;
-      max-height: 80vh;
-      overflow-y: scroll;
     }
     .section-container {
       padding: 24px 24px 32px;
+      max-height: 570px;
+      overflow-y: scroll;
     }
     .foam-u2-tag-Input, .foam-u2-view-StringView {
       width: 100%;
@@ -42,7 +42,7 @@ foam.CLASS({
     }
     .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
     .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
-      border-color: transparent;
+      border-color: transparent !important;
     }
   `,
 

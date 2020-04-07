@@ -118,7 +118,8 @@ foam.CLASS({
 
         if ( institutionNumber === '' ) {
           return 'Please enter an institution number.';
-        } else if ( ! instNumberRegex.test(institutionNumber) ) {
+        }
+        if ( ! instNumberRegex.test(institutionNumber) ) {
           return 'Institution number must be 3 digits long.';
         }
       },
