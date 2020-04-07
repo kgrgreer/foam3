@@ -71,9 +71,8 @@ foam.CLASS({
       var onboardingStatusCheck =
         businessOnboarding
         && businessOnboarding.status !== this.OnboardingStatus.SUBMITTED
-        && this.user.compliance === this.ComplianceStatus.NOTREQUESTED
-        && this.ctrl.webApp !== 'Ablii-GD';
-      
+        && this.user.compliance === this.ComplianceStatus.NOTREQUESTED;
+
       if ( ! businessOnboarding || onboardingStatusCheck ) {
         this.stack.push({
           class: 'net.nanopay.sme.onboarding.ui.WizardView',
