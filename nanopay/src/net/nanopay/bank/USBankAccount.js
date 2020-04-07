@@ -136,7 +136,6 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
-      updateVisibility: 'RO',
       section: 'accountDetails',
       visibility: 'HIDDEN'
     },
