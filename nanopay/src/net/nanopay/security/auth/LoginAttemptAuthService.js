@@ -11,13 +11,13 @@ foam.CLASS({
 
   imports: [
     'localUserDAO',
-    'logger',
     'groupDAO'
   ],
 
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.User',
     'net.nanopay.admin.model.AccountStatus',
@@ -48,6 +48,17 @@ foam.CLASS({
       name: 'loginDelayMultiplier',
       value: 5
     },
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
+    }
   ],
 
   methods: [
@@ -111,7 +122,7 @@ foam.CLASS({
           // increment login attempts by 1
           user = incrementLoginAttempts(x, user);
           if ( isAdminUser(user) ) incrementNextLoginAttemptAllowedAt(x, user);
-          ((Logger) getLogger()).error("Error logging in.", t);
+          getLogger().error("Error logging in.", t);
           throw new foam.nanos.auth.AuthenticationException(getErrorMessage(x, user, t.getMessage()));
         }
       `
