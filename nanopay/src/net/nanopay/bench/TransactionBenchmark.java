@@ -19,6 +19,7 @@ import foam.nanos.bench.Benchmark;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.account.TrustAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -44,10 +45,18 @@ public class TransactionBenchmark
   protected DAO userDAO_;
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
-  protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
-  protected Boolean quote_ = true;
+  protected Boolean quote_ = false;
   protected Boolean purge_ = true;
   protected Boolean disableRules_ = false;
+
+  // Alterna
+  protected Long INSTITUTION_ID = 34L;
+  protected String INSTITUTION_NUMBER = "842";
+  protected Long BRANCH_ID = 130L;
+  protected String BRANCH_NUMBER = "00646";
+  protected Long RESERVE_ACCOUNT_ID = 7L;
+  protected String RESERVE_ACCOUNT_NUMBER = "2131412443534534";
+  protected Long TRUST_ID = 1L;
 
   public void setQuoteTransactions(Boolean quote) {
     quote_ = quote;
@@ -135,45 +144,50 @@ public class TransactionBenchmark
 
     User admin = (User) userDAO_.find(1L);
 
-    DAO dao = accountDAO_.where(EQ(BankAccount.ACCOUNT_NUMBER,ADMIN_BANK_ACCOUNT_NUMBER)).limit(1);
-    List banks = ((ArraySink) dao.select(new ArraySink())).getArray();
-    BankAccount bank = null;
-    if ( banks.size() == 1 ) {
-      bank = (BankAccount) banks.get(0);
-    } else {
-      dao = institutionDAO_.where(EQ(Institution.INSTITUTION_NUMBER, "001")).limit(1);
-      List institutions = ((ArraySink) dao.select(new ArraySink())).getArray();
-      Institution institution = null;
-      if ( institutions.size() == 1 ) {
-        institution = (Institution) institutions.get(0);
-      } else {
+    BankAccount bank = (BankAccount) accountDAO_.find(RESERVE_ACCOUNT_ID);
+    if ( bank == null ) {
+      Institution institution = (Institution) institutionDAO_.find(INSTITUTION_ID);
+      if ( institution == null ) {
         institution = new Institution.Builder(x)
-          .setCountryId("CAD")
-          .setInstitutionNumber("001")
+          .setId(INSTITUTION_ID)
+          .setCountryId("CA")
+          .setInstitutionNumber(INSTITUTION_NUMBER)
           .build();
         institution = (Institution) institutionDAO_.put_(x, institution);
       }
 
-      dao = branchDAO_.where(EQ(Branch.BRANCH_ID, "12345")).limit(1);
-      List branches = ((ArraySink) dao.select(new ArraySink())).getArray();
-      Branch branch = null;
-      if ( branches.size() == 1 ) {
-        branch = (Branch) branches.get(0);
-      } else {
+      Branch branch = (Branch) branchDAO_.find(BRANCH_ID);
+      if ( branch == null ) {
         branch = new Branch.Builder(x)
+          .setId(BRANCH_ID)
           .setInstitution(institution.getId())
-          .setBranchId("12345")
+          .setBranchId(BRANCH_NUMBER)
           .build();
         branch = (Branch) branchDAO_.put_(x, branch);
       }
 
       bank = new CABankAccount();
-      bank.setName(ADMIN_BANK_ACCOUNT_NUMBER);
+      bank.setId(RESERVE_ACCOUNT_ID);
+      bank.setName("Reserve");
       bank.setBranch(branch.getId());
-      bank.setAccountNumber(ADMIN_BANK_ACCOUNT_NUMBER);
+      bank.setAccountNumber(RESERVE_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
-      accountDAO_.put_(x, bank);
+      bank = (BankAccount) accountDAO_.put_(x, bank);
+    }
+
+    if ( bank.getStatus() != BankAccountStatus.VERIFIED ) {
+      bank = (BankAccount) bank.fclone();
+      bank.setStatus(BankAccountStatus.VERIFIED);
+      bank = (BankAccount) accountDAO_.put_(x, bank);
+    }
+
+    TrustAccount trust = (TrustAccount) accountDAO_.find(TRUST_ID);
+    if ( trust == null ) {
+      trust = new TrustAccount();
+      trust.setId(TRUST_ID);
+      trust.setReserveAccount(bank.getId());
+      trust = (TrustAccount) accountDAO_.put(trust);
     }
 
     for ( long i = 1; i <= MAX_USERS; i++ ) {
@@ -207,6 +221,7 @@ public class TransactionBenchmark
     ci.setDestinationAccount(adminDCA.getId());
     ci.setAmount(Long.valueOf(users_.size()) * STARTING_BALANCE);
     ci.setStatus(TransactionStatus.COMPLETED);
+    ci.setIsQuoted(true);
     transactionDAO_.put_(x, ci);
     Long bal = (Long) adminDCA.findBalance(x);
     assert bal >= Long.valueOf(users_.size()) * STARTING_BALANCE;
