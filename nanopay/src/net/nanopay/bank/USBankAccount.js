@@ -104,6 +104,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'ACH Account Number',
+      updateVisibility: 'RO',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
@@ -118,6 +119,7 @@ foam.CLASS({
     {
       name: 'branch',
       //visibility: 'HIDDEN'
+      updateVisibility: 'RO',
       label: 'Routing No.',
     },
     // {
@@ -134,6 +136,7 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       visibility: 'HIDDEN'
     },
