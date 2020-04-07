@@ -116,7 +116,7 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         // Check source account
-        if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+        if ( BankAccountStatus.UNVERIFIED == ((BankAccount)findSourceAccount(x)).getStatus() ) {
           logger.error("Bank account must be verified");
           throw new RuntimeException("Bank account must be verified");
         }
@@ -124,9 +124,9 @@ foam.CLASS({
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
         if ( oldTxn != null
-          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
-            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
-          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && ( oldTxn.getStatus() == TransactionStatus.DECLINED
+            || oldTxn.getStatus() == TransactionStatus.COMPLETED )
+          && getStatus() != TransactionStatus.DECLINED
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
