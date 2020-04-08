@@ -62,6 +62,7 @@ foam.CLASS({
       txn.copyFrom(requestTxn);
       txn.setStatus(TransactionStatus.PENDING);
       txn.setInitialStatus(TransactionStatus.PENDING);
+      txn.setName("KotakFxTransaction");
       txn.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       txn.setSourceAccount(kotakCAbank.getId());
       txn.setDestinationAccount(kotakINbank.getId());
@@ -89,6 +90,7 @@ foam.CLASS({
       t3.setStatus(TransactionStatus.PENDING);
       t3.setInitialStatus(TransactionStatus.PENDING);
       t3.setAmount(requestTxn.getDestinationAmount());
+      t3.setName("KotakPaymentTransaction");
       t3.addLineItems(
         new TransactionLineItem[] {
           new PurposeCodeLineItem.Builder(x).setPurposeCode("P1099").build(),
