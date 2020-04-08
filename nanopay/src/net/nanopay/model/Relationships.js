@@ -834,6 +834,7 @@ foam.RELATIONSHIP({
     },
     updateVisibility: 'RO',
     section: 'paymentInfoSource',
+    tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
 
@@ -911,6 +912,7 @@ foam.RELATIONSHIP({
       if ( destinationAccount == 0 ) return 'please input an account id.';
       return dstAccountError;
     },
+    tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
 
