@@ -42,10 +42,12 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setRbcReferenceNumber( ((RbcCOTransaction) other).getRbcReferenceNumber() );
-        setRbcFileCreationNumber( ((RbcCOTransaction) other).getRbcFileCreationNumber() );
-        setRejectReason( ((RbcCOTransaction) other).getRejectReason() );
-        setSettled( ((RbcCOTransaction) other).getSettled() );
+        if ( other instanceof RbcVerificationTransaction ) {
+          setRbcReferenceNumber( ((RbcVerificationTransaction) other).getRbcReferenceNumber() );
+          setRbcFileCreationNumber( ((RbcVerificationTransaction) other).getRbcFileCreationNumber() );
+          setRejectReason( ((RbcVerificationTransaction) other).getRejectReason() );
+          setSettled( ((RbcVerificationTransaction) other).getSettled() );
+        }
       `
     }
   ]
