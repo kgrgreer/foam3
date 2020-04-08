@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'MenuRedirectSMEModalView',
   extends: 'foam.u2.View',
 
+  documentation: `
+    View that wraps the given view with a MenuRedirectSMEModal, which redirects
+    to the given menu when closed.
+  `,
+
   requires: [
     'net.nanopay.sme.ui.MenuRedirectSMEModal'
   ],
