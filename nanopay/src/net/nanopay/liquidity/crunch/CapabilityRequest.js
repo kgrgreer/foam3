@@ -309,7 +309,8 @@ foam.CLASS({
       name: 'lifecycleState',
       label: 'Status',
       value: foam.nanos.auth.LifecycleState.PENDING,
-      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      writePermissionRequired: true,
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       readVisibility: 'RO'
     },
