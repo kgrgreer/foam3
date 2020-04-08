@@ -76,21 +76,26 @@ foam.CLASS({
           return account.getId() == this.getId();
         }
 
-        // Retrieve the user/business from the context
-        User user = (User) ((X) obj).get("user");
-        if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
-          return 
-            (user instanceof Business) ? user.getId() == this.getId() :
-            false;
-        }
+        if (this.getSend()) {
+          // When sending, retrieve the user/business from the context
+          User user = (User) ((X) obj).get("user");
+          if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
+            return 
+              (user instanceof Business) ? user.getId() == this.getId() :
+              false;
+          }
 
-        // Retrieve the agent from the context
-        User agent = (User) ((X) obj).get("agent");
-        if (this.getEntityType() == TxLimitEntityType.USER) {
-          return 
-            (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
-            (user != null) ? user.getId() == this.getId() :
-            false;
+          // Retrieve the agent from the context
+          User agent = (User) ((X) obj).get("agent");
+          if (this.getEntityType() == TxLimitEntityType.USER) {
+            return 
+              (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
+              (user != null) ? user.getId() == this.getId() :
+              false;
+          }
+        } else {
+          // When receiving, lookup the user or business from the account
+          
         }
 
         // otherwise this is an unknown entity type

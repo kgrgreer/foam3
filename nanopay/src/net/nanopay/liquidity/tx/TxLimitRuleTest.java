@@ -53,6 +53,9 @@ public class TxLimitRuleTest
     User sourceUser = TransactionTestUtil.setupTestUser(x, "source_user_limit@nanopay.net");
     User destinationUser = TransactionTestUtil.setupTestUser(x, "destination_user_limit@nanopay.net");
 
+    // Create context with the source user for the transaction put
+    X sourceX = x.put("user", sourceUser);
+
     // fetch source account
     Account sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
     Account destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser);
@@ -66,12 +69,12 @@ public class TxLimitRuleTest
     txLimitRule.setCreatedBy(sourceUser.getId());
     txLimitRule.setApplyLimitTo(entityType);
     if (entityType == TxLimitEntityType.USER) {
-      txLimitRule.setUserToLimit(sourceUser.getId());
+      txLimitRule.setUserToLimit(send ? sourceUser.getId() : destinationUser.getId());
     } else if (entityType == TxLimitEntityType.ACCOUNT) {
       txLimitRule.setAccountToLimit(sourceAccount.getId());
     }
     txLimitRule.setDenomination("CAD");
-    txLimitRule.setSend(true);
+    txLimitRule.setSend(send);
     txLimitRule.setLimit(limit);
     txLimitRule.setPeriod(period);
     ruleDAO.put(txLimitRule);
@@ -109,7 +112,7 @@ public class TxLimitRuleTest
 
     // make sure transaction throws expected RuntimeException
     test(
-      TestUtils.testThrows( () -> transactionDAO.put(transaction), errorMessage, RuntimeException.class ),
+      TestUtils.testThrows( () -> transactionDAO.inX(sourceX).put(transaction), errorMessage, RuntimeException.class ),
       message + " throws RuntimeException with error message: " + errorMessage
     );
   }
