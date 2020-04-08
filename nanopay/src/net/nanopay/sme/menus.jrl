@@ -43,11 +43,8 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "foam.u2.ModalWrapper",
-      "wrapper": {
-        "class": "net.nanopay.sme.ui.MenuRedirectSMEModal",
-        "menu": "sme.main.contacts"
-      },
+      "class": "net.nanopay.sme.ui.MenuRedirectSMEModalView",
+      "menu": "sme.main.contacts",
       "view": {
         "class": "foam.nanos.menu.MenuToolBar",
         "classification": "sme.menu",

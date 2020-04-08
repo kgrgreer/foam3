@@ -10,7 +10,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.detail.WizardSectionView',
-    'net.nanopay.sme.ui.MenuRedirectSMEModal'
+    'net.nanopay.sme.ui.MenuRedirectSMEModalView',
   ],
 
   css: `
@@ -71,12 +71,14 @@ foam.CLASS({
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-        .add(this.MenuRedirectSMEModal.create({ menu: 'sme.main.contacts' }).tag({
-          class: `net.nanopay.contacts.ui.${this.modelName}WizardView`,
-          data: this.model_
+        .add(this.MenuRedirectSMEModalView.create({
+          menu: 'sme.main.contacts',
+          view: {
+            class: `net.nanopay.contacts.ui.${this.modelName}WizardView`,
+            data: this.model_
+          }
         }))
       .end()
     }
   ]
-
 });

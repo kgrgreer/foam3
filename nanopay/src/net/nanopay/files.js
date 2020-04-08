@@ -1043,6 +1043,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MenuRedirectSMEModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/MenuRedirectSMEModalView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
