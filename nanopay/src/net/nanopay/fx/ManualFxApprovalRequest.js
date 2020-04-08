@@ -9,21 +9,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'dealId',
-      visibility: function(dealId) {
-        return dealId ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      name: 'dealId'
     },
     {
       class: 'Double',
-      name: 'fxRate',
-      visibility: function(fxRate) {
-        return fxRate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      name: 'fxRate'
     },
     {
       class: 'DateTime',
