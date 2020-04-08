@@ -114,11 +114,10 @@ foam.CLASS({
         onKey: true
       },
       validateObj: function(institutionNumber) {
-        var instNumberRegex = /^[0-9]{3}$/;
-
         if ( institutionNumber === '' ) {
           return 'Please enter an institution number.';
         }
+        var instNumberRegex = /^[0-9]{3}$/;
         if ( ! instNumberRegex.test(institutionNumber) ) {
           return 'Institution number must be 3 digits long.';
         }
@@ -133,11 +132,11 @@ foam.CLASS({
     {
       name: 'accountNumber',
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{5,12}$/;
-
         if ( accountNumber === '' ) {
           return 'Please enter an account number.';
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
+        }
+        var accNumberRegex = /^[0-9]{5,12}$/;
+        if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 5 and 12 digits long.';
         }
       },
