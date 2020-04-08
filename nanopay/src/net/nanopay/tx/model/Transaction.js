@@ -276,12 +276,9 @@ foam.CLASS({
       updateVisibility: 'RO',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
-      javaFactory: `
-        if ( getStatusHistory().length > 0 ) {
-          return getStatusHistory()[0].getTimeStamp();
-        }
-        return new java.util.Date();
-      `,
+      getter: function() {
+         return this.statusHistory[0].timeStamp;
+      },
       tableWidth: 172,
       includeInDigest: true
     },
@@ -802,7 +799,7 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       factory: function() {
-        var h = [1]; //new net.nanopay.tx.HistoricStatus[1];
+        var h = [1];
         h[0] = net.nanopay.tx.HistoricStatus.create();
         h[0].status = this.status;
         h[0].timeStamp = new Date();
