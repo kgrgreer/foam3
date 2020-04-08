@@ -9,8 +9,9 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.bank.INBankAccount',
-    'net.nanopay.bank.CABankAccount'
+    'foam.u2.ControllerMode',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.INBankAccount'
   ],
 
   imports: [
@@ -207,11 +208,14 @@ foam.CLASS({
           .addClass('contact-bank-account')
             .add(this.slot(function(bankAdded) {
               if ( bankAdded || this.viewData.isBankingProvided ) {
-                return this.E().tag({
-                  class: 'foam.u2.detail.SectionedDetailView',
-                  of: 'net.nanopay.bank.BankAccount',
-                  data$: self.bankAccount$ // Bind value to the property
-                });
+                return this.E()
+                  .startContext({ controllerMode: this.ControllerMode.EDIT })
+                    .tag({
+                      class: 'foam.u2.detail.SectionedDetailView',
+                      of: 'net.nanopay.bank.BankAccount',
+                      data$: self.bankAccount$ // Bind value to the property
+                    })
+                  .endContext();
               }
 
               return this.E().tag({
