@@ -269,16 +269,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'canInvite',
-      documentation: 'True if the contact can be invite to join Ablii.',
-      section: 'stepTwo',
-      visibility: 'HIDDEN',
-      expression: function(createBankAccount$country) {
-        return createBankAccount$country == 'IN' ? false : true;
-      }
-    },
-    {
-      class: 'Boolean',
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
@@ -286,7 +276,8 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.Element.create()
           .start()
-            .add(X.data.slot(function(canInvite) {
+            .add(X.data.slot(function(createBankAccount$country) {
+              let canInvite = createBankAccount$country == 'IN' ? false : true;
               if ( ! canInvite ) {
                 return foam.u2.Element.create()
                   .tag({ class: 'foam.u2.CheckBox', label: X.data.RESTRICT_INVITE_LABEL, mode: foam.u2.DisplayMode.DISABLED });
