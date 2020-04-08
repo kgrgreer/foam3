@@ -100,6 +100,42 @@ foam.CLASS({
         sendSingleAccountRequest(x, accountRequest, approverIds.get(i));
       }
       `
+    },
+    {
+      name: 'findApprovers',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'obj', type: 'FObject' },
+        { name: 'operation', javaType: 'foam.nanos.ruler.Operations' },
+        { name: 'user', javaType: 'foam.nanos.auth.User' }
+      ],
+      javaType: 'List<Long>',
+      javaCode: ` 
+        Logger logger = (Logger) x.get("logger");
+        DAO requestingDAO = (DAO) x.get(getDaoKey());
+
+        String modelName = requestingDAO.getOf().getObjClass().getSimpleName();
+
+        AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
+        AccountApprovableAware aaaObj = (AccountApprovableAware) obj;
+        Long outgoingAccount = operation == Operations.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
+                                operation == Operations.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) : 
+                                                                aaaObj.getOutgoingAccountDelete(x);
+        
+        List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, outgoingAccount);
+          
+        if ( approverIds == null || approverIds.size() <= 0 ) {
+          logger.log("No Approvers exist for the model: " + modelName);
+          throw new RuntimeException("No Approvers exist for the model: " + modelName);
+        }
+
+        if ( ! getCanMakerApproveOwnRequest() && approverIds.size() == 1 && approverIds.get(0) == user.getId() ) {
+          logger.log("The only approver of " + modelName + " is the maker of this request!");
+          throw new RuntimeException("The only approver of " + modelName + " is the maker of this request!");
+        }
+
+        return approverIds;
+      `
     }
   ]
 });
