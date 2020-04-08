@@ -70,13 +70,16 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
   public EFTFile generate(List<Transaction> transactions) {
     try {
       EFTFile eftFile = createEFTFile(transactions);
-      eftFile.setFile(createFile(eftFile).getId());
-      eftFile.setProvider(5); // TODO set provider appropriately
-      return (EFTFile) ((DAO) this.x.get("eftFileDAO")).put(eftFile);
+      if ( eftFile != null ) {
+        eftFile.setFile(createFile(eftFile).getId());
+        eftFile.setProvider(5); // TODO set provider appropriately
+        return (EFTFile) ((DAO) this.x.get("eftFileDAO")).put(eftFile);
+      }
     } catch (Throwable t) {
       this.logger.error("RBC Error generating EFT File. " + t.getMessage(), t);
       throw new RbcEftFileException("RBC Error generating EFT File. " + t.getMessage(), t);
     }
+    return null;
   }
 
   /**
@@ -134,7 +137,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
     } catch ( Exception e ) {
       this.passedTransactions.clear();
       logger.error("Error when creating EFT File: " + e.getMessage(), e);
-      return null;
+      throw e;
     }
   }
 

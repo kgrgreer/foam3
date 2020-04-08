@@ -60,6 +60,9 @@ foam.CLASS({
       // Will be pending untill ops teams completes the manual transfers
       KotakFxTransaction txn = new KotakFxTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);
+      txn.setStatus(TransactionStatus.PENDING);
+      txn.setInitialStatus(TransactionStatus.PENDING);
+      txn.setName("KotakFxTransaction");
       txn.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       txn.setSourceAccount(kotakCAbank.getId());
       txn.setDestinationAccount(kotakINbank.getId());
@@ -68,11 +71,11 @@ foam.CLASS({
       // funds would have been moved by ops team already by this point.
       Transfer t = new Transfer();
       t.setAccount(requestTxn.getSourceAccount());
-      t.setAmount(requestTxn.getAmount());
+      t.setAmount(-requestTxn.getAmount());
       Transfer[] transfers = new Transfer[1];
       transfers[0] = t;
 
-      TrustAccount trustAccount = TrustAccount.find(getX(), requestTxn.findSourceAccount(x));
+      TrustAccount trustAccount = TrustAccount.find(x, requestTxn.findSourceAccount(x));
       KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
       kotakCO.setAmount(requestTxn.getAmount());
       kotakCO.setSourceAccount(requestTxn.getSourceAccount());
@@ -84,7 +87,10 @@ foam.CLASS({
       // txn 3: Kotak IN bank -> destination IN bank
       KotakPaymentTransaction t3 = new KotakPaymentTransaction.Builder(x).build();
       t3.copyFrom(requestTxn);
+      t3.setStatus(TransactionStatus.PENDING);
+      t3.setInitialStatus(TransactionStatus.PENDING);
       t3.setAmount(requestTxn.getDestinationAmount());
+      t3.setName("KotakPaymentTransaction");
       t3.addLineItems(
         new TransactionLineItem[] {
           new PurposeCodeLineItem.Builder(x).setPurposeCode("P1099").build(),

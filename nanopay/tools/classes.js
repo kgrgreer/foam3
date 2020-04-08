@@ -2,8 +2,6 @@ global.FOAM_FLAGS.src = __dirname + '/../src/';
 require('../src/net/nanopay/files.js');
 
 var classes = [
-  'net.nanopay.tx.PayerTransactionDAO',
-  'net.nanopay.tx.PayeeTransactionDAO',
   'net.nanopay.auth.sms.PhoneVerificationTokenService',
   'net.nanopay.auth.ExternalInvoiceTokenService',
   'net.nanopay.cico.model.EFTReturnRecord',
@@ -19,7 +17,6 @@ var classes = [
   'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.CreateExpediteApprovalRequest',
   'net.nanopay.tx.cico.VerificationTransaction',
-  'net.nanopay.tx.cico.CABankTransactionPlanDAO',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.cico.EFTFile',
@@ -34,7 +31,6 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
-  'net.nanopay.tx.alterna.AlternaTransactionPlanDAO',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -169,8 +165,6 @@ var classes = [
   // AFEX
   'net.nanopay.fx.FXSummaryTransaction',
   'net.nanopay.fx.afex.AFEXTransaction',
-  'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
-  'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule',
   'net.nanopay.fx.afex.AFEXBusiness',
@@ -274,8 +268,6 @@ var classes = [
   'net.nanopay.sme.ruler.OnboardingPaymentOperationNotification',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
-  'net.nanopay.onboarding.BusinessRegistration',
-  'net.nanopay.onboarding.BusinessRegistrationAdapterDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
   // sign up
@@ -333,6 +325,8 @@ var classes = [
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
+   'net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionPredicate',
+   'net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionRule',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
@@ -427,7 +421,6 @@ var classes = [
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
-  'net.nanopay.fx.GenericFXPlanDAO',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -506,34 +499,24 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
-  'net.nanopay.tx.DigitalTransactionPlanDAO',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
   'net.nanopay.tx.PlanETAComparator',
   'net.nanopay.tx.PlanComparator',
-  'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
   'net.nanopay.tx.KotakPaymentTransaction',
-  'net.nanopay.tx.KotakFxTransactionPlanDAO',
-  'net.nanopay.tx.KotakTransactionPlanDAO',
-  'net.nanopay.tx.KotakSplitTransactionPlanDAO',
-  'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.AbliiTransactionDAO',
-  'net.nanopay.tx.DebtablePlanDAO',
   'net.nanopay.tx.DebtTransaction',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
-  'net.nanopay.tx.LoanTransactionPlanDAO',
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
-  'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.tx.DVPTransaction',
   'net.nanopay.tx.ParentCompleteToPendingRule',
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.Amount',
-  'net.nanopay.tx.GuidTransactionPlanDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
@@ -542,7 +525,6 @@ var classes = [
   'net.nanopay.fx.FXLineItem',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
-  'net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
@@ -938,7 +920,6 @@ var classes = [
   'net.nanopay.tx.bmo.BmoSFTPCredential',
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',
-  'net.nanopay.tx.bmo.BmoTransactionPlanDAO',
 
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
@@ -967,7 +948,6 @@ var classes = [
   'net.nanopay.tx.rbc.RbcCITransaction',
   'net.nanopay.tx.rbc.RbcCOTransaction',
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
-  'net.nanopay.tx.rbc.RbcTransactionPlanDAO',
   'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
   'net.nanopay.tx.rbc.RBCTransactionISO20022Util',
   'net.nanopay.tx.rbc.RbcAssignedClientValue',
@@ -978,7 +958,7 @@ var classes = [
   'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
   'net.nanopay.tx.rbc.iso20022file.RbcBatchControl',
   'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
-  
+
   // Ticket
   'net.nanopay.ticket.SudoTicket',
   'net.nanopay.ticket.SudoTicketApprovalRequestRule',
@@ -989,7 +969,6 @@ var classes = [
 
   // Planners
   'net.nanopay.tx.planner.SummaryPopulatorDAO',
-  'net.nanopay.tx.planner.TransactionPlannerDAO',
   'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
   'net.nanopay.tx.planner.ExamplePlanner',
@@ -1006,7 +985,6 @@ var classes = [
   'net.nanopay.tx.planner.KotakSplitTransactionPlanner',
   'net.nanopay.tx.planner.KotakFxTransactionPlanner',
   'net.nanopay.tx.planner.KotakTransactionPlanner',
-  'net.nanopay.tx.GenericCIPlanner', //needs deletion..
   'net.nanopay.tx.planner.DVPPlanner',
   'net.nanopay.tx.planner.FOPPlanner',
   'net.nanopay.tx.planner.RbcCITransactionPlanner',
@@ -1024,6 +1002,11 @@ var classes = [
   'net.nanopay.tx.planner.BmoCITransactionPlanner',
   'net.nanopay.tx.planner.BmoCOTransactionPlanner',
   'net.nanopay.tx.planner.BulkTransactionPlanner',
+  'net.nanopay.tx.planner.NanopayFXTransactionPlanner',
+  'net.nanopay.tx.planner.LoanTransactionPlanner',
+  'net.nanopay.tx.planner.AFEXTransactionPlanner',
+  'net.nanopay.tx.planner.DebtRepaymentPlanner',
+  'net.nanopay.tx.planner.DebtablePlanner',
 
   // Fees
   'net.nanopay.tx.planner.fees.AbliiFeeRule'

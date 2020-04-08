@@ -172,5 +172,18 @@ foam.CLASS({
       documentation: 'The token associated to the sent invitation',
       visibility: 'HIDDEN'
     },
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return `${this.email}`;
+      },
+      javaCode: `
+        return  this.getEmail();
+      `
+    }
   ]
 });

@@ -208,7 +208,20 @@ foam.CLASS({
     {
       name: 'SELECT_BUSINESS_WARNING',
       message: 'Please select a business before proceeding'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_TITLE',
+      message: 'We’re Sorry'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_1',
+      message: 'It looks like you’re trying to accept an invitation, but the invitation has been revoked.'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_2',
+      message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.'
     }
+
   ],
 
   properties: [
@@ -435,6 +448,11 @@ foam.CLASS({
         }
 
         var hash = location.hash.substr(1);
+
+        if ( hash == 'sme.main.onboarding' ) {
+          this.onboardingUtil.initOnboardingView();
+        }
+
         menu = await this.client.menuDAO.find(hash);
 
         // Any errors in finding the menu location to redirect
@@ -555,6 +573,20 @@ foam.CLASS({
 
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
+        var tokenParam = searchParams.get('token');
+
+        // direct to error page if an invalid token hits (token not found)
+        self.client.authenticationTokenService.processToken(null, null, tokenParam).then(() => {
+        }).catch(e => {
+            if ( tokenParam != null && e.message === 'Token not found' ) {
+              view = net.nanopay.sme.ui.ErrorPageView.create({
+                title: this.INVALID_TOKEN_ERROR_TITLE,
+                info_1: this.INVALID_TOKEN_ERROR_1,
+                info_2: this.INVALID_TOKEN_ERROR_2
+              });
+              self.stack.push(view, self);
+            }
+        });
 
         if ( locHash === '#reset' ) {
           view = { class: 'foam.nanos.auth.ChangePasswordView' };
@@ -567,7 +599,7 @@ foam.CLASS({
             param: {
               email: searchParams.get('email'),
               disableEmail_: searchParams.has('email'),
-              token_: searchParams.get('token'),
+              token_: tokenParam,
               organization: searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '',

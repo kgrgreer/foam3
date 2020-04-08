@@ -15,7 +15,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'sameUser',
-      value: true
+      value: true,
     }
   ],
 

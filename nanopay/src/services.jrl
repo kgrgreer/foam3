@@ -433,7 +433,28 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"brokerDAO",                        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.model.Broker.getOwnClassInfo(), \"brokers\")));", "client":"{\"of\":\"net.nanopay.model.Broker\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"brokerDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.model.Broker.getOwnClassInfo())
+      .setJournalName("brokers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"net.nanopay.model.Broker"
+    }
+  """
+})
+
 //p({
 //  "class": "foam.nanos.boot.NSpec",
 //  "name": "recurringInvoiceDAO",
@@ -698,7 +719,6 @@ p({
       .setPipelinePm(true)
       .setDeletedAware(false)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("user").build())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
   """,
@@ -1434,8 +1454,6 @@ p({
   "client": "{\"of\":\"net.nanopay.bank.BankAccount\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"privateKeyDAO",                    "serviceScript":"return new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"privateKeys\").setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).build()).build();"})
-
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "keyPairDAO",
@@ -1532,7 +1550,6 @@ p({
         new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.retail.NewP2PTxnRequestDAO.getOwnClassInfo()).build())))))
       .setJournalName("p2pTxnRequests")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-
       .build())
   """,
   "client": "{\"of\":\"net.nanopay.retail.model.P2PTxnRequest\"}"

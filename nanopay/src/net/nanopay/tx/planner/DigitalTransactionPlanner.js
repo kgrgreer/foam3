@@ -8,7 +8,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.DigitalTransaction',
   ],
-//TODO: predicate: both accounts are digital, and currency is the same.
 
   methods: [
     {
@@ -17,10 +16,11 @@ foam.CLASS({
 
         DigitalTransaction dt = new DigitalTransaction();
         dt.copyFrom(requestTxn);
-        addTransfer(dt.getSourceAccount(), -dt.getAmount());
-        addTransfer(dt.getDestinationAccount(), dt.getAmount());
+        dt.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        dt.setName(dt.getSourceCurrency() + " Digital Transaction");
+        quote.addTransfer(dt.getSourceAccount(), -dt.getAmount());
+        quote.addTransfer(dt.getDestinationAccount(), dt.getAmount());
         return dt;
-
       `
     },
   ]

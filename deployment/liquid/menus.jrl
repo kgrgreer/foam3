@@ -360,7 +360,10 @@ p({
               "name": "Transactions",
               "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
             }
-          ]
+          ],
+          "viewBorder": {
+            "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
+          }
         }
     }
 })

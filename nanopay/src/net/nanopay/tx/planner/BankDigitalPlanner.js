@@ -11,12 +11,19 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  properties: [
+    {
+      name: 'multiPlan_',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
       javaCode: `
         Account sourceAccount = quote.getSourceAccount();
-        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
+        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
         
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
@@ -33,7 +40,7 @@ foam.CLASS({
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : CIs ) {
             tx2.addNext(tx1);
-            getAlternatePlans_().add(tx2);
+            quote.getAlternatePlans_().add(tx2);
           }
         }
         return null;

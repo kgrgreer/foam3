@@ -184,7 +184,7 @@ public class NanopayLineItemFeeDAOTest
     transaction.addLineItems(new TransactionLineItem[] {lineItem1, lineItem2}, new TransactionLineItem[] {});
 
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO")).put_(x_, quote);
     test( null != resultQoute, "TransactionQuote not null");
     FeeLineItem feeApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {

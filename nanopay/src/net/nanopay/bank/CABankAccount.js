@@ -75,6 +75,7 @@ foam.CLASS({
       label: 'Transit No.',
       updateVisibility: 'RO',
       section: 'accountDetails',
+      updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',

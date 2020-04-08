@@ -19,7 +19,6 @@ foam.CLASS({
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
-    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXLineItem',
@@ -28,6 +27,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
@@ -47,7 +47,7 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
     
-        AFEXServiceProvider fxService = (AFEXServiceProvider) x.get("AFEXService");
+        AFEXServiceProvider fxService = (AFEXServiceProvider) x.get("afexServiceProvider");
         return generateTransaction(x, quote, (AFEXServiceProvider) fxService);
       `
     },
@@ -72,6 +72,7 @@ foam.CLASS({
         Transaction request = quote.getRequestTransaction();
         Account sourceAccount = quote.getSourceAccount();
         Account destinationAccount = quote.getDestinationAccount();
+        FXSummaryTransaction summary = null;
         Logger logger = (Logger) x.get("logger");
         logger.debug(this.getClass().getSimpleName(), "generateTransaction", quote);
 
@@ -86,8 +87,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
             afexTransaction.setInvoiceId(request.getInvoiceId());
-            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
-            quote.addPlan(summary);
+            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
           }
           
         } catch (Throwable t) {
@@ -100,7 +100,7 @@ foam.CLASS({
             ((DAO) x.get("localNotificationDAO")).put(notification);
             logger.error("Error sending GetQuote to AFEX.", t);
         }
-        return quote.getPlan();
+        return summary;
       `
     },
     {
@@ -123,7 +123,8 @@ foam.CLASS({
       javaCode: `
         AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
         afexTransaction.copyFrom(request);
-      
+        afexTransaction.setStatus(TransactionStatus.PENDING);
+        afexTransaction.setName("Foreign Exchange");
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         afexTransaction.setFxRate(fxQuote.getRate());
@@ -156,9 +157,6 @@ foam.CLASS({
         // TODO move to fee engine
         // add invoice fee
         Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());
-        AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
-        Long feeAmount = sameCurrency ? credentials.getDomesticFee() : credentials.getInternationalFee();
-        afexTransaction.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(request.getSourceCurrency()).build()}, null);  
         afexTransaction.setIsQuoted(true);
       
         return afexTransaction;
@@ -198,8 +196,8 @@ foam.CLASS({
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
         summary.setIsQuoted(true);
-        summary.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(tx.getCost()).setCurrency(sourceAccount.getDenomination()).build()}, null);
-      
+        summary.addNext(createCompliance(tx));
+
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
         afexCT.setAmount(tx.getAmount());
@@ -217,6 +215,12 @@ foam.CLASS({
         summary.addNext(afexCT);
       
         return summary;
+      `
+    },
+    {
+      name: 'forceBestPlan',
+      javaCode: `
+        return true;
       `
     }
   ]

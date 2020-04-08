@@ -34,6 +34,11 @@ foam.CLASS({
         setDelegate(delegate);
         System.err.println("Direct constructor use is deprecated. Use Builder instead.");
       }
+       public TransactionQuotingDAO(X x, DAO delegate, Boolean validate) {
+         setX(x);
+         setDelegate(delegate);
+         setEnableValidation(validate);
+       }
         `);
       }
     }
@@ -51,14 +56,13 @@ foam.CLASS({
         Transaction txn = (Transaction) obj;
         if ( ! txn.getIsQuoted() ) {
           TransactionQuote quote = new TransactionQuote();
-          quote.setRequestTransaction(txn);
+          quote.setRequestTransaction((Transaction) txn.fclone());
           quote = (TransactionQuote) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put(quote);
           validateQuoteTransfers(x, quote);
           return getDelegate().put_(x, quote.getPlan());
         }
         return getDelegate().put_(x, obj);
       `
-
     },
     {
       name: 'validateQuoteTransfers',

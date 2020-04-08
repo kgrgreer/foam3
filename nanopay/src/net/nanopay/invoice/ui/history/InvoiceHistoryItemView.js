@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.invoice.ui.history',
   name: 'InvoiceHistoryItemView',
   extends: 'foam.u2.View',
+  documentation: 'View displaying history for each history object.',
 
   implements: [
     'foam.u2.history.HistoryItemView'
@@ -14,7 +15,9 @@ foam.CLASS({
     'net.nanopay.invoice.ui.history.InvoiceApprovedHistoryItemView',
   ],
 
-  documentation: 'View displaying history for each history object.',
+  imports: [
+    'user'
+  ],
 
   properties: [
     {
@@ -45,6 +48,8 @@ foam.CLASS({
 
   methods: [
     function outputRecord(parentView, record) {
+      const currentUser = this.user.id;
+      const recordUser = this.getId(record.user);
       const isFirstHistoryEvent = record.updates.length === 0;
       const updatesContainRelevantChange = record.updates.some((update) => {
         if ( update.name === 'status' ) {
@@ -55,9 +60,8 @@ foam.CLASS({
       const updatesContainApprovalChange = record.updates.some((update) => {
         return update.name === 'approvedBy';
       });
+
       if ( isFirstHistoryEvent ) {
-        const recordUser = this.getId(record.user);
-        const currentUser = ctrl.user.id;
         if ( currentUser === recordUser ) {
           this.invoiceCreatedHistoryItemView.outputRecord(parentView, record);
         } else {

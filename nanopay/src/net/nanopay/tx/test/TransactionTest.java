@@ -60,7 +60,7 @@ public class TransactionTest
     accDAO = (DAO) x_.get("localAccountDAO");
     invDAO = (DAO) x_.get("invoiceDAO");
     userDAO = (DAO) x_.get("localUserDAO");
-    txnQuoteDAO = (DAO) x_.get("localTransactionQuotePlanDAO");
+    txnQuoteDAO = (DAO) x_.get("localTransactionPlannerDAO");
 
     sender_ = addUser("txntest1@transactiontest.ca");
     receiver_ = addUser("txntest2@transactiontest.ca");
@@ -167,7 +167,7 @@ public class TransactionTest
       .build();
     test(TestUtils.testThrows(
       () -> txnDAO.put(finalTxn),
-      "Transaction Exceeds Loan Account Principal Limit",
+      "Unable to find a plan for requested transaction.",
       RuntimeException.class), "Exception: try to exceed principal");
 
     // test trying to repay more then borrowed
@@ -261,11 +261,15 @@ public class TransactionTest
 
   public void testAbliiTransaction(){
     AbliiTransaction txn = new AbliiTransaction.Builder(x_)
+      .setSourceAccount(sender_CA.getId())
+      .setDestinationAccount(receiver_CA.getId())
+      .setSourceCurrency(sender_CA.getDenomination())
+      .setDestinationCurrency(receiver_CA.getDenomination())
       .setPayeeId(receiver_.getId())
       .setPayerId(sender_.getId())
-      .setSourceAccount(sender_CA.getId())
       .setInvoiceId(inv.getId())
       .setAmount(123)
+      .setDestinationAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();

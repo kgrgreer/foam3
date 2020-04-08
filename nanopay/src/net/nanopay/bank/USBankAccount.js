@@ -104,6 +104,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'ACH Account Number',
+      updateVisibility: 'RO',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
@@ -118,6 +119,7 @@ foam.CLASS({
     {
       name: 'branch',
       //visibility: 'HIDDEN'
+      updateVisibility: 'RO',
       label: 'Routing No.',
     },
     // {

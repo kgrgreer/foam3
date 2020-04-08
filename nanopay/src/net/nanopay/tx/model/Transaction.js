@@ -268,15 +268,6 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'createdLegacy',
-      documentation: `The date the transaction was created for transaction before status history.`,
-      visibility: 'HIDDEN',
-      section: 'basicInfo',
-      storageTransient: true,
-      shortName: 'created'
-    },
-    {
-      class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
       storageTransient: true,
@@ -284,24 +275,10 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
+      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
       getter: function() {
-        return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
+         return this.statusHistory[0].timeStamp;
       },
-      javaGetter: `
-        if ( getCreatedLegacy() != null ) {
-          return getCreatedLegacy();
-        }
-        return getStatusHistory()[0].getTimeStamp();
-      `,
-      javaFactory: `
-        if ( getCreatedLegacy() != null ) {
-          return getCreatedLegacy();
-        }
-        if ( getStatusHistory().length > 0 ) {
-          return getStatusHistory()[0].getTimeStamp();
-        }
-        return new java.util.Date();
-      `,
       tableWidth: 172,
       includeInDigest: true
     },
@@ -419,10 +396,7 @@ foam.CLASS({
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
       createVisibility: 'HIDDEN',
-      readVisibility: function(lifecycleState){
-        return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(lifecycleState){
+      readVisibility: function(lifecycleState) {
         return lifecycleState === foam.nanos.auth.LifecycleState.ACTIVE ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
@@ -825,7 +799,7 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       factory: function() {
-        var h = [1]; //new net.nanopay.tx.HistoricStatus[1];
+        var h = [1];
         h[0] = net.nanopay.tx.HistoricStatus.create();
         h[0].status = this.status;
         h[0].timeStamp = new Date();
@@ -1062,46 +1036,13 @@ foam.CLASS({
       `
     },
     {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        if (! canTransfer(x, oldTxn) ) {
-          return new Transfer[0];
-        }
-
-        List all = new ArrayList();
-        TransactionLineItem[] lineItems = getLineItems();
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
-          }
-        }
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
       javaCode: `
+
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {

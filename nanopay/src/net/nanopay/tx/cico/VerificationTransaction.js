@@ -81,24 +81,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-      //NOP delete after migration to 4.0
-      return new Transfer[0];
-      `
-    },
-    {
       documentation: `verification transaction doesn't create any transfers`,
       name: 'canTransfer',
       args: [

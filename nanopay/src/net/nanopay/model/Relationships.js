@@ -819,14 +819,7 @@ foam.RELATIONSHIP({
             X.data.EQ(net.nanopay.account.Account.DELETED, false),
             X.data.EQ(net.nanopay.account.Account.ENABLED, true),
             X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
-              foam.nanos.auth.LifecycleState.ACTIVE),
-            X.data.OR(
-              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-              X.data.AND(
-                X.data.EQ(X.data.user.group, 'admin'),
-                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount)
-              )
-            )
+              foam.nanos.auth.LifecycleState.ACTIVE)
           )).orderBy(net.nanopay.account.Account.NAME),
           objToChoice: function(a) {
             return [a.id, a.summary];
@@ -841,6 +834,7 @@ foam.RELATIONSHIP({
     },
     updateVisibility: 'RO',
     section: 'paymentInfoSource',
+    tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
 
@@ -918,6 +912,7 @@ foam.RELATIONSHIP({
       if ( destinationAccount == 0 ) return 'please input an account id.';
       return dstAccountError;
     },
+    tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
 

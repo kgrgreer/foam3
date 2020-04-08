@@ -194,23 +194,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        return getTransfers();
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
