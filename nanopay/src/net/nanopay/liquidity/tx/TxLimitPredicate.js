@@ -95,7 +95,11 @@ foam.CLASS({
           }
         } else {
           // When receiving, lookup the user or business from the account
-          
+          User user = account.findOwner((X) obj); 
+          if (this.getEntityType() == TxLimitEntityType.USER ||
+             (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
+            return user.getId() == this.getId();
+          }
         }
 
         // otherwise this is an unknown entity type
