@@ -5,7 +5,6 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.approval.Approvable;
 import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestUtil;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
@@ -20,30 +19,21 @@ import java.util.List;
 
 import net.nanopay.liquidity.crunch.CapabilityRequest;
 import net.nanopay.liquidity.crunch.CapabilityRequestOperations;
+import net.nanopay.test.liquid.LiquidTestExecutor;
 
 import static foam.mlang.MLang.*;
 
-public class ApprovalTestExecutor extends Test {
-  private User firstSystemUser;
-  private User secondSystemUser;
-  private X systemX, firstX, secondX;
-  private Logger logger;
-  private String prefix;
+public class ApprovalTestExecutor extends LiquidTestExecutor {
   private ApprovalTestExecutorState[] states;
 
   public ApprovalTestExecutor(String prefix, ApprovalTestExecutorState[] testStates) {
-    this.prefix = prefix;
+    super(prefix);
     this.states = testStates;
-  }
-
-  // Prefix used to differentiate this test from all others using the same base class
-  protected String getTestPrefix() {
-    return prefix;
   }
 
   public void runTest(X x) {
     // Setup contexts
-    this.setupContexts(x);
+    this.setup(x);
 
     // Get the expected actions and states for this test
     test(this.states != null, "Test states must be set");
@@ -51,171 +41,66 @@ public class ApprovalTestExecutor extends Test {
       return;
 
     // Add a user
-    this.logger.info(prefix, "Creating user");
+    this.logger.info(getTestPrefix(), "Creating user");
     User user = this.addUser(this.getFirstX());
 
     // Test approval request creation
-    this.logger.info(prefix, "Checking approval requests");
+    this.logger.info(getTestPrefix(), "Checking approval requests");
     ApprovalRequest request = this.testApprovalRequestCreation(this.getSystemX(), user, this.getFirstSystemUser(x), this.getSecondSystemUser(x), Operations.CREATE);
 
     // 01 - Approve / reject
-    this.logger.info(prefix, "Applying approval action", states[0].getApprovalStatus());
+    this.logger.info(getTestPrefix(), "Applying approval action", states[0].getApprovalStatus());
     this.applyApprovalAction(this.getSecondX(), states[0].getApprovalStatus(), request, user, Operations.CREATE);
 
     // Check status
-    this.logger.info(prefix, "Checking lifecycle state", states[0].getLifecycleState());
+    this.logger.info(getTestPrefix(), "Checking lifecycle state", states[0].getLifecycleState());
     user = this.checkUserStatus(this.getSystemX(), states[0].getLifecycleState(), user);
 
     // Stop the test if the user was rejected
     if (states[0].getApprovalStatus() == ApprovalStatus.REJECTED) {
-      this.logger.info(prefix, "Stopping test after creation rejection");
+      this.logger.info(getTestPrefix(), "Stopping test after creation rejection");
       return;
     }
 
     // Update the user
-    this.logger.info(prefix, "Updating the user");
+    this.logger.info(getTestPrefix(), "Updating the user");
     this.updateUser(this.getFirstX(), user);
 
     // Test approval request creation
-    this.logger.info(prefix, "Checking approval requests");
+    this.logger.info(getTestPrefix(), "Checking approval requests");
     request = this.testApprovalRequestCreation(this.getSystemX(), user, this.getFirstSystemUser(x), this.getSecondSystemUser(x), Operations.UPDATE);
 
     // Test approvable created
-    this.logger.info(prefix, "Checking requested approvables");
+    this.logger.info(getTestPrefix(), "Checking requested approvables");
     this.testApprovableCreation(this.getSystemX(), user, ApprovalStatus.REQUESTED, false);
 
     // 02 - Approve / reject
-    this.logger.info(prefix, "Applying approval action", states[1].getApprovalStatus());
+    this.logger.info(getTestPrefix(), "Applying approval action", states[1].getApprovalStatus());
     this.applyApprovalAction(this.getSecondX(), states[1].getApprovalStatus(), request, user, Operations.UPDATE);
 
     // Validation
-    this.logger.info(prefix, "Validating requested approvables");
+    this.logger.info(getTestPrefix(), "Validating requested approvables");
     this.testApprovableCreation(this.getSystemX(), user, states[1].getApprovalStatus(), states[1].getApprovalStatus() == ApprovalStatus.APPROVED);
 
     // Check status
-    this.logger.info(prefix, "Checking lifecycle state", states[1].getLifecycleState());
+    this.logger.info(getTestPrefix(), "Checking lifecycle state", states[1].getLifecycleState());
     user = this.checkUserStatus(this.getSystemX(), states[1].getLifecycleState(), user);
 
     // Remove the user
-    this.logger.info(prefix, "Removing the user");
+    this.logger.info(getTestPrefix(), "Removing the user");
     this.removeUser(this.getFirstX(), user);
 
     // Test approval request creation
-    this.logger.info(prefix, "Checking approval requests");
+    this.logger.info(getTestPrefix(), "Checking approval requests");
     request = this.testApprovalRequestCreation(this.getSystemX(), user, this.getFirstSystemUser(x), this.getSecondSystemUser(x), Operations.REMOVE);
 
     // 03 - Approve / reject
-    this.logger.info(prefix, "Applying approval action", states[2].getApprovalStatus());
+    this.logger.info(getTestPrefix(), "Applying approval action", states[2].getApprovalStatus());
     this.applyApprovalAction(this.getSecondX(), states[2].getApprovalStatus(), request, user, Operations.REMOVE);
 
     // Check status
-    this.logger.info(prefix, "Checking lifecycle state", states[2].getLifecycleState());
+    this.logger.info(getTestPrefix(), "Checking lifecycle state", states[2].getLifecycleState());
     user = this.checkUserStatus(this.getSystemX(), states[2].getLifecycleState(), user);
-  }
-
-  protected void setupContexts(X x) {
-    this.systemX = x.put("user", new User.Builder(x).setId(1).build());
-    this.firstX = x.put("user", this.getFirstSystemUser(x));
-    this.secondX = x.put("user", this.getSecondSystemUser(x));
-    this.logger = (Logger) x.get("logger");
-  }
-
-  protected X getSystemX() {
-    if (this.systemX == null) {
-      throw new RuntimeException("SystemX: setupContexts has not been called.");
-    }
-    return this.systemX;
-  }
-
-  protected X getFirstX() {
-    if (this.firstX == null) {
-      throw new RuntimeException("FirstX: setupContexts has not been called.");
-    }
-    return this.firstX;
-  }
-
-  protected X getSecondX() {
-    if (this.secondX == null) {
-      throw new RuntimeException("SecondX: setupContexts has not been called.");
-    }
-    return this.secondX;
-  }
-
-  protected DAO getApprovableDAO(X x) {
-    return (DAO) x.get("approvableDAO");
-  }
-
-  protected DAO getApprovalRequestDAO(X x) {
-    return (DAO) x.get("approvalRequestDAO");
-  }
-
-  protected DAO getLocalUserDAO(X x) {
-    return (DAO) x.get("localUserDAO");
-  }
-
-  protected DAO getCapabilityRequestDAO(X x) {
-    return (DAO) x.get("capabilityRequestDAO");
-  }
-
-  protected UserQueryService getUserQueryService(X x) {
-    return (UserQueryService) x.get("userQueryService");
-  }  
-
-  protected String getFirstSystemUserEmail() {
-    return getTestPrefix() + "approvaltest01@nanopay.net";
-  }
-
-  protected User getFirstSystemUser(X x) {
-    if (this.firstSystemUser == null) {
-      this.firstSystemUser = this.setupSystemUser(x, this.getFirstSystemUserEmail());
-    }
-    return this.firstSystemUser;
-  }
-
-  protected String getSecondSystemUserEmail() {
-    return getTestPrefix() + "approvaltest02@nanopay.net";
-  }
-
-  protected User getSecondSystemUser(X x) {
-    if (this.secondSystemUser == null) {
-      this.secondSystemUser = this.setupSystemUser(x, this.getSecondSystemUserEmail());
-    }
-    return this.secondSystemUser;
-  }
-
-  protected User setupSystemUser(X x, String email) {
-    // Find the user and return if they exist
-    User user = (User) getLocalUserDAO(x).inX(this.getSystemX()).find(EQ(User.EMAIL, email));
-    if (user != null && user.getLifecycleState() == LifecycleState.ACTIVE) {
-      return user;
-    }
-    
-    // Otherwise, create the user
-    user = new User.Builder(x)
-        .setFirstName(this.getTestPrefix() + "Approval")
-        .setLastName("System")
-        .setEmail(email)
-        .setGroup("liquidBasic")
-        .setJobTitle("Approver")
-        .setOrganization("Goldman Sachs")
-        .setLifecycleState(LifecycleState.ACTIVE)
-        .setEnabled(true)
-        .build();
-    user = (User) ((DAO) this.getLocalUserDAO(x).inX(this.getSystemX())).put(user);
-
-    List<Long> userList = new ArrayList<Long>();
-    userList.add(user.getId());
-
-    // Assign role
-    CapabilityRequest capabilityRequest = new CapabilityRequest.Builder(this.getSystemX())
-      .setGlobalCapability("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8")
-      .setRequestType(CapabilityRequestOperations.ASSIGN_GLOBAL)
-      .setUsers(userList)
-      .setLifecycleState(LifecycleState.ACTIVE)
-      .build();
-    this.getCapabilityRequestDAO(x).inX(this.getSystemX()).put(capabilityRequest);
-    
-    return user;
   }
 
   private User addUser(X x) {

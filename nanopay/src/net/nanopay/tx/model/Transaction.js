@@ -272,15 +272,6 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'createdLegacy',
-      documentation: `The date the transaction was created for transaction before status history.`,
-      visibility: 'HIDDEN',
-      section: 'basicInfo',
-      storageTransient: true,
-      shortName: 'created'
-    },
-    {
-      class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
       storageTransient: true,
@@ -288,24 +279,10 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
+      javaGetter: 'return getStatusHistory()[0].getTimeStamp();',
       getter: function() {
-        return this.createdLegacy ? this.createdLegacy : this.statusHistory[0].timeStamp;
+         return this.statusHistory[0].timeStamp;
       },
-      javaGetter: `
-        if ( getCreatedLegacy() != null ) {
-          return getCreatedLegacy();
-        }
-        return getStatusHistory()[0].getTimeStamp();
-      `,
-      javaFactory: `
-        if ( getCreatedLegacy() != null ) {
-          return getCreatedLegacy();
-        }
-        if ( getStatusHistory().length > 0 ) {
-          return getStatusHistory()[0].getTimeStamp();
-        }
-        return new java.util.Date();
-      `,
       tableWidth: 172,
       includeInDigest: true
     },
@@ -821,7 +798,7 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       factory: function() {
-        var h = [1]; //new net.nanopay.tx.HistoricStatus[1];
+        var h = [1];
         h[0] = net.nanopay.tx.HistoricStatus.create();
         h[0].status = this.status;
         h[0].timeStamp = new Date();

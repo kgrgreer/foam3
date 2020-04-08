@@ -67,6 +67,7 @@ foam.CLASS({
       class: 'String',
       name: 'ifscCode',
       label: 'IFSC Code',
+      updateVisibility: 'RO',
       validationPredicates: [
         {
           args: ['ifscCode'],
@@ -111,6 +112,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'Bank Account No.',
+      updateVisibility: 'RO',
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },

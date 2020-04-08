@@ -216,6 +216,12 @@ foam.CLASS({
       
         return summary;
       `
+    },
+    {
+      name: 'forceBestPlan',
+      javaCode: `
+        return true;
+      `
     }
   ]
 });
