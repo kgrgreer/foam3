@@ -20,16 +20,16 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "internalMedusaEntryDAO",
-  "lazy": false,
+  "lazy": true,
   "serve": false,
   "serviceScript": `
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setGuid(true)
       .setAuthorize(false)
       .setCluster(false)
       .setRuler(false)
-      .setPm(true)
-      .setEnableInterfaceDecorators(false)
+      .setDecorator(new foam.nanos.medusa.MedusaEntryTestingDAO.Builder(x).build())
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
       })
@@ -64,10 +64,10 @@ p({
           .setDelegate(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
             .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
               .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
-              .build())
             .build())
           .build())
         .build())
+      .build())
       .build();
    `
 })
@@ -87,9 +87,9 @@ p({
         .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
           .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
             .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
-            .build())
           .build())
         .build())
+      .build())
       .build()
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
