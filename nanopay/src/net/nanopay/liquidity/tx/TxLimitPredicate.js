@@ -76,11 +76,21 @@ foam.CLASS({
           return account.getId() == this.getId();
         }
 
-        // Retrieve the users
-        User user = account.findOwner((X) obj);
-        if (this.getEntityType() == TxLimitEntityType.USER || 
-            this.getEntityType() == TxLimitEntityType.BUSINESS) {
-          return user.getId() == this.getId();
+        // Retrieve the user/business from the context
+        User user = (User) ((X) obj).get("user");
+        if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
+          return 
+            (user instanceof Business) ? user.getId() == this.getId() :
+            false;
+        }
+
+        // Retrieve the agent from the context
+        User agent = (User) ((X) obj).get("agent");
+        if (this.getEntityType() == TxLimitEntityType.USER) {
+          return 
+            (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
+            (user != null) ? user.getId() == this.getId() :
+            false;
         }
 
         // otherwise this is an unknown entity type
