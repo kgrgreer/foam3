@@ -1,3 +1,4 @@
+// set mode: 4 - Testing
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"appConfig",
