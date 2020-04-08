@@ -1015,6 +1015,7 @@ p({
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setInnerDAO(x.get("localLiquiditySettingsDAO"))
     .setEnableInterfaceDecorators(false)
+    .setRuler(false)
     .setValidated(true)
     .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
     .build();
@@ -1043,6 +1044,7 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setSeqNo(true)
+    .setRuler(false) // TODO: needs to be set to true https://nanopay.atlassian.net/browse/NP-652
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
