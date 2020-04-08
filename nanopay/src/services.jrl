@@ -1011,6 +1011,26 @@ p({
   import net.nanopay.liquidity.LiquiditySettings;
   import foam.dao.DAO;
 
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
+    .setInnerDAO(x.get("localLiquiditySettingsDAO"))
+    .setEnableInterfaceDecorators(false)
+    .setValidated(true)
+    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
+    .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localLiquiditySettingsDAO",
+  "serve": true,
+  "serviceScript":
+  """
+  import net.nanopay.liquidity.LiquiditySettings;
+  import foam.dao.DAO;
+
   DAO dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
     .setFm(
       new foam.nanos.analytics.DAOFoldManager.Builder(x)
@@ -1023,9 +1043,6 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setSeqNo(true)
-    .setRuler(false)
-    .setValidated(true)
-    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())

@@ -495,9 +495,30 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"liquiditySettingsDAO",
-  "serve":true,
+  "class": "foam.nanos.boot.NSpec",
+  "name": "liquiditySettingsDAO",
+  "serve": true,
+  "serviceScript":
+  """
+  import net.nanopay.liquidity.LiquiditySettings;
+  import foam.dao.DAO;
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
+    .setInnerDAO(x.get("localLiquiditySettingsDAO"))
+    .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("liquiditysettings").build())
+    .setEnableInterfaceDecorators(false)
+    .setValidated(true)
+    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
+    .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localLiquiditySettingsDAO",
+  "serve": true,
   "serviceScript":
   """
   import net.nanopay.liquidity.LiquiditySettings;
@@ -515,11 +536,10 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setSeqNo(true)
-    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")
-    .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer.Builder(x).setPermissionPrefix("liquiditysettings").build())
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
+    .setAuthorize(false)
     .setDecorator(dao)
     .build();
   """,
