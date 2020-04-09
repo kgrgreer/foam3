@@ -80,18 +80,14 @@ foam.CLASS({
         String availableLimit = (ruleCurrency != null) ?
           ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
           String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
-        Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
-        Businesss business = x.get("user") instanceof (Business) ? (Business) x.get("user") : null;
-        User user = (null == business) ? (User) x.get("user") : (User) x.get("agent");
         testedRule.setProbeInfo(
           new TransactionLimitProbeInfo.Builder(x)
             .setRemainingLimit(txLimitRule.getLimit() - limitState.getSpent())
-            .setMessage(
-              "Remaining limit for " + txLimitRule.getApplyLimitTo().getLabel() + " " +
-              (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ? ((user != null) ? user.label() : "unknown") :
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? ((business != null) ? business.label() : "unknown") :
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? ((account != null) ? account.getName() : "unknown")) 
-              + " is " + availableLimit )
+            .setMessage("The " + 
+                txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+                txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+                (txLimitRule.getSend() ? "sending" : "receiving") + 
+                " limit exceeded. AvailableLimit: " + availableLimit)
             .build());
       }
 
