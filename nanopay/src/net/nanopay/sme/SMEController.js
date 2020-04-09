@@ -457,7 +457,6 @@ foam.CLASS({
           this.onboardingUtil.initInternationalOnboardingView();
         }
 
-
         menu = await this.client.menuDAO.find(hash);
 
         // Any errors in finding the menu location to redirect
