@@ -29,7 +29,6 @@ p({
       .setAuthorize(false)
       .setCluster(false)
       .setRuler(false)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryTestingDAO.Builder(x).build())
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
       })
