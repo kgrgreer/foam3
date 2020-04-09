@@ -159,7 +159,7 @@ p({
         "isEnabled": true,
         "enabledActionsAuth": {
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "account"
+          "modelName": "liquiditysettings"
         }
       },
     }
