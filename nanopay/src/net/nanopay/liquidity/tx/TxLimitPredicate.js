@@ -49,12 +49,7 @@ foam.CLASS({
         if ( ! ( tx instanceof DigitalTransaction ||
                  tx instanceof FXTransaction ) ) {
           return false;
-        }    
-
-        // Always matches for transactions
-        // if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
-        //   return true;
-        // }
+        }
 
         // When there is no ID to match, always return false
         if (this.getId() == 0) {
