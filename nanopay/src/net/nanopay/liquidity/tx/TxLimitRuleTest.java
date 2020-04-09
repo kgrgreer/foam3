@@ -4,6 +4,7 @@ import foam.core.Currency;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import foam.util.SafetyUtil;
@@ -63,7 +64,6 @@ public class TxLimitRuleTest
     // create test rule to restrict users from transacting
     TxLimitRule txLimitRule = new TxLimitRule();
     txLimitRule.setEnabled(true);
-    txLimitRule.setId("123123");
     txLimitRule.setName("Tx Limit Test Rule");
     txLimitRule.setDescription("Tx Limit Test Rule");
     txLimitRule.setCreatedBy(sourceUser.getId());
@@ -77,7 +77,10 @@ public class TxLimitRuleTest
     txLimitRule.setSend(send);
     txLimitRule.setLimit(limit);
     txLimitRule.setPeriod(period);
-    ruleDAO.put(txLimitRule);
+    txLimitRule.setLifecycleState(LifecycleState.ACTIVE);
+    txLimitRule = ruleDAO.put(txLimitRule);
+    test( txLimitRule.getEnabled() && txLimitRule.getLifecycleState() == LifecycleState.ACTIVE, 
+          "Checking if rule is enabled: " + txLimitRule.getEnabled() + ", and active: " + txLimitRule.getLifecycleState());
 
     // create test transactions
     long spent = 0L;
@@ -115,5 +118,11 @@ public class TxLimitRuleTest
       TestUtils.testThrows( () -> transactionDAO.inX(sourceX).put(transaction), errorMessage, RuntimeException.class ),
       message + " throws RuntimeException with error message: " + errorMessage
     );
+
+    // Disable the rule
+    txLimitRule = txLimitRule.fclone();
+    txLimitRule.setEnabled(false);
+    txLimitRule = ruleDAO.put(txLimitRule);
+    test( !txLimitRule.getEnabled(), "Checking if rule is disabled: " + txLimitRule.getEnabled());
   }
 }
