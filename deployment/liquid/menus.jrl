@@ -396,7 +396,7 @@ p({
         "isEnabled": true,
         "enabledActionsAuth": {
           "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
-          "modelName": "account"
+          "modelName": "liquiditysettings"
         }
       },
     }
