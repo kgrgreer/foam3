@@ -270,7 +270,8 @@
     ^ .foam-u2-ActionView-enableTwoFactor,
       .foam-u2-ActionView-disableTwoFactor {
       width: 108px;
-      height: 30px;
+      margin-top: 10px;
+      height: 37px;
       border-radius: 2px;
       border: solid 1px #59a5d5;
     }

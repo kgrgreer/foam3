@@ -46,6 +46,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"transactionquote.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"transactionquote.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"txlimitrule.rw.enabled"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"txlimitentitytype.read.user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"txlimitentitytype.read.account"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"user.read.*"})
 
 // Allowed predicates for Business Rules
@@ -64,3 +66,4 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.2c1799d7-afa3-4768-92a0-8245b3cd5180"}) // Constant
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.7207bfd7-7cf4-4652-9cb9-f3f6feb9aa13"}) // CurrentTime
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidBasic","targetId":"strategyreference.read.6383e97e-f0b3-4f7b-a995-e5ba79c35db8"}) // ArrayConstant
+
