@@ -18,6 +18,10 @@ foam.CLASS({
       padding: 0;
       border: none !important;
     }
+    
+    ^inner {
+      position: relative;
+    }
 
     ^X:hover {
       transform: scale(1.1);
