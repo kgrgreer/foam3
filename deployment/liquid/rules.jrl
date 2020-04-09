@@ -56,7 +56,7 @@ p({
   "enabled":true,
   "ruleGroup": "liquid",
   "documentation": "Create ucj on capabilityrequest approval",
-  "daoKey": "capabilityRequestDAO",
+  "daoKey": "localCapabilityRequestDAO",
   "operation": 3,
   "after": true,
   "predicate":{
@@ -75,7 +75,7 @@ p({
   "enabled":true,
   "ruleGroup": "liquid",
   "documentation": "Logout users on capabilityrequest approval",
-  "daoKey": "capabilityRequestDAO",
+  "daoKey": "localCapabilityRequestDAO",
   "operation": 3,
   "after": true,
   "predicate":{
