@@ -54,7 +54,7 @@ foam.CLASS({
       // Amount of the transaction in the transaction source currency
       long amount = transaction.getAmount();
       if ( !txLimitRule.getSend() && 
-         ( transaction.getDestinationAmount() >= 0) && 
+         ( transaction.getDestinationAmount() > 0) && 
          ( transaction.getDestinationCurrency() != null ) )
       {
         amount = transaction.getDestinationAmount();  
