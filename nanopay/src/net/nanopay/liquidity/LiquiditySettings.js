@@ -350,7 +350,10 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
-      visibility: 'HIDDEN'
+      writePermissionRequired: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO'
     },
     {
       class: 'FObjectProperty',
