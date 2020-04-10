@@ -2,15 +2,13 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "clusterConfigMonitor",
   "lazy": false,
-  "serve": false,
   "serviceClass": "foam.nanos.medusa.ClusterConfigMonitor"
 })
 
+// NOTE: exists to satisfy common logic between Mediators and Nodes, Nodes do not explicitly use this.
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "internalMedusaEntryDAO",
-  "lazy": false,
-  "serve": false,
   "serviceScript": `
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
@@ -24,7 +22,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"medusaEntryDAO",
-  "lazy":false,
   "serve":true,
   "serviceScript":`
     dao = new foam.dao.EasyDAO.Builder(x)
