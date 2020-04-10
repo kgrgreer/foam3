@@ -35,7 +35,13 @@ foam.CLASS({
       label: 'Applies To',
       section: 'basicInfo',
       tableWidth: 125,
-      value: 'ACCOUNT'
+      value: 'ACCOUNT',
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.EnumView',
+          permissioned: true
+        };
+      }
     },
     {
       class: 'Reference',

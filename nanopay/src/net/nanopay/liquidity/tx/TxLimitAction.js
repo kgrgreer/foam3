@@ -54,7 +54,7 @@ foam.CLASS({
       // Amount of the transaction in the transaction source currency
       long amount = transaction.getAmount();
       if ( !txLimitRule.getSend() && 
-         ( transaction.getDestinationAmount() >= 0) && 
+         ( transaction.getDestinationAmount() > 0) && 
          ( transaction.getDestinationCurrency() != null ) )
       {
         amount = transaction.getDestinationAmount();  
@@ -80,16 +80,14 @@ foam.CLASS({
         String availableLimit = (ruleCurrency != null) ?
           ruleCurrency.format(txLimitRule.getLimit() - limitState.getSpent()) :
           String.format("%s", txLimitRule.getLimit() - limitState.getSpent());
-        Account account = txLimitRule.getSend() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x);
         testedRule.setProbeInfo(
           new TransactionLimitProbeInfo.Builder(x)
             .setRemainingLimit(txLimitRule.getLimit() - limitState.getSpent())
-            .setMessage(
-              "Remaining limit for " + txLimitRule.getApplyLimitTo().getLabel() + " " +
-              (txLimitRule.getApplyLimitTo() == TxLimitEntityType.USER ||
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ||
-               txLimitRule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? account.getName() : "") 
-              + " is " + availableLimit )
+            .setMessage("The " + 
+                txLimitRule.getApplyLimitTo().getLabel().toLowerCase() + " " +
+                txLimitRule.getPeriod().getLabel().toLowerCase() + " " + 
+                (txLimitRule.getSend() ? "sending" : "receiving") + 
+                " limit exceeded. AvailableLimit: " + availableLimit)
             .build());
       }
 
@@ -132,7 +130,8 @@ foam.CLASS({
         sb.append("txlimit:")
           .append(rule.getApplyLimitTo())
           .append(":")
-          .append(rule.getApplyLimitTo() == TxLimitEntityType.USER ? rule.getUserToLimit() :
+          .append(rule.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? rule.getBusinessToLimit() :
+                  rule.getApplyLimitTo() == TxLimitEntityType.USER ? rule.getUserToLimit() :
                   rule.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? rule.getAccountToLimit() : 0)
           .append(":")
           .append(rule.getDenomination())

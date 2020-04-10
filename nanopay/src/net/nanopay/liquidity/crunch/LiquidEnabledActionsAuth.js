@@ -41,7 +41,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        String outputString = getModelName();
+        String outputString = getModelName().toLowerCase();
 
         if ( SafetyUtil.equals(operation, foam.nanos.ruler.Operations.CREATE ) ){
           outputString += ".make";
@@ -56,7 +56,7 @@ foam.CLASS({
         return outputString;
       `,
       code: function(operation, obj){
-        let outputString = this.modelName;
+        let outputString = this.modelName.toLowerCase();
         if ( operation === foam.nanos.ruler.Operations.CREATE ) {
           outputString += '.make';
         } else if ( operation === foam.nanos.ruler.Operations.UPDATE ) {

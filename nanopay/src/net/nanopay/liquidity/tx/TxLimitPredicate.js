@@ -49,12 +49,7 @@ foam.CLASS({
         if ( ! ( tx instanceof DigitalTransaction ||
                  tx instanceof FXTransaction ) ) {
           return false;
-        }    
-
-        // Always matches for transactions
-        // if (this.getEntityType() == TxLimitEntityType.TRANSACTION) {
-        //   return true;
-        // }
+        }
 
         // When there is no ID to match, always return false
         if (this.getId() == 0) {
@@ -76,11 +71,30 @@ foam.CLASS({
           return account.getId() == this.getId();
         }
 
-        // Retrieve the users
-        User user = account.findOwner((X) obj);
-        if (this.getEntityType() == TxLimitEntityType.USER || 
-            this.getEntityType() == TxLimitEntityType.BUSINESS) {
-          return user.getId() == this.getId();
+        if (this.getSend()) {
+          // When sending, retrieve the user/business from the context
+          User user = (User) ((X) obj).get("user");
+          if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
+            return 
+              (user instanceof Business) ? user.getId() == this.getId() :
+              false;
+          }
+
+          // Retrieve the agent from the context
+          User agent = (User) ((X) obj).get("agent");
+          if (this.getEntityType() == TxLimitEntityType.USER) {
+            return 
+              (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
+              (user != null) ? user.getId() == this.getId() :
+              false;
+          }
+        } else {
+          // When receiving, lookup the user or business from the account
+          User user = account.findOwner((X) obj); 
+          if (this.getEntityType() == TxLimitEntityType.USER ||
+             (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
+            return user.getId() == this.getId();
+          }
         }
 
         // otherwise this is an unknown entity type

@@ -1036,6 +1036,27 @@ p({
   import net.nanopay.liquidity.LiquiditySettings;
   import foam.dao.DAO;
 
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
+    .setInnerDAO(x.get("localLiquiditySettingsDAO"))
+    .setEnableInterfaceDecorators(false)
+    .setRuler(false)
+    .setValidated(true)
+    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
+    .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localLiquiditySettingsDAO",
+  "serve": true,
+  "serviceScript":
+  """
+  import net.nanopay.liquidity.LiquiditySettings;
+  import foam.dao.DAO;
+
   DAO dao = new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)
     .setFm(
       new foam.nanos.analytics.DAOFoldManager.Builder(x)
@@ -1048,14 +1069,13 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setSeqNo(true)
-    .setRuler(false)
-    .setValidated(true)
-    .setValidator(new net.nanopay.liquidity.LiquiditySettingValidator())
+    .setRuler(false) // TODO: needs to be set to true https://nanopay.atlassian.net/browse/NP-652
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
     .setApprovableAwareEnabled(false)
+    .setAuthorize(false)
     .build();
   """,
   "client": "{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"

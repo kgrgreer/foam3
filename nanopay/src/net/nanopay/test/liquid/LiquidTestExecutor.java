@@ -88,8 +88,8 @@ public abstract class LiquidTestExecutor extends Test {
     return (DAO) x.get("userUserDAO");
   }
 
-  protected DAO getCapabilityRequestDAO(X x) {
-    return (DAO) x.get("capabilityRequestDAO");
+  protected DAO getLocalCapabilityRequestDAO(X x) {
+    return (DAO) x.get("localCapabilityRequestDAO");
   }
 
   protected UserQueryService getUserQueryService(X x) {
@@ -148,7 +148,7 @@ public abstract class LiquidTestExecutor extends Test {
       .setUsers(userList)
       .setLifecycleState(LifecycleState.ACTIVE)
       .build();
-    this.getCapabilityRequestDAO(x).inX(this.getSystemX()).put(capabilityRequest);
+    this.getLocalCapabilityRequestDAO(x).inX(this.getSystemX()).put(capabilityRequest);
     
     return user;
   }  
