@@ -2,7 +2,13 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "clusterConfigMonitor",
   "lazy": false,
-  "service": {"class":"foam.nanos.medusa.ClusterConfigMonitor"}
+//  "service": {"class":"foam.nanos.medusa.ClusterConfigMonitor"}
+  "serviceScript": `
+    return new foam.nanos.medusa.ClusterConfigMonitor.Builder(x)
+      .setTimerInterval(10000)
+      .setInitialTimerDelay(10000)
+      .build();
+  `
 })
 
 // NOTE: exists to satisfy common logic between Mediators and Nodes, Nodes do not explicitly use this.
@@ -58,4 +64,20 @@ p({
     return dao;
   `,
   "client":"{\"of\":\"foam.nanos.medusa.MedusaEntry\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localClusterConfigDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("clusterConfig")
+      .setCluster(false)
+      .setRuler(false)
+      .setAuthorize(false)
+      .setPm(true)
+      .build();
+   """
 })
