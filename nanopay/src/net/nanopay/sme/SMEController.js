@@ -453,6 +453,10 @@ foam.CLASS({
           this.onboardingUtil.initOnboardingView();
         }
 
+        if ( hash == 'sme.main.onboarding.international' ) {
+          this.onboardingUtil.initInternationalOnboardingView();
+        }
+
         menu = await this.client.menuDAO.find(hash);
 
         // Any errors in finding the menu location to redirect

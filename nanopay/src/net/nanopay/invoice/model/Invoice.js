@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'search',
     'invoiceNumber',
     'payerId',
     'payeeId',
@@ -595,7 +594,11 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
-      visibility: 'RO'
+      visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView',
+        valueView: 'foam.u2.CitationView'
+      }
     },
     {
       class: 'Boolean',

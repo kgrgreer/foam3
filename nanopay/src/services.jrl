@@ -797,6 +797,30 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "localPaymentCodeDAO",
+  "serve": false,
+  "authenticate": false,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setPipelinePm(true)
+    .setGuid(true)
+    .setAuthorize(false)
+    .setJournalName("paymentCodes")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
+    .build();
+  """,
+  "client": """
+  {
+    "of": "net.nanopay.payment.PaymentCode"
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "paymentCodeDAO",
   "serve": true,
   "serviceScript":
@@ -804,9 +828,9 @@ p({
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
     .setPipelinePm(true)
+    .setInnerDAO(x.get("localPaymentCodeDAO"))
     .setGuid(true)
-    .setJournalName("paymentCodes")
-    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setAuthorize(true)
     .setOf(net.nanopay.payment.PaymentCode.getOwnClassInfo())
     .build();
   """,

@@ -45,3 +45,26 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentCodeService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass":"net.nanopay.contacts.PaymentCodeServiceInterfaceSkeleton",
+  "serviceClass": "net.nanopay.contacts.PaymentCodeService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.contacts.ClientPaymentCodeService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/paymentCodeService"
+          }
+        }
+      }
+    """
+})

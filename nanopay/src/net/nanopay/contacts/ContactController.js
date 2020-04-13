@@ -27,6 +27,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToReceive',
     'stack',
     'user',
+    'pushMenu',
     'publicBusinessDAO',
   ],
 
@@ -93,11 +94,7 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
-                  // Setting data enables the edit flow.
-                  data: this
-                }));
+                // disabled until new edit contact flow is implemented
               }
             }),
             this.Action.create({
@@ -110,9 +107,16 @@ foam.CLASS({
                 return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account);
               },
               code: function(X) {
+                var invite = net.nanopay.model.Invitation.create({
+                  email: this.email,
+                  businessName: this.organization,
+                  createdBy: this.user.id,
+                  isContact: true
+                });
                 X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: 'net.nanopay.contacts.ui.modal.InviteContactModal',
-                  data: this
+                  class: net.nanopay.contacts.ui.InvitationWizardView,
+                  data: invite,
+                  disableMenuMode: true
                 }));
               }
             }),
@@ -181,10 +185,8 @@ foam.CLASS({
         return this.Action.create({
           name: 'addContact',
           label: 'Add a Contact',
-          code: function(X) {
-            X.controllerView.add(this.Popup.create().tag({
-              class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
-            }));
+          code: function() {
+            this.pushMenu('sme.menu.toolbar');
           }
         });
       }

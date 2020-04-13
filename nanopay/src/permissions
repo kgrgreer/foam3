@@ -140,6 +140,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.canadaUsBusinessOnboarding
 p({"class":"foam.nanos.auth.Permission","id":"service.businessSectorDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.canReceiveCurrencyDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.getDefaultCurrencyDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.paymentCodeService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.complianceItemDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.currencyDAO","description":""})
@@ -543,5 +544,4 @@ p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.CA","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"corridor.US.US","description":"Permission to send payment from US to US."})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.IN","description":"Permission to send payment from Canada to India."})
 p({"class":"foam.nanos.auth.Permission","id":"transactionquote.create","description":"Permission to create transactionQuote."})
-
-
+p({"class":"foam.nanos.auth.Permission","id":"file.create", "description":"Permission to create a file."})

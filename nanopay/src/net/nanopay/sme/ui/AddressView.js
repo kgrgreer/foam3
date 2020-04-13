@@ -34,6 +34,11 @@ foam.CLASS({
     ^container {
       margin-bottom: 20px;
     }
+    ^disclaimer {
+      font-size: 16px;
+      color: #525455;
+      margin-top: 40px;
+    }
     ^ .two-column {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -65,6 +70,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'showDisclaimer',
+      value: false,
+      documentation: 'Displays PO boxes not allowed disclaimer if true.'
+    },
+    {
+      class: 'Boolean',
       name: 'withoutCountrySelection',
       value: false,
       documentation: `If the value of this property is true, then hide country selection dropdown.`
@@ -82,7 +93,8 @@ foam.CLASS({
   messages: [
     { name: 'PROVINCE_LABEL', message: 'Province/State' },
     { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'PO_DISCLAIMER', message: '* PO Boxes are not Allowed' }
   ],
 
   methods: [
@@ -192,6 +204,12 @@ foam.CLASS({
             .end()
           .end()
         .end()
+        .callIf( this.showDisclaimer, () => {
+          this.start().addClass(this.myClass('container'))
+            .addClass(this.myClass('disclaimer'))
+            .add(this.PO_DISCLAIMER)
+          .end();
+        })
       .end();
     }
   ]

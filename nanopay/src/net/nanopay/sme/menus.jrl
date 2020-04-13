@@ -35,3 +35,86 @@ p({
     }
   }
 })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "sme.menu.toolbar",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.sme.ui.MenuRedirectSMEModalView",
+      "menu": "sme.main.contacts",
+      "view": {
+        "class": "foam.nanos.menu.MenuToolBar",
+        "classification": "sme.menu",
+        "parent": "sme",
+        "title": "Add a contact"
+      }
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "sme.menu.search",
+  "label": "Search by Business Name",
+  "icon": "images/ablii/search.png",
+  "order": 1,
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "sme.menu.paymentcode",
+  "label": "Search by Payment Code",
+  "icon": "images/ablii/payment-code.png",
+  "order": 2,
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "sme.menu.create",
+  "label": "Create from Scratch",
+  "icon": "images/ablii/scratch.png",
+  "order": 3,
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "model": "net.nanopay.contacts.Contact"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "sme.menu.invitation",
+  "label": "Invite",
+  "icon": "images/ablii/mail.png",
+  "order": 4,
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "model": "net.nanopay.model.Invitation"
+    }
+  }
+})

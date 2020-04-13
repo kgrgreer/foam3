@@ -6,8 +6,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.model.Transaction',
-      name: 'transaction',
-      hidden: true
+      name: 'transaction'
     },
     {
       class: 'String',
@@ -35,3 +34,4 @@ foam.CLASS({
     }
   ]
 });
+
