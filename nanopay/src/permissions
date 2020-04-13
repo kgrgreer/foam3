@@ -544,5 +544,4 @@ p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.CA","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"corridor.US.US","description":"Permission to send payment from US to US."})
 p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.IN","description":"Permission to send payment from Canada to India."})
 p({"class":"foam.nanos.auth.Permission","id":"transactionquote.create","description":"Permission to create transactionQuote."})
-
-
+p({"class":"foam.nanos.auth.Permission","id":"file.create", "description":"Permission to create a file."})
