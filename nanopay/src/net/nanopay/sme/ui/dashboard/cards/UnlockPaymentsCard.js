@@ -360,7 +360,7 @@ foam.CLASS({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o
               });
-              location.hash = 'sme.main.onboarding';
+              location.hash = 'sme.main.onboarding.international';
             });
           } else {
             this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());

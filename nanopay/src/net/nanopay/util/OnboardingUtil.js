@@ -76,7 +76,27 @@ foam.CLASS({
         });
         location.hash = 'sme.main.onboarding';
       }
+
       return;
+    },
+
+    async function initInternationalOnboardingView() {
+      await this.canadaUsBusinessOnboardingDAO.find(
+        this.AND(
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
+          )
+        ).then((businessOnboarding) => {
+          if ( businessOnboarding ) {
+            if ( businessOnboarding.status !== this.OnboardingStatus.SUBMITTED ) {
+              this.stack.push({
+                class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                data: businessOnboarding
+              });
+              location.hash = 'sme.main.onboarding.international';
+            }
+          }
+        });
     }
   ]
 
