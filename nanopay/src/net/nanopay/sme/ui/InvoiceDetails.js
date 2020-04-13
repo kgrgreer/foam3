@@ -355,11 +355,13 @@ foam.CLASS({
           .end()
           .start()
             .addClass('invoice-row')
+            .show(isBillingInvoice)
             .start()
               .add(this.LINE_ITEMS)
               .addClass('bold-label')
             .end()
             .start()
+              .addClass(this.myClass('invoice-content-text'))
               .add(this.slot(function(invoice$lineItems) {
                 if ( invoice$lineItems.length !== 0 ) {
                   return self.E()
