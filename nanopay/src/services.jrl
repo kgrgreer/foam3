@@ -2064,26 +2064,6 @@ p({
 
 p({"class":"foam.nanos.boot.NSpec", "name":"JDBCConnectionSpec", "lazy":false, "serve":false, "class":"foam.nanos.boot.NSpec", "service":{"class":"foam.dao.jdbc.JDBCConnectionSpec", "databaseServer":"mysql", "hostName":"localhost", "databaseName":"testSQLDAO", "userName":"foam_user", "userPassword":"foam_password"} })
 
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"csvUploadScriptDAO",
-  "lazy":true,
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setGuid(true)
-      .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("csvUploadScripts")
-      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo()).build()))
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .setCluster(false)
-      .build();
-    """,
-  "client":"{\n    \"of\":\"net.nanopay.script.CsvUploadScript\",\n    \"decorators\": [\n        {\"class\":\"foam.nanos.fs.FileDAODecorator\"},\n        {\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}\n    ]\n}"
-})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -2376,7 +2356,6 @@ p({
       .setPm(true)
       .setGuid(true)
       .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
-      .setCluster(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName(\"csvUploadScripts\")
       .setAuthorize(false)

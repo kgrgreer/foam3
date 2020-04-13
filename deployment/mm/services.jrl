@@ -110,7 +110,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryReplayBatchDAO.Builder(x)
+      .setDecorator(new foam.dao.BatchServerDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryInternalDAO.Builder(x)
