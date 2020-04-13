@@ -21,7 +21,6 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'search',
     'invoiceNumber',
     'payerId',
     'payeeId',
