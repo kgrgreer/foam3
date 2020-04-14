@@ -241,6 +241,14 @@ foam.CLASS({
       }
     },
     {
+      name: 'directorsInfoSection',
+      title: 'Enter the directors information',
+      help: `Next, I’ll need details about the company directors, include all of the directors name here.`,
+      isAvailable: function (businessTypeId) {
+        return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6;
+      }
+    },
+    {
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
@@ -794,7 +802,24 @@ foam.CLASS({
           }
         };
       },
-
+      postSet: function() {
+        if ( this.businessTypeId === 1 ) { // 'Sole Proprietorship'
+          if ( this.signingOfficer ) {
+              this.businessDirectors[0] = net.nanopay.model.BusinessDirector.create({
+                firstName: this.firstName,
+                lastName: this.lastName
+              });
+          }
+          else {
+            this.businessDirectors[0] = net.nanopay.model.BusinessDirector.create({
+              firstName: this.adminFirstName != null ? this.adminFirstName : null,
+              lastName: this.adminLastName != null ? this.adminLastName : null
+            });
+          }
+        } else {
+          this.businessDirectors = null;
+        }
+      },
       validationPredicates: [
         {
           args: ['businessTypeId', 'signingOfficer'],
@@ -1273,6 +1298,83 @@ foam.CLASS({
      ]
     },
     {
+      class: 'FObjectArray',
+      name: 'businessDirectors',
+      label: '',
+      of: 'net.nanopay.model.BusinessDirector',
+      section: 'directorsInfoSection',
+      view: {
+        //class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+        class: 'foam.u2.view.FObjectArrayView',
+        mode: 'RW',
+        enableAdding: true,
+        enableRemoving: true,
+        defaultNewItem: ''
+      },
+      autoValidate: true,
+      validationTextVisible: true,
+//      validationPredicates: [
+//      {
+//        args: ['businessDirectors', 'businessDirectors$errors_'],
+//        predicateFactory: function(e) {
+//          return e.OR(
+//              e.EQ(foam.mlang.IsValid.create({
+//                arg1: net.nanopay.sme.onboarding.businessDirectors
+//              }), true)
+//          );
+//        },
+//        errorString: 'businessDirectors invalid'
+//      }
+//     ],
+      validateObj: function(businessDirectors) {
+        if ( this.signingOfficer && (this.businessTypeId === 3 || this.businessTypeId === 5 || this.businessTypeId == 6) ) {
+           if ( businessDirectors.length < 1 )
+            return 'Please enter director\'s information.'
+
+           for ( var i = 0; i < businessDirectors.length; i++ ) {
+             if ( businessDirectors[i].errors_$ != null ) {
+             //if ( businessDirectors[i].firstName$ != null && businessDirectors[i].firstName$ != "" ) {
+               businessDirectors[i].errors_$.sub(this.errorsUpdate);
+
+               return this.errorsUpdate(null, null, null, businessDirectors[i].errors_$);
+             }
+           }
+
+           //return this.businessDirectorsErrors_$;
+        }
+      },
+    },
+    {
+      class: 'String',
+      name: 'businessDirectorsErrors_',
+      //value: 'Please input business director\'s information.',
+//      expression: function(businessDirectorsErrors_) {
+//        console.log("businessDirectorsErrors_");
+//      }
+    },
+    {
+      class: 'Boolean',
+      name: 'directorsListed',
+      section: 'directorsInfoSection',
+      label: 'I certify that all directors have been listed.',
+      validationPredicates: [
+       {
+         args: ['businessTypeId', 'directorsListed', 'signingOfficer'],
+         predicateFactory: function(e) {
+           return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.DIRECTORS_LISTED, true),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_TYPE_ID, 1),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_TYPE_ID, 2),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_TYPE_ID, 4),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_TYPE_ID, 7),
+            e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
+          );
+         },
+         errorString: 'You must certify that all directors have been listed.'
+       }
+      ]
+    },
+    {
       name: 'beneficialOwnersTable',
       flags: ['web'],
       label: '',
@@ -1411,7 +1513,9 @@ foam.CLASS({
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'updateTable']
+    ['', 'propertyChange.amountOfOwners', 'updateTable'],
+    ['', 'propertyChange.businessDirectors', 'errorsUpdate'],
+    ['businessDirectors', 'propertyChange', 'errorsUpdate']
   ].concat([1, 2, 3, 4].map((i) => [
     [`owner${i}`, 'propertyChange', 'updateTable'],
     ['', `propertyChange.owner${i}`, 'updateTable']
@@ -1430,6 +1534,17 @@ foam.CLASS({
         });
       }
     },
+    {
+      name: 'errorsUpdate',
+      code: function (_, __ ,___, errs) {
+        console.log("errs : " + errs.get());
+        if ( errs.get() ) {
+          this.businessDirectorsErrors_ = 'Please input business director\'s information.';
+        } else if ( errs.get() == null ) {
+          this.businessDirectorsErrors_ = null;
+        }
+      }
+    }
   ],
 
   messages: [

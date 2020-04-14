@@ -123,7 +123,7 @@ foam.CLASS({
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
 
-        // * Step 4+5: Signing officer
+        // * Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setAddress(businessOnboarding.getAddress());
@@ -155,7 +155,7 @@ foam.CLASS({
             business = (Business) localBusinessDAO.find(business.getId());
             business = (Business) business.fclone();
 
-            // * Step 6: Business info
+            // * Business info
             // Business info: business address
             business.setAddress(businessOnboarding.getBusinessAddress());
             business.setPhone(businessOnboarding.getPhone());
@@ -181,7 +181,10 @@ foam.CLASS({
             business.setTargetCustomers(businessOnboarding.getTargetCustomers());
             business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-            // * Step 7: Percent of ownership
+            // * Business directors Info
+            business.setBusinessDirectors(businessOnboarding.getBusinessDirectors());
+
+            // * Percent of ownership
             business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
             for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
               business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
