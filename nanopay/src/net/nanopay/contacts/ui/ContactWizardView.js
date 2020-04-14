@@ -92,7 +92,8 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         this.contact = await this.user.contacts.put(this.data);
-        if ( this.data.shouldInvite ) {
+        let canInvite = this.data.createBankAccount.country != 'IN' ? true : false;
+        if ( this.data.shouldInvite && canInvite ) {
           try {
             await this.sendInvite(false);
             this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
@@ -198,7 +199,7 @@ foam.CLASS({
         return currentIndex === 1;
       },
       code: async function(X) {
-        if ( ! await this.addContact(false) ) return;
+        if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
     },

@@ -273,18 +273,11 @@ foam.CLASS({
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
       label: '',
+      visibility: function(createBankAccount$country) {
+        return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;;
+      },
       view: function(_, X) {
-        return foam.u2.Element.create()
-          .start()
-            .add(X.data.slot(function(createBankAccount$country) {
-              let canInvite = createBankAccount$country == 'IN' ? false : true;
-              if ( ! canInvite ) {
-                return foam.u2.Element.create()
-                  .tag({ class: 'foam.u2.CheckBox', label: X.data.RESTRICT_INVITE_LABEL, mode: foam.u2.DisplayMode.DISABLED });
-              }
-              return foam.u2.Element.create().tag({ class: 'foam.u2.CheckBox', label: X.data.INVITE_LABEL });
-            }))
-          .end();
+        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
       }
     },
     {
