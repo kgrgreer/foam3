@@ -1,1 +1,3 @@
 p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest","testSuite":"liquid"})
+p({"class":"net.nanopay.tx.gs.IngestionTest","id":"IngestionTest","testSuite":"liquid"})
+
