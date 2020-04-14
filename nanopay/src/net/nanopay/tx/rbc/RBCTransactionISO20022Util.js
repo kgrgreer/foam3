@@ -150,6 +150,7 @@ foam.CLASS({
           if( destAccount == null ) continue;
           User payee = destAccount.findOwner(x);
           Address payeeAddress = payee == null ? null : payee.getAddress();
+          if ( payeeAddress == null ) throw new RuntimeException("Invalid Payee address.");
 
           String senderEmail = payee.getEmail();
           if ( payee instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
