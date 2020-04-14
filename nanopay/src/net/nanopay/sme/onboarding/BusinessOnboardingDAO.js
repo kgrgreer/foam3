@@ -108,7 +108,9 @@ foam.CLASS({
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
-        if ( businessOnboarding.getStatus() != OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding.getStatus() != OnboardingStatus.SUBMITTED
+          && ( old == null || old.getStatus() != OnboardingStatus.SUBMITTED )
+        ) {
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -122,6 +124,21 @@ foam.CLASS({
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
+
+        // The current user needs "onboarding.update.*" permission to update an
+        // already submitted business onboarding (eg. from SUBMITTED to DRAFT).
+        // The permission is given to fraud-ops and payment-ops groups
+        // (See. auth/groupPermissionJunctions.jrl).
+        if ( old.getStatus() == OnboardingStatus.SUBMITTED
+          && businessOnboarding.getStatus() == OnboardingStatus.DRAFT
+        ) {
+          business = (Business) business.fclone();
+          business.setOnboarded(false);
+          business.setCompliance(ComplianceStatus.NOTREQUESTED);
+          localBusinessDAO.put(business);
+
+          return getDelegate().put_(x, businessOnboarding);
+        }
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
