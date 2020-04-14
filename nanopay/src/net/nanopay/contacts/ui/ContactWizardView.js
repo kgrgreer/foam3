@@ -25,6 +25,12 @@ foam.CLASS({
       display: flex;
       justify-content: flex-end;
     }
+    .property-rbiLink {
+      margin-top: -33px;
+      top: 50px;
+      position: relative;
+      float: right;
+    }
   `,
 
   messages: [
