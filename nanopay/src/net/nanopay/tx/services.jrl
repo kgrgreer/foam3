@@ -432,6 +432,22 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "paymentMethods",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("paymentMethods")
+      .setOf(net.nanopay.payment.PaymentMethod.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.payment.PaymentMethod\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "corridorService",
   "serve": true,
   "serviceClass": "net.nanopay.payment.PaymentCorridorService",

@@ -59,6 +59,7 @@ var classes = [
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
+  'net.nanopay.payment.PaymentMethod',
   'net.nanopay.payment.PaymentProviderCorridorJunction',
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.InstitutionPaymentProvider',
