@@ -18,7 +18,7 @@ foam.CLASS({
       padding: 0;
       border: none !important;
     }
-    
+
     ^inner {
       position: relative;
     }
@@ -49,7 +49,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('inner'))
-          .start(this.CLOSE_MODAL).show(this.closeable$)
+          .start(this.CLOSE_MODAL).show(this.closeable$.map(function(c) { return c && this.isHiddenOnSME}))
             .addClass(this.myClass('X'))
           .end()
           .start()
