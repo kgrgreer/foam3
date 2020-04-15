@@ -786,6 +786,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
 
+  //onboarding
+  { name: 'net/nanopay/sme/onboarding/BusinessDirectorArrayView', flags: ['web'] },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },

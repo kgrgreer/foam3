@@ -121,7 +121,9 @@ foam.CLASS({
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
         }
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding.getStatus() != OnboardingStatus.SUBMITTED
+          && ( old == null || old.getStatus() != OnboardingStatus.SUBMITTED )
+        ) {
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -129,7 +131,22 @@ foam.CLASS({
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
 
-        // * Step 4+5: Signing officer
+        // The current user needs "onboarding.update.*" permission to update an
+        // already submitted business onboarding (eg. from SUBMITTED to DRAFT).
+        // The permission is given to fraud-ops and payment-ops groups
+        // (See. auth/groupPermissionJunctions.jrl).
+        if ( old.getStatus() == OnboardingStatus.SUBMITTED
+          && businessOnboarding.getStatus() == OnboardingStatus.DRAFT
+        ) {
+          business = (Business) business.fclone();
+          business.setOnboarded(false);
+          business.setCompliance(ComplianceStatus.NOTREQUESTED);
+          localBusinessDAO.put(business);
+
+          return getDelegate().put_(x, businessOnboarding);
+        }
+
+        // * Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
@@ -181,7 +198,10 @@ foam.CLASS({
             business.setTargetCustomers(businessOnboarding.getTargetCustomers());
             business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-            // * Step 7: Percent of ownership
+            // * Business directors Info
+            business.setBusinessDirectors(businessOnboarding.getBusinessDirectors());
+
+            // * Percent of ownership
             business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
             for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
               business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
