@@ -48,8 +48,8 @@ notifications
 notificationTemplates
 payoutOptions
 paymentCodes
-paymentProviderCorridorJunctions
 paymentMethods
+paymentProviderCorridorJunctions
 paymentProviders
 PADTypes
 permissions
