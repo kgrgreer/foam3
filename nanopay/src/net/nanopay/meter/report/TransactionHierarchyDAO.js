@@ -29,6 +29,12 @@ foam.CLASS({
       name: 'select_',
       javaCode: `
         DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+
+        // If the id is empty
+        if (predicate instanceof True) {
+          throw new RuntimeException("The transaction id is empty.");
+        }
+
         String id = (String) ((Constant)((Eq)((And) predicate).getArgs()[1]).getArg2()).getValue();
         Transaction transaction = (Transaction) transactionDAO.find(id);
 
