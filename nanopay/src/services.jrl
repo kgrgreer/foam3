@@ -2148,8 +2148,6 @@ p({
       .setJournalName("rules")
       .setValidated(true)
       .setRuler(false)
-      .setApprovableAware(true)
-      .setApprovableAwareEnabled(false)
       .build();
 
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
