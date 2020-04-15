@@ -146,7 +146,7 @@ foam.CLASS({
           return getDelegate().put_(x, businessOnboarding);
         }
 
-        // * Step 4+5: Signing officer
+        // * Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
@@ -198,7 +198,10 @@ foam.CLASS({
             business.setTargetCustomers(businessOnboarding.getTargetCustomers());
             business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-            // * Step 7: Percent of ownership
+            // * Business directors Info
+            business.setBusinessDirectors(businessOnboarding.getBusinessDirectors());
+
+            // * Percent of ownership
             business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
             for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
               business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
