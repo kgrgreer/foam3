@@ -208,7 +208,11 @@ foam.CLASS({
           await this.ctrl.fetchGroup();
           this.user = business;
           this.agent = result;
-          this.onboardingUtil.initOnboardingView();
+          // Add the condition check for Grain Discovery.
+          // This should be removed once we use Crunch for onboarding.
+          if ( this.ctrl.webApp !== 'Ablii-GD' ) {
+            this.onboardingUtil.initOnboardingView();
+          }
           this.pushMenu('sme.main.dashboard');
           return;
         }
