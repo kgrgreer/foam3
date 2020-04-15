@@ -5,6 +5,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
+import foam.nanos.auth.LifecycleState;
 import foam.test.TestUtils;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -115,6 +116,7 @@ public class RestrictAccountChildrenRuleTest
     rule_.setDestinationAccount(destinationAccount_.getId());
     rule_.setIncludeDestinationChildAccounts(true);
     rule_.setEnabled(true);
+    rule_.setLifecycleState(LifecycleState.ACTIVE);
     ruleDAO_.put(rule_);
 
     transaction_ = new Transaction();
