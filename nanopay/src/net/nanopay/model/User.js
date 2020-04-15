@@ -85,6 +85,48 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'firstName',
+      section: 'personal',
+      validationPredicates: [
+        {
+          args: ['firstName'],
+          predicateFactory: function(e) {
+            return e.NEQ(foam.nanos.auth.User.FIRST_NAME, '');
+          },
+          errorString: 'First name required.'
+        }
+      ]
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      section: 'personal',
+      validationPredicates: [
+        {
+          args: ['lastName'],
+          predicateFactory: function(e) {
+            return e.NEQ(foam.nanos.auth.User.LAST_NAME, '');
+          },
+          errorString: 'Last name required.'
+        }
+      ]
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      section: 'personal',
+      validationPredicates: [
+        {
+          args: ['email'],
+          predicateFactory: function(e) {
+            return e.NEQ(foam.nanos.auth.User.EMAIL, '');
+          },
+          errorString: 'Email address required.'
+        }
+      ]
+    },
+    {
       class: 'Boolean',
       name: 'invited',
       value: false,
