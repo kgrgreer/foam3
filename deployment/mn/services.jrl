@@ -26,7 +26,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"medusaEntryDAO",
+  "name":"medusaNodeDAO",
   "serve":true,
   "serviceScript":`
     dao = new foam.dao.EasyDAO.Builder(x)

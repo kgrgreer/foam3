@@ -85,13 +85,20 @@ p({
       .setRuler(false)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.MedusaEntryReplayingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryLinkDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaRegionDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaClientDAO.Builder(x)
+      .setDelegate(new foam.dao.BatchServerDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaServerDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaEntryLinkDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryInternalDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
-        .build())
-//      .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
+      .build())
+      .build())
+      .build())
+      .build())
+      .build())
       .build())
       .build())
       .build())
@@ -102,7 +109,22 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "medusaEntryDAO",
+  "name": "medusaMediatorDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(x.get("localMedusaEntryDAO"))
+      .setCluster(false)
+      .setRuler(false)
+      .build();
+  `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaConsensusDAO",
   "serve": true,
   "serviceScript": `
     return new foam.dao.EasyDAO.Builder(x)
@@ -115,8 +137,7 @@ p({
       .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaEntryInternalDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
-        .build())
-//      .setDelegate((foam.dao.DAO) x.get("internalMedusaEntryDAO"))
+      .build())
       .build())
       .build())
       .build())

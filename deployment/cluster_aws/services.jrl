@@ -14,7 +14,7 @@ p({
     "urlLabel":"Powered by nanopay",
     "termsAndCondLabel":"Terms and Conditions",
     "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
-    "mode":4,
+    "mode":0,
     "appLink":"",
     "playLink":"https://play.google.com/store?hl=en",
     "enableInternationalPayment":true
