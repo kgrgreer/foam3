@@ -54,13 +54,6 @@ p({
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.TransactionValidator());
     dao = new foam.dao.GUIDDAO.Builder(x).setDelegate(dao).build();
-
-    if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      dao = new foam.nanos.medusa.ClusterClientDAO.Builder(x)
-             .setServiceName("localTransactionDAO")
-             .setDelegate(dao)
-             .build();
-    }
     
     dao = new net.nanopay.tx.planner.TransactionQuotingDAO(x, dao);
 
