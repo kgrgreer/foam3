@@ -6,11 +6,13 @@ foam.CLASS({
   documentation: `
     The base model, as part of the Self-Serve project, for representing people who,
     although they are not registered on the platform, can still receive invoices from
-    platform users.
+    platform users. Used as a property model in ContactWizardView for the three steps
+    of contact creation.
   `,
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable'
   ],
 
@@ -27,7 +29,19 @@ foam.CLASS({
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Business',
+    'net.nanopay.model.Business'
+  ],
+
+  imports: [
+    'auth',
+    'countryDAO',
+    'publicBusinessDAO',
+    'user'
+  ],
+
+  requires: [
+    'foam.nanos.auth.Country',
+    'foam.dao.PromisedDAO'
   ],
 
   constants: [
@@ -40,15 +54,61 @@ foam.CLASS({
 
   tableColumns: [
     'organization',
-    'legalName',
-    'email',
+    'status'
+  ],
+
+  sections: [
+    {
+      name: 'stepOne',
+      title: 'Create a contact',
+      subTitle: `
+        Create a new contact by entering in their business information below.
+        If you have their banking information, you can start sending payments
+        to the contact right away.
+      `
+    },
+    {
+      name: 'stepTwo',
+      title: 'Add banking information',
+      subTitle: `
+        Enter the contact’s bank account information. Please make sure that this is
+        accurate as payments will go directly to the specified account.
+      `
+    },
+    {
+      name: 'stepThree',
+      title: 'Add business address',
+      subTitle: `
+        In order to send payments to this business, we’ll need you to verify their
+        business address below.
+      `
+    }
+  ],
+
+  messages: [
+    {
+      name: 'CONFIRM_RELATIONSHIP',
+      message: `I confirm that I have a business relationship with this contact and
+        acknowledge that the bank account info entered by the contact
+        business will be used for all deposits to their account.`
+    },
+    {
+      name: 'INVITE_LABEL',
+      message: 'Invite this contact to join Ablii'
+    },
+    {
+      name: 'RESTRICT_INVITE_LABEL',
+      message: 'This contact cannot be invited to join Ablii'
+    }
   ],
 
   properties: [
     {
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
-      label: 'Company',
+      section: 'stepOne',
+      label: 'Business',
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
@@ -66,12 +126,15 @@ foam.CLASS({
       documentation: `A field for the legal first and last name of the Contact,
         if different than the provided first name.  The field will default to first
         name, last name.`,
+      visibility: 'HIDDEN',
       label: 'Name'
     },
     {
       name: 'email',
       documentation: 'The email address of the Contact.',
+      section: 'stepOne',
       label: 'Email',
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -83,6 +146,9 @@ foam.CLASS({
     },
     {
       name: 'firstName',
+      section: 'stepOne',
+      gridColumns: 6,
+      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -93,10 +159,14 @@ foam.CLASS({
     },
     {
       name: 'middleName',
+      visibility: 'HIDDEN',
       validateObj: function(middleName) {}
     },
     {
       name: 'lastName',
+      section: 'stepOne',
+      gridColumns: 6,
+      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
@@ -106,19 +176,45 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'confirm',
+      documentation: `True if the user confirms their relationship with the contact.`,
+      section: 'stepOne',
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.CONFIRM_RELATIONSHIP
+        }
+    },
+      validateObj: function(confirm) {
+        if ( ! confirm ) {
+          return 'Confirmation required.';
+        }
+      }
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.contacts.ContactStatus',
       name: 'signUpStatus',
-      label: 'Status',
-      tableWidth: 170,
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
       `,
+      visibility: 'HIDDEN',
+      label: 'Status',
+      tableWidth: 170,
       tableCellFormatter: function(state, obj) {
+        var format = obj.bankAccount && state != net.nanopay.contacts.ContactStatus.ACTIVE ? 'Ready' : 'Pending';
+        var label = state == net.nanopay.contacts.ContactStatus.ACTIVE ? state.label.replace(/\s+/g, '') : format;
         this.start()
-          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
-          .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
-            .add(state.label)
+          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + label).end()
+          .start('img')
+            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
+            .attrs({ src: this.__subContext__.theme.logo })
+            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+            .end()
+          .start().addClass('contact-status-' + label)
+            .add(label)
           .end()
         .end();
       }
@@ -127,20 +223,24 @@ foam.CLASS({
       // TODO: This should probably be defined by a relationship.
       class: 'Reference',
       of: 'net.nanopay.model.Business',
+      javaValue: '0',
       name: 'businessId',
-      documentation: `A unique identifier for the business associated with the Contact.`
+      documentation: `A unique identifier for the business associated with the Contact.`,
+      visibility: 'HIDDEN'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
       documentation: `The ID for the individual person, or real user,
-        who registers with our platform.`
+        who registers with our platform.`,
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
+      visibility: 'HIDDEN',
       value: false
     },
     {
@@ -148,14 +248,88 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
-        if created while registering the Contact.`
+        if created while registering the Contact.`,
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.BankAccount',
+      name: 'createBankAccount',
+      documentation: 'A before put bank account object a user creates for the contact.',
+      section: 'stepTwo',
+      storageTransient: true,
+      label: '',
+      factory: function() {
+        return net.nanopay.bank.BankAccount.create({ isDefault: true });
+      },
+      view: {
+        class: 'foam.u2.view.FObjectView',
+        of: 'net.nanopay.bank.BankAccount'
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'shouldInvite',
+      documentation: 'True if the user wants to invite the contact to join Ablii.',
+      section: 'stepTwo',
+      label: '',
+      view: function(_, X) {
+        return foam.u2.Element.create()
+          .start()
+            .add(X.data.slot(function(createBankAccount$country) {
+              let canInvite = createBankAccount$country == 'IN' ? false : true;
+              if ( ! canInvite ) {
+                return foam.u2.Element.create()
+                  .tag({ class: 'foam.u2.CheckBox', label: X.data.RESTRICT_INVITE_LABEL, mode: foam.u2.DisplayMode.DISABLED });
+              }
+              return foam.u2.Element.create().tag({ class: 'foam.u2.CheckBox', label: X.data.INVITE_LABEL });
+            }))
+          .end();
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      section: 'stepThree',
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          showDisclaimer: true,
+          customCountryDAO: X.data.PromisedDAO.create({
+            promise: X.data.auth.check(null, 'currency.read.USD').then((hasPermission) => {
+              var q;
+              if ( hasPermission && X.data.user.countryOfBusinessRegistration == 'CA' ) {
+                q = X.data.OR(
+                  X.data.EQ(X.data.Country.ID, 'CA'),
+                  X.data.EQ(X.data.Country.ID, 'US'),
+                  X.data.EQ(X.data.Country.ID, 'IN')
+                );
+              } else if ( hasPermission ) {
+                q = X.data.OR(
+                  X.data.EQ(X.data.Country.ID, 'CA'),
+                  X.data.EQ(X.data.Country.ID, 'US')
+                );
+              } else {
+                return X.data.auth.check(null, 'currency.read.INR').then((inrPermission) => {
+                  if ( inrPermission ) {
+                    q = X.data.OR(
+                      X.data.EQ(X.data.Country.ID, 'CA'),
+                      X.data.EQ(X.data.Country.ID, 'IN')
+                    );
+                  } else {
+                    q = X.data.EQ(X.data.Country.ID, 'CA');
+                  }
+                  return X.data.countryDAO.where(q);
+                });
+              }
+              return X.data.countryDAO.where(q);
+            })
+          })
+        };
+      },
       factory: function() {
         return this.Address.create();
       }
@@ -165,6 +339,7 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
+      visibility: 'HIDDEN',
       storageTransient: true
     },
     {
@@ -173,13 +348,15 @@ foam.CLASS({
       documentation: `Verifies that the email address of the Contact is valid.
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
-      `
+      `,
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'businessPhone',
       documentation: 'The phone number of the business.',
+      visibility: 'HIDDEN',
       factory: function() {
         return this.Phone.create();
       },
@@ -188,12 +365,14 @@ foam.CLASS({
     {
       class: 'PhoneNumber',
       name: 'businessPhoneNumber',
-      documentation: 'The phone number of the business.'
+      documentation: 'The phone number of the business.',
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'businessPhoneVerified',
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -382,7 +561,11 @@ foam.CLASS({
     {
       name: 'label',
       type: 'String',
-      code: function label() {
+      code: async function label() {
+        if ( this.businessId ) {
+          let business = await this.publicBusinessDAO.find(this.businessId);
+          return business.label();
+        }
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
@@ -392,6 +575,11 @@ foam.CLASS({
         return '';
       },
       javaCode: `
+        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
+        if ( this.getBusinessId() != 0 ) {
+          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
+          return business.label();
+        }
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

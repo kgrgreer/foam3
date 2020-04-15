@@ -7,6 +7,9 @@ node tools/xsd/index.js net.nanopay.iso20022 \
   pacs.002.001.09.xsd \
   pacs.008.001.06.xsd \
   pacs.028.001.01.xsd \
+  pain.001.001.03.xsd \
+  pain.008.001.02.xsd \
+  pain.002.001.03.xsd \
   pain.007.001.07.xsd \
   tsin.004.001.01.xsd
 
@@ -16,4 +19,4 @@ node tools/xsd/index.js net.nanopay.kotak.model.paymentRequest KotakPaymentReque
 node tools/xsd/index.js net.nanopay.kotak.model.paymentResponse KotakPaymentResponse.xsd
 node tools/xsd/index.js net.nanopay.kotak.model.reversal KotakReversal.xsd
 
-node foam2/tools/genjava.js $1 $2 $PWD
+node --stack_trace_limit=200 foam2/tools/genjava.js $1 $2 $PWD "$3"

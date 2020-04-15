@@ -110,6 +110,26 @@ public class BusinessInvitationDAO
       throw new RuntimeException("Invitation already exists");
     }
 
+    // Associated the business into the param. Add group type (admin, approver, employee)
+    Map tokenParams = new HashMap();
+    tokenParams.put("businessId", business.getId());
+    tokenParams.put("group", invite.getGroup());
+    tokenParams.put("inviteeEmail", invite.getEmail());
+
+    // Create token for user registration
+    DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
+
+    Token token = new Token();
+    Date today  = new Date();
+    long oneMonth = 1000l*60l*60l*24l*30l;
+    token.setExpiry(new Date(today.getTime() + oneMonth));
+    token.setParameters(tokenParams);
+    String tokenData = UUID.randomUUID().toString();
+    token.setData(tokenData);
+    token = (Token) tokenDAO.put(token);
+
+    invite.setTokenData(tokenData);
+
     if ( invite.getInternal() ) {
       // Inviting a user who's already on our platform to join a business.
       invite.setStatus(InvitationStatus.SENT);
@@ -144,28 +164,12 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
-
-    // Associated the business into the param. Add group type (admin, approver, employee)
-    Map tokenParams = new HashMap();
-    tokenParams.put("businessId", business.getId());
-    tokenParams.put("group", invite.getGroup());
-    tokenParams.put("inviteeEmail", invite.getEmail());
 
     Group group = business.findGroup(x);
     AppConfig appConfig = group.getAppConfig(x);
     String url = appConfig.getUrl().replaceAll("/$", "");
-
-    // Create token for user registration
-    Token token = new Token();
-    Date today  = new Date();
-    long oneMonth = 1000l*60l*60l*24l*30l;
-    token.setExpiry(new Date(today.getTime() + oneMonth));
-    token.setParameters(tokenParams);
-    token.setData(UUID.randomUUID().toString());
-    token = (Token) tokenDAO.put(token);
 
     // Create the email message
     EmailMessage message = new EmailMessage.Builder(x)
@@ -173,7 +177,7 @@ public class BusinessInvitationDAO
         .build();
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
-    args.put("business", business.getBusinessName());
+    args.put("business", business.label());
     args.put("sendTo", invite.getEmail());
 
     // Encoding business name and email to handle special characters.
@@ -192,7 +196,7 @@ public class BusinessInvitationDAO
 
     String country = ((foam.nanos.auth.Address)business.getAddress()).getCountryId();
 
-    url += "?token=" + token.getData();
+    url += "?token=" + invite.getTokenData();
     if ( country != null ) url += "&country=" + country;
     url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "&firstName=" + encodedFirstName
       + "&lastName=" + encodedLastName + "&jobTitle=" + encodedJobTitle + "&phone=" + encodedPhoneNumber

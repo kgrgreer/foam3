@@ -108,7 +108,9 @@ foam.CLASS({
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getBusinessId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
-        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+        if ( businessOnboarding.getStatus() != OnboardingStatus.SUBMITTED
+          && ( old == null || old.getStatus() != OnboardingStatus.SUBMITTED )
+        ) {
           return getDelegate().put_(x, businessOnboarding);
         }
 
@@ -123,78 +125,96 @@ foam.CLASS({
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
 
-        // * Step 4+5: Signing officer
+        // The current user needs "onboarding.update.*" permission to update an
+        // already submitted business onboarding (eg. from SUBMITTED to DRAFT).
+        // The permission is given to fraud-ops and payment-ops groups
+        // (See. auth/groupPermissionJunctions.jrl).
+        if ( old.getStatus() == OnboardingStatus.SUBMITTED
+          && businessOnboarding.getStatus() == OnboardingStatus.DRAFT
+        ) {
+          business = (Business) business.fclone();
+          business.setOnboarded(false);
+          business.setCompliance(ComplianceStatus.NOTREQUESTED);
+          localBusinessDAO.put(business);
+
+          return getDelegate().put_(x, businessOnboarding);
+        }
+
+        // *Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         user.setAddress(businessOnboarding.getAddress());
 
-        // If the user is the signing officer
-        if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
-          // Agreenments (tri-party, dual-party & PEP/HIO)
+        if ( businessOnboarding.getStatus() == OnboardingStatus.SUBMITTED ) {
+          // If the user is the signing officer
+          if ( businessOnboarding.getSigningOfficer() ) {
+            user.setBirthday(businessOnboarding.getBirthday());
+            // Agreenments (tri-party, dual-party & PEP/HIO)
 
-          if ( businessOnboarding.getPEPHIORelated() ) {
-            Notification notification = new Notification();
-            notification.setEmailIsEnabled(true);
-            notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
-                                  business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
-            notification.setNotificationType("A PEP/HIO related user has been Onboarded");
-            notification.setGroupId("fraud-ops");
-            localNotificationDAO.put(notification);
-          }
-          user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
-          user.setThirdParty(businessOnboarding.getThirdParty());
+            if ( businessOnboarding.getPEPHIORelated() ) {
+              Notification notification = new Notification();
+              notification.setEmailIsEnabled(true);
+              notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
+                                    business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
+              notification.setNotificationType("A PEP/HIO related user has been Onboarded");
+              notification.setGroupId("fraud-ops");
+              localNotificationDAO.put(notification);
+            }
+            user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
+            user.setThirdParty(businessOnboarding.getThirdParty());
 
-          localUserDAO.put(user);
-          // Set the signing officer junction between the user and the business
-          business.getSigningOfficers(x).add(user);
+            localUserDAO.put(user);
+            // Set the signing officer junction between the user and the business
+            business.getSigningOfficers(x).add(user);
 
-          // Update the business because the put to signingOfficerJunctionDAO
-          // will have updated the email property of the business.
-          business = (Business) localBusinessDAO.find(business.getId());
-          business = (Business) business.fclone();
+            // Update the business because the put to signingOfficerJunctionDAO
+            // will have updated the email property of the business.
+            business = (Business) localBusinessDAO.find(business.getId());
+            business = (Business) business.fclone();
 
-          // * Step 6: Business info
-          // Business info: business address
-          business.setAddress(businessOnboarding.getBusinessAddress());
-          business.setPhone(businessOnboarding.getPhone());
+            // * Business info
+            // Business info: business address
+            business.setAddress(businessOnboarding.getBusinessAddress());
+            business.setPhone(businessOnboarding.getPhone());
 
-          // Business info: business details
-          business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
-          business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
-          business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+            // Business info: business details
+            business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
+            business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
+            business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
-          if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-            business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
-          }
+            if ( businessOnboarding.getOperatingUnderDifferentName() ) {
+              business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
+            }
 
-          // Business info: transaction details
-          SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-          suggestedUserTransactionInfo.setBaseCurrency("CAD");
-          suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
-          suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
-          suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
-          suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
-          suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+            // Business info: transaction details
+            SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
+            suggestedUserTransactionInfo.setBaseCurrency("CAD");
+            suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+            suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
+            suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
+            suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+            suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
-          business.setTargetCustomers(businessOnboarding.getTargetCustomers());
-          business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+            business.setTargetCustomers(businessOnboarding.getTargetCustomers());
+            business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
-          // * Step 7: Percent of ownership
-          business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
-          for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
-            business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
-          }
+            // * Business directors Info
+            business.setBusinessDirectors(businessOnboarding.getBusinessDirectors());
 
-          if ( businessOnboarding.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED )
+            // * Percent of ownership
+            business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
+            for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+              business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
+            }
+
             business.setOnboarded(true);
 
-          if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
-            business.setCompliance(ComplianceStatus.REQUESTED);
+            if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
+              business.setCompliance(ComplianceStatus.REQUESTED);
+            }
+
+            localBusinessDAO.put(business);
           }
-
-          localBusinessDAO.put(business);
-
         }
 
         return getDelegate().put_(x, businessOnboarding);

@@ -149,8 +149,8 @@ foam.CLASS({
   methods: [
     function initE() {
       var label = this.data.payeeId === this.user.id ?
-        this.data.payer.businessName || this.data.payer.label() :
-        this.data.payee.businessName || this.data.payee.label();
+        this.data.payer.label() :
+        this.data.payee.label();
       var dueDateFormatted = this.data.dueDate ?
         'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
         '';

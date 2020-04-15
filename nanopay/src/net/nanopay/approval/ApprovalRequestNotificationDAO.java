@@ -4,6 +4,8 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.notification.Notification;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 
@@ -16,15 +18,15 @@ extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    
-    FObject old = ((DAO)x.get("approvalRequestDAO")).find_(x, obj);
+    ApprovalRequest old = (ApprovalRequest) getDelegate().find(obj);
     ApprovalRequest ret = (ApprovalRequest) getDelegate().put_(x, obj);
     String causeDAO = "";
     String notificationType = "";
     String notificationBody = "";
-    if ( old != null
-      || ApprovalStatus.REQUESTED != ret.getStatus()
-    ) { 
+
+    if ( ApprovalStatus.REQUESTED != ret.getStatus()
+      || ( old != null && old.getApprover() == ret.getApprover())
+    ) {
       return ret;
     }
 

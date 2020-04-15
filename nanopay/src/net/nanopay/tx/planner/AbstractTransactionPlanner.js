@@ -1,0 +1,164 @@
+foam.CLASS({
+  package: 'net.nanopay.tx.planner',
+  name: 'AbstractTransactionPlanner',
+  abstract: true,
+
+  documentation: 'Abstract rule action for transaction planning.',
+
+  implements: [
+    'foam.nanos.ruler.RuleAction'
+  ],
+
+  javaImports: [
+    'foam.dao.DAO',
+    'java.util.UUID',
+    'java.util.List',
+    'java.util.ArrayList',
+    'foam.core.ContextAwareAgent',
+    'foam.core.X',
+    'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.Transfer',
+    'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.model.Transaction',
+    'org.apache.commons.lang.ArrayUtils'
+  ],
+
+  properties: [
+    {
+      name: 'multiPlan_',
+      documentation: 'true for planners which produce more then one plan',
+      class: 'Boolean',
+      value: false
+    }
+  ],
+
+  methods: [
+    {
+      name: 'applyAction',
+      documentation: 'applyAction of the rule is called by rule engine',
+      javaCode: `
+        agency.submit(x, new ContextAwareAgent() {
+          @Override
+          public void execute(X x) {
+          TransactionQuote q = (TransactionQuote) obj;
+          Transaction t = q.getRequestTransaction();
+          save(getX(), plan(getX(), q, ((Transaction) t), agency), q);
+        }
+      },"AbstractTransaction Planner executing");
+      `
+    },
+    {
+      name: 'plan',
+      documentation: 'The transaction that is to be planned should be created here',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'requestTxn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'agency', type: 'foam.core.Agency' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        /* Needs to be overwritten by extending class */
+        return new Transaction();
+      `
+    },
+    {
+      name: 'save',
+      documentation: 'boiler plate transaction fields that need to be set for a valid plan',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' }
+      ],
+      javaCode: `
+        if ( getMultiPlan_() ) { // for performance can disallow multiplans on some planners?
+          for ( Object altPlanO : quote.getAlternatePlans_() ) {
+            Transaction altPlan = (Transaction) altPlanO;
+            altPlan.setIsQuoted(true);
+            altPlan.setTransfers((Transfer[]) ArrayUtils.addAll(altPlan.getTransfers(),quote.getMyTransfers_().toArray(new Transfer[0])));
+            altPlan.setId(UUID.randomUUID().toString());
+            altPlan = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(altPlan);
+            quote.addPlan(altPlan);
+          }
+        }
+        if ( txn != null ) {
+          txn.setId(UUID.randomUUID().toString());
+          txn.setTransfers((Transfer[]) quote.getMyTransfers_().toArray(new Transfer[0]));
+          txn.setIsQuoted(true);
+          //likely can add logic for setting clearing/completion time based on planners here.
+          //auto add fx rate
+          txn = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
+          //TODO: hit tax engine
+          //TODO: signing
+          quote.addPlan(txn);
+          if (forceBestPlan()) {
+            quote.setPlan(txn);
+          }
+        }
+        quote.clearAlternatePlans_();
+        quote.clearMyTransfers_();
+      `
+    },
+    {
+      name: 'quoteTxn',
+      documentation: 'Takes care of recursive transactionPlannerDAO calls returns best txn',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        DAO d = (DAO) x.get("localTransactionPlannerDAO");
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction((Transaction) txn.fclone());
+        quote = (TransactionQuote) d.put(quote);
+        return quote.getPlan();
+      `
+    },
+    {
+      name: 'multiQuoteTxn',
+      documentation: 'Takes care of recursive transactionPlannerDAO calls returns ',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction[]',
+      javaCode: `
+        DAO d = (DAO) x.get("localTransactionPlannerDAO");
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction((Transaction) txn.fclone());
+        quote = (TransactionQuote) d.put(quote);
+        return quote.getPlans();
+      `
+    },
+    {
+      name: 'createCompliance',
+      documentation: 'Creates a compliance transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.ComplianceTransaction',
+      javaCode: `
+        ComplianceTransaction ct = new ComplianceTransaction();
+        ct.copyFrom(txn);
+        ct.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        ct.setName("Compliance Transaction");
+        ct.clearTransfers();
+        ct.clearLineItems();
+        ct.clearNext();
+        ct.setIsQuoted(true);
+        return ct;
+      `
+    },
+    {
+      name: 'forceBestPlan',
+      documentation: 'determines whether to save as best plan',
+      type: 'boolean',
+      javaCode: `
+        return false;
+      `
+    },
+  ]
+});
+

@@ -59,6 +59,7 @@ foam.CLASS({
 
   css: `
   ^ {
+    height: 100%;
     display: flex;
   }
   ^ > .stack-wrapper {
@@ -117,6 +118,9 @@ foam.CLASS({
     cursor: pointer;
     margin-left: 5px;
     text-decoration: underline;
+  }
+  ^ .net-nanopay-sme-ui-AbliiActionView-large {
+    width: 160px;
   }
   `,
 
@@ -183,7 +187,7 @@ foam.CLASS({
     },
     {
       name: 'ADDED_TO_BUSINESS_1',
-      message: "You've been successfully added to "
+      message: `You've been successfully added to `
     },
     {
       name: 'ADDED_TO_BUSINESS_2',
@@ -201,6 +205,23 @@ foam.CLASS({
       name: 'QUERY_SIGNING_OFFICERS_ERROR',
       message: 'An unexpected error occurred while querying signing officers: '
     },
+    {
+      name: 'SELECT_BUSINESS_WARNING',
+      message: 'Please select a business before proceeding'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_TITLE',
+      message: 'We’re Sorry'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_1',
+      message: 'It looks like you’re trying to accept an invitation, but the invitation has been revoked.'
+    },
+    {
+      name: 'INVALID_TOKEN_ERROR_2',
+      message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.'
+    }
+
   ],
 
   properties: [
@@ -226,7 +247,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.model.Business',
+      of: 'foam.nanos.auth.User',
       name: 'user',
       factory: function() {
         return this.Business.create({});
@@ -427,6 +448,15 @@ foam.CLASS({
         }
 
         var hash = location.hash.substr(1);
+
+        if ( hash == 'sme.main.onboarding' ) {
+          this.onboardingUtil.initOnboardingView();
+        }
+
+        if ( hash == 'sme.main.onboarding.international' ) {
+          this.onboardingUtil.initInternationalOnboardingView();
+        }
+
         menu = await this.client.menuDAO.find(hash);
 
         // Any errors in finding the menu location to redirect
@@ -449,6 +479,22 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
+      // Prevent action within platform if user is not a business. Redirect regular users to
+      // switch business menu screen to select a business.
+      this.stack$.dot('pos').sub(function() {
+        if ( self.user.cls_ == net.nanopay.model.Business && self.loginSuccess ) {
+          return;
+        } else if (
+          self.user.cls_ != self.Business &&
+          self.loginSuccess &&
+          location.hash != '#sme.accountProfile.switch-business'
+        ) {
+          self.pushMenu('sme.accountProfile.switch-business');
+          self.notify(self.SELECT_BUSINESS_WARNING, 'warning');
+        }
+      });
+
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {
@@ -531,6 +577,20 @@ foam.CLASS({
 
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
+        var tokenParam = searchParams.get('token');
+
+        // direct to error page if an invalid token hits (token not found)
+        self.client.authenticationTokenService.processToken(null, null, tokenParam).then(() => {
+        }).catch(e => {
+            if ( tokenParam != null && e.message === 'Token not found' ) {
+              view = net.nanopay.sme.ui.ErrorPageView.create({
+                title: this.INVALID_TOKEN_ERROR_TITLE,
+                info_1: this.INVALID_TOKEN_ERROR_1,
+                info_2: this.INVALID_TOKEN_ERROR_2
+              });
+              self.stack.push(view, self);
+            }
+        });
 
         if ( locHash === '#reset' ) {
           view = { class: 'foam.nanos.auth.ChangePasswordView' };
@@ -543,7 +603,7 @@ foam.CLASS({
             param: {
               email: searchParams.get('email'),
               disableEmail_: searchParams.has('email'),
-              token_: searchParams.get('token'),
+              token_: tokenParam,
               organization: searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '',

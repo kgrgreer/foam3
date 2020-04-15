@@ -1,10 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'TransactionLimitState',
-  documentation: 'The class stores the limit itself and date when that limit was set.' +
-  'Responsible for updating the limit as well.' +
-  'The object is stored in a hash map on the TransactionLimitRule' +
-  'along with the object that it stores limit for(account, business, user..)',
+  documentation: `
+    This class stores the transaction limit and date when that limit was set.
+    Responsible for updating the limit as well.`,
 
   javaImports: [
     'net.nanopay.util.Frequency'

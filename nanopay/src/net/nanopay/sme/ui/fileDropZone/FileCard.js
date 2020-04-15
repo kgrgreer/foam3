@@ -75,6 +75,7 @@ foam.CLASS({
 
     ^close-action {
       margin-left: auto;
+      padding: 0;
     }
 
     ^close-action span {
@@ -106,7 +107,10 @@ foam.CLASS({
           }, this.data.filename$))
           .on('click', this.viewFile)
         .end()
-        .start(this.REMOVE_FILE_X).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
+        .start(this.REMOVE_FILE_X, {
+          buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+          icon: 'images/cancel-x.png'
+        }).show(this.allowRemoval && this.canBeRemoved).addClass(this.myClass('close-action')).end()
     }
   ],
 

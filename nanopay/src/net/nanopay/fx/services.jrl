@@ -165,11 +165,35 @@ p({"class":"foam.nanos.boot.NSpec", "name":"AFEXLogDAO",                 "lazy":
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "fxProviderDAO",
+  "name": "securityPriceDAO",
+  "lazy": false,
   "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.SecurityPrice.getOwnClassInfo())
+      .setJournalName("Security Prices")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .setRuler(false)
+      .build();
+  """,
+    "client": """
+      {
+        "of": "net.nanopay.fx.SecurityPrice"
+      }
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxProviderDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+      return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.fx.FXProvider.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)

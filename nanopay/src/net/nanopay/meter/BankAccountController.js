@@ -23,13 +23,8 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        // TODO: Use INSTANCE_OF mlang when it's fixed.
         var dao = this.accountDAO.where(
-          this.OR(
-            this.EQ(this.Account.TYPE, this.BankAccount.name),
-            this.EQ(this.Account.TYPE, this.CABankAccount.name),
-            this.EQ(this.Account.TYPE, this.USBankAccount.name)
-          )
+          this.INSTANCE_OF(net.nanopay.bank.BankAccount)
         );
         dao.of = this.BankAccount;
         return dao;

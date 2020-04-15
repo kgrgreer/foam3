@@ -1,9 +1,9 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"plaidService",                    "serve":true,  "authenticate": false, "boxClass":"net.nanopay.plaid.PlaidServiceSkeleton", "serviceClass":"net.nanopay.plaid.PlaidServiceImpl","client":"{\"class\":\"net.nanopay.plaid.ClientPlaidService\",\"delegate\":{\"class\":\"foam.box.SessionClientBox\", \"url\":\"service/plaidService\", \"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/plaidService\"}}}"})
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "plaidItemDAO",                    
-  "serve": true,  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "plaidItemDAO",
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -18,9 +18,9 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "plaidAccountDetailDAO",           
-  "serve": true,  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "plaidAccountDetailDAO",
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -28,9 +28,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("plaidAccountDetail")
       .setOf(net.nanopay.plaid.model.PlaidAccountDetail.getOwnClassInfo())
-      .setAuthorize(false)
+      .setAuthorize(true)
       .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.plaid.model.PlaidAccountDetail\"}"
 })
 
@@ -45,10 +45,10 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "plaidResultReportDAO",            
-  "lazy": false,  
-  "serve": true,  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "plaidResultReportDAO",
+  "lazy": false,
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -57,8 +57,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("plaidResultReport")
       .setOf(net.nanopay.plaid.PlaidResultReport.getOwnClassInfo())
-      .setAuthorize(false)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.plaid.PlaidResultReportAuthorizer())
       .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.plaid.PlaidResultReport\"}"
 })

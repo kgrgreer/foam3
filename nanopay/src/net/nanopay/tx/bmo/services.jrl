@@ -38,3 +38,5 @@ p({
 
 p({"class":"foam.nanos.boot.NSpec", "name":"bmoSFTPCredential",               "lazy":false,  "service":{"class":"net.nanopay.tx.bmo.BmoSFTPCredential"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"bmoAssignedClientValue",          "lazy":false,  "service":{"class":"net.nanopay.tx.bmo.BmoAssignedClientValue"}})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"rbcFTPSCredential",               "lazy":false,  "service":{"class":"net.nanopay.tx.rbc.ftps.RbcFTPSCredential"}})

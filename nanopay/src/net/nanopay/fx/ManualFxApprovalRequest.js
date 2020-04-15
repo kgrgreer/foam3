@@ -4,7 +4,7 @@ foam.CLASS({
 
   documentation: 'Approval request that stores a CAD to INR FX rate',
 
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {
@@ -17,11 +17,21 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'valueDate'
+      name: 'valueDate',
+      visibility: function(valueDate) {
+        return valueDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'DateTime',
-      name: 'expiryDate'
+      name: 'expiryDate',
+      visibility: function(expiryDate) {
+        return expiryDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ]
 });

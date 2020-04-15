@@ -9,7 +9,10 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.GroupPermissionJunction;
 import foam.nanos.auth.User;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -20,26 +23,30 @@ import net.nanopay.payment.Institution;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.planner.AFEXTransactionPlanner;
 
 
 public class AFEXTransactionPlanDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
+  protected DAO groupDAO_;
   protected DAO userDAO_;
-  protected User user1 ;
+  protected User user1;
   protected User user2;
+  protected DAO permissionJunctionDAO_;
   BankAccount user1USBankAccount;
   BankAccount user1CABankAccount;
   BankAccount user2USBankAccount;
   BankAccount user2CABankAccount;
   DAO localUserDAO;
+  DAO localGroupDAO;
   DAO localAccountDAO;
   DAO localtxDAO;
   DAO invoiceDAO;
   X x_;
   AFEXServiceProvider afexService;
-  AFEXTransactionPlanDAO planDAO;
+  AFEXTransactionPlanner planDAO;
 
   @Override
   public void runTest(X x) {
@@ -56,14 +63,29 @@ public class AFEXTransactionPlanDAOTest
   private void setUpTest() {
     AFEX afex = new AFEXServiceMock(x_);
     afexService = new AFEXServiceProvider(x_, afex);
-    planDAO = new AFEXTransactionPlanDAO.Builder(x_).build();
+    planDAO = new AFEXTransactionPlanner.Builder(x_).build();
 
+    permissionJunctionDAO_ = (DAO) x_.get("groupPermissionJunctionDAO");
+    groupDAO_ = (DAO) x_.get("localGroupDAO");
     localUserDAO = (DAO) x_.get("localUserDAO");
     localAccountDAO = (DAO) x_.get("localAccountDAO");
     Address businessAddress = new Address();
     businessAddress.setCity("Toronto");
     businessAddress.setCountryId("CA");
 
+    Group businessGroup = (Group) groupDAO_.find("business");
+    if ( businessGroup == null ) {
+      businessGroup = new Group.Builder(x_)
+        .setId("business")
+        .build();
+      businessGroup = (Group) groupDAO_.put(businessGroup);
+    }
+    permissionJunctionDAO_.put(
+                              new GroupPermissionJunction.Builder(x_)
+                              .setSourceId("business")
+                              .setTargetId("digitalaccount.default.create")
+                              .build()
+                              );
     user1 = new User();
     user1.setFirstName("AFEXPayer");
     user1.setLastName("AFEX");
@@ -180,6 +202,8 @@ public class AFEXTransactionPlanDAOTest
     txn.setAmount(100000L);
     txn.setSourceAccount(user1CABankAccount.getId());
     txn.setPayeeId(user1.getId());
+    DigitalAccount digitalAccount = DigitalAccount.findDefault(x_, user1, "CAD");
+    txn.setDestinationAccount(digitalAccount.getId());
     txn.setStatus(TransactionStatus.COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
   }
@@ -198,14 +222,14 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
-    test( null != resultQoute, "CAD USD quote was processed" );
+    quote.setDestinationAccount(user2USBankAccount);
+    quote.setSourceAccount(user1CABankAccount);
+    Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
+    test( null != result, "CAD USD quote was processed" );
 
-    Transaction tx1 = resultQoute.getPlans()[0];
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for CAD to USD");
 
-    test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for CAD to USD");
-
-    Transaction tx2 = (tx1.getNext()[0]).getNext()[0];
+    Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");
 
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);
@@ -231,14 +255,14 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
-    test( null != resultQoute, "USD USD quote was processed" );
+    quote.setDestinationAccount(user1USBankAccount);
+    quote.setSourceAccount(user2USBankAccount);
+    Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
+    test( null != result, "USD USD quote was processed" );
 
-    Transaction tx1 = resultQoute.getPlans()[0];
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to USD");
 
-    test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to USD");
-
-    Transaction tx2 = (tx1.getNext()[0]).getNext()[0];
+    Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");
 
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);
@@ -263,13 +287,13 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
+    quote.setDestinationAccount(user1CABankAccount);
+    quote.setSourceAccount(user2USBankAccount);
+    Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
 
-    Transaction tx1 = resultQoute.getPlans()[0];
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to CAD");
 
-    test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to CAD");
-
-    Transaction tx2 = (tx1.getNext()[0]).getNext()[0];
+    Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");
 
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);

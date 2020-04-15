@@ -6,10 +6,6 @@ foam.CLASS({
   documentation: ``,
 
   css: `
-    ^inner {
-      position: relative;
-    }
-
     ^X {
       position: absolute;
       top: -30px;
@@ -21,6 +17,10 @@ foam.CLASS({
       transition: ease 0.2s;
       padding: 0;
       border: none !important;
+    }
+    
+    ^inner {
+      position: relative;
     }
 
     ^X:hover {

@@ -37,9 +37,10 @@ foam.CLASS({
 
                   // User.compliance is a permissioned property thus we need
                   // to use localUserDAO when saving change to the property.
-                  signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
-
-                  localUserDAO.inX(x).put(signingOfficer);
+                  if ( signingOfficer.getCompliance() != ComplianceStatus.PASSED ) {
+                    signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
+                    localUserDAO.inX(x).put(signingOfficer);
+                  }
                 }
               }, "Request Signing Officers Compliance");
             }
