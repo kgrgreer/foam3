@@ -228,6 +228,12 @@ foam.CLASS({
           throw new RuntimeException("Exceed INR Transaction limit");
         }
       `
-    }
+    },
+    {
+      name: 'forceBestPlan',
+      javaCode: `
+        return true;
+      `
+    },
   ]
 });
