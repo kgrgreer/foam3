@@ -49,6 +49,7 @@ notificationTemplates
 payoutOptions
 paymentCodes
 paymentProviderCorridorJunctions
+paymentMethods
 paymentProviders
 PADTypes
 permissions
