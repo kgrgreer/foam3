@@ -26,7 +26,8 @@ foam.CLASS({
       name: 'state',
       expression: function(value, maxValue){
         return ( (value / maxValue) * 100);
-      }
+      },
+
     },
     {
       class: 'String',

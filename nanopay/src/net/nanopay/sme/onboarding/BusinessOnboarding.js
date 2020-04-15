@@ -1304,8 +1304,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessDirector',
       section: 'directorsInfoSection',
       view: {
-        //class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
-        class: 'foam.u2.view.FObjectArrayView',
+        class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
         mode: 'RW',
         enableAdding: true,
         enableRemoving: true,
@@ -1313,44 +1312,12 @@ foam.CLASS({
       },
       autoValidate: true,
       validationTextVisible: true,
-//      validationPredicates: [
-//      {
-//        args: ['businessDirectors', 'businessDirectors$errors_'],
-//        predicateFactory: function(e) {
-//          return e.OR(
-//              e.EQ(foam.mlang.IsValid.create({
-//                arg1: net.nanopay.sme.onboarding.businessDirectors
-//              }), true)
-//          );
-//        },
-//        errorString: 'businessDirectors invalid'
-//      }
-//     ],
       validateObj: function(businessDirectors) {
         if ( this.signingOfficer && (this.businessTypeId === 3 || this.businessTypeId === 5 || this.businessTypeId == 6) ) {
            if ( businessDirectors.length < 1 )
             return 'Please enter director\'s information.'
-
-           for ( var i = 0; i < businessDirectors.length; i++ ) {
-             if ( businessDirectors[i].errors_$ != null ) {
-             //if ( businessDirectors[i].firstName$ != null && businessDirectors[i].firstName$ != "" ) {
-               businessDirectors[i].errors_$.sub(this.errorsUpdate);
-
-               return this.errorsUpdate(null, null, null, businessDirectors[i].errors_$);
-             }
-           }
-
-           //return this.businessDirectorsErrors_$;
         }
       },
-    },
-    {
-      class: 'String',
-      name: 'businessDirectorsErrors_',
-      //value: 'Please input business director\'s information.',
-//      expression: function(businessDirectorsErrors_) {
-//        console.log("businessDirectorsErrors_");
-//      }
     },
     {
       class: 'Boolean',
@@ -1513,9 +1480,7 @@ foam.CLASS({
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'updateTable'],
-    ['', 'propertyChange.businessDirectors', 'errorsUpdate'],
-    ['businessDirectors', 'propertyChange', 'errorsUpdate']
+    ['', 'propertyChange.amountOfOwners', 'updateTable']
   ].concat([1, 2, 3, 4].map((i) => [
     [`owner${i}`, 'propertyChange', 'updateTable'],
     ['', `propertyChange.owner${i}`, 'updateTable']
@@ -1532,17 +1497,6 @@ foam.CLASS({
             self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
           }
         });
-      }
-    },
-    {
-      name: 'errorsUpdate',
-      code: function (_, __ ,___, errs) {
-        console.log("errs : " + errs.get());
-        if ( errs.get() ) {
-          this.businessDirectorsErrors_ = 'Please input business director\'s information.';
-        } else if ( errs.get() == null ) {
-          this.businessDirectorsErrors_ = null;
-        }
       }
     }
   ],
