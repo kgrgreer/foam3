@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.LifecycleState',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
@@ -120,7 +121,6 @@ foam.CLASS({
           Transaction t = getIsInternal() ?
             parseInternal(getX(),getRow1(),getRow2()) :
             parseExternal(getX(),getRow1());
-
           setTransaction(t);
         }
         catch( Exception e ){
@@ -648,11 +648,13 @@ foam.CLASS({
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getSourceCurrency())
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setName("Trust Account "+txn.getSourceCurrency())
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(1348) // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
@@ -672,12 +674,14 @@ foam.CLASS({
           destinationTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(txn.getDestinationCurrency())
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setName(" Trust Account "+ txn.getDestinationCurrency())
             .build();
           BankAccount destBank = new BankAccount.Builder(x)
             .setOwner(1348) // admin@nanopay.net
             .setAccountNumber("000000")
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getDestinationCurrency())
             .setName(txn.getDestinationCurrency() +" Bank Account")
             .build();

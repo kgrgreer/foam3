@@ -8,8 +8,8 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.Token;
 import foam.nanos.logger.Logger;
@@ -37,7 +37,7 @@ public class UserRegistrationDAO
   private DAO localBusinessDAO_;
 
   public UserRegistrationDAO(X x, String group, DAO delegate) {
-    this(x, "nanopay", group, delegate);
+    this(x, ((AppConfig) x.get("appConfig")).getDefaultSpid(), group, delegate);
   }
 
   public UserRegistrationDAO(X x, String spid, String group, DAO delegate) {
@@ -59,22 +59,7 @@ public class UserRegistrationDAO
       throw new RuntimeException("Email required");
     }
 
-    // We want to use current user spid and context only when the user have
-    // spid.create.<user.spid> permission. Otherwise, set spid=this.spid_ and
-    // use system user context for creating user and business.
-    User currentUser = (User) x.get("user");
-    boolean hasSpidCreatePermission = false;
-    if ( currentUser != null ) {
-      AuthService auth = (AuthService) x.get("auth");
-      hasSpidCreatePermission = auth.check(x, "spid.create." + currentUser.getSpid());
-    }
-
-    // Set user SPID and group defined by service.
-    if (hasSpidCreatePermission && ( ! SafetyUtil.isEmpty(currentUser.getSpid()) )) {
-      user.setSpid(currentUser.getSpid());
-    } else {
-      user.setSpid(spid_);
-    }
+    user.setSpid(spid_);
     user.setGroup(group_);
 
     // We want the system user to be putting the User we're trying to create. If
@@ -82,7 +67,7 @@ public class UserRegistrationDAO
     // decorators down the line would fail because of authentication checks.
 
     // If we want use the system user, then we need to copy the http request/appconfig to system context
-    X sysContext = hasSpidCreatePermission ? x : getX()
+    X sysContext = getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 

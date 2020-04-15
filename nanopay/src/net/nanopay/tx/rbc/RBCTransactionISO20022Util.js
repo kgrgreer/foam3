@@ -150,6 +150,7 @@ foam.CLASS({
           if( destAccount == null ) continue;
           User payee = destAccount.findOwner(x);
           Address payeeAddress = payee == null ? null : payee.getAddress();
+          if ( payeeAddress == null ) throw new RuntimeException("Invalid Payee address.");
 
           String senderEmail = payee.getEmail();
           if ( payee instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
@@ -270,7 +271,7 @@ foam.CLASS({
           logger.error("Error when add transaction to RBC ISO20022 file", e);
           txn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent(e.getMessage()).build());
           txn.setStatus(TransactionStatus.FAILED);
-          ((DAO) x.get("localtransactionDAO")).put(txn);
+          ((DAO) x.get("localTransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )
@@ -530,7 +531,7 @@ foam.CLASS({
           logger.error("Error when add transaction to RBC ISO20022 file", e);
           txn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent(e.getMessage()).build());
           txn.setStatus(TransactionStatus.FAILED);
-          ((DAO) x.get("localtransactionDAO")).put(txn);
+          ((DAO) x.get("localTransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )

@@ -34,22 +34,22 @@ public class LiquidTransactionValidator implements Validator {
     if (dest == null )
       throw new RuntimeException("Unable to send from account");
 
-    // Prevent transaction from non-DigitalAccount (including sub-classes of
-    // DigitalAccount) except ShadowAccount if the user is an admin.
+    if (source.getLifecycleState() == LifecycleState.DELETED )
+      throw new RuntimeException("Unable to send from deleted account");
+    if (dest.getLifecycleState() == LifecycleState.DELETED )
+      throw new RuntimeException("Unable to send to account "+dest.getId());
+
     User user = (User) x.get("user");
-    if ( source.getClass() != DigitalAccount.class
+    if (     tx.getReferenceNumber().equals("Manual Entry") && source.getClass() != DigitalAccount.class
       && ! (
-        user.getGroup().equals("admin")
+      user.getGroup().equals("admin")
         && source instanceof ShadowAccount )
     ) {
       throw new RuntimeException(
         "Unable to send from non-digital/shadow account");
     }
 
-    if (source.getLifecycleState() == LifecycleState.DELETED )
-      throw new RuntimeException("Unable to send from deleted account");
-    if (dest.getLifecycleState() == LifecycleState.DELETED )
-      throw new RuntimeException("Unable to send to account "+dest.getId());
+
 
   }
 }

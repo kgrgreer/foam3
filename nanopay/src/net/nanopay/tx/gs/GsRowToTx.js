@@ -170,12 +170,15 @@ foam.CLASS({
               transactionProcessor.enqueue(job);
             }
           }
-          pbd.setValue(am);
-          pbd.setStatus("File Has Been Ingested");
+
+          ProgressBarData finalPBD = (ProgressBarData) pbd.fclone();
+          finalPBD.setValue(am);
+          finalPBD.setStatus("File Has Been Ingested");
+          finalJob.setProgressBarData(finalPBD);
         }
 
         if ( finalJob.getFailed() ) {
-          pbd.setStatus("File Upload Failed");
+          finalJob.getProgressBarData().setStatus("File Upload Failed");
         }
         transactionProcessor.enqueue(finalJob);
       `
@@ -214,11 +217,13 @@ foam.CLASS({
           sourceTrust = new TrustAccount.Builder(x)
             .setOwner(101) // nanopay.trust@nanopay.net
             .setDenomination(denomination)
+            .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
             .setName("Trust Account "+denomination)
             .build();
           BankAccount sourceBank = new BankAccount.Builder(x)
             .setOwner(8005) // liquiddev@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
             .setDenomination(denomination)
             .setName(denomination +" Bank Account")
             .setAccountNumber("000000")

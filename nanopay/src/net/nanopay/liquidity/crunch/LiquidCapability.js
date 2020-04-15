@@ -563,7 +563,10 @@ foam.CLASS({
         if ( getCanViewCapability() && getCanViewUser() ) permissions.add("menu.read.roles.rolequeryview");
 
         // add file upload permission for file ingesters
-        if ( getCanIngestFile() ) permissions.add("menu.read.fileupload");
+        if ( getCanIngestFile() ) { 
+          permissions.add("menu.read.fileupload");
+          permissions.add("file.create");
+        }
 
         if ( getCanMakeRule() ) {
           permissions.add("rule.make");
