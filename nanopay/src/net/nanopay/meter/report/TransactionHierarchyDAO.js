@@ -58,6 +58,7 @@ foam.CLASS({
         ArraySink arraySink_txnList = new ArraySink();
         List<Transaction> childTxnList = new ArrayList<>();
 
+        // If the trasaction id is not valid format or it cannot find transaction
         if (txnList.isEmpty() || txnList.get(0) == null) {
           throw new RuntimeException("Error when trying to find the child transaction of " + id);
         }
