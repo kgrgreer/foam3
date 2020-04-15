@@ -9,7 +9,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   imports: [
@@ -108,13 +109,13 @@ foam.CLASS({
         case this.InvoiceStatus.PENDING_APPROVAL:
           var user = ctrl.user;
           var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
-          if (record.user === currentUser)
+          if ( record.user === currentUser ) {
             return {
               labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
               labelDecoration: 'Invoice-Status-Pending-approval',
               icon: 'images/ic-scheduled.svg'
             };
-          else return null;
+          } else return null;
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
             labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,
@@ -130,23 +131,32 @@ foam.CLASS({
       }
     },
 
-    function formatDate(timestamp) {
+    function formatDate(timestamp, displayTime=true) {
       var locale = 'en-US';
-      return timestamp.toLocaleTimeString(locale, { hour12: false }) +
-        ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
-        ' ' + timestamp.getDate() +
-        ' ' + timestamp.getFullYear();
+      var time = displayTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
+      return time
+        + `${timestamp.toLocaleString(locale, { month: 'short' })} `
+        + `${timestamp.getDate()} `
+        + timestamp.getFullYear();
     },
 
-    function outputRecord(parentView, record) {
-      var self = this;
-      var attributes = this.getAttributes(record);
-      var update = record.updates.find((u) => u.name === 'paymentDate');
-      var hasDisplayDate = update && update.newValue != null;
-      var displayDate = hasDisplayDate ? new Date(update.newValue) : null;
+    async function outputRecord(parentView, record) {
+      const attributes = this.getAttributes(record);
 
       // Only show updates to the status.
       if ( attributes === null ) return;
+
+      const self = this;
+
+      const paymentDateUpdate = record.updates.find((u) => u.name === 'paymentDate');
+      const hasDisplayDate = paymentDateUpdate && paymentDateUpdate.newValue !== null;
+      const displayDate = hasDisplayDate ? new Date(paymentDateUpdate.newValue) : null;
+
+      const invoice = await this.invoiceDAO.find(record.objectId);
+      // name of the payee
+      const payee = await invoice.payee.label();
+      // a flag for checking if the invoice was completed by the payee
+      const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
 
       return parentView
         .addClass(this.myClass())
@@ -157,17 +167,22 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('Invoice status changed to ', )
+              .callIfElse(completedByPayee, function() {
+                this.add(`${payee} marked invoice as `);
+              }, function() {
+                this.add('Invoice status changed to ');
+              })
             .end()
-            .start('div').addClass('inline')
-              .start('span').add(attributes.labelText)
-                .start('span').style({ 'margin-left': '4px' })
-                  .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {
-                    this.add(self.formatDate(displayDate));
-                  })
-                .end()
-              .end()
+            .start('span')
+              .add(attributes.labelText)
             .end()
+            .callIf(hasDisplayDate &&
+              (attributes.labelText === 'Scheduled' || completedByPayee),
+              function() {
+                this.start('span').addClass('statusTitle')
+                  .add(` on ${self.formatDate(displayDate, false)}`)
+                .end();
+            })
           .end()
           .start('div')
             .style({ 'padding-left': '30px' })

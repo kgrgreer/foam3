@@ -207,7 +207,7 @@ foam.CLASS({
           throw new Error('Invalid password');
         }
 
-        return self.client.deviceAuth.loginByEmail(null, 'device-' + self.serialNumber, self.password);
+        return self.client.deviceAuth.login(null, 'device-' + self.serialNumber, self.password);
       })
       .then(function (result) {
         if ( ! result ) {
@@ -264,7 +264,7 @@ foam.CLASS({
     function requestLogin() {
       var self = this;
       this.password = '';
-      
+
       return new Promise(function (resolve, reject) {
         self.stack.push({ class: 'net.nanopay.merchant.ui.setup.SetupView'});
         self.loginSuccess$.sub(resolve);

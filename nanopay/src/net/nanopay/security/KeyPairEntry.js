@@ -21,6 +21,11 @@ foam.CLASS({
       documentation: 'Owner of the keypair'
     },
     {
+      class: 'String',
+      name: 'alias',
+      documentation: 'Alias to identify key pair. Typically nanopay user would have multiple keys.'
+    },    
+    {
       class: 'Reference',
       of: 'net.nanopay.security.PrivateKeyEntry',
       name: 'privateKeyId',

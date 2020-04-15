@@ -28,23 +28,23 @@ public class ISODateTimeParser
   public ISODateTimeParser() {
     super(new Seq(
       Literal.create("\""),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("-"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("-"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("T"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("."),
       new Repeat(new Chars("0123456789")),
       new Alt(Literal.create("+"), Literal.create("-")),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("\"")
     ));
   }
@@ -62,20 +62,22 @@ public class ISODateTimeParser
     }
 
     Object[] result = (Object[]) ps.value();
+    // To handle the optional literal since xml does not come with the literal
+    int offset = result.length == 19 ? 1 : 0;    
     Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     c.clear();
 
     c.set(
-      (Integer) result[1],
-      (Integer) result[3] - 1, // Java calendar uses zero-indexed months
-      (Integer) result[5],
-      (Integer) result[7],
-      (Integer) result[9],
-      (Integer) result[11]);
+      (Integer) result[0 + offset],
+      (Integer) result[2 + offset] - 1, // Java calendar uses zero-indexed months
+      (Integer) result[4 + offset],
+      (Integer) result[6 + offset],
+      (Integer) result[8 + offset],
+      (Integer) result[10 + offset]);
 
     boolean zeroPrefixed = true;
     StringBuilder builder = sb.get();
-    Object[] millis = (Object[]) result[13];
+    Object[] millis = (Object[]) result[12 + offset];
 
     for ( int i = 0 ; i < millis.length ; i++ ) {
       // do not prefix with zeros
@@ -95,10 +97,10 @@ public class ISODateTimeParser
     // reset builder and build timezone string
     builder.setLength(0);
     builder.append("UTC")
-      .append(result[14])
-      .append(String.format("%02d", (Integer) result[15]))
+      .append(result[13 + offset])
+      .append(String.format("%02d", (Integer) result[14 + offset]))
       .append(":")
-      .append(String.format("%02d", (Integer) result[17]));
+      .append(String.format("%02d", (Integer) result[16 + offset]));
 
     // set timezone correctly
     c.setTimeZone(TimeZone.getTimeZone(builder.toString()));

@@ -6,6 +6,7 @@ foam.CLASS({
   imports: [
     'auth',
     'userDAO',
+    'pushMenu',
     'theme'
   ],
 
@@ -185,7 +186,7 @@ foam.CLASS({
       code: function() {
         if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({
+        dao.put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
           status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
           sendInvitation: false
         }));
@@ -204,7 +205,7 @@ foam.CLASS({
         this.submitted = true;
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
-          put(this.data.clone().copyFrom({
+          put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
             status: (this.data.signingOfficer ? 'SUBMITTED' : 'SAVED'),
             sendInvitation: true
           })).
@@ -214,6 +215,7 @@ foam.CLASS({
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
+              x.user.address = o.address
             });
 
             await x.userDAO.find(x.agent.id).then((agent) => {
@@ -222,7 +224,7 @@ foam.CLASS({
 
             this.auth.cache = {};
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
-            x.stack.back();
+            x.pushMenu('sme.main.dashboard');
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
@@ -236,13 +238,13 @@ foam.CLASS({
       label: 'Save & Exit',
       code: function(x) {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({
+        dao.put(this.data.copyFrom({ // To-do : this.data.clone() does not get info properly, investigate later.
           status: (this.data.status === net.nanopay.sme.onboarding.OnboardingStatus.DRAFT ? 'DRAFT' : 'SAVED'),
           sendInvitation: true
           })).
           then(function() {
             x.ctrl.notify('Progress saved.');
-            x.stack.back();
+            x.pushMenu('sme.main.dashboard');
           }, function() {
             x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
           });

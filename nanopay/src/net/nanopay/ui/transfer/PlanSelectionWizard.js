@@ -27,7 +27,7 @@ foam.CLASS({
     'balance',
     'user',
     'type',
-    'transactionQuotePlanDAO',
+    'transactionPlannerDAO',
     'quote',
     'addCommas'
   ],

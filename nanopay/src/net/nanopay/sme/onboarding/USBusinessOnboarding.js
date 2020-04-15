@@ -39,32 +39,6 @@ foam.CLASS({
         sectionName: 'requiredSection',
         showTitle: false
       },
-    },
-    {
-      name: 'validationPredicates',
-      factory: function() {
-        var i = this.index;
-        return [
-          {
-            args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', `owner${i}$errors_`],
-            predicateFactory: function(e) {
-              return e.OR(
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
-                e.AND(
-                  e.EQ(i, 1),
-                  e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true)
-                ),
-                e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
-                e.EQ(foam.mlang.IsValid.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
-                }), true)
-              );
-            },
-            errorString: `Owner #${i} is invalid.`
-          }
-        ];
-      }
     }
   ]
 });
@@ -134,14 +108,14 @@ foam.CLASS({
     },
     {
       name: 'personalInformationSection',
-      title: 'Enter the personal information',
+      title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify the identity…'
     },
     {
       name: 'signingOfficerEmailSection',
-      title: 'Enter the signing officer\'s email',
-      help: `For security, we require the approval of a signing officer before you can continue.
-          I can email the signing officer directly for the approval.`,
+      title: 'Enter a signing officer\'s information',
+      help: `Before you proceed we’ll need to invite a signing officer to approve the application.
+             I can email the signing officer directly for you.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
@@ -161,7 +135,7 @@ foam.CLASS({
     },
     {
       name: 'transactionDetailsSection',
-      title: 'Enter the transaction details',
+      title: 'Enter the business transaction details',
       help: `Thanks! Now let’s get some details on the company's transactions.`,
     },
     {
@@ -204,6 +178,14 @@ foam.CLASS({
       index: 4,
       isAvailable: function(userOwnsPercent, amountOfOwners) {
         return amountOfOwners >= 4;
+      }
+    },
+    {
+      name: 'directorsInfoSection',
+      title: 'Enter the directors information',
+      help: `Next, I’ll need details about the company directors, include all of the directors name here.`,
+      isAvailable: function (businessTypeId) {
+        return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6;
       }
     },
     {
@@ -347,9 +329,21 @@ foam.CLASS({
           this.adminJobTitle = this.jobTitle;
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
+
+          if ( this.userOwnsPercent ) {
+            this.userId$find.then((user) => {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            })
+          }
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
+
+          if ( ! this.userOwnsPercent ) {
+            this.clearProperty('owner1');
+          }
         }
       }
     },
@@ -382,19 +376,25 @@ foam.CLASS({
           },
           errorString: 'Please select job title.'
         }
-      ]
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent && this.signingOfficer ) {
+          this.owner1.jobTitle = this.jobTitle;
+        }
+      },
     },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
-      createMode: 'RW',
+      createVisibility: 'RW',
       autoValidate: true
+      // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
       section: 'personalInformationSection',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -435,8 +435,8 @@ foam.CLASS({
       factory: function() {
         return this.PersonalIdentification.create({});
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: {
         class: 'foam.u2.detail.SectionedDetailView',
@@ -474,8 +474,8 @@ foam.CLASS({
         ],
         isHorizontal: true
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     }),
     {
@@ -498,8 +498,13 @@ foam.CLASS({
           }
         };
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.jobTitle = this.adminJobTitle;
+        }
+      },
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -522,8 +527,8 @@ foam.CLASS({
       name: 'adminPhone',
       section: 'homeAddressSection',
       label: 'Phone Number',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
+      visibility: function(signingOfficer) {
+        return signingOfficer ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -613,23 +618,28 @@ foam.CLASS({
       width: 100,
       gridColumns: 6,
       validationPredicates: [
-      {
-        args: ['adminFirstName', 'signingOfficer'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.AND(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
-                }), 0)
-            ),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true)
-          );
-        },
-        errorString: 'Please enter first name with least 1 character.'
+        {
+          args: ['adminFirstName', 'signingOfficer'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+                e.GT(
+                  foam.mlang.StringLength.create({
+                    arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.ADMIN_FIRST_NAME
+                  }), 0)
+              ),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true)
+            );
+          },
+          errorString: 'Please enter first name with least 1 character.'
+        }
+      ],
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.firstName = this.adminFirstName;
+        }
       }
-    ]
     },
     {
       class: 'String',
@@ -638,12 +648,17 @@ foam.CLASS({
       section: 'signingOfficerEmailSection',
       documentation: 'Signing officer \' last name',
       width: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      postSet: function() {
+        if ( this.userOwnsPercent ) {
+          this.owner1.lastName = this.adminLastName;
+        }
+      }
     },
     {
       class: 'String',
       name: 'signingOfficerEmail',
-      label: 'Enter your signing officer\'s email',
+      label: 'Enter a signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
       placeholder: 'example@email.com',
@@ -734,6 +749,24 @@ foam.CLASS({
             }
         };
       },
+      postSet: function() {
+        if ( this.businessTypeId === 1 ) { // 'Sole Proprietorship'
+          if ( this.signingOfficer ) {
+              this.businessDirectors[0] = net.nanopay.model.BusinessDirector.create({
+                firstName: this.firstName,
+                lastName: this.lastName
+              });
+          }
+          else {
+            this.businessDirectors[0] = net.nanopay.model.BusinessDirector.create({
+              firstName: this.adminFirstName != null ? this.adminFirstName : null,
+              lastName: this.adminLastName != null ? this.adminLastName : null
+            });
+          }
+        } else {
+          this.businessDirectors = null;
+        }
+      },
       validationPredicates: [
         {
           args: ['businessTypeId', 'signingOfficer'],
@@ -822,14 +855,14 @@ foam.CLASS({
         isHorizontal: true
       }
     },
-    foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
       view: {
         class: 'foam.u2.TextField',
         placeholder: 'Enter your operating name'
       },
-      visibilityExpression: function(operatingUnderDifferentName) {
-        return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(operatingUnderDifferentName) {
+        return operatingUnderDifferentName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -912,8 +945,8 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       label: 'Federal Tax ID Number (EIN)',
       documentation: 'Federal Tax ID Number (EIN)',
-      visibilityExpression: function(countryOfBusinessFormation) {
-        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1103,9 +1136,9 @@ foam.CLASS({
 
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
           } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
           }
         });
       },
@@ -1158,21 +1191,20 @@ foam.CLASS({
 
         this.clearProperty('ownershipPercent');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       class: 'Boolean',
       name: 'publiclyTraded',
       section: 'ownershipAmountSection',
-      label: '',
-      label2: 'This is a publicly traded company',
+      label: 'This is a publicly traded company',
       postSet: function(_, n) {
         if ( n ) this.clearProperty('owner1');
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners == 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1209,19 +1241,139 @@ foam.CLASS({
     }),
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 1
+      index: 1,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner1$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true),
+            e.AND(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER1']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner1 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 2
+      index: 2,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner2$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 2),
+            e.AND(
+              e.GTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 2),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER2']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner2 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 3
+      index: 3,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner3$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 3),
+            e.AND(
+              e.GTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 3),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER3']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner3 is invalid.'
+      }
+     ]
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 4
+      index: 4,
+      validationPredicates: [
+      {
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner4$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 4),
+            e.AND(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 4),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER4']
+              }), true)
+            )
+          );
+        },
+        errorString: 'Owner4 is invalid.'
+      }
+     ]
+    },
+    {
+      class: 'FObjectArray',
+      name: 'businessDirectors',
+      label: '',
+      of: 'net.nanopay.model.BusinessDirector',
+      section: 'directorsInfoSection',
+      view: {
+        class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+        mode: 'RW',
+        enableAdding: true,
+        enableRemoving: true,
+        defaultNewItem: ''
+      },
+      autoValidate: true,
+      validationTextVisible: true,
+      validateObj: function(businessDirectors) {
+        if ( this.signingOfficer && (this.businessTypeId === 3 || this.businessTypeId === 5 || this.businessTypeId == 6) ) {
+           if ( businessDirectors.length < 1 )
+            return 'Please enter director\'s information.'
+        }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'directorsListed',
+      section: 'directorsInfoSection',
+      label: 'I certify that all directors have been listed.',
+      validationPredicates: [
+       {
+         args: ['businessTypeId', 'directorsListed', 'signingOfficer'],
+         predicateFactory: function(e) {
+           return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.DIRECTORS_LISTED, true),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_TYPE_ID, 1),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_TYPE_ID, 2),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_TYPE_ID, 4),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_TYPE_ID, 7),
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+          );
+         },
+         errorString: 'You must certify that all directors have been listed.'
+       }
+      ]
     },
     {
       name: 'beneficialOwnersTable',
@@ -1251,8 +1403,8 @@ foam.CLASS({
           'ownershipPercent'
         ]
       },
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners > 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -1283,8 +1435,8 @@ foam.CLASS({
 
         return sum;
       `,
-      visibilityExpression: function(totalOwnership) {
-        return Number(totalOwnership) > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(totalOwnership) {
+        return Number(totalOwnership) > 100 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
@@ -1292,7 +1444,10 @@ foam.CLASS({
         {
           args: ['totalOwnership'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100);
+            return e.OR (
+              e.LTE(net.nanopay.sme.onboarding.USBusinessOnboarding.TOTAL_OWNERSHIP, 100),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
+            );
           },
           errorString: 'The total Ownership should less than 100%'
         }
@@ -1304,18 +1459,17 @@ foam.CLASS({
       label: 'There are no beneficial owners with 25% or more ownership listed.',
       visibility: 'RO',
       documentation: 'If amountOfOwners property is zero, this message will be display',
-      visibilityExpression: function(amountOfOwners) {
-        return amountOfOwners === 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibility: function(amountOfOwners) {
+        return amountOfOwners === 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
     },
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
-      label: '',
-      label2: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      label: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1340,8 +1494,8 @@ foam.CLASS({
       documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
       docName: 'USD_AFEX_Terms',
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1366,8 +1520,8 @@ foam.CLASS({
       documentation: 'Verifies if the user is accept the dual-party agreement.',
       docName: 'nanopayInternationalPaymentsCustomerAgreement', // TODO Make this the USD version. Waiting on USD doc from complaince
       label: '',
-      visibilityExpression: function(signingOfficer, amountOfOwners) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibility: function(signingOfficer, amountOfOwners) {
+        return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -1432,10 +1586,10 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        DAO uSBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
+        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
 
         USBusinessOnboarding obj = (USBusinessOnboarding) this;
-        USBusinessOnboarding oldObj = (USBusinessOnboarding) uSBusinessOnboardingDAO.find(this.getId());
+        USBusinessOnboarding oldObj = (USBusinessOnboarding) usBusinessOnboardingDAO.find(this.getId());
 
         if ( auth.check(x, "onboarding.update.*") ) return;
 
@@ -1512,13 +1666,32 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
+        this.phone.VERIFIED.writePermissionRequired = false;
+        this.PHONE.label = '';
+        this.ADDRESS.label = '';
+        this.BUSINESS_ADDRESS.label = '';
+
         this.userId$find.then((user) => {
           if ( this.signingOfficer ) {
-            this.USER_OWNS_PERCENT.label2 = user.firstName + ' is one of these owners.';
+            this.USER_OWNS_PERCENT.label = 'I am one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + user.firstName;
-          } else {
-            this.USER_OWNS_PERCENT.label2 = this.adminFirstName + ' is one of these owners.';
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = user.firstName;
+              this.owner1.lastName = user.lastName;
+              this.owner1.jobTitle = user.jobTitle;
+            }
+          } else if ( ! this.signingOfficer ) {
+            this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
+
+            if ( this.userOwnsPercent ) {
+              this.owner1.firstName = this.adminFirstName;
+              this.owner1.lastName = this.adminLastName;
+              this.owner1.jobTitle = this.adminJobTitle;
+            }
+          } else if ( ! userOwnsPercent ) {
+            this.clearProperty('owner1');
           }
         });
         this.owner1.showValidation$ = this.signingOfficer$;

@@ -157,10 +157,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.core.Currency',
       name: 'chosenCurrency',
-      postSet: function() {
-        this.data = this.chosenCurrency;
-      },
       documentation: 'The selected currency showing on the optionsBtn_'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'dao',
+      factory: function() {
+        return this.currencyDAO;
+      }
     }
   ],
 
@@ -172,6 +176,8 @@ foam.CLASS({
         .then((currency) => {
           this.chosenCurrency = currency;
         });
+
+      this.data$.sub(this.updateChosenCurrency);
 
       this
         .addClass(this.myClass())
@@ -190,6 +196,10 @@ foam.CLASS({
   ],
 
   listeners: [
+    async function updateChosenCurrency() {
+      var currencyObj = await this.currencyDAO.find(this.data);
+      this.chosenCurrency = currencyObj;
+    },
     {
       name: 'onClick',
       code: function(e) {
@@ -202,11 +212,10 @@ foam.CLASS({
         }
 
         this.optionPopup_ = this.View.create({});
-
         this.optionPopup_ = this.optionPopup_
           .start('div')
             .addClass('popUpDropDown')
-            .select(this.currencyDAO, function(currency) {
+            .select(this.dao$proxy, function(currency) {
               if ( typeof currency.flagImage === 'string' ) {
                 return this.E()
                   .start('img').addClass(this.myClass('img'))
@@ -216,6 +225,7 @@ foam.CLASS({
                   .add(currency.id)
                   .on('click', function() {
                       self.chosenCurrency = currency;
+                      self.data = currency.id;
                       self.optionPopup_.remove();
                   });
               }

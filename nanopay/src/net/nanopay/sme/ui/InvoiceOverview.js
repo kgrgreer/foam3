@@ -193,7 +193,10 @@ foam.CLASS({
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
     { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
-    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' }
+    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' },
+    { name: 'RECONCILED_MESSAGE', message: 'Reconcile' },
+    { name: 'RECONCILED_SUCCESS', message: 'Invoice successfully reconciled.' },
+    { name: 'REECONCILED_ERROR', message: 'An error occurred reconciling invoice.' }
   ],
 
   constants: [
@@ -332,11 +335,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'canApproveInvoice',
-      factory: function() {
-        this.auth.check(null, 'invoice.pay').then((canPay) => {
-          this.canApproveInvoice = canPay;
-        });
-        return false;
+      expression: async function(invoice$status) {
+        let canPay = await this.auth.check(null, 'invoice.pay');
+        return canPay && invoice$status === this.InvoiceStatus.PENDING_APPROVAL;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'canReconcile',
+      documentation: `This boolean is a check for invoice ability to reconcile.`,
+      expression: function(invoice$payeeReconciled, invoice$payerReconciled, invoice$status, isPayable) {
+       return invoice$status === this.InvoiceStatus.PAID &&
+          (( ! invoice$payerReconciled && isPayable ) ||
+          ( ! invoice$payeeReconciled && ! isPayable ));
       }
     },
     {
@@ -547,6 +558,20 @@ foam.CLASS({
             .add(this.MARK_AS_COMP_MESSAGE)
             .on('click', () => this.markAsComplete())
           .end()
+          .start().addClass('inline-block').show(this.canReconcile$)
+            .addClass('sme').addClass('link-button')
+            .start('img').addClass('icon')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.COMPLETE_ICON)
+            .end()
+            .start('img')
+              .addClass('icon').addClass('hover')
+              .addClass(this.myClass('align-top'))
+              .attr('src', this.COMPLETE_ICON_HOVER)
+            .end()
+            .add(this.RECONCILED_MESSAGE)
+            .on('click', () => this.markAsReconciled())
+          .end()
         .end()
 
         .start().addClass('full-invoice')
@@ -652,10 +677,10 @@ foam.CLASS({
                 .addClass('subheading')
                 .add(this.INVOICE_HISTORY)
               .end()
-              .start({
+              .tag({
                 class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
                 id: this.invoice.id
-              }).end()
+              })
             .end()
           .end()
         .end()
@@ -675,6 +700,15 @@ foam.CLASS({
         invoice: this.invoice
       }));
     },
+
+    function markAsReconciled() {
+      this.invoice[this.isPayable ? 'payerReconciled' : 'payeeReconciled'] = true;
+      this.invoiceDAO.put(this.invoice).then((r) => {
+        this.notify(this.RECONCILED_SUCCESS);
+      }).catch((err) => {
+        this.notify(this.RECONCILED_ERROR, 'error');
+      });
+    }
   ],
 
   actions: [
@@ -763,11 +797,11 @@ foam.CLASS({
     {
       name: 'approve',
       label: 'Approve',
-      isAvailable: function(isPendingApproval) {
-        return this.isPayable && isPendingApproval;
+      isAvailable: function(isPendingApproval, canApproveInvoice) {
+        return this.isPayable && isPendingApproval && canApproveInvoice;
       },
-      isEnabled: function(canApproveInvoice) {
-        return canApproveInvoice;
+      isEnabled: function(isPendingApproval, canApproveInvoice) {
+        return canApproveInvoice && isPendingApproval;
       },
       availablePermissions: ['invoice.pay'],
       code: function(X) {

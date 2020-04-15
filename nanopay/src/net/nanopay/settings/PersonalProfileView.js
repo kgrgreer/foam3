@@ -41,6 +41,7 @@
       width: 150px;
       margin-right: 88px;
       margin-bottom: 8px;
+      display: inline-block;
     }
     ^ .lastName-Text {
       width: 150px;
@@ -269,7 +270,8 @@
     ^ .foam-u2-ActionView-enableTwoFactor,
       .foam-u2-ActionView-disableTwoFactor {
       width: 108px;
-      height: 30px;
+      margin-top: 10px;
+      height: 37px;
       border-radius: 2px;
       border: solid 1px #59a5d5;
     }
@@ -364,8 +366,6 @@
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
       var changePasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
       var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
-      var emailPreferenceProfile = this.ExpandContainer.create({ title: 'Email Preferences', link: '', linkView: '' });
-      var notificationPreferenceProfile = this.ExpandContainer.create({ title: 'Notification Preferences', link: '', linkView: '' });
 
       if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
@@ -380,31 +380,35 @@
       this
       .addClass(this.myClass())
       .start(personalProfile)
-        .start()
-          .start('div')
+        .start().style({ display: 'flex'})
+          .start().style({ display:'inline-block'})
             .start('h2').add("First name").addClass('firstName-Text').end()
-            .start('h2').add("Last name").addClass('lastName-Text').end()
-            .start('h2').add("Job Title").addClass('jobTitle-Text').end()
-          .end()
-          .start('div')
             .start(this.FIRST_NAME).addClass('firstName-Input').end()
+          .end()
+          .start().style({ display:'inline-block', 'margin-left': '50px'})
+            .start('h2').add("Last name").addClass('lastName-Text').end()
             .start(this.LAST_NAME).addClass('lastName-Input').end()
+          .end()
+          .start().style({ display:'inline-block', 'margin-left': '50px'})
+            .start('h2').add("Job Title").addClass('jobTitle-Text').end()
             .start(this.JOB_TITLE).addClass('jobTitle-Input').end()
-          .end()
-          .start('div')
-            .start('h2').add("Email Address").addClass('emailAddress-Text').end()
-            .start('h2').add("Phone Number").end()
-          .end()
-          .start('div')
-            .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
-            .start(this.PHONE_CODE, {mode: foam.u2.DisplayMode.DISABLED}).addClass('phoneNumber-Dropdown').end()
-            .start(this.PHONE).addClass('phoneNumber-Input').end()
-          .end()
-          .start('div')
-            .start({class: 'foam.u2.CheckBox'}, {mode: foam.u2.DisplayMode.DISABLED}).end()
-            .add("Make my profile visible to public").addClass('checkBox-Text').addClass('disabled').end()
-            .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
-          .end()
+          .end()       
+        .end()
+
+        .start('div')
+          .start('h2').add("Email Address").addClass('emailAddress-Text').end()
+          .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
+        .end()
+
+        .start()
+          .start('h2').add("Phone Number").end()
+          .start(this.PHONE).addClass('phoneNumber-Input').end()
+        .end()
+
+        .start('div')
+          .start({class: 'foam.u2.CheckBox'}, {mode: foam.u2.DisplayMode.DISABLED}).end()
+          .add("Make my profile visible to public").addClass('checkBox-Text').addClass('disabled').end()
+          .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
         .end()
       .end();
 
@@ -492,83 +496,6 @@
           }, this.user.twoFactorEnabled$))
         .end()
       .end();
-
-      this
-      .addClass(this.myClass())
-      .start(emailPreferenceProfile)
-        .start('div').addClass('checkbox-Div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice is first seen by the other party").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill requires approval").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill is overdue").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("New Features and updates").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("Unsubscribe all").addClass('unsubscribe-Text').addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .start(this.UPDATE_EMAIL_PREFERENCE).addClass('update-BTN').end()
-        .end()
-      .end();
-
-      this
-      .addClass(this.myClass())
-      .start(notificationPreferenceProfile)
-        .start('div').addClass('checkbox-Div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When a payment is received").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice is first seen by the other party").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill requires approval").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("When an invoice or bill is overdue").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("New Features and updates").addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .tag({class: 'foam.u2.CheckBox'}).add("Unsubscribe all").addClass('unsubscribe-Text').addClass('checkBox-Text')
-        .end()
-        .start('div')
-          .start(this.UPDATE_NOTIFICATION_PREFERENCE).addClass('update-BTN').end()
-        .end()
-      .end()
-    .end();
     }
   ],
 
@@ -602,22 +529,6 @@
         .catch(function (err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
-      }
-    },
-    {
-      name: 'updateEmailPreference',
-      label: 'Update',
-      code: function (X) {
-        var self = this;
-        console.log("UPDATE EMAILS PREFERENCE")
-      }
-    },
-    {
-      name: 'updateNotificationPreference',
-      label: 'Update',
-      code: function (X) {
-        var self = this;
-        console.log("UPDATE NOTIFICATION PREFERENCE")
       }
     },
     {

@@ -10,7 +10,7 @@ public class HexStringArrayParser
   public HexStringArrayParser() {
     super(
       new Alt(
-        new NullParser(),
+        NullParser.instance(),
         new Seq1(3,
           Whitespace.instance(),
           Literal.create("["),

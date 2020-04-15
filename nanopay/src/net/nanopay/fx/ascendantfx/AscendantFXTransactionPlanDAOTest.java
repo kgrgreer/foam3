@@ -150,7 +150,7 @@ public class AscendantFXTransactionPlanDAOTest
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO")).put_(x_, quote);
     test( null != resultQoute, "TransactionQuote was processed" );
     boolean hasAscendantTransaction = false;
     double rate = 0;

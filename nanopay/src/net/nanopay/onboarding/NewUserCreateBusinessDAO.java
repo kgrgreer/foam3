@@ -13,7 +13,6 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
@@ -61,18 +60,8 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
 
-    // We want to use current user spid and context only when the user have
-    // spid.create.<user.spid> permission. Otherwise, set spid="nanopay" and use
-    // system user context for creating user and business.
-    User currentUser = (User) x.get("user");
-    boolean hasSpidCreatePermission = false;
-    if ( currentUser != null ) {
-      AuthService auth = (AuthService) x.get("auth");
-      hasSpidCreatePermission = auth.check(x, "spid.create." + currentUser.getSpid());
-    }
-
     // If we want use the system user, then we need to copy the http request/appconfig to system context
-    X sysContext = hasSpidCreatePermission ? x : getX()
+    X sysContext = getX()
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
@@ -165,22 +154,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       .setBusinessName(user.getOrganization())
       .setOrganization(user.getOrganization())
       .setAddress(businessAddress)
-      .setSpid(hasSpidCreatePermission ? currentUser.getSpid() : "nanopay")
-      // We need to be able to send emails to businesses, but until now we were
-      // avoiding giving businesses an email address. However, in Ablii users
-      // are always acting as a business, meaning the payer and payee of every
-      // invoice are always businesses, and therefore we need an email address
-      // somehow associated with a business so that we can send payment-related
-      // emails to it.
-      // We have a few options:
-      //   1. Set the email address of the business to the email address of the
-      //      user that creates it. Allow it to be updated later.
-      //   2. Send emails to everyone in the business when that business needs
-      //      to receive an email.
-      // I'm going with option 1 right now, but I don't know if it's a perfect
-      // solution or if there might be unforeseen consequences for letting
-      // businesses have email addresses.
-      .setEmail(user.getEmail())
+      .setSpid(user.getSpid())
       .setEmailVerified(true)
       .build();
 

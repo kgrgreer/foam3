@@ -10,22 +10,24 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'institutionDAO',
     'branchDAO'
   ],
 
   javaImports: [
-    'net.nanopay.account.Account',
     'foam.core.Currency',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*',
     'foam.dao.ArraySink',
-    'foam.nanos.auth.User',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.*',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'java.util.List'
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.account.Account'
   ],
 
   tableColumns: [
@@ -51,7 +53,11 @@ foam.CLASS({
       permissionRequired: true
     }
   ],
-  
+
+  messages: [
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
+  ],
+
   properties: [
     {
       name: 'name',
@@ -67,7 +73,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       label: 'Account No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
@@ -207,7 +213,6 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
-      
     },
     {
       class: 'URL',
@@ -255,9 +260,16 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
+    },
+    {
+      name: 'denomination',
+      visibility: 'HIDDEN'
     }
   ],
   methods: [
+    function toSummary() {
+      return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
+    },
     {
       name: 'getBankCode',
       type: 'String',

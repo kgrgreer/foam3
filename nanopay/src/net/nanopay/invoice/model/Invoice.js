@@ -21,12 +21,24 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'search', 'payerId', 'payeeId', 'status'
+    'invoiceNumber',
+    'payerId',
+    'payeeId',
+    'issueDate',
+    'payeeReconciled',
+    'payerReconciled',
+    'amount',
+    'status'
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'payerId',
-    'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
+    'id',
+    'invoiceNumber',
+    'payerId',
+    'payeeId',
+    'issueDate',
+    'amount',
+    'status'
   ],
 
   javaImports: [
@@ -73,7 +85,7 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL,
+      updateVisibility: 'RO',
       tableWidth: 110
     },
     {
@@ -138,9 +150,41 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'paymentDate',
-      documentation: `The date and time of when the invoice was paid.`,
+      documentation: `The date and time of when the invoice payment was fully completed.`,
       label: 'Received',
       aliases: ['scheduled', 'paid']
+    },
+    {
+      class: 'Date',
+      name: 'processingDate',
+      documentation: `The date by which the invoice payment begun.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.processingDate ? invoice.processingDate.toISOString().substring(0, 10) : null);
+      }
+    },
+    {
+      class: 'Date',
+      name: 'approvalDate',
+      documentation: `The date by which the invoice approval occured.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.approvalDate ? invoice.approvalDate.toISOString().substring(0, 10) : null);
+      }
+    },
+    {
+      class: 'Date',
+      name: 'paymentSentDate',
+      documentation: `The date by which the invoice payment was sent.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.paymentSentDate ? invoice.paymentSentDate.toISOString().substring(0, 10) : null);
+      }
+    },
+    {
+      class: 'Date',
+      name: 'paymentReceivedDate',
+      documentation: `The date by which the invoice payment was received.`,
+      tableCellFormatter: function(_, invoice) {
+        this.add(invoice.paymentReceivedDate ? invoice.paymentReceivedDate.toISOString().substring(0, 10) : null);
+      }
     },
     {
       class: 'DateTime',
@@ -550,7 +594,23 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
-      visibility: 'RO'
+      visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView',
+        valueView: 'foam.u2.CitationView'
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'payeeReconciled',
+      documentation: `Determines whether invoice has been reconciled by payee.
+          Verifies that the receive amount is correct.`
+    },
+    {
+      class: 'Boolean',
+      name: 'payerReconciled',
+      documentation: `Determines whether invoice has been reconciled by payer.
+          Verifies that the sent amount is correct.`
     }
   ],
 

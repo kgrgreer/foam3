@@ -9,7 +9,7 @@ foam.CLASS({
       {
         name: 'viewApprovalRequests',
         label: 'View Approval Requests',
-        availablePermissions: ['service.approvalrequestdao', 'foam.nanos.auth.User.permission.viewApprovalRequests'],
+        availablePermissions: ['service.approvalRequestDAO', 'foam.nanos.auth.User.permission.viewApprovalRequests'],
         code: async function(X) {
           var m = foam.mlang.ExpressionsSingleton.create({});
           this.__context__.stack.push({
@@ -19,8 +19,8 @@ foam.CLASS({
             exportEnabled: true,
             title: `${this.organization}'s Approval Requests`,
             data: X.approvalRequestDAO.where(m.AND(
-              m.EQ(net.nanopay.approval.ApprovalRequest.OBJ_ID, this.id),
-              m.EQ(net.nanopay.approval.ApprovalRequest.DAO_KEY, 'localUserDAO')
+              m.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, this.id),
+              m.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, 'localUserDAO')
             ))
           });
         }

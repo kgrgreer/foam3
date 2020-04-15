@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'Business',
   extends: 'foam.nanos.auth.User',
 
+  implements: [
+    'foam.core.Validatable',
+    'foam.nanos.auth.Authorizable'
+  ],
+
   imports: [
     'ctrl',
     'invoiceDAO'
@@ -19,10 +24,35 @@ foam.CLASS({
     the business as the 'organization'.
   `,
 
+  javaImports: [
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.dao.ProxyDAO',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthenticationException',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.admin.model.AccountStatus',
+    'static foam.mlang.MLang.*'
+  ],
+
   tableColumns: [
     'id',
     'businessName',
     'email',
+    'address',
+    'compliance',
     'viewAccounts'
   ],
 
@@ -52,7 +82,18 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      section: 'business',
+      visibility: 'RW',
       width: 50
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      label: 'Company',
+      documentation: `The business name displayed to the public. This may differ
+        from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
+      section: 'business'
     },
     {
       class: 'Reference',
@@ -69,7 +110,7 @@ foam.CLASS({
         foam.nanos.auth.user and changes the section from administrative to
         business, so that paymentops and other groups can see this property.
       `,
-      section: 'business',
+      section: 'business'
     },
     {
       class: 'Reference',
@@ -106,8 +147,8 @@ foam.CLASS({
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `,
-      createMode: 'HIDDEN',
-      updateMode: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'administrative'
     },
     {
@@ -228,9 +269,10 @@ foam.CLASS({
       name: 'address',
       documentation: `Returns the postal address of the business associated with the
         User from the Address model.`,
+      section: 'business',
       factory: function() {
         return this.Address.create();
-      },
+      }
     },
     {
       class: 'Boolean',
@@ -253,7 +295,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
       documentation: 'Represents the people who own the majority shares in a business.',
-      createMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
       section: 'business'
     },
     {
@@ -382,31 +424,6 @@ foam.CLASS({
     }
  ],
 
-  javaImports: [
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
-    'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthenticationException',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.UserUserJunction',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.notification.NotificationSetting',
-    'foam.util.SafetyUtil',
-    'java.util.List',
-    'net.nanopay.model.BusinessUserJunction',
-    'static foam.mlang.MLang.*'
-  ],
-
-  implements: [
-    'foam.core.Validatable',
-    'foam.nanos.auth.Authorizable'
-  ],
-
   methods: [
     {
       name: `validate`,
@@ -435,15 +452,11 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
+        boolean hasUserCreatePermission = auth.check(x, "business.create");
 
-        // Prevent privilege escalation by only allowing a user's group to be
-        // set to one that the user doing the put has permission to update.
-        boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
-
-        if ( ! hasGroupUpdatePermission ) {
-          throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
+        if ( ! hasUserCreatePermission ) {
+          throw new AuthorizationException("You do not have permission to create a business.");
         }
       `
     },
@@ -531,15 +544,27 @@ foam.CLASS({
       `
     },
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.label();
+      },
+      javaCode: `
+        return this.label();
+      `
+    },
+    {
       name: 'label',
       type: 'String',
       code: function label() {
+        if ( this.operatingBusinessName ) return this.operatingBusinessName;
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
         return '';
       },
       javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getOperatingBusinessName()) ) return this.getOperatingBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
@@ -602,6 +627,22 @@ foam.CLASS({
         User user = (User) userDAO.find(businessUserJunction.getTargetId());
 
         return user;
+      `
+    },
+    {
+      name: 'validateAuth',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        // check if business is enabled
+        if ( ! this.getEnabled() && AccountStatus.DISABLED == this.getStatus()) {
+          throw new AuthenticationException("Business disabled");
+        }
+
+        if ( this instanceof LifecycleAware && ((LifecycleAware) this).getLifecycleState() != LifecycleState.ACTIVE ) {
+          throw new AuthenticationException("Business is not active");
+        }
       `
     }
   ],

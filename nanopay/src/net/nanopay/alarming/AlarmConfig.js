@@ -106,6 +106,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'sendEmail',
+      label: 'Notify',
       value: true
     },
     {

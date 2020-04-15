@@ -15,6 +15,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
 import foam.test.TestUtils;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
@@ -50,6 +51,7 @@ public class PlaidIntegrationTest extends foam.nanos.test.Test {
       .setLastName("TestLast")
       .setEmail("tester@nanopay.net")
       .setGroup("sme")
+      .setLifecycleState(LifecycleState.ACTIVE)
       .build();
     ((DAO) x.get("localUserDAO")).put(user);
     X userContext = Auth.sudo(x, user);

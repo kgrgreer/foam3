@@ -16,7 +16,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
 
   DAO transactionDAO_;
   DAO invoiceDAO_;
-  DAO transactionQuotePlanDAO_;
+  DAO transactionPlannerDAO;
   DAO groupDAO_;
 
   public DefaultInvoicePaymentService(X x) {
@@ -26,7 +26,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
   public void start() {
     transactionDAO_ = (DAO) getX().get("transactionDAO");
     invoiceDAO_ = (DAO) getX().get("invoiceDAO");
-    transactionQuotePlanDAO_ = (DAO) getX().get("transactionQuotePlanDAO");
+    transactionPlannerDAO = (DAO) getX().get("transactionPlannerDAO");
     groupDAO_ = (DAO) getX().get("groupDAO");
   }
 
@@ -113,7 +113,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
       .setRequestTransaction(requestTransaction)
       .build();
 
-    quote = (TransactionQuote) transactionQuotePlanDAO_.inX(x).put(quote);
+    quote = (TransactionQuote) transactionPlannerDAO.inX(x).put(quote);
 
     if ( quote == null )
       throw new RuntimeException("No Quote for the transaction found.");

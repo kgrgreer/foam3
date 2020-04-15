@@ -21,7 +21,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'transactionDAO',
-    'transactionQuotePlanDAO'
+    'transactionPlannerDAO'
   ],
 
   exports: [
@@ -338,7 +338,7 @@ foam.CLASS({
             });
           }
 
-          this.quote = self.transactionQuotePlanDAO.put(
+          this.quote = self.transactionPlannerDAO.put(
             self.TransactionQuote.create({
               requestTransaction: transaction
             })

@@ -1,0 +1,35 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localFeeEngineDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setRuler(true)
+      .setRulerDaoKey("feeEngineDAO")
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"feeEngineDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localFeeEngineDAO"))
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\"}"
+})
