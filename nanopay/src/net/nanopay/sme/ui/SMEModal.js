@@ -33,6 +33,9 @@ foam.CLASS({
       overflow: hidden;
       background-color: white;
     }
+    .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
+      display: none;
+    }
   `,
 
   methods: [
@@ -49,7 +52,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('inner'))
-          .start(this.CLOSE_MODAL).show(this.closeable$.map(function(c) { return c && this.isHiddenOnSME}))
+          .start(this.CLOSE_MODAL).show(this.closeable$)
             .addClass(this.myClass('X'))
           .end()
           .start()
