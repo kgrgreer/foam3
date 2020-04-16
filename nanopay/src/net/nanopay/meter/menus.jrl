@@ -114,23 +114,6 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"operation.complianceItem",
-  "label":"Compliance Responses",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "browseTitle": "Compliance Responses",
-      "daoKey": "complianceItemDAO",
-      "createEnabled": false,
-      "editEnabled": false
-    }
-  },
-  "parent":"operation"
-})
-
-p({
-  "class":"foam.nanos.menu.Menu",
   "id":"operation.donotsolicit",
   "label":"Do Not Solicit",
   "handler": {

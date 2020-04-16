@@ -2151,9 +2151,6 @@ p({
       .setJournalName("rules")
       .setValidated(true)
       .setRuler(false)
-      .setCluster(false)
-      .setApprovableAware(true)
-      .setApprovableAwareEnabled(false)
       .setPm(true)
       .build();
 

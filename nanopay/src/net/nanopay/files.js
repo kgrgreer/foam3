@@ -786,6 +786,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
 
+  //onboarding
+  { name: 'net/nanopay/sme/onboarding/BusinessDirectorArrayView', flags: ['web'] },
+
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
@@ -1058,6 +1061,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
   { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
+  { name: 'net/nanopay/sme/ruler/InvitationAntiSpamCheckRule' },
   { name: 'net/nanopay/sme/ui/ErrorPageView', flags: ['web']  },
 
   // relationships
