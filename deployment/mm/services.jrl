@@ -44,7 +44,7 @@ p({
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
 })
 
-// NOTE: see MedusaEntryInternalDAO for access to this DAO.
+// NOTE: see MedusaInternalDAO for access to this DAO.
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "internalMedusaEntryDAO",
@@ -84,15 +84,15 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.medusa.MedusaEntryReplayingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryBlockingDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.MedusaReplayingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBlockingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaRegionDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaClientDAO.Builder(x)
       .setDelegate(new foam.dao.BatchServerDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaServerDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryLinkDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryDistributionDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryInternalDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaLinkDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaDistributionDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
       .build())
       .build())
@@ -133,9 +133,9 @@ p({
       .setRuler(false)
       .setPm(true)
       .setDecorator(new foam.dao.BatchServerDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryConsensusDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryRoutingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaEntryInternalDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaRoutingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
       .build())
       .build())
