@@ -18,6 +18,8 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       width: 540px;
+      max-height: 80vh;
+      overflow-y: scroll;
     }
     .section-container {
       padding: 24px 24px 32px;

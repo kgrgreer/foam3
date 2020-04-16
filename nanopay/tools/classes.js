@@ -244,6 +244,7 @@ var classes = [
   'net.nanopay.admin.SkipUserEmailVerification',
   'net.nanopay.admin.predicate.IsCurrentUser',
   'net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule',
+  'net.nanopay.sme.ruler.InvitationAntiSpamCheckRule',
 
   // compliance Email notification
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',
