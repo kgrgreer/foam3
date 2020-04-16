@@ -33,6 +33,9 @@ foam.CLASS({
       overflow: hidden;
       background-color: white;
     }
+    .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
+      display: none;
+    }
   `,
 
   methods: [
