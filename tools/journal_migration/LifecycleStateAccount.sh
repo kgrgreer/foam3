@@ -16,7 +16,7 @@ if [ -f "$JOURNAL_HOME/accounts" ]
 then
     echo "Found $JOURNAL_HOME/accounts"
     echo "Stripping digest..."
-    perl -p -i -e 's/},{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/accounts
+    perl -p -i -e 's/},\{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/accounts
     echo "Finished stripping digest..."
 
     echo "Migrating $JOURNAL_HOME/accounts ..."
@@ -42,7 +42,7 @@ if [ -f "$JOURNAL_HOME/bankAccounts" ]
 then
     echo "Found $JOURNAL_HOME/bankAccounts"
     echo "Stripping digest..."
-    perl -p -i -e 's/},{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/bankAccounts
+    perl -p -i -e 's/},\{\"algorithm\":(.*)}/}/g;' "$JOURNAL_HOME"/bankAccounts
     echo "Finished stripping digest..."
 
     echo "Migrating $JOURNAL_HOME/bankAccounts ..."

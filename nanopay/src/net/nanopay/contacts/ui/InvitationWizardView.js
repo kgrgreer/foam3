@@ -96,8 +96,9 @@ foam.CLASS({
             X.closeDialog();
           })
           .catch((e) => {
+            let message = e.message || this.INVITE_FAILURE;
             this.ctrl.add(this.NotificationMessage.create({
-              message: this.INVITE_FAILURE,
+              message: message,
               type: 'error'
             }));
           });
