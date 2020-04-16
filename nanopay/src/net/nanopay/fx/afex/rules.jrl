@@ -217,7 +217,7 @@ p({
   "priority":100,
   "ruleGroup":"AFEX",
   "daoKey":"afexBusinessDAO",
-  "operation":1,
+  "operation":0,
   "after":true,
   "predicate":{
     "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
@@ -239,7 +239,7 @@ p({
   "priority":100,
   "ruleGroup":"AFEX",
   "daoKey":"afexBusinessDAO",
-  "operation":1,
+  "operation":0,
   "after":true,
   "predicate":{
     "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
