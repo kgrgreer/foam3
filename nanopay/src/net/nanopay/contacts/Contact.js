@@ -274,7 +274,7 @@ foam.CLASS({
       section: 'stepTwo',
       label: '',
       visibility: function(createBankAccount$country) {
-        return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;;
+        return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
         return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });

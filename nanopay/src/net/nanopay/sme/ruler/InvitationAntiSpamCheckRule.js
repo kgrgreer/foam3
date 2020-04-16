@@ -2,7 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.sme.ruler',
   name: 'InvitationAntiSpamCheckRule',
 
-  documentation: `Prevents the same invitation from being sent if sent within 2 hours of latest invitation.`,
+  documentation: `
+    Prevents the invitation from being sent if the hourly time difference between the invitation and the
+    latest invitation with the same inviter/invitee pair is under the minTimeoutThreshold.
+  `,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -14,6 +17,21 @@ foam.CLASS({
     'java.util.Date',
     'java.util.List',
     'static foam.mlang.MLang.*'
+  ],
+
+  messages: [
+    { name: 'TIMEOUT_ERROR', message: 'You have recently invited this user. Please try again at a later time.' }
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'minTimeoutThreshold',
+      value: 2,
+      documentation: `
+        The minimum value of the difference in hours between the new invitation and the latest invitation
+        with the same inviter/invitee pair.`
+    }
   ],
 
   methods: [
@@ -39,8 +57,8 @@ foam.CLASS({
           Date now = new Date();
           long diff = now.getTime() - latestInvitation.getTimestamp().getTime();
           long hoursSinceLastSent = hoursUnit.convert(diff, TimeUnit.MILLISECONDS);
-          if ( hoursSinceLastSent <= 2 ) {
-            throw new RuntimeException("You have recently invited this user. Please try again at a later time.");
+          if ( hoursSinceLastSent <= getMinTimeoutThreshold() ) {
+            throw new RuntimeException(TIMEOUT_ERROR);
           }
         }
       `

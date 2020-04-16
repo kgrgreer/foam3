@@ -36,8 +36,8 @@ foam.CLASS({
   messages: [
     { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
-    { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added.  An email invitation was sent.' },
-    { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
+    { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
+    { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' }
   ],
 
   properties: [
@@ -98,11 +98,12 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         this.contact = await this.user.contacts.put(this.data);
-        let canInvite = this.data.createBankAccount.country != 'IN' ? true : false;
+        let canInvite = this.data.createBankAccount.country != 'IN';
         if ( this.data.shouldInvite && canInvite ) {
           try {
-            await this.sendInvite(false);
-            this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
+            if ( await this.sendInvite(false) ) {
+              this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
+            }
           } catch (err) {
             var msg = err.message || this.GENERIC_PUT_FAILED;
             this.ctrl.notify(msg, 'error');
@@ -129,15 +130,14 @@ foam.CLASS({
         message: ''
       });
       try {
-        this.invitationDAO.put(invite);
+        await this.invitationDAO.put(invite);
         if ( showToastMsg ) {
           this.ctrl.notify(this.INVITE_SUCCESS);
         }
         // Force the view to update.
         this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
-        var msg = e.message || this.INVITE_FAILURE;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, 'error');
         return false;
       }
       return true;
