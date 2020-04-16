@@ -34,7 +34,6 @@ foam.CLASS({
             AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
 
             if ( afexBusiness == null ) {
-              sendFailureEmail(x, String.valueOf(account.getId()), "", null);
               return;
             }
             DAO businessDAO = (DAO) x.get("businessDAO");
