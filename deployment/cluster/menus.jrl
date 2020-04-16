@@ -27,7 +27,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"medusaEntryDAO",
+      "daoKey":"medusaMediatorDAO",
       "browseViews":[{
         "class":"foam.comics.v2.BrowseView",
         "name":"Table",
