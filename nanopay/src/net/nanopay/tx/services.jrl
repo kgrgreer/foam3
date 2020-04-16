@@ -30,7 +30,7 @@ p({
     inner = new net.nanopay.tx.TransactionDAO(x, inner);
 
     if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      inner = new foam.nanos.medusa.MedusaEntryAdapterDAO.Builder(x)
+      inner = new foam.nanos.medusa.MedusaAdapterDAO.Builder(x)
           .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("localTransactionDAO").build())
           .setDelegate(inner)
           .build();
