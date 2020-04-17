@@ -105,25 +105,14 @@ p({
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
   "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
-      }
-    ]
-  },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule"
   },
-  "enabled":false,
-  "saveHistory":true
+  "enabled":true,
+  "saveHistory":false
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -148,8 +137,8 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule2"
   },
-  "enabled":false,
-  "saveHistory":true
+  "enabled":true,
+  "saveHistory":false
 })
 
 p({

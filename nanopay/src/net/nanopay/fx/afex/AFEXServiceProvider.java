@@ -339,7 +339,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .setAccountOwnerLastName(pad.getLastName())
       .setAPIKey(afexBusiness.getApiKey())
       .setBankDetailsVerified(bankAccount.getStatus() == BankAccountStatus.VERIFIED)
-      .setBankName(bankResponse.getInstitutionName())
+      .setBankName(bankResponse != null ? bankResponse.getInstitutionName() : bankAccount.findInstitution(x).getName())
       .setCurrency(bankAccount.getDenomination())
       .build();
     if ( bankAccount instanceof CABankAccount ) {
