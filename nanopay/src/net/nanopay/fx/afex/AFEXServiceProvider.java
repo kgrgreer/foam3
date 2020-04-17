@@ -528,7 +528,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
     } catch(Throwable t) {
-      logger_.debug("A beneficiary does not exist for: " + payeeUserId);
+      logger_.debug("A beneficiary does not exist for: " + beneficiaryId);
     }
     return beneficiaryResponse;
   }

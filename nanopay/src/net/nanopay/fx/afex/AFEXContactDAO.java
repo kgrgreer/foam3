@@ -101,7 +101,6 @@ public class AFEXContactDAO
   }
 
   protected boolean afexBeneficiaryExists(X x, Long contactId, Long ownerId) {
-    boolean beneficiaryExists = false;
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
@@ -110,24 +109,7 @@ public class AFEXContactDAO
         EQ(AFEXBeneficiary.OWNER, ownerId)
       )
     );
-    if ( null != afexBeneficiary ) return true;
-    try {
-      FindBeneficiaryResponse existingBeneficiary = afexServiceProvider.findBeneficiary(String.valueOf(contactId), ownerId);
-      if ( existingBeneficiary != null ) {
-        beneficiaryExists = true;
-        afexBeneficiary = new AFEXBeneficiary();
-        afexBeneficiary.setContact(contactId);
-        afexBeneficiary.setOwner(ownerId);
-        afexBeneficiary.setStatus(existingBeneficiary.getStatus());
-        afexBeneficiaryDAO.put(afexBeneficiary);
-      } else {
-        beneficiaryExists = false;
-      }
-    } catch(Throwable t) {
-      // TODO: Log
-    } 
-
-    return beneficiaryExists;
+    return null != afexBeneficiary;
   }
 
   protected void createAFEXBeneficiary(X x, long beneficiaryId, long bankAccountId, long beneficiaryOwnerId) {
