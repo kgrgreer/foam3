@@ -410,7 +410,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
     } catch(Throwable t) {
-      logger_.error("Error finding AFEX beneficiary.", t);
+      logger_.debug("A beneficiary does not exist for: " + payeeUserId);
     }
     return beneficiaryResponse;
   }
@@ -535,15 +535,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBeneficiaryResponse payeeInfo = null;
     AFEXBusiness afexBusiness = getAFEXBusiness(x, businessId);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + businessId);
-    FindBeneficiaryRequest request = new FindBeneficiaryRequest();
-    request.setVendorId(payeeUserId);
-    request.setClientAPIKey(afexBusiness.getApiKey());
-    try {
-      payeeInfo = this.afexClient.findBeneficiary(request);
-    } catch(Throwable t) {
-      logger_.error("Error getting AFEX beneficiary.", t);
-    }
-    return payeeInfo;
+    return findBeneficiary(payeeUserId, afexBusiness.getApiKey());
   }
 
   public int createTrade(Transaction transaction) throws  RuntimeException {
