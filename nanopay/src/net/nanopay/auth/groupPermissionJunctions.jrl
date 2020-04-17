@@ -308,6 +308,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-supp
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.menuDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.ticketDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.ticketMessageDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"AccountWithDetailModel.read.AccountNumber"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"AccountWithDetailModel.read.Holder"})
