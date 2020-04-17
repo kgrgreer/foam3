@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import foam.core.ContextAwareSupport;
@@ -32,11 +33,13 @@ import net.nanopay.bank.USBankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
 import net.nanopay.model.PadCapture;
+import net.nanopay.model.PersonalIdentification;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
@@ -69,7 +72,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return onboardBusiness(business, bankAccount);
   }
 
-  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException{
+  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException {
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     if ( bankAccount == null ||  bankAccount.getStatus() != BankAccountStatus.VERIFIED ) return false;
@@ -181,6 +184,121 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     return false;
 
+  }
+
+  public void pushSigningOfficers(Business business, String clientKey) {
+    if ( business == null ) return;
+    List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+
+    for ( User officer : signingOfficers ) {
+      pushSigningOfficer(business, officer, clientKey);
+    } 
+  }
+
+  public void pushSigningOfficer(Business business, User officer, String clientKey) {
+    StringBuilder name = new StringBuilder();
+    name.append(officer.getFirstName());
+    name.append(" ");
+    name.append(officer.getLastName());
+    AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
+    request.setApiKey(clientKey);
+    request.setName(name.toString());
+    int ownership = getSigningOfficerOwnershipPercentage(business, officer);
+    request.setPercentOwnership(String.valueOf(ownership));
+    request.setDirector("true");
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+      request.setDateOfBirth(dateFormat.format(officer.getBirthday()));
+    } catch(Exception e) {
+      logger_.error("Failed parse beneficial owner birthday.", e);
+    }
+    Address address = officer.getAddress();
+    if ( address != null ) {
+      request.setAddress1(address.getAddress());
+      request.setCity(address.getCity());
+      request.setCountryCode(address.getCountryId());
+      request.setStateRegion(address.getRegionId());
+      request.setZip(address.getPostalCode());
+    }
+
+    PersonalIdentification identification = officer.getIdentification();
+    if ( identification != null ) {
+      request.setCompanyOfficerIdentificationIssuingType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
+      request.setCompanyOfficerIdentificationNumber(identification.getIdentificationNumber());
+      request.setCompanyOfficerIdentificationIssuingCountry(identification.getCountryId());
+      request.setCompanyOfficerIdentificationIssuingRegion(identification.getRegionId());
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        request.setCompanyOfficerIdentificationExpirationDate(dateFormat.format(identification.getExpirationDate()));
+      } catch(Exception e) {
+        logger_.error("Failed parse company officer identification expiration date.", e);
+      }
+    }
+
+    addCompanyOfficer(request);
+  }
+
+  private int getSigningOfficerOwnershipPercentage(Business business, User officer) {
+    if ( business == null ) return 0;
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
+      .select(new ArraySink())).getArray();
+      for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+        if ( beneficialOwner.getFirstName().equals(officer.getFirstName()) 
+            && beneficialOwner.getLastName().equals(officer.getLastName()) )
+          return beneficialOwner.getOwnershipPercent();
+      }
+      return 0;
+  }
+
+  public void pushBeneficialOwners(Business business, String clientKey) {
+    if ( business == null ) return;
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
+      .select(new ArraySink())).getArray();
+
+    for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+      if ( beneficialOwner.getOwnershipPercent() >= 25 ) { // Only push when ownership percentage is greater than 25
+        pushBeneficialOwner(beneficialOwner, clientKey);
+      }
+    } 
+  }
+
+  public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey) {
+    StringBuilder beneficialOwnerName = new StringBuilder();
+    beneficialOwnerName.append(beneficialOwner.getFirstName());
+    beneficialOwnerName.append(" ");
+    beneficialOwnerName.append(beneficialOwner.getLastName());
+    AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
+    request.setApiKey(clientKey);
+    request.setName(beneficialOwnerName.toString());
+    request.setPercentOwnership(String.valueOf(beneficialOwner.getOwnershipPercent()));
+    request.setDirector("false");
+    try {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+      dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+      request.setDateOfBirth(dateFormat.format(beneficialOwner.getBirthday()));
+    } catch(Exception e) {
+      logger_.error("Failed parse beneficial owner birthday.", e);
+    }
+    Address address = beneficialOwner.getAddress();
+    if ( address != null ) {
+      request.setAddress1(address.getAddress());
+      request.setCity(address.getCity());
+      request.setCountryCode(address.getCountryId());
+      request.setStateRegion(address.getRegionId());
+      request.setZip(address.getPostalCode());
+    }
+
+    addCompanyOfficer(request);
+  }
+
+  public void addCompanyOfficer(AddCompanyOfficerRequest request) {
+    try {
+      afexClient.addCompanyOfficer(request);
+    } catch(Exception e) {
+      logger_.error("Failed to push beneficial owner: " + request.getName(), e);
+    }
   }
 
   public boolean isFXEnrolled(Business business, User signingOfficer) {
