@@ -69,9 +69,6 @@ foam.CLASS({
       code: function(X) {
         if ( X.data.disableMenuMode ) {
           X.closeDialog();
-        }
-        else if (X.subStack && X.subStack.depth > 1 ) {
-          X.subStack.back();
         } else {
           X.pushMenu('sme.menu.toolbar');
         }
