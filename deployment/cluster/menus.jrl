@@ -1,5 +1,15 @@
 p({
   "class":"foam.nanos.menu.Menu",
+  "id":"medusa",
+  "label":"Medusa / Clustering",
+  "handler":{"class":"foam.nanos.menu.SubMenu"},
+  "parent":"",
+  "icon":"images/parent-menu-icon.png",
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
   "id":"admin.clusterConfig",
   "label":"Cluster Config",
   "handler":{
@@ -16,7 +26,7 @@ p({
       }]
     }
   },
-  "parent":"admin"
+  "parent":"medusa"
 })
 
 p({
@@ -37,7 +47,7 @@ p({
       }]
     }
   },
-  "parent":"admin"
+  "parent":"medusa"
 })
 
 p({
