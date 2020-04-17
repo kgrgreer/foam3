@@ -105,25 +105,14 @@ p({
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
   "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
-      }
-    ]
-  },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule"
   },
-  "enabled":false,
-  "saveHistory":true
+  "enabled":true,
+  "saveHistory":false
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -148,8 +137,8 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule2"
   },
-  "enabled":false,
-  "saveHistory":true
+  "enabled":true,
+  "saveHistory":false
 })
 
 p({
@@ -204,6 +193,50 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXSubmitPaymentRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c1419029-a8fe-136e-a29e-eef5c17e60cc",
+  "name":"AFEX Push Beneficial Owner",
+  "documentation":"Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.",
+  "priority":100,
+  "ruleGroup":"AFEX",
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName": "apiKey",
+    "propValue": null
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBeneficialOwnerRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c1419029-a8fe-136e-a29e-eef5c17e60co",
+  "name":"AFEX Push Signing Officer",
+  "documentation":"Rule to push Signing Officers to AFEX after AFEX Business is created.",
+  "priority":100,
+  "ruleGroup":"AFEX",
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName": "apiKey",
+    "propValue": null
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXSigningOfficerRule"
   },
   "enabled":true,
   "saveHistory":true

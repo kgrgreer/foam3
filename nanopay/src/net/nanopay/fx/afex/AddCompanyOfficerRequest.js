@@ -19,7 +19,7 @@ foam.CLASS({
       name: "Director"
     },
     {
-      class: 'Date',
+      class: 'String',
       name: "DateOfBirth"
     },
     {
@@ -41,6 +41,34 @@ foam.CLASS({
     {
       class: "String",
       name: "Zip"
-    }
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationIssuingType"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationNumber"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationIssuingAgency"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationIssuingCountry"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationIssuingRegion"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerIdentificationExpirationDate"
+    },
+    {
+      class: "String",
+      name: "CompanyOfficerTaxIdentificationNumber"
+    },
   ]
 });

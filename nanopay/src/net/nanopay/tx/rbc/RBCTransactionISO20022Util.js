@@ -231,37 +231,6 @@ foam.CLASS({
           cdtrAcct.setIdentification(acctId2);
           cdtTrfTxInf.setCreditorAccount(cdtrAcct);
 
-          // Remittance Information
-          net.nanopay.iso20022.RemittanceLocation2 rltdRmtInf = new net.nanopay.iso20022.RemittanceLocation2();
-          rltdRmtInf.setRemittanceLocationMethod(net.nanopay.iso20022.RemittanceLocationMethod2Code.EMAL);
-          rltdRmtInf.setRemittanceLocationElectronicAddress(senderEmail);
-          net.nanopay.iso20022.NameAndAddress10 rmtLctnPstlAdr = new net.nanopay.iso20022.NameAndAddress10();
-          rmtLctnPstlAdr.setName(getName(payee));
-          net.nanopay.iso20022.PostalAddress6 adr = new net.nanopay.iso20022.PostalAddress6();
-          adr.setCountry(payeeAddress.getCountryId());
-          rmtLctnPstlAdr.setAddress(adr);
-          rltdRmtInf.setRemittanceLocationPostalAddress(rmtLctnPstlAdr);
-          cdtTrfTxInf.setRelatedRemittanceInformation(new net.nanopay.iso20022.RemittanceLocation2[]{rltdRmtInf});
-          net.nanopay.iso20022.RemittanceInformation5 rmtInf = new net.nanopay.iso20022.RemittanceInformation5();
-          net.nanopay.iso20022.StructuredRemittanceInformation7 strd = new net.nanopay.iso20022.StructuredRemittanceInformation7();
-          net.nanopay.iso20022.ReferredDocumentInformation3 rfrdDocInf = new net.nanopay.iso20022.ReferredDocumentInformation3();
-          net.nanopay.iso20022.ReferredDocumentType2 tp3 = new net.nanopay.iso20022.ReferredDocumentType2();
-          net.nanopay.iso20022.ReferredDocumentType1Choice cdOrPrtry = new net.nanopay.iso20022.ReferredDocumentType1Choice();
-          cdOrPrtry.setCd(net.nanopay.iso20022.DocumentType5Code.CREN); // TODO CREN or CINV ?
-          tp3.setCodeOrProprietary(cdOrPrtry);
-          rfrdDocInf.setType(tp3);
-          rfrdDocInf.setNumber(String.valueOf(invoice.getId()));
-          rfrdDocInf.setRelatedDate(invoice.getIssueDate());
-          strd.setReferredDocumentInformation(new net.nanopay.iso20022.ReferredDocumentInformation3[]{rfrdDocInf});
-          net.nanopay.iso20022.RemittanceAmount1 rfrdDocAmt = new net.nanopay.iso20022.RemittanceAmount1();
-          net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount duePyblAmt = new net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount();
-          duePyblAmt.setCcy(invoice.getDestinationCurrency());
-          duePyblAmt.setText(toDecimal(invoice.getAmount()));
-          rfrdDocAmt.setDuePayableAmount(duePyblAmt);
-          strd.setReferredDocumentAmount(rfrdDocAmt);
-          rmtInf.setStructured(new net.nanopay.iso20022.StructuredRemittanceInformation7[]{strd});
-          cdtTrfTxInf.setRemittanceInformation(rmtInf);
-
           // Add credit message 
           cdtTrfTxInfList.add(cdtTrfTxInf);
           transactionCount++;
@@ -490,37 +459,6 @@ foam.CLASS({
           dbtrAcct.setIdentification(acctId);
           dbtrAcct.setCurrency(txn.getSourceCurrency());
           drctDbtTxInf.setDebtorAccount(dbtrAcct);
-
-          // Remittance Information
-          net.nanopay.iso20022.RemittanceLocation2 rltdRmtInf = new net.nanopay.iso20022.RemittanceLocation2();
-          rltdRmtInf.setRemittanceLocationMethod(net.nanopay.iso20022.RemittanceLocationMethod2Code.EMAL);
-          rltdRmtInf.setRemittanceLocationElectronicAddress(senderEmail);
-          net.nanopay.iso20022.NameAndAddress10 rmtLctnPstlAdr = new net.nanopay.iso20022.NameAndAddress10();
-          rmtLctnPstlAdr.setName(getName(sender));
-          net.nanopay.iso20022.PostalAddress6 adr = new net.nanopay.iso20022.PostalAddress6();
-          adr.setCountry(senderAddress.getCountryId());
-          rmtLctnPstlAdr.setAddress(adr);
-          rltdRmtInf.setRemittanceLocationPostalAddress(rmtLctnPstlAdr);
-          drctDbtTxInf.setRelatedRemittanceInformation(new net.nanopay.iso20022.RemittanceLocation2[]{rltdRmtInf});
-          net.nanopay.iso20022.RemittanceInformation5 rmtInf = new net.nanopay.iso20022.RemittanceInformation5();
-          net.nanopay.iso20022.StructuredRemittanceInformation7 strd = new net.nanopay.iso20022.StructuredRemittanceInformation7();
-          net.nanopay.iso20022.ReferredDocumentInformation3 rfrdDocInf = new net.nanopay.iso20022.ReferredDocumentInformation3();
-          net.nanopay.iso20022.ReferredDocumentType2 tp3 = new net.nanopay.iso20022.ReferredDocumentType2();
-          net.nanopay.iso20022.ReferredDocumentType1Choice cdOrPrtry = new net.nanopay.iso20022.ReferredDocumentType1Choice();
-          cdOrPrtry.setCd(net.nanopay.iso20022.DocumentType5Code.CREN); // TODO CREN or CINV ?
-          tp3.setCodeOrProprietary(cdOrPrtry);
-          rfrdDocInf.setType(tp3);
-          rfrdDocInf.setNumber(String.valueOf(invoice.getId()));
-          rfrdDocInf.setRelatedDate(invoice.getIssueDate());
-          strd.setReferredDocumentInformation(new net.nanopay.iso20022.ReferredDocumentInformation3[]{rfrdDocInf});
-          net.nanopay.iso20022.RemittanceAmount1 rfrdDocAmt = new net.nanopay.iso20022.RemittanceAmount1();
-          net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount duePyblAmt = new net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount();
-          duePyblAmt.setCcy(invoice.getSourceCurrency());
-          duePyblAmt.setText(toDecimal(invoice.getSourceAmount()));
-          rfrdDocAmt.setDuePayableAmount(duePyblAmt);
-          strd.setReferredDocumentAmount(rfrdDocAmt);
-          rmtInf.setStructured(new net.nanopay.iso20022.StructuredRemittanceInformation7[]{strd});
-          drctDbtTxInf.setRemittanceInformation(rmtInf);
 
           // Add debit message 
           drctDbtTxInfList.add(drctDbtTxInf);

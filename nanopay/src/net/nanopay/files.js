@@ -326,6 +326,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBeneficialOwnerRule' },
+  { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -1061,6 +1063,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
   { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
+  { name: 'net/nanopay/sme/ruler/InvitationAntiSpamCheckRule' },
   { name: 'net/nanopay/sme/ui/ErrorPageView', flags: ['web']  },
 
   // relationships
