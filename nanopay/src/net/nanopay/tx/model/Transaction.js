@@ -232,7 +232,7 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `,
-      tableWidth: 160
+      tableWidth: 180
     },
     {
       name: 'isQuoted',
@@ -391,7 +391,7 @@ foam.CLASS({
         outputter.outputValue(get_(obj));
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
-      tableWidth: 130,
+      tableWidth: 190,
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
@@ -424,7 +424,8 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'basicInfo',
       label: 'Originating Source',
-      includeInDigest: true
+      includeInDigest: true,
+      tableWidth: 170
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -639,7 +640,8 @@ foam.CLASS({
           .addClass('amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
-      }
+      },
+      tableWidth: 160
     },
     {
       class: 'UnitValue',
@@ -913,7 +915,8 @@ foam.CLASS({
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO'
+      readVisibility: 'RO',
+      tableWidth: 130
     }
   ],
 
