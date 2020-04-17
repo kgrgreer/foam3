@@ -5,6 +5,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.session.Session',
+    'foam.core.X',
     'foam.nanos.auth.LifecycleState'
   ],
 
@@ -27,6 +28,11 @@ foam.CLASS({
 
         // Override session user and context for tests
         Session session = x.get(Session.class);
+        
+        //save the actual Context
+        long oldUserId = session.getUserId();
+        X oldContext = session.getContext();
+        
         session.setUserId(1000);
         session.setContext(session.applyTo(x));
 
@@ -49,6 +55,10 @@ foam.CLASS({
         // test login by email
         Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
         ResetLoginCount(x, userDAO);
+        
+        //set back the Context
+        session.setUserId(oldUserId);
+        session.setContext(oldContext);
       `
     },
     {
