@@ -18,6 +18,7 @@ foam.CLASS({
     'type',
     'user',
     'entityLabel',
+    'summary',
     'created'
   ],
 
@@ -108,6 +109,26 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       tableWidth: 300
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      expression: function() {
+        return this.toSummary();
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: async function(x) {
+        if ( this.sidniResponse != 0 ) {
+          let response = await this.sidniResponse$find;
+          return response.toSummary();
+        }
+        return "";
+      }
     }
   ]
 });
