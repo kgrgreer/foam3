@@ -531,13 +531,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
-  public FindBeneficiaryResponse getPayeeInfo(String payeeUserId, Long businessId) throws RuntimeException {
-    FindBeneficiaryResponse payeeInfo = null;
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, businessId);
-    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + businessId);
-    return findBeneficiary(payeeUserId, afexBusiness.getApiKey());
-  }
-
   public int createTrade(Transaction transaction) throws  RuntimeException {
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
