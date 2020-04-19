@@ -8,7 +8,7 @@ p({
     "class":"foam.nanos.cron.IntervalSchedule",
     "duration":{
       "class":"foam.nanos.cron.TimeHMS",
-      "second":10
+      "second":1
     }
   },
   "code":"new foam.nanos.medusa.ClusterConfigMonitor(x).execute(x);"
