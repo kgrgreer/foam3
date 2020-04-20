@@ -73,12 +73,24 @@ foam.CLASS({
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-        .add(this.MenuRedirectSMEModalView.create({
-          menu: 'sme.main.contacts',
-          view: {
-            class: `net.nanopay.contacts.ui.${this.modelName}WizardView`,
-            data: this.model_
+        .add(this.slot((data) => {
+          if ( !! data ) {
+            return self.Popup.create(null, self)
+              .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
+                .tag({
+                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
+                  data: self.data,
+                  disableMenuMode: true
+                })
+              .endContext();
           }
+          return self.MenuRedirectSMEModalView.create({
+            menu: 'sme.main.contacts',
+            view: {
+              class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
+              data: self.model_
+            }
+          });
         }))
       .end()
     }

@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Lets the user create a contact from scratch.',
 
   requires: [
+    'foam.u2.ControllerMode',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -52,7 +53,14 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'contact',
       documentation: 'The contact returned after put to contactDAO.'
+    },
+    {
+      name: 'controllerMode',
+      factory: function() {
+        return this.ControllerMode.CREATE;
+      }
     }
+    //controllermode property default to create
   ],
   
   methods: [
@@ -62,10 +70,12 @@ foam.CLASS({
       this.data.copyFrom({
         type: 'Contact',
         group: 'sme'
-      });  
+      });
+      //section titles
+      //edit check on create bank account
     },
     function initE() {
-      var self = this;
+      var self = this; 
       this.addClass('wizard');
       self
         .start(self.Rows)

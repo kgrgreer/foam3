@@ -181,12 +181,13 @@ foam.CLASS({
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'stepOne',
       label: '',
+      updateVisibility: foam.u2.DisplayMode.HIDDEN,
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
           label: X.data.CONFIRM_RELATIONSHIP
         }
-    },
+      },
       validateObj: function(confirm) {
         if ( ! confirm ) {
           return 'Confirmation required.';
@@ -273,9 +274,10 @@ foam.CLASS({
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
       label: '',
-      visibility: function(createBankAccount$country) {
+      createVisibility: function(createBankAccount$country) {
         return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      updateVisibility: foam.u2.DisplayMode.HIDDEN,
       view: function(_, X) {
         return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
       }
