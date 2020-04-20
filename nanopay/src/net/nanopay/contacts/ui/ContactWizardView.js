@@ -35,6 +35,9 @@ foam.CLASS({
   `,
 
   messages: [
+    { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
+    { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
+    { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
     { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
     { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
@@ -55,12 +58,12 @@ foam.CLASS({
       documentation: 'The contact returned after put to contactDAO.'
     },
     {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.CREATE;
-      }
+      class: 'Boolean',
+      name: 'disableMenuMode',
+      documentation: `Set to true when editing a contact from
+      contact controller.`,
+      value: false
     }
-    //controllermode property default to create
   ],
   
   methods: [
@@ -71,7 +74,15 @@ foam.CLASS({
         type: 'Contact',
         group: 'sme'
       });
-      //section titles
+      // override sections titles/subtitles if edit mode
+      if ( this.controllerMode === this.ControllerMode.EDIT ) {
+        this.sections[0].title = this.EDIT_STEP_ONE_TITLE;
+        this.sections[0].subTitle = '';
+        this.sections[1].title = this.EDIT_STEP_TWO_TITLE;
+        this.sections[1].subTitle = '';
+        this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
+        this.sections[2].subTitle = '';
+      }
       //edit check on create bank account
     },
     function initE() {
@@ -103,7 +114,7 @@ foam.CLASS({
           .endContext()
         .end();
     },
-    // /** Add the contact to the user's contacts. */
+    /** Add the contact to the user's contacts. */
     async function addContact() {
       this.isConnecting = true;
       try {
@@ -130,7 +141,7 @@ foam.CLASS({
       this.isConnecting = false;
       return true;
     },
-    // /** Send the Contact an email inviting them to join Ablii. */
+    /** Send the Contact an email inviting them to join Ablii. */
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
@@ -169,7 +180,7 @@ foam.CLASS({
       this.isConnecting = false;
       return true;
     },
-    // /** Sets the reference from the Contact to the Bank Account.  */
+    /** Sets the reference from the Contact to the Bank Account.  */
     async function updateContactBankInfo(contact, bankAccountId) {
       try {
         contact.bankAccount = bankAccountId;
@@ -187,7 +198,10 @@ foam.CLASS({
       label: 'Go back',
       code: function(X) {
         this.isConnecting = false;
-        if ( this.currentIndex > 0 ) {
+        if ( this.disableMenuMode && this.currentIndex === 0 ) {
+          X.closeDialog();
+        }
+        else if ( this.currentIndex > 0 ) {
           this.currentIndex = this.prevIndex;
         } else {
           X.pushMenu('sme.menu.toolbar');

@@ -258,6 +258,7 @@ foam.CLASS({
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
       section: 'stepTwo',
+      updateVisibility: 'RW',
       storageTransient: true,
       label: '',
       factory: function() {

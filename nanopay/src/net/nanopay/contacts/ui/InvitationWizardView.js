@@ -67,7 +67,7 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        if ( X.data.disableMenuMode ) {
+        if ( this.disableMenuMode ) {
           X.closeDialog();
         }
         else if (X.subStack && X.subStack.depth > 1 ) {
