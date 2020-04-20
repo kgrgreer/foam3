@@ -1377,18 +1377,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
   { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},
 
-  // alarming & monitoring
-  { name: 'net/nanopay/alarming/Alarm' },
-  { name: 'net/nanopay/alarming/Alarming' },
-  { name: 'net/nanopay/alarming/AlarmConfig' },
-  { name: 'net/nanopay/alarming/AlarmReason' },
-  { name: 'net/nanopay/alarming/AlarmHostnameRuleAction' },
-  { name: 'net/nanopay/alarming/MonitoringReport' },
-  { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
-  { name: 'net/nanopay/alarming/OMName' },
-  { name: 'net/nanopay/alarming/AlarmingUniqueNameDAO' },
-
   // RBC
   { name: 'net/nanopay/tx/rbc/RbcTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcCITransaction' },
