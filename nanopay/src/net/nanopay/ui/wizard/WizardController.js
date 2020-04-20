@@ -78,11 +78,13 @@ foam.CLASS({
         .add(this.slot((data) => {
           if ( !! data ) {
             return self.Popup.create(null, self)
-              .tag({
-                class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-                data: self.data,
-                disableMenuMode: true
-              })
+              .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
+                .tag({
+                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
+                  data: self.data,
+                  disableMenuMode: true
+                })
+              .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
             menu: 'sme.main.contacts',
@@ -90,7 +92,7 @@ foam.CLASS({
               class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
               data: self.model_
             }
-          })
+          });
         }))
       .end()
     }
