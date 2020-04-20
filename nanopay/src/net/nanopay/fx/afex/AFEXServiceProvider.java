@@ -98,6 +98,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
             onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
             onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
+            if ( businessCountry.getId().equals("US") ) onboardingRequest.setTaxIdentificationNumber(business.getTaxIdentificationNumber());
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
@@ -679,24 +680,26 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException {
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.findSourceAccount(x).getOwner());
+    AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,txn.findSourceAccount(x).getOwner());
     if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
 
     CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
     request.setClientAPIKey(afexBusiness.getApiKey());
-    request.setId(transaction.getReferenceNumber());
+    request.setId(txn.getReferenceNumber());
 
     try {
       CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request);
       if ( null == paymentStatusResponse ) throw new RuntimeException("Null response got for remote system." );
-
-      transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
+      
+      txn.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
+      txn.setAfexPaymentStatus(Enum.valueOf(AFEXPaymentStatus.class, paymentStatusResponse.getPaymentStatus().toUpperCase()));
 
     } catch(Throwable t) {
       logger_.error("Error updating AFEX transaction status.", t);
     }
 
-    return transaction;
+    return txn;
 
   }
 
@@ -774,7 +777,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
+  public AFEXBusiness getAFEXBusiness(X x, Long userId) {
     DAO dao = (DAO) x.get("afexBusinessDAO");
     return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
   }

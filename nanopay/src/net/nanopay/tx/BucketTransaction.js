@@ -10,7 +10,7 @@ foam.CLASS({
       name: 'subTransactions',
       storageTransient: true,
       documentation: `
-        Amounts to be transfered as part of the bucket transaction.
+        Amounts to be transferred as part of the bucket transaction.
       `,
     }
   ]

@@ -5,13 +5,4 @@ foam.CLASS({
 
   documentation: 'A Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
 
-  methods: [
-    {
-      name: 'createTransfers',
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        return new Transfer[0];
-      `
-    },
-  ]
 });

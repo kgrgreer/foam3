@@ -9,7 +9,7 @@ foam.CLASS({
     //   class: 'Long',
     //   name: 'impsReferenceNumber',
     //   label: 'IMPS Reference Number',
-    //   visibility: foam.u2.Visibility.RO
+    //   visibility: 'RO'
     // },
     {
       // class: 'FObjectProperty',
@@ -17,7 +17,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionPurpose',
       name: 'purpose',
       label: 'Purpose',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       documentation: 'Transaction purpose'
     },
   ]

@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'net.nanopay.invoice.test',
   name: 'invoiceHistoryAuthorizerTest',
   extends: 'foam.nanos.test.Test',
-  flags: ['java'],
 
   javaImports: [
     'foam.core.X',
@@ -57,6 +56,7 @@ foam.CLASS({
 
         invoice.setPayeeId(payeeUser.getId());
         invoice.setPayerId(payerUser.getId());
+        invoice.setAmount(1000);
         invoice = (Invoice) invoiceDAO.put(invoice);
 
         historyRecord = (HistoryRecord) ((ArraySink) invoiceHistoryDAO.inX(x).where(
@@ -131,7 +131,7 @@ foam.CLASS({
 
         threw = false;
         try {
-          invoiceHistoryDAO.inX(x).inX(x).put(historyRecord1);
+          invoiceHistoryDAO.inX(x).put(historyRecord1);
         } catch ( AuthorizationException e ) {
           threw = true;
         }

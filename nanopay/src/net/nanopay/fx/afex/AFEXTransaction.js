@@ -12,29 +12,22 @@ foam.CLASS({
   documentation: `Hold AFEX specific properties`,
 
   javaImports: [
-    'foam.blob.BlobService',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.nanos.fs.File',
-    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'java.io.ByteArrayInputStream',
-    'java.io.InputStream',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Business',
     'foam.core.Currency',
-    'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionLineItem',
 
     'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF'
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -84,10 +77,16 @@ foam.CLASS({
                 }
        return ['No status to choose'];
       }
-    }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
+      name: 'afexPaymentStatus',
+      value: 'PENDING'
+    },
   ],
 
-  methods: [ 
+  methods: [
     {
       name: 'findRootTransaction',
       args: [
@@ -129,7 +128,7 @@ foam.CLASS({
       BankAccount destinationAccount = (BankAccount) localAccountDAO.find(getDestinationAccount());
       User payee = (User) localUserDAO.find(destinationAccount.getOwner());
       User payer = (User) localUserDAO.find(sourceAccount.getOwner());
-    
+
         Address payerAddress = payer.getAddress();
         String addressLine1 =
           (! SafetyUtil.isEmpty(payerAddress.getSuite()) ? payerAddress.getSuite() + "-" : "") +
@@ -142,43 +141,43 @@ foam.CLASS({
           payerAddress.findRegionId(x).getName() +
           ", " +
           payerAddress.findCountryId(x).getName();
-    
+
         // Get the initiator, the person who created the invoice.
         Transaction root = findRootTransaction(x, this);
         DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
         Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
         long initiatorId = invoice.getCreatedBy();
         User initiator = (User) localUserDAO.find(initiatorId);
-    
+
         // Get the releaser/approver, the person who created the transaction.
         User approver = (User) localUserDAO.find(getCreatedBy());
-    
+
         // Get and format the destination currency amount.
         DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
         Currency destCurrency = (Currency) currencyDAO.find(getDestinationCurrency());
         String destAmountFormatted = destCurrency.format(getDestinationAmount());
-    
+
         // Get and format the rate.
         String rate = String.format("%.12f", 1.0 / getFxRate());
-    
+
         // Get and format the settlement amount.
         Currency srcCurrency = (Currency) currencyDAO.find(getSourceCurrency());
         String settlementAmount = srcCurrency.format(getAmount());
-    
+
         // Get and format the fee.
         String fee = srcCurrency.format(getCost());
-    
+
         // Get and format the total settlement.
         String totalSettlement = srcCurrency.format(getTotal());
-    
+
         // Get the client ID.
         DAO afexBusinessDAO = ((DAO) x.get("afexBusinessDAO")).inX(x);
         AFEXBusiness afxBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, payer.getId()));
         String afexAccountNumber = afxBusiness.getAccountNumber();
-    
+
         String invoiceCreated = String.format("%tD %tI:%tM %Tp %TZ", invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated(), invoice.getCreated());
         String transactionCreated = String.format("%tD %tI:%tM %Tp %TZ", getCreated(), getCreated(), getCreated(), getCreated(), getCreated());
-    
+
         // Add special disclosure.
         // We only show it if the payer's address is in one of the states that
         // requires a specific disclosure. If the payer is a business, this will be
@@ -186,7 +185,7 @@ foam.CLASS({
         AcceptanceDocument disclosure = null;
         DAO acceptanceDocumentDAO = ((DAO) x.get("acceptanceDocumentDAO")).inX(x);
         Address address = payer.getAddress();
-    
+
         if ( address != null ) {
           disclosure = (AcceptanceDocument) acceptanceDocumentDAO.find(
             AND(
@@ -197,7 +196,7 @@ foam.CLASS({
             )
           );
         }
-        
+
         // TODO: replace AFX placeholders
         StringBuilder doc = new StringBuilder();
         doc.append("<html>");
@@ -241,117 +240,117 @@ foam.CLASS({
         doc.append("}");
         doc.append("</style>");
         doc.append("</head>");
-        doc.append("<body>");      
-        doc.append(\"<h1>ORDER CONFIRMATION</h1>\");    
-        doc.append(\"<table>\");      
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td><b>Client Account NUmber:</b></td>\");       
-        doc.append(\"    <td>\").append(afexAccountNumber).append(\"</td>\");       
-        doc.append(\"    <td><b>Transaction Number:</b></td>\");       
-        doc.append(\"    <td>\").append(getReferenceNumber()).append(\"</td>\");      
-        doc.append(\"  </tr>\");        
-        doc.append(\"  <tr>\");      
+        doc.append("<body>");
+        doc.append(\"<h1>ORDER CONFIRMATION</h1>\");
+        doc.append(\"<table>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Client Account NUmber:</b></td>\");
+        doc.append(\"    <td>\").append(afexAccountNumber).append(\"</td>\");
+        doc.append(\"    <td><b>Transaction Number:</b></td>\");
+        doc.append(\"    <td>\").append(getReferenceNumber()).append(\"</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
         doc.append(\"    <td><b>Client Name:</b></td>\");
-        doc.append(\"    <td>\").append(payer.label()).append(\"</td>\");       
-        doc.append(\"    <td><b>Transaction Date:</b></td>\");       
-        doc.append(\"    <td>\").append(transactionCreated).append(\"</td>\");        
-        doc.append(\"  </tr>\");      
-        doc.append(\"  <tr>\");        
-        doc.append(\"    <td><b>Address:</b></td>\");       
-        doc.append(\"    <td>\").append(addressLine1).append(\"<br>\").append(addressLine2).append(\"<br>\").append(payerAddress.getPostalCode()).append(\"</td>\");      
-        doc.append(\"    <td></td>\");       
-        doc.append(\"    <td></td>\");       
-        doc.append(\"  </tr>\");       
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td><b>Tel:</b></td>\");       
-        doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");       
-        doc.append(\"    <td><b>Deal Type:</b></td>\");        
-        doc.append(\"    <td>Spot</td>\");     
-        doc.append(\"  </tr>\");        
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td><b>Fax:</b></td>\");        
-        doc.append(\"    <td></td>\"); // This can be left blank.       
-        doc.append(\"    <td><b>Dealer:</b></td>\");      
-        doc.append(\"    <td>AFEX</td>\");      
-        doc.append(\"  </tr>\");       
-        doc.append(\"  <tr>\");      
-        doc.append(\"    <td></td>\");        
-        doc.append(\"    <td></td>\");       
-        doc.append(\"    <td><b>Phone:</b></td>\");       
-        doc.append(\"  </tr>\");        
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td></td>\");       
-        doc.append(\"    <td></td>\");        
-        doc.append(\"    <td><b>Email:</b></td>\");       
-        doc.append(\"    <td>fxdesk@afex.com</td>\");       
-        doc.append(\"  </tr>\");      
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td><b>Initiated By:</b></td>\");        
-        doc.append(\"    <td>\").append(initiator.label()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");        
-        doc.append(\"    <td></td>\");      
-        doc.append(\"    <td></td>\");        
-        doc.append(\"  </tr>\");        
-        doc.append(\"  <tr>\");      
-        doc.append(\"    <td><b>Approved By:</b></td>\");        
-        doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");       
-        doc.append(\"    <td></td>\");      
-        doc.append(\"    <td></td>\");      
-        doc.append(\"  </tr>\");        
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td><b>Released By:</b></td>\");       
-        doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");       
-        doc.append(\"    <td></td>\");      
-        doc.append(\"    <td></td>\");      
-        doc.append(\"  </tr>\");       
-        doc.append(\"</table>\");      
-        doc.append(\"<h2>Transaction Summary</h2>\");      
-        doc.append(\"<table class=\\\"transaction\\\">\");        
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <th>Item</th>\");       
-        doc.append(\"    <th>Payee Name</th>\");       
-        doc.append(\"    <th>Method</th>\");        
-        doc.append(\"    <th>Cur.</th>\");       
-        doc.append(\"    <th>Amount</th>\");        
-        doc.append(\"    <th>Rate</th>\");       
-        doc.append(\"    <th>Settlement Amount</th>\");        
-        doc.append(\"    <th>Fee</th>\");     
-        doc.append(\"    <th>Total Settlement</th>\");      
-        doc.append(\"  </tr>\");       
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td>1</td>\");       
-        doc.append(\"    <td>\").append(payee.label()).append(\"</td>\");      
-        doc.append(\"    <td>EFT/ACH</td>\");       
-        doc.append(\"    <td>\").append(getDestinationCurrency()).append(\"</td>\");       
-        doc.append(\"    <td class=\\\"r-align\\\">\").append(destAmountFormatted).append(\"</td>\");       
-        doc.append(\"    <td class=\\\"r-align\\\">\").append(rate).append(\"</td>\");       
-        doc.append(\"    <td class=\\\"r-align\\\">\").append(settlementAmount).append(\"</td>\");      
-        doc.append(\"    <td class=\\\"r-align\\\">\").append(fee).append(\"</td>\");        
-        doc.append(\"    <td class=\\\"r-align\\\">\").append(totalSettlement).append(\"</td>\");       
-        doc.append(\"  </tr>\");       
-        doc.append(\"  <tr>\");       
-        doc.append(\"    <td></td>\");      
-        doc.append(\"    <td></td>\");       
-        doc.append(\"    <td></td>\");       
-        doc.append(\"    <td></td>\");        
-        doc.append(\"    <td></td>\");        
-        doc.append(\"    <td class=\\\"r-align\\\"><b>Total (\").append(getSourceCurrency()).append(\"):</b></td>\");       
-        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(settlementAmount).append(\"</b></td>\");      
-        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(fee).append(\"</b></td>\");      
-        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(totalSettlement).append(\"</b></td>\");       
-        doc.append(\"  </tr>\");      
-        doc.append(\"</table>\");  
+        doc.append(\"    <td>\").append(payer.label()).append(\"</td>\");
+        doc.append(\"    <td><b>Transaction Date:</b></td>\");
+        doc.append(\"    <td>\").append(transactionCreated).append(\"</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Address:</b></td>\");
+        doc.append(\"    <td>\").append(addressLine1).append(\"<br>\").append(addressLine2).append(\"<br>\").append(payerAddress.getPostalCode()).append(\"</td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Tel:</b></td>\");
+        doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");
+        doc.append(\"    <td><b>Deal Type:</b></td>\");
+        doc.append(\"    <td>Spot</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Fax:</b></td>\");
+        doc.append(\"    <td></td>\"); // This can be left blank.
+        doc.append(\"    <td><b>Dealer:</b></td>\");
+        doc.append(\"    <td>AFEX</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td><b>Phone:</b></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td><b>Email:</b></td>\");
+        doc.append(\"    <td>fxdesk@afex.com</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Initiated By:</b></td>\");
+        doc.append(\"    <td>\").append(initiator.label()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Approved By:</b></td>\");
+        doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td><b>Released By:</b></td>\");
+        doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"</table>\");
+        doc.append(\"<h2>Transaction Summary</h2>\");
+        doc.append(\"<table class=\\\"transaction\\\">\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <th>Item</th>\");
+        doc.append(\"    <th>Payee Name</th>\");
+        doc.append(\"    <th>Method</th>\");
+        doc.append(\"    <th>Cur.</th>\");
+        doc.append(\"    <th>Amount</th>\");
+        doc.append(\"    <th>Rate</th>\");
+        doc.append(\"    <th>Settlement Amount</th>\");
+        doc.append(\"    <th>Fee</th>\");
+        doc.append(\"    <th>Total Settlement</th>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td>1</td>\");
+        doc.append(\"    <td>\").append(payee.label()).append(\"</td>\");
+        doc.append(\"    <td>EFT/ACH</td>\");
+        doc.append(\"    <td>\").append(getDestinationCurrency()).append(\"</td>\");
+        doc.append(\"    <td class=\\\"r-align\\\">\").append(destAmountFormatted).append(\"</td>\");
+        doc.append(\"    <td class=\\\"r-align\\\">\").append(rate).append(\"</td>\");
+        doc.append(\"    <td class=\\\"r-align\\\">\").append(settlementAmount).append(\"</td>\");
+        doc.append(\"    <td class=\\\"r-align\\\">\").append(fee).append(\"</td>\");
+        doc.append(\"    <td class=\\\"r-align\\\">\").append(totalSettlement).append(\"</td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"  <tr>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td></td>\");
+        doc.append(\"    <td class=\\\"r-align\\\"><b>Total (\").append(getSourceCurrency()).append(\"):</b></td>\");
+        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(settlementAmount).append(\"</b></td>\");
+        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(fee).append(\"</b></td>\");
+        doc.append(\"    <td class=\\\"r-align\\\"><b>\").append(totalSettlement).append(\"</b></td>\");
+        doc.append(\"  </tr>\");
+        doc.append(\"</table>\");
 
-        if ( disclosure != null ) {          
+        if ( disclosure != null ) {
           doc.append(disclosure.getBody());
         }
 
-        doc.append(\"<footer>\");       
-        doc.append(\"</footer>\");       
-        doc.append(\"</body>\");      
+        doc.append(\"<footer>\");
+        doc.append(\"</footer>\");
+        doc.append(\"</body>\");
         doc.append(\"</html>\");
-    
+
         return doc.toString();
-      
+
       `
     },
     {
@@ -365,8 +364,9 @@ foam.CLASS({
       javaCode: `
       super.limitedCopyFrom(other);
       setAfexTradeResponseNumber(((AFEXTransaction) other).getAfexTradeResponseNumber());
+      setCompletionDate(other.getCompletionDate());
       setLineItems(other.getLineItems());
       `
-    },
+    }
   ],
 });

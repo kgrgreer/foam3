@@ -3,10 +3,11 @@ package net.nanopay.tx.test;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
-
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
@@ -26,6 +27,7 @@ public class TransactionDAOTest
   User sender_, receiver_;
   X x_;
   CABankAccount senderBankAccount_;
+  DigitalAccount senderDigitalAccount_;
   DAO txnDAO;
   public void runTest(X x) {
     txnDAO = (DAO) x.get("localTransactionDAO");
@@ -67,7 +69,7 @@ public class TransactionDAOTest
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
-      sender_.setGroup("basicUser");
+      sender_.setGroup("business");
       sender_.setFirstName("Francis");
       sender_.setLastName("Filth");
     }
@@ -82,10 +84,14 @@ public class TransactionDAOTest
     }
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
-    receiver_.setGroup("basicUser");
+    receiver_.setGroup("business");
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
+
+    if ( senderDigitalAccount_ == null ) {
+      senderDigitalAccount_ = DigitalAccount.findDefault(x_, sender_, "CAD");
+    }
 
     return x_;
   }
@@ -159,7 +165,7 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Txn amount cannot be negative");
 
 
-    txn.setAmount((DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 1 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_))+ 1);
+    txn.setAmount( DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_)+ 1);
     txn.setPayeeId(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
@@ -168,8 +174,8 @@ public class TransactionDAOTest
 
     // Test return transactionStatus
     cashIn();
-    long initialBalanceSender = DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_) == null ? 0 : (Long) DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
+    long initialBalanceSender =   DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
     Transaction transaction = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(transaction.getStatus() == TransactionStatus.COMPLETED, "transaction is completed");
     test(transaction instanceof DigitalTransaction, "transaction is NONE type");
@@ -189,6 +195,7 @@ public class TransactionDAOTest
     setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayeeId(sender_.getId());
     txn.setSourceAccount(senderBankAccount_.getId());
+    txn.setDestinationAccount(senderDigitalAccount_.getId());
     txn.setAmount(1l);
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
@@ -207,7 +214,7 @@ public class TransactionDAOTest
     tx = (Transaction) txnDAO.put_(x_, tx).fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction remains in status COMPLETED" );
     Long balance = (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    test( senderInitialBalance  == balance, "After transaction is declined balance is reverted. initialBalance: "+senderInitialBalance +" balance: "+balance );
+    test( senderInitialBalance +tx.getAmount() == balance, "After transaction is 'attempted' DECLINED from COMPLETED balance is unchanged. initialBalance: "+(senderInitialBalance + tx.getAmount()) +" balance: "+balance );
   }
 
   public void testCashOut() {
@@ -218,7 +225,7 @@ public class TransactionDAOTest
     txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Bank account needs to be verified for cashout",
+      "Unable to find a plan for requested transaction.",
       RuntimeException.class), "Exception: Bank account needs to be verified for cashout");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
@@ -269,6 +276,7 @@ public class TransactionDAOTest
     Transaction txn = new Transaction();
     txn.setAmount(100000L);
     txn.setSourceAccount(senderBankAccount_.getId());
+    txn.setDestinationAccount(senderDigitalAccount_.getId());
     txn.setPayeeId(sender_.getId());
     txn = (Transaction) ((Transaction)((DAO) x_.get("localTransactionDAO")).put_(x_, txn)).fclone();
     txn.setStatus(TransactionStatus.COMPLETED);

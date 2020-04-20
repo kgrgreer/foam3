@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
   name: 'VerificationTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.CompositeTransaction',
 
   javaImports: [
     'foam.dao.DAO',
@@ -78,23 +78,6 @@ foam.CLASS({
       super.limitedCopyFrom(other);
       setCompletionDate(other.getCompletionDate());
       setProcessDate(other.getProcessDate());
-      `
-    },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-      return new Transfer[0];
       `
     },
     {

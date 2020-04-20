@@ -1,0 +1,120 @@
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":1,
+  "templateName":"Global Account Template",
+  "accounts": {
+    "1103": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":2,
+  "templateName":"Global Account Template",
+  "accounts": {
+    "1103": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":3,
+  "templateName":"Asia Account Template",
+  "accounts": {
+    "1105": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":4,
+  "templateName":"Asia Account Template",
+  "accounts": {
+    "1105": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":5,
+  "templateName":"Americas Account Template",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":6,
+  "templateName":"Americas Account Template",
+  "accounts": {
+    "1755": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.CapabilityAccountTemplate",
+  "id":5,
+  "templateName":"Europe Account Template",
+  "accounts": {
+    "1311": {
+      "class":"net.nanopay.liquidity.crunch.CapabilityAccountData",
+      "isCascading":true,
+      "isIncluded":true,
+      "approverLevel":{
+        "class":"net.nanopay.liquidity.crunch.ApproverLevel",
+        "approverLevel":1,
+      }
+    }
+  }
+})
+
+p({
+  "class":"net.nanopay.liquidity.crunch.AccountTemplate",
+  "id":6,
+  "templateName":"Europe Account Template",
+  "accounts": {
+    "1311": {
+      "class":"net.nanopay.liquidity.crunch.AccountData",
+      "isCascading":true,
+      "isIncluded":true,
+    }
+  }
+})
+

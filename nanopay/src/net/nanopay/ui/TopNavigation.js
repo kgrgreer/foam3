@@ -16,7 +16,6 @@ foam.CLASS({
       width: 100%;
       display: flex;
       z-index: 10001;
-      position: fixed;
       background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       font-family: Roboto, Helvetica, sans-serif;
@@ -27,7 +26,7 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 40px;
+      margin-left: 16px;
       display: flex;
       flex-grow: 1;
     }
@@ -115,7 +114,8 @@ foam.CLASS({
             .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .start().addClass('navigation-components')
               .tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
-              .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
+              // Hide notification icon from Top Nav for Liquid Demo
+              // .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })
             .end()
           .end()

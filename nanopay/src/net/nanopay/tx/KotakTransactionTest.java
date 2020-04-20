@@ -12,8 +12,8 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalStatus;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -163,6 +163,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     cal.add(Calendar.DATE, 1);
     approval.setExpiryDate(cal.getTime());
     approval.setStatus(ApprovalStatus.APPROVED);
+    approval.setIsFulfilled(true);
     approvalDAO.put_(x, approval);
 
     kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
@@ -185,6 +186,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
       user.setFirstName("Francis");
       user.setLastName("Filth");
       user.setEmailVerified(true);
+      user.setGroup("business");
     }
     return ((User) userDAO.put_(x, user));
   }

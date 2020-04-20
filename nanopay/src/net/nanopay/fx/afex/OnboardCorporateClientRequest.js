@@ -121,6 +121,10 @@ foam.CLASS({
     {
       class: 'String',
       name: "termsAndConditions"
+    },
+    {
+      class: 'String',
+      name: "taxIdentificationNumber"
     }
   ]
 });

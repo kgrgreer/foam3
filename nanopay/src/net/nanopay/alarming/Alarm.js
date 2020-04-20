@@ -12,6 +12,7 @@ foam.CLASS({
 
   tableColumns: [
     'name',
+    'hostname',
     'lastModified',
     'isActive',
     'stop',
@@ -38,6 +39,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+    },
+    {
+      class: 'String',
+      name: 'hostname',
+      visibility: 'RO',
+      javaFactory: 'return System.getProperty("hostname", "localhost");'
     },
     {
       class: 'Boolean',

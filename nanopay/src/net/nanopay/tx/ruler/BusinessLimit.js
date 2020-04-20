@@ -62,15 +62,15 @@ foam.CLASS({
         this.add('Business ID');
       },
       tableWidth: 120,
-      readMode: 'HIDDEN' // Show business name instead in read mode.
+      readVisibility: 'HIDDEN' // Show business name instead in read mode.
     },
     {
       class: 'String',
       name: 'businessName',
       label: 'Business',
       documentation: 'This property exists so we can display the business name in the table without doing a lookup for each row.',
-      createMode: 'HIDDEN',
-      updateMode: 'HIDDEN',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
       section: 'basicInfo'
     },
     {

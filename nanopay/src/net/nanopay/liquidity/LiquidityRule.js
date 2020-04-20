@@ -16,26 +16,30 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.fx.FXTransaction',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.util.Frequency'
+    'net.nanopay.util.Frequency',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction) ) {
+        if ( (obj instanceof DigitalTransaction || obj instanceof CITransaction || obj instanceof COTransaction || obj instanceof FXTransaction ) ) {
           Transaction txn = (Transaction) obj;
-          if ( ! (txn.getStatus() == TransactionStatus.COMPLETED) )
+          if ( ! (txn.getStatus() == TransactionStatus.COMPLETED)  )
+            return;
+          if ( txn.getLifecycleState() != LifecycleState.ACTIVE )
             return;
           LiquidityService ls = (LiquidityService) x.get("liquidityService");
           Account source = txn.findSourceAccount(x);
           Account destination = txn.findDestinationAccount(x);
-          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction ) {
+          if ( (! SafetyUtil.equals(source.getOwner(), destination.getOwner()) ) || txn instanceof DigitalTransaction || txn instanceof FXTransaction ) {
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {

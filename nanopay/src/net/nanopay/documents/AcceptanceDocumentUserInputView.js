@@ -21,6 +21,9 @@ foam.CLASS({
   ^ .checkBoxText {
     display: inline;
   }
+  ^ label > span {
+    display: none;
+  }
   `,
 
   properties: [

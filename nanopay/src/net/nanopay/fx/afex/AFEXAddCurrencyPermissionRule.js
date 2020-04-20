@@ -23,9 +23,9 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'javax.security.auth.AuthPermission',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalRequestUtil',
-    'net.nanopay.approval.ApprovalStatus',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'
@@ -66,7 +66,8 @@ foam.CLASS({
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
                 Group group = (Group) localGroupDAO.find(business.getGroup());
                 while ( group != null ) {
-                  group = group.findParent(x);
+
+                  group = (Group) group.findParent(x);
                   if ( group != null && group.getId().endsWith("employee") ) break;
                 }
                 if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
@@ -112,7 +113,7 @@ foam.CLASS({
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-        args.put("business", business.getBusinessName());
+        args.put("business", business.label());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
         args.put("link",   config.getUrl() + "#sme.main.dashboard");

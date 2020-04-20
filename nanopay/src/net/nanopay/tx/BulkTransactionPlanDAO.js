@@ -35,7 +35,7 @@ foam.CLASS({
           PADType bulkTxnPADType = PADTypeLineItem.getPADTypeFrom(x, bulkTxn);
 
           DAO userDAO = (DAO) x.get("localUserDAO");
-          DAO planDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+          DAO planDAO = (DAO) x.get("localTransactionPlannerDAO");
           DAO balanceDAO = (DAO) x.get("localBalanceDAO");
 
           Account sourceAccount = bulkTxn.findSourceAccount(x);

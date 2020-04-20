@@ -762,8 +762,8 @@ foam.CLASS({
 
           try {
             manager = new PKCS12KeyStoreManager.Builder(getX())
-              .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
-              .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+              .setKeyStorePath("/tmp/nanopay/var/keys/keystore.p12")
+              .setPassphrasePath("/tmp/nanopay/var/keys/passphrase")
               .build();
             manager.unlock();
           } catch ( Throwable t ) {

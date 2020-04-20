@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'INBankAccount',
-  label: 'India',
+  label: 'India Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -27,13 +27,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'IN',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/india.png',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'desc',
@@ -67,6 +67,7 @@ foam.CLASS({
       class: 'String',
       name: 'ifscCode',
       label: 'IFSC Code',
+      updateVisibility: 'RO',
       validationPredicates: [
         {
           args: ['ifscCode'],
@@ -111,6 +112,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'Bank Account No.',
+      updateVisibility: 'RO',
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },

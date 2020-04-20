@@ -49,7 +49,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
-    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid Paid date.' },
+    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid paid date.' },
     { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
     { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
@@ -170,17 +170,23 @@ foam.CLASS({
 
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-        var paymentDate = new Date(X.data.paymentDate);
-        var dateCheck = paymentDate > new Date();
+        let paymentDateInTime = this.paymentDate.getTime();
+        const issueDateInTime = this.invoice.issueDate.getTime();
+        const currentDateInTime = new Date().getTime();
+        const isInvalidPaymentDate =
+          isNaN(paymentDateInTime) || paymentDateInTime > currentDateInTime || paymentDateInTime < issueDateInTime;
 
-        if ( isNaN(paymentDate) || dateCheck ) {
+        if ( isInvalidPaymentDate ) {
           this.add(this.notify(this.MSG_INVALID_DATE, 'error'));
           return;
         }
         
-        paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
-        
-        this.invoice.paymentDate = paymentDate;
+        // when user selects payment date, the date is set in UTC time zone
+        // so we need to take difference between UTC time zone and user's local time zone
+        // into account when calculating payment date
+        paymentDateInTime += this.paymentDate.getTimezoneOffset() * 60000;
+ 
+        this.invoice.paymentDate = new Date(paymentDateInTime);
         this.invoice.chequeAmount = X.data.chequeAmount;
         this.invoice.chequeCurrency = X.data.currencyType.id;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
