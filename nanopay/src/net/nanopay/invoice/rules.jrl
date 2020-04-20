@@ -14,7 +14,8 @@ p({
       "class":"net.nanopay.invoice.ruler.CompleteInvoiceNotification"
     },
     "enabled":true,
-    "saveHistory":true
+    "saveHistory":true,
+    "lifecycleState":1
 })
 
 p({
@@ -30,7 +31,8 @@ p({
         "class":"net.nanopay.invoice.ruler.RequestPaymentNotificationRule"
     },
     "enabled":true,
-    "saveHistory":true
+    "saveHistory":true,
+    "lifecycleState":1
 })
 
 p({
@@ -64,7 +66,8 @@ p({
     "class": "net.nanopay.invoice.ruler.InvoiceVoidEmailRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -98,7 +101,8 @@ p({
     "class": "net.nanopay.invoice.ruler.SetProcessingDateRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -152,7 +156,8 @@ p({
     "class": "net.nanopay.invoice.ruler.SetPaymentSentDateRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -206,5 +211,6 @@ p({
     "class": "net.nanopay.invoice.ruler.SetReceivedDateRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })

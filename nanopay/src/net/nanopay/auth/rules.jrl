@@ -12,5 +12,6 @@ p({
   "saveHistory":false,
   "action":{
     "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"
-  }
+  },
+  "lifecycleState":1
 })
