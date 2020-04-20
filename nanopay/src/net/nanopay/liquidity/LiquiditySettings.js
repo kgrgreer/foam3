@@ -384,7 +384,7 @@ fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshol
       `
     },
     {
-      name: 'getApprovableKey',
+      name: 'getStringId',
       type: 'String',
       javaCode: `
         String id = ((Long) getId()).toString();
