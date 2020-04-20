@@ -15,14 +15,9 @@ foam.ENUM({
       documentation: 'Limits for accounts.'
     },
     {
-      name: 'TRANSACTION',
-      label: 'All Transactions',
-      documentation: 'Limits on all transactions.'
-    },
-    {
       name: 'BUSINESS',
       label: 'Business',
-      documenation: 'Limits for businesses.'
+      documentation: 'Limits for businesses.'
     }
   ]
 });

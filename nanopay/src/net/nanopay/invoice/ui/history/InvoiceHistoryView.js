@@ -122,7 +122,7 @@ foam.CLASS({
           class: 'foam.u2.history.HistoryView',
           title: 'Invoice History',
           data$: this.data$,
-          historyItemView: this.InvoiceHistoryItemView.create()
+          historyItemView: this.InvoiceHistoryItemView.create({}, this)
         });
     }
   ]

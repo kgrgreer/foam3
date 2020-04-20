@@ -85,7 +85,11 @@ function setup_jce {
     cd tmp_jce
     curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
     unzip jce_policy-8.zip
-    sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+    if [[ $IS_MAC -eq 1 ]]; then
+        sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+      elif [[ $IS_LINUX -eq 1 ]]; then
+        cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
+      fi
     cd ..
     rm -rf tmp_jce
 
@@ -367,8 +371,14 @@ function setenv {
 
     export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
+    export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
+
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
+    fi
+
+    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
+        mkdir -p "${PROJECT_HOME}/.foam"
     fi
 
     if [ ! -d "$NANOPAY_HOME" ]; then
@@ -478,6 +488,7 @@ function usage {
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
+    echo "  -e : Skipping genJava task."
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -660,7 +671,7 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         x) VULNERABILITY_CHECK=1 ;;
-        ?) usage ; quit 1 ;;
+       ?) usage ; quit 1 ;;
     esac
 done
 
@@ -690,10 +701,7 @@ fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
-    if [[ ! -f ~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/security-versions-1.0.6.jar ]]; then
-        mvn dependency:get -DgroupId=com.redhat.victims.maven -DartifactId=security-versions -Dversion=1.0.6
-    fi
-    mvn com.redhat.victims.maven:security-versions:check
+    gradle dependencyCheckAnalyze --info
     quit 0
 fi
 

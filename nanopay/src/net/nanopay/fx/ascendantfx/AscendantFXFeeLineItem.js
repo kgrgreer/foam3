@@ -14,31 +14,4 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
-  methods: [
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'old',
-          type: 'net.nanopay.tx.model.Transaction'
-        },
-        {
-          name: 'nu',
-          type: 'net.nanopay.tx.model.Transaction'
-        },
-        {
-          name: 'reverse',
-          type: 'Boolean'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-         return new Transfer[0];
-      `
-    }
-  ]
 });

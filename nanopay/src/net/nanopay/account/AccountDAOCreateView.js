@@ -9,14 +9,28 @@ foam.CLASS({
   name: 'AccountDAOCreateView',
   extends: 'foam.comics.v2.DAOCreateView',
 
+  imports: [
+    'ctrl',
+    'group',
+    'stack',
+    'user'
+  ],
+
   requires: [
     'net.nanopay.account.DigitalAccount',
     'foam.u2.dialog.NotificationMessage'
   ],
-  
+
   documentation: `
     A configurable view to create an instance of a specified model
   `,
+
+  messages: [
+    {
+      name: 'SUCCESS_MESSAGE',
+      message: 'An approval request has been created.'
+    }
+  ],
 
   properties: [
     {
@@ -25,38 +39,78 @@ foam.CLASS({
       expression: function() {
         return {
           class: 'foam.u2.view.FObjectView',
-          choices: [
-              ['net.nanopay.account.AggregateAccount', 'Aggregate account'],
-              ['net.nanopay.account.DigitalAccount', 'Digital account'],
-              ['net.nanopay.account.ShadowAccount', 'Shadow account']
-          ],
+          of: 'net.nanopay.account.Account',
+          dataView: 'net.nanopay.liquidity.ui.account.AccountDetailView'
         };
       }
     },
-    {
-      name: 'data',
-      preSet: function(_, n) {
-        if ( n.cls_ === net.nanopay.account.Account ) return this.DigitalAccount.create();
-        return n;
-      }      
-    }
   ],
 
   actions: [
     {
       name: 'save',
+      isEnabled: function(data, data$errors_, group$id, data$parent, data$name) {
+        return ! data$errors_ && (group$id !== 'liquidBasic' || !! data$parent) && !! data$name;
+      },
       code: function() {
-        this.data.owner = this.__subContext__.user.id;
-        this.config.dao.put(this.data).then(o => {
+        var cData = this.data;
+
+        cData = cData.clone();
+        cData.owner = this.__subContext__.user.id;
+        cData.enabled = true;
+
+        this.config.dao.put(cData).then((o) => {
           this.data = o;
           this.finished.pub();
+          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ){
+            var currentFeedback = o.userFeedback;
+            while ( currentFeedback ){
+              this.ctrl.add(this.NotificationMessage.create({
+                message: currentFeedback.message,
+                type: currentFeedback.status.name.toLowerCase()
+              }));
+
+              currentFeedback = currentFeedback.next;
+            }
+          } else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: `${this.data.model_.label} created.`
+            }));
+          }
+
           this.stack.back();
-        }, e => {
+        }, (e) => {
           this.throwError.pub(e);
-          this.add(this.NotificationMessage.create({
-            message: e.message,
-            type: 'error'
-          }));
+          
+          // TODO: Uncomment this once we turn UserFeedbackException into an actual throwable
+          // if ( foam.comics.v2.userfeedback.UserFeedbackException.isInstance(e) && e.userFeedback  ){
+          //   var currentFeedback = e.userFeedback;
+          //   while ( currentFeedback ){
+          //     this.ctrl.add(this.NotificationMessage.create({
+          //       message: currentFeedback.message,
+          //       type: currentFeedback.status.name.toLowerCase()
+          //     }));
+
+          //     currentFeedback = currentFeedback.next;
+          //   }
+          // } else {
+          //   this.ctrl.add(this.NotificationMessage.create({
+          //     message: e.message,
+          //     type: 'error'
+          //   }));
+          // }
+
+          if ( e.message === "An approval request has been sent out." ){
+            this.ctrl.add(this.NotificationMessage.create({
+              message: e.message,
+              type: 'success'
+            }));
+          } else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: e.message,
+              type: 'error'
+            }));
+          }
         });
       }
     },

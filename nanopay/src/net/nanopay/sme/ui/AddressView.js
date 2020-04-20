@@ -31,15 +31,32 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       width: 100%;
     }
-    ^ .two-column{
+    ^container {
+      margin-bottom: 20px;
+    }
+    ^disclaimer {
+      font-size: 16px;
+      color: #525455;
+      margin-top: 40px;
+    }
+    ^ .two-column {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
-      margin-bottom: 20px;
     }
-    ^ .three-column{
+    ^ .three-column {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 16px;
+    }
+    ^ .one-three-one-column {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1fr;
+      grid-gap: 16px;
+    }
+    ^ .one-two-column {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       grid-gap: 16px;
     }
   `,
@@ -50,6 +67,12 @@ foam.CLASS({
       name: 'showValidation',
       value: true,
       documentation: 'Use this property if the value of validationTextVisible is situational.'
+    },
+    {
+      class: 'Boolean',
+      name: 'showDisclaimer',
+      value: false,
+      documentation: 'Displays PO boxes not allowed disclaimer if true.'
     },
     {
       class: 'Boolean',
@@ -70,7 +93,8 @@ foam.CLASS({
   messages: [
     { name: 'PROVINCE_LABEL', message: 'Province/State' },
     { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'PO_DISCLAIMER', message: '* PO Boxes are not Allowed' }
   ],
 
   methods: [
@@ -91,8 +115,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .callIf( ! this.withoutCountrySelection, () => {
-          this.start()
-            .addClass('two-column')
+          this.start().addClass(this.myClass('container'))
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
@@ -110,6 +133,48 @@ foam.CLASS({
                 })
               })
             .end()
+          .end();
+        })
+        .start().addClass(this.myClass('container'))
+          .start().addClass('one-three-one-column')
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.STREET_NUMBER.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.STREET_NAME.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.SUITE.clone().copyFrom({
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+          .end()
+        .end()
+        .start().addClass(this.myClass('container'))
+          .start().addClass('label-input')
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.CITY.clone().copyFrom({
+                validationTextVisible: this.showValidation
+              })
+            })
+          .end()
+        .end()
+        .start().addClass(this.myClass('container'))
+          .start().addClass('one-two-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
@@ -128,55 +193,24 @@ foam.CLASS({
                 })
               })
             .end()
+            .start().addClass('label-input')
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.POSTAL_CODE.clone().copyFrom({
+                  label: this.POSTAL_CODE,
+                  validationTextVisible: this.showValidation
+                })
+              })
+            .end()
+          .end()
+        .end()
+        .callIf( this.showDisclaimer, () => {
+          this.start().addClass(this.myClass('container'))
+            .addClass(this.myClass('disclaimer'))
+            .add(this.PO_DISCLAIMER)
           .end();
         })
-        .start()
-          .addClass('two-column')
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.STREET_NAME.clone().copyFrom({
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-        .end()
-        .start()
-          .addClass('two-column')
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.CITY.clone().copyFrom({
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-          .start().addClass('label-input')
-            .tag(this.SectionedDetailPropertyView, {
-              data$: this.data$,
-              prop: this.Address.POSTAL_CODE.clone().copyFrom({
-                label: this.POSTAL_CODE,
-                validationTextVisible: this.showValidation
-              })
-            })
-          .end()
-        .end()
-        .start().addClass('label-input')
-          .tag(this.SectionedDetailPropertyView, {
-            data$: this.data$,
-            prop: this.Address.SUITE.clone().copyFrom({
-              validationTextVisible: this.showValidation
-            })
-          })
-        .end();
+      .end();
     }
   ]
 });

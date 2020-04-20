@@ -19,9 +19,12 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
+    'foam.nanos.auth.User',
     'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+    'static foam.mlang.MLang.CLASS_OF',
 
     'java.util.Date',
     'java.util.Calendar',
@@ -58,27 +61,21 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, userId, password);
-      `
-    },
-    {
-      name: 'loginByEmail',
-      javaCode: `
-        return login_(x, email, password);
+        return login_(x, identifier, password);
       `
     },
     {
       name: 'login_',
       documentation: 'Helper login function to reduce duplicated code',
-      type: 'foam.nanos.auth.User',
+      type: 'User',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'id',
-          type: 'Any'
+          name: 'identifier',
+          type: 'String'
         },
         {
           name: 'password',
@@ -87,8 +84,7 @@ foam.CLASS({
       ],
       javaCode: `
         // check login attempts
-        foam.nanos.auth.User user = ( id instanceof String ) ?
-          getUserByEmail(x, (String) id) : getUserById(x, (long) id);
+        User user = getUser(x, identifier);
 
         if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
@@ -102,9 +98,7 @@ foam.CLASS({
 
         try {
           // attempt to login in, on success reset the login attempts
-          return resetLoginAttempts(x, ( id instanceof String ) ?
-            super.loginByEmail(x, (String) id, password) :
-            super.login(x, (long) id, password));
+          return resetLoginAttempts(x, super.login(x, identifier, password));
         } catch ( Throwable t ) {
           if ( user == null ) {
             /*
@@ -125,7 +119,7 @@ foam.CLASS({
     {
       name: 'getUserById',
       documentation: 'Convenience method to get a user by id',
-      type: 'foam.nanos.auth.User',
+      type: 'User',
       args: [
         {
           name: 'x',
@@ -137,31 +131,33 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(id);
+        return (User) ((DAO) getLocalUserDAO()).inX(x).find(id);
       `
     },
     {
-      name: 'getUserByEmail',
-      documentation: 'Convenience method to get a user by email',
-      type: 'foam.nanos.auth.User',
+      name: 'getUser',
+      documentation: 'Convenience method to get a user by username or email',
+      type: 'User',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'email',
+          name: 'identifier',
           type: 'String'
         }
       ],
       javaCode: `
-        foam.dao.DAO localUserDAO = (foam.dao.DAO) getLocalUserDAO();
-        return (foam.nanos.auth.User) localUserDAO
+        return (User) ((DAO) getLocalUserDAO())
           .inX(x)
           .find(
             AND(
-              EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()),
-              EQ(foam.nanos.auth.User.LOGIN_ENABLED, true)
+              OR(
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
+              ),
+              CLASS_OF(User.class)
             )
           );
       `
@@ -173,7 +169,7 @@ foam.CLASS({
       args: [
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode: `
@@ -194,7 +190,7 @@ foam.CLASS({
         },
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         },
         {
           name: 'reason',
@@ -210,7 +206,7 @@ foam.CLASS({
           return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
         } else {
           if ( isAdminUser(user) ){
-            foam.nanos.auth.User tempUser = getUserById(x, user.getId());
+            User tempUser = getUserById(x, user.getId());
             return "Account temporarily locked. You can attempt to login after " + getDateFormat().format(tempUser.getNextLoginAttemptAllowedAt());
           } else {
             return "Account locked. Please contact customer service." ;
@@ -221,7 +217,7 @@ foam.CLASS({
     {
       name: 'resetLoginAttempts',
       documentation: 'Checks if login attempts have been modified, and resets them if they have been',
-      type: 'foam.nanos.auth.User',
+      type: 'User',
       args: [
         {
           name: 'x',
@@ -229,7 +225,7 @@ foam.CLASS({
         },
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode: `
@@ -237,16 +233,16 @@ foam.CLASS({
           return user;
         }
 
-        user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
+        user = user.isFrozen() ? (User) user.fclone() : user;
         user.setLoginAttempts((short) 0);
         user.setNextLoginAttemptAllowedAt(new Date());
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
+        return (User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     },
     {
       name: 'incrementLoginAttempts',
       documentation: 'Increments login attempts by 1',
-      type: 'foam.nanos.auth.User',
+      type: 'User',
       args: [
         {
           name: 'x',
@@ -254,13 +250,13 @@ foam.CLASS({
         },
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode: `
-        user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
+        user = user.isFrozen() ? (User) user.fclone() : user;
         user.setLoginAttempts((short) (user.getLoginAttempts() + 1));
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
+        return (User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     },
     {
@@ -274,11 +270,11 @@ foam.CLASS({
          },
          {
            name: 'user',
-           type: 'foam.nanos.auth.User'
+           type: 'User'
          }
        ],
        javaCode: `
-         user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
+         user = user.isFrozen() ? (User) user.fclone() : user;
          Calendar cal = Calendar.getInstance();
          cal.add((Calendar.MINUTE), user.getLoginAttempts() * getLoginDelayMultiplier());
          user.setNextLoginAttemptAllowedAt(cal.getTime());
@@ -292,7 +288,7 @@ foam.CLASS({
       args: [
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode: `
@@ -309,7 +305,7 @@ foam.CLASS({
       args: [
         {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode: `

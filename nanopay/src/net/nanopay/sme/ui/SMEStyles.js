@@ -751,7 +751,7 @@ foam.CLASS({
       height: 6px;
       width: 6px;
       margin-bottom: 1px;
-      margin-right: 4px;
+      margin-right: 8px;
       border-radius: 50%;
     }
 
@@ -759,24 +759,11 @@ foam.CLASS({
       color: #07941f;
     }
 
-    .contact-status-circle-Active {
-      background-color: #07941f;
+    .contact-status-circle-Ready {
+      background-color: /*%APPROVAL3%*/ #32bf5e;
     }
-
-    .contact-status-NotInvited {
-      color: #424242;
-    }
-
-    .contact-status-circle-NotInvited {
-      background-color: #424242;
-    }
-
-    .contact-status-Invited {
-      color: #545d87;
-    }
-
-    .contact-status-circle-Invited {
-      background-color: #545d87;
+    .contact-status-circle-Pending {
+      background-color: /*%GREY3%*/ #cbcfd4;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
@@ -1044,6 +1031,42 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
+    }
+    .foam-u2-filter-FilterSearch-container-search {
+      width: 857px;
+      margin-left: 7px;
+    }
+    .DAOBrowser-query-bar {
+      align-items: center !important;
+    }
+    .foam-u2-filter-BooleanFilterView-container > input[type='checkbox']:checked:after {
+      width: 16px;
+      height: 18px;
+      margin-right: 2px;
+      padding-left: 2px;
+      position: relative;
+      left: -2px;
+      top: -2px;
+      background-color: white;
+      display: inline-block;
+      visibility: visible;
+      color: #604aff;
+      border-radius: 2px;
+      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
+    }
+    .net-nanopay-sme-onboarding-BusinessDirectorArrayView-value-view-container .foam-u2-borders-CardBorder {
+      // onboarding Business Directors Info ArrayView
+      border-radius: 0px;
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      border: solid 0 #ffffff;
+      background-color: #ffffff;
+    }
+    .foam-u2-detail-SectionedDetailPropertyView div .net-nanopay-sme-onboarding-BusinessDirectorArrayView .net-nanopay-sme-ui-AbliiActionView-secondary {
+      // onboarding Business Directors Info Add Director button
+      border: 0px;
+      border-style: none;
+      background-color: white;
+      color: /*%PRIMARY3%*/ #604aff;
     }
   `
 });

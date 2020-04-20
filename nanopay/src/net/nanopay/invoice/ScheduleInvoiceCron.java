@@ -24,7 +24,7 @@ public class ScheduleInvoiceCron
   {
     protected DAO    invoiceDAO_;
     protected DAO    localTransactionDAO_;
-    protected DAO    localTransactionQuotePlanDAO_;
+    protected DAO    localTransactionPlannerDAO;
     protected DAO    localUserDAO_;
     protected Logger logger;
 
@@ -95,7 +95,7 @@ public class ScheduleInvoiceCron
 
         try {
           TransactionQuote quote = new TransactionQuote.Builder(getX()).setRequestTransaction(transaction).build();
-          quote = (TransactionQuote) localTransactionQuotePlanDAO_.put(quote);
+          quote = (TransactionQuote) localTransactionPlannerDAO.put(quote);
           Transaction plan = quote.getPlan();
           if ( plan == null ) {
             throw new RuntimeException("Failed to quote Invoice: "+transaction);
@@ -116,7 +116,7 @@ public class ScheduleInvoiceCron
       logger = (Logger) getX().get("logger");
       logger.log("Scheduled payments on Invoice Cron Starting...");
       localTransactionDAO_ = (DAO) getX().get("localTransactionDAO");
-      localTransactionQuotePlanDAO_ = (DAO) getX().get("localTransactionQuotePlanDAO");
+      localTransactionPlannerDAO = (DAO) getX().get("localTransactionPlannerDAO");
       invoiceDAO_     = (DAO) getX().get("invoiceDAO");
       localUserDAO_    = (DAO) getX().get("localUserDAO");
       logger.log("DAO's fetched...");

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'United States',
+  label: 'US Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -29,13 +29,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'US',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/us.png',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -78,7 +78,7 @@ foam.CLASS({
       name: 'branchId',
       label: 'ACH Routing Number',
       section: 'accountDetails',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123456789',
@@ -104,6 +104,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'ACH Account Number',
+      updateVisibility: 'RO',
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
@@ -115,11 +116,12 @@ foam.CLASS({
       },
       gridColumns: 6
     },
-    // {
-    //   name: 'branch',
-    //   //visibility: 'HIDDEN'
-    //   label: 'Routing No.',
-    // },
+    {
+      name: 'branch',
+      //visibility: 'HIDDEN'
+      updateVisibility: 'RO',
+      label: 'Routing No.',
+    },
     // {
     //   name: 'institution',
     //   visibility: 'HIDDEN'
@@ -145,7 +147,6 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((branch, branchDAO) => {

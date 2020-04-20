@@ -7,7 +7,7 @@ foam.CLASS({
 
   properties: [
     ['type', 'JKS'],
-    ['keyStorePath', '/opt/nanopay/keys/keystore.jks'],
-    ['passphrasePath', '/opt/nanopay/keys/passphrase']
+    ['keyStorePath', '/opt/nanopay/var/keys/keystore.jks'],
+    ['passphrasePath', '/opt/nanopay/var/keys/passphrase']
   ]
 });

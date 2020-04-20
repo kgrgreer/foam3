@@ -6,6 +6,9 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.Transfer',
+    'java.util.ArrayList',
+
   ],
 
   properties: [
@@ -60,6 +63,20 @@ foam.CLASS({
       networkTransient: true,
       documentation: 'helper property used during planning to keep track of parent quote when a planner spawns child quotes'
     },
+    {
+      name: 'myTransfers_',
+      class: 'List',
+      javaFactory: 'return new ArrayList<Transfer>();',
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    },
+    {
+      name: 'alternatePlans_',
+      class: 'List',
+      javaFactory: 'return new ArrayList<Transaction>();',
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    }
   ],
 
   methods: [
@@ -80,6 +97,20 @@ foam.CLASS({
       } else {
         setPlans(new Transaction[] { plan });
       }
+      `
+    },
+    {
+      name: 'addTransfer',
+      documentation: 'helper function for adding transfers to the plan',
+      args: [
+        { name: 'account', type: 'Long' },
+        { name: 'amount', type: 'Long' }
+      ],
+      javaCode: `
+        Transfer t = new Transfer();
+        t.setAccount(account);
+        t.setAmount(amount);
+        getMyTransfers_().add(t);
       `
     },
   ]

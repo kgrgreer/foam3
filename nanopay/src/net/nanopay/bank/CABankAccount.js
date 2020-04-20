@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canada',
+  label: 'Canadian Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
@@ -35,13 +35,13 @@ foam.CLASS({
      {
       name: 'country',
       value: 'CA',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/cad.png',
-      createMode: 'HIDDEN'
+      createVisibility: 'HIDDEN'
     },
     {
       name: 'denomination',
@@ -73,8 +73,9 @@ foam.CLASS({
       name: 'branchId',
       type: 'String',
       label: 'Transit No.',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails',
+      updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
@@ -103,7 +104,7 @@ foam.CLASS({
       documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       label: 'Inst. No.',
       section: 'accountDetails',
       storageTransient: true,
@@ -112,6 +113,15 @@ foam.CLASS({
         placeholder: '123',
         maxLength: 3,
         onKey: true
+      },
+      validateObj: function(institutionNumber) {
+        if ( institutionNumber === '' ) {
+          return 'Please enter an institution number.';
+        }
+        var instNumberRegex = /^[0-9]{3}$/;
+        if ( ! instNumberRegex.test(institutionNumber) ) {
+          return 'Institution number must be 3 digits long.';
+        }
       },
       gridColumns: 2,
       preSet: function(o, n) {
@@ -123,16 +133,16 @@ foam.CLASS({
     {
       name: 'accountNumber',
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{5,12}$/;
-
         if ( accountNumber === '' ) {
           return 'Please enter an account number.';
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
+        }
+        var accNumberRegex = /^[0-9]{5,12}$/;
+        if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Account number must be between 5 and 12 digits long.';
         }
       },
       gridColumns: 6,
-      visibility: 'FINAL',
+      updateVisibility: 'RO',
       section: 'accountDetails'
     },
     {
@@ -143,7 +153,6 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of BankAccounts.
       `,
-      tableWidth: 400,
       tableCellFormatter: function(_, obj) {
         this.start()
           .add(obj.slot((institution, institutionDAO) => {

@@ -46,7 +46,7 @@ foam.CLASS({
                 .build();
 
               try {
-                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
+                ((DAO) x.get("transactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
                 //email Support about failure.

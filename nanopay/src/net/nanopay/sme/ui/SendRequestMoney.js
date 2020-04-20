@@ -28,7 +28,7 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'userDAO',
-    'transactionQuotePlanDAO',
+    'transactionPlannerDAO',
     'quickbooksService',
     'xeroService',
   ],
@@ -61,7 +61,8 @@ foam.CLASS({
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.dialog.Popup',
   ],
 
   axioms: [
@@ -397,7 +398,7 @@ foam.CLASS({
         destinationAmount: this.invoice.amount
       });
 
-      var quote = await this.transactionQuotePlanDAO.put(
+      var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
@@ -423,7 +424,12 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        if ( ! this.isApproving ) {
+        // Calling put here makes display 'invoice was created' message in invoice history.
+        // We want to show this message only when we are creating a new invoice.
+        
+        // a flag for determining if we are creating a new invoice
+        const isNewInvoice = this.invoice.id === 0;
+        if ( isNewInvoice ) {
           this.invoice = await this.invoiceDAO.put(this.invoice);
         }
       } catch (error) {
@@ -628,6 +634,18 @@ foam.CLASS({
           return;
         }
         this.subStack.back();
+      }
+    },
+    {
+      name: 'otherOption',
+      isAvailable: function(hasOtherOption) {
+        return hasOtherOption;
+      },
+      code: function(X) {
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+          invoice: this.invoice
+        }));
       }
     },
   ]

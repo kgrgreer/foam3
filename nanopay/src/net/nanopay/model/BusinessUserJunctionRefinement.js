@@ -88,7 +88,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
 
-        if ( auth.check(x, "*") ) return;
+        if ( auth.check(x, "*") || auth.check(x, "onboarding.update.*") ) return;
 
         if ( ! (user instanceof Business) ) {
           throw new AuthorizationException("Only businesses may assign signing officers.");

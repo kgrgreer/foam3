@@ -104,6 +104,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hidePaymentCards',
+      label: '',
       documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     },
     'bankAccount',
@@ -145,10 +146,21 @@ foam.CLASS({
                   return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
-              .start('span').hide(this.isIframe())
+              .start('span')
+                .hide(this.isIframe())
+                .addClass('us-business-onboarding')
                 .add(this.slot((user$onboarded, businessOnboarding, complete) => {
                   let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: complete, isEmployee: isEmp, businessOnboarding: businessOnboarding }).end();
+                  return this.E()
+                    .start()
+                    .tag({
+                      class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard',
+                      type: this.UnlockPaymentsCardType.INTERNATIONAL,
+                      isComplete: complete,
+                      isEmployee: isEmp,
+                      businessOnboarding: businessOnboarding
+                    })
+                    .end();
                 }))
               .end()
             .end()
@@ -158,7 +170,9 @@ foam.CLASS({
               return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount }).end();
             }))
           .end()
-          .start('span').hide(this.isIframe())
+          .start('span')
+            .hide(this.isIframe())
+            .addClass('accounting-software')
             .add(this.slot((user$hasIntegrated) => {
               return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
             }))

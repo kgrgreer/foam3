@@ -27,11 +27,11 @@ public class ISOTimeParser
   public ISOTimeParser() {
     super(new Seq(
       Literal.create("\""),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create(":"),
-      new IntParser(),
+      IntParser.instance(),
       Literal.create("."),
       new Repeat(new Chars("0123456789")),
       Literal.create("Z"),

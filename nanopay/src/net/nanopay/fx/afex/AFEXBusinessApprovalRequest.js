@@ -4,12 +4,17 @@ foam.CLASS({
 
   documentation: 'Approval request to allow 5minutes delay in AFEX Client Onboarding',
 
-  extends: 'net.nanopay.approval.ApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
   properties: [
     {
       class: 'String',
-      name: 'afexBusinessId'
+      name: 'afexBusinessId',
+      visibility: function(afexBusinessId) {
+        return afexBusinessId ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ]
 });

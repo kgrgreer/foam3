@@ -23,9 +23,7 @@ foam.CLASS({
         }
         int size = t.length;
         Transaction [] t2 = new Transaction [size+1];
-        for ( int i = 0; i < tx.getNext().length; i++ ) {
-          t2[i] = t[i];
-        }
+        System.arraycopy(t,0,t2,0,t.length);
         t2[t2.length-1] = txn;
         tx.setNext(t2);
       `

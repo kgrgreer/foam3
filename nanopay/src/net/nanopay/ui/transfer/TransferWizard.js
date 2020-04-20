@@ -29,7 +29,7 @@ foam.CLASS({
     'transactionDAO',
     'user',
     'accountDAO as bankAccountDAO',
-    'transactionQuotePlanDAO'
+    'transactionPlannerDAO'
   ],
 
   exports: [
@@ -401,7 +401,7 @@ foam.CLASS({
             transaction.sourceAccount = this.viewData.account;
           }
 
-          this.quote = self.transactionQuotePlanDAO.put(
+          this.quote = self.transactionPlannerDAO.put(
             self.TransactionQuote.create({
               requestTransaction: transaction
             })

@@ -7,11 +7,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.LoanAccount',
+    'net.nanopay.account.LoanedTotalAccount',
+    'net.nanopay.tx.model.Transaction',
     'java.util.List',
-    'java.util.ArrayList',
-    'net.nanopay.account.LoanedTotalAccount'
+    'java.util.ArrayList'
   ],
 
   methods: [
@@ -34,49 +34,21 @@ foam.CLASS({
       `
     },
     {
-      name: 'executeBeforePut',
+      name: `validate`,
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
+        { name: 'x', type: 'Context' }
       ],
-      type: 'net.nanopay.tx.model.Transaction',
+      type: 'Void',
       javaCode: `
-      Transaction tx = super.executeBeforePut(x, oldTxn);
-      if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) ) {
+      super.validate(x);
+      if( ! ( findSourceAccount(x) instanceof LoanAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a Loan Account as a Source Account");
         throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
       }
-      if( ! ( tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
+      if( ! ( findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a LoanedTotalAccount as a Destination Account");
         throw new RuntimeException("Transaction must include a LoanedTotalAccount as a Destination Account");
       }
-      return tx;
-    `
-    },
-    {
-      name: 'createTransfers',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.Transfer[]',
-      javaCode: `
-        List all = new ArrayList();
-        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
-        return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
   ]

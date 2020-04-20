@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -24,6 +25,8 @@ foam.CLASS({
           ) {
             ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
             ct.copyFrom(plan);
+            ct.setInitialStatus(TransactionStatus.PENDING);
+            ct.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
             ct.clearLineItems();
             ct.setIsQuoted(true);
             plan.setNext(new Transaction[] { ct });

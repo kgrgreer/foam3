@@ -19,10 +19,10 @@ foam.CLASS({
     { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
     { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
     { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
-    { name: 'NOTE_LABEL', message: 'Note:'},
-    { name: 'NOTE_HINT', message: 'i.e. Why is it voided?'},
+    { name: 'NOTE_LABEL', message: 'Notes' },
+    { name: 'NOTE_HINT', message: 'i.e. Why is it voided?' },
     { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}    
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}
   ],
 
   css: `
@@ -42,9 +42,11 @@ foam.CLASS({
     ^ .margin-bottom-24 {
       margin: 0;
       margin-bottom: 24px;
+      width: 270px;
+      opacity: 0.8;
     }
     ^ .margin-bottom-8 {
-     margin: 0px;   
+     margin: 0px;
      margin-bottom: 8px;
     }
     ^ .input-note {
@@ -57,7 +59,7 @@ foam.CLASS({
       name: 'note',
       view: function(args, X) {
         return foam.u2.tag.TextArea.create({
-          placeholder: X.data.NOTE_HINT,        
+          placeholder: X.data.NOTE_HINT,
           rows: 4,
           cols: 35
         });
@@ -119,9 +121,16 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
         this.invoiceDAO.put(this.invoice).then((invoice) => {
-         if (invoice.paymentMethod == this.PaymentStatus.VOID) {
-          this.notify(this.VOID_SUCCESS, 'success');
+         if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           X.closeDialog();
+          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'sme.main.dashboard' ) {
+            X.stack.push({
+              class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
+              invoice: this.invoice
+            });
+          } else {
+            this.notify(this.VOID_SUCCESS, 'success');
+          }
          }
         }).catch((err) => {
          if ( err ) this.notify(this.VOID_ERROR, 'error');
