@@ -283,8 +283,7 @@ foam.CLASS({
       getter: function() {
          return this.statusHistory[0].timeStamp;
       },
-      tableWidth: 172,
-      includeInDigest: true
+      tableWidth: 172
     },
     {
       class: 'Reference',
@@ -370,7 +369,7 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-      includeInDigest: true,
+//      includeInDigest: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -418,7 +417,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'basicInfo',
       label: 'Originating Source',
-      includeInDigest: true,
+//      includeInDigest: true,
       tableWidth: 170
     },
      {
@@ -427,6 +426,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
+      storageTransient: true,
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
       readVisibility: function(payer, referenceNumber) {
@@ -445,8 +445,6 @@ foam.CLASS({
           choices$: x.data.payer$.map((p) => p ? [[p, p.toSummary()]] : [])
         };
       },
-      storageTransient: true,
-      includeInDigest: false,
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -462,7 +460,6 @@ foam.CLASS({
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
-      includeInDigest: false,
       section: 'paymentInfoDestination',
       createVisibility: 'HIDDEN',
       readVisibility: function(payee, referenceNumber) {
@@ -494,7 +491,6 @@ foam.CLASS({
       name: 'payeeId',
       section: 'paymentInfoDestination',
       storageTransient: true,
-      includeInDigest: false,
       visibility: 'HIDDEN',
     },
     {
@@ -502,7 +498,6 @@ foam.CLASS({
       name: 'payerId',
       label: 'payer',
       storageTransient: true,
-      includeInDigest: false,
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
       readVisibility: function(payerId) {
@@ -563,7 +558,6 @@ foam.CLASS({
         outputter.outputValue("Source Amount");
         outputter.outputValue("Source Currency");
       `,
-      includeInDigest: true
     },
     {
       class: 'String',
@@ -624,7 +618,6 @@ foam.CLASS({
       name: 'total',
       label: 'Total Amount',
       transient: true,
-      includeInDigest: false,
       visibility: 'HIDDEN',
       expression: function(amount) {
         return amount;
@@ -682,7 +675,7 @@ foam.CLASS({
       `
     },
     {
-      // REVIEW: processDate and completionDate are Alterna specific?
+      // REVIEW: processDate and completionDate are PaymentProvider specific?
       class: 'DateTime',
       name: 'processDate',
       createVisibility: 'HIDDEN',
@@ -734,7 +727,6 @@ foam.CLASS({
       javaFactory: `
         return "CAD";
       `,
-      includeInDigest: true,
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.currencyDAO,
@@ -762,6 +754,7 @@ foam.CLASS({
       },
     },
     {
+      // REVIEW: Remove-  I suspect this specific to payment providers.
       class: 'String',
       name: 'dstAccountError',
       documentation: 'This is used strictly for the synchronizing of dstAccount errors on create.',
@@ -848,7 +841,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       storageTransient: true,
-      includeInDigest: false,
       expression: function(statusHistory) {
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
@@ -875,8 +867,6 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
-      // TODO/REVIEW causing class cast exception during medusa replay
-      includeInDigest: false,
     },
     {
       class: 'DateTime',
@@ -903,6 +893,7 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
+      // REVIEW - Remove - Why is this on the base Transaction? This should be on a view model.
       class: 'String',
       name: 'searchName',
       label: 'Payer/Payee Name',
@@ -925,6 +916,7 @@ foam.CLASS({
     }
   ],
 
+  // REVIEW: move many methods to a Transactions.js support model
   methods: [
     {
       name: 'doFolds',
@@ -1189,7 +1181,7 @@ foam.CLASS({
     {
       name: 'copyLineItems',
       code: function copyLineItems(from, to) {
-      if ( from.length > 0 ) {
+        if ( from.length > 0 ) {
           to = to.concat(from);
         }
         return to;
@@ -1197,7 +1189,7 @@ foam.CLASS({
       args: [
         { name: 'from', type: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'to', type: 'net.nanopay.tx.TransactionLineItem[]' },
-     ],
+      ],
       type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
@@ -1281,65 +1273,66 @@ foam.CLASS({
         tx.setNext(t2);
       }
     `
-  },
-  {
-    name: 'authorizeOnCreate',
-    args: [
-      { name: 'x', type: 'Context' }
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnUpdate',
-    args: [
-      { name: 'x', type: 'Context' },
-      { name: 'oldObj', type: 'foam.core.FObject' }
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnDelete',
-    args: [
-      { name: 'x', type: 'Context' },
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnRead',
-    args: [
-      { name: 'x', type: 'Context' },
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'getApprovableKey',
-    type: 'String',
-    javaCode: `
+    },
+    {
+      name: 'getApprovableKey',
+      type: 'String',
+      javaCode: `
       return getId();
     `
-  },
-  {
-    name: 'getOutgoingAccount',
-    type: 'Long',
-    javaCode: `
+    },
+    {
+      name: 'getOutgoingAccount',
+      type: 'Long',
+      javaCode: `
       return getSourceAccount();
     `
-  }
-],
+    }
+  ],
   actions: [
     {
+      // REVIEW: Why is this on base transaction?  This should be on a view model Transaction.
       name: 'viewComplianceHistory',
       label: 'View Compliance History',
       isAvailable: function(group) {

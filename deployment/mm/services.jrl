@@ -69,6 +69,23 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntryDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(x.get("internalMedusaEntryDAO"))
+//      .setReadOnly(true);
+      .setCluster(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "localMedusaEntryDAO",
   "serviceScript": `
     return new foam.dao.EasyDAO.Builder(x)
@@ -110,6 +127,7 @@ p({
       .setInnerDAO(x.get("localMedusaEntryDAO"))
       .setCluster(false)
       .setRuler(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
@@ -125,6 +143,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
+      .setEnableInterfaceDecorators(false)
       .setDecorator(new foam.dao.BatchServerDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaRoutingDAO.Builder(x)
