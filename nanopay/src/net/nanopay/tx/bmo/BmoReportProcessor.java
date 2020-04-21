@@ -32,8 +32,6 @@ import net.nanopay.tx.model.TransactionStatus;
 public class BmoReportProcessor {
 
   private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/";
-  private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
-  private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
   private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
 
   private X x;
@@ -59,12 +57,9 @@ public class BmoReportProcessor {
     File receipt = null;
 
     try {
-
       String message = FileUtils.readFileToString(file, "US-ASCII");
       boolean result = message.contains("SUCCESSFULLY DELIVERED");
-      FileUtils.moveFile(file, new File(RECEIPT_PROCESSED_FOLDER + "_" + fileCreationNumber + "_" +  file.getName()));
       return result;
-
     } catch (Exception e) {
       this.logger.error("Error when process the receipt file. ", e);
       return false;
