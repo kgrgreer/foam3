@@ -10,7 +10,8 @@ p({
     "class":"net.nanopay.business.ruler.JunctionNotificationSettingsRule"
   },
   "after":true,
-  "enabled":true
+  "enabled":true,
+  "lifecycleState":1
 })
 
 p({
@@ -30,5 +31,6 @@ p({
     "propValue": "gd"
   },
   "after": false,
-  "enabled": false
+  "enabled": false,
+  "lifecycleState":1
 })

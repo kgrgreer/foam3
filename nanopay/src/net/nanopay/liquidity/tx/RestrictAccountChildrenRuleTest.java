@@ -34,7 +34,7 @@ public class RestrictAccountChildrenRuleTest
 
   public void runTest(X x) {
     accountDAO_ = (DAO) x.get("localAccountDAO");
-    ruleDAO_ = (DAO) x.get("ruleDAO");
+    ruleDAO_ = (DAO) x.get("localRuleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     user_ = (User) x.get("user");

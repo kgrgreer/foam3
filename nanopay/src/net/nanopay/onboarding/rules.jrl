@@ -10,5 +10,6 @@ p({
     "class":"net.nanopay.onboarding.ruler.NotificationSettingsRule"
   },
   "after":true,
-  "enabled":true
+  "enabled":true,
+  "lifecycleState":1
 })

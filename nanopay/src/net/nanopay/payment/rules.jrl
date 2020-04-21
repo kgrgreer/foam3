@@ -11,6 +11,7 @@ p({
     "class": "net.nanopay.payment.CreatePaymentCode"
   },
   "enabled": true,
-  "saveHistory": false
+  "saveHistory": false,
+  "lifecycleState":1
 })
 

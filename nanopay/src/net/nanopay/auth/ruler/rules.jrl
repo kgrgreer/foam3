@@ -17,5 +17,6 @@ p({
     }
   },
   "action":{ "class":"net.nanopay.auth.ruler.LogoutUserAction" },
-  "saveHistory": true
+  "saveHistory": true,
+  "lifecycleState":1
 })
