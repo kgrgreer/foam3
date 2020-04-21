@@ -75,7 +75,6 @@ foam.CLASS({
         type: 'Contact',
         group: 'sme'
       });
-      // override sections titles/subtitles if edit mode
       if ( this.isEdit ) {
         this.data.isEdit = true;
         this.data.shouldInvite = false;
@@ -85,14 +84,13 @@ foam.CLASS({
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
-        // populate createBankAccount with bankAccount if bankAccount > 0
         if ( this.data.bankAccount > 0 ){
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
     },
     function initE() {
-      var self = this; 
+      var self = this;
       this.addClass('wizard');
       self
         .start(self.Rows)
