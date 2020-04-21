@@ -80,7 +80,7 @@ foam.CLASS({
       this.start().addClass(this.myClass())
         .add(this.slot((data) => {
           if ( !! data ) {
-            return self.Popup.create({onClose: self.onClose}, self)
+            return self.Popup.create({ onClose: self.onClose }, self)
               .startContext({ controllerMode: self.controllerMode })
                 .tag({
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
