@@ -2,6 +2,9 @@ FOAM_FILES([
   // DAO
   { name: 'net/nanopay/dao/EasyDAO'},
 
+  { name: 'net/nanopay/security/HexString', flags: ['web']},
+  { name: 'net/nanopay/security/HexStringArray', flags: ['web']},
+
   // Approvable
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
@@ -714,8 +717,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/pii/FreezeApprovedPIIRequestsDAO' },
 
   // security
-  { name: 'net/nanopay/security/HexString' },
-  { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/EncryptingDAO' },
   { name: 'net/nanopay/security/KeyStoreManager' },

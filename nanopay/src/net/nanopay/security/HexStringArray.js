@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.security',
   name: 'HexStringArray',
   extends: 'foam.core.Property',
-  flags: ['java'],
+//  flags: ['java'],
 
   properties: [
     {
