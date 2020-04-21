@@ -78,11 +78,11 @@ foam.CLASS({
         .add(this.slot((data) => {
           if ( !! data ) {
             return self.Popup.create(null, self)
-              .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
+              .startContext({ controllerMode: this.controllerMode })
                 .tag({
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
                   data: self.data,
-                  disableMenuMode: true
+                  isEdit: true
                 })
               .endContext();
           }

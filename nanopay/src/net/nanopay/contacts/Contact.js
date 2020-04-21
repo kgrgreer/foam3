@@ -182,6 +182,9 @@ foam.CLASS({
       section: 'stepOne',
       label: '',
       updateVisibility: foam.u2.DisplayMode.HIDDEN,
+      createVisibility: function(isEdit) {
+        return isEdit ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
@@ -258,7 +261,6 @@ foam.CLASS({
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
       section: 'stepTwo',
-      updateVisibility: 'RW',
       storageTransient: true,
       label: '',
       factory: function() {
@@ -275,8 +277,10 @@ foam.CLASS({
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
       label: '',
-      createVisibility: function(createBankAccount$country) {
-        return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      createVisibility: function(createBankAccount$country, isEdit) {
+        return (createBankAccount$country != 'IN' && ! isEdit) ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: foam.u2.DisplayMode.HIDDEN,
       view: function(_, X) {
@@ -337,6 +341,14 @@ foam.CLASS({
       documentation: 'Tracks the status of a business.',
       visibility: 'HIDDEN',
       storageTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: 'True if the contact is being edited',
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      value: false
     },
     {
       name: 'emailVerified',

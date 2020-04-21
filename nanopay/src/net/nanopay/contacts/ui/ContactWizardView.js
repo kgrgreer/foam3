@@ -39,6 +39,7 @@ foam.CLASS({
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
     { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
+    { name: 'CONTACT_EDITED', message: 'Personal contact edited.' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
     { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
     { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' }
@@ -59,7 +60,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'disableMenuMode',
+      name: 'isEdit',
       documentation: `Set to true when editing a contact from
       contact controller.`,
       value: false
@@ -67,7 +68,7 @@ foam.CLASS({
   ],
   
   methods: [
-    function init() {
+    async function init() {
       // filter out inherited sections
       this.sections = this.sections.filter((section) => section.fromClass === 'Contact');
       this.data.copyFrom({
@@ -75,15 +76,20 @@ foam.CLASS({
         group: 'sme'
       });
       // override sections titles/subtitles if edit mode
-      if ( this.controllerMode === this.ControllerMode.EDIT ) {
+      if ( this.isEdit ) {
+        this.data.isEdit = true;
+        this.data.shouldInvite = false;
         this.sections[0].title = this.EDIT_STEP_ONE_TITLE;
         this.sections[0].subTitle = '';
         this.sections[1].title = this.EDIT_STEP_TWO_TITLE;
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
+        // populate createBankAccount with bankAccount if bankAccount > 0
+        if ( this.data.bankAccount > 0 ){
+          this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
+        }
       }
-      //edit check on create bank account
     },
     function initE() {
       var self = this; 
@@ -130,7 +136,7 @@ foam.CLASS({
             this.ctrl.notify(msg, 'error');
           }
         } else {
-          this.ctrl.notify(this.CONTACT_ADDED);
+          this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED);
       }
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
@@ -163,7 +169,7 @@ foam.CLASS({
       }
       return true;
     },
-    // /** Add the bank account to the Contact. */
+    /** Add the bank account to the Contact. */
     async function addBankAccount() {
       this.isConnecting = true;
       var contact = this.contact;
@@ -198,7 +204,8 @@ foam.CLASS({
       label: 'Go back',
       code: function(X) {
         this.isConnecting = false;
-        if ( this.disableMenuMode && this.currentIndex === 0 ) {
+        if ( this.isEdit && this.currentIndex === 0 ) {
+          this.data.isEdit = false;
           X.closeDialog();
         }
         else if ( this.currentIndex > 0 ) {
@@ -244,7 +251,7 @@ foam.CLASS({
       },
       code: async function(X) { 
         if ( ! await this.addContact() ) return;
-        if ( ! await this.addBankAccount() ) return;
+        if ( this.data.bankAccount === 0 && ! await this.addBankAccount() ) return;
         X.closeDialog();
       }
     }
