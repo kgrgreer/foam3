@@ -149,7 +149,7 @@ foam.CLASS({
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
-            .setApprovableHashKey(ApprovableAware.getApprovableHashKey(x, obj))
+            .setApprovableHashKey(ApprovableAware.getApprovableHashKey(x, obj, Operations.CREATE))
             .setOperation(Operations.CREATE)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
