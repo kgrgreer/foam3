@@ -60,7 +60,7 @@ foam.CLASS({
     User user2 = (User) userDAO.put(new User.Builder(x).setGroup("group2").setFirstName("user_two").setLastName("user_two").setEmail("user2@nanopay.net").build());
     User user3 = (User) userDAO.put(new User.Builder(x).setGroup("group3").setFirstName("user_three").setLastName("user_three").setEmail("user3@nanopay.net").build());
 
-    DAO ruleDAO = (DAO) x.get("ruleDAO");
+    DAO ruleDAO = (DAO) x.get("localRuleDAO");
     SudoTicketApprovalRequestRule requestRule = (SudoTicketApprovalRequestRule) ruleDAO.find(EQ(foam.nanos.ruler.Rule.NAME, "SudoTicketApprovalRequestRule")).fclone();
     test(requestRule != null, "Request rule found");
     requestRule.setApprovers(new ArrayList(Arrays.asList(user1.getId())));

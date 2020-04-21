@@ -39,7 +39,7 @@ public class TxLimitRuleTest
 
   public void testTransactionLimit(X x, TxLimitEntityType entityType, boolean send, Frequency period, long limit, long[] txAmounts, String message) {
     User testUser = (User) x.get("user");
-    DAO ruleDAO = (DAO) x.get("ruleDAO");
+    DAO ruleDAO = (DAO) x.get("localRuleDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     // create source user which generates source account

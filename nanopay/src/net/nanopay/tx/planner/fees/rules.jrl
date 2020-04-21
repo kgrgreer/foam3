@@ -21,7 +21,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.fees.AbliiFeeRule"}
+  "action":{"class":"net.nanopay.tx.planner.fees.AbliiFeeRule"},
+  "lifecycleState":1
 })
 
 p({
@@ -37,5 +38,6 @@ p({
     "class":"net.nanopay.tx.ruler.AddGDTxnFeeLineItem",
     "fee":150
   },
-  "enabled":false
+  "enabled":false,
+  "lifecycleState":1
 })
