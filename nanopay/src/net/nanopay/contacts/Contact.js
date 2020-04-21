@@ -181,12 +181,16 @@ foam.CLASS({
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'stepOne',
       label: '',
+      updateVisibility: foam.u2.DisplayMode.HIDDEN,
+      createVisibility: function(isEdit) {
+        return isEdit ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
           label: X.data.CONFIRM_RELATIONSHIP
         }
-    },
+      },
       validateObj: function(confirm) {
         if ( ! confirm ) {
           return 'Confirmation required.';
@@ -273,9 +277,12 @@ foam.CLASS({
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
       label: '',
-      visibility: function(createBankAccount$country) {
-        return createBankAccount$country != 'IN' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      createVisibility: function(createBankAccount$country, isEdit) {
+        return (createBankAccount$country != 'IN' && ! isEdit) ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
       },
+      updateVisibility: foam.u2.DisplayMode.HIDDEN,
       view: function(_, X) {
         return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
       }
@@ -334,6 +341,14 @@ foam.CLASS({
       documentation: 'Tracks the status of a business.',
       visibility: 'HIDDEN',
       storageTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: 'True if the contact is being edited',
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      value: false
     },
     {
       name: 'emailVerified',
