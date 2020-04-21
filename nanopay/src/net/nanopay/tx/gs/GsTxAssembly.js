@@ -34,6 +34,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.tx.DVPTransaction',
+    'net.nanopay.tx.OriginatingSource',
     'net.nanopay.fx.SecurityPrice',
     'net.nanopay.fx.ExchangeRateService',
     'foam.core.Currency',
@@ -256,7 +257,7 @@ foam.CLASS({
       javaCode: `
       tx = addStatusHistory(tx,stamp);
       setTxnCount(getTxnCount()+1);
-      tx.setReferenceNumber("File Upload");
+      tx.setOrigin(OriginatingSource.UPLOAD);
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -420,7 +421,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-          txn2.setReferenceNumber("System Generated");
+          txn2.setOrigin(OriginatingSource.SYSTEM);
           txn2 = walk_(txn2,txn.getCreated().getTime());
           verifyBalance(x,txn2);
         }  
@@ -450,7 +451,7 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
-            secCI.setReferenceNumber("System Generated");
+            secCI.setOrigin(OriginatingSource.SYSTEM);
             TransactionQuote quote = new TransactionQuote();
             quote.setRequestTransaction(secCI);
             secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
@@ -500,7 +501,7 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
-            .setReferenceNumber("System Generated")
+            .setOrigin(OriginatingSource.SYSTEM)
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
