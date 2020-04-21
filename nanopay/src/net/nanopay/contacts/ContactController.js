@@ -96,7 +96,8 @@ foam.CLASS({
               code: function(X) {
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
-                  data: this
+                  data: this,
+                  controllerMode: this.bankAccount > 0 ? foam.u2.ControllerMode.EDIT : foam.u2.ControllerMode.CREATE
                 }, X));
               }
             }),
