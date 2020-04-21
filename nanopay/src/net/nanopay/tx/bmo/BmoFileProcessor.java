@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Date;
+import org.apache.commons.io.FileUtils;
 
 import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.cico.EFTFileStatus;
@@ -110,6 +111,7 @@ public class BmoFileProcessor {
       try {
         foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, receipt, "text/csv"); 
         eftFile.setReceipt(f.getId());
+        FileUtils.deleteQuietly(receipt);
       } catch(Exception e) {
         logger.error("BMO Error while saving recipt", e);
       }
