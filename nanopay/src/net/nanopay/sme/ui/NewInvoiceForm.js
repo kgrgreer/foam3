@@ -40,6 +40,7 @@ foam.CLASS({
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.ui.wizard.WizardController',
     'foam.u2.dialog.Popup',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
@@ -443,7 +444,12 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    // disabled until new edit contact flow is implemented
+                    self.add(self.WizardController.create({
+                      model: 'net.nanopay.contacts.Contact',
+                      data: contact,
+                      controllerMode: foam.u2.ControllerMode.CREATE,
+                      onClose: self.checkUser.bind(self)
+                    }, self))
                   });
                 })
               .end()

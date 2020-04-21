@@ -67,6 +67,11 @@ foam.CLASS({
         var array = model.split(".");
         return array[array.length - 1];
       }
+    },
+    {
+      class: 'Function',
+      name: 'onClose',
+      documentation: 'Callback function to be passed on to Popup.'
     }
   ],
   
@@ -75,8 +80,8 @@ foam.CLASS({
       this.start().addClass(this.myClass())
         .add(this.slot((data) => {
           if ( !! data ) {
-            return self.Popup.create(null, self)
-              .startContext({ controllerMode: this.controllerMode })
+            return self.Popup.create({onClose: self.onClose}, self)
+              .startContext({ controllerMode: self.controllerMode })
                 .tag({
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
                   data: self.data,
