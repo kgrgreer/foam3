@@ -4,6 +4,7 @@ import foam.core.ContextAgent;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
@@ -168,6 +169,14 @@ public class BillingInvoicesCron implements ContextAgent {
         // Only want to charge fees on completed or declined Transaction chains
         if ( ! (transaction.getState(x) == TransactionStatus.DECLINED || transaction.getState(x) == TransactionStatus.COMPLETED) ) {
           return;
+        }
+
+        if ( transaction.getState(x) == TransactionStatus.DECLINED ) {
+          ArraySink sink = (ArraySink) transactionDAO.where(EQ(Transaction.PARENT, transaction.getId())).select(new ArraySink());
+          Transaction ct = (Transaction) sink.getArray().get(0);
+          if ( ct.getStatus() == TransactionStatus.DECLINED ) {
+            return;
+          }
         }
 
         if ( invoice == null ) {
