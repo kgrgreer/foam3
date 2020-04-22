@@ -441,6 +441,7 @@ foam.CLASS({
       section: 'basicInfo',
       label: 'Originating Source',
       value: 'NONE',
+      javaFactory: 'return OriginatingSource.NONE;',
       includeInDigest: true,
     },
      {
