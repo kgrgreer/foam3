@@ -84,3 +84,10 @@ p({
   "authenticate": false,
   "serviceClass": "foam.nanos.medusa.ClusterPingService"
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigMonitor",
+  "lazy": false,
+  "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+})

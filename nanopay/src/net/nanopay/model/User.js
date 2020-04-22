@@ -235,14 +235,6 @@ foam.CLASS({
       value: false,
     },
     {
-      class: 'Boolean',
-      name: 'createdPwd',
-      value: false,
-      documentation: `Determines whether the User is using its own unique password or one
-        that was system-generated.`,
-      section: 'administrative'
-    },
-    {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,

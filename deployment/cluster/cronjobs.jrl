@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.cron.Cron",
   "id":"ClusterConfigMonitorCron",
-  "enabled":true,
+  "enabled":false,
   "clusterable":false,
   "description":"Cluster Monitoring",
   "schedule":{
