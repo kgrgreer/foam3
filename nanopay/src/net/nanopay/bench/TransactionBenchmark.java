@@ -16,6 +16,7 @@ import foam.nanos.boot.NSpec;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -152,6 +153,7 @@ public class TransactionBenchmark
           .setId(INSTITUTION_ID)
           .setCountryId("CA")
           .setInstitutionNumber(INSTITUTION_NUMBER)
+          //          .setLifecycleState(LifecycleState.ACTIVE);
           .build();
         institution = (Institution) institutionDAO_.put_(x, institution);
       }
@@ -162,6 +164,7 @@ public class TransactionBenchmark
           .setId(BRANCH_ID)
           .setInstitution(institution.getId())
           .setBranchId(BRANCH_NUMBER)
+          //          .setLifecycleState(LifecycleState.ACTIVE);
           .build();
         branch = (Branch) branchDAO_.put_(x, branch);
       }
@@ -173,6 +176,11 @@ public class TransactionBenchmark
       bank.setAccountNumber(RESERVE_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
+      bank = (BankAccount) accountDAO_.put_(x, bank);
+    }
+    if ( bank.getLifecycleState() != LifecycleState.ACTIVE ) {
+      bank = (BankAccount) bank.fclone();
+      bank.setLifecycleState(LifecycleState.ACTIVE);
       bank = (BankAccount) accountDAO_.put_(x, bank);
     }
 
@@ -188,6 +196,11 @@ public class TransactionBenchmark
       trust.setId(TRUST_ID);
       trust.setReserveAccount(bank.getId());
       trust = (TrustAccount) accountDAO_.put(trust);
+    }
+    if ( trust.getLifecycleState() != LifecycleState.ACTIVE ) {
+      trust = (TrustAccount) trust.fclone();
+      trust.setLifecycleState(LifecycleState.ACTIVE);
+      trust = (TrustAccount) accountDAO_.put_(x, bank);
     }
 
     for ( long i = 1; i <= MAX_USERS; i++ ) {
@@ -206,6 +219,11 @@ public class TransactionBenchmark
         user.setGroup("business");
         user = (User) userDAO_.put(user);
 
+      }
+      if ( user.getLifecycleState() != LifecycleState.ACTIVE ) {
+        user = (User) user.fclone();
+        user.setLifecycleState(LifecycleState.ACTIVE);
+        user = (User) userDAO_.put_(x, bank);
       }
     }
 
