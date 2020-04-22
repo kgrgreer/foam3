@@ -11,7 +11,8 @@ p({
         "class":"net.nanopay.sme.ruler.OnboardingPaymentOperationNotification"
     },
     "enabled":true,
-    "saveHistory":true
+    "saveHistory":true,
+    "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -42,7 +43,8 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -83,7 +85,8 @@ p({
     "class": "net.nanopay.sme.ruler.CheckUserNameAvailabilityRule"
   },
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -100,7 +103,8 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({

@@ -230,7 +230,7 @@ public class LiquidityService
   {
     Transaction transaction = new Transaction.Builder(x_)
         .setAmount(amount)
-        .setReferenceNumber("Liquidity Service")
+        .setOrigin(net.nanopay.tx.OriginatingSource.LIQUIDITY)
         .setDestinationAccount(destination)
         .setSourceAccount(source)
         .build();

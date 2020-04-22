@@ -32,7 +32,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'disableMenuMode',
+      name: 'isEdit',
       documentation: `Set to true when inviting a contact directly from
       contact controller.`,
       value: false
@@ -67,7 +67,7 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        if ( X.data.disableMenuMode ) {
+        if ( this.isEdit ) {
           X.closeDialog();
         } else {
           X.pushMenu('sme.menu.toolbar');

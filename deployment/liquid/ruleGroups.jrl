@@ -6,8 +6,11 @@ p({
     "args":[
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"referenceNumber",
-        "propValue":"Manual Entry"
+        "propName":"origin",
+        "propValue":{
+          "class":"net.nanopay.tx.OriginatingSource",
+          "ordinal":0
+        }
       },
       {
         "class":"foam.mlang.predicate.Not",
@@ -30,8 +33,11 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[{
       "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-      "propName":"referenceNumber",
-      "propValue":"Manual Entry"
+      "propName":"origin",
+      "propValue":{
+        "class":"net.nanopay.tx.OriginatingSource",
+        "ordinal":0
+      }
     },
     {
       "class": "foam.mlang.predicate.Not",

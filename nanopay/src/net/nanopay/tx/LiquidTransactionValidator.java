@@ -40,7 +40,7 @@ public class LiquidTransactionValidator implements Validator {
       throw new RuntimeException("Unable to send to account "+dest.getId());
 
     User user = (User) x.get("user");
-    if (     tx.getReferenceNumber().equals("Manual Entry") && source.getClass() != DigitalAccount.class
+    if (     tx.getOrigin() == net.nanopay.tx.OriginatingSource.MANUAL && source.getClass() != DigitalAccount.class
       && ! (
       user.getGroup().equals("admin")
         && source instanceof ShadowAccount )

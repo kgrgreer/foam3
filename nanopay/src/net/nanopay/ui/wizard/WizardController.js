@@ -68,6 +68,11 @@ foam.CLASS({
         var array = model.split(".");
         return array[array.length - 1];
       }
+    },
+    {
+      class: 'Function',
+      name: 'onClose',
+      documentation: 'Callback function to be passed on to Popup.'
     }
   ],
   
@@ -77,12 +82,14 @@ foam.CLASS({
       this.start().addClass(this.myClass())
         .add(this.slot((data) => {
           if ( !! data ) {
-            return self.Popup.create(null, self)
-              .tag({
-                class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-                data: self.data,
-                disableMenuMode: true
-              })
+            return self.Popup.create({ onClose: self.onClose }, self)
+              .startContext({ controllerMode: self.controllerMode })
+                .tag({
+                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
+                  data: self.data,
+                  isEdit: true
+                })
+              .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
             menu: 'sme.main.contacts',
@@ -90,7 +97,7 @@ foam.CLASS({
               class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
               data: self.model_
             }
-          })
+          });
         }))
       .end()
     }

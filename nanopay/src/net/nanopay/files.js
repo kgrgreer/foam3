@@ -426,6 +426,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/OriginatingSource' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

@@ -569,7 +569,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .setServiceProviderAware(true)
-      .setDeletedAware(false)
       .setApprovableAwareEnabled(false)
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
@@ -610,7 +609,6 @@ p({
       .setEnableInterfaceDecorators(false)
       .setRuler(true)
       .setAuthorize(false)
-      .setDeletedAware(false)
       .setValidated(true)
       .setServiceProviderAware(true)
       .build();
@@ -633,7 +631,6 @@ p({
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(x.get("localUserDAO"))
         .setEnableInterfaceDecorators(false)
-        .setDeletedAware(false)
         .build();
   """,
   "client":
@@ -668,7 +665,6 @@ p({
             .setPredicate(foam.mlang.MLang.CLASS_OF(foam.nanos.auth.User.class))
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
           .build())
-        .setDeletedAware(false)
         .setEnableInterfaceDecorators(false)
         .build();
   """,
@@ -708,7 +704,6 @@ p({
       .setInnerDAO(filtered)
       .setEnableInterfaceDecorators(false)
       .setAuthorize(false)
-      .setDeletedAware(false)
       .build();
   """,
   "client":
@@ -742,7 +737,6 @@ p({
       .setEnableInterfaceDecorators(false)
       .setPm(true)
       .setPipelinePm(true)
-      .setDeletedAware(false)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.User.CREATED).build() })
       .build();
@@ -788,7 +782,6 @@ p({
       .setAuthorize(false)
       .setInnerDAO(dao)
       .setEnableInterfaceDecorators(false)
-      .setDeletedAware(false)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .build();
   """,
@@ -855,7 +848,6 @@ p({
       .setRuler(false)
       .setDecorator(new net.nanopay.auth.BusinessEmployeeDAO.Builder(x).build())
       .setInnerDAO(x.get("bareUserDAO"))
-      .setDeletedAware(false)
       .build();
   """,
   "client":
@@ -900,7 +892,6 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
-      .setDeletedAware(false)
       .setInnerDAO(x.get("localBusinessDAO"))
       .setEnableInterfaceDecorators(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.model.Business.CREATED).build() })
@@ -1075,7 +1066,6 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localLiquiditySettingsDAO",
-  "serve": true,
   "serviceScript":
   """
   import net.nanopay.liquidity.LiquiditySettings;
@@ -2144,17 +2134,11 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.EasyDAO.Builder(x)
+      .setEnableInterfaceDecorators(false)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
-      .setGuid(true)
-      .setContextualize(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("rules")
-      .setValidated(true)
       .setRuler(false)
-      .setPm(true)
+      .setInnerDAO(x.get("localRuleDAO"))
       .build();
-
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.Rule.NAME });
 
     return dao;
   """,

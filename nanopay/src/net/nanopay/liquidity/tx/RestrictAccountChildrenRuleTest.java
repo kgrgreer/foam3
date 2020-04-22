@@ -34,7 +34,7 @@ public class RestrictAccountChildrenRuleTest
 
   public void runTest(X x) {
     accountDAO_ = (DAO) x.get("localAccountDAO");
-    ruleDAO_ = (DAO) x.get("ruleDAO");
+    ruleDAO_ = (DAO) x.get("localRuleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     user_ = (User) x.get("user");
@@ -125,7 +125,7 @@ public class RestrictAccountChildrenRuleTest
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
     transaction_.setIsQuoted(true);
-    transaction_.setReferenceNumber("Manual Entry");
+    transaction_.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
 
     test(
       TestUtils.testThrows(
