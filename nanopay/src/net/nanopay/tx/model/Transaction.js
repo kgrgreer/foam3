@@ -453,12 +453,12 @@ foam.CLASS({
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
       readVisibility: function(payer, origin) {
-        if ( origin == OriginatingSource.MANUAL && payer )
+        if ( origin == this.OriginatingSource.MANUAL && payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(payer, origin) {
-        if ( origin == OriginatingSource.MANUAL && payer )
+        if ( origin == this.OriginatingSource.MANUAL && payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
@@ -487,12 +487,12 @@ foam.CLASS({
       section: 'paymentInfoDestination',
       createVisibility: 'HIDDEN',
       readVisibility: function(payee, origin) {
-         if ( origin == OriginatingSource.MANUAL && payee )
+         if ( origin == this.OriginatingSource.MANUAL && payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(payee, origin) {
-         if ( origin == OriginatingSource.MANUAL && payee )
+         if ( origin == this.OriginatingSource.MANUAL && payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },
