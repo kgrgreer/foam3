@@ -165,6 +165,11 @@ public class BillingInvoicesCron implements ContextAgent {
           return;
         }
 
+        // Only want to charge fees on completed or declined Transaction chains
+        if ( ! (transaction.getState(x) == TransactionStatus.DECLINED || transaction.getState(x) == TransactionStatus.COMPLETED) ) {
+          return;
+        }
+
         if ( invoice == null ) {
           Date paymentDate = getPaymentDate(x, payer.getAddress(), issueDate);
           invoice = new BillingInvoice.Builder(x)
