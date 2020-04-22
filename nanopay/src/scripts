@@ -1410,6 +1410,7 @@ p({
     permissionArray.add("menu.read.report");
     permissionArray.add("menu.read.report.txnReport");
     permissionArray.add("service.accountDAO");
+    permissionArray.add("service.agentJunctionDAO");
     permissionArray.add("service.balanceDAO");
     permissionArray.add("service.branchDAO");
     permissionArray.add("service.businessDAO");
@@ -1424,10 +1425,16 @@ p({
     permissionArray.add("service.nSpecDAO");
     permissionArray.add("service.notificationDAO");
     permissionArray.add("service.run.dig");
+    permissionArray.add("service.run.sugar");
+    permissionArray.add("service.sessionService");
     permissionArray.add("service.transactionDAO");
+    permissionArray.add("service.transactionHierarchyDAO");
     permissionArray.add("service.twofactor");
     permissionArray.add("session.read.*");
+    permissionArray.add("transaction.create");
     permissionArray.add("transaction.read.*");
+    permissionArray.add("transactionquote.read.*");
+    permissionArray.add("transactionreport.read.*");
     permissionArray.add("user.read.*");
     permissionArray.add("service.run.authenticationToken");
     permissionArray.add("spid.create."+NAME);
