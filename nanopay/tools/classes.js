@@ -556,6 +556,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
   'net.nanopay.fx.AddINCurrencyPermissionRule',
   'net.nanopay.tx.TransactionValidator',
+  'net.nanopay.tx.OriginatingSource',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',

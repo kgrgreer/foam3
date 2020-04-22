@@ -847,7 +847,7 @@ foam.RELATIONSHIP({
       } else {
         this.__subSubContext__.accountDAO.find(value).then((account) => {
           this.removeChild(value.toString());
-          this.add(account.name);
+          account.name === '' ? this.add('Account ' + account.id) : this.add(account.name);
         });
       }
     },
@@ -925,7 +925,7 @@ foam.RELATIONSHIP({
       } else {
         this.__subSubContext__.accountDAO.find(value).then((account) => {
           this.removeChild(value.toString());
-          this.add(account.name);
+          account.name === '' ? this.add('Account ' + account.id) : this.add(account.name);
         });
       }
     },

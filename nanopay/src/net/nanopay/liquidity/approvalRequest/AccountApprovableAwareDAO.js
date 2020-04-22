@@ -68,7 +68,7 @@ foam.CLASS({
       AccountRoleApprovalRequest accountRequest = new AccountRoleApprovalRequest.Builder(x)
         .setDaoKey(request.getDaoKey())
         .setObjId(request.getObjId())
-        .setApprovableCreateKey(ApprovableAware.getApprovableCreateKey(x, obj))
+        .setApprovableHashKey(ApprovableAware.getApprovableHashKey(x, obj, request.getOperation()))
         .setClassification(request.getClassification())
         .setOperation(request.getOperation())
         .setCreatedBy(request.getCreatedBy())

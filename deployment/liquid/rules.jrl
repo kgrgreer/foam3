@@ -219,10 +219,10 @@ p({
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"referenceNumber",
+        "propName":"origin",
         "propValue":{
-          "class":"foam.mlang.Constant",
-          "value":"Manual Entry"
+          "class":"net.nanopay.tx.OriginatingSource",
+          "ordinal":0
         }
       }
     ]

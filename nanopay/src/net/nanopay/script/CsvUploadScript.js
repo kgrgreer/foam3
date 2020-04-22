@@ -15,6 +15,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filename'
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      value: 'csvUploadScriptDAO',
+      transient: true,
+      visibility: 'HIDDEN',
     }
   ],
 });

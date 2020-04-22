@@ -194,7 +194,7 @@ p({
   "enabled":true,
   "saveHistory":true,
   "predicate":{
-    "class":"foam.mlang.predicate.OR",
+    "class":"foam.mlang.predicate.Or",
     "args":[
     {
       "class":"foam.mlang.predicate.Eq",
@@ -379,17 +379,8 @@ p({
   "daoKey":"localTransactionDAO",
   "operation":1,
   "predicate":{
-    "class":"foam.mlang.predicate.OR",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName":"status"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName":"lifecycleState"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+    "propName":"status"
   },
   "action":{"class":"net.nanopay.tx.ruler.AddStatusHistoryAction"},
   "lifecycleState":1
