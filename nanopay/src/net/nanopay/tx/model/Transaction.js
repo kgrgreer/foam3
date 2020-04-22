@@ -220,6 +220,7 @@ foam.CLASS({
       javaFactory: `
     return getType();
       `,
+      includeInDigest: false
     },
     {
       name: 'balances',
@@ -242,19 +243,22 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `,
-      tableWidth: 180
+      tableWidth: 180,
+      includeInDigest: false
     },
     {
       name: 'isQuoted',
       class: 'Boolean',
-      hidden: true
+      hidden: true,
+      includeInDigest: false
     },
     {
       name: 'transfers',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
-      hidden: true
+      hidden: true,
+      includeInDigest: true
     },
     {
       name: 'reverseTransfers',
@@ -275,7 +279,7 @@ foam.CLASS({
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
       tableWidth: 150,
-//      includeInDigest: true
+      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -290,8 +294,9 @@ foam.CLASS({
       getter: function() {
          return this.statusHistory[0].timeStamp;
       },
-      tableWidth: 172
-    },
+      tableWidth: 172,
+      includeInDigest: true
+     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
@@ -308,7 +313,8 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -326,14 +332,16 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the transaction was last modified.`,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -350,7 +358,8 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -369,6 +378,7 @@ foam.CLASS({
       },
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
+      includeInDigest: true
     },
     {
       class: 'foam.core.Enum',
@@ -376,7 +386,7 @@ foam.CLASS({
       name: 'status',
       section: 'basicInfo',
       value: 'COMPLETED',
-//      includeInDigest: true,
+      includeInDigest: true,
       writePermissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
@@ -542,6 +552,7 @@ foam.CLASS({
       label: 'Source Amount',
       section: 'amountSelection',
       required: true,
+      includeInDigest: true,
       gridColumns: 5,
       visibility: 'RO',
       help: `This is the amount withdrawn from the payer's chosen account (Source Account).`,
@@ -655,6 +666,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
+      includeInDigest: true,
       gridColumns: 7,
       help: `This is the amount sent to payee's account (destination account).`,
       view: function(_, X) {
@@ -694,6 +706,7 @@ foam.CLASS({
       // REVIEW: processDate and completionDate are PaymentProvider specific?
       class: 'DateTime',
       name: 'processDate',
+      includeInDigest: false,
       createVisibility: 'HIDDEN',
       readVisibility: function(processDate) {
         return processDate ?
@@ -704,11 +717,12 @@ foam.CLASS({
         return processDate ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
-      }
+      },
     },
     {
       class: 'DateTime',
       name: 'completionDate',
+      includeInDigest: false,
       readVisibility: function(completionDate) {
         return completionDate ?
           foam.u2.DisplayMode.RO :
@@ -728,11 +742,13 @@ foam.CLASS({
       class: 'String',
       name: 'messageId',
       visibility: 'RO',
+      includeInDigest: true,
       hidden: true
     },
     {
       class: 'String',
       name: 'sourceCurrency',
+      includeInDigest: true,
       aliases: ['sourceDenomination'],
       section: 'paymentInfoSource',
       gridColumns: 5,
@@ -757,6 +773,7 @@ foam.CLASS({
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
+      includeInDigest: true,
       createVisibility: 'HIDDEN',
       readVisibility: function(referenceData) {
         return referenceData.length > 0 ?
@@ -780,6 +797,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      includeInDigest: true,
       aliases: ['destinationDenomination'],
       visibility: 'RO',
       section: 'paymentInfoDestination',
@@ -797,6 +815,7 @@ foam.CLASS({
       name: 'statusHistory',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.HistoricStatus',
+      includeInDigest: false,
       createVisibility: 'HIDDEN',
       readVisibility: function(statusHistory) {
         return statusHistory.length > 0 ?
@@ -827,6 +846,7 @@ foam.CLASS({
       // TODO: Why do we have this and scheduledTime?
       name: 'scheduled',
       class: 'DateTime',
+      includeInDigest: false,
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       readVisibility: function(scheduled) {
@@ -843,6 +863,7 @@ foam.CLASS({
     {
       name: 'lastStatusChange',
       class: 'DateTime',
+      includeInDigest: false,
       section: 'basicInfo',
       documentation: 'The date that a transaction changed to its current status',
       createVisibility: 'HIDDEN',
@@ -887,6 +908,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'scheduledTime',
+      includeInDigest: false,
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       readVisibility: function(scheduledTime) {
@@ -905,6 +927,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'deleted',
       value: false,
+      includeInDigest: true,
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     },
@@ -924,6 +947,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
+      includeInDigest: true,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
