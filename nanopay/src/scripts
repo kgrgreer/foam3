@@ -1361,7 +1361,6 @@ p({
       print("--------------------");
     }
 
-
     groupDAO = x.get("groupDAO");
 
     // Create new group
@@ -1466,7 +1465,7 @@ p({
       junction.setTargetId(smeRemovePermissionArray.get(i));
       if ( DRY_RUN ) {
         print("'menu.read.sme.accountProfile.*', 'menu.read.sme.main.*' and 'menu.read.sme.quickAction.*' are removed from sme group.");
-      } else if ( fixSME) {
+      } else if ( fixSME ) {
         groupPermissionJunctionDAO.put(junction);
       } else {
         groupPermissionJunctionDAO.remove(junction);
@@ -1478,7 +1477,7 @@ p({
     smeBusinessJunction.setTargetId("menu.read.sme.*");
     if ( DRY_RUN ) {
       print("'menu.read.sme.*' is removed from smeBusinessAdmin group.");
-    }  else if ( fixSME) {
+    }  else if ( fixSME ) {
       groupPermissionJunctionDAO.put(smeBusinessJunction);
     } else {
       groupPermissionJunctionDAO.remove(smeBusinessJunction);
@@ -1537,7 +1536,7 @@ p({
       .setId(NAME+"-operation")
       .build();
 
-    // create account submenu
+    // create Account submenu
     accountMenuConfig = new DAOControllerConfig();
     accountMenuConfig.setDaoKey("accountDAO");
     accountMenuConfig.setCreateEnabled(false);
