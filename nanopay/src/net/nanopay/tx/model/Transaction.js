@@ -1336,7 +1336,7 @@ foam.CLASS({
     `
   },
   {
-    name: 'getApprovableKey',
+    name: 'getStringId',
     type: 'String',
     javaCode: `
       return getId();
