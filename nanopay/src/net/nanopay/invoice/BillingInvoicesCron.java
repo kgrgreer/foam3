@@ -4,7 +4,6 @@ import foam.core.ContextAgent;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
@@ -15,6 +14,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.BillingInvoice;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -142,6 +142,22 @@ public class BillingInvoicesCron implements ContextAgent {
     )).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Transaction transaction = (Transaction) obj;
+
+        // Only want to charge fees on completed or declined Transaction chains
+        TransactionStatus state = transaction.getState(x);
+
+        if ( state == TransactionStatus.DECLINED ) {
+          Transaction ct = (Transaction) transactionDAO.find(AND(
+            EQ(Transaction.PARENT, transaction.getId()),
+            INSTANCE_OF(ComplianceTransaction.class)
+          ));
+          if ( ct.getStatus() == TransactionStatus.DECLINED ) {
+            return;
+          }
+        } else if ( state != TransactionStatus.COMPLETED ) {
+          return;
+        }
+
         Account sourceAccount = transaction.findSourceAccount(x);
         if ( sourceAccount == null ) {
           error_.append(" . id: ").append(transaction.getId())
@@ -164,19 +180,6 @@ public class BillingInvoicesCron implements ContextAgent {
           || transaction.getDestinationAccount() == destinationAccount_.getId()
         ) {
           return;
-        }
-
-        // Only want to charge fees on completed or declined Transaction chains
-        if ( ! (transaction.getState(x) == TransactionStatus.DECLINED || transaction.getState(x) == TransactionStatus.COMPLETED) ) {
-          return;
-        }
-
-        if ( transaction.getState(x) == TransactionStatus.DECLINED ) {
-          ArraySink sink = (ArraySink) transactionDAO.where(EQ(Transaction.PARENT, transaction.getId())).select(new ArraySink());
-          Transaction ct = (Transaction) sink.getArray().get(0);
-          if ( ct.getStatus() == TransactionStatus.DECLINED ) {
-            return;
-          }
         }
 
         if ( invoice == null ) {
