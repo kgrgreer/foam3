@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity',
-  name: 'LiquiditySettingsPreventLoopRule',
+  name: 'PreventAccountLiquidityLoopRule',
 
   documentation: 'This rule prevents money from infinitely looping through multiple accounts via Liquidity Settings.',
 
@@ -13,6 +13,13 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'message'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -23,7 +30,7 @@ foam.CLASS({
         HashSet<DigitalAccount> seenAccounts = new HashSet<>();
         while ( account != null ) {
           if ( seenAccounts.contains(account) ) {
-            throw new Error("Loop detected");
+            throw new RuntimeException(this.getMessage());
           }
           seenAccounts.add(account);
           LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
