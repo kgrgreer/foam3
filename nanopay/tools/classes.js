@@ -24,6 +24,7 @@ var classes = [
   'net.nanopay.tx.cico.EFTFileStatus',
   'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.cico.ReverseCORule',
+  'net.nanopay.tx.client.ClientTransactionLimitService',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.tx.alterna.AlternaSFTPService',
@@ -501,6 +502,7 @@ var classes = [
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
+  'net.nanopay.tx.model.TransactionLimitDetail',
   'net.nanopay.tx.TransactionPurpose',
   'net.nanopay.tx.PlanTransactionComparator',
   'net.nanopay.tx.PlanCostComparator',
@@ -1037,11 +1039,13 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateServiceInterface',
   'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.liquidity.tx.AccountHierarchy',
+  'net.nanopay.tx.TransactionLimitServiceInterface',
   'net.nanopay.contacts.PaymentCodeServiceInterface'
 ];
 
 var proxies = [
   'net.nanopay.cico.service.BankAccountVerifier',
+  'net.nanopay.tx.TransactionLimitServiceInterface',
   'net.nanopay.contacts.PaymentCodeServiceInterface'
 ];
 
