@@ -12,8 +12,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'static foam.mlang.MLang.*',
     'java.util.List',
     'foam.nanos.approval.ApprovalStatus',
