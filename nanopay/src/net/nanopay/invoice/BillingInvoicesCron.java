@@ -154,7 +154,7 @@ public class BillingInvoicesCron implements ContextAgent {
           if ( ct != null && ct.getStatus() == TransactionStatus.DECLINED ) {
             return;
           }
-        } else if ( state != TransactionStatus.COMPLETED ) {
+        } else if ( ! (state == TransactionStatus.COMPLETED || state == TransactionStatus.SENT) ) {
           return;
         }
 
