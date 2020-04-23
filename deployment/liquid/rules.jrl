@@ -310,7 +310,7 @@ p({
 })
 p({
   "class": "net.nanopay.liquidity.tx.L2TransactionApprovalRule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d173","name": "L2 approval for transaction >= $50,000 - GS06 CASH (USD)",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d173","name": "L2 approval for transaction >= $50,000 - ACME06 CASH (USD)",
   "sourceAccount": 1449,
   "startAmount": 5000000,
   "denomination": "USD",
@@ -361,7 +361,7 @@ p({
 // Transaction limit business rule example for 200,000.00 EUR
 p({
   "class":"net.nanopay.liquidity.tx.TxLimitRule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d176","name":"GS09 Securities €200,000.00 EUR Account Limit",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d176","name":"ACME08 Securities €200,000.00 EUR Account Limit",
   "applyLimitTo":1,
   "accountToLimit":1613,
   "limit":20000000,
@@ -378,8 +378,8 @@ p({
 // Generic business rule example
 p({
   "class":"net.nanopay.liquidity.tx.GenericBusinessRule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d177","name":"GS10 Account Tx Notification Rule",
-  "description":"Sample Goldman Business Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d177","name":"ACME10 Account Tx Notification Rule",
+  "description":"Sample Business Rule",
   "sourcePredicate":{
     "class":"foam.mlang.predicate.Eq",
     "arg1":{
@@ -393,7 +393,7 @@ p({
     },
     "arg2":{
       "class":"foam.mlang.Constant",
-      "value":"GS10 Shadow Account"
+      "value":"ACME10 Shadow Account"
     }
   },
   "destinationPredicate":{

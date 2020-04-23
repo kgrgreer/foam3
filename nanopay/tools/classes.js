@@ -939,7 +939,7 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.OMName',
 
-  // goldman ingestion
+  // file ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
   'net.nanopay.script.CsvUploadScript',

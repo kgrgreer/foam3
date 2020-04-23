@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.LifecycleState',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -394,6 +395,7 @@ foam.CLASS({
           .setDenomination(row.getCurrency())  
           .setOwner(1348) // admin@nanopay.net
           .setName(name)
+          .setLifecycleState(LifecycleState.ACTIVE)
           .build();
         return ((Account) accountDAO.put(da)).getId();
       }
@@ -481,11 +483,13 @@ foam.CLASS({
           b = new BankAccount.Builder(x)
             .setOwner(1348)  // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
             .setAccountNumber("000000")
             .build();
-          b = (BankAccount) accountDAO.put_(x,b).fclone();
+          X systemX = x.put("user", new User.Builder(x).setId(1).build());
+          b = (BankAccount) accountDAO.put_(systemX,b).fclone();
           logger.info("Created account for cash-in transaction: " + b.getName());
         }
 
@@ -657,8 +661,9 @@ foam.CLASS({
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
             .build();
-          accountDAO.put(sourceTrust);
-          accountDAO.put(sourceBank);
+          X systemX = x.put("user", new User.Builder(x).setId(1).build());
+          accountDAO.inX(systemX).put(sourceTrust);
+          accountDAO.inX(systemX).put(sourceBank);
         }
 
         // Check for currency conversion
