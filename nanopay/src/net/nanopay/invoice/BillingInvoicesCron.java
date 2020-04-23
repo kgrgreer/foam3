@@ -151,7 +151,7 @@ public class BillingInvoicesCron implements ContextAgent {
             EQ(Transaction.PARENT, transaction.getId()),
             INSTANCE_OF(ComplianceTransaction.class)
           ));
-          if ( ct.getStatus() == TransactionStatus.DECLINED ) {
+          if ( ct != null && ct.getStatus() == TransactionStatus.DECLINED ) {
             return;
           }
         } else if ( state != TransactionStatus.COMPLETED ) {
