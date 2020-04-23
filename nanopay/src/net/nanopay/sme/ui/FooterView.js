@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'FooterView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'View to display nanopay footer, including copyright label',
+  documentation: 'View to display footer view.',
 
   imports: [
     'appConfig'
