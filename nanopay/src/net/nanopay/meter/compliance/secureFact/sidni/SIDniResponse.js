@@ -47,5 +47,14 @@ foam.CLASS({
       of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniAdditionalMatchInfo',
       name: 'additionalMatchInfo'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function(x) {
+        return this.verified ? "VERIFIED" : "NOT VERIFIED, " + this.reason;
+      },
+    },
   ]
 });

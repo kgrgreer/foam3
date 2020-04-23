@@ -290,6 +290,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"user.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"user.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"whitelistedEmail.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.approvalRequestDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.identityMindResponseDAO"})
@@ -307,6 +308,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-supp
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.menuDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.ticketDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"service.ticketMessageDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"operations-support","targetId":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"AccountWithDetailModel.read.AccountNumber"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"AccountWithDetailModel.read.Holder"})
@@ -581,6 +583,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"whitelistedEmail.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"whitelistedEmail.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"whitelistedEmail.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"menu.read.integration"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"menu.read.integration.api-dig"})

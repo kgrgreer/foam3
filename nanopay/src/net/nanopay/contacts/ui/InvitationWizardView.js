@@ -32,7 +32,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'disableMenuMode',
+      name: 'isEdit',
       documentation: `Set to true when inviting a contact directly from
       contact controller.`,
       value: false
@@ -67,11 +67,8 @@ foam.CLASS({
       name: 'back',
       label: 'Go back',
       code: function(X) {
-        if ( X.data.disableMenuMode ) {
+        if ( this.isEdit ) {
           X.closeDialog();
-        }
-        else if (X.subStack && X.subStack.depth > 1 ) {
-          X.subStack.back();
         } else {
           X.pushMenu('sme.menu.toolbar');
         }
@@ -96,8 +93,9 @@ foam.CLASS({
             X.closeDialog();
           })
           .catch((e) => {
+            let message = e.message || this.INVITE_FAILURE;
             this.ctrl.add(this.NotificationMessage.create({
-              message: this.INVITE_FAILURE,
+              message: message,
               type: 'error'
             }));
           });

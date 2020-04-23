@@ -326,6 +326,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBeneficialOwnerRule' },
+  { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -424,6 +426,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
+  { name: 'net/nanopay/tx/OriginatingSource' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -1061,6 +1064,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailRule' },
   { name: 'net/nanopay/sme/ruler/CheckUserNameAvailabilityRule' },
   { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
+  { name: 'net/nanopay/sme/ruler/InvitationAntiSpamCheckRule' },
   { name: 'net/nanopay/sme/ui/ErrorPageView', flags: ['web']  },
 
   // relationships
@@ -1401,7 +1405,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 
-  // goldman ingestion
+  // file ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
   { name: 'net/nanopay/tx/gs/GsTxAssembly' },

@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.Account;
@@ -31,7 +32,7 @@ public class RestrictUsersRuleTest
 
   public void runTest(X x) {
     accountDAO_ = (DAO) x.get("localAccountDAO");
-    ruleDAO_ = (DAO) x.get("ruleDAO");
+    ruleDAO_ = (DAO) x.get("localRuleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     user_ = (User) x.get("user");
@@ -89,6 +90,7 @@ public class RestrictUsersRuleTest
     rule_.setSourceUser(sourceUser_.getId());
     rule_.setDestinationUser(destinationUser_.getId());
     rule_.setEnabled(true);
+    rule_.setLifecycleState(LifecycleState.ACTIVE);
     ruleDAO_.put(rule_);
 
     // create test transaction

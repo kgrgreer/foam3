@@ -11,7 +11,8 @@ p({
         "class":"net.nanopay.sme.ruler.OnboardingPaymentOperationNotification"
     },
     "enabled":true,
-    "saveHistory":true
+    "saveHistory":true,
+    "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -42,7 +43,8 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -83,7 +85,8 @@ p({
     "class": "net.nanopay.sme.ruler.CheckUserNameAvailabilityRule"
   },
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -98,6 +101,24 @@ p({
   "after": false,
   "action": {
     "class": "net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0f-f719-98f8-0841-75e97a3ad16d68",
+  "name": "Invitation anti spam check",
+  "priority": 100,
+  "ruleGroup":"invitationAntiSpamCheck",
+  "documentation": "Invitation anti spam check",
+  "daoKey": "invitationDAO",
+  "operation": 0,
+  "after": false,
+  "action": {
+    "class": "net.nanopay.sme.ruler.InvitationAntiSpamCheckRule"
   },
   "enabled":true,
   "saveHistory":true

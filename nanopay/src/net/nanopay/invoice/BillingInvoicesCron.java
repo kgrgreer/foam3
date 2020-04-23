@@ -14,6 +14,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.BillingInvoice;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -141,6 +142,22 @@ public class BillingInvoicesCron implements ContextAgent {
     )).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Transaction transaction = (Transaction) obj;
+
+        // Only want to charge fees on completed or declined Transaction chains
+        TransactionStatus state = transaction.getState(x);
+
+        if ( state == TransactionStatus.DECLINED ) {
+          Transaction ct = (Transaction) transactionDAO.find(AND(
+            EQ(Transaction.PARENT, transaction.getId()),
+            INSTANCE_OF(ComplianceTransaction.class)
+          ));
+          if ( ct != null && ct.getStatus() == TransactionStatus.DECLINED ) {
+            return;
+          }
+        } else if ( ! (state == TransactionStatus.COMPLETED || state == TransactionStatus.SENT) ) {
+          return;
+        }
+
         Account sourceAccount = transaction.findSourceAccount(x);
         if ( sourceAccount == null ) {
           error_.append(" . id: ").append(transaction.getId())

@@ -48,6 +48,7 @@ foam.CLASS({
     'net.nanopay.tx.InterestTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.OriginatingSource',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ'
   ],
@@ -58,7 +59,8 @@ foam.CLASS({
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
    'net.nanopay.tx.model.TransactionStatus',
-   'net.nanopay.tx.HistoricStatus'
+   'net.nanopay.tx.HistoricStatus',
+   'net.nanopay.tx.OriginatingSource'
   ],
 
   constants: [
@@ -108,6 +110,11 @@ foam.CLASS({
       name: 'amountSelection',
       help: 'The amount inputted will be refelective of the source currency account.',
       order: 2
+    },
+    {
+      name: 'additionalInfo',
+      help: 'Extra transaction information can be added here',
+      order: 3
     },
     {
       name: 'basicInfo',
@@ -232,7 +239,7 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `,
-      tableWidth: 160
+      tableWidth: 180
     },
     {
       name: 'isQuoted',
@@ -391,7 +398,7 @@ foam.CLASS({
         outputter.outputValue(get_(obj));
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
-      tableWidth: 130,
+      tableWidth: 190,
       view: function(_, x) {
         return { class: 'foam.u2.view.ChoiceView', choices: x.data.statusChoices };
       },
@@ -420,11 +427,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'referenceNumber',
+      label: 'Reference Number',
+      section: 'additionalInfo',
+      includeInDigest: true,
+      tableWidth: 50
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.OriginatingSource',
+      name: 'origin',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'basicInfo',
       label: 'Originating Source',
-      includeInDigest: true
+      value: 'NONE',
+      javaFactory: 'return OriginatingSource.NONE;',
+      includeInDigest: true,
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -434,13 +452,13 @@ foam.CLASS({
       label: 'Sender',
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
-      readVisibility: function(payer, referenceNumber) {
-        if ( referenceNumber == 'Manual Entry' && payer )
+      readVisibility: function(payer, origin) {
+        if ( origin == this.OriginatingSource.MANUAL && payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
-      updateVisibility: function(payer, referenceNumber) {
-        if ( referenceNumber == 'Manual Entry' && payer )
+      updateVisibility: function(payer, origin) {
+        if ( origin == this.OriginatingSource.MANUAL && payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
@@ -468,13 +486,13 @@ foam.CLASS({
       storageTransient: true,
       section: 'paymentInfoDestination',
       createVisibility: 'HIDDEN',
-      readVisibility: function(payee, referenceNumber) {
-         if ( referenceNumber == 'Manual Entry' && payee )
+      readVisibility: function(payee, origin) {
+         if ( origin == this.OriginatingSource.MANUAL && payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },
-      updateVisibility: function(payee, referenceNumber) {
-         if ( referenceNumber == 'Manual Entry' && payee )
+      updateVisibility: function(payee, origin) {
+         if ( origin == this.OriginatingSource.MANUAL && payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },
@@ -639,7 +657,8 @@ foam.CLASS({
           .addClass('amount-Color-Green')
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
-      }
+      },
+      tableWidth: 160
     },
     {
       class: 'UnitValue',
@@ -913,7 +932,8 @@ foam.CLASS({
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO'
+      readVisibility: 'RO',
+      tableWidth: 130
     }
   ],
 
@@ -1316,7 +1336,7 @@ foam.CLASS({
     `
   },
   {
-    name: 'getApprovableKey',
+    name: 'getStringId',
     type: 'String',
     javaCode: `
       return getId();

@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.LifecycleState',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
@@ -34,6 +35,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.tx.DVPTransaction',
+    'net.nanopay.tx.OriginatingSource',
     'net.nanopay.fx.SecurityPrice',
     'net.nanopay.fx.ExchangeRateService',
     'foam.core.Currency',
@@ -256,7 +258,7 @@ foam.CLASS({
       javaCode: `
       tx = addStatusHistory(tx,stamp);
       setTxnCount(getTxnCount()+1);
-      tx.setReferenceNumber("File Upload");
+      tx.setOrigin(OriginatingSource.UPLOAD);
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -393,6 +395,7 @@ foam.CLASS({
           .setDenomination(row.getCurrency())  
           .setOwner(1348) // admin@nanopay.net
           .setName(name)
+          .setLifecycleState(LifecycleState.ACTIVE)
           .build();
         return ((Account) accountDAO.put(da)).getId();
       }
@@ -420,7 +423,7 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-          txn2.setReferenceNumber("System Generated");
+          txn2.setOrigin(OriginatingSource.SYSTEM);
           txn2 = walk_(txn2,txn.getCreated().getTime());
           verifyBalance(x,txn2);
         }  
@@ -450,7 +453,7 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
-            secCI.setReferenceNumber("System Generated");
+            secCI.setOrigin(OriginatingSource.SYSTEM);
             TransactionQuote quote = new TransactionQuote();
             quote.setRequestTransaction(secCI);
             secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
@@ -480,11 +483,13 @@ foam.CLASS({
           b = new BankAccount.Builder(x)
             .setOwner(1348)  // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
             .setAccountNumber("000000")
             .build();
-          b = (BankAccount) accountDAO.put_(x,b).fclone();
+          X systemX = x.put("user", new User.Builder(x).setId(1).build());
+          b = (BankAccount) accountDAO.put_(systemX,b).fclone();
           logger.info("Created account for cash-in transaction: " + b.getName());
         }
 
@@ -500,7 +505,7 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
-            .setReferenceNumber("System Generated")
+            .setOrigin(OriginatingSource.SYSTEM)
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
@@ -656,8 +661,9 @@ foam.CLASS({
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
             .build();
-          accountDAO.put(sourceTrust);
-          accountDAO.put(sourceBank);
+          X systemX = x.put("user", new User.Builder(x).setId(1).build());
+          accountDAO.inX(systemX).put(sourceTrust);
+          accountDAO.inX(systemX).put(sourceBank);
         }
 
         // Check for currency conversion

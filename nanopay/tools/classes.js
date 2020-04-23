@@ -222,6 +222,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXCreateTradeRule',
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
+  'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
+  'net.nanopay.fx.afex.AFEXSigningOfficerRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -244,6 +246,7 @@ var classes = [
   'net.nanopay.admin.SkipUserEmailVerification',
   'net.nanopay.admin.predicate.IsCurrentUser',
   'net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule',
+  'net.nanopay.sme.ruler.InvitationAntiSpamCheckRule',
 
   // compliance Email notification
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule',
@@ -552,6 +555,7 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
   'net.nanopay.fx.AddINCurrencyPermissionRule',
   'net.nanopay.tx.TransactionValidator',
+  'net.nanopay.tx.OriginatingSource',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -935,7 +939,7 @@ var classes = [
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.OMName',
 
-  // goldman ingestion
+  // file ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
   'net.nanopay.script.CsvUploadScript',

@@ -18,7 +18,7 @@ foam.CLASS({
       padding: 0;
       border: none !important;
     }
-    
+
     ^inner {
       position: relative;
     }
@@ -32,6 +32,9 @@ foam.CLASS({
       border-radius: 3px;
       overflow: hidden;
       background-color: white;
+    }
+    .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
+      display: none;
     }
   `,
 

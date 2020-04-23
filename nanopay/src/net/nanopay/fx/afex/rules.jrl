@@ -1,4 +1,4 @@
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d6","name":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":true,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d6","name":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":true,"saveHistory":true,"lifecycleState":1})
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d7","name":"Add FX Currency Permission to Business",
@@ -15,7 +15,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 r({
   "class":"foam.nanos.ruler.Rule",
@@ -45,7 +46,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -71,7 +73,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -97,7 +100,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXBusinessOnboardingRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -105,25 +109,15 @@ p({
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
   "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
-      }
-    ]
-  },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule"
   },
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -149,7 +143,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXBankUploadingRule2"
   },
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -168,7 +163,8 @@ p({
     "class":"net.nanopay.fx.AddINCurrencyPermissionRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -187,7 +183,8 @@ p({
     "class":"net.nanopay.fx.afex.AFEXCreateTradeRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
 })
 
 p({
@@ -206,5 +203,52 @@ p({
     "class":"net.nanopay.fx.afex.AFEXSubmitPaymentRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c1419029-a8fe-136e-a29e-eef5c17e60cc",
+  "name":"AFEX Push Beneficial Owner",
+  "documentation":"Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.",
+  "priority":100,
+  "ruleGroup":"AFEX",
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName": "apiKey",
+    "propValue": null
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBeneficialOwnerRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c1419029-a8fe-136e-a29e-eef5c17e60co",
+  "name":"AFEX Push Signing Officer",
+  "documentation":"Rule to push Signing Officers to AFEX after AFEX Business is created.",
+  "priority":100,
+  "ruleGroup":"AFEX",
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName": "apiKey",
+    "propValue": null
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXSigningOfficerRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
 })

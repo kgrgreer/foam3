@@ -5,6 +5,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
+import foam.nanos.auth.LifecycleState;
 import foam.test.TestUtils;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -33,7 +34,7 @@ public class RestrictAccountChildrenRuleTest
 
   public void runTest(X x) {
     accountDAO_ = (DAO) x.get("localAccountDAO");
-    ruleDAO_ = (DAO) x.get("ruleDAO");
+    ruleDAO_ = (DAO) x.get("localRuleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
     user_ = (User) x.get("user");
@@ -115,6 +116,7 @@ public class RestrictAccountChildrenRuleTest
     rule_.setDestinationAccount(destinationAccount_.getId());
     rule_.setIncludeDestinationChildAccounts(true);
     rule_.setEnabled(true);
+    rule_.setLifecycleState(LifecycleState.ACTIVE);
     ruleDAO_.put(rule_);
 
     transaction_ = new Transaction();
@@ -123,7 +125,7 @@ public class RestrictAccountChildrenRuleTest
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
     transaction_.setIsQuoted(true);
-    transaction_.setReferenceNumber("Manual Entry");
+    transaction_.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
 
     test(
       TestUtils.testThrows(

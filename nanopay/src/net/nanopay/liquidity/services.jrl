@@ -207,7 +207,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localCapabilityRequestDAO",
-  "serve":true,
   "serviceScript":"""      
     return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)

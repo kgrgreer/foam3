@@ -11,7 +11,8 @@ p({
   "saveHistory":false,
   "action":{
     "class":"net.nanopay.ticket.SudoTicketApprovalRequestAction"
-  }
+  },
+  "lifecycleState":1
 })
 p({
   "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
@@ -27,4 +28,5 @@ p({
   "asyncAction":{
     "class":"net.nanopay.ticket.SudoTicketApprovalResponseAction"
   },
+  "lifecycleState":1
 })

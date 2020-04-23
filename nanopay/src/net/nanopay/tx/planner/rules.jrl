@@ -28,7 +28,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -54,7 +55,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericCIPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.GenericCIPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -80,7 +82,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericCOPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.GenericCOPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -114,7 +117,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericFXPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.GenericFXPlanner"},
+  "lifecycleState":1
 })
 
 
@@ -147,7 +151,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityCIPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.SecurityCIPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -178,7 +183,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityCOPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.SecurityCOPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -209,7 +215,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.FOPPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.FOPPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -225,7 +232,8 @@ p({
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.DVPTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.DVPPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.DVPPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -241,7 +249,8 @@ p({
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.BucketTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityBucketPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.SecurityBucketPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -274,7 +283,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AFEXTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.AFEXTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -307,7 +317,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AscendantFXTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.AscendantFXTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -344,7 +355,8 @@ p({
       },
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakFxTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.KotakFxTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -371,7 +383,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakSplitTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.KotakSplitTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -403,7 +416,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.KotakTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -439,7 +453,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BankDigitalPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.BankDigitalPlanner"},
+  "lifecycleState":1
 })
 
 p({
@@ -476,7 +491,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DigitalBankPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.DigitalBankPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -508,7 +524,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BankToBankPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.BankToBankPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -538,7 +555,8 @@ p({
   "action":{
     "class":"net.nanopay.tx.planner.VerificationPlanner",
     "verifierAccount":4
-  }
+  },
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -578,7 +596,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -626,7 +645,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AlternaCOTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.AlternaCOTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -666,7 +686,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BmoCITransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.BmoCITransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -714,7 +735,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BmoCOTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.BmoCOTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -731,7 +753,8 @@ p({
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.BulkTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.BulkTransaction"}
+  "action":{"class":"net.nanopay.tx.planner.BulkTransaction"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -766,7 +789,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.NanopayFXTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.NanopayFXTransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -793,7 +817,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.LoanTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.LoanTransactionPlanner"},
+  "lifecycleState":1
 })
 
 p({
@@ -855,7 +880,8 @@ p({
   "action": {
     "class": "net.nanopay.tx.ruler.ComplianceTransactionPlanner"
   },
-  "enabled": true
+  "enabled": true,
+  "lifecycleState":1
 })
 
 p({
@@ -876,7 +902,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DebtablePlanner"}
+  "action":{"class":"net.nanopay.tx.planner.DebtablePlanner"},
+  "lifecycleState":1
 })
 
 p({
@@ -897,7 +924,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DebtRepaymentPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.DebtRepaymentPlanner"},
+  "lifecycleState":1
 })
 
 p({
@@ -938,7 +966,8 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.RbcCITransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.RbcCITransactionPlanner"},
+  "lifecycleState":1
 })
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -986,5 +1015,6 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.RbcCOTransactionPlanner"}
+  "action":{"class":"net.nanopay.tx.planner.RbcCOTransactionPlanner"},
+  "lifecycleState":1
 })

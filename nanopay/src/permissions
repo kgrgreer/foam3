@@ -550,3 +550,4 @@ p({"class":"foam.nanos.auth.Permission","id":"corridor.CA.IN","description":"Per
 p({"class":"foam.nanos.auth.Permission","id":"transactionquote.create","description":"Permission to create transactionQuote."})
 p({"class":"foam.nanos.auth.Permission","id":"file.create", "description":"Permission to create a file."})
 p({"class":"foam.nanos.auth.Permission","id":"transactionreport.read.*", "description":"Permission to read TransactionReport."})
+p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa","description":"Permission to see sudo ticket type in strategizer view."})
