@@ -62,7 +62,6 @@ foam.CLASS({
             if ( rate <= 0 ) {
               request.setStatus(ApprovalStatus.REQUESTED);
               request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);
-              throw new RuntimeException("no fx rate");
             } else {
               FXQuote quote = new FXQuote();
               quote.setRate(rate);
