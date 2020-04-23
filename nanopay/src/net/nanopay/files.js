@@ -1001,6 +1001,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessEmployeeDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/model/BusinessDirector' },
+  { name: 'net/nanopay/sme/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowRejectView', flags: ['web'] },
